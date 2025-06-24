@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build embed script",
+      "type": "shell",
+      "command": "pnpm -C embed dev",
+      "hide": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "revealProblems": "onProblem",
+        "group": "script"
+      }
+    },
+    {
+      "label": "Run CDN",
+      "type": "shell",
+      "command": "pnpm -C cdn dev",
+      "hide": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "revealProblems": "onProblem",
+        "group": "script"
+      }
+    },
+    {
+      "label": "Run API",
+      "type": "shell",
+      "command": "pnpm -C api dev",
+      "hide": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "revealProblems": "onProblem",
+        "group": "api"
+      }
+    },
+    {
+      "label": "Run Editor UI",
+      "type": "shell",
+      "command": "pnpm -C frontend dev",
+      "hide": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "revealProblems": "onProblem",
+        "group": "frontend"
+      }
+    },
+    {
+      "label": "Dev",
+      "icon": {
+        "id": "run-all"
+      },
+      "detail": "Run all the development servers",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "promptOnClose": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "close": false,
+        "revealProblems": "always",
+        "reveal": "always",
+        "showReuseMessage": true
+      },
+      "dependsOn": ["Build embed script", "Run CDN", "Run API", "Run Editor UI"]
+    }
+  ]
+}
