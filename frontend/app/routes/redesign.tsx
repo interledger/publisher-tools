@@ -15,7 +15,6 @@ import { StepsIndicator } from '../components/redesign/components/StepsIndicator
 import { TabSelector } from '../components/redesign/components/TabSelector'
 import { SectionHeader } from '~/components/redesign/components/SectionHeader'
 import { SVGColorPicker, SVGRoundedCorner } from '~/assets/svg'
-
 // Primary Button Component
 export function PrimaryButton({
   children,
@@ -90,39 +89,6 @@ export function Card({
   )
 }
 
-// Typography Components
-export function Heading1({
-  children,
-  className = ''
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <h1
-      className={`text-5xl leading-5xl font-bold text-text-primary ${className}`}
-    >
-      {children}
-    </h1>
-  )
-}
-
-export function Heading2({
-  children,
-  className = ''
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <h2
-      className={`text-4xl leading-4xl font-bold text-text-primary ${className}`}
-    >
-      {children}
-    </h2>
-  )
-}
-
 export function BodyText({
   children,
   className = ''
@@ -142,16 +108,12 @@ export default function ExamplePage() {
   return (
     <div className="min-h-screen bg-interface-bg-main p-lg">
       <div className="max-w-2xl mx-auto space-y-lg">
-        <Heading1>Redesign</Heading1>
-
         {/* Typography Examples Section */}
         <Card>
-          <Heading2 className="mb-md">Typography</Heading2>
           <TypographyExample />
         </Card>
 
         <Card>
-          <Heading2 className="mb-md">Get Started</Heading2>
           <BodyText className="mb-lg">
             Fill out the form below to create your account.
           </BodyText>
