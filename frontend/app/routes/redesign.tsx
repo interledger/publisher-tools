@@ -12,6 +12,7 @@ import { ToolsDropdown } from '../components/redesign/components/ToolsDropdown'
 import { ColorSelector } from '../components/redesign/components/ColorSelector'
 import { CornerRadiusSelector } from '../components/redesign/components/CornerRadiusSelector'
 import { StepsIndicator } from '../components/redesign/components/StepsIndicator'
+import { TabSelector } from '../components/redesign/components/TabSelector'
 import { SectionHeader } from '~/components/redesign/components/SectionHeader'
 import { SVGColorPicker, SVGRoundedCorner } from '~/assets/svg'
 
@@ -354,6 +355,24 @@ export function RedesignDemo() {
                 { number: 3, label: 'Validate', status: 'error' }
               ]}
               isMobile={true}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="mt-8 mb-8">
+        <h2 className="text-xl font-bold mb-4">Tab Selector Component</h2>
+        <div className="flex flex-col gap-6 max-w-2xl border border-silver-200 rounded-md p-4 bg-interface-bg-main">
+          {/* Default Tab Selector */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Default Tab Selector</h3>
+            <TabSelector
+              options={[
+                { id: 'tab1', label: 'Default preset 1' },
+                { id: 'tab2', label: 'Default preset 2' },
+                { id: 'tab3', label: 'Default preset 3' }
+              ]}
+              defaultSelectedId="tab1"
+              onSelectTab={(tabId) => console.log('Selected tab:', tabId)}
             />
           </div>
         </div>
