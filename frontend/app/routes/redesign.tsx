@@ -23,7 +23,7 @@ export default function Redesign() {
     <div className="bg-interface-bg-main min-h-screen w-full">
       {/* Main Content Container */}
       <div className="flex flex-col items-center min-h-[calc(100vh-64px)]">
-        <div className="w-full max-w-[1280px] pt-[120px] pb-8 px-4">
+        <div className="w-full max-w-[1280px] pt-[60px] pb-8 px-4">
           {/* Page Header */}
           <HeadingCore
             title="Banner"
@@ -35,15 +35,16 @@ export default function Redesign() {
             <p className="text-base leading-md text-text-primary">
               The drawer banner informs visitors who don&apos;t have the Web
               Monetization extension active, with a call-to-action linking to
-              the extension or providing details about the options available. It
-              also adds your wallet address for your site to be monetized.
+              the extension or providing details about the options available.
+              <br />
+              It also adds your wallet address for your site to be monetized.
             </p>
           </div>
           {/* Main Content Section */}
           <div className="flex flex-col min-h-[756px]">
-            {/* Step 1: Wallet Address */}
+            {/* Wallet Address */}
             <div className="flex items-start gap-6 mb-12">
-              <div id="step-indicator" className="w-[60px] flex-shrink-0 pt-4">
+              <div className="w-[60px] flex-shrink-0 pt-4">
                 <StepsIndicator
                   steps={[
                     {
@@ -65,15 +66,14 @@ export default function Redesign() {
                   onConnectionChange={handleWalletConnection}
                 />
 
-                {/* Step 2: Build Content */}
-                <div id="step-2" className="flex gap-8">
+                {/* Build Content */}
+                <div className="flex gap-8">
                   {/* Builder Form */}
                   <div className="max-w-[628px] flex-1">
                     <BuilderForm
                       onBuildStepComplete={handleBuildStepComplete}
                     />
 
-                    {/* Action Buttons */}
                     <div className="flex items-center justify-end gap-3 mt-6">
                       <ToolsSecondaryButton>
                         Save edits only
@@ -88,7 +88,6 @@ export default function Redesign() {
                     </div>
                   </div>
 
-                  {/* Preview Panel - sticky with content awareness */}
                   <div className="sticky top-4 self-start flex-shrink-0 w-[504px] h-fit">
                     <BuilderBackground />
                   </div>
