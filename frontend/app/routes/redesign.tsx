@@ -1,24 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
+import { useSnapshot } from 'valtio'
 import { StepsIndicator } from '~/components/redesign/components/StepsIndicator'
 import { ToolsWalletAddress } from '../components/redesign/components/ToolsWalletAddress'
 import { HeadingCore } from '../components/redesign/components/HeadingCore'
-
 import { BuilderForm } from '~/components/redesign/components/BuilderForm'
 import { BuilderBackground } from '~/components/redesign/components/BuilderBackground'
 import { ToolsSecondaryButton } from '~/components/redesign/components/ToolsSecondaryButton'
 import { ToolsPrimaryButton } from '~/components/redesign/components/ToolsPrimaryButton'
+import { toolState, persistState, loadState } from '~/stores/toolStore'
 
 export default function Redesign() {
-  const [isWalletConnected, setIsWalletConnected] = useState(false)
-  const [isBuildStepComplete, setIsBuildStepComplete] = useState(false)
+  const snap = useSnapshot(toolState)
 
-  const handleWalletConnection = (connected: boolean) => {
-    setIsWalletConnected(connected)
-  }
+  useEffect(() => {
+    loadState()
+    persistState()
+  }, [])
 
-  const handleBuildStepComplete = (isComplete: boolean) => {
-    setIsBuildStepComplete(isComplete)
-  }
   return (
     <div className="bg-interface-bg-main min-h-screen w-full">
       {/* Main Content Container */}
@@ -50,29 +48,25 @@ export default function Redesign() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: isWalletConnected ? 'filled' : 'unfilled'
+                      status: snap.isWalletConnected ? 'filled' : 'unfilled'
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: isBuildStepComplete ? 'filled' : 'unfilled'
+                      status: snap.isBuildStepComplete ? 'filled' : 'unfilled'
                     }
                   ]}
                 />
               </div>
 
               <div className="flex flex-col gap-12 flex-1">
-                <ToolsWalletAddress
-                  onConnectionChange={handleWalletConnection}
-                />
+                <ToolsWalletAddress />
 
                 {/* Build Content */}
                 <div className="flex gap-8">
                   {/* Builder Form */}
                   <div className="max-w-[628px] flex-1">
-                    <BuilderForm
-                      onBuildStepComplete={handleBuildStepComplete}
-                    />
+                    <BuilderForm />
 
                     <div className="flex items-center justify-end gap-3 mt-6">
                       <ToolsSecondaryButton>
