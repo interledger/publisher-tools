@@ -65,20 +65,24 @@ export default function Redesign() {
   }, [grantResponse, isGrantAccepted, isGrantResponse])
 
   const handleSaveEditsOnly = async () => {
+    if (!snap.isWalletConnected) {
+      toolActions.setConnectWalletStep('error')
+      return
+    }
+
     setIsLoading(true)
     await toolActions.saveConfig('banner', 'save-success')
     setIsLoading(false)
   }
 
   const handleSaveAndGenerateScript = async () => {
-    setIsLoadingScript(true)
-    try {
-      await toolActions.saveConfig('banner', 'script')
-    } catch (error) {
-      console.error('Error saving and generating script:', error)
-    } finally {
-      setIsLoadingScript(false)
+    if (!snap.isWalletConnected) {
+      toolActions.setConnectWalletStep('error')
+      return
     }
+    setIsLoadingScript(true)
+    await toolActions.saveConfig('banner', 'script')
+    setIsLoadingScript(false)
   }
 
   const handleConfirmWalletOwnership = () => {
@@ -122,12 +126,12 @@ export default function Redesign() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.isWalletConnected ? 'filled' : 'unfilled'
+                      status: snap.walletConnectStep
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: snap.isBuildStepComplete ? 'filled' : 'unfilled'
+                      status: snap.buildStep
                     }
                   ]}
                 />
@@ -140,7 +144,11 @@ export default function Redesign() {
                 <div className="flex gap-8">
                   {/* Builder Form */}
                   <div className="max-w-[628px] flex-1">
-                    <BuilderForm />
+                    <BuilderForm
+                      onBuildStepComplete={() =>
+                        toolActions.setBuildCompleteStep('filled')
+                      }
+                    />
 
                     <div className="flex items-center justify-end gap-3 mt-6">
                       <ToolsSecondaryButton
