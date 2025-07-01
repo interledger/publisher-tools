@@ -4,15 +4,9 @@ import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-paym
 import type { WidgetController } from './widget'
 
 export class PaymentInteraction extends LitElement {
+  private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   @property({ type: Object }) configController!: WidgetController
-  @property({ type: String }) interactUrl = ''
-  @property({ type: String }) senderWalletAddress = ''
-  @property({ type: Object }) grant: {
-    interact?: { redirect?: string }
-  } = {}
-  @property({ type: Object }) quote = {}
   @property({ type: Boolean }) requestPayment?: boolean = true
-
   @state() private currentView: 'authorizing' | 'success' | 'failed' =
     'authorizing'
   @state() private errorMessage = ''
@@ -161,15 +155,21 @@ export class PaymentInteraction extends LitElement {
       this.previewInteractionCompleted()
       return
     }
-    if (!this.interactUrl) return
+    const {
+      outgoingPaymentGrant: {
+        interact: { redirect }
+      }
+    } = this.configController.state
+    if (!redirect) return
 
-    window.open(this.interactUrl, '_blank')
-    window.addEventListener('message', this.handleMessage.bind(this))
+    window.open(redirect, '_blank')
+    this._boundHandleMessage = this.handleMessage.bind(this)
+    window.addEventListener('message', this._boundHandleMessage)
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener('message', this.handleMessage.bind(this))
+    window.removeEventListener('message', this._boundHandleMessage)
   }
 
   private handleMessage(event: MessageEvent) {
@@ -213,6 +213,13 @@ export class PaymentInteraction extends LitElement {
 
   private async handleInteractionCompleted(interactRef: string) {
     try {
+      const {
+        walletAddress,
+        outgoingPaymentGrant,
+        quote,
+        incomingPaymentGrant,
+        note
+      } = this.configController.state
       const response = await fetch(
         `${this.configController.config.apiUrl}tools/payment/finalize`,
         {
@@ -221,10 +228,12 @@ export class PaymentInteraction extends LitElement {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            walletAddress: this.senderWalletAddress,
-            grant: this.grant,
-            quote: this.quote,
-            interactRef
+            walletAddress,
+            pendingGrant: outgoingPaymentGrant,
+            quote,
+            incomingPaymentGrant,
+            interactRef,
+            note
           })
         }
       )

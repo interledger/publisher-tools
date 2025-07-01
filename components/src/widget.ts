@@ -6,6 +6,7 @@ import {
   type ReactiveControllerHost
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import type { Grant, PendingGrant, Quote } from '@interledger/open-payments'
 import './confirmation.js'
 import './interaction.js'
 import defaultTriggerIcon from './assets/wm_logo_animated.svg'
@@ -30,20 +31,6 @@ export interface WidgetConfig {
   apiUrl?: string
 }
 
-export type Quote = {
-  id: string
-  receiveAmount: {
-    value: string
-    assetCode: string
-    assetScale: number
-  }
-  debitAmount: {
-    value: string
-    assetCode: string
-    assetScale: number
-  }
-}
-
 export type WalletAddress = {
   id: string
   publicName: string
@@ -51,6 +38,22 @@ export type WalletAddress = {
   assetScale: number
   authServer: string
   resourceServer: string
+}
+
+export type FormattedAmount = {
+  amount: number
+  amountWithCurrency: string
+  symbol: string
+}
+
+export interface Amount {
+  value: string
+  assetCode: string
+  assetScale: number
+}
+
+type FormatAmountArgs = Amount & {
+  value: string
 }
 
 export class PaymentWidget extends LitElement {
@@ -64,12 +67,7 @@ export class PaymentWidget extends LitElement {
     return this.configController.config
   }
 
-  @property({ type: Object }) walletAddress: WalletAddress | null = null
   @property({ type: Boolean }) isOpen = false
-  @property({ type: Object }) outgoingGrant: {
-    interact?: { redirect?: string }
-  } = {}
-  @property({ type: Object }) quote = {}
   @property({ type: Boolean }) requestQuote?: boolean = true
   @property({ type: Boolean }) requestPayment?: boolean = true
 
@@ -256,17 +254,41 @@ export class PaymentWidget extends LitElement {
 
     const response = await fetch(this.toWalletAddressUrl(walletAddress))
     if (!response.ok) {
-      alert('Invalid wallet address or unable to fetch wallet details')
+      alert('Unable to fetch wallet details')
       return
     }
 
-    this.walletAddress = (await response.json()) as WalletAddress
+    const json = (await response.json()) as WalletAddress
+    if (!this.isWalletAddress(json)) {
+      alert('Invalid wallet address format')
+      return
+    }
+
+    this.configController.updateState({ walletAddress: json })
     this.currentView = 'confirmation'
   }
 
   // TODO: Move this to the shared utils module!
   private toWalletAddressUrl(s: string): string {
     return s.startsWith('$') ? s.replace('$', 'https://') : s
+  }
+
+  // TODO: Move this to the shared utils module!
+  private isWalletAddress = (
+    o: Record<string, unknown>
+  ): o is WalletAddress => {
+    return !!(
+      o.id &&
+      typeof o.id === 'string' &&
+      o.assetScale &&
+      typeof o.assetScale === 'number' &&
+      o.assetCode &&
+      typeof o.assetCode === 'string' &&
+      o.authServer &&
+      typeof o.authServer === 'string' &&
+      o.resourceServer &&
+      typeof o.resourceServer === 'string'
+    )
   }
 
   private toggleWidget() {
@@ -305,17 +327,6 @@ export class PaymentWidget extends LitElement {
 
   private navigateToHome() {
     this.currentView = 'home'
-  }
-
-  private handlePaymentConfirmed(e: CustomEvent) {
-    if (this.requestPayment) {
-      const { grant, quote } = e.detail
-
-      this.outgoingGrant = grant
-      this.quote = quote
-    }
-
-    this.navigateToInteraction()
   }
 
   private renderHomeView() {
@@ -357,12 +368,11 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-confirmation
         .configController=${this.configController}
-        .walletAddress=${this.walletAddress}
         .note=${this.config.note || ''}
         .requestQuote=${this.requestQuote}
         .requestPayment=${this.requestPayment}
         @back=${this.navigateToHome}
-        @payment-confirmed=${this.handlePaymentConfirmed}
+        @payment-confirmed=${this.navigateToInteraction}
       ></wm-payment-confirmation>
     `
   }
@@ -371,10 +381,6 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-interaction
         .configController=${this.configController}
-        .interactUrl=${this.outgoingGrant?.interact?.redirect}
-        .senderWalletAddress=${this.walletAddress!.id}
-        .grant=${this.outgoingGrant}
-        .quote=${this.quote}
         .requestPayment=${this.requestPayment}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
@@ -401,15 +407,21 @@ export class PaymentWidget extends LitElement {
 
 customElements.define('wm-payment-widget', PaymentWidget)
 
-interface WidgetState {
-  receiver?: WalletAddress
+export interface WidgetState {
+  walletAddress: WalletAddress
+  incomingPaymentGrant: Grant
+  quote: Quote
+  outgoingPaymentGrant: PendingGrant
+  debitAmount: string
+  receiveAmount: string
+  receiverPublicName?: string
+  note?: string
 }
 
-// TODO: use WidgetController for state management and configuration
 export class WidgetController implements ReactiveController {
   private host: ReactiveControllerHost & HTMLElement
   private _config!: WidgetConfig
-  private _state: WidgetState = {}
+  private _state!: WidgetState
 
   constructor(host: ReactiveControllerHost & HTMLElement) {
     this.host = host
@@ -460,6 +472,32 @@ export class WidgetController implements ReactiveController {
       .format(0)
       .replace(/0/g, '')
       .trim()
+  }
+
+  getFormattedAmount = (args: FormatAmountArgs): FormattedAmount => {
+    const { value, assetCode, assetScale } = args
+    const formatterWithCurrency = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: assetCode,
+      maximumFractionDigits: assetScale,
+      minimumFractionDigits: assetScale
+    })
+    const formatter = new Intl.NumberFormat('en-US', {
+      maximumFractionDigits: assetScale,
+      minimumFractionDigits: assetScale
+    })
+
+    const amount = Number(formatter.format(Number(`${value}e-${assetScale}`)))
+    const amountWithCurrency = formatterWithCurrency.format(
+      Number(`${value}e-${assetScale}`)
+    )
+    const symbol = this.getCurrencySymbol(assetCode)
+
+    return {
+      amount,
+      amountWithCurrency,
+      symbol
+    }
   }
 
   applyTheme(element: HTMLElement) {

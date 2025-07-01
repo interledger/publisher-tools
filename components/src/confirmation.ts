@@ -1,31 +1,31 @@
 import { html, css, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { WidgetController, WalletAddress } from './widget.js'
+import type { WidgetController, Amount } from './widget.js'
 import type { PaymentQuoteInput } from 'publisher-tools-api'
-import type { PendingGrant } from '@interledger/open-payments'
+import type {
+  Grant,
+  PendingGrant,
+  Quote,
+  WalletAddress
+} from '@interledger/open-payments'
 
-export interface PaymentDetails {
-  walletAddress: string
-  receiveAmount: string
-  debitAmount: string
-  quote: object
-  isQuote: boolean
-  receiverName?: string
-  note?: string
+export interface PaymentResponse {
+  quote: Quote
+  incomingPaymentGrant: Grant
 }
 
 export class PaymentConfirmation extends LitElement {
   @property({ type: Object }) configController!: WidgetController
-  @property({ type: String }) inputWidth = ''
-  @property({ type: Object }) walletAddress: WalletAddress | null = null
   @property({ type: String }) note = ''
   @property({ type: Boolean }) requestQuote?: boolean = true
   @property({ type: Boolean }) requestPayment?: boolean = true
 
   @state() private inputAmount = ''
-  @state() private paymentDetails: PaymentDetails | null = null
+  @state() private inputWidth = ''
   @state() private isLoadingPreview = false
   @state() private debounceTimer: ReturnType<typeof setTimeout> | null = null
+  @state() private formattedDebitAmount?: string
+  @state() private formattedReceiveAmount?: string
 
   static styles = css`
     :host {
@@ -344,6 +344,22 @@ export class PaymentConfirmation extends LitElement {
       background-color: #f9fafb;
       color: #6b7280;
     }
+
+    .payment-note-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
+
+    .payment-note-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
   `
 
   connectedCallback() {
@@ -371,37 +387,27 @@ export class PaymentConfirmation extends LitElement {
 
   private async processPaymentForAmount(amount: string) {
     if (!amount || amount === '0') {
-      this.paymentDetails = null
       this.requestUpdate()
       return
     }
 
+    const {
+      walletAddress: { id }
+    } = this.configController.state
+
     const paymentData = {
-      walletAddress: this.walletAddress!.id,
+      walletAddress: id,
       receiver: this.configController.config.receiverAddress,
-      amount: Number(amount),
-      note: this.note
+      amount: Number(amount)
     }
 
-    let payment: PaymentDetails
     if (this.requestQuote) {
-      payment = await this.getPaymentQuote(paymentData)
+      await this.getPaymentQuote(paymentData)
     } else {
-      payment = await this.previewPaymentQuote(paymentData)
-    }
-
-    this.paymentDetails = {
-      walletAddress: payment.walletAddress,
-      receiveAmount: payment.receiveAmount,
-      debitAmount: payment.debitAmount,
-      receiverName: payment.receiverName,
-      quote: payment.quote,
-      isQuote: payment.isQuote,
-      note: paymentData.note
+      await this.previewPaymentQuote(paymentData)
     }
 
     this.isLoadingPreview = false
-    this.requestUpdate()
   }
 
   private handlePresetClick(amount: string) {
@@ -417,12 +423,16 @@ export class PaymentConfirmation extends LitElement {
   private handleAmountInput(e: Event) {
     const input = e.target as HTMLInputElement
 
-    // this.inputAmount = value
     const formatted = this.formatAmount(input.value)
     this.inputAmount = formatted
     this.inputWidth = this.calculateInputWidth(formatted)
     this.debouncedProcessPayment(this.inputAmount)
     this.requestUpdate()
+  }
+
+  private handleNoteInput(e: Event) {
+    const input = e.target as HTMLInputElement
+    this.note = input.value
   }
 
   /** Formats the input amount to 2 decimal places and adds commas */
@@ -489,8 +499,7 @@ export class PaymentConfirmation extends LitElement {
     walletAddress: string
     receiver: string
     amount: number
-    note: string
-  }): Promise<PaymentDetails> {
+  }): Promise<void> {
     const response = await fetch(
       `${this.configController.config.apiUrl}tools/payment/quote`,
       {
@@ -502,7 +511,7 @@ export class PaymentConfirmation extends LitElement {
           senderWalletAddress: paymentData.walletAddress,
           receiverWalletAddress: paymentData.receiver,
           amount: paymentData.amount,
-          note: paymentData.note
+          note: this.note
         } satisfies PaymentQuoteInput)
       }
     )
@@ -511,28 +520,37 @@ export class PaymentConfirmation extends LitElement {
       throw new Error('Failed to fetch payment quote')
     }
 
-    return await response.json()
+    const payment = (await response.json()) as PaymentResponse
+    const { quote } = payment
+
+    this.formattedDebitAmount = this.configController.getFormattedAmount({
+      value: quote.debitAmount.value,
+      assetCode: quote.debitAmount.assetCode,
+      assetScale: quote.debitAmount.assetScale
+    }).amountWithCurrency
+
+    this.formattedReceiveAmount = this.configController.getFormattedAmount({
+      value: quote.receiveAmount.value,
+      assetCode: quote.receiveAmount.assetCode,
+      assetScale: quote.receiveAmount.assetScale
+    }).amountWithCurrency
+
+    this.configController.updateState({ ...payment })
   }
 
   private async previewPaymentQuote(paymentData: {
     walletAddress: string
     receiver: string
     amount: number
-    note: string
-  }): Promise<PaymentDetails> {
+  }): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const currencySymbol = this.configController.getCurrencySymbol(
-          this.walletAddress!.assetCode
+          this.configController.state.walletAddress.assetCode
         )
-        resolve({
-          walletAddress: paymentData.walletAddress,
-          receiveAmount: `${currencySymbol}${paymentData.amount.toString()}`,
-          debitAmount: `${currencySymbol}${paymentData.amount.toString()}`,
-          receiverName: paymentData.receiver,
-          quote: {},
-          isQuote: false
-        })
+        this.formattedDebitAmount = `${currencySymbol}${paymentData.amount.toString()}`
+        this.formattedReceiveAmount = `${currencySymbol}${paymentData.amount.toString()}`
+        resolve()
       }, 500)
     })
   }
@@ -548,23 +566,20 @@ export class PaymentConfirmation extends LitElement {
 
   private async handlePaymentConfirmed() {
     try {
+      const { walletAddress, quote } = this.configController.state
       const outgoingPaymentGrant = await this.requestOutgoingGrant({
-        senderWalletAddress: this.paymentDetails?.walletAddress || '',
-        // @ts-expect-error todo: add types
-        debitAmount: this.paymentDetails?.quote?.debitAmount || {},
-        // @ts-expect-error todo: add types
-        receiveAmount: this.paymentDetails?.quote?.receiveAmount || {}
+        walletAddress,
+        debitAmount: quote.debitAmount,
+        receiveAmount: quote.receiveAmount
+      })
+
+      this.configController.updateState({
+        outgoingPaymentGrant,
+        note: this.note
       })
 
       this.dispatchEvent(
         new CustomEvent('payment-confirmed', {
-          detail: {
-            grant: {
-              interact: outgoingPaymentGrant.interact,
-              continue: outgoingPaymentGrant.continue
-            },
-            quote: this.paymentDetails?.quote
-          },
           bubbles: true,
           composed: true
         })
@@ -584,9 +599,9 @@ export class PaymentConfirmation extends LitElement {
   }
 
   private async requestOutgoingGrant(paymentData: {
-    senderWalletAddress: string
-    debitAmount: object
-    receiveAmount: object
+    walletAddress: WalletAddress
+    debitAmount: Amount
+    receiveAmount: Amount
   }): Promise<PendingGrant> {
     const response = await fetch(
       `${this.configController.config.apiUrl}tools/payment/grant`,
@@ -596,7 +611,7 @@ export class PaymentConfirmation extends LitElement {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          senderWalletAddress: paymentData.senderWalletAddress,
+          walletAddress: paymentData.walletAddress,
           debitAmount: paymentData.debitAmount,
           receiveAmount: paymentData.receiveAmount
         })
@@ -607,14 +622,12 @@ export class PaymentConfirmation extends LitElement {
       throw new Error('Failed to request outgoing payment grant')
     }
 
-    const outgoingGrant = (await response.json()) as PendingGrant
-    return outgoingGrant
+    return await response.json()
   }
 
   private goBack() {
     this.dispatchEvent(
       new CustomEvent('back', {
-        detail: this.paymentDetails,
         bubbles: true,
         composed: true
       })
@@ -629,9 +642,10 @@ export class PaymentConfirmation extends LitElement {
   }
 
   render() {
-    const currencySymbol = this.configController.getCurrencySymbol(
-      this.walletAddress!.assetCode
-    )
+    const {
+      walletAddress: { assetCode }
+    } = this.configController.state
+    const currencySymbol = this.configController.getCurrencySymbol(assetCode)
 
     return html`
       <div class="confirmation-container">
@@ -704,7 +718,8 @@ export class PaymentConfirmation extends LitElement {
       `
     }
 
-    if (!this.paymentDetails) {
+    const { quote } = this.configController.state
+    if (this.requestQuote && !quote) {
       return html`
         <div class="payment-details">
           <div class="loading-state">
@@ -717,38 +732,30 @@ export class PaymentConfirmation extends LitElement {
     return html`
       <div class="payment-details">
         <div class="detail-header">
-          ${this.paymentDetails.isQuote
-            ? html`<span class="quote-badge">Payment Details</span>`
-            : ''}
+          <span class="quote-badge">Payment Details</span>
         </div>
-
-        ${this.note
-          ? html` <div class="note-display">"${this.note}"</div> `
-          : ''}
 
         <div class="detail-summary">
           <div class="summary-row">
             <span class="summary-label">You send:</span>
-            <span class="summary-value"
-              >${this.paymentDetails.debitAmount}</span
-            >
+            <span class="summary-value">${this.formattedDebitAmount}</span>
           </div>
           <div class="summary-row">
             <span class="summary-label">They will receive:</span>
-            <span class="summary-value"
-              >${this.paymentDetails.receiveAmount}</span
-            >
+            <span class="summary-value">${this.formattedReceiveAmount}</span>
           </div>
         </div>
       </div>
       <div class="detail-note">
         <label class="form-label">Payment note:</label>
         <input
-          class="form-input"
+          class="payment-note-input"
           type="text"
           name="note"
           placeholder="Note"
+          maxlength="20"
           .value=${this.note}
+          @input=${this.handleNoteInput}
         />
       </div>
 

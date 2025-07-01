@@ -116,14 +116,6 @@ export type ElementErrors = {
 
 export class WalletAddressFormatError extends Error {}
 
-export interface WalletAddress {
-  id: string
-  assetScale: number
-  assetCode: string
-  authServer: string
-  resourceServer: string
-}
-
 declare global {
   interface Env {
     SCRIPT_EMBED_URL: string

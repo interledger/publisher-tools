@@ -98,7 +98,7 @@ app.post(
         req.valid('json')
 
       const openPayments = await OpenPaymentsService.getInstance(env)
-      const result = await openPayments.createPaymentQuote({
+      const result = await openPayments.createPayment({
         senderWalletAddress,
         receiverWalletAddress,
         amount,
@@ -117,12 +117,11 @@ app.post(
   zValidator('json', PaymentGrantSchema),
   async ({ req, json, env }) => {
     try {
-      const { senderWalletAddress, debitAmount, receiveAmount } =
-        req.valid('json')
+      const { walletAddress, debitAmount, receiveAmount } = req.valid('json')
 
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.initializePayment({
-        senderWalletAddress,
+        walletAddress,
         debitAmount,
         receiveAmount
       })
@@ -139,14 +138,23 @@ app.post(
   zValidator('json', PaymentFinalizeSchema),
   async ({ req, json, env }) => {
     try {
-      const { walletAddress, grant, quote, interactRef } = req.valid('json')
+      const {
+        walletAddress,
+        pendingGrant,
+        quote,
+        incomingPaymentGrant,
+        interactRef,
+        note
+      } = req.valid('json')
 
       const openPaymentsService = await OpenPaymentsService.getInstance(env)
       const result = await openPaymentsService.finishPaymentProcess(
         walletAddress,
-        grant,
+        pendingGrant,
         quote,
-        interactRef
+        incomingPaymentGrant,
+        interactRef,
+        note
       )
 
       return json(result)
