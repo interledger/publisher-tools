@@ -29,7 +29,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
-      'wm-payment-banner': React.DetailedHTMLProps<
+      'wm-banner': React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<PaymentBanner> },
         HTMLElement
       >

@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSnapshot } from 'valtio'
+import { useLoaderData } from '@remix-run/react'
+import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import { StepsIndicator } from '~/components/redesign/components/StepsIndicator'
 import { ToolsWalletAddress } from '../components/redesign/components/ToolsWalletAddress'
 import { HeadingCore } from '../components/redesign/components/HeadingCore'
@@ -7,15 +9,72 @@ import { BuilderForm } from '~/components/redesign/components/BuilderForm'
 import { BuilderBackground } from '~/components/redesign/components/BuilderBackground'
 import { ToolsSecondaryButton } from '~/components/redesign/components/ToolsSecondaryButton'
 import { ToolsPrimaryButton } from '~/components/redesign/components/ToolsPrimaryButton'
-import { toolState, persistState, loadState } from '~/stores/toolStore'
+import { SaveResultModal } from '~/components/redesign/components/SaveResultModal'
+import { WalletOwnershipModal } from '~/components/redesign/components/WalletOwnershipModal'
+import {
+  toolState,
+  toolActions,
+  persistState,
+  loadState
+} from '~/stores/toolStore'
+import { commitSession, getSession } from '~/utils/session.server.js'
+import { SVGSpinner } from '~/assets/svg'
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get('Cookie'))
+  const grantResponse = session.get('grant-response')
+  const isGrantAccepted = session.get('is-grant-accepted')
+  const isGrantResponse = session.get('is-grant-response')
+
+  session.unset('grant-response')
+  session.unset('is-grant-accepted')
+  session.unset('is-grant-response')
+
+  return json(
+    {
+      grantResponse,
+      isGrantAccepted,
+      isGrantResponse
+    },
+    {
+      headers: {
+        'Set-Cookie': await commitSession(session)
+      }
+    }
+  )
+}
 
 export default function Redesign() {
   const snap = useSnapshot(toolState)
+  const [isLoading, setIsLoading] = useState(false)
+  const { grantResponse, isGrantAccepted, isGrantResponse } =
+    useLoaderData<typeof loader>()
 
   useEffect(() => {
     loadState()
     persistState()
-  }, [])
+
+    if (isGrantResponse) {
+      toolActions.setGrantResponse(grantResponse, isGrantAccepted)
+      toolActions.handleGrantResponse()
+    }
+  }, [grantResponse, isGrantAccepted, isGrantResponse])
+
+  const handleSaveEditsOnly = async () => {
+    setIsLoading(true)
+    await toolActions.saveConfig('banner')
+    setIsLoading(false)
+  }
+
+  const handleConfirmWalletOwnership = () => {
+    if (snap.modal?.grantRedirectURI) {
+      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
+    }
+  }
+
+  const handleCloseModal = () => {
+    toolActions.setModal(undefined)
+  }
 
   return (
     <div className="bg-interface-bg-main min-h-screen w-full">
@@ -69,8 +128,17 @@ export default function Redesign() {
                     <BuilderForm />
 
                     <div className="flex items-center justify-end gap-3 mt-6">
-                      <ToolsSecondaryButton>
-                        Save edits only
+                      <ToolsSecondaryButton
+                        className="w-[135px]"
+                        disabled={isLoading}
+                        onClick={handleSaveEditsOnly}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          {isLoading && <SVGSpinner />}
+                          <span>
+                            {isLoading ? 'Saving...' : 'Save edits only'}
+                          </span>
+                        </div>
                       </ToolsSecondaryButton>
                       <ToolsPrimaryButton
                         icon="script"
@@ -91,6 +159,58 @@ export default function Redesign() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {snap.modal?.type === 'save-success' && (
+        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <SaveResultModal
+                isOpen={true}
+                onClose={handleCloseModal}
+                onDone={handleCloseModal}
+                message="Your edits have been saved"
+                isSuccess={true}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {snap.modal?.type === 'save-error' && (
+        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <SaveResultModal
+                isOpen={true}
+                onClose={handleCloseModal}
+                onDone={handleCloseModal}
+                message={
+                  !snap.isGrantAccepted
+                    ? String(snap.grantResponse)
+                    : 'Error saving your edits'
+                }
+                isSuccess={snap.isGrantAccepted}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {snap.modal?.type === 'wallet-ownership' && (
+        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <WalletOwnershipModal
+                isOpen={true}
+                onClose={handleCloseModal}
+                onConfirm={handleConfirmWalletOwnership}
+                walletAddress={snap.walletAddress}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
