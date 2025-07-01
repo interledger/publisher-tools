@@ -143,7 +143,7 @@ const drawBanner = (config: Config) => {
 }
 
 const drawWidget = (walletAddressUrl: string, config: Config) => {
-  const element = document.createElement('wm-payment-widget')
+  const element = document.createElement('wm-payment-widget') as WidgetElement
 
   element.config = {
     apiUrl: API_URL,

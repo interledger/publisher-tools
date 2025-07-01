@@ -10,6 +10,7 @@ import { BuilderBackground } from '~/components/redesign/components/BuilderBackg
 import { ToolsSecondaryButton } from '~/components/redesign/components/ToolsSecondaryButton'
 import { ToolsPrimaryButton } from '~/components/redesign/components/ToolsPrimaryButton'
 import { SaveResultModal } from '~/components/redesign/components/SaveResultModal'
+import { ScriptReadyModal } from '~/components/redesign/components/ScriptReadyModal'
 import { WalletOwnershipModal } from '~/components/redesign/components/WalletOwnershipModal'
 import {
   toolState,
@@ -20,7 +21,8 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { SVGSpinner } from '~/assets/svg'
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const { env } = context.cloudflare
   const session = await getSession(request.headers.get('Cookie'))
   const grantResponse = session.get('grant-response')
   const isGrantAccepted = session.get('is-grant-accepted')
@@ -34,7 +36,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     {
       grantResponse,
       isGrantAccepted,
-      isGrantResponse
+      isGrantResponse,
+      env
     },
     {
       headers: {
@@ -47,11 +50,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function Redesign() {
   const snap = useSnapshot(toolState)
   const [isLoading, setIsLoading] = useState(false)
-  const { grantResponse, isGrantAccepted, isGrantResponse } =
+  const [isLoadingScript, setIsLoadingScript] = useState(false)
+  const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
 
   useEffect(() => {
-    loadState()
+    loadState(env)
     persistState()
 
     if (isGrantResponse) {
@@ -62,8 +66,19 @@ export default function Redesign() {
 
   const handleSaveEditsOnly = async () => {
     setIsLoading(true)
-    await toolActions.saveConfig('banner')
+    await toolActions.saveConfig('banner', 'save-success')
     setIsLoading(false)
+  }
+
+  const handleSaveAndGenerateScript = async () => {
+    setIsLoadingScript(true)
+    try {
+      await toolActions.saveConfig('banner', 'script')
+    } catch (error) {
+      console.error('Error saving and generating script:', error)
+    } finally {
+      setIsLoadingScript(false)
+    }
   }
 
   const handleConfirmWalletOwnership = () => {
@@ -142,10 +157,19 @@ export default function Redesign() {
                       </ToolsSecondaryButton>
                       <ToolsPrimaryButton
                         icon="script"
-                        iconPosition="left"
+                        iconPosition={isLoadingScript ? 'none' : 'left'}
                         className="min-w-[230px] max-w-[244px]"
+                        disabled={isLoadingScript}
+                        onClick={handleSaveAndGenerateScript}
                       >
-                        Save and generate script
+                        <div className="flex items-center justify-center gap-2">
+                          {isLoadingScript && <SVGSpinner />}
+                          <span>
+                            {isLoadingScript
+                              ? 'Saving...'
+                              : 'Save and generate script'}
+                          </span>
+                        </div>
                       </ToolsPrimaryButton>
                     </div>
                   </div>
@@ -161,6 +185,21 @@ export default function Redesign() {
       </div>
 
       {/* Modals */}
+      {snap.modal?.type === 'script' && (
+        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <ScriptReadyModal
+                isOpen={true}
+                onClose={handleCloseModal}
+                scriptContent={toolActions.getScriptToDisplay()}
+                onCopy={() => console.log('Script copied to clipboard')}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {snap.modal?.type === 'save-success' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
