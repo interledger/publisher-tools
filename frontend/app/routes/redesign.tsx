@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData } from '@remix-run/react'
 import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
@@ -51,6 +51,7 @@ export default function Redesign() {
   const snap = useSnapshot(toolState)
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
+  const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
 
@@ -64,9 +65,29 @@ export default function Redesign() {
     }
   }, [grantResponse, isGrantAccepted, isGrantResponse])
 
+  const scrollToWalletAddress = () => {
+    if (walletAddressRef.current) {
+      walletAddressRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      })
+
+      walletAddressRef.current.style.transition = 'all 0.3s ease'
+      walletAddressRef.current.style.transform = 'scale(1.02)'
+
+      setTimeout(() => {
+        if (walletAddressRef.current) {
+          walletAddressRef.current.style.transform = 'scale(1)'
+        }
+      }, 500)
+    }
+  }
+
   const handleSaveEditsOnly = async () => {
     if (!snap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
+      scrollToWalletAddress()
       return
     }
 
@@ -78,8 +99,10 @@ export default function Redesign() {
   const handleSaveAndGenerateScript = async () => {
     if (!snap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
+      scrollToWalletAddress()
       return
     }
+
     setIsLoadingScript(true)
     await toolActions.saveConfig('banner', 'script')
     setIsLoadingScript(false)
@@ -138,7 +161,9 @@ export default function Redesign() {
               </div>
 
               <div className="flex flex-col gap-12 flex-1">
-                <ToolsWalletAddress />
+                <div ref={walletAddressRef}>
+                  <ToolsWalletAddress />
+                </div>
 
                 {/* Build Content */}
                 <div className="flex gap-8">
