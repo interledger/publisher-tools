@@ -2,7 +2,10 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData } from '@remix-run/react'
 import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
-import { StepsIndicator } from '~/components/redesign/components/StepsIndicator'
+import {
+  MobileStepsIndicator,
+  StepsIndicator
+} from '~/components/redesign/components/StepsIndicator'
 import { ToolsWalletAddress } from '../components/redesign/components/ToolsWalletAddress'
 import { HeadingCore } from '../components/redesign/components/HeadingCore'
 import { BuilderForm } from '~/components/redesign/components/BuilderForm'
@@ -119,31 +122,25 @@ export default function Redesign() {
   }
 
   return (
-    <div className="bg-interface-bg-main min-h-screen w-full">
-      {/* Main Content Container */}
-      <div className="flex flex-col items-center min-h-[calc(100vh-64px)]">
-        <div className="w-full max-w-[1280px] pt-[60px] pb-8 px-4">
-          {/* Page Header */}
+    <div className="bg-interface-bg-main min-h-screen w-full pb-[32px]">
+      <div className="flex flex-col items-center pt-2xl">
+        <div className="w-full max-w-[1280px] px-md sm:px-lg md:px-xl lg:px-md">
           <HeadingCore
             title="Banner"
             onBackClick={() => console.log('Back clicked')}
-            className="mb-12"
-          />
-          {/* Description */}
-          <div className="text-center max-w-[1280px] mx-auto mb-12">
-            <p className="text-base leading-md text-text-primary">
-              The drawer banner informs visitors who don&apos;t have the Web
-              Monetization extension active, with a call-to-action linking to
-              the extension or providing details about the options available.
-              <br />
-              It also adds your wallet address for your site to be monetized.
-            </p>
-          </div>
-          {/* Main Content Section */}
+          >
+            The drawer banner informs visitors who don&apos;t have the Web
+            Monetization extension active, with a call-to-action linking to the
+            extension or providing details about the options available.
+            <br />
+            It also adds your wallet address for your site to be monetized.
+          </HeadingCore>
           <div className="flex flex-col min-h-[756px]">
-            {/* Wallet Address */}
-            <div className="flex items-start gap-6 mb-12">
-              <div className="w-[60px] flex-shrink-0 pt-4">
+            <div className="flex flex-col xl:flex-row xl:items-start gap-lg mb-3xl">
+              <div
+                id="steps-indicator"
+                className="hidden xl:block w-[60px] flex-shrink-0 pt-md"
+              >
                 <StepsIndicator
                   steps={[
                     {
@@ -160,54 +157,77 @@ export default function Redesign() {
                 />
               </div>
 
-              <div className="flex flex-col gap-12 flex-1">
-                <div ref={walletAddressRef}>
+              <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+                <div id="wallet-address" ref={walletAddressRef}>
+                  <MobileStepsIndicator
+                    number={1}
+                    label="Connect"
+                    status={snap.walletConnectStep}
+                  />
                   <ToolsWalletAddress />
                 </div>
 
-                {/* Build Content */}
-                <div className="flex gap-8">
-                  {/* Builder Form */}
-                  <div className="max-w-[628px] flex-1">
+                <div className="flex flex-col xl:flex-row gap-2xl">
+                  <div
+                    id="builder"
+                    className="w-full xl:max-w-[628px] xl:flex-1"
+                  >
+                    <MobileStepsIndicator
+                      number={2}
+                      label="Build"
+                      status={snap.buildStep}
+                    />
+
                     <BuilderForm
                       onBuildStepComplete={() =>
                         toolActions.setBuildCompleteStep('filled')
                       }
                     />
 
-                    <div className="flex items-center justify-end gap-3 mt-6">
-                      <ToolsSecondaryButton
-                        className="w-[135px]"
-                        disabled={isLoading}
-                        onClick={handleSaveEditsOnly}
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {isLoading && <SVGSpinner />}
-                          <span>
-                            {isLoading ? 'Saving...' : 'Save edits only'}
-                          </span>
-                        </div>
-                      </ToolsSecondaryButton>
-                      <ToolsPrimaryButton
-                        icon="script"
-                        iconPosition={isLoadingScript ? 'none' : 'left'}
-                        className="min-w-[230px] max-w-[244px]"
-                        disabled={isLoadingScript}
-                        onClick={handleSaveAndGenerateScript}
-                      >
-                        <div className="flex items-center justify-center gap-2">
-                          {isLoadingScript && <SVGSpinner />}
-                          <span>
-                            {isLoadingScript
-                              ? 'Saving...'
-                              : 'Save and generate script'}
-                          </span>
-                        </div>
-                      </ToolsPrimaryButton>
+                    <div
+                      id="builder-actions"
+                      className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
+                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs p-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                    >
+                      <div className="xl:contents flex flex-col gap-xs mx-auto px-md sm:px-lg md:px-xl xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm">
+                        <ToolsSecondaryButton
+                          className="xl:w-auto xl:rounded-lg
+                                     w-full border-0 xl:border order-last xl:order-first"
+                          disabled={isLoading}
+                          onClick={handleSaveEditsOnly}
+                        >
+                          <div className="flex items-center justify-center gap-2">
+                            {isLoading && <SVGSpinner />}
+                            <span>
+                              {isLoading ? 'Saving...' : 'Save edits only'}
+                            </span>
+                          </div>
+                        </ToolsSecondaryButton>
+                        <ToolsPrimaryButton
+                          icon="script"
+                          iconPosition={isLoadingScript ? 'none' : 'left'}
+                          className="xl:w-auto xl:rounded-lg
+                                     w-full order-first xl:order-last"
+                          disabled={isLoadingScript}
+                          onClick={handleSaveAndGenerateScript}
+                        >
+                          <div className="flex items-center justify-center gap-xs">
+                            {isLoadingScript && <SVGSpinner />}
+                            <span>
+                              {isLoadingScript
+                                ? 'Saving...'
+                                : 'Save and generate script'}
+                            </span>
+                          </div>
+                        </ToolsPrimaryButton>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="sticky top-4 self-start flex-shrink-0 w-[504px] h-fit">
+                  <div
+                    id="preview"
+                    className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
+                  >
                     <BuilderBackground />
                   </div>
                 </div>
