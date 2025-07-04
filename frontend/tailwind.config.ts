@@ -146,6 +146,9 @@ export default {
         'nav-link-default': palettes['purple-300'],
         'nav-link-hover': palettes['purple-600'],
 
+        'nav-link-default': palettes['purple-300'], // #8075B3
+        'nav-link-hover': palettes['purple-600'], // #5B5380
+
         // Custom old WM colors
         'wm-green': '#5BC8BB',
         'wm-green-fade': '#BFEEE8',

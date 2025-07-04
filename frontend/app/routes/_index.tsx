@@ -81,6 +81,12 @@ const interactionTools = [
   }
 ].filter((e) => !e.disabled)
 
+const DEFAULT_TITLE = 'Publisher Tools'
+const DEFAULT_DESCRIPTION = 'Choose and configure your elements!'
+const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
+const DEFAULT_URL = 'https://webmonetization.org/tools'
+const SITE_NAME = 'Web Monetization'
+
 export const meta: MetaFunction = () => {
   const title = DEFAULT_TITLE
   const description = DEFAULT_DESCRIPTION
