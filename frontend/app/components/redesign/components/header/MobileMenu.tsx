@@ -14,12 +14,8 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
       </GhostButton>
       <ul className="flex flex-col gap-md list-none">
         <NavDropdown title="Tools" onMenuItemClick={onClose} />
-        <NavLink to="/docs" onClick={onClose}>
-          Documentation
-        </NavLink>
-        <NavLink to="/specification" onClick={onClose}>
-          Specification
-        </NavLink>
+        <NavLink to="/docs">Documentation</NavLink>
+        <NavLink to="/specification">Specification</NavLink>
       </ul>
     </div>
   )
