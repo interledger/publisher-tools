@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 
 export type TextStyleType =
   | 'h1'
@@ -31,10 +32,7 @@ export function Typography({
   const Component = as || getDefaultElementForVariant(variant)
 
   return (
-    <Component
-      className={`text-style-${variant}${className ? ` ${className}` : ''}`}
-      {...props}
-    >
+    <Component className={cx(`text-style-${variant}`, className)} {...props}>
       {children}
     </Component>
   )

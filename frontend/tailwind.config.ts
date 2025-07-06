@@ -75,6 +75,7 @@ export default {
   safelist: [
     'text-style-h1',
     'text-style-h2',
+    'text-style-h2-semibold',
     'text-style-h3',
     'text-style-h4',
     'text-style-h5',
@@ -121,15 +122,14 @@ export default {
         'field-bg-disabled': palettes['silver-100'], // #EFEFEF
         'field-border-error': palettes['red-600'], // #E51D25
 
-        'landing-footer-bg': palettes['mint-100'], // #D4F3EB
-        'landing-button-bg': palettes['black'], // #000000
-        'landing-button-bg-hover': palettes['silver-950'], // #363636
-        'landing-button-border': palettes['silver-800'], // #676767
-        'landing-button-border-hover': palettes['black'], // #000000
+        'landing-content': palettes['silver-800'], // #676767
         'landing-pill-border': palettes['blue-300'], // #A3BEDC
 
         'nav-link-default': palettes['purple-300'], // #8075B3
         'nav-link-hover': palettes['purple-600'], // #5B5380
+
+        'footer-bg': palettes['mint-100'], // #D4F3EB
+        'footer-content': palettes['silver-800'], // #676767
 
         // Custom old WM colors
         'wm-green': '#5BC8BB',

@@ -21,6 +21,8 @@ import { ScriptReadyModal } from '../components/redesign/components/ScriptReadyM
 import { SaveResultModal } from '../components/redesign/components/SaveResultModal'
 import { WalletOwnershipModal } from '../components/redesign/components/WalletOwnershipModal'
 import { CornerType } from '~/lib/types'
+import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
+import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 
 export function Card({
   children,
@@ -294,6 +296,21 @@ export function RedesignDemo() {
           />
         </div>
       </div>
+
+      <ToolCard
+        title="Link-tag generator"
+        tags={[
+          'flawless',
+          'dynamic',
+          'dynamic',
+          'high click rate',
+          'high click rate'
+        ]}
+        icon={SVGLinkGenerator}
+      >
+        The most classic, yet one of the most effective methods in order to link
+        to your supporters. Ladies and gents, the button!
+      </ToolCard>
     </div>
   )
 }
