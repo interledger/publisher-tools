@@ -1,30 +1,38 @@
 import React from 'react'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
-import inSocialIcon from '~/assets/images/footer/in_social.svg?url'
-import slkSocialIcon from '~/assets/images/footer/slk_social.svg?url'
-import instSocialIcon from '~/assets/images/footer/inst_social.svg?url'
-import ghSocialIcon from '~/assets/images/footer/gh_social.svg?url'
-import ytSocialIcon from '~/assets/images/footer/yt_social.svg?url'
+import socialLinkedInIcon from '~/assets/images/icons/social-linkedin.svg?url'
+import socialSlackIcon from '~/assets/images/icons/social-slack.svg?url'
+import socialInstagramIcon from '~/assets/images/icons/social-instagram.svg?url'
+import socialGitGubIcon from '~/assets/images/icons/social-github.svg?url'
+import socialYoutubeIcon from '~/assets/images/icons/social-youtube.svg?url'
 import { SVGFooterDivider } from '~/assets/svg'
 import { BodyStandardLink } from './BodyStandardLink'
 
 const socialLinks = [
   {
     href: 'https://www.linkedin.com/company/interledger-foundation/',
-    icon: inSocialIcon
+    icon: socialLinkedInIcon,
+    text: 'LinkedIn'
   },
   {
     href: 'https://interledger.slack.com/archives/CNYTXJKMX',
-    icon: slkSocialIcon
+    icon: socialSlackIcon,
+    text: 'Slack'
   },
   {
     href: 'https://www.instagram.com/interledgerfoundation/',
-    icon: instSocialIcon
+    icon: socialInstagramIcon,
+    text: 'Instagram'
   },
-  { href: 'https://github.com/interledger', icon: ghSocialIcon },
+  {
+    href: 'https://github.com/interledger',
+    icon: socialGitGubIcon,
+    text: 'GitHub'
+  },
   {
     href: 'https://www.youtube.com/@interledgerfoundation',
-    icon: ytSocialIcon
+    icon: socialYoutubeIcon,
+    text: 'YouTube'
   }
 ]
 
@@ -32,7 +40,7 @@ const SocialLinks = ({ className }: { className: string }) => (
   <div className={className}>
     {socialLinks.map((social, index) => (
       <a key={index} href={social.href} target="_blank" rel="noreferrer">
-        <img src={social.icon} />
+        <img src={social.icon} alt={social.text} />
       </a>
     ))}
   </div>

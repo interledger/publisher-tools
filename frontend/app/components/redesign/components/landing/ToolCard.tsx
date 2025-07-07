@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from '@remix-run/react'
 import { PillTag } from './PillTag'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 
@@ -7,11 +8,21 @@ export type ToolCardProps = {
   title: string
   tags: string[]
   icon: string
+  to: string
 }
 
-export const ToolCard = ({ children, title, tags, icon }: ToolCardProps) => {
+export const ToolCard = ({
+  children,
+  title,
+  tags,
+  icon,
+  to
+}: ToolCardProps) => {
   return (
-    <div className="bg-interface-bg-main rounded-2xl w-[340px] h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer">
+    <Link
+      to={to}
+      className="bg-interface-bg-main rounded-2xl w-[340px] max-w-full h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer no-underline"
+    >
       {<img src={icon} className="h-[160px]" />}
 
       <div className="flex flex-col gap-xs">
@@ -23,18 +34,18 @@ export const ToolCard = ({ children, title, tags, icon }: ToolCardProps) => {
           {children}
         </p>
 
-        <div className="flex flex-wrap gap-xs">
+        <ul className="flex flex-wrap gap-xs list-none p-0 m-0">
           {tags.map((tag, index) => (
-            <PillTag key={index} variant="active">
-              {tag}
-            </PillTag>
+            <li key={index}>
+              <PillTag variant="active">{tag}</PillTag>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       <div className="absolute bottom-4 right-4 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <img src={arrowOutwardIcon} alt="Open tool" className="w-full h-full" />
+        <img src={arrowOutwardIcon} className="w-full h-full" />
       </div>
-    </div>
+    </Link>
   )
 }

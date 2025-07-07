@@ -15,10 +15,10 @@ export const PillTag = ({
     variant === 'active' ? 'text-text-secondary' : 'text-text-helper'
 
   return (
-    <div
+    <span
       className={`relative rounded-full border border-landing-pill-border border-solid flex items-center justify-center px-sm py-2xs font-normal text-sm leading-sm whitespace-nowrap ${textColorClass} ${className}`}
     >
       {children}
-    </div>
+    </span>
   )
 }

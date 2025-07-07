@@ -20,14 +20,16 @@ const setupTools = [
     description:
       'Generate the <link rel="monetization"> tag required to enable Web Monetization on your web pages.',
     tags: ['flawless', 'dynamic', 'high click rate', 'link tag', 'generator'],
-    icon: SVGLinkGenerator
+    icon: SVGLinkGenerator,
+    link: '/link-tag'
   },
   {
     title: 'Probabilistic revshare',
     description:
       'Split Web Monetization revenue across multiple payment pointers/wallets using probabilistic algorithms',
     tags: ['flawless', 'dynamic', 'high click rate', 'revshare', 'generator'],
-    icon: SVGRevShareGenerator
+    icon: SVGRevShareGenerator,
+    link: '/prob-revshare'
   }
 ]
 
@@ -37,20 +39,23 @@ const interactionTools = [
     description:
       'Show a customizable banner to introduce Web Monetization. The banner disappears when dismissed or the extension is installed.',
     tags: ['flawless', 'dynamic', 'high click rate', 'banner'],
-    icon: SVGBanner
+    icon: SVGBanner,
+    link: '/banner'
   },
   {
     title: 'Widget',
     description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
     tags: ['flawless', 'dynamic', 'high click rate', 'widget'],
-    icon: SVGWidget
+    icon: SVGWidget,
+    link: '/widget'
   },
   {
     title: 'Call-to-Action button',
     description:
       'The most classic, yet one of the most effective methods in order to link to your supporters. Ladies and gents, the button!',
     tags: ['flawless', 'dynamic', 'high click rate', 'button'],
-    icon: SVGButton
+    icon: SVGButton,
+    link: '/button'
   }
 ]
 
@@ -117,18 +122,19 @@ export default function Index() {
             Monetization on your website
           </Typography>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-xl:flex-col max-xl:gap-lg max-xl:items-center">
+          <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
             {setupTools.map((tool, index) => (
               <ToolCard
                 key={index}
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
+                to={tool.link}
               >
                 {tool.description}
               </ToolCard>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <div className="w-[340px] opacity-0 max-md:hidden" />
           </div>
         </div>
 
@@ -142,18 +148,19 @@ export default function Index() {
             className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center"
           >
             Add lightweight and embeddable tools, like banners and widgets, to
-            your site with simple scripts. They're easily customizable, helping
-            you connect with your audience to encourage Web Monetization
+            your site with simple scripts. They&apos;re easily customizable,
+            helping you connect with your audience to encourage Web Monetization
             support.
           </Typography>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-xl:flex-col max-xl:gap-lg max-xl:items-center">
+          <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
             {interactionTools.map((tool, index) => (
               <ToolCard
                 key={index}
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
+                to={tool.link}
               >
                 {tool.description}
               </ToolCard>
