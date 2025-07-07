@@ -81,7 +81,7 @@ export default function Index() {
         <div className="flex flex-col gap-xs items-center justify-start p-0 w-full">
           <Typography
             variant="h1"
-            className="!leading-normal !text-[42px] max-xl:!text-style-h2-semibold"
+            className="!leading-normal !text-[42px] max-xl:!text-style-h2-semibold text-center"
           >
             Web Monetization Tools
           </Typography>
