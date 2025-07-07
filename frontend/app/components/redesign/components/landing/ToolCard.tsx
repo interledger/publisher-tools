@@ -12,7 +12,7 @@ export type ToolCardProps = {
 export const ToolCard = ({ children, title, tags, icon }: ToolCardProps) => {
   return (
     <div className="bg-interface-bg-main rounded-2xl w-[340px] h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer">
-      {<img src={icon} />}
+      {<img src={icon} className="h-[160px]" />}
 
       <div className="flex flex-col gap-xs">
         <h3 className="font-bold text-xl leading-normal text-text-primary">

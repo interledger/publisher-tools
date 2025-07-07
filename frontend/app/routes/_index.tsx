@@ -16,16 +16,16 @@ const SITE_NAME = 'Web Monetization'
 
 const setupTools = [
   {
-    title: 'Link-tag generator',
+    title: 'Link tag generator',
     description:
-      'The most classic, yet one of the most effective methods in order to link to your supporters. Ladies and gents, the button!',
+      'Generate the <link rel="monetization"> tag required to enable Web Monetization on your web pages.',
     tags: ['flawless', 'dynamic', 'high click rate', 'link tag', 'generator'],
     icon: SVGLinkGenerator
   },
   {
     title: 'Probabilistic revshare',
     description:
-      'The most classic, yet one of the most effective methods in order to link to your supporters. Ladies and gents, the button!',
+      'Split Web Monetization revenue across multiple payment pointers/wallets using probabilistic algorithms',
     tags: ['flawless', 'dynamic', 'high click rate', 'revshare', 'generator'],
     icon: SVGRevShareGenerator
   }
@@ -35,14 +35,13 @@ const interactionTools = [
   {
     title: 'Banner',
     description:
-      'An invitation to support will seamlessly slide into the interface of your website interface. Very elegant and eye catchy.',
+      'Show a customizable banner to introduce Web Monetization. The banner disappears when dismissed or the extension is installed.',
     tags: ['flawless', 'dynamic', 'high click rate', 'banner'],
     icon: SVGBanner
   },
   {
     title: 'Widget',
-    description:
-      "A sticky button that follows the visitors wherever they go. When they press it, we'll make sure that they know what to do.",
+    description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
     tags: ['flawless', 'dynamic', 'high click rate', 'widget'],
     icon: SVGWidget
   },
@@ -96,8 +95,8 @@ export default function Index() {
           variant="h5"
           className="!text-landing-content text-center w-full max-xl:!text-style-body-standard"
         >
-          We care about your public and your option you want to help them
-          support you. Feel free to choose any interaction.
+          Use our suite of tools to set up and promote Web Monetization.
+          Encourage your visitors to support your content and website.
         </Typography>
       </div>
 
@@ -114,8 +113,8 @@ export default function Index() {
             variant="h5"
             className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center"
           >
-            We care about your public and your option you want to help them
-            support you. Feel free to choose any interaction.
+            Get started quickly with tools designed to help you set up Web
+            Monetization on your website
           </Typography>
 
           <div className="flex flex-row items-center justify-between p-0 w-full max-xl:flex-col max-xl:gap-lg max-xl:items-center">
@@ -142,8 +141,10 @@ export default function Index() {
             variant="h5"
             className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center"
           >
-            We care about your public and your option you want to help them
-            support you. Feel free to choose any interaction.
+            Add lightweight and embeddable tools, like banners and widgets, to
+            your site with simple scripts. They're easily customizable, helping
+            you connect with your audience to encourage Web Monetization
+            support.
           </Typography>
 
           <div className="flex flex-row items-center justify-between p-0 w-full max-xl:flex-col max-xl:gap-lg max-xl:items-center">

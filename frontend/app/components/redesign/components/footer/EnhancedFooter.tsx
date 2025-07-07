@@ -6,7 +6,7 @@ import instSocialIcon from '~/assets/images/footer/inst_social.svg?url'
 import ghSocialIcon from '~/assets/images/footer/gh_social.svg?url'
 import ytSocialIcon from '~/assets/images/footer/yt_social.svg?url'
 import { SVGFooterDivider } from '~/assets/svg'
-import { BodyStandard } from '../../Typography'
+import { BodyStandardLink } from './BodyStandardLink'
 
 const socialLinks = [
   {
@@ -44,28 +44,48 @@ export const EnhancedFooter = () => {
       <div className="flex flex-col md:flex-row gap-2xl md:gap-lg items-center md:items-start justify-center md:justify-start w-full max-w-4xl">
         <div className="flex-1 flex flex-col gap-sm items-center md:items-start justify-center w-full md:w-auto">
           <SVGFooterDivider />
-          <BodyStandard>Community</BodyStandard>
-          <BodyStandard>GitHub</BodyStandard>
-          <BodyStandard>Blog</BodyStandard>
-          <BodyStandard>FAQ</BodyStandard>
+          <BodyStandardLink href="https://community.interledger.org/">
+            Community
+          </BodyStandardLink>
+          <BodyStandardLink href="https://github.com/WICG/webmonetization">
+            GitHub
+          </BodyStandardLink>
+          <BodyStandardLink href="https://interledger.org/blog">
+            Blog
+          </BodyStandardLink>
+          <BodyStandardLink href="https://interledger.org/faq">
+            FAQ
+          </BodyStandardLink>
         </div>
 
         <div className="hidden md:block w-px h-36 bg-blue-300" />
 
         <div className="flex-1 flex flex-col gap-md items-center md:items-start justify-center w-full md:w-auto">
           <SVGFooterDivider />
-          <BodyStandard>Interledger Foundation</BodyStandard>
-          <BodyStandard>Web Incubator Community Group</BodyStandard>
-          <BodyStandard>Summit</BodyStandard>
+          <BodyStandardLink href="https://interledger.org">
+            Interledger Foundation
+          </BodyStandardLink>
+          <BodyStandardLink href="https://wicg.io/">
+            Web Incubator Community Group
+          </BodyStandardLink>
+          <BodyStandardLink href="https://interledger.org/summit">
+            Summit
+          </BodyStandardLink>
         </div>
 
         <div className="hidden md:block w-px h-36 bg-blue-300" />
 
         <div className="flex-1 flex flex-col gap-md items-center md:items-start justify-center w-full md:w-auto">
           <SVGFooterDivider />
-          <BodyStandard>Privacy Policy</BodyStandard>
-          <BodyStandard>Cookie Policy</BodyStandard>
-          <BodyStandard>Terms & conditions</BodyStandard>
+          <BodyStandardLink href="https://www.iubenda.com/privacy-policy/95080147">
+            Privacy Policy
+          </BodyStandardLink>
+          <BodyStandardLink href="https://www.iubenda.com/privacy-policy/95080147/cookie-policy">
+            Cookie Policy
+          </BodyStandardLink>
+          <BodyStandardLink href="https://www.iubenda.com/terms-and-conditions/95080147">
+            Terms & conditions
+          </BodyStandardLink>
         </div>
       </div>
 
