@@ -21,7 +21,7 @@ const setupTools = [
       'Generate the <link rel="monetization"> tag required to enable Web Monetization on your web pages.',
     tags: ['flawless', 'dynamic', 'high click rate', 'link tag', 'generator'],
     icon: SVGLinkGenerator,
-    link: '/link-tag'
+    href: '/link-tag/'
   },
   {
     title: 'Probabilistic revshare',
@@ -29,7 +29,7 @@ const setupTools = [
       'Split Web Monetization revenue across multiple payment pointers/wallets using probabilistic algorithms',
     tags: ['flawless', 'dynamic', 'high click rate', 'revshare', 'generator'],
     icon: SVGRevShareGenerator,
-    link: '/prob-revshare'
+    href: '/prob-revshare/'
   }
 ]
 
@@ -55,7 +55,8 @@ const interactionTools = [
       'The most classic, yet one of the most effective methods in order to link to your supporters. Ladies and gents, the button!',
     tags: ['flawless', 'dynamic', 'high click rate', 'button'],
     icon: SVGButton,
-    link: '/button'
+    link: '/button',
+    disabled: true
   }
 ]
 
@@ -129,7 +130,7 @@ export default function Index() {
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
-                to={tool.link}
+                href={tool.href}
               >
                 {tool.description}
               </ToolCard>
@@ -161,6 +162,7 @@ export default function Index() {
                 tags={tool.tags}
                 icon={tool.icon}
                 to={tool.link}
+                className={tool.disabled ? 'invisible' : ''}
               >
                 {tool.description}
               </ToolCard>

@@ -8,7 +8,10 @@ export type ToolCardProps = {
   title: string
   tags: string[]
   icon: string
-  to: string
+  to?: string
+  href?: string
+  target?: '_blank' | '_self' | '_parent' | '_top'
+  className?: string
 }
 
 export const ToolCard = ({
@@ -16,19 +19,36 @@ export const ToolCard = ({
   title,
   tags,
   icon,
-  to
+  to,
+  href,
+  target = '_blank',
+  className = ''
 }: ToolCardProps) => {
+  const linkContent = title
+  const linkClasses =
+    "font-bold text-xl leading-normal text-text-primary after:absolute after:inset-0 after:content-[''] after:z-10"
+
   return (
-    <div className="bg-interface-bg-main rounded-2xl w-[340px] max-w-full h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer">
+    <div
+      className={`bg-interface-bg-main rounded-2xl w-[340px] max-w-full h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer ${className}`}
+    >
       {<img src={icon} alt="" className="h-[160px]" />}
 
       <div className="flex flex-col gap-xs">
-        <Link
-          to={to}
-          className="font-bold text-xl leading-normal text-text-primary after:absolute after:inset-0 after:content-[''] after:z-10"
-        >
-          {title}
-        </Link>
+        {href ? (
+          <a
+            href={href}
+            target={target}
+            rel={target === '_blank' ? 'noreferrer' : undefined}
+            className={linkClasses}
+          >
+            {linkContent}
+          </a>
+        ) : (
+          <Link to={to!} className={linkClasses}>
+            {linkContent}
+          </Link>
+        )}
 
         <p className="font-normal text-sm leading-sm text-text-primary">
           {children}
