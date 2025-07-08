@@ -4,6 +4,7 @@ import { SVGDownArrow } from '~/assets/svg'
 import devHeroSVG from '~/assets/images/developer-icon.png'
 import pubHeroSVG from '~/assets/images/publishers-icon.png'
 import supHeroSVG from '~/assets/images/supporters-icon.png'
+import ClickAwayListener from 'react-click-away-listener'
 
 type ToolsMenuItemProps = {
   to: string
@@ -64,6 +65,13 @@ export const NavDropdown = ({
     setIsOpen(!isOpen)
   }
 
+  /** only handle click away on desktop (md breakpoint and above) */
+  const handleClickAway = () => {
+    if (window.innerWidth >= 768) {
+      setIsOpen(false)
+    }
+  }
+
   return (
     <li className="group relative inline-flex flex-col items-start justify-center">
       <button
@@ -95,30 +103,32 @@ export const NavDropdown = ({
       </button>
 
       {isOpen && (
-        <div
-          id="nav-dropdown-content"
-          className="relative z-50 flex flex-col gap-xs overflow-hidden rounded-lg p-sm md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[472px] md:w-[299px] md:items-start md:justify-start md:bg-interface-bg-container md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)] md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container"
-          role="menu"
-          aria-hidden={!isOpen}
-        >
-          <ul className="flex w-full flex-grow list-none flex-col gap-xs">
-            <ToolsMenuItem
-              to="/publishers"
-              imgSrc={pubHeroSVG}
-              text="Publisher tools"
-            />
-            <ToolsMenuItem
-              to="/supporters"
-              imgSrc={supHeroSVG}
-              text="Supporter tools"
-            />
-            <ToolsMenuItem
-              to="/developers"
-              imgSrc={devHeroSVG}
-              text="Developer tools"
-            />
-          </ul>
-        </div>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <div
+            id="nav-dropdown-content"
+            className="relative z-50 flex flex-col gap-xs overflow-hidden rounded-lg p-sm md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[472px] md:w-[299px] md:items-start md:justify-start md:bg-interface-bg-container md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)] md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container"
+            role="menu"
+            aria-hidden={!isOpen}
+          >
+            <ul className="flex w-full flex-grow list-none flex-col gap-xs">
+              <ToolsMenuItem
+                to="/publishers"
+                imgSrc={pubHeroSVG}
+                text="Publisher tools"
+              />
+              <ToolsMenuItem
+                to="/supporters"
+                imgSrc={supHeroSVG}
+                text="Supporter tools"
+              />
+              <ToolsMenuItem
+                to="/developers"
+                imgSrc={devHeroSVG}
+                text="Developer tools"
+              />
+            </ul>
+          </div>
+        </ClickAwayListener>
       )}
     </li>
   )

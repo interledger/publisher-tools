@@ -1,10 +1,20 @@
+import { useLocation } from '@remix-run/react'
+import { EnhancedFooter } from './footer/EnhancedFooter'
+
 export const Footer = () => {
+  const location = useLocation()
+  const isIndexRoute = location.pathname === '/'
+
+  if (isIndexRoute) {
+    return <EnhancedFooter />
+  }
+
   return (
-    <footer className="w-full pb-xl">
-      <div className="container mx-auto px-md py-px text-center">
-        <span className="text-text-helper text-sm font-normal font-sans leading-sm">
+    <footer className="w-full pb-xl bg-interface-bg-main">
+      <div className="flex flex-row items-center justify-center w-full">
+        <p className="!text-footer-content text-style-small-standard">
           Copyright© {new Date().getFullYear()} Interledger Foundation.
-        </span>
+        </p>
       </div>
     </footer>
   )
