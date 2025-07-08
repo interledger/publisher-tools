@@ -1,6 +1,6 @@
 import type { MetaFunction } from '@remix-run/cloudflare'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
-import { Typography } from '~/components/redesign/Typography'
+import { Heading1, Heading3, Heading5 } from '~/components/redesign/Typography'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
@@ -105,12 +105,9 @@ export default function Index() {
     <div className="bg-interface-bg-main min-h-screen flex flex-col gap-2xl items-center pt-5xl pb-xl px-0">
       <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-[1280px]">
         <div className="flex flex-col gap-xs items-center justify-start p-0 w-full">
-          <Typography
-            variant="h1"
-            className="!leading-normal !text-[42px] max-xl:!text-style-h2-semibold text-center"
-          >
+          <Heading1 className="!leading-normal !text-[42px] max-xl:!text-style-h2-semibold text-center">
             Web Monetization Tools
-          </Typography>
+          </Heading1>
           <img
             alt="Decorative underline"
             className="block max-w-none h-[23px] w-[442px] max-xl:h-[13px] max-xl:w-[247px]"
@@ -118,13 +115,10 @@ export default function Index() {
           />
         </div>
 
-        <Typography
-          variant="h5"
-          className="!text-landing-content text-center w-full max-xl:!text-style-body-standard"
-        >
+        <Heading5 className="!text-landing-content text-center w-full max-xl:!text-style-body-standard">
           Use our suite of tools to set up and promote Web Monetization.
           Encourage your visitors to support your content and website.
-        </Typography>
+        </Heading5>
       </div>
 
       <div
@@ -132,17 +126,12 @@ export default function Index() {
         className="flex flex-col gap-2.5 items-center justify-start p-0 w-full"
       >
         <div className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0">
-          <Typography variant="h3" className="w-full max-xl:text-center">
-            Setup tools
-          </Typography>
+          <Heading3 className="w-full max-xl:text-center">Setup tools</Heading3>
 
-          <Typography
-            variant="h5"
-            className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center"
-          >
+          <Heading5 className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Get started quickly with tools designed to help you set up Web
             Monetization on your website
-          </Typography>
+          </Heading5>
 
           <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
             {setupTools.map((tool, index) => (
@@ -151,7 +140,8 @@ export default function Index() {
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
-                href={tool.href}
+                to={tool.href}
+                target="_blank"
               >
                 {tool.description}
               </ToolCard>
@@ -161,19 +151,16 @@ export default function Index() {
         </div>
 
         <div className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0">
-          <Typography variant="h3" className="w-full max-xl:text-center">
+          <Heading3 className="w-full max-xl:text-center">
             Interaction tools
-          </Typography>
+          </Heading3>
 
-          <Typography
-            variant="h5"
-            className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center"
-          >
+          <Heading5 className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Add lightweight and embeddable tools, like banners and widgets, to
             your site with simple scripts. They&apos;re easily customizable,
             helping you connect with your audience to encourage Web Monetization
             support.
-          </Typography>
+          </Heading5>
 
           <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
             {interactionTools.map((tool, index) => (

@@ -92,7 +92,7 @@ export const EnhancedFooter = () => {
             Cookie Policy
           </BodyStandardLink>
           <BodyStandardLink href="https://www.iubenda.com/terms-and-conditions/95080147">
-            Terms & conditions
+            Terms & Conditions
           </BodyStandardLink>
         </div>
       </div>

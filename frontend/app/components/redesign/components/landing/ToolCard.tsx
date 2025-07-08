@@ -8,8 +8,7 @@ export type ToolCardProps = {
   title: string
   tags: string[]
   icon: string
-  to?: string
-  href?: string
+  to: string
   target?: '_blank' | '_self' | '_parent' | '_top'
   className?: string
 }
@@ -20,24 +19,24 @@ export const ToolCard = ({
   tags,
   icon,
   to,
-  href,
-  target = '_blank',
+  target,
   className = ''
 }: ToolCardProps) => {
   const linkContent = title
   const linkClasses =
-    "font-bold text-xl leading-normal text-text-primary after:absolute after:inset-0 after:content-[''] after:z-10"
+    'font-bold text-xl leading-normal text-text-primary after:absolute after:inset-0 after:z-10'
+  const isExternalLink = target !== undefined
 
   return (
     <div
       className={`bg-interface-bg-main rounded-2xl w-[340px] max-w-full h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer ${className}`}
     >
-      {<img src={icon} alt="" className="h-[160px]" />}
+      <img src={icon} alt="" className="h-[160px]" />
 
       <div className="flex flex-col gap-xs">
-        {href ? (
+        {isExternalLink ? (
           <a
-            href={href}
+            href={to}
             target={target}
             rel={target === '_blank' ? 'noreferrer' : undefined}
             className={linkClasses}
@@ -45,7 +44,7 @@ export const ToolCard = ({
             {linkContent}
           </a>
         ) : (
-          <Link to={to!} className={linkClasses}>
+          <Link to={to} className={linkClasses}>
             {linkContent}
           </Link>
         )}
