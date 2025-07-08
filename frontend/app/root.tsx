@@ -106,7 +106,7 @@ export function ErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <ErrorPage>
-        <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md shadow-md space-y-2">
+        <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md-old shadow-md space-y-2">
           <h4 className="font-semibold text-xl -tracking-widest text-[#F37F64]">
             {error.status}
           </h4>
@@ -126,7 +126,7 @@ export function ErrorBoundary() {
 
   return (
     <ErrorPage>
-      <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md shadow-md space-y-5">
+      <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md-old shadow-md space-y-5">
         <div className="grid place-items-center">
           <XCircle className="w-10 h-10 text-red-500" />
           <p className="text-lg font-semibold">
