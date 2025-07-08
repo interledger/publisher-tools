@@ -308,3 +308,37 @@ export const SVGDeleteScript: SvgIcon = ({ className }) => (
     />
   </svg>
 )
+
+export const SVGFooterDivider = ({
+  className = ''
+}: {
+  className?: string
+}) => (
+  <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    width="38"
+    height="5"
+    fill="none"
+  >
+    <path
+      stroke="url(#a)"
+      strokeLinecap="round"
+      strokeWidth="4"
+      d="M2 2.32h34"
+    />
+    <defs>
+      <linearGradient
+        id="a"
+        x1="4.427"
+        x2="4.754"
+        y1="2.773"
+        y2="5.896"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#009877" />
+        <stop offset="1" stopColor="#50D098" />
+      </linearGradient>
+    </defs>
+  </svg>
+)
