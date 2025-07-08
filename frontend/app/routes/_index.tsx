@@ -19,15 +19,26 @@ const setupTools = [
     title: 'Link tag generator',
     description:
       'Generate the <link rel="monetization"> tag required to enable Web Monetization on your web pages.',
-    tags: ['flawless', 'dynamic', 'high click rate', 'link tag', 'generator'],
+    tags: [
+      'Web Monetization',
+      'Easy integration',
+      'Easy setup',
+      'HTML tag',
+      'No code'
+    ],
     icon: SVGLinkGenerator,
     href: '/link-tag/'
   },
   {
-    title: 'Probabilistic revshare',
+    title: 'Probabilistic revenue share',
     description:
       'Split Web Monetization revenue across multiple payment pointers/wallets using probabilistic algorithms',
-    tags: ['flawless', 'dynamic', 'high click rate', 'revshare', 'generator'],
+    tags: [
+      'Web Monetization',
+      'Shared revenue',
+      'Automatic split',
+      'Fair payout'
+    ],
     icon: SVGRevShareGenerator,
     href: '/prob-revshare/'
   }
@@ -38,14 +49,19 @@ const interactionTools = [
     title: 'Banner',
     description:
       'Show a customizable banner to introduce Web Monetization. The banner disappears when dismissed or the extension is installed.',
-    tags: ['flawless', 'dynamic', 'high click rate', 'banner'],
+    tags: [
+      'Web Monetization',
+      'Visibility boost',
+      'Audience education',
+      'Engagement'
+    ],
     icon: SVGBanner,
     link: '/banner'
   },
   {
     title: 'Widget',
     description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
-    tags: ['flawless', 'dynamic', 'high click rate', 'widget'],
+    tags: ['Web Monetization', 'Pay with Interledger', 'One time support'],
     icon: SVGWidget,
     link: '/widget'
   },
