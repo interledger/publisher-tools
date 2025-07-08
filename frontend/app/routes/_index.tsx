@@ -61,7 +61,12 @@ const interactionTools = [
   {
     title: 'Widget',
     description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
-    tags: ['Web Monetization', 'Pay with Interledger', 'One time support'],
+    tags: [
+      'Web Monetization',
+      'One time support',
+      'Pay with Interledger',
+      'Engagement'
+    ],
     icon: SVGWidget,
     link: '/widget'
   },
