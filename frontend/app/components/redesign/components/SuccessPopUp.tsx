@@ -117,7 +117,7 @@ export const SuccessPopUp = () => {
             {({ style, tokens, getLineProps, getTokenProps }) => (
               <pre
                 className={
-                  'grow shrink basis-0 font-sans text-sm font-normal leading-normal whitespace-pre-wrap'
+                  'grow shrink-0 basis-0 font-sans text-sm font-normal leading-normal whitespace-pre-wrap'
                 }
               >
                 {tokens.map((line, i) => (
