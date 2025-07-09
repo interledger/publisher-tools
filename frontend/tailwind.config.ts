@@ -115,7 +115,6 @@ export default {
         'text-error': palettes['red-600'], // #E51D25
         'text-success': palettes['green-600'], // #27797A
         'text-buttons-default': palettes['purple-300'], // #8075B3
-        
 
         'field-border': palettes['silver-300'], // #C9C9C9
         'field-border-hover': palettes['silver-400'], // #ADADAD
