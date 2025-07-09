@@ -25,7 +25,6 @@ if (currentScript) {
   urlWallet = encodeURIComponent(params.get('wa') || '')
 }
 
-// check
 if (!paramTypes || !paramWallet) {
   throw 'Missing parameters! Could not initialise WM Tools.'
 }
