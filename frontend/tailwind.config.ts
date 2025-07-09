@@ -108,6 +108,7 @@ export default {
         'text-disabled': palettes['silver-300'],
         'text-error': palettes['red-600'],
         'text-success': palettes['green-600'],
+        'text-buttons-default': palettes['purple-300'],
 
         'field-border': palettes['silver-300'],
         'field-border-hover': palettes['silver-400'],
@@ -115,6 +116,7 @@ export default {
         'field-border-disabled': palettes['silver-200'],
         'field-bg-disabled': palettes['silver-100'],
         'field-border-error': palettes['red-600'],
+        'field-helpertext-default': palettes['silver-800'],
 
         'landing-footer-bg': palettes['mint-100'],
         'landing-button-bg': palettes['black'],

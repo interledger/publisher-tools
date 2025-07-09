@@ -23,13 +23,14 @@ export function InputField({
       )}
       <input
         className={cx(
-          'w-full px-sm py-xs',
-          'border rounded-sm',
+          'w-full px-sm py-xs rounded-sm',
           'text-text-primary placeholder:text-text-placeholder',
-          'hover:border-field-border-hover',
-          'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+          'border hover:border-field-border-hover',
+          'focus:outline-none focus:ring-1',
           'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
-          error ? 'border-field-border-error' : 'border-field-border',
+          error
+            ? 'border-field-border-error focus:border-field-border-error focus:ring-field-border-error'
+            : 'border-field-border focus:border-field-border-focus focus:ring-primary-focus',
           className
         )}
         {...props}
