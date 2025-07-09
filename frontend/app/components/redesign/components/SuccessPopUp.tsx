@@ -3,7 +3,7 @@ import { cx } from 'class-variance-authority'
 import { Heading5 } from '../Typography'
 import { InputField, Tooltip, ToolsPrimaryButton } from './index'
 import { Highlight, themes } from 'prism-react-renderer'
-import { SVGCopyScript } from '~/assets/svg'
+import { SVGCopyIcon } from '~/assets/svg'
 
 export const SuccessPopUp = () => {
   const [pointerInput, setPointerInput] = useState('')
@@ -49,7 +49,7 @@ export const SuccessPopUp = () => {
     try {
       await navigator.clipboard.writeText(generatedLinkTag)
       setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 1500)
+      setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
       console.error('Failed to copy text:', err)
     }
@@ -75,12 +75,12 @@ export const SuccessPopUp = () => {
     setInvalidUrl(false)
     setShowCodeBox(false)
   }
+
   return (
     <div className="flex w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container">
       {/* Generator Header */}
-      <div className="flex items-center gap-xs">
-        <Heading5>Generator</Heading5>
-        <Tooltip>Generate link tag</Tooltip>
+      <div>
+        <Heading5>Link tag generator</Heading5>
       </div>
       {/* Input Field */}
       <div>
@@ -95,7 +95,7 @@ export const SuccessPopUp = () => {
         </label>
         <InputField
           id="paymentPointer"
-          placeholder="Fill in your wallet address"
+          placeholder="Fill in your payment pointer/wallet address"
           value={pointerInput}
           onChange={(e) => handleOnChange(e)}
           error={
@@ -108,16 +108,14 @@ export const SuccessPopUp = () => {
 
       {showCodeBox && generatedLinkTag && (
         <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+          {/* May not need to use Highlight component here, but it provides syntax highlighting */}
           <Highlight
             theme={themes.github}
             code={generatedLinkTag}
-            language="tsx"
+            language="html"
           >
             {({ style, tokens, getLineProps, getTokenProps }) => (
-              <pre
-                className={'font-sans text-sm font-normal leading-normal'}
-                style={style}
-              >
+              <pre className={'font-sans text-sm font-normal leading-normal'}>
                 {tokens.map((line, i) => (
                   <div key={i} {...getLineProps({ line })}>
                     {line.map((token, key) => (
@@ -132,30 +130,7 @@ export const SuccessPopUp = () => {
             onClick={handleCopyClick}
             aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <mask
-                id="mask0_3439_8007"
-                maskUnits="userSpaceOnUse"
-                x="0"
-                y="0"
-                width="24"
-                height="24"
-              >
-                <rect width="24" height="24" fill="#C4C4C4" />
-              </mask>
-              <g mask="url(#mask0_3439_8007)">
-                <path
-                  d="M9 18C8.45 18 7.97933 17.8043 7.588 17.413C7.196 17.021 7 16.55 7 16V4C7 3.45 7.196 2.979 7.588 2.587C7.97933 2.19567 8.45 2 9 2H18C18.55 2 19.021 2.19567 19.413 2.587C19.8043 2.979 20 3.45 20 4V16C20 16.55 19.8043 17.021 19.413 17.413C19.021 17.8043 18.55 18 18 18H9ZM9 16H18V4H9V16ZM5 22C4.45 22 3.979 21.8043 3.587 21.413C3.19567 21.021 3 20.55 3 20V6H5V20H16V22H5Z"
-                  fill="#000000"
-                />
-              </g>
-            </svg>
+            <SVGCopyIcon />
           </button>
         </div>
       )}
@@ -168,6 +143,14 @@ export const SuccessPopUp = () => {
       >
         Generate link-tag
       </ToolsPrimaryButton>
+
+      {isCopied && (
+        <div className="h-[40px] p-sm rounded-sm bg-interface-bg-main">
+          <p className="font-sans text-sm font-normal leading-normal text-text-success text-center">
+            Copied to clipboard.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

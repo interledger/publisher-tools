@@ -4,13 +4,17 @@ export default function LinkTag() {
   return (
     <div className="bg-interface-bg-main min-h-screen w-full pt-3xl pb-xl">
       <div className="w-full max-w-[1280px] mx-auto">
-        <HeadingCore title="Link-tag generator">
+        <HeadingCore title="Link Tag Generator">
           Use the Link Tag Generator to generate a monetization &lt;link&gt;
           element for your HTML documents. Just enter your{' '}
           <a href="https://paymentpointers.org/" className="underline">
             payment pointer
           </a>{' '}
-          or wallet address into the field and click Generate.
+          or{' '}
+          <a href="https://webmonetization.org/wallets/" className="underline">
+            wallet address
+          </a>{' '}
+          into the field and click Generate.
         </HeadingCore>
       </div>
       <div className="flex flex-col items-center gap-md">
