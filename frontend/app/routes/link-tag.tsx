@@ -17,10 +17,8 @@ export default function LinkTag() {
           into the field and click Generate.
         </HeadingCore>
       </div>
-      <div className="flex flex-col items-center gap-md">
-        <div className="mx-auto max-w-[800px]">
-          <SuccessPopUp />
-        </div>
+      <div className="flex flex-col items-center gap-md px-md lg:px-0">
+        <SuccessPopUp />
         <div className="flex-grow flex-shrink-0 basis-0 max-w-[1280px] text-center">
           <p className="text-style-body-standard !text-field-helpertext-default">
             After generating your{' '}
