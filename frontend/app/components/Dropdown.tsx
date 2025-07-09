@@ -51,7 +51,7 @@ export const Dropdown = ({
           <Listbox.Button
             role="combobox"
             aria-required
-            className="relative w-full border border-tealish/50 rounded-md bg-white transition-colors duration-150 py-2 pl-3 pr-10 text-left shadow-sm focus:border-tealish focus:outline-none focus:ring-0"
+            className="relative w-full border border-tealish/50 rounded-md-old bg-white transition-colors duration-150 py-2 pl-3 pr-10 text-left shadow-sm focus:border-tealish focus:outline-none focus:ring-0"
           >
             {({ open }) => (
               <>
@@ -74,7 +74,7 @@ export const Dropdown = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 shadow-lg focus:outline-none">
+          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md-old bg-white py-1 shadow-lg focus:outline-none">
             {options.map((option) => (
               <Listbox.Option
                 key={option.value}

@@ -14,7 +14,9 @@ export const modalTypes = [
   'new-version',
   'script',
   'wallet-ownership',
-  'grant-response'
+  'grant-response',
+  'save-error',
+  'save-success'
 ]
 export type ModalType = {
   type: (typeof modalTypes)[number]

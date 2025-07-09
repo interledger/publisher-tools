@@ -25,13 +25,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             {label}
           </Label>
         )}
-        <div className="shadow-sm flex relative rounded-md">
+        <div className="shadow-sm flex relative rounded-md-old">
           <textarea
             ref={ref}
             id={internalId}
             rows={4}
             className={cx(
-              'block w-full p-2 rounded-md border border-tealish/50 transition-colors duration-150 placeholder:font-extralight focus:border-tealish focus:outline-none focus:ring-0 disabled:bg-mercury',
+              'block w-full p-2 rounded-md-old border border-tealish/50 transition-colors duration-150 placeholder:font-extralight focus:border-tealish focus:outline-none focus:ring-0 disabled:bg-mercury',
               className
             )}
             {...props}

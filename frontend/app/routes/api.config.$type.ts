@@ -63,7 +63,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       return json(fileContent)
     } catch (error) {
       // @ts-expect-error TODO
-      if (error.name === 'NoSuchKey') {
+      if (error.name === 'NoSuchKey' || error.message.includes('404')) {
         // if no user config exists, return default
         return json(defaultData)
       }
@@ -235,26 +235,19 @@ async function handleUpdate(
       throw new Error('Configuration data is required')
     }
 
-    let existingConfig: ConfigVersions = {}
-    try {
-      existingConfig = await configStorage.getJson(walletAddress)
-    } catch (error) {
-      // treats new wallets entries with no existing Default config
-      // @ts-expect-error TODO: add type for error
-      if (error.name !== 'NoSuchKey') throw error
-    }
-
     const newConfigData: ConfigVersions = JSON.parse(fullConfigStr)
+
+    const sanitizedConfig: ConfigVersions = {}
     Object.keys(newConfigData).forEach((key) => {
       if (typeof newConfigData[key] === 'object') {
-        existingConfig[key] = sanitizeConfigFields(newConfigData[key])
+        sanitizedConfig[key] = sanitizeConfigFields(newConfigData[key])
       }
     })
 
-    const filteredData = filterDeepProperties(existingConfig)
+    const filteredData = filterDeepProperties(sanitizedConfig)
     await configStorage.putJson(walletAddress, filteredData)
 
-    return json(existingConfig)
+    return json(filteredData)
   } catch (error) {
     return json({ error: (error as Error).message }, { status: 500 })
   }
