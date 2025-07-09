@@ -77,7 +77,7 @@ export const SuccessPopUp = () => {
   }
 
   return (
-    <div className="flex w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container">
+    <div className="flex w-full max-w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container">
       {/* Generator Header */}
       <div>
         <Heading5>Link tag generator</Heading5>
@@ -107,7 +107,7 @@ export const SuccessPopUp = () => {
       </div>
 
       {showCodeBox && generatedLinkTag && (
-        <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+        <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
           {/* May not need to use Highlight component here, but it provides syntax highlighting */}
           <Highlight
             theme={themes.github}
@@ -115,7 +115,11 @@ export const SuccessPopUp = () => {
             language="html"
           >
             {({ style, tokens, getLineProps, getTokenProps }) => (
-              <pre className={'font-sans text-sm font-normal leading-normal'}>
+              <pre
+                className={
+                  'grow shrink basis-0 font-sans text-sm font-normal leading-normal whitespace-pre-wrap'
+                }
+              >
                 {tokens.map((line, i) => (
                   <div key={i} {...getLineProps({ line })}>
                     {line.map((token, key) => (
