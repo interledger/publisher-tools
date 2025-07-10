@@ -405,7 +405,7 @@ export class PaymentBanner extends LitElement {
           <h3 class="banner-title">${title}</h3>
           <p class="banner-description">${description}</p>
           <p class="banner-link" @click=${this.handleLinkClick}>
-            Download web monetization extension
+            Install the Web Monetization browser extension
           </p>
         </div>
 

@@ -20,7 +20,7 @@ export function ToolsPrimaryButton({
 }: ToolsPrimaryButtonProps) {
   return (
     <button
-      className={` flex flex-row items-center
+      className={` flex flex-row items-center justify-center
         bg-primary-bg hover:bg-primary-bg-hover 
         text-white 
         px-md py-sm 

@@ -21,6 +21,7 @@ import { ScriptReadyModal } from '../components/redesign/components/ScriptReadyM
 import { SaveResultModal } from '../components/redesign/components/SaveResultModal'
 import { WalletOwnershipModal } from '../components/redesign/components/WalletOwnershipModal'
 import { CornerType } from '~/lib/types'
+import OverridePresetModal from '~/components/redesign/components/OverridePresetModal'
 
 export function Card({
   children,
@@ -294,6 +295,17 @@ export function RedesignDemo() {
           />
         </div>
       </div>
+
+      <OverridePresetModal
+        isOpen={true}
+        onClose={() => console.log('Override preset modal closed')}
+        onOverride={(presetId) => {
+          console.log('Override preset:', presetId)
+        }}
+        onAddWalletAddress={() => {
+          console.log('Add wallet address clicked')
+        }}
+      />
     </div>
   )
 }

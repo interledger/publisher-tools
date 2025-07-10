@@ -67,8 +67,8 @@ export const toolActions = {
   setFullConfig: (fullConfig: Record<string, ElementConfigType>) => {
     toolState.fullConfig = fullConfig
   },
-  setConfigs: (fullConfigObject: Record<string, ElementConfigType>) => {
-    const providedKeys = Object.keys(fullConfigObject)
+  setConfigs: (fullConfigObject?: Record<string, ElementConfigType> | null) => {
+    const providedKeys = fullConfigObject ? Object.keys(fullConfigObject) : []
     const defaultData = getDefaultData()
     const defaultVersionKeys = ['tab1', 'tab2', 'tab3']
 
@@ -89,7 +89,7 @@ export const toolActions = {
 
       newFullConfig[versionKey] = {
         ...defaultData,
-        ...(fullConfigObject[versionKey] || {})
+        ...(fullConfigObject?.[versionKey] || {})
       }
     })
 

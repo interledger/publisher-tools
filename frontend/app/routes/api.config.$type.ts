@@ -64,8 +64,8 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
     } catch (error) {
       // @ts-expect-error TODO
       if (error.name === 'NoSuchKey' || error.message.includes('404')) {
-        // if no user config exists, return default
-        return json(defaultData)
+        // no user config exists for this wallet address - return empty response
+        return json({})
       }
       throw error
     }

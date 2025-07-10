@@ -15,6 +15,7 @@ import { ToolsPrimaryButton } from '~/components/redesign/components/ToolsPrimar
 import { SaveResultModal } from '~/components/redesign/components/SaveResultModal'
 import { ScriptReadyModal } from '~/components/redesign/components/ScriptReadyModal'
 import { WalletOwnershipModal } from '~/components/redesign/components/WalletOwnershipModal'
+import { OverridePresetModal } from '~/components/redesign/components/OverridePresetModal'
 import {
   toolState,
   toolActions,
@@ -187,12 +188,15 @@ export default function Redesign() {
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs p-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
-                      <div className="xl:contents flex flex-col gap-xs mx-auto px-md sm:px-lg md:px-xl xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm">
+                      <div
+                        id="builder-actions-inner"
+                        className="xl:contents flex flex-col gap-xs mx-auto w-full xl:w-auto xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm"
+                      >
                         <ToolsSecondaryButton
                           className="xl:w-auto xl:rounded-lg
-                                     w-full border-0 xl:border order-last xl:order-first"
+                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={handleSaveEditsOnly}
                         >
@@ -207,7 +211,7 @@ export default function Redesign() {
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
                           className="xl:w-auto xl:rounded-lg
-                                     w-full order-first xl:order-last"
+                                     w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={handleSaveAndGenerateScript}
                         >
@@ -298,6 +302,27 @@ export default function Redesign() {
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmWalletOwnership}
                 walletAddress={snap.walletAddress}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {snap.modal?.type === 'override-preset' && (
+        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <OverridePresetModal
+                isOpen={true}
+                onClose={handleCloseModal}
+                onOverride={(presetId) => {
+                  console.log('Override preset:', presetId)
+                  handleCloseModal()
+                }}
+                onAddWalletAddress={() => {
+                  console.log('Add wallet address clicked')
+                  handleCloseModal()
+                }}
               />
             </div>
           </div>

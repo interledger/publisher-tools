@@ -16,7 +16,8 @@ export const modalTypes = [
   'wallet-ownership',
   'grant-response',
   'save-error',
-  'save-success'
+  'save-success',
+  'override-preset'
 ]
 export type ModalType = {
   type: (typeof modalTypes)[number]

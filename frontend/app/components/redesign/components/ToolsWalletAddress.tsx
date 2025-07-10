@@ -7,7 +7,7 @@ import { cx } from 'class-variance-authority'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { APP_BASEPATH } from '~/lib/constants'
-import type { ElementErrors } from '~/lib/types'
+import type { ElementErrors, ElementConfigType } from '~/lib/types'
 import { Heading5 } from '../Typography'
 
 export const ToolsWalletAddress = () => {
@@ -31,14 +31,12 @@ export const ToolsWalletAddress = () => {
         return
       }
 
-      const data = await response.json()
-
-      // @ts-expect-error TODO
-      if (data.default) {
-        // @ts-expect-error TODO
-        toolActions.setConfigs(data, 'default')
-        setError(undefined)
+      const data = (await response.json()) as {
+        [key: string]: ElementConfigType
       }
+
+      toolActions.setConfigs(Object.keys(data).length === 0 ? null : data)
+      setError(undefined)
 
       toolActions.setWalletConnected(true)
     } catch {
@@ -98,6 +96,7 @@ export const ToolsWalletAddress = () => {
               error={error?.fieldErrors.walletAddress}
             />
           </div>
+          {/* FIX ME */}
           {snap.isWalletConnected && (
             <button onClick={handleRefresh}>
               <SVGRefresh className="w-5 h-5" />

@@ -29,6 +29,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   const [inputValue, setInputValue] = useState<string>('')
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [dragDistance, setDragDistance] = useState(0)
+  const [hasError, setHasError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -58,7 +60,14 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        saveEdit()
+        if (!hasError) {
+          saveEdit()
+        } else {
+          // cancel edit if there's an error
+          setEditingId(null)
+          setHasError(false)
+          setErrorMessage('')
+        }
       }
     }
 
@@ -70,8 +79,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   }, [editingId, inputValue])
 
   const handleTabClick = (tabId: string) => {
-    // Prevent click if user was dragging
     if (dragDistance > 5) {
+      // prevent click if user was dragging
       setDragDistance(0)
       return
     }
@@ -96,25 +105,60 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
     setEditingId(tabId)
     setInputValue(currentLabel)
+    setHasError(false)
+    setErrorMessage('')
+  }
+
+  const validateInput = (value: string, currentTabId: string) => {
+    const trimmedValue = value.trim()
+
+    if (!trimmedValue) {
+      setHasError(true)
+      setErrorMessage('tab name is required')
+      return
+    }
+
+    const isDuplicate = Object.entries(tabLabels).some(
+      ([tabId, label]) =>
+        tabId !== currentTabId &&
+        label.toLowerCase() === trimmedValue.toLowerCase()
+    )
+
+    if (isDuplicate) {
+      setHasError(true)
+      setErrorMessage('this name is taken by another tab')
+      return
+    }
+
+    setHasError(false)
+    setErrorMessage('')
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     if (/^[a-zA-Z0-9-_ ]*$/.test(newValue)) {
       setInputValue(newValue)
+
+      if (editingId) {
+        validateInput(newValue, editingId)
+      }
     }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      saveEdit()
+      if (!hasError) {
+        saveEdit()
+      }
     } else if (e.key === 'Escape') {
       setEditingId(null)
+      setHasError(false)
+      setErrorMessage('')
     }
   }
 
   const saveEdit = () => {
-    if (editingId && inputValue.trim() !== '') {
+    if (editingId && inputValue.trim() !== '' && !hasError) {
       setTabLabels((prev) => ({
         ...prev,
         [editingId]: inputValue
@@ -123,9 +167,11 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       if (onTabLabelChange) {
         onTabLabelChange(editingId, inputValue)
       }
-    }
 
-    setEditingId(null)
+      setEditingId(null)
+      setHasError(false)
+      setErrorMessage('')
+    }
   }
 
   const startDragging = (e: React.MouseEvent) => {
@@ -169,64 +215,74 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
           const displayLabel = tabLabels[tab.id] || tab.label
 
           return (
-            <div
-              key={tab.id}
-              onClick={() => handleTabClick(tab.id)}
-              onMouseEnter={() => setHoveredId(tab.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              className={`
-                rounded-t-sm flex-1 cursor-pointer ${isEditing ? 'min-w-[200px]' : ''}
-                ${
-                  isSelected
-                    ? 'bg-white text-purple-300'
-                    : 'text-silver-600 hover:bg-purple-50'
-                }
-              `}
-              aria-selected={isSelected}
-              role="tab"
-            >
-              <div className="flex flex-row items-center w-full h-[50px] gap-1 px-3 py-2">
-                <div
-                  className="cursor-pointer flex-shrink-0"
-                  onClick={(e: React.MouseEvent) => {
-                    e.stopPropagation()
-                    if (isSelected) beginEditing(tab.id)
-                  }}
-                >
-                  <SVGEdit
-                    className={cx(
-                      'w-4 h-4',
-                      isEditing || (isSelected && hoveredId === tab.id)
-                        ? 'visible'
-                        : 'invisible'
-                    )}
-                  />
-                </div>
+            <div key={tab.id} className="flex flex-col flex-1">
+              <div className="h-4 flex items-end mb-1">
+                {isEditing && hasError && (
+                  <div className="text-red-500 text-xs px-3 animate-in fade-in duration-200">
+                    {errorMessage}
+                  </div>
+                )}
+              </div>
+              <div
+                onClick={() => handleTabClick(tab.id)}
+                onMouseEnter={() => setHoveredId(tab.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                className={`
+                  rounded-t-sm flex-1 cursor-pointer ${isEditing ? 'min-w-[200px]' : ''}
+                  ${
+                    isSelected
+                      ? 'bg-white text-purple-300'
+                      : 'text-silver-600 hover:bg-purple-50'
+                  }
+                `}
+                aria-selected={isSelected}
+                role="tab"
+              >
+                <div className="flex flex-row items-center w-full h-[50px] gap-1 px-3 py-2">
+                  <div
+                    className="cursor-pointer flex-shrink-0"
+                    onClick={(e: React.MouseEvent) => {
+                      e.stopPropagation()
+                      if (isSelected) beginEditing(tab.id)
+                    }}
+                  >
+                    <SVGEdit
+                      className={cx(
+                        'w-4 h-4',
+                        isEditing || (isSelected && hoveredId === tab.id)
+                          ? 'visible'
+                          : 'invisible'
+                      )}
+                    />
+                  </div>
 
-                {isEditing ? (
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    className="bg-transparent border-none outline-none text-purple-600 text-base leading-md font-normal w-full box-border"
-                    maxLength={40}
-                    autoFocus
-                  />
-                ) : (
-                  <div className="flex-1 min-w-0">
-                    <TabTooltip
-                      text={displayLabel}
-                      className={`
+                  {isEditing ? (
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
+                      className={`bg-transparent border-none outline-none text-base leading-md font-normal w-full box-border ${
+                        hasError ? 'text-red-500' : 'text-purple-600'
+                      }`}
+                      maxLength={40}
+                      autoFocus
+                    />
+                  ) : (
+                    <div className="flex-1 min-w-0">
+                      <TabTooltip
+                        text={displayLabel}
+                        className={`
                         truncate block
                         ${isSelected ? 'text-purple-300' : 'text-silver-600'}
                       `}
-                    >
-                      {displayLabel}
-                    </TabTooltip>
-                  </div>
-                )}
+                      >
+                        {displayLabel}
+                      </TabTooltip>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )
