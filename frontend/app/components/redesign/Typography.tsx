@@ -4,6 +4,7 @@ import { cx } from 'class-variance-authority'
 export type TextStyleType =
   | 'h1'
   | 'h2'
+  | 'h2-semibold'
   | 'h3'
   | 'h4'
   | 'h5'
@@ -49,6 +50,8 @@ function getDefaultElementForVariant(
     case 'h5':
     case 'h6':
       return variant
+    case 'h2-semibold':
+      return 'h2'
     case 'body-standard':
     case 'body-emphasis':
       return 'p'
@@ -70,6 +73,10 @@ export const Heading1 = (props: Omit<TypographyProps, 'variant'>) => (
 
 export const Heading2 = (props: Omit<TypographyProps, 'variant'>) => (
   <Typography variant="h2" {...props} />
+)
+
+export const Heading2SemiBold = (props: Omit<TypographyProps, 'variant'>) => (
+  <Typography variant="h2-semibold" {...props} />
 )
 
 export const Heading3 = (props: Omit<TypographyProps, 'variant'>) => (
