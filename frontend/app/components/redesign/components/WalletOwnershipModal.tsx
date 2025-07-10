@@ -46,7 +46,7 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
         </button>
       )}
       <div className="text-center">
-        <Heading5>Please confirm you are owner of</Heading5>
+        <Heading5>Connecting to your wallet</Heading5>
         {walletAddress && (
           <div className="flex w-full justify-center text-center mt-2">
             <BodyEmphasis>{walletAddress}</BodyEmphasis>
@@ -55,9 +55,9 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
       </div>
       <div className="text-center">
         <p className="text-base leading-md font-normal text-text-primary">
-          You will need to confirm a grant to prove that you are the owner of
-          the wallet address. <br /> No funds will be withdrawn from your
-          wallet.
+          We need to connect to your wallet for security & privacy reasons.
+          <br /> Please note this process does not involve accessing or handling
+          your funds.
         </p>
       </div>
       <div className="w-full">
