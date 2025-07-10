@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { Heading5 } from '../Typography'
-import { InputField, Tooltip, ToolsPrimaryButton } from './index'
-import { Highlight, themes } from 'prism-react-renderer'
+import { InputField, ToolsPrimaryButton } from './index'
 import { SVGCopyIcon } from '~/assets/svg'
 
 export const SuccessPopUp = () => {
   const [pointerInput, setPointerInput] = useState('')
-  const [generatedLinkTag, setGeneratedLinkTag] = useState('')
+  const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
@@ -28,26 +27,27 @@ export const SuccessPopUp = () => {
 
       return url.href
     } catch (err) {
-      // Do we want to log this error?
+      console.error('Invalid payment pointer URL:', err)
       setInvalidUrl(true)
       return ''
     }
   }
 
-  // Function to generate the HTML link tag
-  const generateHtmlLinkTag = (pointer: string) => {
-    const escapedPointer = pointer
+  // Just in case the pointer contains special characters
+  const parsePointer = (pointer: string) => {
+    return pointer
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&apos;')
-    return `<link rel="monetization" href="${escapedPointer}" />`
   }
 
   const handleCopyClick = async () => {
     try {
-      await navigator.clipboard.writeText(generatedLinkTag)
+      await navigator.clipboard.writeText(
+        `<link rel="monetization" href="${linkTag}" />`
+      )
       setIsCopied(true)
       setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
@@ -63,7 +63,7 @@ export const SuccessPopUp = () => {
     const validatedPointer = isValidPointer(pointerInput)
 
     if (validatedPointer) {
-      setGeneratedLinkTag(generateHtmlLinkTag(validatedPointer))
+      setParsedLinkTag(parsePointer(validatedPointer))
       setShowCodeBox(true)
     } else {
       setShowCodeBox(false)
@@ -106,30 +106,20 @@ export const SuccessPopUp = () => {
         />
       </div>
 
-      {showCodeBox && generatedLinkTag && (
+      {showCodeBox && linkTag && (
         <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-          {/* May not need to use Highlight component here, but it provides syntax highlighting */}
-          <Highlight
-            theme={themes.github}
-            code={generatedLinkTag}
-            language="html"
-          >
-            {({ style, tokens, getLineProps, getTokenProps }) => (
-              <pre
-                className={
-                  'grow shrink-0 basis-0 font-sans text-sm font-normal leading-normal whitespace-pre-wrap'
-                }
-              >
-                {tokens.map((line, i) => (
-                  <div key={i} {...getLineProps({ line })}>
-                    {line.map((token, key) => (
-                      <span key={key} {...getTokenProps({ token })} />
-                    ))}
-                  </div>
-                ))}
-              </pre>
-            )}
-          </Highlight>
+          <div className="grow shrink-0 basis-0 font-sans text-sm font-normal leading-normal whitespace-pre-wrap">
+            <span>&lt;</span>
+            <span className="text-[#00009F]">link </span>
+            <span className="text-[#00A4DB]">rel</span>
+            <span>="</span>
+            <span className="text-[#E3116C]">monetization</span>
+            <span>" </span>
+            <span className="text-[#00A4DB]">href</span>
+            <span>="</span>
+            <span className="text-[#E3116C]">{linkTag}</span>
+            <span>" /&gt;</span>
+          </div>
           <button
             onClick={handleCopyClick}
             aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
