@@ -2,7 +2,7 @@ import { HeadingCore, SuccessPopUp } from '../components/redesign/components'
 
 export default function LinkTag() {
   return (
-    <div className="bg-interface-bg-main min-h-screen w-full pt-3xl pb-xl px-md">
+    <div className="bg-interface-bg-main min-h-screen w-full pt-3xl pb-xl px-md lg:px-0">
       <div className="w-full max-w-[1280px] mx-auto">
         <HeadingCore title="Link Tag Generator">
           Use the Link Tag Generator to generate a monetization &lt;link&gt;
@@ -17,7 +17,7 @@ export default function LinkTag() {
           into the field and click Generate.
         </HeadingCore>
       </div>
-      <div className="flex flex-col items-center gap-md lg:px-0">
+      <div className="flex flex-col items-center gap-md">
         <SuccessPopUp />
         <div className="flex-grow flex-shrink-0 basis-0 max-w-[1280px] text-center">
           <p className="text-style-body-standard !text-field-helpertext-default">
