@@ -111,7 +111,7 @@ export const LinkTagGenerator = () => {
 
       {showCodeBox && linkTag && (
         <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-          <div className="grow shrink-0 basis-0 font-sans text-sm font-normal leading-normal whitespace-pre-wrap">
+          <div className="grow shrink font-sans text-sm font-normal leading-normal whitespace-pre-wrap min-w-0 overflow-x-auto">
             <span>&lt;</span>
             <span className="text-[#00009F]">link </span>
             <span className="text-[#00A4DB]">rel</span>
