@@ -50,7 +50,7 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
         {isSuccess ? (
           <SVGMarkSuccess className="w-[60px] h-[60px]" />
         ) : (
-          <SVGErrorVector />
+          <SVGErrorVector className="w-[60px] h-[60px]" />
         )}
       </div>
       <div className="text-center">
