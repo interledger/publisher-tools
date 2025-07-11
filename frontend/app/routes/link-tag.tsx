@@ -5,7 +5,7 @@ import {
 
 export default function LinkTag() {
   return (
-    <div className="bg-interface-bg-main w-full px-md pt-2xl lg:pt-0 lg:px-0">
+    <div className="bg-interface-bg-main w-full px-md pt-2xl lg:pt-0 lg:px-0 max-md:mb-2xl">
       <div className="w-full max-w-[1280px] mx-auto">
         <HeadingCore title="Link Tag Generator">
           Use the Link Tag Generator to generate a monetization &lt;link&gt;
