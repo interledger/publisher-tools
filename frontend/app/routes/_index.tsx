@@ -141,7 +141,6 @@ export default function Index() {
                 tags={tool.tags}
                 icon={tool.icon}
                 to={tool.href}
-                target="_blank"
               >
                 {tool.description}
               </ToolCard>
