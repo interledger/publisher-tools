@@ -102,9 +102,11 @@ export const LinkTagGenerator = () => {
               : ''
           }
         />
-        <p className="text-xs text-text-secondary mt-1 sm:hidden">
-          Fill in your payment pointer/wallet address
-        </p>
+        {!invalidUrl && (
+          <p className="text-xs text-text-secondary mt-1 sm:hidden">
+            Fill in your payment pointer/wallet address
+          </p>
+        )}
       </div>
 
       {showCodeBox && linkTag && (
