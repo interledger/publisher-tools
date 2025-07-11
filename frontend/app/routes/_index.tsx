@@ -27,7 +27,7 @@ const setupTools = [
       'No code'
     ],
     icon: SVGLinkGenerator,
-    href: '/link-tag/'
+    link: '/link-tag/'
   },
   {
     title: 'Probabilistic revenue share',
@@ -140,7 +140,8 @@ export default function Index() {
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
-                to={tool.href}
+                to={tool.link || tool.href}
+                target={tool.href ? '_blank' : undefined}
               >
                 {tool.description}
               </ToolCard>
