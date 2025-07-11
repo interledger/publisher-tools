@@ -29,6 +29,9 @@ export function InputField({
           disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700
           rounded-sm
           text-text-primary placeholder:text-text-placeholder
+          placeholder-ellipsis
+          placeholder:text-xs
+          sm:placeholder:text-sm
           ${className}
         `}
         {...props}

@@ -114,6 +114,7 @@ export default {
         'text-disabled': palettes['silver-300'], // #C9C9C9
         'text-error': palettes['red-600'], // #E51D25
         'text-success': palettes['green-600'], // #27797A
+        'text-buttons-default': palettes['purple-300'], // #8075B3
 
         'field-border': palettes['silver-300'], // #C9C9C9
         'field-border-hover': palettes['silver-400'], // #ADADAD
@@ -121,6 +122,7 @@ export default {
         'field-border-disabled': palettes['silver-200'], // #DFDFDF
         'field-bg-disabled': palettes['silver-100'], // #EFEFEF
         'field-border-error': palettes['red-600'], // #E51D25
+        'field-helpertext-default': palettes['silver-800'], // #676767
 
         'landing-content': palettes['silver-800'], // #676767
         'landing-pill-border': palettes['blue-300'], // #A3BEDC
