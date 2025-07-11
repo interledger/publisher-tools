@@ -1,4 +1,7 @@
-import { HeadingCore, SuccessPopUp } from '../components/redesign/components'
+import {
+  HeadingCore,
+  LinkTagGenerator
+} from '../components/redesign/components'
 
 export default function LinkTag() {
   return (
@@ -18,7 +21,7 @@ export default function LinkTag() {
         </HeadingCore>
       </div>
       <div className="flex flex-col items-center gap-md">
-        <SuccessPopUp />
+        <LinkTagGenerator />
         <div className="flex-grow flex-shrink-0 basis-0 max-w-[1280px] text-center">
           <p className="text-style-body-standard !text-field-helpertext-default">
             After generating your{' '}

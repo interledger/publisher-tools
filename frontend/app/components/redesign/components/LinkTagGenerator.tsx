@@ -4,7 +4,7 @@ import { Heading5 } from '../Typography'
 import { InputField, ToolsPrimaryButton } from './index'
 import { SVGCopyIcon } from '~/assets/svg'
 
-export const SuccessPopUp = () => {
+export const LinkTagGenerator = () => {
   const [pointerInput, setPointerInput] = useState('')
   const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
@@ -27,9 +27,7 @@ export const SuccessPopUp = () => {
 
       return url.href
     } catch (err) {
-      console.error('Invalid payment pointer URL:', err)
       setInvalidUrl(true)
-      return ''
     }
   }
 
@@ -112,13 +110,13 @@ export const SuccessPopUp = () => {
             <span>&lt;</span>
             <span className="text-[#00009F]">link </span>
             <span className="text-[#00A4DB]">rel</span>
-            <span>="</span>
+            <span>=&quot;</span>
             <span className="text-[#E3116C]">monetization</span>
-            <span>" </span>
+            <span>&quot; </span>
             <span className="text-[#00A4DB]">href</span>
-            <span>="</span>
+            <span>=&quot;</span>
             <span className="text-[#E3116C]">{linkTag}</span>
-            <span>" /&gt;</span>
+            <span>&quot; /&gt;</span>
           </div>
           <button
             onClick={handleCopyClick}

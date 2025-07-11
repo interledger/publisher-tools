@@ -27,7 +27,7 @@ const setupTools = [
       'No code'
     ],
     icon: SVGLinkGenerator,
-    href: '/tools/link-tag/' //! Added to make it work locally, but not sure if needed in production
+    href: '/link-tag/'
   },
   {
     title: 'Probabilistic revenue share',
