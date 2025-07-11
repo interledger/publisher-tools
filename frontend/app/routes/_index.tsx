@@ -40,7 +40,7 @@ const setupTools = [
       'Fair payout'
     ],
     icon: SVGRevShareGenerator,
-    href: '/prob-revshare/'
+    href: 'https://webmonetization.org/tools/prob-revshare/'
   }
 ]
 
