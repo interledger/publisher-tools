@@ -35,7 +35,9 @@ export const ToolsWalletAddress = () => {
         [key: string]: ElementConfigType
       }
 
-      toolActions.setConfigs(Object.keys(data).length === 0 ? null : data)
+      const hasCustomEdits = Object.keys(data).length > 0
+      toolActions.setHasCustomEdits(hasCustomEdits)
+      toolActions.setConfigs(hasCustomEdits ? data : null)
       setError(undefined)
 
       toolActions.setWalletConnected(true)
@@ -52,6 +54,7 @@ export const ToolsWalletAddress = () => {
   const handleRefresh = () => {
     toolActions.setWalletConnected(false)
     toolActions.setWalletAddress('')
+    toolActions.setHasCustomEdits(false)
   }
 
   const handleWalletAddressChange = (
@@ -82,8 +85,11 @@ export const ToolsWalletAddress = () => {
           </Tooltip>
         </div>
 
-        <div className="flex items-center w-full">
-          <div className="w-full">
+        <div
+          id="wallet-address-input"
+          className="flex items-start gap-3 w-full"
+        >
+          <div className="flex-1 min-w-0 h-12">
             <InputField
               placeholder={
                 snap.isWalletConnected
@@ -96,16 +102,21 @@ export const ToolsWalletAddress = () => {
               error={error?.fieldErrors.walletAddress}
             />
           </div>
-          {/* FIX ME */}
           {snap.isWalletConnected && (
-            <button onClick={handleRefresh}>
-              <SVGRefresh className="w-5 h-5" />
+            <button
+              onClick={handleRefresh}
+              className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            >
+              <SVGRefresh className="w-5 h-5 text-purple-500" />
             </button>
           )}
         </div>
       </div>
 
-      <div className="flex flex-col w-full xl:max-w-[490px] items-start gap-xs xl:flex-1 xl:grow">
+      <div
+        id="wallet-address-message"
+        className="flex flex-col w-full xl:max-w-[490px] items-start gap-xs xl:flex-1 xl:grow"
+      >
         {snap.walletConnectStep === 'error' ? (
           <p className="w-full text-style-small-standard !text-red-600">
             You have not connected your wallet address yet.
@@ -117,6 +128,11 @@ export const ToolsWalletAddress = () => {
             configuration.
             <br />
             You can then customize and save your config as needed.
+          </p>
+        ) : !snap.hasCustomEdits ? (
+          <p className="w-full text-style-small-standard !text-text-success">
+            There are no custom edits for the drawer banner correlated to this
+            wallet address but you can start customizing when you want.
           </p>
         ) : (
           <p className="w-full text-style-small-standard !text-text-success">

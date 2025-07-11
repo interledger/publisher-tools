@@ -121,7 +121,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
     const isDuplicate = Object.entries(tabLabels).some(
       ([tabId, label]) =>
         tabId !== currentTabId &&
-        label.toLowerCase() === trimmedValue.toLowerCase()
+        label.trim().toLowerCase() === trimmedValue.toLowerCase()
     )
 
     if (isDuplicate) {
@@ -216,9 +216,9 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
           return (
             <div key={tab.id} className="flex flex-col flex-1">
-              <div className="h-4 flex items-end mb-1">
+              <div className="h-4 flex items-end">
                 {isEditing && hasError && (
-                  <div className="text-red-500 text-xs px-3 animate-in fade-in duration-200">
+                  <div className="text-red-500 text-xs animate-in fade-in duration-200">
                     {errorMessage}
                   </div>
                 )}

@@ -22,7 +22,7 @@ export function InputField({
       )}
       <input
         className={`
-          w-full px-sm py-xs
+          w-full h-12 px-sm py-xs
           border ${error ? 'border-field-border-error' : 'border-field-border'}
           hover:border-field-border-hover
           focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus

@@ -46,6 +46,7 @@ export const toolState = proxy({
   grantResponse: '',
   isGrantAccepted: false,
   isWalletConnected: false,
+  hasCustomEdits: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus
 })
@@ -175,18 +176,10 @@ export const toolActions = {
   },
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
+  },
 
-    // if (toolState.toolConfig) {
-    //   toolState.toolConfig = {
-    //     ...toolState.toolConfig,
-    //     walletAddress: walletAddress
-    //   }
-
-    //   toolState.fullConfig = {
-    //     ...toolState.fullConfig,
-    //     [toolState.selectedVersion]: toolState.toolConfig
-    //   }
-    // }
+  setHasCustomEdits: (hasCustomEdits: boolean) => {
+    toolState.hasCustomEdits = hasCustomEdits
   },
   saveConfig: async (
     elementType: string,
