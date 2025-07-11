@@ -31,6 +31,8 @@ export function InputField({
           rounded-sm
           text-text-primary placeholder:text-text-placeholder
           placeholder-ellipsis
+          placeholder:text-xs
+          sm:placeholder:text-sm
           ${className}
         `}
         {...props}

@@ -41,6 +41,7 @@
     display: none;
   }
 
+  /* Placeholder text with ellipsis */
   .placeholder-ellipsis[placeholder] {
     text-overflow: ellipsis;
   }

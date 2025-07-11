@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { Heading5 } from '../Typography'
 import { InputField, ToolsPrimaryButton } from './index'
-import { SVGCopyIcon } from '~/assets/svg'
+import { SVGCopyIcon, SVGCheckIcon } from '~/assets/svg'
 
 export const LinkTagGenerator = () => {
   const [pointerInput, setPointerInput] = useState('')
@@ -25,7 +25,7 @@ export const LinkTagGenerator = () => {
         return `${url.origin}.well-known/pay`
       }
 
-      return url.href
+      return url.origin + url.pathname
     } catch (err) {
       setInvalidUrl(true)
     }
@@ -75,12 +75,13 @@ export const LinkTagGenerator = () => {
   }
 
   return (
-    <div className="flex w-full max-w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container">
-      {/* Generator Header */}
+    <form
+      className="flex w-full max-w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container"
+      onSubmit={handleSubmit}
+    >
       <div>
         <Heading5>Link tag generator</Heading5>
       </div>
-      {/* Input Field */}
       <div>
         <label
           htmlFor="paymentPointer"
@@ -102,16 +103,11 @@ export const LinkTagGenerator = () => {
               : ''
           }
         />
-        {!invalidUrl && (
-          <p className="text-xs text-text-secondary mt-1 sm:hidden">
-            Fill in your payment pointer/wallet address
-          </p>
-        )}
       </div>
 
       {showCodeBox && linkTag && (
         <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-          <div className="grow shrink font-sans text-sm font-normal leading-normal whitespace-pre-wrap min-w-0 overflow-x-auto">
+          <output className="grow shrink font-sans text-sm font-normal leading-normal whitespace-pre-wrap min-w-0 overflow-x-auto">
             <span>&lt;</span>
             <span className="text-[#00009F]">link </span>
             <span className="text-[#00A4DB]">rel</span>
@@ -122,22 +118,17 @@ export const LinkTagGenerator = () => {
             <span>=&quot;</span>
             <span className="text-[#E3116C]">{linkTag}</span>
             <span>&quot; /&gt;</span>
-          </div>
+          </output>
           <button
             onClick={handleCopyClick}
             aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
           >
-            <SVGCopyIcon />
+            {isCopied ? <SVGCheckIcon /> : <SVGCopyIcon />}
           </button>
         </div>
       )}
 
-      <ToolsPrimaryButton
-        icon="link"
-        className="justify-center"
-        type="submit"
-        onClick={(e) => handleSubmit(e)}
-      >
+      <ToolsPrimaryButton icon="link" className="justify-center" type="submit">
         Generate link-tag
       </ToolsPrimaryButton>
 
@@ -148,6 +139,6 @@ export const LinkTagGenerator = () => {
           </p>
         </div>
       )}
-    </div>
+    </form>
   )
 }
