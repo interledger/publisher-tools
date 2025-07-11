@@ -27,7 +27,7 @@ export const PageHeader = ({
   return (
     <div
       className={cx(
-        'flex py-4 rounded-md items-center justify-between space-x-5'
+        'flex py-4 rounded-md-old items-center justify-between space-x-5'
       )}
     >
       <div className="flex-1">
