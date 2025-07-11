@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
 import { CornerType } from '~/lib/types'
 
@@ -24,7 +25,7 @@ export function CornerRadiusSelector({
       options={cornerRadiusOptions}
       defaultValue={defaultValue}
       onChange={onChange}
-      className={`xl:flex-row flex-col gap-md ${className}`}
+      className={cx('xl:flex-row flex-col gap-md', className)}
     />
   )
 }

@@ -136,6 +136,7 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
               <span className="flex items-center justify-center mr-xs">
                 <SVGDropdown
                   className={cx(
+                    'w-5 h-5',
                     disabled
                       ? 'fill-text-disabled'
                       : selectedOption
@@ -169,6 +170,7 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
             >
               <SVGArrowDropdown
                 className={cx(
+                  'w-5 h-5',
                   disabled ? 'fill-text-disabled' : 'fill-text-primary'
                 )}
               />

@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { SVGMarkSuccess, SVGClose, SVGErrorVector } from '~/assets/svg'
 
@@ -25,16 +26,16 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
 
   return (
     <div
-      className={`
-        bg-interface-bg-container
-        border border-interface-edge-container
-        rounded-lg
-        p-8 pt-8 pb-4
-        flex flex-col items-center gap-6
-        w-full max-w-[426px]
-        relative
-        ${className}
-      `}
+      className={cx(
+        'bg-interface-bg-container',
+        'border border-interface-edge-container',
+        'rounded-lg',
+        'p-8 pt-8 pb-4',
+        'flex flex-col items-center gap-6',
+        'w-full max-w-[426px]',
+        'relative',
+        className
+      )}
     >
       {onClose && (
         <button
@@ -42,11 +43,15 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
           className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
           aria-label="Close modal"
         >
-          <SVGClose />
+          <SVGClose className="w-6 h-6" />
         </button>
       )}
       <div className="flex items-center justify-center">
-        {isSuccess ? <SVGMarkSuccess /> : <SVGErrorVector />}
+        {isSuccess ? (
+          <SVGMarkSuccess className="w-[60px] h-[60px]" />
+        ) : (
+          <SVGErrorVector />
+        )}
       </div>
       <div className="text-center">
         <p className="text-base leading-md font-normal text-text-primary">

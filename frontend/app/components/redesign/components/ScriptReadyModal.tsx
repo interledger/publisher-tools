@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { SVGMarkSuccess, SVGClose } from '~/assets/svg'
 
@@ -18,26 +19,27 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
   className = ''
 }) => {
   const handleCopy = () => {
-    navigator.clipboard.writeText(scriptContent)
-    if (onCopy) {
-      onCopy()
-    }
+    navigator.clipboard.writeText(scriptContent).then(() => {
+      if (onCopy) {
+        onCopy()
+      }
+    })
   }
 
   if (!isOpen) return null
 
   return (
     <div
-      className={`
-      bg-interface-bg-container
-      border border-interface-edge-container
-      rounded-lg
-      p-8 pt-8 pb-4
-      flex flex-col items-center gap-6
-      w-full max-w-[442px]
-      relative
-      ${className}
-    `}
+      className={cx(
+        'bg-interface-bg-container',
+        'border border-interface-edge-container',
+        'rounded-lg',
+        'p-xl pt-xl pb-md',
+        'flex flex-col items-center gap-lg',
+        'w-full max-w-[442px]',
+        'relative',
+        className
+      )}
     >
       {onClose && (
         <button
@@ -45,11 +47,11 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
           className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
           aria-label="Close"
         >
-          <SVGClose />
+          <SVGClose className="w-6 h-6" />
         </button>
       )}
       <div className="flex items-center justify-center">
-        <SVGMarkSuccess />
+        <SVGMarkSuccess className="w-[60px] h-[60px]" />
       </div>
       <div className="text-center">
         <p className="text-base leading-md font-normal text-text-primary">

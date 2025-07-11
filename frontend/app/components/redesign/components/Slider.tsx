@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 
 export interface SliderProps {
   value: number
@@ -51,7 +52,10 @@ export const Slider: React.FC<SliderProps> = ({
 
   return (
     <div
-      className={`relative h-6 w-full flex items-center cursor-pointer ${className}`}
+      className={cx(
+        'relative h-6 w-full flex items-center cursor-pointer',
+        className
+      )}
       onMouseDown={handleMouseDown}
     >
       <div className="absolute h-1.5 w-full bg-purple-100 rounded-full"></div>

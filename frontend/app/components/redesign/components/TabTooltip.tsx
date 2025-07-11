@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { cx } from 'class-variance-authority'
 
 export interface TabTooltipProps {
   children: React.ReactNode
@@ -60,7 +61,10 @@ export function TabTooltip({
       <div className="relative w-full">
         <p
           ref={textRef}
-          className={`w-[150px] text-base leading-md font-normal overflow-hidden whitespace-nowrap text-ellipsis ${className}`}
+          className={cx(
+            'w-[150px] text-base leading-md font-normal overflow-hidden whitespace-nowrap text-ellipsis',
+            className
+          )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

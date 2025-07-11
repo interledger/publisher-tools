@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { SVGClose } from '~/assets/svg'
 import { Heading5, BodyEmphasis } from '../Typography'
@@ -24,16 +25,16 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
 
   return (
     <div
-      className={`
-        bg-interface-bg-container
-        border border-interface-edge-container
-        rounded-lg
-        p-8 pt-8 pb-4
-        flex flex-col items-center gap-6
-        w-full max-w-[442px]
-        relative
-        ${className}
-      `}
+      className={cx(
+        'bg-interface-bg-container',
+        'border border-interface-edge-container',
+        'rounded-lg',
+        'p-8 pt-8 pb-4',
+        'flex flex-col items-center gap-6',
+        'w-full max-w-[442px]',
+        'relative',
+        className
+      )}
     >
       {onClose && (
         <button
@@ -41,7 +42,7 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
           className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
           aria-label="Close modal"
         >
-          <SVGClose />
+          <SVGClose className="w-6 h-6" />
         </button>
       )}
       <div className="text-center">

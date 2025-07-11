@@ -105,6 +105,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               >
                 <SVGArrowDropdown
                   className={cx(
+                    'w-5 h-5',
                     disabled ? 'fill-text-disabled' : 'fill-text-primary'
                   )}
                 />
@@ -115,7 +116,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                 <div className="flex items-center gap-3 whitespace-nowrap">
                   {/* color picker icon */}
                   <SVGColorPicker
-                    className="cursor-pointer fill-purple-300"
+                    className="w-5 h-5 cursor-pointer fill-purple-300"
                     onClick={() => {
                       setIsOpen(false)
                       setDisplayColorPicker(!openColorPicker)

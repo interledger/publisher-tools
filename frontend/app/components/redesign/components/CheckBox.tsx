@@ -41,7 +41,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           !disabled && !checked && 'hover:border-purple-400'
         )}
       >
-        {checked && <SVGCheck />}
+        {checked && <SVGCheck className="w-3 h-3" />}
       </div>
       {label && (
         <span className="text-sm leading-sm text-text-primary">{label}</span>

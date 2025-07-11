@@ -31,13 +31,15 @@ const getStepContent = (
   if (status === 'filled') {
     return (
       <div className="flex items-center justify-center">
-        <SVGGreenVector className={size === 'small' ? 'w-4 h-3' : ''} />
+        <SVGGreenVector
+          className={size === 'small' ? 'w-4 h-3' : 'w-6 h-[18px]'}
+        />
       </div>
     )
   } else if (status === 'error') {
     return (
       <div className="flex items-center justify-center">
-        <SVGErrorVector className={size === 'small' ? 'w-3 h-3' : ''} />
+        <SVGErrorVector className={size === 'small' ? 'w-3 h-3' : 'w-6 h-6'} />
       </div>
     )
   } else {

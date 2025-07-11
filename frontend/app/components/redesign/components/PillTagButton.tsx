@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ButtonHTMLAttributes } from 'react'
+import { cx } from 'class-variance-authority'
 
 interface PillTagButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
@@ -21,42 +22,39 @@ export const PillTagButton: React.FC<PillTagButtonProps> = ({
   }
 
   const variantClasses = {
-    default: `
-      border-field-border
-      text-text-placeholder
-      hover:border-field-border-hover
-      hover:text-text-primary
-      focus:border-field-border-focus
-      focus:text-text-primary
-    `,
-    active: `
-      border-field-border-focus
-      text-text-primary
-      hover:border-field-border-focus
-      hover:text-text-primary
-    `
+    default: [
+      'border-field-border',
+      'text-text-placeholder',
+      'hover:border-field-border-hover',
+      'hover:text-text-primary',
+      'focus:border-field-border-focus',
+      'focus:text-text-primary'
+    ],
+    active: [
+      'border-field-border-focus',
+      'text-text-primary',
+      'hover:border-field-border-focus',
+      'hover:text-text-primary'
+    ]
   }
 
   return (
     <button
-      className={`
-        relative
-        rounded-full
-        border
-        bg-transparent
-        font-normal
-        transition-all duration-200
-        
-        /* Disabled state */
-        disabled:opacity-50
-        disabled:cursor-not-allowed
-        disabled:hover:border-field-border
-        disabled:hover:text-text-placeholder
-        
-        ${sizeClasses[size]}
-        ${variantClasses[variant]}
-        ${className}
-      `}
+      className={cx(
+        'relative',
+        'rounded-full',
+        'border',
+        'bg-transparent',
+        'font-normal',
+        'transition-all duration-200',
+        'disabled:opacity-50',
+        'disabled:cursor-not-allowed',
+        'disabled:hover:border-field-border',
+        'disabled:hover:text-text-placeholder',
+        sizeClasses[size],
+        ...variantClasses[variant],
+        className
+      )}
       {...props}
     >
       <span className="relative z-10 whitespace-nowrap">{children}</span>

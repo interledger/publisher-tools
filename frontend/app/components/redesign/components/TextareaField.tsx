@@ -1,4 +1,5 @@
 import type { TextareaHTMLAttributes } from 'react'
+import { cx } from 'class-variance-authority'
 
 interface TextareaFieldProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -29,17 +30,17 @@ export function TextareaField({
         </label>
       )}
       <textarea
-        className={`
-          w-full px-md py-sm
-          border ${error ? 'border-field-border-error' : 'border-field-border'}
-          hover:border-field-border-hover
-          focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus
-          disabled:border-field-border-disabled disabled:bg-field-bg-disabled
-          rounded-sm
-          text-sm leading-sm text-text-primary placeholder:text-text-placeholder
-          resize-none
-          ${className}
-        `}
+        className={cx(
+          'w-full px-md py-sm',
+          'border rounded-sm',
+          'text-sm leading-sm text-text-primary placeholder:text-text-placeholder',
+          'resize-none',
+          'hover:border-field-border-hover',
+          'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+          'disabled:border-field-border-disabled disabled:bg-field-bg-disabled',
+          error ? 'border-field-border-error' : 'border-field-border',
+          className
+        )}
         value={value}
         maxLength={maxLength}
         {...props}
@@ -47,7 +48,10 @@ export function TextareaField({
       <div className="flex items-center justify-between">
         {(helpText || error) && (
           <span
-            className={`text-xs leading-xs ${error ? 'text-text-error' : 'text-text-secondary'}`}
+            className={cx(
+              'text-xs leading-xs',
+              error ? 'text-text-error' : 'text-text-secondary'
+            )}
           >
             {error || helpText}
           </span>
