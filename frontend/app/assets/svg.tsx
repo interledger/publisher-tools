@@ -259,9 +259,7 @@ export const SVGLinkIcon = ({ className }: { className: string }) => (
 export const SVGCopyIcon = ({ className = '' }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    width="24"
-    height="24"
+    className={`w-6 h-6 ${className}`}
     viewBox="0 0 24 24"
     fill="none"
   >
@@ -286,10 +284,9 @@ export const SVGCopyIcon = ({ className = '' }: { className?: string }) => (
 
 export const SVGCheckIcon = ({ className = '' }: { className?: string }) => (
   <svg
+    className={`w-6 h-6 ${className}`}
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="18"
-    viewBox="0 0 24 18"
+    viewBox="0 0 24 24"
     fill="none"
   >
     <path

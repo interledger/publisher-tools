@@ -140,7 +140,7 @@ export default function Index() {
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
-                to={tool.link || tool.href}
+                to={tool.link || tool.href || ''}
                 target={tool.href ? '_blank' : undefined}
               >
                 {tool.description}
