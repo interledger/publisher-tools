@@ -240,19 +240,18 @@ function Revshare() {
           </div>
           <div className="w-full max-w-[1280px] px-md sm:px-lg md:px-xl lg:px-md">
             <div className="mt-4">
-              dddd
               <RevshareChart shares={shares} />
             </div>
           </div>
           <div className=" text-gray-500 mt-4">
             <Heading5>Information</Heading5>
-            <p className='text-base leading-md text-text-primary'>
+            <p className='text-base pt-2 leading-md text-text-primary'>
               Each recipient has a different chance of being chosen, depending on their assigned weight. The weight is translated to a percentage which represents the percent of revenue each recipient will receive over time. The higher the weight, the larger the percentage.<br />
               For example, if three recipients each have a weight of 1, then each recipient will eventually receive 33% of the revenue. If three recipients have a weight of 1, 2, and 3, the percentages will be 17% (weight 1), 33% (weight 2), and 50% (weight 3). <br />
               Additional information can be found in the overview of the <a className="underline" href="https://webmonetization.org/tutorials/revenue-sharing" target="_blank">Set up probabilistic revenue sharing</a> tutorial.
             </p>
             <br />
-            <p className='text-base font-bold'>Define a revshare</p>
+            <p className='text-black font-bold'>Define a revshare</p>
             <p className='text-base leading-md text-text-primary'>
               Enter each payment pointer and wallet address that will receive a split of the revenue into the table. Names are optional. Click <a>Add Share</a> to add more rows. Assign a weight to each recipient. If you'd rather assign sharing by percentage, enter at least two recipients into the table. The Percent field will open for edits.
               When you're finished, add the generated monetization <a>link</a> tag to your site. The link contains a unique URL hosted on <a>https://webmonetization.org/api/revshare/pay/</a>.
