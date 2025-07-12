@@ -15,7 +15,7 @@ export function InputField({
   ...props
 }: InputFieldProps) {
   return (
-    <div className="space-y-2xs">
+    <div className="w-full space-y-2xs">
       {label && (
         <label className="block text-sm font-medium text-text-primary">
           {label}
