@@ -123,7 +123,11 @@ export const LinkTagGenerator = () => {
             onClick={handleCopyClick}
             aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
           >
-            {isCopied ? <SVGCheckIcon /> : <SVGCopyIcon />}
+            {isCopied ? (
+              <SVGCheckIcon className="w-6 h-6" />
+            ) : (
+              <SVGCopyIcon className="w-6 h-6" />
+            )}
           </button>
         </div>
       )}

@@ -96,6 +96,7 @@ export const NavDropdown = ({
         >
           <SVGDownArrow
             className={cx(
+              'w-4 h-4',
               isOpen ? 'fill-nav-link-hover' : 'fill-nav-link-default'
             )}
           />

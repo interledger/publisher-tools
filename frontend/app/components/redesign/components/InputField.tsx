@@ -22,19 +22,16 @@ export function InputField({
         </label>
       )}
       <input
-        className={`
-          w-full px-sm py-xs
-          border ${error ? 'border-field-border-error' : 'border-field-border'}
-          hover:border-field-border-hover
-          focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus
-          disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700
-          rounded-sm
-          text-text-primary placeholder:text-text-placeholder
-          placeholder-ellipsis
-          placeholder:text-xs
-          sm:placeholder:text-sm
-          ${className}
-        `}
+        className={cx(
+          'w-full px-sm py-xs rounded-sm',
+          'text-text-primary placeholder:text-text-placeholder',
+          'border hover:border-field-border-hover',
+          'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+          'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
+          'placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
+          error ? 'border-field-border-error' : 'border-field-border',
+          className
+        )}
         {...props}
       />
       {error && <p className="text-xs text-text-error">{error}</p>}

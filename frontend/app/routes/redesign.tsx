@@ -124,8 +124,8 @@ export default function Redesign() {
 
   return (
     <div className="bg-interface-bg-main min-h-screen w-full pb-[32px]">
-      <div className="flex flex-col items-center pt-2xl">
-        <div className="w-full max-w-[1280px] px-md sm:px-lg md:px-xl lg:px-md">
+      <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
+        <div className="w-full max-w-[1280px] px-md">
           <HeadingCore
             title="Banner"
             onBackClick={() => console.log('Back clicked')}

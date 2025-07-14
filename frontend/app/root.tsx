@@ -54,7 +54,7 @@ export default function App() {
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
         <Header />
-        <main className="flex-grow flex flex-col lg:pt-3xl">
+        <main className="flex-grow flex flex-col">
           <Outlet />
         </main>
         <Footer />
