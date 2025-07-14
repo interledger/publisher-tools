@@ -1,7 +1,4 @@
-import {
-  HeadingCore,
-  LinkTagGenerator
-} from '../components/redesign/components'
+import { HeadingCore, LinkTagGenerator } from '@/components'
 
 export default function LinkTag() {
   return (

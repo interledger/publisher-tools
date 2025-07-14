@@ -1,6 +1,7 @@
 export { TabSelector } from './TabSelector'
 export { TabTooltip } from './TabTooltip'
 export { StepsIndicator } from './StepsIndicator'
+export { MobileStepsIndicator } from './StepsIndicator'
 export { BuilderBackground } from './BuilderBackground'
 export { HeadingCore } from './HeadingCore'
 export { ToolsWalletAddress } from './ToolsWalletAddress'

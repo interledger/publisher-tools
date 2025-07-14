@@ -1,8 +1,36 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import { Heading5 } from '../Typography'
-import { InputField, ToolsPrimaryButton } from './index'
-import { SVGCopyIcon, SVGCheckIcon } from '~/assets/svg'
+import { InputField, ToolsPrimaryButton } from '@/components'
+import { Heading5 } from '@/typography'
+import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
+
+const isValidPointer = (input: string): string | false => {
+  try {
+    let urlString = input.trim()
+    if (input.charAt(0) === '$') {
+      urlString = input.replace('$', 'https://')
+    }
+
+    const url = new URL(urlString)
+
+    if (url.pathname === '/') {
+      return `${url.origin}/.well-known/pay`
+    }
+
+    return url.origin + url.pathname
+  } catch {
+    return false
+  }
+}
+
+const htmlEncodePointer = (pointer: string): string => {
+  return pointer
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
 
 export const LinkTagGenerator = () => {
   const [pointerInput, setPointerInput] = useState('')
@@ -11,66 +39,54 @@ export const LinkTagGenerator = () => {
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const isValidPointer = (input: string) => {
-    try {
-      let urlString = input.trim()
-      if (input.charAt(0) === '$') {
-        urlString = input.replace('$', 'https://')
-      }
+  useEffect(() => {
+    if (isCopied) {
+      const timer = setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
 
-      const url = new URL(urlString)
-
-      if (url.pathname === '/') {
-        return `${url.origin}.well-known/pay`
-      }
-
-      return url.origin + url.pathname
-    } catch {
-      setInvalidUrl(true)
+      return () => clearTimeout(timer)
     }
-  }
+  }, [isCopied])
 
-  const parsePointer = (pointer: string) => {
-    return pointer
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;')
-  }
-
-  const handleCopyClick = async () => {
+  const handleCopyClick = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(
         `<link rel="monetization" href="${linkTag}" />`
       )
       setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
       console.error('Failed to copy text:', err)
     }
-  }
+  }, [linkTag])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setInvalidUrl(false)
-    setIsCopied(false)
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      setInvalidUrl(false)
+      setIsCopied(false)
 
-    const validatedPointer = isValidPointer(pointerInput)
+      const validatedPointer = isValidPointer(pointerInput)
 
-    if (validatedPointer) {
-      setParsedLinkTag(parsePointer(validatedPointer))
-      setShowCodeBox(true)
-    } else {
+      if (validatedPointer) {
+        setParsedLinkTag(htmlEncodePointer(validatedPointer))
+        setShowCodeBox(true)
+      } else {
+        setInvalidUrl(true)
+        setShowCodeBox(false)
+      }
+    },
+    [pointerInput]
+  )
+
+  const handleOnChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPointerInput(e.target.value)
+      setInvalidUrl(false)
       setShowCodeBox(false)
-    }
-  }
-
-  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPointerInput(e.target.value)
-    setInvalidUrl(false)
-    setShowCodeBox(false)
-  }
+    },
+    []
+  )
 
   return (
     <form
@@ -107,14 +123,14 @@ export const LinkTagGenerator = () => {
         <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
           <output className="grow shrink font-sans text-sm font-normal leading-normal whitespace-pre-wrap min-w-0 overflow-x-auto">
             <span>&lt;</span>
-            <span className="text-[#00009F]">link </span>
-            <span className="text-[#00A4DB]">rel</span>
+            <span style={{ color: '#00009F' }}>link </span>
+            <span style={{ color: '#00A4DB' }}>rel</span>
             <span>=&quot;</span>
-            <span className="text-[#E3116C]">monetization</span>
+            <span style={{ color: '#E3116C' }}>monetization</span>
             <span>&quot; </span>
-            <span className="text-[#00A4DB]">href</span>
+            <span style={{ color: '#00A4DB' }}>href</span>
             <span>=&quot;</span>
-            <span className="text-[#E3116C]">{linkTag}</span>
+            <span style={{ color: '#E3116C' }}>{linkTag}</span>
             <span>&quot; /&gt;</span>
           </output>
           <button

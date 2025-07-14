@@ -260,21 +260,14 @@ export const SVGLinkIcon = ({ className }: { className: string }) => (
 )
 
 export const SVGCopyIcon = ({ className }: { className: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none">
-    <mask
-      id="mask0_3439_8007"
-      maskUnits="userSpaceOnUse"
-      x="0"
-      y="0"
-      width="24"
-      height="24"
-    >
-      <rect width="24" height="24" fill="#C4C4C4" />
+  <svg className={className} fill="none">
+    <mask id="a" width="24" height="24" x="0" y="0" maskUnits="userSpaceOnUse">
+      <path fill="#C4C4C4" d="M0 0h24v24H0z" />
     </mask>
-    <g mask="url(#mask0_3439_8007)">
+    <g mask="url(#a)">
       <path
-        d="M9 18C8.45 18 7.97933 17.8043 7.588 17.413C7.196 17.021 7 16.55 7 16V4C7 3.45 7.196 2.979 7.588 2.587C7.97933 2.19567 8.45 2 9 2H18C18.55 2 19.021 2.19567 19.413 2.587C19.8043 2.979 20 3.45 20 4V16C20 16.55 19.8043 17.021 19.413 17.413C19.021 17.8043 18.55 18 18 18H9ZM9 16H18V4H9V16ZM5 22C4.45 22 3.979 21.8043 3.587 21.413C3.19567 21.021 3 20.55 3 20V6H5V20H16V22H5Z"
-        fill="#000000"
+        fill="#3A3A3A"
+        d="M9 18c-.55 0-1.02-.196-1.412-.587A1.927 1.927 0 0 1 7 16V4c0-.55.196-1.021.588-1.413A1.925 1.925 0 0 1 9 2h9c.55 0 1.021.196 1.413.587.391.392.587.863.587 1.413v12c0 .55-.196 1.021-.587 1.413A1.928 1.928 0 0 1 18 18H9Zm0-2h9V4H9v12Zm-4 6c-.55 0-1.021-.196-1.413-.587A1.928 1.928 0 0 1 3 20V6h2v14h11v2H5Z"
       />
     </g>
   </svg>

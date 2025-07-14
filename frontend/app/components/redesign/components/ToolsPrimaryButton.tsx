@@ -1,6 +1,6 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGScriptCode, SVGCopyScript, SVGLinkIcon } from '../../../assets/svg'
+import { SVGScriptCode, SVGCopyScript, SVGLinkIcon } from '@/assets'
 
 interface ToolsPrimaryButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {

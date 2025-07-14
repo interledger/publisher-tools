@@ -3,19 +3,19 @@ import { useSnapshot } from 'valtio'
 import { useLoaderData } from '@remix-run/react'
 import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import {
-  MobileStepsIndicator,
-  StepsIndicator
-} from '~/components/redesign/components/StepsIndicator'
-import { ToolsWalletAddress } from '../components/redesign/components/ToolsWalletAddress'
-import { HeadingCore } from '../components/redesign/components/HeadingCore'
-import { BuilderForm } from '~/components/redesign/components/BuilderForm'
-import { BuilderBackground } from '~/components/redesign/components/BuilderBackground'
-import { ToolsSecondaryButton } from '~/components/redesign/components/ToolsSecondaryButton'
-import { ToolsPrimaryButton } from '~/components/redesign/components/ToolsPrimaryButton'
-import { SaveResultModal } from '~/components/redesign/components/SaveResultModal'
-import { ScriptReadyModal } from '~/components/redesign/components/ScriptReadyModal'
-import { WalletOwnershipModal } from '~/components/redesign/components/WalletOwnershipModal'
-import { OverridePresetModal } from '~/components/redesign/components/OverridePresetModal'
+  HeadingCore,
+  ToolsWalletAddress,
+  BuilderForm,
+  BuilderBackground,
+  ToolsSecondaryButton,
+  ToolsPrimaryButton,
+  SaveResultModal,
+  ScriptReadyModal,
+  WalletOwnershipModal,
+  OverridePresetModal,
+  StepsIndicator,
+  MobileStepsIndicator
+} from '@/components'
 import {
   toolState,
   toolActions,
@@ -23,7 +23,7 @@ import {
   loadState
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { SVGSpinner } from '~/assets/svg'
+import { SVGSpinner } from '@/assets'
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
