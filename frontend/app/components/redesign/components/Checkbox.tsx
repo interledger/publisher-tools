@@ -10,7 +10,7 @@ export interface CheckboxProps {
   disabled?: boolean
 }
 
-export const CheckBox: React.FC<CheckboxProps> = ({
+export const Checkbox: React.FC<CheckboxProps> = ({
   checked = false,
   onChange,
   label,
@@ -59,4 +59,4 @@ export const CheckBox: React.FC<CheckboxProps> = ({
   )
 }
 
-export default CheckBox
+export default Checkbox
