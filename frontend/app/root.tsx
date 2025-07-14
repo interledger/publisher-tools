@@ -19,7 +19,6 @@ import stylesheet from '~/tailwind.css?url'
 import { Button, Snackbar } from './components/index.js'
 import { Header, Footer } from './components/redesign/components/index.js'
 import { XCircle } from './components/icons.js'
-import bgTileSvg from '~/assets/images/bg-tile.svg?url'
 import faviconPng from '~/assets/images/favicon.png?url'
 import faviconIco from '~/assets/images/favicon.ico?url'
 

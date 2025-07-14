@@ -11,7 +11,6 @@ export const LinkTagGenerator = () => {
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  // Function to validate and format the payment pointer URL
   const isValidPointer = (input: string) => {
     try {
       let urlString = input.trim()
@@ -26,12 +25,11 @@ export const LinkTagGenerator = () => {
       }
 
       return url.origin + url.pathname
-    } catch (err) {
+    } catch {
       setInvalidUrl(true)
     }
   }
 
-  // Just in case the pointer contains special characters
   const parsePointer = (pointer: string) => {
     return pointer
       .replace(/&/g, '&amp;')
