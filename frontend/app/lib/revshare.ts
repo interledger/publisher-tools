@@ -51,17 +51,17 @@ export function sharesToPointerList(
 export function sharesFromPointerList(
   pl: [string, number, string][]
 ): SharesState {
-  return pl.map((share: any[]) => ({
-    pointer: share[0],
-    weight: share[1],
-    name: share[2]
+  return pl.map(([pointer, weight, name]) => ({
+    pointer,
+    weight,
+    name
   }))
 }
 
 export function changeList(
   arr: SharesState,
   i: number,
-  alteration: {}
+  alteration: Partial<Share>
 ): SharesState {
   return [
     ...arr.slice(0, i),
@@ -87,7 +87,7 @@ export function base64url(str: string): string {
 }
 
 export function fromBase64url(str: string): string {
-  return atob(str.replace(/\-/g, '+').replace(/_/g, '/'))
+  return atob(str.replace(/-/g, '+').replace(/_/g, '/'))
 }
 
 export function sharesToPaymentPointer(shares: Share[]): string | undefined {
@@ -125,11 +125,11 @@ export function pointerToShares(pointer: string): SharesState {
         'Share data is invalid. Make sure you copy the whole "content" from your meta tag.'
       )
     }
-    return sharesFromPointerList(pointerList)
-  } catch (err: any) {
-    if (err.name === 'TypeError') {
+    return sharesFromPointerList(pointerList as [string, number, string][])
+  } catch (err: unknown) {
+    if (err instanceof TypeError) {
       throw new Error('Meta tag or payment pointer is malformed')
-    } else if (err.name === 'SyntaxError') {
+    } else if (err instanceof SyntaxError) {
       throw new Error(
         'Payment pointer has malformed share data. Make sure to copy the entire pointer.'
       )
@@ -189,23 +189,20 @@ export function trimDecimal(dec: number): number {
   return Number(dec.toFixed(3))
 }
 
-export function validatePointerList(pointerList: any): boolean {
-  console.log('pointerList', pointerList)
+export function validatePointerList(
+  pointerList: unknown
+): pointerList is [string, number, string?][] {
   if (!Array.isArray(pointerList)) {
     return false
   }
 
   for (const entry of pointerList) {
-    if (typeof entry[0] !== 'string') {
-      console.log('ptr not string', entry)
-      return false
-    }
-    if (typeof entry[1] !== 'number') {
-      console.log('weight not number', entry)
-      return false
-    }
-    if (entry[2] && typeof entry[2] !== 'string') {
-      console.log('name not string', entry)
+    if (
+      !Array.isArray(entry) ||
+      typeof entry[0] !== 'string' ||
+      typeof entry[1] !== 'number' ||
+      (entry[2] !== undefined && typeof entry[2] !== 'string')
+    ) {
       return false
     }
   }

@@ -1,5 +1,7 @@
-import React, { useContext, useState, createContext, ReactNode, useEffect } from 'react'
-import { validateShares, SharesState, Share } from '../lib/revshare'
+import type { ReactNode } from 'react';
+import { useContext, useState, createContext, useEffect } from 'react'
+import type { SharesState, Share } from '../lib/revshare';
+import { validateShares } from '../lib/revshare'
 
 const SHARES_KEY = 'prob-revshare-shares'
 
@@ -12,9 +14,7 @@ interface SharesContextState {
 export const SharesContext = createContext<SharesContextState | undefined>(undefined)
 SharesContext.displayName = 'SharesContext'
 
-/**
- * Create a new empty share
- */
+
 export function newShare(): Share {
   return {
     name: '',
@@ -23,9 +23,6 @@ export function newShare(): Share {
   }
 }
 
-/**
- * Load shares from localStorage or initialise with a default share
- */
 export function loadStartingShares(): SharesState {
   try {
     const shareStr =
@@ -38,18 +35,14 @@ export function loadStartingShares(): SharesState {
     } else {
       return [newShare()]
     }
-  } catch (e: any) {
-    if (e.name === 'SyntaxError') {
+  } catch (e: unknown) {
+    if (e instanceof SyntaxError) {
       return [newShare()]
-    } else {
-      throw e
     }
+    throw e
   }
 }
 
-/**
- * SharesProvider component
- */
 interface SharesProviderProps {
   children: ReactNode
 }
@@ -77,9 +70,6 @@ export function SharesProvider({ children }: SharesProviderProps) {
   )
 }
 
-/**
- * Hook to use shares context
- */
 export function useShares(): SharesContextState {
   const context = useContext(SharesContext)
   if (!context) {
