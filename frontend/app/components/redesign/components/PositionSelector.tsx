@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
 import { PositionType } from '~/lib/types'
 
@@ -53,7 +54,7 @@ export function PositionSelector({
       options={positionOptions}
       defaultValue={defaultValue}
       onChange={onChange}
-      className={`xl:flex-row flex-col gap-md ${className}`}
+      className={cx('xl:flex-row flex-col gap-md', className)}
     />
   )
 }

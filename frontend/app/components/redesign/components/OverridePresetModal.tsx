@@ -63,7 +63,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
           aria-label="Close modal"
         >
-          <SVGClose />
+          <SVGClose className="w-6 h-6" />
         </button>
       )}
 

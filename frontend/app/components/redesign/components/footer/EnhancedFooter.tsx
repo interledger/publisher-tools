@@ -51,7 +51,7 @@ export const EnhancedFooter = () => {
     <footer className="w-full rounded-2xl bg-footer-bg p-md md:p-xl mx-auto max-w-none flex flex-col gap-2xl md:gap-lg items-center justify-center">
       <div className="flex flex-col md:flex-row gap-2xl md:gap-lg items-center md:items-start justify-center md:justify-start w-full max-w-4xl">
         <div className="flex-1 flex flex-col gap-sm items-center md:items-start justify-center w-full md:w-auto">
-          <SVGFooterDivider />
+          <SVGFooterDivider className="w-[38px] h-[5px]" />
           <BodyStandardLink href="https://community.interledger.org/">
             Community
           </BodyStandardLink>
@@ -69,7 +69,7 @@ export const EnhancedFooter = () => {
         <div className="hidden md:block w-px h-36 bg-blue-300" />
 
         <div className="flex-1 flex flex-col gap-md items-center md:items-start justify-center w-full md:w-auto">
-          <SVGFooterDivider />
+          <SVGFooterDivider className="w-[38px] h-[5px]" />
           <BodyStandardLink href="https://interledger.org">
             Interledger Foundation
           </BodyStandardLink>
@@ -84,7 +84,7 @@ export const EnhancedFooter = () => {
         <div className="hidden md:block w-px h-36 bg-blue-300" />
 
         <div className="flex-1 flex flex-col gap-md items-center md:items-start justify-center w-full md:w-auto">
-          <SVGFooterDivider />
+          <SVGFooterDivider className="w-[38px] h-[5px]" />
           <BodyStandardLink href="https://www.iubenda.com/privacy-policy/95080147">
             Privacy Policy
           </BodyStandardLink>

@@ -3,7 +3,6 @@ import { InputField } from '../components/redesign/components/InputField'
 import { ToolsPrimaryButton } from '../components/redesign/components/ToolsPrimaryButton'
 import { ToolsSecondaryButton } from '../components/redesign/components/ToolsSecondaryButton'
 import { Tooltip } from '../components/redesign/components/Tooltip'
-import { ToolsWalletAddress } from '../components/redesign/components/ToolsWalletAddress'
 import { ToolsDropdown } from '../components/redesign/components/ToolsDropdown'
 import { ColorSelector } from '../components/redesign/components/ColorSelector'
 import { CornerRadiusSelector } from '../components/redesign/components/CornerRadiusSelector'
@@ -11,17 +10,12 @@ import {
   MobileStepsIndicator,
   StepsIndicator
 } from '../components/redesign/components/StepsIndicator'
-import { SectionHeader } from '~/components/redesign/components/SectionHeader'
-import { SVGColorPicker, SVGRoundedCorner } from '~/assets/svg'
 import { GhostButton } from '../components/redesign/components/GhostButton'
 import { PillTagButton } from '../components/redesign/components/PillTagButton'
-import { BuilderForm } from '../components/redesign/components/BuilderForm'
-import { BuilderBackground } from '../components/redesign/components/BuilderBackground'
 import { ScriptReadyModal } from '../components/redesign/components/ScriptReadyModal'
 import { SaveResultModal } from '../components/redesign/components/SaveResultModal'
 import { WalletOwnershipModal } from '../components/redesign/components/WalletOwnershipModal'
 import { CornerType } from '~/lib/types'
-import OverridePresetModal from '~/components/redesign/components/OverridePresetModal'
 
 export function Card({
   children,
@@ -126,7 +120,6 @@ export function RedesignDemo() {
       </div>
       <h1>Tooltip</h1>
       <Tooltip>Your wallet address must use HTTPS protocol</Tooltip>
-      <ToolsWalletAddress />
       <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Dropdown Component</h2>
         <div className="flex flex-col gap-6 max-w-md">
@@ -199,7 +192,6 @@ export function RedesignDemo() {
       <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Color Selector Component</h2>
         <div className="flex flex-col gap-6 max-w-md">
-          <SectionHeader icon={<SVGColorPicker />} label="Colors" />
           <ColorSelector />
         </div>
       </div>
@@ -208,10 +200,6 @@ export function RedesignDemo() {
           Corner Radius Selector Component
         </h2>
         <div className="flex flex-col gap-6 max-w-md">
-          <SectionHeader
-            icon={<SVGRoundedCorner />}
-            label="Container Corner Radius"
-          />
           <CornerRadiusSelector defaultValue={CornerType.Light} />
         </div>
       </div>
@@ -252,18 +240,6 @@ export function RedesignDemo() {
         </div>
       </div>
       <div className="mt-8 mb-8">
-        <h2 className="text-xl font-bold mb-4">Builder Form Component</h2>
-        <div className="flex flex-col">
-          <BuilderForm className="w-[608px]" />
-        </div>
-      </div>
-      <div className="mt-8 mb-8">
-        <h2 className="text-xl font-bold mb-4">Builder Background Component</h2>
-        <div className="flex flex-col max-w-2xl">
-          <BuilderBackground />
-        </div>
-      </div>
-      <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Script Ready Modal Component</h2>
         <div className="flex flex-col items-center max-w-md mx-auto">
           <ScriptReadyModal
@@ -295,17 +271,6 @@ export function RedesignDemo() {
           />
         </div>
       </div>
-
-      <OverridePresetModal
-        isOpen={true}
-        onClose={() => console.log('Override preset modal closed')}
-        onOverride={(presetId) => {
-          console.log('Override preset:', presetId)
-        }}
-        onAddWalletAddress={() => {
-          console.log('Add wallet address clicked')
-        }}
-      />
     </div>
   )
 }

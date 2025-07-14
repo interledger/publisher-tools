@@ -1,4 +1,5 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { SVGClose } from '~/assets/svg'
 import { Heading5, BodyEmphasis } from '../Typography'
@@ -24,16 +25,16 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
 
   return (
     <div
-      className={`
-        bg-interface-bg-container
-        border border-interface-edge-container
-        rounded-lg
-        p-8 pt-8 pb-4
-        flex flex-col items-center gap-6
-        w-full max-w-[442px]
-        relative
-        ${className}
-      `}
+      className={cx(
+        'bg-interface-bg-container',
+        'border border-interface-edge-container',
+        'rounded-lg',
+        'p-8 pt-8 pb-4',
+        'flex flex-col items-center gap-6',
+        'w-full max-w-[442px]',
+        'relative',
+        className
+      )}
     >
       {onClose && (
         <button
@@ -41,24 +42,22 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
           className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
           aria-label="Close modal"
         >
-          <SVGClose />
+          <SVGClose className="w-6 h-6" />
         </button>
       )}
-      {/* Title */}
       <div className="text-center">
-        <Heading5>Connecting to your wallet</Heading5>
+        <Heading5>Please confirm you are owner of</Heading5>
         {walletAddress && (
           <div className="flex w-full justify-center text-center mt-2">
             <BodyEmphasis>{walletAddress}</BodyEmphasis>
           </div>
         )}
       </div>
-      {/* Description */}
       <div className="text-center">
         <p className="text-base leading-md font-normal text-text-primary">
-          We need to connect to your wallet for security & privacy reasons.
-          <br /> Please note this process does not involve accessing or handling
-          your funds.
+          You will need to confirm a grant to prove that you are the owner of
+          the wallet address. <br /> No funds will be withdrawn from your
+          wallet.
         </p>
       </div>
       <div className="w-full">

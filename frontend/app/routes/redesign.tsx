@@ -201,7 +201,7 @@ export default function Redesign() {
                           onClick={handleSaveEditsOnly}
                         >
                           <div className="flex items-center justify-center gap-2">
-                            {isLoading && <SVGSpinner />}
+                            {isLoading && <SVGSpinner className="w-4 h-4" />}
                             <span>
                               {isLoading ? 'Saving...' : 'Save edits only'}
                             </span>
@@ -216,7 +216,9 @@ export default function Redesign() {
                           onClick={handleSaveAndGenerateScript}
                         >
                           <div className="flex items-center justify-center gap-xs">
-                            {isLoadingScript && <SVGSpinner />}
+                            {isLoadingScript && (
+                              <SVGSpinner className="w-4 h-4" />
+                            )}
                             <span>
                               {isLoadingScript
                                 ? 'Saving...'

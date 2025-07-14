@@ -71,7 +71,7 @@ export const Header = () => {
             tabIndex={0}
             className="md:hidden size-12"
           >
-            <SVGHamburgerIcon />
+            <SVGHamburgerIcon className="w-5 h-5" />
           </GhostButton>
         </nav>
       </header>

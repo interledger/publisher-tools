@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes } from 'react'
+import { cx } from 'class-variance-authority'
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -21,16 +22,16 @@ export function InputField({
         </label>
       )}
       <input
-        className={`
-          w-full h-12 px-sm py-xs
-          border ${error ? 'border-field-border-error' : 'border-field-border'}
-          hover:border-field-border-hover
-          focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus
-          disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700
-          rounded-sm
-          text-text-primary placeholder:text-text-placeholder
-          ${className}
-        `}
+        className={cx(
+          'w-full px-sm py-xs',
+          'border rounded-sm',
+          'text-text-primary placeholder:text-text-placeholder',
+          'hover:border-field-border-hover',
+          'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+          'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
+          error ? 'border-field-border-error' : 'border-field-border',
+          className
+        )}
         {...props}
       />
       {error && <p className="text-xs text-text-error">{error}</p>}

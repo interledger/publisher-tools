@@ -5,7 +5,7 @@ import { TextareaField } from './TextareaField'
 import { Heading5 } from '../Typography'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '~/assets/svg'
 import Divider from './Divider'
-import Checkbox from './Checkbox'
+import Checkbox from './CheckBox'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { useSnapshot } from 'valtio'
 import { toolState, toolActions } from '~/stores/toolStore'
@@ -66,7 +66,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
         <div className="px-4 pr-1 py-2 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isComplete && <SVGGreenVector />}
+              {isComplete && <SVGGreenVector className="w-6 h-[18px]" />}
               <Heading5>Content</Heading5>
             </div>
             <button
@@ -76,7 +76,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
               }}
               className="w-12 h-12 rounded-lg flex items-center justify-center"
             >
-              <SVGArrowCollapse />
+              <SVGArrowCollapse className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -86,7 +86,6 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
 
   return (
     <div className="flex flex-col bg-interface-bg-container rounded-sm gap-sm">
-      {/* Header section */}
       <div
         className="px-1 py-2 flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
@@ -102,7 +101,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
               handleRefresh()
             }}
           >
-            <SVGRefresh />
+            <SVGRefresh className="w-6 h-6" />
           </button>
           <button
             onClick={(e) => {
@@ -114,13 +113,12 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
             className="w-12 h-12 rounded-lg flex items-center justify-center"
           >
             <div className="rotate-180">
-              <SVGArrowCollapse />
+              <SVGArrowCollapse className="w-5 h-5" />
             </div>
           </button>
         </div>
       </div>
       <div className="flex flex-col gap-lg">
-        {/* Title Section */}
         <div className="flex flex-col gap-2">
           <h4 className="text-base leading-md font-bold text-text-primary">
             Suggested title
@@ -142,7 +140,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
           </div>
         </div>
         <Divider />
-        {/* Custom Title Section */}
+
         <div className="flex flex-col gap-2">
           <h4 className="text-base leading-md font-bold text-text-primary">
             Custom title
@@ -165,13 +163,11 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
 
         <Divider />
 
-        {/* Banner Message Section */}
         <div className="flex flex-col gap-2">
           <h4 className="text-base leading-md font-bold text-text-primary">
             Banner message
           </h4>
           <div className="flex gap-lg items-start xl:flex-row flex-col">
-            {/* Checkbox */}
             <div className="flex items-center gap-2 shrink-0">
               <Checkbox
                 checked={isBannerActive}
@@ -180,7 +176,6 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
               />
             </div>
 
-            {/* Textarea */}
             <div className="flex-grow">
               <TextareaField
                 value={snap.toolConfig?.bannerDescriptionText}
@@ -201,7 +196,6 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
       </div>
       <Divider />
 
-      {/* Footer button */}
       <div className="flex justify-end">
         <ToolsSecondaryButton
           className="w-full xl:w-[140px]"

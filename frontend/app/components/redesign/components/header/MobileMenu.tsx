@@ -10,7 +10,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
         onClick={onClose}
         className="absolute top-0 right-0 size-12 m-sm"
       >
-        <SVGCloseIcon />
+        <SVGCloseIcon className="w-5 h-5" />
       </GhostButton>
       <ul className="flex flex-col gap-md list-none">
         <NavDropdown title="Tools" onMenuItemClick={onClose} />

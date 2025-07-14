@@ -64,14 +64,10 @@ const palettes = {
   'silver-800': '#676767',
   'silver-900': '#545454',
   'silver-950': '#363636'
-}
+} as const
 
 export default {
-  content: [
-    './app/**/*.{js,jsx,ts,tsx}',
-    './components/**/*.{js,jsx,ts,tsx}',
-    './frontend/components/src/**/*.{js,jsx,ts,tsx}'
-  ],
+  content: ['./app/**/*.{js,jsx,ts,tsx}'],
   safelist: [
     'text-style-h1',
     'text-style-h2',
@@ -91,45 +87,48 @@ export default {
     extend: {
       colors: {
         ...palettes,
+        'interface-bg-main': palettes['blue-50'],
+        'interface-bg-container': palettes['white'],
+        'interface-edge-container': palettes['silver-200'],
+        'interface-heading-container': palettes['purple-300'],
+        'interface-bg-stickymenu': palettes['silver-100'],
+        'interface-tooltip': palettes['purple-800'],
 
-        // Semantic color mappings for components
-        'interface-bg-main': palettes['blue-50'], // #F6F8FA
-        'interface-bg-container': palettes['white'], // #FFFFFF
-        'interface-edge-container': palettes['silver-200'], // #DFDFDF
-        'interface-heading-container': palettes['purple-300'], // #8075B3
-        'interface-bg-stickymenu': palettes['silver-100'], // #EFEFEF
-        'interface-tooltip': palettes['purple-800'], // #2D2A3C
+        'primary-bg': palettes['green-400'],
+        'primary-bg-hover': palettes['green-600'],
+        'primary-focus': palettes['purple-600'],
 
-        'primary-bg': palettes['green-400'], // #56B7B5
-        'primary-bg-hover': palettes['green-600'], // #27797A
-        'primary-focus': palettes['purple-600'], // #5B5380
+        'secondary-edge': palettes['purple-300'],
+        'secondary-edge-hover': palettes['purple-600'],
+        'secondary-hover-surface': palettes['purple-50'],
 
-        'secondary-edge': palettes['purple-300'], // #8075B3
-        'secondary-edge-hover': palettes['purple-600'], // #5B5380
-        'secondary-hover-surface': palettes['purple-50'], // #F3F4FA
+        'text-primary': palettes['silver-950'],
+        'text-secondary': palettes['silver-600'],
+        'text-placeholder': palettes['silver-700'],
+        'text-disabled': palettes['silver-300'],
+        'text-error': palettes['red-600'],
+        'text-success': palettes['green-600'],
 
-        'text-primary': palettes['silver-950'], // #363636
-        'text-secondary': palettes['silver-600'], // #888888
-        'text-placeholder': palettes['silver-700'], // #7B7B7B
-        'text-disabled': palettes['silver-300'], // #C9C9C9
-        'text-error': palettes['red-600'], // #E51D25
-        'text-success': palettes['green-600'], // #27797A
+        'field-border': palettes['silver-300'],
+        'field-border-hover': palettes['silver-400'],
+        'field-border-focus': palettes['purple-600'],
+        'field-border-disabled': palettes['silver-200'],
+        'field-bg-disabled': palettes['silver-100'],
+        'field-border-error': palettes['red-600'],
 
-        'field-border': palettes['silver-300'], // #C9C9C9
-        'field-border-hover': palettes['silver-400'], // #ADADAD
-        'field-border-focus': palettes['purple-600'], // #5B5380
-        'field-border-disabled': palettes['silver-200'], // #DFDFDF
-        'field-bg-disabled': palettes['silver-100'], // #EFEFEF
-        'field-border-error': palettes['red-600'], // #E51D25
+        'landing-footer-bg': palettes['mint-100'],
+        'landing-button-bg': palettes['black'],
+        'landing-button-bg-hover': palettes['silver-950'],
+        'landing-button-border': palettes['silver-800'],
+        'landing-button-border-hover': palettes['black'],
+        'landing-pill-border': palettes['blue-300'],
+        'landing-content': palettes['silver-800'],
 
-        'landing-content': palettes['silver-800'], // #676767
-        'landing-pill-border': palettes['blue-300'], // #A3BEDC
+        'footer-bg': palettes['mint-100'],
+        'footer-content': palettes['silver-800'],
 
-        'nav-link-default': palettes['purple-300'], // #8075B3
-        'nav-link-hover': palettes['purple-600'], // #5B5380
-
-        'footer-bg': palettes['mint-100'], // #D4F3EB
-        'footer-content': palettes['silver-800'], // #676767
+        'nav-link-default': palettes['purple-300'],
+        'nav-link-hover': palettes['purple-600'],
 
         // Custom old WM colors
         'wm-green': '#5BC8BB',

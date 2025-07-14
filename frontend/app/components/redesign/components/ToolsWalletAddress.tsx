@@ -148,7 +148,7 @@ export const ToolsWalletAddress = () => {
             onClick={handleContinue}
           >
             <div className="flex items-center justify-center gap-2">
-              {isLoading && <SVGSpinner />}
+              {isLoading && <SVGSpinner className="w-4 h-4" />}
               <span>{isLoading ? 'Connecting...' : 'Continue'}</span>
             </div>
           </ToolsSecondaryButton>

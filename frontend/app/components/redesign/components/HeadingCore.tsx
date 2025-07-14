@@ -20,7 +20,7 @@ export const HeadingCore: React.FC<HeadingCoreProps> = ({
     <div className={`w-full ${className}`}>
       <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between xl:py-0 w-full mb-3xl gap-md xl:gap-0">
         <GhostButton onClick={onBackClick} className="xl:order-1">
-          <SVGArrowLeft />
+          <SVGArrowLeft className="w-5 h-5" />
           All tools
         </GhostButton>
 

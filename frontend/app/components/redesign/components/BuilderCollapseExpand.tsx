@@ -16,7 +16,7 @@ import { ColorSelector } from './ColorSelector'
 import { CornerRadiusSelector } from './CornerRadiusSelector'
 import { PositionSelector } from './PositionSelector'
 import { Slider } from './Slider'
-import Checkbox from './Checkbox'
+import Checkbox from './CheckBox'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Heading5 } from '../Typography'
 import { Divider } from './Divider'
@@ -77,7 +77,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
         <div className="px-4 pr-1 py-2 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isComplete && <SVGGreenVector />}
+              {isComplete && <SVGGreenVector className="w-6 h-[18px]" />}
               <Heading5>Appearance</Heading5>
             </div>
             <button
@@ -87,7 +87,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               }}
               className="w-12 h-12 rounded-lg flex items-center justify-center"
             >
-              <SVGArrowCollapse />
+              <SVGArrowCollapse className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -97,7 +97,6 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
 
   return (
     <div className="flex flex-col bg-interface-bg-container rounded-lg gap-sm">
-      {/* Header section */}
       <div
         className="px-1 py-2 flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
@@ -112,7 +111,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               console.log('Refresh')
             }}
           >
-            <SVGRefresh />
+            <SVGRefresh className="w-6 h-6" />
           </button>
           <button
             onClick={(e) => {
@@ -124,15 +123,14 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
             className="w-12 h-12 rounded-lg flex items-center justify-center"
           >
             <div className="rotate-180">
-              <SVGArrowCollapse />
+              <SVGArrowCollapse className="w-5 h-5" />
             </div>
           </button>
         </div>
       </div>
 
-      {/* Text section */}
       <div className="flex flex-col gap-2">
-        <SectionHeader icon={<SVGText />} label="Text" />
+        <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
         <ToolsDropdown
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
@@ -188,12 +186,13 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           </div>
         </div>
       </div>
-
       <Divider />
 
-      {/* Colors section */}
       <div className="flex flex-col gap-2">
-        <SectionHeader icon={<SVGColorPicker />} label="Colors" />
+        <SectionHeader
+          icon={<SVGColorPicker className="w-5 h-5" />}
+          label="Colors"
+        />
 
         <div className="flex justify-between xl:flex-row flex-col gap-md">
           <ColorSelector
@@ -213,13 +212,11 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           <div className="w-[150px] xl:block hidden"></div>
         </div>
       </div>
-
       <Divider />
 
-      {/* Corner radius section */}
       <div className="flex flex-col gap-xs">
         <SectionHeader
-          icon={<SVGRoundedCorner />}
+          icon={<SVGRoundedCorner className="w-5 h-5" />}
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
@@ -229,12 +226,13 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           }
         />
       </div>
-
       <Divider />
 
-      {/* Position section */}
       <div className="flex flex-col gap-xs">
-        <SectionHeader icon={<SVGPosition />} label="Position (Appears from)" />
+        <SectionHeader
+          icon={<SVGPosition className="w-5 h-5" />}
+          label="Position (Appears from)"
+        />
         <PositionSelector
           defaultValue={snap.toolConfig?.bannerPosition}
           onChange={(value) =>
@@ -242,12 +240,13 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           }
         />
       </div>
-
       <Divider />
 
-      {/* Animation section */}
       <div className="flex flex-col gap-xs">
-        <SectionHeader icon={<SVGAnimation />} label="Animation" />
+        <SectionHeader
+          icon={<SVGAnimation className="w-5 h-5" />}
+          label="Animation"
+        />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
             checked={isAnimated}
@@ -276,9 +275,12 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
         </div>
       </div>
       <Divider />
-      {/* Thumbnail section */}
+
       <div className="flex flex-col gap-xs">
-        <SectionHeader icon={<SVGThumbnail />} label="Thumbnail" />
+        <SectionHeader
+          icon={<SVGThumbnail className="w-5 h-5" />}
+          label="Thumbnail"
+        />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
             checked={isThumbnailVisible}
@@ -298,7 +300,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
         </div>
       </div>
       <Divider />
-      {/* Footer button */}
+
       <div className="flex justify-end">
         <ToolsSecondaryButton
           className="w-full xl:w-[140px]"
