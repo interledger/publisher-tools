@@ -5,6 +5,7 @@ import {
 import { defineConfig, type Plugin } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { APP_BASEPATH } from './app/lib/constants.js'
+import path from 'path'
 
 /**
  * Custom plugin to handle root redirects to basepath in dev
@@ -46,7 +47,16 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      crypto: 'crypto-browserify'
+      'crypto': 'crypto-browserify',
+      '@/components': path.resolve(
+        __dirname,
+        './app/components/redesign/components'
+      ),
+      '@/typography': path.resolve(
+        __dirname,
+        './app/components/redesign/Typography.tsx'
+      ),
+      '@/assets': path.resolve(__dirname, './app/assets/svg.tsx')
     }
   },
   build: {

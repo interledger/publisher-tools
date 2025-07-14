@@ -40,4 +40,9 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Placeholder text with ellipsis */
+  .placeholder-ellipsis[placeholder] {
+    text-overflow: ellipsis;
+  }
 }

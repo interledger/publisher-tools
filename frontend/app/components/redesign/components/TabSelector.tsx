@@ -248,7 +248,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                   >
                     <SVGEdit
                       className={cx(
-                        'w-4 h-4',
+                        'w-7 h-7',
                         isEditing || (isSelected && hoveredId === tab.id)
                           ? 'visible'
                           : 'invisible'

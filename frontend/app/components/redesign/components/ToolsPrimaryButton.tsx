@@ -1,12 +1,12 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGScriptCode, SVGCopyScript } from '../../../assets/svg'
+import { SVGScriptCode, SVGCopyScript, SVGLinkIcon } from '@/assets'
 
 interface ToolsPrimaryButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   iconPosition?: 'left' | 'right' | 'none'
-  icon?: 'script' | 'copy'
+  icon?: 'script' | 'copy' | 'link'
   className?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
@@ -22,7 +22,7 @@ export function ToolsPrimaryButton({
   return (
     <button
       className={cx(
-        'flex flex-row items-center',
+        'flex flex-row items-center justify-center',
         'bg-primary-bg hover:bg-primary-bg-hover',
         'text-white',
         'px-md py-sm',
@@ -47,6 +47,9 @@ export function ToolsPrimaryButton({
       )}
       {icon === 'copy' && iconPosition === 'right' && (
         <SVGCopyScript className="w-5 h-5" />
+      )}
+      {icon === 'link' && iconPosition === 'right' && (
+        <SVGLinkIcon className="w-5 h-5" />
       )}
     </button>
   )
