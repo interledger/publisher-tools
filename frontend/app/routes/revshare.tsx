@@ -1,22 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useState } from 'react'
 
-import { useSnapshot } from 'valtio'
 import { HeadingCore } from '../components/redesign/components/HeadingCore'
 import { Heading5 } from '../components/redesign/Typography'
 
 import { SVGSpinner } from '~/assets/svg'
 import { ToolsPrimaryButton } from '../components/redesign/components/ToolsPrimaryButton'
 import { ToolsSecondaryButton } from '../components/redesign/components/ToolsSecondaryButton'
-import { InputField } from '../components/redesign/components/InputField'
 import { ShareInput, ShareInputMobile } from '../components/revshare/shareInput'
 import { RevshareChart } from '../components/revshare/chart'
-import { useShares, newShare, loadStartingShares } from '../stores/revshareStore'
+import { useShares, newShare, SharesProvider } from '../stores/revshareStore'
 
-import { validatePointer, validateWeight, sharesToPaymentPointer, changeList, dropIndex, weightFromPercent, trimDecimal } from '../lib/revshare'
+import { sharesToPaymentPointer, changeList, dropIndex, weightFromPercent, trimDecimal } from '../lib/revshare'
 
-import { toolState, toolActions } from '../stores/toolStore'
-import { SVGDeleteScript, SVGCopyScript } from '~/assets/svg'
-import { SharesProvider } from '../stores/revshareStore'
+import { SVGCopyScript } from '~/assets/svg'
 
 export default function RevsharePageWrapper() {
   return (
@@ -48,9 +44,8 @@ export function Card({
 }
 function Revshare() {
   const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingScript, setIsLoadingScript] = useState(false)
+  //const [isLoadingScript, setIsLoadingScript] = useState(false)
 
-  const snap = useSnapshot(toolState)
   const { shares, setShares } = useShares()
   const totalWeight = shares.reduce((a, b) => a + Number(b.weight), 0)
 
@@ -71,19 +66,6 @@ function Revshare() {
     }
   }
 
-  const handleAddRevShare = async () => {
-    setIsLoadingScript(true)
-    try {
-      // Simulate an API call to add revshare data
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log('Revshare added successfully')
-    } catch (error) {
-      console.error('Failed to add revshare', error)
-    } finally {
-      setIsLoadingScript(false)
-    }
-  }
-
   return (
     <div className="bg-interface-bg-main min-h-screen w-full pb-[32px]">
       <div className="flex flex-col items-center pt-2xl">
@@ -93,7 +75,7 @@ function Revshare() {
             onBackClick={() => console.log('Back clicked')}
             className="xl:mt-2xl"
           >
-            Probabilistic revenue sharing is a way to share a portion of a web monetized page's earnings between multiple wallet addresses and payment pointers. Each time a web monetized user visits the page, a recipient will be chosen at random. Payments will go to the chosen recipient until the page is closed or reloaded.
+            Probabilistic revenue sharing is a way to share a portion of a web monetized page&apos;s earnings between multiple wallet addresses and payment pointers. Each time a web monetized user visits the page, a recipient will be chosen at random. Payments will go to the chosen recipient until the page is closed or reloaded.
           </HeadingCore>
 
           <div className=" mx-auto space-y-lg">
@@ -197,16 +179,16 @@ function Revshare() {
               <div className="text-sm font-mono p-4 rounded overflow-hidden">
                 <span className="text-blue-600">&lt;link</span>
                 <span className="text-sky-400"> rel</span>
-                <span className="text-pink-400">="monetization"</span>
+                <span className="text-pink-400">=&quot;monetization&quot;</span>
                 <span className="text-sky-400"> href</span>
-                <span className="text-pink-400">="{sharesPP}"</span>
+                <span className="text-pink-400">=&quot;{sharesPP}&quot;</span>
                 <span className="text-blue-600"> /&gt;</span>
               </div>
               <div className="flex items-center gap-2 p-2">
                 <ToolsSecondaryButton
                   className="!border-none !p-0"
                   onClick={() => {
-                    navigator.clipboard.writeText(sharesPP)
+                    navigator.clipboard.writeText(`<link rel="monetization" href="${sharesPP}"/>`)
                     console.log('Payment Pointer copied to clipboard')
                   }}
                 >
@@ -248,13 +230,13 @@ function Revshare() {
             <p className='text-base pt-2 leading-md text-text-primary'>
               Each recipient has a different chance of being chosen, depending on their assigned weight. The weight is translated to a percentage which represents the percent of revenue each recipient will receive over time. The higher the weight, the larger the percentage.<br />
               For example, if three recipients each have a weight of 1, then each recipient will eventually receive 33% of the revenue. If three recipients have a weight of 1, 2, and 3, the percentages will be 17% (weight 1), 33% (weight 2), and 50% (weight 3). <br />
-              Additional information can be found in the overview of the <a className="underline" href="https://webmonetization.org/tutorials/revenue-sharing" target="_blank">Set up probabilistic revenue sharing</a> tutorial.
+              Additional information can be found in the overview of the <a className="underline" href="https://webmonetization.org/tutorials/revenue-sharing" target="_blank" rel="noreferrer">Set up probabilistic revenue sharing</a> tutorial.
             </p>
             <br />
             <p className='text-black font-bold'>Define a revshare</p>
             <p className='text-base leading-md text-text-primary'>
-              Enter each payment pointer and wallet address that will receive a split of the revenue into the table. Names are optional. Click <a>Add Share</a> to add more rows. Assign a weight to each recipient. If you'd rather assign sharing by percentage, enter at least two recipients into the table. The Percent field will open for edits.
-              When you're finished, add the generated monetization <a>link</a> tag to your site. The link contains a unique URL hosted on <a>https://webmonetization.org/api/revshare/pay/</a>.
+              Enter each payment pointer and wallet address that will receive a split of the revenue into the table. Names are optional. Click <a>Add Share</a> to add more rows. Assign a weight to each recipient. If you&apos;d rather assign sharing by percentage, enter at least two recipients into the table. The Percent field will open for edits.
+              When you&apos;re finished, add the generated monetization <a>link</a> tag to your site. The link contains a unique URL hosted on <a>https://webmonetization.org/api/revshare/pay/</a>.
             </p>
           </div>
         </div>
