@@ -5,7 +5,7 @@ import { TextareaField } from './TextareaField'
 import { Heading5 } from '../Typography'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '~/assets/svg'
 import Divider from './Divider'
-import { CheckBox } from './CheckBox'
+import { Checkbox } from './Checkbox'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { useSnapshot } from 'valtio'
 import { toolState, toolActions } from '~/stores/toolStore'
@@ -169,7 +169,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
           </h4>
           <div className="flex gap-lg items-start xl:flex-row flex-col">
             <div className="flex items-center gap-2 shrink-0">
-              <CheckBox
+              <Checkbox
                 checked={isBannerActive}
                 onChange={() => setIsBannerActive(!isBannerActive)}
                 label="Active"
