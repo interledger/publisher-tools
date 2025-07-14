@@ -16,7 +16,7 @@ import { ColorSelector } from './ColorSelector'
 import { CornerRadiusSelector } from './CornerRadiusSelector'
 import { PositionSelector } from './PositionSelector'
 import { Slider } from './Slider'
-import Checkbox from './CheckBox'
+import { CheckBox } from './CheckBox'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Heading5 } from '../Typography'
 import { Divider } from './Divider'
@@ -248,7 +248,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           label="Animation"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
+          <CheckBox
             checked={isAnimated}
             onChange={() => {
               toolActions.setToolConfig({
@@ -282,7 +282,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           label="Thumbnail"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
+          <CheckBox
             checked={isThumbnailVisible}
             onChange={() => setIsThumbnailVisible(!isThumbnailVisible)}
             label="Visible"
