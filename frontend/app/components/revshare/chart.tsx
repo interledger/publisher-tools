@@ -1,6 +1,7 @@
 import React from 'react';
 import { PieChart } from 'react-minimal-pie-chart';
-import { Share, sharesToChartData } from '~/lib/revshare'; // adjust import if needed
+import type { Share } from '~/lib/revshare';
+import { sharesToChartData } from '~/lib/revshare';
 
 function genLabel({ dataEntry }: { dataEntry: { title: string; value: number; percentage: number } }): string {
   return dataEntry.title;

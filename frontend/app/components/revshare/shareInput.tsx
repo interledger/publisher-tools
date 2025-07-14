@@ -2,7 +2,6 @@ import React from 'react'
 import { InputField } from '../redesign/components/InputField'
 import { ToolsSecondaryButton } from '../redesign/components/ToolsSecondaryButton'
 import { SVGDeleteScript } from '~/assets/svg'
-import { validatePointer, validateWeight } from '~/lib/revshare'
 
 interface ShareInputProps {
   index: number
@@ -31,7 +30,7 @@ export function ShareInput({
   onChangeWeight,
   onChangePercent,
   onRemove,
-  removeDisabled = false,
+  //removeDisabled = false,
   percentDisabled = false,
   weightDisabled = false,
 }: ShareInputProps) {
@@ -56,6 +55,8 @@ export function ShareInput({
           type="number"
           value={weight}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) => onChangeWeight(Number(ev.target.value))}
+          disabled={weightDisabled}
+          min={0}
         />
       </td>
       <td className="p-2 w-24">
@@ -63,6 +64,9 @@ export function ShareInput({
           type="number"
           value={percent ? Math.round(percent * 100) : ''}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) => onChangePercent(Number(ev.target.value) / 100)}
+          disabled={percentDisabled}
+          min={0}
+          max={100}
         />
       </td>
       <td className="p-2 px-4 w-24">
@@ -88,7 +92,7 @@ export function ShareInputMobile({
   onChangeWeight,
   onChangePercent,
   onRemove,
-  removeDisabled = false,
+  //removeDisabled = false,
   percentDisabled = false,
   weightDisabled = false,
 }: ShareInputProps) {
@@ -128,7 +132,7 @@ export function ShareInputMobile({
           min={0}
           step="any"
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) => onChangeWeight(Number(ev.target.value))}
-          disabled={!weightDisabled}
+          disabled={weightDisabled}
         />
       </div>
       <div>
@@ -139,7 +143,7 @@ export function ShareInputMobile({
           step="any"
           value={percent ? Math.round(percent * 100) : ''}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) => onChangePercent(Number(ev.target.value) / 100)}
-          disabled={!percentDisabled}
+          disabled={percentDisabled}
         />
       </div>
     </div>
