@@ -42,7 +42,10 @@ export function Card({
       bg-interface-bg-container 
       border border-interface-edge-container
       rounded-sm
-      p-lg
+      p-md
+      gap-md
+      flex flex-col
+      justify-start
       ${className}
     `}
     >
@@ -207,47 +210,49 @@ function Revshare() {
                   )
                 })}
               </div>
+              <hr />
+              {/* Payment Pointer section */}
+              <div className="flex h-[40px] w-full p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+                <CodeBlock
+                  link={sharesPP}
+                  className="text-sm font-sans p-sm overflow-hidden leading-normal font-normal whitespace-nowrap"
+                />
+                <button
+                  onClick={handleCopyClick}
+                  aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
+                >
+                  {isCopied ? (
+                    <SVGCheckIcon className="w-6 h-6" />
+                  ) : (
+                    <SVGCopyIcon className="w-6 h-6" />
+                  )}
+                </button>
+              </div>
+              {/* TODO - Action buttons section */}
+              <div className="flex justify-end gap-4 mt-4">
+                <ToolsSecondaryButton
+                  className="xl:w-[143px]"
+                  disabled={isLoading}
+                  onClick={handleImport}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    {isLoading && <SVGSpinner />}
+                    <span>{isLoading ? 'Connecting...' : 'Import'}</span>
+                  </div>
+                </ToolsSecondaryButton>
+
+                <ToolsPrimaryButton
+                  icon="share"
+                  iconPosition="right"
+                  className=" flex items-center justify-center"
+                  onClick={addShare}
+                >
+                  Add rev share
+                </ToolsPrimaryButton>
+              </div>
             </Card>
           </div>
-          {/* Payment Pointer section */}
-          <div className="flex w-full p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-            <CodeBlock
-              link={sharesPP}
-              className="text-sm font-sans p-sm overflow-hidden leading-normal font-normal"
-            />
-            <button
-              onClick={handleCopyClick}
-              aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
-            >
-              {isCopied ? (
-                <SVGCheckIcon className="w-6 h-6" />
-              ) : (
-                <SVGCopyIcon className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-          {/* TODO - Action buttons section */}
-          <div className="flex justify-end gap-4 mt-4">
-            <ToolsSecondaryButton
-              className="xl:w-[143px]"
-              disabled={isLoading}
-              onClick={handleImport}
-            >
-              <div className="flex items-center justify-center gap-2">
-                {isLoading && <SVGSpinner />}
-                <span>{isLoading ? 'Connecting...' : 'Import'}</span>
-              </div>
-            </ToolsSecondaryButton>
 
-            <ToolsPrimaryButton
-              icon="share"
-              iconPosition="right"
-              className=" flex items-center justify-center"
-              onClick={addShare}
-            >
-              Add rev share
-            </ToolsPrimaryButton>
-          </div>
           {/* TODO - Chart section */}
           <div className="w-full max-w-[1280px] px-md sm:px-lg md:px-xl lg:px-md">
             <div className="mt-4">
