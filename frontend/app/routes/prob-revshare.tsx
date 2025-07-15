@@ -230,13 +230,13 @@ function Revshare() {
                 </div>
               )}
               {/* TODO - Action buttons section */}
-              <div className="flex justify-end gap-4 mt-4">
+              <div className="flex justify-end gap-sm">
                 <ToolsSecondaryButton
                   className="xl:w-[143px]"
                   disabled={isLoading}
                   onClick={handleImport}
                 >
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-center gap-xs">
                     {isLoading && <SVGSpinner />}
                     <span>{isLoading ? 'Connecting...' : 'Import'}</span>
                   </div>

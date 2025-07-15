@@ -26,7 +26,7 @@ export function ToolsSecondaryButton({
         'border border-secondary-edge hover:border-secondary-edge-hover',
         'text-secondary-edge hover:text-secondary-edge-hover',
         'hover:bg-secondary-hover-surface',
-        'px-md py-sm',
+        'p-sm',
         'rounded-sm',
         'font-medium',
         'gap-2',
