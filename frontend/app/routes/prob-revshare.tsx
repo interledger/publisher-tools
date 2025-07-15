@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { HeadingCore } from '../components/redesign/components/HeadingCore'
 import { Heading5 } from '../components/redesign/Typography'
-import { SVGSpinner, SVGCopyScript } from '~/assets/svg'
+import { SVGSpinner, SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
 import { ToolsPrimaryButton } from '../components/redesign/components/ToolsPrimaryButton'
 import { ToolsSecondaryButton } from '../components/redesign/components/ToolsSecondaryButton'
-import { ShareInput, ShareInputMobile } from '../components/revshare/ShareInput'
-import { RevshareChart } from '../components/revshare/Chart'
+import {
+  ShareInput,
+  ShareInputMobile
+} from '../components/redesign/revshare/ShareInput'
+import { RevshareChart } from '../components/redesign/revshare/Chart'
 import { useShares, newShare, SharesProvider } from '../stores/revshareStore'
 
 import {
@@ -15,6 +18,8 @@ import {
   weightFromPercent,
   trimDecimal
 } from '../lib/revshare'
+import { CodeBlock } from '~/components/redesign/components'
+import { useCopyToClipboard } from '~/components/redesign/hooks/useCopyToClipboard'
 
 export default function RevsharePageWrapper() {
   return (
@@ -23,6 +28,7 @@ export default function RevsharePageWrapper() {
     </SharesProvider>
   )
 }
+
 export function Card({
   children,
   className = ''
@@ -68,9 +74,10 @@ function Revshare() {
       setIsLoading(false)
     }
   }
+  const { isCopied, handleCopyClick } = useCopyToClipboard(sharesPP)
 
   return (
-    <div className="bg-interface-bg-main min-h-screen w-full pb-[32px]">
+    <div className="bg-interface-bg-main w-full px-md">
       <div className="flex flex-col items-center pt-2xl">
         <div className="w-full max-w-[1280px] px-md sm:px-lg md:px-xl lg:px-md">
           <HeadingCore
@@ -202,31 +209,24 @@ function Revshare() {
               </div>
             </Card>
           </div>
-          <div className="w-full  gap-4 mt-4">
-            <div className="w-full flex justify-between bg-gray-200 rounded-lg ">
-              <div className="text-sm font-mono p-4 rounded overflow-hidden">
-                <span className="text-blue-600">&lt;link</span>
-                <span className="text-sky-400"> rel</span>
-                <span className="text-pink-400">=&quot;monetization&quot;</span>
-                <span className="text-sky-400"> href</span>
-                <span className="text-pink-400">=&quot;{sharesPP}&quot;</span>
-                <span className="text-blue-600"> /&gt;</span>
-              </div>
-              <div className="flex items-center gap-2 p-2">
-                <ToolsSecondaryButton
-                  className="!border-none !p-0"
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      `<link rel="monetization" href="${sharesPP}"/>`
-                    )
-                    console.log('Payment Pointer copied to clipboard')
-                  }}
-                >
-                  <SVGCopyScript width={36} height={32} color="black" />
-                </ToolsSecondaryButton>
-              </div>
-            </div>
+          {/* Payment Pointer section */}
+          <div className="flex w-full p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+            <CodeBlock
+              link={sharesPP}
+              className="text-sm font-sans p-sm overflow-hidden leading-normal font-normal"
+            />
+            <button
+              onClick={handleCopyClick}
+              aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
+            >
+              {isCopied ? (
+                <SVGCheckIcon className="w-6 h-6" />
+              ) : (
+                <SVGCopyIcon className="w-6 h-6" />
+              )}
+            </button>
           </div>
+          {/* TODO - Action buttons section */}
           <div className="flex justify-end gap-4 mt-4">
             <ToolsSecondaryButton
               className="xl:w-[143px]"
@@ -248,13 +248,14 @@ function Revshare() {
               Add rev share
             </ToolsPrimaryButton>
           </div>
+          {/* TODO - Chart section */}
           <div className="w-full max-w-[1280px] px-md sm:px-lg md:px-xl lg:px-md">
             <div className="mt-4">
               <RevshareChart shares={shares} />
             </div>
           </div>
-          {/* Information section */}
-          <div className="flex flex-col justify-start gap-4 px-4">
+          {/* COMPLETE - Information section */}
+          <div className="flex flex-col justify-start gap-4 px-4 mt-md">
             <Heading5>Information</Heading5>
             <div>
               <p className="text-sm leading-sm text-field-helpertext-default">
