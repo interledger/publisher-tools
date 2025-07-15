@@ -16,9 +16,9 @@ interface SaveConfigResponse {
 function initializeFullConfigWithDefaults(): Record<string, ElementConfigType> {
   const defaultData = getDefaultData()
   return {
-    tab1: { ...defaultData },
-    tab2: { ...defaultData },
-    tab3: { ...defaultData }
+    'Default preset 1': { ...defaultData },
+    'Default preset 2': { ...defaultData },
+    'Default preset 3': { ...defaultData }
   }
 }
 

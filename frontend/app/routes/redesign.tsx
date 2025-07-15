@@ -180,8 +180,10 @@ export default function Redesign() {
                     />
 
                     <BuilderForm
-                      onBuildStepComplete={() =>
-                        toolActions.setBuildCompleteStep('filled')
+                      onBuildStepComplete={(isComplete) =>
+                        toolActions.setBuildCompleteStep(
+                          isComplete ? 'filled' : 'unfilled'
+                        )
                       }
                     />
 
