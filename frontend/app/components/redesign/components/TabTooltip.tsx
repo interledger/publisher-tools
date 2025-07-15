@@ -62,7 +62,7 @@ export function TabTooltip({
         <p
           ref={textRef}
           className={cx(
-            'w-[150px] text-base leading-md font-normal overflow-hidden whitespace-nowrap text-ellipsis',
+            'w-[140px] text-base leading-md font-normal overflow-hidden whitespace-nowrap text-ellipsis',
             className
           )}
           onMouseEnter={handleMouseEnter}

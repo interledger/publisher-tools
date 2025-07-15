@@ -2,11 +2,11 @@ import { cx } from 'class-variance-authority'
 import React, { useState, useRef, useEffect } from 'react'
 import { SVGEdit } from '~/assets/svg'
 import { TabTooltip } from './TabTooltip'
-import { toolActions } from '~/stores/toolStore'
+import { toolActions, toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
 
 export interface TabOption {
   id: string
-  label: string
 }
 
 interface TabSelectorProps {
@@ -24,6 +24,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   className = '',
   onTabLabelChange
 }) => {
+  const { modifiedConfigs } = useSnapshot(toolState)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [tabLabels, setTabLabels] = useState<Record<string, string>>({})
   const [inputValue, setInputValue] = useState<string>('')
@@ -41,7 +42,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   useEffect(() => {
     const initialLabels: Record<string, string> = {}
     options.forEach((tab) => {
-      initialLabels[tab.id] = tab.label
+      initialLabels[tab.id] = tab.id
     })
     setTabLabels(initialLabels)
   }, [options])
@@ -101,7 +102,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
   const beginEditing = (tabId: string) => {
     const currentLabel =
-      tabLabels[tabId] || options.find((tab) => tab.id === tabId)?.label || ''
+      tabLabels[tabId] || options.find((tab) => tab.id === tabId)?.id || ''
 
     setEditingId(tabId)
     setInputValue(currentLabel)
@@ -159,13 +160,16 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
   const saveEdit = () => {
     if (editingId && inputValue.trim() !== '' && !hasError) {
+      const originalLabel = tabLabels[editingId] || editingId
+      const newLabel = inputValue.trim()
+
       setTabLabels((prev) => ({
         ...prev,
-        [editingId]: inputValue
+        [editingId]: newLabel
       }))
 
-      if (onTabLabelChange) {
-        onTabLabelChange(editingId, inputValue)
+      if (onTabLabelChange && originalLabel !== newLabel) {
+        onTabLabelChange(editingId, newLabel)
       }
 
       setEditingId(null)
@@ -212,7 +216,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         {options.map((tab) => {
           const isSelected = selectedId === tab.id
           const isEditing = editingId === tab.id
-          const displayLabel = tabLabels[tab.id] || tab.label
+          const displayLabel = tabLabels[tab.id] || tab.id
+          const isModified = modifiedConfigs.includes(tab.id)
 
           return (
             <div key={tab.id} className="flex flex-col flex-1">
@@ -270,7 +275,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                       autoFocus
                     />
                   ) : (
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 flex items-center gap-1">
                       <TabTooltip
                         text={displayLabel}
                         className={`
@@ -280,6 +285,12 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                       >
                         {displayLabel}
                       </TabTooltip>
+                      {isModified && (
+                        <div
+                          className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"
+                          title="This configuration has been modified from default"
+                        />
+                      )}
                     </div>
                   )}
                 </div>

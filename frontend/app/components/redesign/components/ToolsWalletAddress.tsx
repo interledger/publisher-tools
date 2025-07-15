@@ -36,11 +36,25 @@ export const ToolsWalletAddress = () => {
       }
 
       const hasCustomEdits = Object.keys(data).length > 0
+      const hasLocalModifications = snap.modifiedConfigs.length > 0
+      if (hasCustomEdits && hasLocalModifications) {
+        toolActions.setModal({
+          type: 'override-preset',
+          fetchedConfigs: data
+        })
+        return
+      }
+
       toolActions.setHasCustomEdits(hasCustomEdits)
-      toolActions.setConfigs(hasCustomEdits ? data : null)
-      setError(undefined)
+
+      if (hasCustomEdits) {
+        toolActions.loadSavedConfigs(data)
+      } else {
+        toolActions.setConfigs(null)
+      }
 
       toolActions.setWalletConnected(true)
+      setError(undefined)
     } catch {
       setError({
         fieldErrors: { walletAddress: ['Failed to fetch configuration'] },
@@ -55,6 +69,8 @@ export const ToolsWalletAddress = () => {
     toolActions.setWalletConnected(false)
     toolActions.setWalletAddress('')
     toolActions.setHasCustomEdits(false)
+
+    toolActions.setConfigs(null)
   }
 
   const handleWalletAddressChange = (

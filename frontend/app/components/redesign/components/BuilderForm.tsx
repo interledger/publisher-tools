@@ -72,8 +72,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
       {/* Tab Selector */}
       <TabSelector
         options={snap.versionOptions.map((option) => ({
-          id: option.value,
-          label: option.label
+          id: option
         }))}
         selectedId={snap.selectedVersion}
         onSelectTab={handleTabSelect}

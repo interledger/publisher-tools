@@ -1,7 +1,6 @@
 import { proxy, subscribe } from 'valtio'
 import type { ElementConfigType } from '~/lib/types.js'
 import type { ModalType } from '~/lib/presets.js'
-import type { SelectOption } from '~/components/index.js'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 const STORAGE_KEY = 'valtio-store'
@@ -23,16 +22,106 @@ function initializeFullConfigWithDefaults(): Record<string, ElementConfigType> {
   }
 }
 
+function isConfigModified(
+  config: ElementConfigType,
+  baselineConfig: ElementConfigType
+): boolean {
+  return JSON.stringify(config) !== JSON.stringify(baselineConfig)
+}
+
+function updateModificationTracking(versionKey: string, isModified: boolean) {
+  const currentIndex = toolState.modifiedConfigs.indexOf(versionKey)
+
+  if (isModified && currentIndex === -1) {
+    toolState.modifiedConfigs.push(versionKey)
+  } else if (!isModified && currentIndex > -1) {
+    toolState.modifiedConfigs.splice(currentIndex, 1)
+  }
+}
+
+function resetBaselineAfterSave() {
+  toolState.baselineConfig = { ...toolState.fullConfig }
+  toolState.baselineVersionOptions = [...toolState.versionOptions]
+  toolState.modifiedConfigs = []
+}
+function setupConfigs(
+  fullConfigObject: Record<string, ElementConfigType> | null,
+  treatAsBaseline: boolean = false
+) {
+  const providedKeys = fullConfigObject ? Object.keys(fullConfigObject) : []
+  const defaultData = getDefaultData()
+  const defaultVersionKeys = [
+    'Default preset 1',
+    'Default preset 2',
+    'Default preset 3'
+  ]
+
+  const newVersionOptions: string[] = []
+  const newFullConfig: Record<string, ElementConfigType> = {}
+
+  defaultVersionKeys.forEach((defaultKey, index) => {
+    const hasProvidedKey = providedKeys[index] !== undefined
+    const versionKey = hasProvidedKey ? providedKeys[index] : defaultKey
+
+    newVersionOptions.push(versionKey)
+
+    newFullConfig[versionKey] = {
+      ...defaultData,
+      ...(fullConfigObject?.[versionKey] || {})
+    }
+  })
+
+  toolState.versionOptions = newVersionOptions
+  toolState.fullConfig = newFullConfig
+  toolState.selectedVersion = newVersionOptions[0]
+  toolState.toolConfig = newFullConfig[toolState.selectedVersion]
+
+  if (treatAsBaseline) {
+    toolState.baselineConfig = { ...newFullConfig }
+    toolState.baselineVersionOptions = [...newVersionOptions]
+    toolState.modifiedConfigs = []
+  } else {
+    toolState.baselineConfig = { ...newFullConfig }
+    toolState.baselineVersionOptions = [...newVersionOptions]
+    toolState.modifiedConfigs = Object.keys(newFullConfig).filter((key) =>
+      isConfigModified(newFullConfig[key], toolState.baselineConfig[key])
+    )
+  }
+}
+
+function updateModificationTrackingWithVersionNames(versionKey: string) {
+  const configModified = isConfigModified(
+    toolState.fullConfig[versionKey],
+    toolState.baselineConfig[versionKey]
+  )
+
+  const versionIndex = toolState.versionOptions.indexOf(versionKey)
+  const baselineVersionName = toolState.baselineVersionOptions[versionIndex]
+  const versionNameChanged =
+    baselineVersionName && versionKey !== baselineVersionName
+
+  const isModified = configModified || Boolean(versionNameChanged)
+  updateModificationTracking(versionKey, isModified)
+}
+
 export const toolState = proxy({
   toolConfig: getDefaultData() as ElementConfigType,
   fullConfig: initializeFullConfigWithDefaults(),
+  defaultConfig: getDefaultData() as ElementConfigType,
+  baselineConfig: initializeFullConfigWithDefaults(),
+  modifiedConfigs: [] as string[],
 
-  selectedVersion: 'tab1',
+  selectedVersion: 'Default preset 1',
   versionOptions: [
-    { label: 'Default preset 1', value: 'tab1' },
-    { label: 'Default preset 2', value: 'tab2' },
-    { label: 'Default preset 3', value: 'tab3' }
-  ] as SelectOption[],
+    'Default preset 1',
+    'Default preset 2',
+    'Default preset 3'
+  ] as string[],
+  baselineVersionOptions: [
+    'Default preset 1',
+    'Default preset 2',
+    'Default preset 3'
+  ] as string[],
   modal: undefined as ModalType | undefined,
   resubmitActionType: 'save-success' as 'save-success' | 'script',
 
@@ -62,6 +151,8 @@ export const toolActions = {
       toolState.fullConfig[toolState.selectedVersion] = {
         ...toolState.toolConfig
       }
+
+      updateModificationTrackingWithVersionNames(toolState.selectedVersion)
     }
   },
 
@@ -69,36 +160,14 @@ export const toolActions = {
     toolState.fullConfig = fullConfig
   },
   setConfigs: (fullConfigObject?: Record<string, ElementConfigType> | null) => {
-    const providedKeys = fullConfigObject ? Object.keys(fullConfigObject) : []
-    const defaultData = getDefaultData()
-    const defaultVersionKeys = ['tab1', 'tab2', 'tab3']
-
-    const newVersionOptions: SelectOption[] = []
-    const newFullConfig: Record<string, ElementConfigType> = {}
-
-    defaultVersionKeys.forEach((defaultKey, index) => {
-      const hasProvidedKey = providedKeys[index] !== undefined
-      const versionKey = hasProvidedKey ? providedKeys[index] : defaultKey
-      const versionLabel = hasProvidedKey
-        ? providedKeys[index]
-        : `Default preset ${index + 1}`
-
-      newVersionOptions.push({
-        label: versionLabel,
-        value: versionKey
-      })
-
-      newFullConfig[versionKey] = {
-        ...defaultData,
-        ...(fullConfigObject?.[versionKey] || {})
-      }
-    })
-
-    toolState.versionOptions = newVersionOptions
-    toolState.fullConfig = newFullConfig
-    toolState.selectedVersion = newVersionOptions[0].value
-    toolState.toolConfig = newFullConfig[toolState.selectedVersion]
+    setupConfigs(fullConfigObject || null, false)
   },
+  loadSavedConfigs: (
+    fullConfigObject?: Record<string, ElementConfigType> | null
+  ) => {
+    setupConfigs(fullConfigObject || null, true)
+  },
+
   selectVersion: (selectedVersion: string) => {
     if (toolState.selectedVersion && toolState.toolConfig) {
       toolState.fullConfig[toolState.selectedVersion] = {
@@ -154,12 +223,11 @@ export const toolActions = {
     return `<script id="wmt-init-script" type="module" src="${toolState.scriptInitUrl}init.js?wa=${wa}&tag=${toolState.selectedVersion}&types=banner"></script>`
   },
   updateVersionLabel: (oldVersionKey: string, newVersionName: string) => {
-    const targetOption = toolState.versionOptions.find(
-      (option) => option.value === oldVersionKey
+    const targetIndex = toolState.versionOptions.findIndex(
+      (option) => option === oldVersionKey
     )
-    if (targetOption) {
-      targetOption.label = newVersionName
-      targetOption.value = newVersionName
+    if (targetIndex !== -1) {
+      toolState.versionOptions[targetIndex] = newVersionName
     }
 
     const existingConfig = toolState.fullConfig[oldVersionKey]
@@ -170,9 +238,22 @@ export const toolActions = {
     delete toolState.fullConfig[oldVersionKey]
     toolState.fullConfig[newVersionName] = existingConfig
 
+    if (toolState.baselineConfig[oldVersionKey]) {
+      toolState.baselineConfig[newVersionName] =
+        toolState.baselineConfig[oldVersionKey]
+      delete toolState.baselineConfig[oldVersionKey]
+    }
+
     if (toolState.selectedVersion === oldVersionKey) {
       toolState.selectedVersion = newVersionName
     }
+
+    const modifiedIndex = toolState.modifiedConfigs.indexOf(oldVersionKey)
+    if (modifiedIndex > -1) {
+      toolState.modifiedConfigs[modifiedIndex] = newVersionName
+    }
+
+    updateModificationTrackingWithVersionNames(newVersionName)
   },
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
@@ -263,6 +344,8 @@ export const toolActions = {
       toolState.toolConfig = configToSave
       toolState.modal = { type: callToActionType }
 
+      resetBaselineAfterSave()
+
       return { success: true, data }
     } catch (error) {
       console.error('Save error:', error)
@@ -291,6 +374,28 @@ export const toolActions = {
         type: 'save-error'
       }
     }
+  },
+  overrideWithFetchedConfigs: (
+    fetchedConfigs: Record<string, ElementConfigType>
+  ) => {
+    toolActions.loadSavedConfigs(fetchedConfigs)
+
+    toolActions.setHasCustomEdits(true)
+    toolActions.setWalletConnected(true)
+    toolActions.setModal(undefined)
+  },
+
+  resetWalletConnection: () => {
+    toolActions.setWalletConnected(false)
+    toolActions.setWalletAddress('')
+    toolActions.setHasCustomEdits(false)
+    toolActions.setModal(undefined)
+  },
+
+  keepLocalChanges: () => {
+    toolActions.setHasCustomEdits(false)
+    toolActions.setWalletConnected(true)
+    toolActions.setModal(undefined)
   }
 }
 
@@ -300,6 +405,13 @@ export function loadState(env: Env) {
   if (saved) {
     const parsed = JSON.parse(saved)
     Object.assign(toolState, parsed)
+
+    if (!toolState.baselineConfig) {
+      toolState.baselineConfig = { ...toolState.fullConfig }
+    }
+    if (!toolState.baselineVersionOptions) {
+      toolState.baselineVersionOptions = [...toolState.versionOptions]
+    }
   }
   toolState.scriptInitUrl = env.SCRIPT_EMBED_URL
 }

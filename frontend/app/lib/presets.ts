@@ -1,10 +1,14 @@
 import { tooltips } from './tooltips.js'
-import { CornerType, SlideAnimationType, PositionType } from './types.js'
+import {
+  CornerType,
+  SlideAnimationType,
+  PositionType,
+  type ElementConfigType
+} from './types.js'
 import bannerImg from '~/assets/images/banner_representation.svg'
 import widgetImg from '~/assets/images/widget_representation.svg'
 import buttonImg from '~/assets/images/button_representation.svg'
 import linkImg from '~/assets/images/link_representation.svg'
-// import exclusiveImg from '~/assets/images/exclusive_representation.svg'
 
 export const validConfigTypes = ['button', 'banner', 'widget']
 export const modalTypes = [
@@ -23,6 +27,7 @@ export type ModalType = {
   type: (typeof modalTypes)[number]
   grantRedirectIntent?: string
   grantRedirectURI?: string
+  fetchedConfigs?: Record<string, ElementConfigType>
 }
 
 export const textColorPresets = ['#ffffff', '#000000']

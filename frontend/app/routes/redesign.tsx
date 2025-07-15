@@ -317,13 +317,18 @@ export default function Redesign() {
               <OverridePresetModal
                 isOpen={true}
                 onClose={handleCloseModal}
-                onOverride={(presetId) => {
-                  console.log('Override preset:', presetId)
-                  handleCloseModal()
+                onOverride={() => {
+                  if (snap.modal?.fetchedConfigs) {
+                    toolActions.overrideWithFetchedConfigs(
+                      snap.modal.fetchedConfigs
+                    )
+                  }
                 }}
                 onAddWalletAddress={() => {
-                  console.log('Add wallet address clicked')
-                  handleCloseModal()
+                  toolActions.resetWalletConnection()
+                }}
+                onKeepLocal={() => {
+                  toolActions.keepLocalChanges()
                 }}
               />
             </div>

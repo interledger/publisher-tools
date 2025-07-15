@@ -1,20 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { SVGClose } from '~/assets/svg'
 
-interface PresetOption {
-  id: string
-  name: string
-  isSelected?: boolean
-}
-
 interface OverridePresetModalProps {
   isOpen?: boolean
   onClose?: () => void
-  onOverride?: (selectedPresetId: string) => void
+  onOverride?: () => void
   onAddWalletAddress?: () => void
-  presets?: PresetOption[]
+  onKeepLocal?: () => void
   className?: string
 }
 
@@ -23,24 +17,16 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   onClose,
   onOverride,
   onAddWalletAddress,
-  presets = [
-    { id: 'radu1', name: 'Radu 1', isSelected: true },
-    { id: 'nice-banner', name: 'Nice banner', isSelected: false },
-    { id: 'preset3', name: 'Preset 3 (no edits)', isSelected: false }
-  ],
+  onKeepLocal,
   className = ''
 }) => {
-  const [selectedPresetId, setSelectedPresetId] = useState<string>(
-    presets.find((p) => p.isSelected)?.id || presets[0]?.id || ''
-  )
-
   if (!isOpen) {
     return null
   }
 
   const handleOverride = () => {
-    if (selectedPresetId && onOverride) {
-      onOverride(selectedPresetId)
+    if (onOverride) {
+      onOverride()
     }
   }
 
@@ -70,51 +56,33 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
       <div className="flex flex-row items-center justify-center px-0 w-full">
         <div className="text-center max-w-[394px]">
           <p className="text-base leading-md font-normal text-text-primary">
-            We found edits correlated to this wallet address.
+            We found saved configurations for this wallet address, but you have
+            local modifications that haven&apos;t been saved.
           </p>
         </div>
       </div>
 
-      <div className="text-center">
-        <p className="text-base leading-md font-normal text-text-primary">
-          Choose preset to override
-        </p>
-      </div>
-
-      <div className="w-full px-4">
-        <div className="flex flex-col gap-3">
-          {presets.map((preset) => (
-            <div key={preset.id} className="flex flex-row items-center gap-2">
-              <button
-                onClick={() => setSelectedPresetId(preset.id)}
-                className="flex flex-row items-center justify-start p-1 rounded-full relative w-6 h-6"
-                aria-label={`Select ${preset.name}`}
-              >
-                <div className="relative w-4 h-4">
-                  {selectedPresetId === preset.id ? (
-                    <div className="w-full h-full rounded-full border border-[#5b5380] flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-[#5b5380]" />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full rounded-full border border-[#8075b3]" />
-                  )}
-                </div>
-              </button>
-              <div className="text-sm leading-md font-bold text-text-primary whitespace-nowrap">
-                {preset.name}
-              </div>
-            </div>
-          ))}
+      <div className="w-full px-4 space-y-3">
+        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">
+            ⚠️ Warning: Loading the saved configurations will replace your
+            current unsaved changes.
+          </p>
         </div>
-      </div>
-
-      <div className="w-full px-4">
         <ToolsPrimaryButton
           className="w-full h-12 rounded-lg bg-[#56b7b5] hover:bg-[#4a9d9b] text-white"
           onClick={handleOverride}
         >
-          Override and save
+          Load saved configuration
         </ToolsPrimaryButton>
+        {onKeepLocal && (
+          <ToolsSecondaryButton
+            className="w-full h-12 rounded-lg border border-[#8075b3] text-[#8075b3] hover:border-[#6d5a9e] hover:text-[#6d5a9e]"
+            onClick={onKeepLocal}
+          >
+            Keep my local changes
+          </ToolsSecondaryButton>
+        )}
       </div>
 
       <div className="flex flex-row items-center justify-center px-0 w-full">
