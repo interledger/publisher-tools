@@ -60,8 +60,7 @@ function Revshare() {
   const { shares, setShares } = useShares()
   const totalWeight = shares.reduce((a, b) => a + Number(b.weight), 0)
 
-  const sharesPP =
-    sharesToPaymentPointer(shares) || 'https://paymentpointer.example/alice'
+  const sharesPP = sharesToPaymentPointer(shares) || ''
   const addShare = () => {
     setShares([...shares, newShare()])
   }
@@ -212,22 +211,24 @@ function Revshare() {
               </div>
               <hr />
               {/* Payment Pointer section */}
-              <div className="flex h-[40px] w-full p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-                <CodeBlock
-                  link={sharesPP}
-                  className="text-sm font-sans p-sm overflow-hidden leading-normal font-normal whitespace-nowrap"
-                />
-                <button
-                  onClick={handleCopyClick}
-                  aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
-                >
-                  {isCopied ? (
-                    <SVGCheckIcon className="w-6 h-6" />
-                  ) : (
-                    <SVGCopyIcon className="w-6 h-6" />
-                  )}
-                </button>
-              </div>
+              {sharesPP && (
+                <div className="flex h-[40px] w-full p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+                  <CodeBlock
+                    link={sharesPP}
+                    className="text-sm font-sans p-sm overflow-hidden leading-normal font-normal whitespace-nowrap"
+                  />
+                  <button
+                    onClick={handleCopyClick}
+                    aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
+                  >
+                    {isCopied ? (
+                      <SVGCheckIcon className="w-6 h-6" />
+                    ) : (
+                      <SVGCopyIcon className="w-6 h-6" />
+                    )}
+                  </button>
+                </div>
+              )}
               {/* TODO - Action buttons section */}
               <div className="flex justify-end gap-4 mt-4">
                 <ToolsSecondaryButton
@@ -260,7 +261,7 @@ function Revshare() {
             </div>
           </div>
           {/* COMPLETE - Information section */}
-          <div className="flex flex-col justify-start gap-4 px-4 mt-md">
+          <div className="flex flex-col justify-start gap-md mt-md">
             <Heading5>Information</Heading5>
             <div>
               <p className="text-sm leading-sm text-field-helpertext-default">
