@@ -5,8 +5,8 @@ import socialSlackIcon from '~/assets/images/icons/social-slack.svg?url'
 import socialInstagramIcon from '~/assets/images/icons/social-instagram.svg?url'
 import socialGitGubIcon from '~/assets/images/icons/social-github.svg?url'
 import socialYoutubeIcon from '~/assets/images/icons/social-youtube.svg?url'
-import { SVGFooterDivider } from '~/assets/svg'
-import { BodyStandardLink } from './BodyStandardLink'
+import { SVGFooterDivider } from '@/assets'
+import { BodyStandardLink } from '@/components'
 
 const socialLinks = [
   {

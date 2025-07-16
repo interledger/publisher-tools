@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from '@remix-run/react'
-import { PillTag } from './PillTag'
+import { PillTag } from '@/components'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 
 export type ToolCardProps = {

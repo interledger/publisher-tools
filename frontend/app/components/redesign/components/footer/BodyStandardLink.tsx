@@ -1,5 +1,5 @@
 import React from 'react'
-import { BodyStandard } from '../../Typography'
+import { BodyStandard } from '@/typography'
 
 interface BodyStandardLinkProps {
   href: string
