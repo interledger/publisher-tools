@@ -1,19 +1,19 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from 'react'
 import { useContext, useState, createContext, useEffect } from 'react'
-import type { SharesState, Share } from '../lib/revshare';
+import type { SharesState, Share } from '../lib/revshare'
 import { validateShares } from '../lib/revshare'
 
 const SHARES_KEY = 'prob-revshare-shares'
-
 
 interface SharesContextState {
   shares: SharesState
   setShares: (shares: SharesState) => void
 }
 
-export const SharesContext = createContext<SharesContextState | undefined>(undefined)
+export const SharesContext = createContext<SharesContextState | undefined>(
+  undefined
+)
 SharesContext.displayName = 'SharesContext'
-
 
 export function newShare(): Share {
   return {
@@ -62,11 +62,8 @@ export function SharesProvider({ children }: SharesProviderProps) {
 
   const value: SharesContextState = { shares, setShares }
 
-
   return (
-    <SharesContext.Provider value={value}>
-      {children}
-    </SharesContext.Provider>
+    <SharesContext.Provider value={value}>{children}</SharesContext.Provider>
   )
 }
 
