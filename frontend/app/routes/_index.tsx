@@ -141,7 +141,7 @@ export default function Index() {
                 tags={tool.tags}
                 icon={tool.icon}
                 to={tool.link || ''}
-                target={'_blank'}
+                target={tool.link ? undefined : '_blank'}
               >
                 {tool.description}
               </ToolCard>
