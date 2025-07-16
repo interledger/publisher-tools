@@ -71,6 +71,7 @@ export default {
   safelist: [
     'text-style-h1',
     'text-style-h2',
+    'text-style-h2-semibold',
     'text-style-h3',
     'text-style-h4',
     'text-style-h5',
@@ -107,6 +108,7 @@ export default {
         'text-disabled': palettes['silver-300'],
         'text-error': palettes['red-600'],
         'text-success': palettes['green-600'],
+        'text-buttons-default': palettes['purple-300'],
 
         'field-border': palettes['silver-300'],
         'field-border-hover': palettes['silver-400'],
@@ -114,6 +116,7 @@ export default {
         'field-border-disabled': palettes['silver-200'],
         'field-bg-disabled': palettes['silver-100'],
         'field-border-error': palettes['red-600'],
+        'field-helpertext-default': palettes['silver-800'],
 
         'landing-footer-bg': palettes['mint-100'],
         'landing-button-bg': palettes['black'],
@@ -121,6 +124,10 @@ export default {
         'landing-button-border': palettes['silver-800'],
         'landing-button-border-hover': palettes['black'],
         'landing-pill-border': palettes['blue-300'],
+        'landing-content': palettes['silver-800'],
+
+        'footer-bg': palettes['mint-100'],
+        'footer-content': palettes['silver-800'],
 
         'nav-link-default': palettes['purple-300'],
         'nav-link-hover': palettes['purple-600'],

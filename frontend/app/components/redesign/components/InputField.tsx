@@ -23,12 +23,12 @@ export function InputField({
       )}
       <input
         className={cx(
-          'w-full px-sm py-xs',
-          'border rounded-sm',
+          'w-full px-sm py-xs rounded-sm',
           'text-text-primary placeholder:text-text-placeholder',
-          'hover:border-field-border-hover',
+          'border hover:border-field-border-hover',
           'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
           'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
+          'placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
           error ? 'border-field-border-error' : 'border-field-border',
           className
         )}

@@ -86,7 +86,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
 
     return (
       <div ref={ref} className={cx('space-y-3xs', className)}>
-        {/* Label */}
         {label && (
           <label
             className={cx(
@@ -103,7 +102,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
           </label>
         )}
 
-        {/* Custom dropdown */}
         <div ref={dropdownRef} className="relative">
           <input
             type="hidden"
@@ -112,7 +110,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
             value={selectedOption?.value || ''}
           />
 
-          {/* Dropdown trigger button */}
           <button
             type="button"
             onClick={toggleDropdown}
@@ -146,7 +143,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
                 />
               </span>
 
-              {/* Selected value or placeholder */}
               <span
                 className={cx(
                   'text-base leading-md',
@@ -161,7 +157,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
               </span>
             </div>
 
-            {/* Down arrow icon */}
             <span
               className={cx(
                 'flex items-center justify-center transition-transform duration-200',
@@ -177,7 +172,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
             </span>
           </button>
 
-          {/* dropdown options */}
           {isOpen && (
             <div className="absolute z-10 mt-1 w-full bg-white border border-silver-200 rounded-sm shadow-sm">
               <ul className="p-xs" role="listbox">
@@ -206,7 +200,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
           )}
         </div>
 
-        {/* error message or help text */}
         {error && <p className="text-xs text-text-error">{error}</p>}
         {helpText && !error && (
           <p className="text-xs text-silver-800">{helpText}</p>

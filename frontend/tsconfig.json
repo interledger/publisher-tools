@@ -19,7 +19,10 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "@/components": ["./app/components/redesign/components"],
+      "@/typography": ["./app/components/redesign/Typography.tsx"],
+      "@/assets": ["./app/assets/svg.tsx"]
     },
     "types": [
       "./worker-configuration.d.ts",
