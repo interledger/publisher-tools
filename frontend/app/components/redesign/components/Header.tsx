@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { NavLink as RemixNavLink } from '@remix-run/react'
-// import { GhostButton } from './index.js'
 import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import { SVGHamburgerIcon } from '@/assets'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
