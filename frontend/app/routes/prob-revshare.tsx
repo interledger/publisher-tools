@@ -20,7 +20,8 @@ import {
   changeList,
   dropIndex,
   weightFromPercent,
-  trimDecimal
+  trimDecimal,
+  tagOrPointerToShares
 } from '../lib/revshare'
 
 import { useCopyToClipboard } from '~/components/redesign/hooks/useCopyToClipboard'
@@ -44,7 +45,6 @@ export function Card({
     <div
       className={`
       bg-interface-bg-container 
-      border border-interface-edge-container
       rounded-sm
       p-md
       gap-md
@@ -57,8 +57,8 @@ export function Card({
   )
 }
 function Revshare() {
-  const [isLoading, setIsLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [importTag, setImportTag] = useState('')
 
   const { shares, setShares } = useShares()
   const totalWeight = shares.reduce((a, b) => a + Number(b.weight), 0)
@@ -67,18 +67,16 @@ function Revshare() {
   const addShare = () => {
     setShares([...shares, newShare()])
   }
-  const handleImport = async () => {
-    setIsLoading(true)
+  const handleImportConfirm = () => {
     try {
-      // Simulate an API call to import revshare data
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log('Import successful')
-    } catch (error) {
-      console.error('Import failed', error)
-    } finally {
-      setIsLoading(false)
+      const shares = tagOrPointerToShares(importTag) || []
+      setShares(shares)
+      setIsModalOpen(false)
+    } catch {
+      return 'Invalid revshare tag.'
     }
   }
+
   const { isCopied, handleCopyClick } = useCopyToClipboard(sharesPP)
 
   return (
@@ -212,7 +210,7 @@ function Revshare() {
               })}
             </div>
             <hr />
-            {/* Payment Pointer section */}
+            {/* COMPLETE - Payment Pointer section */}
             {sharesPP && (
               <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
                 <CodeBlock
@@ -231,23 +229,11 @@ function Revshare() {
                 </button>
               </div>
             )}
-            {/* TODO - Action buttons section */}
-            <div className="flex justify-end gap-sm">
-              <ToolsSecondaryButton
-                className="xl:w-[143px]"
-                disabled={isLoading}
-                onClick={() => setIsModalOpen(true)}
-              >
-                <div className="flex items-center justify-center gap-xs">
-                  {isLoading && <SVGSpinner />}
-                  <span>{isLoading ? 'Connecting...' : 'Import'}</span>
-                </div>
+            {/* COMPLETE - Action buttons section */}
+            <div className="flex justify-end gap-xs">
+              <ToolsSecondaryButton onClick={() => setIsModalOpen(true)}>
+                Import
               </ToolsSecondaryButton>
-
-              {isModalOpen && (
-                <ImportTagModal onClose={() => setIsModalOpen(false)} />
-              )}
-
               <ToolsPrimaryButton
                 icon="share"
                 iconPosition="right"
@@ -259,7 +245,6 @@ function Revshare() {
             </div>
           </Card>
         </div>
-
         {/* COMPLETE - Chart section */}
         <div className="my-lg lg:my-md">
           <RevshareChart shares={shares} />
@@ -288,7 +273,7 @@ function Revshare() {
               >
                 Set up probabilistic revenue sharing
               </a>
-              &nbsp; tutorial.
+              &nbsp;tutorial.
             </p>
           </div>
           <div>
@@ -301,14 +286,23 @@ function Revshare() {
               Share to add more rows. Assign a weight to each recipient. If
               you&apos;d rather assign sharing by percentage, enter at least two
               recipients into the table. The Percent field will open for edits.
-              When you&apos;re finished, add the generated monetization{' '}
-              <a>link</a> tag to your site. The link contains a unique URL
-              hosted on&nbsp;
+              When you&apos;re finished, add the generated monetization link tag
+              to your site. The link contains a unique URL hosted on&nbsp;
               <a>https://webmonetization.org/api/revshare/pay/</a>.
             </p>
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+        <ImportTagModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleImportConfirm}
+          tag={importTag}
+          setTag={setImportTag}
+        />
+      )}
     </div>
   )
 }
