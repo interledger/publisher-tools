@@ -6,15 +6,15 @@ export default function LinkTag() {
       <div className="w-full max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
         <HeadingCore title="Link Tag Generator">
           Use the Link Tag Generator to generate a monetization &lt;link&gt;
-          element for your HTML documents. Just enter your{' '}
+          element for your HTML documents. Just enter your&nbsp;
           <a href="https://paymentpointers.org/" className="underline">
             payment pointer
           </a>
-          or
+          &nbsp;or&nbsp;
           <a href="https://webmonetization.org/wallets/" className="underline">
             wallet address
           </a>
-          into the field and click Generate.
+          &nbsp;into the field and click Generate.
         </HeadingCore>
       </div>
       <div className="flex flex-col items-center gap-md">
@@ -31,7 +31,7 @@ export default function LinkTag() {
             </span>
             section of your website.
             <br />
-            Visit our
+            Visit our&nbsp;
             <a
               className="text-style-body-standard !text-text-buttons-default underline"
               href="https://webmonetization.org/docs/"
@@ -40,7 +40,7 @@ export default function LinkTag() {
             >
               docs
             </a>
-            to learn more about Web Monetization.
+            &nbsp;to learn more about Web Monetization.
           </p>
         </div>
       </div>

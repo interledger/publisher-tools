@@ -264,7 +264,6 @@ export const encodeAndCompressParameters = async (params: string) => {
     .pipeThrough(new CompressionStream('gzip'))
     .getReader()
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const { done, value } = await reader.read()
     if (done) {
