@@ -1,28 +1,28 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react'
 
 export const useCopyToClipboard = (link: string) => {
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false)
 
   useEffect(() => {
     if (isCopied) {
       const timer = setTimeout(() => {
-        setIsCopied(false);
-      }, 2000);
+        setIsCopied(false)
+      }, 2000)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [isCopied]);
+  }, [isCopied])
 
   const handleCopyClick = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(
         `<link rel="monetization" href="${link}" />`
-      );
-      setIsCopied(true);
+      )
+      setIsCopied(true)
     } catch (err) {
-      console.error('Failed to copy text:', err);
+      console.error('Failed to copy text:', err)
     }
-  }, [link]);
+  }, [link])
 
-  return { isCopied, handleCopyClick };
-};
+  return { isCopied, handleCopyClick }
+}
