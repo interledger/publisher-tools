@@ -1,7 +1,5 @@
-import GhostButton from '../GhostButton'
-import { NavDropdown } from './NavDropdown'
-import { NavLink } from './NavigationLink'
-import { SVGCloseIcon } from '~/assets/svg'
+import { GhostButton, NavDropdown, NavLink } from '@/components'
+import { SVGCloseIcon } from '@/assets'
 
 export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   return (
