@@ -1,6 +1,7 @@
 import { html, css, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { WidgetController, Amount } from './widget.js'
+import type { Amount } from './widget/types'
+import type { WidgetController } from './widget/controller'
 import type { PaymentQuoteInput } from 'publisher-tools-api'
 import type {
   Grant,
