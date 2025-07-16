@@ -99,10 +99,10 @@ export const LinkTagGenerator = () => {
       </div>
 
       {showCodeBox && linkTag && (
-        <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+        <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
           <CodeBlock
             link={linkTag}
-            className="grow shrink font-sans text-sm font-normal leading-normal whitespace-pre-wrap min-w-0 overflow-x-auto"
+            className="flex-1 text-sm leading-normal whitespace-nowrap min-w-0 overflow-x-auto"
           />
           <button
             onClick={handleCopyClick}
