@@ -3,11 +3,14 @@ import '../interaction.js'
 
 import { LitElement, html } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import defaultTriggerIcon from '../assets/wm_logo_animated.svg';
 import { WidgetController } from './controller';
 import type { WidgetConfig, WalletAddress } from './types';
 import { widgetStyles } from './styles.js';
 
+import defaultTriggerIcon from '../assets/wm_logo_animated.svg';
+import closeButtonIcon from '../assets/wm_close_button.svg';
+import walletTotemIcon from '../assets/wm_wallet_totem.svg';
+import interledgerLogoIcon from '../assets/interledger_logo.svg';
 
 export class PaymentWidget extends LitElement {
   private configController = new WidgetController(this);
@@ -118,17 +121,28 @@ export class PaymentWidget extends LitElement {
 
   private renderHomeView() {
     return html`
-      <div class="payment-content">
+      <div class="widget-header-container">
         <div class="widget-header">
-          <h5>${this.config.widgetTitleText || 'Support Me'}</h5>
-          <p>
-            ${this.config.widgetDescriptionText ||
-      'Enter your wallet address to make a payment'}
-          </p>
+          <img src=${walletTotemIcon} alt="header wallet totem" />
+          <p>${this.config.widgetTitleText || 'Support Me'}</p>
         </div>
+        <img class="close-button" src=${closeButtonIcon} alt="close widget" />
+      </div>
+
+      <div class="widget-body">
+        <p>
+          ${this.config.widgetDescriptionText || 'Enter your wallet address to make a payment'}
+        </p>
+        
         <form class="payment-form" @submit=${this.handleSubmit}>
-          <div class="form-group">
-            <label class="form-label">Pay From</label>
+          <div class="form-wallet-address">
+            <label class="form-label">
+              Pay from
+              <label style="color: var(--Tools-Colors-Text-paragraph-error, #E51D25);">
+              *
+              </label>
+            </label>
+
             <input
               class="form-input"
               type="text"
@@ -142,10 +156,15 @@ export class PaymentWidget extends LitElement {
             ${this.config.action || 'Support Me'}
           </button>
         </form>
+      </div>
 
+      <div class="widget-footer">
+        <div class="delimiter"></div>
         <div class="powered-by">
           Powered by
-          <a href="https://webmonetization.org" target="_blank">Interledger</a>
+          <a href="https://webmonetization.org" target="_blank">
+            <img src=${interledgerLogoIcon} />
+          </a>
         </div>
       </div>
     `
