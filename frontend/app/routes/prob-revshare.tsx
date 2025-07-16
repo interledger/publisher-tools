@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
-import { HeadingCore } from '../components/redesign/components/HeadingCore'
 import { Heading5 } from '../components/redesign/Typography'
 import { SVGSpinner, SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
-import { ToolsPrimaryButton } from '../components/redesign/components/ToolsPrimaryButton'
-import { ToolsSecondaryButton } from '../components/redesign/components/ToolsSecondaryButton'
+import {
+  HeadingCore,
+  CodeBlock,
+  ToolsPrimaryButton,
+  ToolsSecondaryButton,
+  ImportTagModal
+} from '@/components'
 import {
   ShareInput,
   ShareInputMobile
@@ -18,7 +22,7 @@ import {
   weightFromPercent,
   trimDecimal
 } from '../lib/revshare'
-import { CodeBlock } from '~/components/redesign/components'
+
 import { useCopyToClipboard } from '~/components/redesign/hooks/useCopyToClipboard'
 
 export default function RevsharePageWrapper() {
@@ -54,7 +58,7 @@ export function Card({
 }
 function Revshare() {
   const [isLoading, setIsLoading] = useState(false)
-  //const [isLoadingScript, setIsLoadingScript] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const { shares, setShares } = useShares()
   const totalWeight = shares.reduce((a, b) => a + Number(b.weight), 0)
@@ -232,13 +236,17 @@ function Revshare() {
               <ToolsSecondaryButton
                 className="xl:w-[143px]"
                 disabled={isLoading}
-                onClick={handleImport}
+                onClick={() => setIsModalOpen(true)}
               >
                 <div className="flex items-center justify-center gap-xs">
                   {isLoading && <SVGSpinner />}
                   <span>{isLoading ? 'Connecting...' : 'Import'}</span>
                 </div>
               </ToolsSecondaryButton>
+
+              {isModalOpen && (
+                <ImportTagModal onClose={() => setIsModalOpen(false)} />
+              )}
 
               <ToolsPrimaryButton
                 icon="share"
