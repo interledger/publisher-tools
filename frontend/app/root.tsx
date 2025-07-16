@@ -16,9 +16,9 @@ import {
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import stylesheet from '~/tailwind.css?url'
-import { Button, Footer, Header, Snackbar } from './components/index.js'
+import { Button, Snackbar } from './components/index.js'
+import { Header, Footer } from '@/components'
 import { XCircle } from './components/icons.js'
-import bgTileSvg from '~/assets/images/bg-tile.svg?url'
 import faviconPng from '~/assets/images/favicon.png?url'
 import faviconIco from '~/assets/images/favicon.ico?url'
 
@@ -51,19 +51,12 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-screen">
-        <main className="h-auto min-h-full flex flex-col justify-between">
-          <div
-            style={{
-              backgroundImage: `url(${bgTileSvg})`
-            }}
-            className={'h-full flex flex-col bg-[auto_25em]'}
-          >
-            <Header />
-            <Outlet />
-          </div>
-          <Footer />
+      <body className="h-screen bg-interface-bg-main flex flex-col">
+        <Header />
+        <main className="flex-grow flex flex-col">
+          <Outlet />
         </main>
+        <Footer />
         <Snackbar
           id="snackbar"
           onClose={() => setSnackbarOpen(false)}
