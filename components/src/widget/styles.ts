@@ -1,169 +1,258 @@
 import { css } from 'lit';
 
-export const widgetStyles = css`
-    :host {
-      display: block;
-      font-family: var(--wm-font-family, system-ui, sans-serif);
-      --primary-color: var(--wm-primary-color, #10b981);
-      --background-color: var(--wm-background-color, #ffffff);
-      --text-color: var(--wm-text-color, #000000);
-    }
+const toggleButtonStyles = css`
+  .trigger {
+    cursor: pointer;
+    background: var(--wm-widget-trigger-bg-color, #f3f4f6);
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    border: transparent;
+    border-radius: 50%;
+  }
 
-    .wm_widget {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
+  .trigger img {
+    width: 2rem;
+  }
 
-    .content {
-      display: flex;
-      flex-direction: column;
-      background: var(--background-color);
-      width: 24rem;
-      height: 37rem;
-      overflow: hidden;
-      border: 1px solid #f3f4f6;
-      transition: all 1s ease-in-out;
-      border-radius: 6px;
-      padding: 0.25rem;
-      outline: none;
-    }
+`
 
-    .content:focus {
-      outline: none;
-    }
+const contentStyles = css`
+  :host {
+    display: block;
+    font-family: var(--wm-font-family, system-ui, sans-serif);
+    --primary-color: var(--wm-primary-color, #10b981);
+    --background-color: var(--wm-background-color, #ffffff);
+    --text-color: var(--wm-text-color, #000000);
+  }
 
-    .content.open {
-      max-width: 24rem;
-      max-height: 37rem;
-      opacity: 1;
-    }
+  .wm_widget {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
 
-    .content.closed {
-      max-width: 0;
-      max-height: 0;
-      opacity: 0;
-    }
+  .content {
+    display: flex;
+    flex-direction: column;
+    background: var(--background-color);
+    width: 24rem;
+    height: 37rem;
+    overflow: hidden;
+    padding-bottom: 32px;
+    align-items: center;
+    transition: all 1s ease-in-out;
+    border-radius: 8px;
+    outline: none;
+  }
 
-    .widget-header {
-      display: flex;
-      flex-direction: column;
-      height: auto;
-      padding: 16px;
-    }
+  .content:focus {
+    outline: none;
+  }
 
-    .widget-header h5 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-color);
-    }
+  .content.open {
+    max-width: 24rem;
+    max-height: 37rem;
+    opacity: 1;
+  }
 
-    .widget-header p {
-      margin: 0;
-      max-height: 8rem;
-      overflow: hidden;
-      color: var(--text-color);
-      opacity: 0.8;
-    }
+  .content.closed {
+    max-width: 0;
+    max-height: 0;
+    opacity: 0;
+  }
+`
 
-    .payment-content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }
+const headerStyles = css`
+  .widget-header-container {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    height: 75px;
+    padding: 16px 32px;
+    justify-content: space-between;
+    align-items: center;
+    background:  #56B7B5;
+  }
 
-    .payment-form {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-    .form-group {
-      margin-bottom: 16px;
-    }
+  .widget-header img {
+    width: 39px;
+    height: 32px;
+    aspect-ratio: 39/32;
+  }
 
-    .form-label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: var(--text-color);
-      font-size: 0.875rem;
-    }
+  .widget-header p {
+    color: #FFF;
 
-    .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 16px;
-      box-sizing: border-box;
-      transition: border-color 0.2s ease;
-    }
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 26px;
+  }
 
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-    }
+  .close-button {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+  }
+`
 
-    .form-input:read-only {
-      background-color: #f9fafb;
-      color: #6b7280;
-    }
+const bodySyles = css`
+  .widget-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0px var(--Paddings-2xl, 32px);
+    margin-top: var(--Spacings-lg, 24px);
+    flex: 1 1 auto;
+  }
 
-    .support-button {
-      width: 100%;
-      padding: 16px;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: auto;
-    }
+  .widget-body p {
+    align-self: stretch;
 
-    .support-button:hover:not(:disabled) {
-      background: #059669;
-    }
+    color: var(--Tools-Colors-Text-paragraph-standard, #363636);
 
-    .support-button:disabled {
-      background: #d1d5db;
-      cursor: not-allowed;
-    }
+    font-family: var(--Font-Family-Inter, Inter);
+    font-size: var(--Font-Size-text-sm, 14px);
+    font-style: normal;
+    font-weight: var(--Font-Weight-Regular, 400);
+    line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  }
+`
 
-    .trigger {
-      cursor: pointer;
-      background: var(--wm-widget-trigger-bg-color, #f3f4f6);
-      width: 3.5rem;
-      height: 3.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1rem;
-      border: transparent;
-      border-radius: 50%;
-    }
+const formStyles = css`
+  .payment-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
 
-    .trigger img {
-      width: 2rem;
-    }
+  .payment-form {
+    padding: 16px 0px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 
-    .powered-by {
-      text-align: center;
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 16px;
-      padding: 0 16px;
-    }
+  .form-wallet-address {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--Spacings-2xs, 4px);
+    align-self: stretch;
+  }
 
-    .powered-by a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-  `;
+  .form-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--Tools-Colors-Text-fields-helpertext-default, #676767);
+
+    font-family: var(--Font-Family-Inter, Inter);
+    font-size: var(--Font-Size-text-xs, 12px);
+    font-style: normal;
+    font-weight: var(--Font-Weight-Regular, 400);
+    line-height: var(--Font-Line-Height-xs, 16px); /* 133.333% */
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  }
+
+  .form-input:read-only {
+    background-color: #f9fafb;
+    color: #6b7280;
+  }
+
+  .support-button {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: auto;
+  }
+
+  .support-button:hover:not(:disabled) {
+    background: #059669;
+  }
+
+  .support-button:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+  }
+`
+
+const footerStyles = css`
+  .widget-footer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: auto;
+    padding: 0 16px;
+    align-items: center;
+  }
+
+  .widget-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  .widget-footer .delimiter {
+    background: var(--Colors-silver-200, #DFDFDF);
+
+    width: 276px;
+    height: 1px;
+
+    margin: 24px 0px 24px 0px;
+  }
+
+  .widget-footer .powered-by {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+`
+
+export const widgetStyles = [
+  toggleButtonStyles,
+  contentStyles,
+  headerStyles,
+  bodySyles,
+  formStyles,
+  footerStyles
+];
