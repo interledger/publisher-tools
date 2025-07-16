@@ -36,7 +36,7 @@ export default function LinkTag() {
             </span>
             section of your website.
             <br />
-            Visit our
+            Visit our&nbsp;
             <a
               className="text-style-body-standard !text-text-buttons-default underline"
               href="https://webmonetization.org/docs/"
@@ -45,7 +45,7 @@ export default function LinkTag() {
             >
               docs
             </a>
-            to learn more about Web Monetization.
+            &nbsp;to learn more about Web Monetization.
           </p>
         </div>
       </div>

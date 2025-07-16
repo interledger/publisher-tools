@@ -37,7 +37,7 @@ export function ShareInput({
     <tr key={index}>
       <td className="p-2 w-64">
         <InputField
-          placeholder="Type here..."
+          placeholder="Fill in name"
           value={name}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
             onChangeName(ev.target.value)
@@ -46,7 +46,7 @@ export function ShareInput({
       </td>
       <td className="p-2">
         <InputField
-          placeholder="e.g. $wallet.com/myWallet or https://wallet.com/myWallet"
+          placeholder="Wallet address/Payment pointer"
           value={pointer}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
             onChangePointer(ev.target.value)
@@ -103,7 +103,7 @@ export function ShareInputMobile({
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4" data-key={index}>
       <div className="mb-2 flex flex-row justify-between">
-        <span className="font-normal">Revshare #{index} </span>
+        <span className="font-normal">Revshare #{index + 1} </span>
 
         <ToolsSecondaryButton onClick={onRemove} className="!border-none !p-0">
           <SVGDeleteScript width={32} height={32} />
@@ -112,7 +112,7 @@ export function ShareInputMobile({
 
       <div className="mb-2">
         <InputField
-          placeholder="Type here..."
+          placeholder="Fill in name"
           value={name}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
             onChangeName(ev.target.value)
@@ -121,7 +121,7 @@ export function ShareInputMobile({
       </div>
       <div className="mb-2">
         <InputField
-          placeholder="e.g. $wallet.com/myWallet or https://wallet.com/myWallet"
+          placeholder="Wallet address/Payment pointer"
           value={pointer}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
             onChangePointer(ev.target.value)
