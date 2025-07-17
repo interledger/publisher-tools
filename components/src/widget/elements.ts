@@ -84,7 +84,7 @@ export class PaymentWidget extends LitElement {
   private toggleWidget() {
     this.isOpen = !this.isOpen
     this.requestUpdate()
-
+    
     this.dispatchEvent(
       new CustomEvent('widget-toggle', {
         detail: { isOpen: this.isOpen },
@@ -92,6 +92,13 @@ export class PaymentWidget extends LitElement {
         composed: true
       })
     )
+  }
+
+  // Always have 'home' screen when opening the widget
+  updated(changedProps: Map<string, unknown>) {
+    if (changedProps.has('isOpen') && this.isOpen) {
+      this.currentView = 'home';
+    }
   }
 
   private handleInteractionCancelled() {
