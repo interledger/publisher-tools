@@ -1,8 +1,8 @@
 import { PaymentWidget } from '@tools/components/widget'
-import { PaymentBanner } from '@tools/components/banner'
+import { Banner } from '@tools/components/banner'
 
 customElements.define('wm-payment-widget', PaymentWidget)
-customElements.define('wm-banner', PaymentBanner)
+customElements.define('wm-banner', Banner)
 
 declare global {
   interface HTMLElementTagNameMap {

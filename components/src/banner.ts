@@ -8,24 +8,58 @@ import {
 import { property, state } from 'lit/decorators.js'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
+import { getWebMonetizationLinkHref } from './utils.js'
+
+const DEFAULT_BANNER_TITLE = 'How to support?'
+const DEFAULT_BANNER_DESCRIPTION =
+  'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
+const DEFAULT_BANNER_LINK_TEXT =
+  'Install the Web Monetization browser extension'
+
+type BorderRadiusKey = 'Light' | 'Pill' | 'None'
+const BORDER_RADIUS_VALUES: Record<BorderRadiusKey, string> = {
+  Light: '0.375rem',
+  Pill: '1rem',
+  None: '0'
+}
+
+type FontFamilyKey =
+  | 'Cookie'
+  | 'Roboto'
+  | 'Open Sans'
+  | 'Titillium Web'
+  | 'Arial'
+  | 'Inherit'
+const FONT_FAMILY_URLS: Record<
+  Exclude<FontFamilyKey, 'Arial' | 'Inherit'>,
+  string
+> = {
+  'Open Sans':
+    'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap',
+  'Cookie': 'https://fonts.googleapis.com/css2?family=Cookie&display=swap',
+  'Roboto':
+    'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
+  'Titillium Web':
+    'https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap'
+}
 
 export interface BannerConfig {
   bannerTitleText?: string
   bannerDescriptionText?: string
-  bannerBorderRadius?: string
+  bannerBorderRadius?: BorderRadiusKey
   bannerPosition?: 'Top' | 'Bottom'
   bannerSlideAnimation?: 'Down' | 'None'
   theme?: {
     primaryColor?: string
     backgroundColor?: string
     textColor?: string
-    fontFamily?: string
+    fontFamily?: FontFamilyKey
     fontSize?: number
   }
   logo?: string
 }
 
-export class PaymentBanner extends LitElement {
+export class Banner extends LitElement {
   private configController = new BannerController(this)
 
   @property({ type: Object })
@@ -60,22 +94,8 @@ export class PaymentBanner extends LitElement {
   }
 
   private handleLinkClick() {
-    const getWebMonetizationLinkHref = () => {
-      const userAgent = navigator.userAgent
-      if (userAgent.includes('Firefox')) {
-        return 'https://addons.mozilla.org/en-US/firefox/addon/web-monetization-extension/'
-      } else if (
-        userAgent.includes('Chrome') &&
-        !userAgent.includes('Edg') &&
-        !userAgent.includes('OPR')
-      ) {
-        return 'https://chromewebstore.google.com/detail/web-monetization/oiabcfomehhigdepbbclppomkhlknpii'
-      } else if (userAgent.includes('Edg')) {
-        return 'https://microsoftedge.microsoft.com/addons/detail/web-monetization/imjgemgmeoioefpmfefmffbboogighjl'
-      }
-      return 'https://webmonetization.org/'
-    }
-    window.open(getWebMonetizationLinkHref(), '_blank')
+    const href = getWebMonetizationLinkHref(navigator.userAgent)
+    window.open(href, '_blank')
   }
 
   /**
@@ -111,10 +131,9 @@ export class PaymentBanner extends LitElement {
     }
 
     const logo = this.config.logo || defaultLogo
-    const title = this.config.bannerTitleText || 'How to support?'
+    const title = this.config.bannerTitleText || DEFAULT_BANNER_TITLE
     const description =
-      this.config.bannerDescriptionText ||
-      'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
+      this.config.bannerDescriptionText || DEFAULT_BANNER_DESCRIPTION
 
     return html`
       <div class="banner ${this.animationClass}">
@@ -124,7 +143,7 @@ export class PaymentBanner extends LitElement {
           <h3 class="banner-title">${title}</h3>
           <p class="banner-description">${description}</p>
           <p class="banner-link" @click=${this.handleLinkClick}>
-            Install the Web Monetization browser extension
+            ${DEFAULT_BANNER_LINK_TEXT}
           </p>
         </div>
 
@@ -184,28 +203,28 @@ export class BannerController implements ReactiveController {
     this.applyTheme(this.host)
 
     if (updates.bannerBorderRadius) {
-      let borderRadiusValue = updates.bannerBorderRadius
-
-      switch (updates.bannerBorderRadius) {
-        case 'Light':
-          borderRadiusValue = '0.375rem'
-          break
-        case 'Pill':
-          borderRadiusValue = '1rem'
-          break
-        case 'None':
-          borderRadiusValue = '0'
-          break
-      }
-
-      this.host.style.setProperty('--wm-border-radius', borderRadiusValue)
+      this.applyBorderRadius(updates.bannerBorderRadius)
     }
 
     this.host.requestUpdate()
   }
+
   updateState(updates: Partial<BannerState>) {
     this._state = { ...this._state, ...updates }
     this.host.requestUpdate()
+  }
+
+  /**
+   * Applies the specified border radius to the host element.
+   *
+   * @param borderRadius The border radius value to apply.
+   */
+  private applyBorderRadius(borderRadius: BorderRadiusKey) {
+    const borderRadiusValue = BORDER_RADIUS_VALUES[borderRadius]
+    this.host.style.setProperty(
+      '--wm-border-radius',
+      borderRadiusValue || BORDER_RADIUS_VALUES.None
+    )
   }
 
   /**
@@ -214,15 +233,7 @@ export class BannerController implements ReactiveController {
    *
    * @param fontName The name of the font family to apply.
    */
-  private applyFontFamily(fontName: string) {
-    const allowedFonts = [
-      'Cookie',
-      'Roboto',
-      'Open Sans',
-      'Titillium Web',
-      'Arial'
-    ]
-
+  private applyFontFamily(fontName: FontFamilyKey) {
     const existingFont = document.getElementById(
       'wmt-font-family-banner'
     ) as HTMLLinkElement
@@ -230,7 +241,18 @@ export class BannerController implements ReactiveController {
       existingFont.remove()
     }
 
-    if (fontName === 'Inherit' || !allowedFonts.includes(fontName)) {
+    if (fontName === 'Inherit') {
+      this.host.style.setProperty('--wm-font-family', 'inherit')
+      return
+    }
+
+    if (fontName === 'Arial') {
+      this.host.style.setProperty('--wm-font-family', fontName)
+      return
+    }
+
+    const fontFamilyUrl = FONT_FAMILY_URLS[fontName]
+    if (!fontFamilyUrl) {
       this.host.style.setProperty('--wm-font-family', 'inherit')
       return
     }
@@ -239,31 +261,8 @@ export class BannerController implements ReactiveController {
     fontLink.id = 'wmt-font-family-banner'
     fontLink.rel = 'stylesheet'
     fontLink.type = 'text/css'
-
-    switch (fontName) {
-      case 'Open Sans':
-        fontLink.href =
-          'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap'
-        break
-      case 'Cookie':
-        fontLink.href =
-          'https://fonts.googleapis.com/css2?family=Cookie&display=swap'
-        break
-      case 'Roboto':
-        fontLink.href =
-          'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'
-        break
-      case 'Titillium Web':
-        fontLink.href =
-          'https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap'
-        break
-      case 'Arial':
-        break
-    }
-
-    if (fontLink.href && fontName !== 'Arial') {
-      document.head.appendChild(fontLink)
-    }
+    fontLink.href = fontFamilyUrl
+    document.head.appendChild(fontLink)
 
     this.host.style.setProperty('--wm-font-family', fontName)
   }
