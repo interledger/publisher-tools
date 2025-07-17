@@ -221,6 +221,15 @@ export class BannerController implements ReactiveController {
    */
   private applyBorderRadius(borderRadius: BorderRadiusKey) {
     const borderRadiusValue = BORDER_RADIUS_VALUES[borderRadius]
+
+    if (!borderRadiusValue) {
+      this.host.style.setProperty(
+        '--wm-border-radius',
+        BORDER_RADIUS_VALUES.None
+      )
+      return
+    }
+
     this.host.style.setProperty('--wm-border-radius', borderRadiusValue)
   }
 
@@ -248,15 +257,18 @@ export class BannerController implements ReactiveController {
       return
     }
 
-    const fontUrl = FONT_FAMILY_URLS[fontName]
-    if (fontUrl) {
-      const fontLink = document.createElement('link') as HTMLLinkElement
-      fontLink.id = 'wmt-font-family-banner'
-      fontLink.rel = 'stylesheet'
-      fontLink.type = 'text/css'
-      fontLink.href = fontUrl
-      document.head.appendChild(fontLink)
+    const fontFamilyUrl = FONT_FAMILY_URLS[fontName]
+    if (!fontFamilyUrl) {
+      this.host.style.setProperty('--wm-font-family', 'inherit')
+      return
     }
+
+    const fontLink = document.createElement('link') as HTMLLinkElement
+    fontLink.id = 'wmt-font-family-banner'
+    fontLink.rel = 'stylesheet'
+    fontLink.type = 'text/css'
+    fontLink.href = fontFamilyUrl
+    document.head.appendChild(fontLink)
 
     this.host.style.setProperty('--wm-font-family', fontName)
   }
