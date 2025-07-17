@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsPrimaryButton } from '@/components'
 import { SVGClose } from '~/assets/svg'
+import { BodyStandard } from '../Typography'
 
 interface ImportTagModalProps {
   isOpen?: boolean
@@ -54,7 +55,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-silver-400 bg-opacity-40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-silver-400 bg-opacity-40 px-md md:px-0"
       onClick={handleOverlayClick}
     >
       <div
@@ -74,16 +75,12 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           <SVGClose className="w-6 h-6" />
         </button>
         <div className="flex flex-col items-center justify-center gap-lg px-md">
-          <label
-            htmlFor="linkTagTextArea"
-            className="text-text-primary text-base"
-          >
-            Import existing revshare configuration
-          </label>
+          <BodyStandard>Import existing revshare configuration</BodyStandard>
           <textarea
-            id="linkTagTextArea"
+            id="linkTagInput"
             className={cx(
-              'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none w-[394px] h-[136px]',
+              'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none',
+              'w-full max-w-full h-[136px]',
               'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus'
             )}
             placeholder="Your link tag here"

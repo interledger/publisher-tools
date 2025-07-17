@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Heading5 } from '../components/redesign/Typography'
-import { SVGSpinner, SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
+import { SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
 import {
   HeadingCore,
   CodeBlock,
   ToolsPrimaryButton,
   ToolsSecondaryButton,
-  ImportTagModal
+  ImportTagModal,
+  Card,
+  RevShareChart
 } from '@/components'
 import {
   ShareInput,
   ShareInputMobile
 } from '../components/redesign/revshare/ShareInput'
-import { RevshareChart } from '../components/redesign/revshare/Chart'
 import { useShares, newShare, SharesProvider } from '../stores/revshareStore'
 
 import {
@@ -34,39 +35,29 @@ export default function RevsharePageWrapper() {
   )
 }
 
-export function Card({
-  children,
-  className = ''
-}: {
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <div
-      className={`
-      bg-interface-bg-container 
-      rounded-sm
-      p-md
-      gap-md
-      flex flex-col
-      ${className}
-    `}
-    >
-      {children}
-    </div>
-  )
-}
 function Revshare() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [importTag, setImportTag] = useState('')
-
   const { shares, setShares } = useShares()
-  const totalWeight = shares.reduce((a, b) => a + Number(b.weight), 0)
 
-  const sharesPP = sharesToPaymentPointer(shares) || ''
+  const revSharePointers = useMemo(
+    () => sharesToPaymentPointer(shares),
+    [shares]
+  )
+
+  const { isCopied, handleCopyClick } = useCopyToClipboard(
+    revSharePointers ?? ''
+  )
+
+  const totalWeight = useMemo(
+    () => shares.reduce((a, b) => a + Number(b.weight), 0),
+    [shares]
+  )
+
   const addShare = () => {
     setShares([...shares, newShare()])
   }
+
   const handleImportConfirm = () => {
     try {
       const shares = tagOrPointerToShares(importTag) || []
@@ -76,8 +67,6 @@ function Revshare() {
       return 'Invalid revshare tag.'
     }
   }
-
-  const { isCopied, handleCopyClick } = useCopyToClipboard(sharesPP)
 
   return (
     <div className="bg-interface-bg-main w-full px-md">
@@ -96,9 +85,7 @@ function Revshare() {
 
         <div className=" space-y-lg">
           <Card className="overflow-x-auto">
-            <label className="block pb-2 text-xl">
-              Wallet Address/Payment Pointer
-            </label>
+            <Heading5>Wallet Address/Payment Pointer</Heading5>
             <table className="min-w-full  hidden md:table">
               <thead className="bg-gray-200">
                 <tr>
@@ -211,10 +198,10 @@ function Revshare() {
             </div>
             <hr />
             {/* COMPLETE - Payment Pointer section */}
-            {sharesPP && (
+            {revSharePointers && (
               <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
                 <CodeBlock
-                  link={sharesPP}
+                  link={revSharePointers}
                   className="flex-1 text-sm p-sm leading-normal whitespace-nowrap min-w-0 overflow-x-auto"
                 />
                 <button
@@ -247,7 +234,7 @@ function Revshare() {
         </div>
         {/* COMPLETE - Chart section */}
         <div className="my-lg lg:my-md">
-          <RevshareChart shares={shares} />
+          <RevShareChart shares={shares} />
         </div>
         {/* COMPLETE - Information section */}
         <div className="flex flex-col gap-md mb-2xl">
@@ -287,8 +274,8 @@ function Revshare() {
               you&apos;d rather assign sharing by percentage, enter at least two
               recipients into the table. The Percent field will open for edits.
               When you&apos;re finished, add the generated monetization link tag
-              to your site. The link contains a unique URL hosted on&nbsp;
-              <a>https://webmonetization.org/api/revshare/pay/</a>.
+              to your site. The link contains a unique URL hosted on
+              https://webmonetization.org/api/revshare/pay/
             </p>
           </div>
         </div>

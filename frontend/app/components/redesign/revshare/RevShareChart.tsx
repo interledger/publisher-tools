@@ -15,7 +15,7 @@ type RevshareChartProps = {
   shares: Share[]
 }
 
-export function RevshareChart({
+export function RevShareChart({
   shares
 }: RevshareChartProps): React.ReactElement | null {
   const chartData = sharesToChartData(shares)
