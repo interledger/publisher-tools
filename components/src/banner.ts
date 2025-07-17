@@ -25,7 +25,7 @@ export interface BannerConfig {
   logo?: string
 }
 
-export class PaymentBanner extends LitElement {
+export class Banner extends LitElement {
   private configController = new BannerController(this)
 
   @property({ type: Object })
@@ -148,7 +148,7 @@ export class PaymentBanner extends LitElement {
   }
 }
 
-customElements.define('wm-banner', PaymentBanner)
+customElements.define('wm-banner', Banner)
 
 interface BannerState {
   isVisible: boolean
