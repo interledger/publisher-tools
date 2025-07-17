@@ -10,7 +10,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-    "noEmit": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "noEmit": true
   }
 }
