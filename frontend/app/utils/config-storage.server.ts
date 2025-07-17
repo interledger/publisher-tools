@@ -7,10 +7,12 @@ type Secrets = Pick<
   | 'AWS_SECRET_ACCESS_KEY'
   | 'AWS_REGION'
   | 'AWS_BUCKET_NAME'
+  | 'AWS_PREFIX'
 >
 
 export class ConfigStorageService {
   private static instance: AwsClient | null = null
+  private prefix: string
   private client: AwsClient
   private endpoint: string
 
@@ -23,13 +25,18 @@ export class ConfigStorageService {
       })
     }
 
+    this.prefix = env.AWS_PREFIX
     this.client = ConfigStorageService.instance
     this.endpoint = `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com`
   }
 
   async getJson<T>(walletAddress: string): Promise<T> {
     const key = walletAddressToKey(walletAddress)
-    const url = new URL(key, this.endpoint)
+    const url = new URL(`${this.prefix}/${key}`, this.endpoint)
+
+    console.log(
+      `!!!!!   Fetching config for wallet: ${walletAddress} from ${url}`
+    )
 
     const response = await this.client.fetch(url)
 
@@ -42,7 +49,7 @@ export class ConfigStorageService {
 
   async putJson<T>(walletAddress: string, data: T): Promise<void> {
     const key = walletAddressToKey(walletAddress)
-    const url = new URL(key, this.endpoint)
+    const url = new URL(`${this.prefix}/${key}`, this.endpoint)
     const jsonString = JSON.stringify(data)
 
     const response = await this.client.fetch(url, {
