@@ -25,6 +25,7 @@
   },
   "types": "./src/types.ts",
   "devDependencies": {
+    "@shared/types": "workspace:^",
     "typescript": "5.1.6",
     "wrangler": "^4.16.1"
   },

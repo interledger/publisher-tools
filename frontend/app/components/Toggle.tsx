@@ -1,7 +1,7 @@
 import { type ComponentProps, forwardRef, useId, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { Label } from './index.js'
-import type { SlideAnimationType } from '~/lib/types.js'
+import type { SlideAnimationType } from '@shared/types'
 
 type ToggleProps = Omit<ComponentProps<'div'>, 'children'> & {
   label?: string

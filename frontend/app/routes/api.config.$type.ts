@@ -9,11 +9,8 @@ import {
   normalizeWalletAddress
 } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
-import type {
-  ConfigVersions,
-  ElementConfigType,
-  ElementErrors
-} from '~/lib/types.js'
+import type { ConfigVersions, ElementConfigType } from '@shared/types'
+import type { ElementErrors } from '~/lib/types.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { validateForm } from '~/utils/validate.server.js'

@@ -1,6 +1,6 @@
 import type { WalletAddress } from '@interledger/open-payments'
-import type { ElementConfigType } from '~/lib/types.js'
-import { CornerType, PositionType, SlideAnimationType } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
+import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
 import { toWalletAddressUrl } from '@shared/utils'
 
 export function normalizeWalletAddress(walletAddress: WalletAddress): string {
@@ -72,6 +72,7 @@ export const filterDeepProperties = (
 
 export function getDefaultData(): ElementConfigType {
   return {
+    // @ts-expect-error TODO
     walletAddress: undefined,
     buttonFontName: 'Arial',
     buttonText: 'Support me',

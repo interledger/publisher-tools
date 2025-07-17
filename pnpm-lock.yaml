@@ -66,6 +66,9 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
     devDependencies:
+      '@shared/types':
+        specifier: workspace:^
+        version: link:../shared/types
       typescript:
         specifier: 5.1.6
         version: 5.1.6
@@ -219,6 +222,9 @@ importers:
       '@remix-run/dev':
         specifier: ^2.16.6
         version: 2.16.6(@remix-run/react@2.16.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3))(@remix-run/serve@2.16.6(typescript@5.8.3))(@types/node@22.15.17)(lightningcss@1.29.2)(ts-node@10.9.2(@types/node@22.15.17)(typescript@5.8.3))(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2))(wrangler@4.16.1(@cloudflare/workers-types@4.20250507.0))
+      '@shared/types':
+        specifier: workspace:^
+        version: link:../shared/types
       '@tailwindcss/forms':
         specifier: ^0.5.9
         version: 0.5.10(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.15.17)(typescript@5.8.3)))
@@ -270,6 +276,8 @@ importers:
       aws4fetch:
         specifier: ^1.0.20
         version: 1.0.20
+
+  shared/types: {}
 
   shared/utils:
     devDependencies:

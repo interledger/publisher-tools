@@ -4,7 +4,7 @@ import {
   PositionType,
   SlideAnimationType,
   type ElementConfigType
-} from './types.js'
+} from '@shared/types'
 
 const getSelectedFont = (name: string) => {
   switch (name) {
@@ -46,7 +46,7 @@ export const getIlpayCss = (config: ElementConfigType) => {
       }
       .ilpay_body+#headlessui-portal-root {
         all: revert;
-      }   
+      }
       #extension-pay-form+input {
         color: #000000;
       }
@@ -98,7 +98,7 @@ export const generateConfigCss = (
         ? '1rem'
         : '0'
 
-  const css = `       
+  const css = `
         .wm_button {
             font-family: ${selectedWidgetFont}, system-ui, sans-serif !important;
             font-size: 16px;
@@ -108,7 +108,7 @@ export const generateConfigCss = (
             background-color: ${config.buttonBackgroundColor};
             border-radius: ${buttonBorder};
             transition: all 0.5s ease;
-        }       
+        }
         .wm_banner {
             font-family: ${selectedBannerFont}, system-ui, sans-serif !important;
             font-size: ${config.bannerFontSize}px;
@@ -327,6 +327,7 @@ export const getWebMonetizationLink = () => {
 
 export function getDefaultData(): ElementConfigType {
   return {
+    // @ts-expect-error TODO
     walletAddress: undefined,
     buttonFontName: 'Arial',
     buttonText: 'Support me',

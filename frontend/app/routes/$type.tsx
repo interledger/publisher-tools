@@ -21,7 +21,7 @@ import {
 } from '~/components/index.js'
 import { validConfigTypes, type ModalType } from '~/lib/presets.js'
 import { tooltips } from '~/lib/tooltips.js'
-import type { ElementConfigType } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
 import { capitalizeFirstLetter, getDefaultData } from '~/lib/utils.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
