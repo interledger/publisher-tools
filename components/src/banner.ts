@@ -221,16 +221,10 @@ export class BannerController implements ReactiveController {
    */
   private applyBorderRadius(borderRadius: BorderRadiusKey) {
     const borderRadiusValue = BORDER_RADIUS_VALUES[borderRadius]
-
-    if (!borderRadiusValue) {
-      this.host.style.setProperty(
-        '--wm-border-radius',
-        BORDER_RADIUS_VALUES.None
-      )
-      return
-    }
-
-    this.host.style.setProperty('--wm-border-radius', borderRadiusValue)
+    this.host.style.setProperty(
+      '--wm-border-radius',
+      borderRadiusValue || BORDER_RADIUS_VALUES.None
+    )
   }
 
   /**
