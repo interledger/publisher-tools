@@ -405,8 +405,6 @@ export class PaymentWidget extends LitElement {
   }
 }
 
-customElements.define('wm-payment-widget', PaymentWidget)
-
 export interface WidgetState {
   walletAddress: WalletAddress
   incomingPaymentGrant: Grant

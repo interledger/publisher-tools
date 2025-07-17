@@ -148,8 +148,6 @@ export class PaymentBanner extends LitElement {
   }
 }
 
-customElements.define('wm-banner', PaymentBanner)
-
 interface BannerState {
   isVisible: boolean
   isDismissed: boolean

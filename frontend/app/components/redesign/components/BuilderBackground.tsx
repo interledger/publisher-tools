@@ -145,7 +145,8 @@ const Banner = React.forwardRef<BannerHandle>((props, ref) => {
       }
 
       // dynamic import - ensure component only runs on the client side and not on SSR
-      await import('@tools/components/banner')
+      const { PaymentBanner } = await import('@tools/components/banner')
+      customElements.define('wm-banner', PaymentBanner)
       setIsLoaded(true)
     }
 

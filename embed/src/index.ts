@@ -1,5 +1,15 @@
-import '@tools/components/widget'
-import '@tools/components/banner'
+import { PaymentWidget } from '@tools/components/widget'
+import { PaymentBanner } from '@tools/components/banner'
+
+customElements.define('wm-payment-widget', PaymentWidget)
+customElements.define('wm-banner', PaymentBanner)
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'wm-banner': BannerElement
+    'wm-payment-widget': WidgetElement
+  }
+}
 
 /* eslint-disable no-case-declarations */
 const API_URL = import.meta.env.VITE_SCRIPT_API_URL
@@ -97,7 +107,7 @@ const drawBanner = (config: Config) => {
     return
   }
 
-  const bannerElement = document.createElement('wm-banner') as BannerElement
+  const bannerElement = document.createElement('wm-banner')
 
   const bannerConfig = {
     bannerTitleText: config.bannerTitleText,
@@ -133,7 +143,7 @@ const drawBanner = (config: Config) => {
 }
 
 const drawWidget = (walletAddressUrl: string, config: Config) => {
-  const element = document.createElement('wm-payment-widget') as WidgetElement
+  const element = document.createElement('wm-payment-widget')
 
   element.config = {
     apiUrl: API_URL,
