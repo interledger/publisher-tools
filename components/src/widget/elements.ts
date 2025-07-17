@@ -121,15 +121,18 @@ export class PaymentWidget extends LitElement {
 
   private renderHomeView() {
     return html`
-      <div class="widget-header-container">
+      <div class="widget-header-container coloured">
         <div class="widget-header">
           <img src=${walletTotemIcon} alt="header wallet totem" />
-          <p>${this.config.widgetTitleText || 'Support Me'}</p>
+          <p class="white-text">${this.config.widgetTitleText || 'Support Me'}</p>
         </div>
-        <img class="close-button" src=${closeButtonIcon} alt="close widget" />
+        <img class="close-button" 
+          src=${closeButtonIcon} alt="close widget" 
+          @click=${this.toggleWidget}
+        />
       </div>
 
-      <div class="widget-body">
+      <div class="widget-body margin-top-24">
         <p>
           ${this.config.widgetDescriptionText || 'Enter your wallet address to make a payment'}
         </p>
@@ -138,7 +141,7 @@ export class PaymentWidget extends LitElement {
           <div class="form-wallet-address">
             <label class="form-label">
               Pay from
-              <label style="color: var(--Tools-Colors-Text-paragraph-error, #E51D25);">
+              <label class="red-text">
               *
               </label>
             </label>
@@ -168,6 +171,7 @@ export class PaymentWidget extends LitElement {
         .requestQuote=${this.requestQuote}
         .requestPayment=${this.requestPayment}
         @back=${this.navigateToHome}
+        @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
       ></wm-payment-confirmation>
     `
