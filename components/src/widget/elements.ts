@@ -157,16 +157,6 @@ export class PaymentWidget extends LitElement {
           </button>
         </form>
       </div>
-
-      <div class="widget-footer">
-        <div class="delimiter"></div>
-        <div class="powered-by">
-          Powered by
-          <a href="https://webmonetization.org" target="_blank">
-            <img src=${interledgerLogoIcon} />
-          </a>
-        </div>
-      </div>
     `
   }
 
@@ -201,6 +191,16 @@ export class PaymentWidget extends LitElement {
       <div class="wm_widget">
         <div class="content ${this.isOpen ? 'open' : 'closed'}">
           ${this.renderCurrentView()}
+
+          <div class="widget-footer">
+            <div class="delimiter"></div>
+            <div class="powered-by">
+              Powered by
+              <a href="https://webmonetization.org" target="_blank">
+                <img src=${interledgerLogoIcon} />
+              </a>
+            </div>
+          </div>
         </div>
 
         <div class="trigger" @click=${this.toggleWidget}>
