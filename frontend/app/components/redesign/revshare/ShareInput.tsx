@@ -106,7 +106,7 @@ export function ShareInputMobile({
         <span className="font-normal">Revshare #{index + 1} </span>
 
         <ToolsSecondaryButton onClick={onRemove} className="!border-none !p-0">
-          <SVGDeleteScript width={32} height={32} />
+          <SVGDeleteScript width={20} height={20} />
         </ToolsSecondaryButton>
       </div>
 
