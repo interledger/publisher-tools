@@ -9,6 +9,12 @@ import { property, state } from 'lit/decorators.js'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
 
+const DEFAULT_BANNER_TITLE = 'How to support?'
+const DEFAULT_BANNER_DESCRIPTION =
+  'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
+const DEFAULT_BANNER_LINK_TEXT =
+  'Install the Web Monetization browser extension'
+
 export interface BannerConfig {
   bannerTitleText?: string
   bannerDescriptionText?: string
@@ -111,10 +117,9 @@ export class Banner extends LitElement {
     }
 
     const logo = this.config.logo || defaultLogo
-    const title = this.config.bannerTitleText || 'How to support?'
+    const title = this.config.bannerTitleText || DEFAULT_BANNER_TITLE
     const description =
-      this.config.bannerDescriptionText ||
-      'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
+      this.config.bannerDescriptionText || DEFAULT_BANNER_DESCRIPTION
 
     return html`
       <div class="banner ${this.animationClass}">
@@ -124,7 +129,7 @@ export class Banner extends LitElement {
           <h3 class="banner-title">${title}</h3>
           <p class="banner-description">${description}</p>
           <p class="banner-link" @click=${this.handleLinkClick}>
-            Install the Web Monetization browser extension
+            ${DEFAULT_BANNER_LINK_TEXT}
           </p>
         </div>
 
