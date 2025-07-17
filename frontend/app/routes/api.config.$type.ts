@@ -3,9 +3,9 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs
 } from '@remix-run/cloudflare'
+import { getDefaultData } from '@shared/default-data'
 import {
   filterDeepProperties,
-  getDefaultData,
   normalizeWalletAddress
 } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
