@@ -151,7 +151,6 @@ function Revshare() {
                 })}
               </tbody>
             </table>
-
             <div className="md:hidden space-y-4">
               {shares.map((share, i) => {
                 return (
@@ -197,38 +196,44 @@ function Revshare() {
               })}
             </div>
             <hr />
-            {/* COMPLETE - Payment Pointer section */}
-            {revSharePointers && (
-              <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-                <CodeBlock
-                  link={revSharePointers}
-                  className="flex-1 text-sm p-sm leading-normal whitespace-nowrap min-w-0 overflow-x-auto"
-                />
-                <button
-                  onClick={handleCopyClick}
-                  aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
+            <div className="flex flex-col-reverse md:flex-col gap-md">
+              {/* Payment Pointer Section (Will appear second on mobile, first on desktop) */}
+              {revSharePointers && (
+                <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main p-sm">
+                  <CodeBlock
+                    link={revSharePointers}
+                    className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal"
+                  />
+                  <button
+                    onClick={handleCopyClick}
+                    aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
+                  >
+                    {isCopied ? (
+                      <SVGCheckIcon className="h-6 w-6" />
+                    ) : (
+                      <SVGCopyIcon className="h-6 w-6" />
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Action Buttons Section (Will appear first on mobile, second on desktop) */}
+              <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
+                <ToolsSecondaryButton
+                  className="w-full md:w-auto"
+                  onClick={() => setIsModalOpen(true)}
                 >
-                  {isCopied ? (
-                    <SVGCheckIcon className="w-6 h-6" />
-                  ) : (
-                    <SVGCopyIcon className="w-6 h-6" />
-                  )}
-                </button>
+                  Import
+                </ToolsSecondaryButton>
+                <ToolsPrimaryButton
+                  icon="share"
+                  iconPosition="right"
+                  className="flex w-full items-center justify-center md:w-auto"
+                  onClick={addShare}
+                >
+                  Add rev share
+                </ToolsPrimaryButton>
               </div>
-            )}
-            {/* COMPLETE - Action buttons section */}
-            <div className="flex justify-end gap-xs">
-              <ToolsSecondaryButton onClick={() => setIsModalOpen(true)}>
-                Import
-              </ToolsSecondaryButton>
-              <ToolsPrimaryButton
-                icon="share"
-                iconPosition="right"
-                className=" flex items-center justify-center"
-                onClick={addShare}
-              >
-                Add rev share
-              </ToolsPrimaryButton>
             </div>
           </Card>
         </div>
