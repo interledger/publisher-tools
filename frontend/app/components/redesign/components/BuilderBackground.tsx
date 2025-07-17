@@ -9,15 +9,10 @@ import { useSnapshot } from 'valtio'
 import { toolState } from '~/stores/toolStore'
 
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-
-// Import the banner web component
 import type { BannerConfig, PaymentBanner } from '@tools/components'
-
-// Declare the custom element for TypeScript
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
+declare module 'react' {
+  export interface JSX {
+    IntrinsicElements: {
       'wm-banner': React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<PaymentBanner> },
         HTMLElement
