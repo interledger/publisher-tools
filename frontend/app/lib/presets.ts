@@ -28,6 +28,8 @@ export type ModalType = {
   grantRedirectIntent?: string
   grantRedirectURI?: string
   fetchedConfigs?: Record<string, ElementConfigType>
+  currentLocalConfigs?: Record<string, ElementConfigType>
+  modifiedConfigs?: readonly string[]
 }
 
 export const textColorPresets = ['#ffffff', '#000000']

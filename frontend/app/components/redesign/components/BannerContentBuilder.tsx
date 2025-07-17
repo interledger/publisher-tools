@@ -128,7 +128,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
               <PillTagButton
                 key={title}
                 variant={
-                  snap.toolConfig?.bannerTitleText === title
+                  snap.currentConfig?.bannerTitleText === title
                     ? 'active'
                     : 'default'
                 }
@@ -146,7 +146,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
-            value={snap.toolConfig?.bannerTitleText}
+            value={snap.currentConfig?.bannerTitleText}
             onChange={(e) =>
               toolActions.setToolConfig({ bannerTitleText: e.target.value })
             }
@@ -156,7 +156,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
           />
           <div className="flex justify-end">
             <span className="text-xs leading-xs text-text-secondary">
-              {snap.toolConfig?.bannerTitleText.length}/60
+              {snap.currentConfig?.bannerTitleText.length}/60
             </span>
           </div>
         </div>
@@ -178,7 +178,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
 
             <div className="flex-grow">
               <TextareaField
-                value={snap.toolConfig?.bannerDescriptionText}
+                value={snap.currentConfig?.bannerDescriptionText}
                 onChange={(e) =>
                   toolActions.setToolConfig({
                     bannerDescriptionText: e.target.value

@@ -105,7 +105,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         <div
           id="browser-content"
           className={`flex-1 p-md flex justify-center bg-transparent ${
-            snap.toolConfig?.bannerPosition === 'Top'
+            snap.currentConfig?.bannerPosition === 'Top'
               ? 'items-start'
               : 'items-end'
           }`}
@@ -155,19 +155,19 @@ const Banner = React.forwardRef<BannerHandle>((props, ref) => {
   const bannerConfig = useMemo(
     () =>
       ({
-        bannerTitleText: snap.toolConfig?.bannerTitleText,
-        bannerDescriptionText: snap.toolConfig?.bannerDescriptionText,
-        bannerPosition: snap.toolConfig?.bannerPosition,
-        bannerBorderRadius: snap.toolConfig?.bannerBorder,
-        bannerSlideAnimation: snap.toolConfig?.bannerSlideAnimation,
+        bannerTitleText: snap.currentConfig?.bannerTitleText,
+        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
+        bannerPosition: snap.currentConfig?.bannerPosition,
+        bannerBorderRadius: snap.currentConfig?.bannerBorder,
+        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
         theme: {
-          backgroundColor: snap.toolConfig?.bannerBackgroundColor,
-          textColor: snap.toolConfig?.bannerTextColor,
-          fontSize: snap.toolConfig?.bannerFontSize,
-          fontFamily: snap.toolConfig?.bannerFontName
+          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
+          textColor: snap.currentConfig?.bannerTextColor,
+          fontSize: snap.currentConfig?.bannerFontSize,
+          fontFamily: snap.currentConfig?.bannerFontName
         }
       }) as BannerConfig,
-    [snap.toolConfig]
+    [snap.currentConfig]
   )
 
   useEffect(() => {

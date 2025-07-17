@@ -2,19 +2,19 @@ import { cx } from 'class-variance-authority'
 import React, { useState, useRef, useEffect } from 'react'
 import { SVGEdit } from '~/assets/svg'
 import { TabTooltip } from './TabTooltip'
-import { toolActions, toolState } from '~/stores/toolStore'
+import { toolActions, toolState, type StableKey } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
 
 export interface TabOption {
-  id: string
+  id: StableKey
 }
 
 interface TabSelectorProps {
   options: TabOption[]
-  selectedId?: string
-  onSelectTab?: (tabId: string) => void
+  selectedId?: StableKey
+  onSelectTab?: (tabId: StableKey) => void
   className?: string
-  onTabLabelChange?: (tabId: string, newLabel: string) => void
+  onTabLabelChange?: (tabId: StableKey, newLabel: string) => void
 }
 
 export const TabSelector: React.FC<TabSelectorProps> = ({
@@ -24,9 +24,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   className = '',
   onTabLabelChange
 }) => {
-  const { modifiedConfigs } = useSnapshot(toolState)
+  const { modifiedVersions, configurations } = useSnapshot(toolState)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [tabLabels, setTabLabels] = useState<Record<string, string>>({})
   const [inputValue, setInputValue] = useState<string>('')
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [dragDistance, setDragDistance] = useState(0)
@@ -39,13 +38,13 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
   const startXRef = useRef(0)
   const scrollLeftRef = useRef(0)
 
-  useEffect(() => {
-    const initialLabels: Record<string, string> = {}
-    options.forEach((tab) => {
-      initialLabels[tab.id] = tab.id
-    })
-    setTabLabels(initialLabels)
-  }, [options])
+  const getDisplayLabel = (stableKey: string): string => {
+    return configurations[stableKey as StableKey].versionName
+  }
+
+  const isConfigModified = (stableKey: string): boolean => {
+    return modifiedVersions.includes(stableKey as StableKey)
+  }
 
   useEffect(() => {
     if (editingId && inputRef.current) {
@@ -93,16 +92,15 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         saveEdit()
       }
 
-      toolActions.selectVersion(tabId)
+      toolActions.selectVersion(tabId as StableKey)
       if (onSelectTab) {
-        onSelectTab(tabId)
+        onSelectTab(tabId as StableKey)
       }
     }
   }
 
   const beginEditing = (tabId: string) => {
-    const currentLabel =
-      tabLabels[tabId] || options.find((tab) => tab.id === tabId)?.id || ''
+    const currentLabel = getDisplayLabel(tabId)
 
     setEditingId(tabId)
     setInputValue(currentLabel)
@@ -119,10 +117,10 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       return
     }
 
-    const isDuplicate = Object.entries(tabLabels).some(
-      ([tabId, label]) =>
-        tabId !== currentTabId &&
-        label.trim().toLowerCase() === trimmedValue.toLowerCase()
+    const isDuplicate = Object.entries(configurations).some(
+      ([stableKey, config]) =>
+        stableKey !== currentTabId &&
+        config.versionName.trim().toLowerCase() === trimmedValue.toLowerCase()
     )
 
     if (isDuplicate) {
@@ -160,16 +158,11 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
   const saveEdit = () => {
     if (editingId && inputValue.trim() !== '' && !hasError) {
-      const originalLabel = tabLabels[editingId] || editingId
+      const originalLabel = getDisplayLabel(editingId)
       const newLabel = inputValue.trim()
 
-      setTabLabels((prev) => ({
-        ...prev,
-        [editingId]: newLabel
-      }))
-
       if (onTabLabelChange && originalLabel !== newLabel) {
-        onTabLabelChange(editingId, newLabel)
+        onTabLabelChange(editingId as StableKey, newLabel)
       }
 
       setEditingId(null)
@@ -216,8 +209,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         {options.map((tab) => {
           const isSelected = selectedId === tab.id
           const isEditing = editingId === tab.id
-          const displayLabel = tabLabels[tab.id] || tab.id
-          const isModified = modifiedConfigs.includes(tab.id)
+          const displayLabel = getDisplayLabel(tab.id)
+          const isModified = isConfigModified(tab.id)
 
           return (
             <div key={tab.id} className="flex flex-col flex-1">

@@ -3,7 +3,7 @@ import { useSnapshot } from 'valtio'
 import { BannerContentBuilder } from './BannerContentBuilder'
 import { BuilderCollapseExpand } from './BuilderCollapseExpand'
 import TabSelector from './TabSelector'
-import { toolState, toolActions } from '~/stores/toolStore'
+import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 
 interface BuilderFormProps {
   className?: string
@@ -28,12 +28,12 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
     }
   }, [contentComplete, appearanceComplete, onBuildStepComplete])
 
-  const handleTabSelect = (versionName: string) => {
-    toolActions.selectVersion(versionName)
+  const handleTabSelect = (stableKey: StableKey) => {
+    toolActions.selectVersion(stableKey)
   }
 
-  const handleTabLabelChange = (versionName: string, newLabel: string) => {
-    toolActions.updateVersionLabel(versionName, newLabel)
+  const handleTabLabelChange = (stableKey: StableKey, newLabel: string) => {
+    toolActions.updateVersionLabel(stableKey, newLabel)
   }
 
   const handleContentToggle = () => {
@@ -69,12 +69,11 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   }
   return (
     <div className="flex flex-col">
-      {/* Tab Selector */}
       <TabSelector
-        options={snap.versionOptions.map((option) => ({
-          id: option
+        options={toolActions.versionOptions.map((option) => ({
+          id: option.stableKey
         }))}
-        selectedId={snap.selectedVersion}
+        selectedId={snap.activeVersion}
         onSelectTab={handleTabSelect}
         onTabLabelChange={handleTabLabelChange}
       />
@@ -88,7 +87,6 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         ${className}
       `}
       >
-        {/* Content Section - using BannerContentBuilder */}
         <div className="w-full">
           <BannerContentBuilder
             isComplete={contentComplete}
@@ -97,7 +95,6 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
             onDone={handleContentDone}
           />
         </div>
-        {/* Appearance Section - using BuilderCollapseExpand */}
         <div className="w-full">
           <BuilderCollapseExpand
             isComplete={appearanceComplete}

@@ -6,8 +6,7 @@ import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { cx } from 'class-variance-authority'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { toolState, toolActions } from '~/stores/toolStore'
-import { APP_BASEPATH } from '~/lib/constants'
-import type { ElementErrors, ElementConfigType } from '~/lib/types'
+import type { ElementErrors } from '~/lib/types'
 import { Heading5 } from '../Typography'
 
 export const ToolsWalletAddress = () => {
@@ -16,48 +15,41 @@ export const ToolsWalletAddress = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleContinue = async () => {
+    // Validate wallet address first
+    if (!toolActions.validateWalletAddress(snap.walletAddress)) {
+      setError({
+        fieldErrors: { walletAddress: ['Please enter a valid wallet address'] },
+        message: []
+      })
+      return
+    }
+
     setIsLoading(true)
     setError(undefined)
 
     try {
-      const response = await fetch(
-        `${APP_BASEPATH}/api/config/banner?walletAddress=${snap.walletAddress}`
+      const result = await toolActions.fetchAndCheckConfigurations(
+        snap.walletAddress
       )
 
-      if (!response.ok) {
-        const data = await response.json()
-        // @ts-expect-error TODO
-        setError(data.errors)
+      if (result.hasConflict) {
+        toolActions.handleConfigurationConflict(result.fetchedConfigs)
         return
       }
 
-      const data = (await response.json()) as {
-        [key: string]: ElementConfigType
-      }
+      toolActions.setHasCustomEdits(result.hasCustomEdits)
 
-      const hasCustomEdits = Object.keys(data).length > 0
-      const hasLocalModifications = snap.modifiedConfigs.length > 0
-      if (hasCustomEdits && hasLocalModifications) {
-        toolActions.setModal({
-          type: 'override-preset',
-          fetchedConfigs: data
-        })
-        return
-      }
-
-      toolActions.setHasCustomEdits(hasCustomEdits)
-
-      if (hasCustomEdits) {
-        toolActions.loadSavedConfigs(data)
+      if (result.hasCustomEdits) {
+        toolActions.setConfigs(result.fetchedConfigs, true)
       } else {
         toolActions.setConfigs(null)
       }
 
       toolActions.setWalletConnected(true)
       setError(undefined)
-    } catch {
+    } catch (error) {
       setError({
-        fieldErrors: { walletAddress: ['Failed to fetch configuration'] },
+        fieldErrors: { walletAddress: [(error as Error).message] },
         message: []
       })
     } finally {
@@ -145,7 +137,7 @@ export const ToolsWalletAddress = () => {
             <br />
             You can then customize and save your config as needed.
           </p>
-        ) : !snap.hasCustomEdits ? (
+        ) : !snap.hasUnsavedChanges ? (
           <p className="w-full text-style-small-standard !text-text-success">
             There are no custom edits for the drawer banner correlated to this
             wallet address but you can start customizing when you want.
