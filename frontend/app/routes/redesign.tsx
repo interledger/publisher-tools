@@ -315,21 +315,17 @@ export default function Redesign() {
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <OverridePresetModal
-                isOpen={true}
                 onClose={handleCloseModal}
-                onOverride={() => {
-                  if (snap.modal?.fetchedConfigs) {
-                    toolActions.overrideWithFetchedConfigs(
-                      snap.modal.fetchedConfigs
-                    )
-                  }
+                onOverride={async (selectedLocalConfigs) => {
+                  toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
+                  await toolActions.saveConfig('banner', 'save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
                 }}
-                onKeepLocal={() => {
-                  toolActions.keepLocalChanges()
-                }}
+                fetchedConfigs={snap.modal?.fetchedConfigs}
+                currentLocalConfigs={snap.modal?.currentLocalConfigs}
+                modifiedVersions={snap.modal?.modifiedConfigs || []}
               />
             </div>
           </div>
