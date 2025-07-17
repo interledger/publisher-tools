@@ -4,3 +4,4 @@ packages:
   - 'embed'
   - 'cdn'
   - 'components'
+  - 'shared/*'

@@ -3,7 +3,7 @@ import { cors } from 'hono/cors'
 import { zValidator } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
-import { ConfigStorageService } from './utils/config-storage.js'
+import { ConfigStorageService } from '@shared/config-storage-service'
 import { OpenPaymentsService } from './utils/open-payments.js'
 import {
   PaymentQuoteSchema,
