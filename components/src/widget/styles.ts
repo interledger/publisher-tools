@@ -66,7 +66,7 @@ const contentStyles = css`
   }
 `
 
-const headerStyles = css`
+export const headerStyles = css`
   .widget-header-container {
     display: flex;
     width: 100%;
@@ -75,6 +75,9 @@ const headerStyles = css`
     padding: 16px 32px;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .coloured {
     background:  #56B7B5;
   }
 
@@ -91,8 +94,6 @@ const headerStyles = css`
   }
 
   .widget-header p {
-    color: #FFF;
-
     font-family: Inter;
     font-size: 18px;
     font-style: normal;
@@ -100,7 +101,12 @@ const headerStyles = css`
     line-height: 26px;
   }
 
+  .white-text {
+    color: #FFF;
+  }
+
   .close-button {
+    cursor: pointer;
     width: 20px;
     height: 20px;
     flex-shrink: 0;
@@ -108,15 +114,18 @@ const headerStyles = css`
   }
 `
 
-const bodySyles = css`
+export const bodySyles = css`
   .widget-body {
     display: flex;
     flex-direction: column;
     width: 100%;
     box-sizing: border-box;
     padding: 0px var(--Paddings-2xl, 32px);
-    margin-top: var(--Spacings-lg, 24px);
     flex: 1 1 auto;
+  }
+
+  .margin-top-24 {
+    margin-top: var(--Spacings-lg, 24px);
   }
 
   .widget-body p {
@@ -190,6 +199,11 @@ const formStyles = css`
     background-color: #f9fafb;
     color: #6b7280;
   }
+
+  .red-text {
+    color: var(--Tools-Colors-Text-paragraph-error, #E51D25);
+  }
+
 
   .support-button {
     width: 100%;
