@@ -19,7 +19,7 @@ export const HeadingCore: React.FC<HeadingCoreProps> = ({
     <>
       <div
         id="header"
-        className="flex flex-col pt-md pl-md pr-md gap-xs md:flex-row md:items-center md:justify-between md:py-0 md:px-0 md:pt-0 md:pb-0 w-full md:gap-0"
+        className="flex flex-col pt-md gap-xs md:flex-row md:items-center md:justify-between md:py-0 md:px-0 md:pt-0 md:pb-0 w-full md:gap-0"
       >
         <GhostButton
           onClick={onBackClick}
