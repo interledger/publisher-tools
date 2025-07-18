@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGDownArrow } from '~/assets/svg'
 import devHeroSVG from '~/assets/images/developer-icon.png'
 import pubHeroSVG from '~/assets/images/publishers-icon.png'
 import supHeroSVG from '~/assets/images/supporters-icon.png'
 import ClickAwayListener from 'react-click-away-listener'
+import { SVGDownArrow } from '@/assets'
 
 type ToolsMenuItemProps = {
   to: string

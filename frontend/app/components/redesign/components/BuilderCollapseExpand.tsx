@@ -45,11 +45,11 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const isAnimated =
-    snap.toolConfig?.bannerSlideAnimation !== SlideAnimationType.None
+    snap.currentConfig?.bannerSlideAnimation !== SlideAnimationType.None
 
   const FontsType = ['Arial', 'Inherit', 'Open Sans', 'Cookie', 'Titillium Web']
   const defaultFontIndex = FontsType.findIndex(
-    (option) => option == snap.toolConfig?.bannerFontName
+    (option) => option == snap.currentConfig?.bannerFontName
   )
   const thumbnails = [wmLogo]
 
@@ -151,7 +151,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               onClick={() => {
                 const newSize = Math.max(
                   minFontSize,
-                  (snap.toolConfig?.bannerFontSize ?? minFontSize) - 1
+                  (snap.currentConfig?.bannerFontSize ?? minFontSize) - 1
                 )
                 toolActions.setToolConfig({ bannerFontSize: newSize })
               }}
@@ -161,7 +161,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
             </button>
 
             <Slider
-              value={snap.toolConfig?.bannerFontSize ?? minFontSize}
+              value={snap.currentConfig?.bannerFontSize ?? minFontSize}
               min={minFontSize}
               max={maxFontSize}
               onChange={(value) => {
@@ -175,7 +175,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               onClick={() => {
                 const newSize = Math.min(
                   maxFontSize,
-                  (snap.toolConfig?.bannerFontSize ?? minFontSize) + 1
+                  (snap.currentConfig?.bannerFontSize ?? minFontSize) + 1
                 )
                 toolActions.setToolConfig({ bannerFontSize: newSize })
               }}
@@ -197,14 +197,14 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
         <div className="flex justify-between xl:flex-row flex-col gap-md">
           <ColorSelector
             label="Background"
-            value={snap.toolConfig?.bannerBackgroundColor}
+            value={snap.currentConfig?.bannerBackgroundColor}
             onChange={(color) => {
               toolActions.setToolConfig({ bannerBackgroundColor: color })
             }}
           />
           <ColorSelector
             label="Text"
-            value={snap.toolConfig?.bannerTextColor}
+            value={snap.currentConfig?.bannerTextColor}
             onChange={(color) => {
               toolActions.setToolConfig({ bannerTextColor: color })
             }}
@@ -220,7 +220,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
-          defaultValue={snap.toolConfig?.bannerBorder}
+          defaultValue={snap.currentConfig?.bannerBorder}
           onChange={(value) =>
             toolActions.setToolConfig({ bannerBorder: value })
           }
@@ -234,7 +234,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           label="Position (Appears from)"
         />
         <PositionSelector
-          defaultValue={snap.toolConfig?.bannerPosition}
+          defaultValue={snap.currentConfig?.bannerPosition}
           onChange={(value) =>
             toolActions.setToolConfig({ bannerPosition: value })
           }
