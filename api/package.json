@@ -5,6 +5,7 @@
     "dev": "wrangler dev",
     "build": "wrangler deploy --dry-run --outdir dist",
     "preview": "wrangler dev",
+    "typecheck": "tsc --noEmit",
     "deploy": "wrangler deploy"
   },
   "keywords": [],
