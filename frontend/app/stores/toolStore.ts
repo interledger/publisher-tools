@@ -195,7 +195,7 @@ export const toolState = proxy({
   grantResponse: '',
   isGrantAccepted: false,
   isWalletConnected: false,
-  hasUnsavedChanges: false,
+  hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus
 })
@@ -236,10 +236,10 @@ export const toolActions = {
    *   - true: Treats configs as saved state with no modifications (for restoring saved state)
    */
   setConfigs: (
-    fullConfigObject?: Record<string, ElementConfigType> | null,
+    fullConfigObject: Record<string, ElementConfigType> | null,
     treatAsBaseline: boolean = false
   ) => {
-    setupConfigs(fullConfigObject || null, treatAsBaseline)
+    setupConfigs(fullConfigObject, treatAsBaseline)
   },
 
   selectVersion: (selectedStableKey: StableKey) => {
@@ -332,9 +332,14 @@ export const toolActions = {
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
   },
-  setHasCustomEdits: (hasCustomEdits: boolean) => {
-    toolState.hasUnsavedChanges = hasCustomEdits
+  setHasRemoteConfigs: (hasRemoteConfigs: boolean) => {
+    toolState.hasRemoteConfigs = hasRemoteConfigs
   },
+
+  /**
+   * Checks if any local changes have been made to the configurations.
+   */
+  hasCustomEdits: (): boolean => toolState.modifiedVersions.length > 0,
   saveConfig: async (
     elementType: string,
     callToActionType: 'save-success' | 'script'
@@ -510,14 +515,14 @@ export const toolActions = {
       }
     })
 
-    toolActions.setHasCustomEdits(true)
+    toolActions.setHasRemoteConfigs(true)
     toolActions.setWalletConnected(true)
   },
 
   resetWalletConnection: () => {
     toolActions.setWalletConnected(false)
     toolActions.setWalletAddress('')
-    toolActions.setHasCustomEdits(false)
+    toolActions.setHasRemoteConfigs(false)
     toolActions.clearConflictState()
     toolActions.setModal(undefined)
   },

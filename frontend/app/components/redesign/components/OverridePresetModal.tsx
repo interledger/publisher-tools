@@ -10,7 +10,7 @@ interface ConfigItem {
   id: string
   number: string | number
   title: string
-  editCount: string
+  hasLocalChanges: boolean
   presetName: string
   hasEdits: boolean
 }
@@ -82,7 +82,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
         id: localStableKey,
         number: index + 1,
         title: currentTitle,
-        editCount: isModified ? 'Has local changes' : 'No changes',
+        hasLocalChanges: isModified,
         presetName: databaseTitle,
         hasEdits: canOverride
       }
@@ -171,7 +171,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
             <span className="w-[50px] mr-md">Tab</span>
             <span className="w-[150px] mr-md">Current version</span>
             <span className="w-[70px] text-center mr-md">Override</span>
-            <span className="w-[140px]">Database version</span>
+            <span className="w-[140px]">Saved version</span>
           </div>
         </div>
 
@@ -181,7 +181,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
             id={config.id}
             number={config.number}
             title={config.title}
-            editCount={config.editCount}
+            hasLocalChanges={config.hasLocalChanges}
             presetName={config.presetName}
             checked={selectedConfigs.includes(config.id)}
             onCheckedChange={(checked) =>
@@ -206,7 +206,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
                 ? 'Overriding and saving...'
                 : selectedConfigs.length > 0
                   ? `Override ${selectedConfigs.length} local configuration${selectedConfigs.length > 1 ? 's' : ''} and save`
-                  : 'Keep all with database versions and save'}
+                  : 'Keep all saved edits and save'}
             </span>
           </div>
         </ToolsPrimaryButton>

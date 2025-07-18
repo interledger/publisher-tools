@@ -1,11 +1,12 @@
 import React from 'react'
 import { Checkbox } from './Checkbox'
+import { SVGArrow1 } from '~/assets/svg'
 
 interface ConfigConditionProps {
   id?: string
   number?: string | number
   title?: string
-  editCount?: string | number
+  hasLocalChanges?: boolean
   presetName?: string
   checked?: boolean
   onCheckedChange?: (checked: boolean) => void
@@ -17,14 +18,13 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
   id,
   number = '1',
   title = '',
-  editCount = 'Has local changes',
+  hasLocalChanges = false,
   presetName = 'Preset one',
   checked = false,
   onCheckedChange,
   className = '',
   disabled = false
 }) => {
-  const hasLocalChanges = editCount === 'Has local changes'
   const isDisabled = disabled || !hasLocalChanges
 
   const handleClick = () => {
@@ -35,41 +35,13 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
 
   return (
     <div
-      className={`flex items-center w-full px-md py-sm ${className} ${
+      className={`flex items-center w-full px-md py-sm rounded-lg bg-white ${className} ${
         !isDisabled ? 'cursor-pointer hover:bg-gray-50' : 'cursor-not-allowed'
       }`}
       id={id}
       onClick={handleClick}
     >
-      <span
-        className={`text-style-small-standard w-[50px] mr-md ${
-          isDisabled ? 'text-text-secondary' : 'text-text-primary'
-        }`}
-      >
-        {number}.
-      </span>
-
-      <div className="w-[150px] mr-md">
-        <p
-          className={`text-style-small-emphasis ${
-            isDisabled ? 'text-text-secondary' : 'text-text-primary'
-          }`}
-        >
-          {title}
-        </p>
-        {hasLocalChanges && (
-          <p className="text-style-small-standard text-text-success">
-            {editCount}
-          </p>
-        )}
-        {!hasLocalChanges && (
-          <p className="text-style-small-standard text-text-secondary">
-            No changes
-          </p>
-        )}
-      </div>
-
-      <div className="w-[70px] flex justify-center mr-md">
+      <div className="flex items-center gap-3 mr-4">
         <div style={{ pointerEvents: 'none' }}>
           <Checkbox
             checked={checked}
@@ -77,6 +49,41 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
             disabled={isDisabled}
           />
         </div>
+
+        <span
+          className={`text-style-small-standard ${
+            isDisabled ? 'text-text-secondary' : 'text-text-primary'
+          }`}
+        >
+          {number}.
+        </span>
+
+        <div className="flex items-center justify-center w-0 h-2">
+          <div className="w-0.5 h-2 bg-gray-300 rotate-90"></div>
+        </div>
+      </div>
+
+      <div className="flex flex-col w-[150px] mr-4">
+        <p
+          className={`text-style-small-emphasis ${
+            isDisabled ? 'text-text-secondary' : 'text-text-primary'
+          }`}
+        >
+          {title}
+        </p>
+        {hasLocalChanges ? (
+          <p className="text-style-small-standard text-text-success">
+            Has local changes
+          </p>
+        ) : (
+          <p className="text-style-small-standard text-text-secondary">
+            No changes
+          </p>
+        )}
+      </div>
+
+      <div className="flex justify-center w-[70px] mr-4">
+        <SVGArrow1 className="w-[70px] h-2 text-purple-400" />
       </div>
 
       <div className="w-[140px]">

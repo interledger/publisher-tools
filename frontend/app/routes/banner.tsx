@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
-import { useLoaderData } from '@remix-run/react'
+import { useLoaderData, useNavigate } from '@remix-run/react'
 import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
 import {
   HeadingCore,
@@ -53,6 +53,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Redesign() {
   const snap = useSnapshot(toolState)
+  const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -126,10 +127,7 @@ export default function Redesign() {
     <div className="bg-interface-bg-main min-h-screen w-full pb-[32px]">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore
-            title="Banner"
-            onBackClick={() => console.log('Back clicked')}
-          >
+          <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
             The drawer banner informs visitors who don&apos;t have the Web
             Monetization extension active, with a call-to-action linking to the
             extension or providing details about the options available.

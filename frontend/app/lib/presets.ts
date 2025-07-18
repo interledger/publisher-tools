@@ -10,7 +10,7 @@ import widgetImg from '~/assets/images/widget_representation.svg'
 import buttonImg from '~/assets/images/button_representation.svg'
 import linkImg from '~/assets/images/link_representation.svg'
 
-export const validConfigTypes = ['button', 'banner', 'widget']
+export const validConfigTypes = ['button', 'widget']
 export const modalTypes = [
   'confirm',
   'import',

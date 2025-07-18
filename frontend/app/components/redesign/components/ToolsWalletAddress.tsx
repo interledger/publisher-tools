@@ -37,12 +37,10 @@ export const ToolsWalletAddress = () => {
         return
       }
 
-      toolActions.setHasCustomEdits(result.hasCustomEdits)
+      toolActions.setHasRemoteConfigs(result.hasCustomEdits)
 
       if (result.hasCustomEdits) {
         toolActions.setConfigs(result.fetchedConfigs, true)
-      } else {
-        toolActions.setConfigs(null)
       }
 
       toolActions.setWalletConnected(true)
@@ -60,7 +58,7 @@ export const ToolsWalletAddress = () => {
   const handleRefresh = () => {
     toolActions.setWalletConnected(false)
     toolActions.setWalletAddress('')
-    toolActions.setHasCustomEdits(false)
+    toolActions.setHasRemoteConfigs(false)
 
     toolActions.setConfigs(null)
   }
@@ -137,7 +135,7 @@ export const ToolsWalletAddress = () => {
             <br />
             You can then customize and save your config as needed.
           </p>
-        ) : !snap.hasUnsavedChanges ? (
+        ) : !snap.hasRemoteConfigs ? (
           <p className="w-full text-style-small-standard !text-text-success">
             There are no custom edits for the drawer banner correlated to this
             wallet address but you can start customizing when you want.
