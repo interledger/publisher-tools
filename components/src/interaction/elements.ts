@@ -1,22 +1,22 @@
-import { LitElement, html } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments';
-import type { WidgetController } from '../widget';
-import { interactionStyles } from './styles';
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
+import type { WidgetController } from '../widget'
+import { interactionStyles } from './styles'
 
 import loadingIcon from '../assets/interaction/authorization_loading.svg'
 import successIcon from '../assets/interaction/authorization_success.svg'
 import failedIcon from '../assets/interaction/authorization_failed.svg'
 
-
 export class PaymentInteraction extends LitElement {
-  private _boundHandleMessage: (event: MessageEvent) => void = () => { };
+  private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   @property({ type: Object }) configController!: WidgetController
-  @property({ type: Boolean }) requestPayment?: boolean = true;
-  @state() private currentView: 'authorizing' | 'success' | 'failed' = 'authorizing';
-  @state() private errorMessage = '';
+  @property({ type: Boolean }) requestPayment?: boolean = true
+  @state() private currentView: 'authorizing' | 'success' | 'failed' =
+    'authorizing'
+  @state() private errorMessage = ''
 
-  static styles = interactionStyles;
+  static styles = interactionStyles
 
   connectedCallback() {
     super.connectedCallback()
@@ -83,7 +83,11 @@ export class PaymentInteraction extends LitElement {
   private async handleInteractionCompleted(interactRef: string) {
     try {
       const {
-        walletAddress, outgoingPaymentGrant, quote, incomingPaymentGrant, note
+        walletAddress,
+        outgoingPaymentGrant,
+        quote,
+        incomingPaymentGrant,
+        note
       } = this.configController.state
       const response = await fetch(
         `${this.configController.config.apiUrl}tools/payment/finalize`,
@@ -137,18 +141,19 @@ export class PaymentInteraction extends LitElement {
   private renderAuthorizingView() {
     return html`
       <div class="interaction-container">
-        <div class="empty-header" ></div>
-        
+        <div class="empty-header"></div>
+
         <div class="interaction-body">
           <div class="title purple">Authorizing payment</div>
           <div class="description">
             Please complete the authorization in the opened tab
           </div>
-          <img src=${loadingIcon} width="122px" height="200px"/>
+          <img src=${loadingIcon} width="122px" height="200px" />
         </div>
-        
-        <button class="button-container empty-button" @click=${this.cancel}>Cancel payment</button>
-     
+
+        <button class="button-container empty-button" @click=${this.cancel}>
+          Cancel payment
+        </button>
       </div>
     `
   }
@@ -156,17 +161,19 @@ export class PaymentInteraction extends LitElement {
   private renderSuccessView() {
     return html`
       <div class="interaction-container">
-        <div class="empty-header" ></div>
-        
+        <div class="empty-header"></div>
+
         <div class="interaction-body">
           <div class="title green">Payment complete!</div>
           <div class="description">
             Your payment has been processed successfully
           </div>
-          <img src=${successIcon}  width="122px" height="200px"/>
+          <img src=${successIcon} width="122px" height="200px" />
         </div>
-        
-        <button class="button-container filled-button" @click=${this.goBack}>Done</button>
+
+        <button class="button-container filled-button" @click=${this.goBack}>
+          Done
+        </button>
       </div>
     `
   }
@@ -174,15 +181,16 @@ export class PaymentInteraction extends LitElement {
   private renderFailedView() {
     return html`
       <div class="interaction-container">
-        <div class="empty-header" ></div>
-        
+        <div class="empty-header"></div>
+
         <div class="interaction-body">
           <div class="title red">Payment authorization rejected</div>
-          <img src=${failedIcon}  width="122px" height="200px"/>
+          <img src=${failedIcon} width="122px" height="200px" />
         </div>
-        
-        <button class="button-container empty-button" @click=${this.cancel}>Cancel payment</button>
 
+        <button class="button-container empty-button" @click=${this.cancel}>
+          Cancel payment
+        </button>
       </div>
     `
   }

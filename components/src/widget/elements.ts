@@ -1,19 +1,19 @@
 import '../confirmation.js'
 import '../interaction.js'
 
-import { LitElement, html } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import { WidgetController } from './controller';
-import type { WidgetConfig, WalletAddress } from './types';
-import { widgetStyles } from './styles.js';
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { WidgetController } from './controller'
+import type { WidgetConfig, WalletAddress } from './types'
+import { widgetStyles } from './styles.js'
 
-import defaultTriggerIcon from '../assets/wm_logo_animated.svg';
-import closeButtonIcon from '../assets/wm_close_button.svg';
-import walletTotemIcon from '../assets/wm_wallet_totem.svg';
-import interledgerLogoIcon from '../assets/interledger_logo.svg';
+import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
+import closeButtonIcon from '../assets/wm_close_button.svg'
+import walletTotemIcon from '../assets/wm_wallet_totem.svg'
+import interledgerLogoIcon from '../assets/interledger_logo.svg'
 
 export class PaymentWidget extends LitElement {
-  private configController = new WidgetController(this);
+  private configController = new WidgetController(this)
 
   @property({ type: Object })
   set config(value: Partial<WidgetConfig>) {
@@ -23,11 +23,11 @@ export class PaymentWidget extends LitElement {
     return this.configController.config
   }
 
-  @property({ type: Boolean }) isOpen = false;
-  @property({ type: Boolean }) requestQuote?: boolean = true;
-  @property({ type: Boolean }) requestPayment?: boolean = true;
+  @property({ type: Boolean }) isOpen = false
+  @property({ type: Boolean }) requestQuote?: boolean = true
+  @property({ type: Boolean }) requestPayment?: boolean = true
 
-  @state() private currentView: string = 'home';
+  @state() private currentView: string = 'home'
 
   static styles = widgetStyles
 
@@ -79,12 +79,12 @@ export class PaymentWidget extends LitElement {
       o.resourceServer &&
       typeof o.resourceServer === 'string'
     )
-  };
+  }
 
   private toggleWidget() {
     this.isOpen = !this.isOpen
     this.requestUpdate()
-    
+
     this.dispatchEvent(
       new CustomEvent('widget-toggle', {
         detail: { isOpen: this.isOpen },
@@ -97,7 +97,7 @@ export class PaymentWidget extends LitElement {
   // Always have 'home' screen when opening the widget
   updated(changedProps: Map<string, unknown>) {
     if (changedProps.has('isOpen') && this.isOpen) {
-      this.currentView = 'home';
+      this.currentView = 'home'
     }
   }
 
@@ -131,26 +131,29 @@ export class PaymentWidget extends LitElement {
       <div class="widget-header-container coloured">
         <div class="widget-header">
           <img src=${walletTotemIcon} alt="header wallet totem" />
-          <p class="white-text">${this.config.widgetTitleText || 'Support Me'}</p>
+          <p class="white-text">
+            ${this.config.widgetTitleText || 'Support Me'}
+          </p>
         </div>
-        <img class="close-button" 
-          src=${closeButtonIcon} alt="close widget" 
+        <img
+          class="close-button"
+          src=${closeButtonIcon}
+          alt="close widget"
           @click=${this.toggleWidget}
         />
       </div>
 
       <div class="widget-body margin-top-24">
         <p>
-          ${this.config.widgetDescriptionText || 'Enter your wallet address to make a payment'}
+          ${this.config.widgetDescriptionText ||
+          'Enter your wallet address to make a payment'}
         </p>
-        
+
         <form class="payment-form" @submit=${this.handleSubmit}>
           <div class="form-wallet-address">
             <label class="form-label">
               Pay from
-              <label class="red-text">
-              *
-              </label>
+              <label class="red-text"> * </label>
             </label>
 
             <input
@@ -208,7 +211,7 @@ export class PaymentWidget extends LitElement {
             <div class="powered-by">
               Powered by
               <a href="https://webmonetization.org" target="_blank">
-                <img src=${interledgerLogoIcon} widht="100px" height="24px"/>
+                <img src=${interledgerLogoIcon} widht="100px" height="24px" />
               </a>
             </div>
           </div>

@@ -1,14 +1,18 @@
-import type { Quote, Grant, WalletAddress, PendingGrant } from '@interledger/open-payments';
-import { LitElement, html } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import type { PaymentQuoteInput } from 'publisher-tools-api';
-import type { WidgetController, Amount } from '../widget';
+import type {
+  Quote,
+  Grant,
+  WalletAddress,
+  PendingGrant
+} from '@interledger/open-payments'
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import type { PaymentQuoteInput } from 'publisher-tools-api'
+import type { WidgetController, Amount } from '../widget'
 
-import { confirmationStyles } from './styles';
+import { confirmationStyles } from './styles'
 
-import backButtonIcon from '../assets/wm_back_arrow.svg';
-import closeButtonIcon from '../assets/wm_close_button_purple.svg';
-
+import backButtonIcon from '../assets/wm_back_arrow.svg'
+import closeButtonIcon from '../assets/wm_close_button_purple.svg'
 
 export interface PaymentResponse {
   quote: Quote
@@ -17,23 +21,24 @@ export interface PaymentResponse {
 
 export class PaymentConfirmation extends LitElement {
   @property({ type: Object }) configController!: WidgetController
-  @property({ type: String }) note = '';
-  @property({ type: Boolean }) requestQuote?: boolean = true;
-  @property({ type: Boolean }) requestPayment?: boolean = true;
+  @property({ type: String }) note = ''
+  @property({ type: Boolean }) requestQuote?: boolean = true
+  @property({ type: Boolean }) requestPayment?: boolean = true
 
-  @state() private inputAmount = '';
-  @state() private inputWidth = '';
-  @state() private isLoadingPreview = false;
-  @state() private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  @state() private inputAmount = ''
+  @state() private inputWidth = ''
+  @state() private isLoadingPreview = false
+  @state() private debounceTimer: ReturnType<typeof setTimeout> | null = null
   @state() private formattedDebitAmount?: string
   @state() private formattedReceiveAmount?: string
 
-  static styles = confirmationStyles;
+  static styles = confirmationStyles
 
   connectedCallback() {
     super.connectedCallback()
     this.updateComplete.then(() => {
-      const input = this.shadowRoot?.querySelector<HTMLInputElement>('#amount-input')
+      const input =
+        this.shadowRoot?.querySelector<HTMLInputElement>('#amount-input')
       if (input) {
         input.focus()
       }
@@ -137,7 +142,8 @@ export class PaymentConfirmation extends LitElement {
       (e.shiftKey || e.keyCode < 48 || e.keyCode > 57) &&
       (e.keyCode < 96 || e.keyCode > 105) &&
       e.keyCode !== 190 &&
-      e.keyCode !== 110) {
+      e.keyCode !== 110
+    ) {
       e.preventDefault()
     }
 
@@ -228,7 +234,7 @@ export class PaymentConfirmation extends LitElement {
     }
 
     this.handlePaymentConfirmed()
-  };
+  }
 
   private async handlePaymentConfirmed() {
     try {
@@ -329,8 +335,9 @@ export class PaymentConfirmation extends LitElement {
             <img src=${backButtonIcon} alt="header wallet totem" />
             <label>back</label>
           </div>
-          <img class="close-button" 
-            src=${closeButtonIcon} 
+          <img
+            class="close-button"
+            src=${closeButtonIcon}
             alt="close widget"
             @click=${this.closeWidget}
           />
@@ -374,9 +381,10 @@ export class PaymentConfirmation extends LitElement {
             </button>
           </div>
 
-          ${this.inputAmount ? this.renderPaymentDetails() : this.renderEmptyState()}
+          ${this.inputAmount
+            ? this.renderPaymentDetails()
+            : this.renderEmptyState()}
         </div>
-
       </div>
     `
   }
@@ -384,7 +392,7 @@ export class PaymentConfirmation extends LitElement {
   private renderEmptyState() {
     return html`
       <p class="enter-amount-description">
-        <b>Enter an amount</b> <br>
+        <b>Enter an amount</b> <br />
         Type an amount or select one of the preset values above
       </p>
     `
@@ -419,14 +427,14 @@ export class PaymentConfirmation extends LitElement {
           <span class="quote-badge">Payment Details</span>
         </div>
 
-          <div class="summary-row">
-            <span class="summary-label">You send:</span>
-            <span class="summary-value">${this.formattedDebitAmount}</span>
-          </div>
-          <div class="summary-row">
-            <span class="summary-label">They will receive:</span>
-            <span class="summary-value">${this.formattedReceiveAmount}</span>
-          </div>
+        <div class="summary-row">
+          <span class="summary-label">You send:</span>
+          <span class="summary-value">${this.formattedDebitAmount}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">They will receive:</span>
+          <span class="summary-value">${this.formattedReceiveAmount}</span>
+        </div>
       </div>
 
       <div class="detail-note">
