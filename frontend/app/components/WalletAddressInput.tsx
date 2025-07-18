@@ -1,4 +1,5 @@
-import type { ElementConfigType, ElementErrors } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
+import type { ElementErrors } from '~/lib/types.js'
 import { Input } from './index.js'
 import { tooltips } from '~/lib/tooltips.js'
 

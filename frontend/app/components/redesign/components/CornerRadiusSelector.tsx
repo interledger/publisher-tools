@@ -1,7 +1,7 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
-import { CornerType } from '~/lib/types'
+import { CornerType } from '@shared/types'
 
 export interface CornerRadiusSelectorProps {
   defaultValue?: CornerType

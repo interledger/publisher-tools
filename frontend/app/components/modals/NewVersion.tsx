@@ -1,6 +1,6 @@
 import { Dialog } from '@headlessui/react'
 import { useFetcher } from '@remix-run/react'
-import type { ElementConfigType } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
 import { XIcon } from '~/components/icons.js'
 import { Button, Input, WalletAddress } from '~/components/index.js'
 import { useEffect, useState } from 'react'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
-import { PositionType } from '~/lib/types'
+import { PositionType } from '@shared/types'
 
 export interface PositionSelectorProps {
   defaultValue?: PositionType

@@ -1,5 +1,6 @@
 import { Dialog } from '@headlessui/react'
-import type { ElementConfigType, ElementErrors } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
+import type { ElementErrors } from '~/lib/types.js'
 import { XIcon } from '~/components/icons.js'
 import { Button } from '~/components/index.js'
 import { WalletAddress } from '../WalletAddressInput.js'

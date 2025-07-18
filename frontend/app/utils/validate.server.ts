@@ -1,11 +1,7 @@
 import { z } from 'zod'
-import {
-  CornerType,
-  PositionType,
-  SlideAnimationType,
-  WalletAddressFormatError
-} from '~/lib/types.js'
-import { isWalletAddress, toWalletAddressUrl } from './utils.server.js'
+import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
+import { WalletAddressFormatError } from '~/lib/types.js'
+import { isWalletAddress, toWalletAddressUrl } from '@shared/utils'
 
 const rangeError = { message: 'Value has to be between 16 and 24' }
 
