@@ -23,11 +23,11 @@ export class PaymentWidget extends LitElement {
     return this.configController.config
   }
 
-  @property({ type: Boolean }) isOpen = true;
+  @property({ type: Boolean }) isOpen = false;
   @property({ type: Boolean }) requestQuote?: boolean = true;
   @property({ type: Boolean }) requestPayment?: boolean = true;
 
-  @state() private currentView: string = 'interact';
+  @state() private currentView: string = 'home';
 
   static styles = widgetStyles
 
