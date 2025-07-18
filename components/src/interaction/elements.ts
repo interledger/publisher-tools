@@ -4,6 +4,10 @@ import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-paym
 import type { WidgetController } from '../widget';
 import { interactionStyles } from './styles';
 
+import loadingIcon from '../assets/interaction/authorization_loading.svg'
+import successIcon from '../assets/interaction/authorization_success.svg'
+import failedIcon from '../assets/interaction/authorization_failed.svg'
+
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => { };
@@ -133,14 +137,20 @@ export class PaymentInteraction extends LitElement {
   private renderAuthorizingView() {
     return html`
       <div class="interaction-container">
-        <div class="spinner"></div>
-        <h3 class="status-title">Authorizing Payment</h3>
-        <p class="status-description">
-          Please complete the authorization in the opened tab
-        </p>
-        <button class="action-button cancel-button" @click=${this.cancel}>
-          Cancel
-        </button>
+        <div class="empty-header" ></div>
+        
+        <div class="interaction-body">
+          <div class="title purple">Authorizing payment</div>
+          <div class="description">
+            Please complete the authorization in the opened tab
+          </div>
+          <img src=${loadingIcon}/>
+        </div>
+        
+        <div class="button-container">
+          <button class="empty-button">Cancel payment</button>
+        </div>
+      
       </div>
     `
   }
@@ -148,23 +158,20 @@ export class PaymentInteraction extends LitElement {
   private renderSuccessView() {
     return html`
       <div class="interaction-container">
-        <div class="status-icon success-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+        <div class="empty-header" ></div>
+        
+        <div class="interaction-body">
+          <div class="title green">Payment complete!</div>
+          <div class="description">
+            Your payment has been processed successfully
+          </div>
+          <img src=${successIcon}/>
         </div>
-        <h3 class="status-title success">Payment Complete!</h3>
-        <p class="status-description">
-          Your payment has been processed successfully.
-        </p>
-        <button class="action-button success-button" @click=${this.goBack}>
-          Done
-        </button>
+        
+        <div class="button-container">
+          <button class="filled-button">Done</button>
+        </div>
+      
       </div>
     `
   }
@@ -172,23 +179,17 @@ export class PaymentInteraction extends LitElement {
   private renderFailedView() {
     return html`
       <div class="interaction-container">
-        <div class="status-icon error-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+        <div class="empty-header" ></div>
+        
+        <div class="interaction-body">
+          <div class="title red">Payment authorization rejected</div>
+          <img src=${failedIcon}/>
         </div>
-        <h3 class="status-title error">${this.errorMessage}</h3>
-
-        <div style="display: flex; gap: 12px;">
-          <button class="action-button cancel-button" @click=${this.goBack}>
-            Go to homepage
-          </button>
+        
+        <div class="button-container">
+          <button class="empty-button">Cancel payment</button>
         </div>
+      
       </div>
     `
   }
