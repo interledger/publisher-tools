@@ -133,7 +133,7 @@ export default function Index() {
             Monetization on your website
           </Heading5>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
+          <div className="flex flex-row items-center justify-between p-0 w-full max-lg:flex-col max-lg:gap-lg max-lg:items-center">
             {setupTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -146,7 +146,7 @@ export default function Index() {
                 {tool.description}
               </ToolCard>
             ))}
-            <div className="w-[340px] opacity-0 max-md:hidden" />
+            <div className="w-[340px] opacity-0 max-lg:hidden" />
           </div>
         </div>
 
@@ -162,7 +162,7 @@ export default function Index() {
             support.
           </Heading5>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
+          <div className="flex flex-row items-center justify-between p-0 w-full max-lg:flex-col max-lg:gap-lg max-lg:items-center">
             {interactionTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -170,7 +170,7 @@ export default function Index() {
                 tags={tool.tags}
                 icon={tool.icon}
                 to={tool.link}
-                className={tool.disabled ? 'invisible' : ''}
+                className={tool.disabled ? 'max-lg:hidden lg:invisible' : ''}
               >
                 {tool.description}
               </ToolCard>
