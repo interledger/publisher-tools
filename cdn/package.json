@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "npm run build && vite preview",
     "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
     "prepare": "wrangler types"
   },
   "devDependencies": {
