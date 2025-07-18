@@ -1,7 +1,11 @@
-import type { Grant, Quote, PendingGrant } from '@interledger/open-payments';
-import type { ReactiveController, ReactiveControllerHost } from 'lit';
-import type { WalletAddress, WidgetConfig, FormatAmountArgs, FormattedAmount } from './types';
-
+import type { Grant, Quote, PendingGrant } from '@interledger/open-payments'
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
+import type {
+  WalletAddress,
+  WidgetConfig,
+  FormatAmountArgs,
+  FormattedAmount
+} from './types'
 
 export interface WidgetState {
   walletAddress: WalletAddress
@@ -25,10 +29,10 @@ export class WidgetController implements ReactiveController {
   }
 
   /** called when the host is connected to the DOM */
-  hostConnected() { }
+  hostConnected() {}
 
   /** called when the host is disconnected from the DOM */
-  hostDisconnected() { }
+  hostDisconnected() {}
 
   get config(): WidgetConfig {
     return this._config
@@ -94,7 +98,7 @@ export class WidgetController implements ReactiveController {
       amountWithCurrency,
       symbol
     }
-  };
+  }
 
   applyTheme(element: HTMLElement) {
     const theme = this._config.theme

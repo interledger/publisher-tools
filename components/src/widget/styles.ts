@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import { css } from 'lit'
 
 const toggleButtonStyles = css`
   .trigger {
@@ -17,7 +17,6 @@ const toggleButtonStyles = css`
   .trigger img {
     width: 2rem;
   }
-
 `
 
 const contentStyles = css`
@@ -80,7 +79,7 @@ export const headerStyles = css`
   }
 
   .coloured {
-    background:  #56B7B5;
+    background: #56b7b5;
   }
 
   .widget-header {
@@ -104,7 +103,7 @@ export const headerStyles = css`
   }
 
   .white-text {
-    color: #FFF;
+    color: #fff;
   }
 
   .close-button {
@@ -203,9 +202,8 @@ const formStyles = css`
   }
 
   .red-text {
-    color: var(--Tools-Colors-Text-paragraph-error, #E51D25);
+    color: var(--Tools-Colors-Text-paragraph-error, #e51d25);
   }
-
 
   .support-button {
     width: 100%;
@@ -251,7 +249,7 @@ const footerStyles = css`
   }
 
   .widget-footer .delimiter {
-    background: var(--Colors-silver-200, #DFDFDF);
+    background: var(--Colors-silver-200, #dfdfdf);
 
     width: 276px;
     height: 1px;
@@ -273,4 +271,4 @@ export const widgetStyles = [
   bodySyles,
   formStyles,
   footerStyles
-];
+]

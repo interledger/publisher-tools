@@ -1,81 +1,82 @@
-import { css } from "lit";
-import { 
+import { css } from 'lit'
+import {
   headerStyles as step1HeaderStyles,
-  bodySyles as step1BodyStyles,
-} from "../widget/styles";
+  bodySyles as step1BodyStyles
+} from '../widget/styles'
 
 const headerStyles = [
   step1HeaderStyles,
   css`
-  .confimation-buttons-header {
-    color: var(--Tools-Colors-Text-buttons-default, #8075B3);
+    .confimation-buttons-header {
+      color: var(--Tools-Colors-Text-buttons-default, #8075b3);
 
-    font-family: var(--Font-Family-Inter, Inter);
-    font-size: var(--Font-Size-text-base, 16px);
-    font-style: normal;
-    font-weight: var(--Font-Weight-Regular, 400);
-    line-height: var(--Font-Line-Height-md, 24px); /* 150% */
-  }
+      font-family: var(--Font-Family-Inter, Inter);
+      font-size: var(--Font-Size-text-base, 16px);
+      font-style: normal;
+      font-weight: var(--Font-Weight-Regular, 400);
+      line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+    }
 
-  .pointer {
-    cursor: pointer;
-  }
-`
+    .pointer {
+      cursor: pointer;
+    }
+  `
 ]
 
 const bodyStyles = [
   step1BodyStyles,
   css`
-  .preset-buttons {
+    .preset-buttons {
       display: flex;
       justify-content: center;
       gap: 12px;
       margin: var(--Spacings-lg, 24px) 0 var(--Spacings-lg, 24px) 0;
     }
 
-  .preset-btn {
-    display: flex;
-    width: 56px;
-    height: 56px;
-    cursor: pointer;
-    padding: var(--Padding-4, 16px) 12px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    border-radius: 100px;
-    border: 1px solid var(--Tools-Colors-Buttons-Thumbnail-Buttons-edge-default, #C9C9C9);
-    background: #FFFFFF;
-    
-    color: var(--Tools-Colors-Text-fields-placeholder-default, #7B7B7B);
+    .preset-btn {
+      display: flex;
+      width: 56px;
+      height: 56px;
+      cursor: pointer;
+      padding: var(--Padding-4, 16px) 12px;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border-radius: 100px;
+      border: 1px solid
+        var(--Tools-Colors-Buttons-Thumbnail-Buttons-edge-default, #c9c9c9);
+      background: #ffffff;
 
-    font-family: var(--Font-Family-Inter, Inter);
-    font-size: var(--Font-Size-text-base, 16px);
-    font-style: normal;
-    font-weight: var(--Font-Weight-Bold, 700);
-    line-height: var(--Font-Line-Height-md, 24px); /* 150% */
-  }
+      color: var(--Tools-Colors-Text-fields-placeholder-default, #7b7b7b);
 
-  .preset-btn:hover {
-    background: var(--primary-color);
-    color: white;
-  }
+      font-family: var(--Font-Family-Inter, Inter);
+      font-size: var(--Font-Size-text-base, 16px);
+      font-style: normal;
+      font-weight: var(--Font-Weight-Bold, 700);
+      line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+    }
 
-  .preset-btn.selected {
-    background: var(--primary-color);
-    color: white;
-  }
+    .preset-btn:hover {
+      background: var(--primary-color);
+      color: white;
+    }
 
-  .widget-body p, 
-  .widget-body label {
-    color: var(--Tools-Colors-Text-fields-helpertext-default, #676767);
+    .preset-btn.selected {
+      background: var(--primary-color);
+      color: white;
+    }
 
-    font-family: var(--Font-Family-Inter, Inter);
-    font-size: var(--Font-Size-text-sm, 14px);
-    font-style: normal;
-    font-weight: var(--Font-Weight-Regular, 400);
-    line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
-  }
-`
+    .widget-body p,
+    .widget-body label {
+      color: var(--Tools-Colors-Text-fields-helpertext-default, #676767);
+
+      font-family: var(--Font-Family-Inter, Inter);
+      font-size: var(--Font-Size-text-sm, 14px);
+      font-style: normal;
+      font-weight: var(--Font-Weight-Regular, 400);
+      line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+    }
+  `
 ]
 
 const paymentCardStyles = css`
@@ -101,13 +102,13 @@ const paymentCardStyles = css`
     align-self: stretch;
 
     border-radius: 8px;
-    border: 1px solid var(--Colors-green-200, #ABE4DF);
-    background: var(--Colors-mint-50, #F2FBF9);
+    border: 1px solid var(--Colors-green-200, #abe4df);
+    background: var(--Colors-mint-50, #f2fbf9);
   }
 
   .failed {
-    border: 1px solid var(--Colors-red-200, #FECACA);
-    background: var(--Colors-red-50, #FEF2F2);
+    border: 1px solid var(--Colors-red-200, #fecaca);
+    background: var(--Colors-red-50, #fef2f2);
   }
 
   .detail-header {
@@ -117,7 +118,7 @@ const paymentCardStyles = css`
   }
 
   .quote-badge {
-    color: var(--Tools-Colors-Interface-heading-container, #8075B3);
+    color: var(--Tools-Colors-Interface-heading-container, #8075b3);
 
     font-family: var(--Font-Family-Inter, Inter);
     font-size: var(--Font-Size-text-base, 16px);
@@ -152,7 +153,7 @@ const paymentCardStyles = css`
   }
 
   .summary-value {
-    color: var(--Tools-Colors-Text-paragraph-success, #27797A);
+    color: var(--Tools-Colors-Text-paragraph-success, #27797a);
 
     /* Typography Hierarchy/body-emphasis */
     font-family: var(--Font-Family-Inter, Inter);
