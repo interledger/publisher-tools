@@ -38,6 +38,7 @@ export default function RevsharePageWrapper() {
 function Revshare() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [importTag, setImportTag] = useState('')
+  const [importError, setImportError] = useState('')
   const { shares, setShares } = useShares()
 
   const revSharePointers = useMemo(
@@ -58,123 +59,110 @@ function Revshare() {
     setShares([...shares, newShare()])
   }
 
-  const handleImportConfirm = () => {
+  const hangLinkTagImport = () => {
     try {
+      setImportError('')
       const shares = tagOrPointerToShares(importTag) || []
       setShares(shares)
       setIsModalOpen(false)
     } catch {
-      return 'Invalid revshare tag.'
+      setImportError('Invalid monetization tag or payment pointer.')
     }
   }
 
   return (
     <div className="bg-interface-bg-main w-full px-md">
       <div className="max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
-        <HeadingCore
-          title="Probabilistic revshare"
-          onBackClick={() => console.log('Back clicked')}
-          className="xl:mt-2xl"
-        >
+        <HeadingCore title="Probabilistic revshare">
           Probabilistic revenue sharing is a way to share a portion of a web
           monetized page&apos;s earnings between multiple wallet addresses and
           payment pointers. Each time a web monetized user visits the page, a
           recipient will be chosen at random. Payments will go to the chosen
           recipient until the page is closed or reloaded.
         </HeadingCore>
-
-        <div className="space-y-lg">
-          <Card className="w-full">
-            <Heading5>Wallet Address</Heading5>
-            <ShareInputHeader />
-            {shares.map((share, i) => {
-              return (
-                <ShareInput
-                  key={i}
-                  index={i}
-                  name={share.name || ''}
-                  onChangeName={(name) =>
-                    setShares(changeList(shares, i, { name }))
-                  }
-                  pointer={share.pointer}
-                  onChangePointer={(pointer) =>
-                    setShares(changeList(shares, i, { pointer }))
-                  }
-                  weight={share.weight || 0}
-                  onChangeWeight={(weight) =>
-                    setShares(changeList(shares, i, { weight }))
-                  }
-                  weightDisabled={!share.pointer}
-                  percent={
-                    Number(share.weight)
-                      ? (share.weight || 1) / totalWeight
-                      : 100
-                  }
-                  percentDisabled={!share.pointer || shares.length <= 1}
-                  onChangePercent={(percent) =>
-                    setShares(
-                      changeList(shares, i, {
-                        weight: trimDecimal(
-                          weightFromPercent(
-                            percent,
-                            share.weight || 1,
-                            totalWeight
-                          )
+        <Card>
+          <Heading5>Wallet Address</Heading5>
+          <ShareInputHeader />
+          {shares.map((share, i) => {
+            return (
+              <ShareInput
+                key={i}
+                index={i}
+                name={share.name || ''}
+                onChangeName={(name) =>
+                  setShares(changeList(shares, i, { name }))
+                }
+                pointer={share.pointer}
+                onChangePointer={(pointer) =>
+                  setShares(changeList(shares, i, { pointer }))
+                }
+                weight={share.weight || 0}
+                onChangeWeight={(weight) =>
+                  setShares(changeList(shares, i, { weight }))
+                }
+                weightDisabled={!share.pointer}
+                percent={
+                  Number(share.weight) ? (share.weight || 1) / totalWeight : 100
+                }
+                percentDisabled={!share.pointer || shares.length <= 1}
+                onChangePercent={(percent) =>
+                  setShares(
+                    changeList(shares, i, {
+                      weight: trimDecimal(
+                        weightFromPercent(
+                          percent / 100,
+                          share.weight || 1,
+                          totalWeight
                         )
-                      })
-                    )
-                  }
-                  onRemove={() => setShares(dropIndex(shares, i))}
+                      )
+                    })
+                  )
+                }
+                onRemove={() => setShares(dropIndex(shares, i))}
+              />
+            )
+          })}
+          <hr />
+          <div className="flex flex-col-reverse md:flex-col gap-md">
+            {revSharePointers && (
+              <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main p-sm">
+                <CodeBlock
+                  link={revSharePointers}
+                  className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal"
                 />
-              )
-            })}
-            <hr />
-            <div className="flex flex-col-reverse md:flex-col gap-md">
-              {/* Payment Pointer Section (Will appear second on mobile, first on desktop) */}
-              {revSharePointers && (
-                <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main p-sm">
-                  <CodeBlock
-                    link={revSharePointers}
-                    className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal"
-                  />
-                  <button
-                    onClick={handleCopyClick}
-                    aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
-                  >
-                    {isCopied ? (
-                      <SVGCheckIcon className="h-6 w-6" />
-                    ) : (
-                      <SVGCopyIcon className="h-6 w-6" />
-                    )}
-                  </button>
-                </div>
-              )}
-
-              {/* Action Buttons Section (Will appear first on mobile, second on desktop) */}
-              <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
-                <ToolsSecondaryButton
-                  className="w-full md:w-auto"
-                  onClick={() => setIsModalOpen(true)}
+                <button
+                  onClick={handleCopyClick}
+                  aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
                 >
-                  Import
-                </ToolsSecondaryButton>
-                <ToolsPrimaryButton
-                  icon="share"
-                  iconPosition="right"
-                  className="flex w-full items-center justify-center md:w-auto"
-                  onClick={addShare}
-                >
-                  Add rev share
-                </ToolsPrimaryButton>
+                  {isCopied ? (
+                    <SVGCheckIcon className="h-6 w-6" />
+                  ) : (
+                    <SVGCopyIcon className="h-6 w-6" />
+                  )}
+                </button>
               </div>
+            )}
+            <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
+              <ToolsSecondaryButton
+                className="w-full md:w-auto"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Import
+              </ToolsSecondaryButton>
+              <ToolsPrimaryButton
+                icon="share"
+                iconPosition="right"
+                className="flex w-full items-center justify-center md:w-auto"
+                onClick={addShare}
+              >
+                Add rev share
+              </ToolsPrimaryButton>
             </div>
-          </Card>
-        </div>
-        {/* COMPLETE - Chart section */}
+          </div>
+        </Card>
         <div className="my-lg md:my-md">
           <RevShareChart shares={shares} />
         </div>
-        {/* COMPLETE - Information section */}
         <div className="flex flex-col gap-md mb-2xl">
           <Heading5>Information</Heading5>
           <div>
@@ -223,9 +211,10 @@ function Revshare() {
         <ImportTagModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={handleImportConfirm}
+          onConfirm={hangLinkTagImport}
           tag={importTag}
           setTag={setImportTag}
+          errorMessage={importError}
         />
       )}
     </div>
