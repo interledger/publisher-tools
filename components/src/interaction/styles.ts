@@ -1,6 +1,140 @@
 import { css } from "lit";
+import { bodySyles as step1BodyStyles } from "../widget/styles";
+
+const hostStyles = [
+css`
+  :host {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+    min-height: 0;
+  }
+`
+]
 
 export const interactionStyles = [
+  hostStyles,
+step1BodyStyles,
+css`
+  .interaction-container {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: center;
+    flex: 1;
+    padding: 0px var(--Paddings-2xl, 32px);
+  }
+    
+  .empty-header {
+    height: 64px;
+  }
+    
+  .interaction-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--Spacings-lg, 24px);
+  }
+
+  .interaction-body img {
+    margin-top: var(--Paddings-2xl, 32px);
+  }
+    
+  .title {
+    text-align: center;
+
+    /* Typography Hierarchy/H6 */
+    font-family: var(--Font-Family-Inter, Inter);
+    font-size: var(--Font-Size-text-lg, 18px);
+    font-style: normal;
+    font-weight: var(--Font-Weight-Bold, 700);
+    line-height: var(--Font-Line-Height-lg, 26px); /* 144.444% */
+  }
+
+  .purple {
+    color: var(--Tools-Colors-Interface-heading-container, #8075B3);
+  }
+
+  .green {
+    color: var(--Tools-Colors-Text-paragraph-success, #27797A)
+  }
+
+  .red {
+    color: var(--Tools-Colors-Text-paragraph-error, #E51D25);
+  }
+
+  .description {
+    color: var(--Tools-Colors-Text-fields-helpertext-default, #676767);
+    text-align: center;
+
+    /* Typography Hierarchy/small-standard */
+    font-family: var(--Font-Family-Inter, Inter);
+    font-size: var(--Font-Size-text-sm, 14px);
+    font-style: normal;
+    font-weight: var(--Font-Weight-Regular, 400);
+    line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  }
+
+  .icon {
+    width: 122px;
+    height: 200px;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .empty-button {
+    display: flex;
+    padding: var(--Paddings-sm, 12px) 12px;
+    justify-content: center;
+    align-items: center;
+    gap: var(--Spacings-xs, 8px);
+    align-self: stretch;
+
+    border-radius: var(--Radius-Moderate-rounding, 8px);
+    border: 1px solid var(--Tools-Colors-Buttons-Secondary-edge-default, #8075B3);
+    background: #FFFFFF;
+
+    color: var(--Tools-Colors-Text-buttons-default, #8075B3);
+    /* Typography Hierarchy/body-emphasis */
+    font-family: var(--Font-Family-Inter, Inter);
+    font-size: var(--Font-Size-text-base, 16px);
+    font-style: normal;
+    font-weight: var(--Font-Weight-Bold, 400);
+    line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+  }
+
+  .filled-button {
+    display: flex;
+    padding: var(--Paddings-xs, 8px);
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    height: 44px;
+
+    border-radius: 8px;
+    background: var(--Colors-green-400, #56B7B5);
+
+    color: #FFFFFF;
+
+    /* Typography Hierarchy/small-standard */
+    font-family: var(--Font-Family-Inter, Inter);
+    font-size: var(--Font-Size-text-sm, 14px);
+    font-style: normal;
+    font-weight: var(--Font-Weight-Regular, 400);
+    line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  }
+`
+]
+
+const interactionStylesOld = [
 
   css`
   :host {

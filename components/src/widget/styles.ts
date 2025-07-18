@@ -47,6 +47,8 @@ const contentStyles = css`
     transition: all 1s ease-in-out;
     border-radius: 8px;
     outline: none;
+
+    flex: 1 1 auto;
   }
 
   .content:focus {
@@ -239,6 +241,8 @@ const footerStyles = css`
     margin-top: auto;
     padding: 0 16px;
     align-items: center;
+
+    flex: 0 0 auto;
   }
 
   .widget-footer a {
