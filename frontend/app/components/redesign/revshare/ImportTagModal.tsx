@@ -9,6 +9,7 @@ interface ImportTagModalProps {
   onClose?: () => void
   onConfirm?: () => void
   tag: string
+  errorMessage: string
   setTag: (tag: string) => void
   className?: string
 }
@@ -19,7 +20,8 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   tag,
   setTag,
   onConfirm,
-  className = ''
+  className = '',
+  errorMessage
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<Element | null>(null)
@@ -38,7 +40,6 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
       document.addEventListener('keydown', handleKeyDown)
       return () => {
         document.removeEventListener('keydown', handleKeyDown)
-        ;(triggerRef.current as HTMLElement)?.focus()
       }
     }
   }, [isOpen, onClose])
@@ -87,6 +88,9 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             value={tag}
             onChange={(e) => setTag(e.target.value)}
           />
+          {errorMessage && (
+            <p className="text-sm text-red-500 w-full">{errorMessage}</p>
+          )}
           <ToolsPrimaryButton className="w-full" onClick={onConfirm}>
             Import revshare(s)
           </ToolsPrimaryButton>

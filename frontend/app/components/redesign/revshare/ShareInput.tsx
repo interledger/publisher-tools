@@ -63,7 +63,6 @@ export function ShareInput({
         GRID_COLS,
         GRID_GAP
       )}
-      data-key={index}
     >
       <div className="flex flex-row justify-between items-center md:hidden">
         <BodyStandard>Revshare #{index + 1}</BodyStandard>
@@ -112,7 +111,7 @@ export function ShareInput({
           step="any"
           value={percent ? Math.round(percent * 100) : ''}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            onChangePercent(Number(e.target.value) / 100)
+            onChangePercent(Number(e.target.value))
           }
           disabled={percentDisabled}
         />
