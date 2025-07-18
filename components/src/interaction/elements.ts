@@ -147,10 +147,8 @@ export class PaymentInteraction extends LitElement {
           <img src=${loadingIcon}/>
         </div>
         
-        <div class="button-container">
-          <button class="empty-button">Cancel payment</button>
-        </div>
-      
+        <button class="button-container empty-button" @click=${this.cancel}>Cancel payment</button>
+     
       </div>
     `
   }
@@ -168,10 +166,7 @@ export class PaymentInteraction extends LitElement {
           <img src=${successIcon}/>
         </div>
         
-        <div class="button-container">
-          <button class="filled-button">Done</button>
-        </div>
-      
+        <button class="button-container filled-button" @click=${this.goBack}>Done</button>
       </div>
     `
   }
@@ -186,10 +181,8 @@ export class PaymentInteraction extends LitElement {
           <img src=${failedIcon}/>
         </div>
         
-        <div class="button-container">
-          <button class="empty-button">Cancel payment</button>
-        </div>
-      
+        <button class="button-container empty-button" @click=${this.cancel}>Cancel payment</button>
+
       </div>
     `
   }

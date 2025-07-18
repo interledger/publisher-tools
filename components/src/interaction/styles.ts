@@ -87,6 +87,7 @@ css`
     align-items: center;
     width: 100%;
     margin-top: auto;
+    cursor:pointer;
   }
 
   .empty-button {
