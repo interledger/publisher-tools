@@ -118,6 +118,8 @@ css`
     gap: 10px;
     align-self: stretch;
     height: 44px;
+    outline: none;
+    border: none;
 
     border-radius: 8px;
     background: var(--Colors-green-400, #56B7B5);
