@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "tsc --project tsconfig.json",
+    "build": "wrangler deploy --dry-run --outdir dist",
     "preview": "wrangler dev",
     "deploy": "wrangler deploy"
   },
