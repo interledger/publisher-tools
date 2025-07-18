@@ -45,6 +45,3 @@ worker-configuration.d.ts
 dist
 build
 .cache
-
-# Certs
-certs
