@@ -9,17 +9,12 @@ import { useSnapshot } from 'valtio'
 import { toolState } from '~/stores/toolStore'
 
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-
-// Import the banner web component
-import type { BannerConfig, PaymentBanner } from '@tools/components'
-
-// Declare the custom element for TypeScript
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
+import type { BannerConfig, Banner } from '@tools/components'
+declare module 'react' {
+  export interface JSX {
+    IntrinsicElements: {
       'wm-banner': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<PaymentBanner> },
+        React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<Banner> },
         HTMLElement
       >
     }
@@ -105,13 +100,13 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         <div
           id="browser-content"
           className={`flex-1 p-md flex justify-center bg-transparent ${
-            snap.toolConfig?.bannerPosition === 'Top'
+            snap.currentConfig?.bannerPosition === 'Top'
               ? 'items-start'
               : 'items-end'
           }`}
         >
           <div className="w-full max-w-full">
-            <Banner ref={bannerRef} />
+            <BannerPreview ref={bannerRef} />
           </div>
         </div>
       </div>
@@ -123,11 +118,11 @@ interface BannerHandle {
   triggerPreview: () => void
 }
 
-const Banner = React.forwardRef<BannerHandle>((props, ref) => {
+const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const snap = useSnapshot(toolState)
   const [isLoaded, setIsLoaded] = useState(false)
   const bannerContainerRef = useRef<HTMLDivElement>(null)
-  const bannerElementRef = useRef<PaymentBanner | null>(null)
+  const bannerElementRef = useRef<Banner | null>(null)
 
   useImperativeHandle(ref, () => ({
     triggerPreview: () => {
@@ -145,7 +140,8 @@ const Banner = React.forwardRef<BannerHandle>((props, ref) => {
       }
 
       // dynamic import - ensure component only runs on the client side and not on SSR
-      await import('@tools/components/banner')
+      const { Banner } = await import('@tools/components/banner')
+      customElements.define('wm-banner', Banner)
       setIsLoaded(true)
     }
 
@@ -155,19 +151,19 @@ const Banner = React.forwardRef<BannerHandle>((props, ref) => {
   const bannerConfig = useMemo(
     () =>
       ({
-        bannerTitleText: snap.toolConfig?.bannerTitleText,
-        bannerDescriptionText: snap.toolConfig?.bannerDescriptionText,
-        bannerPosition: snap.toolConfig?.bannerPosition,
-        bannerBorderRadius: snap.toolConfig?.bannerBorder,
-        bannerSlideAnimation: snap.toolConfig?.bannerSlideAnimation,
+        bannerTitleText: snap.currentConfig?.bannerTitleText,
+        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
+        bannerPosition: snap.currentConfig?.bannerPosition,
+        bannerBorderRadius: snap.currentConfig?.bannerBorder,
+        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
         theme: {
-          backgroundColor: snap.toolConfig?.bannerBackgroundColor,
-          textColor: snap.toolConfig?.bannerTextColor,
-          fontSize: snap.toolConfig?.bannerFontSize,
-          fontFamily: snap.toolConfig?.bannerFontName
+          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
+          textColor: snap.currentConfig?.bannerTextColor,
+          fontSize: snap.currentConfig?.bannerFontSize,
+          fontFamily: snap.currentConfig?.bannerFontName
         }
       }) as BannerConfig,
-    [snap.toolConfig]
+    [snap.currentConfig]
   )
 
   useEffect(() => {
@@ -177,7 +173,7 @@ const Banner = React.forwardRef<BannerHandle>((props, ref) => {
         return
       }
 
-      const bannerElement = document.createElement('wm-banner') as PaymentBanner
+      const bannerElement = document.createElement('wm-banner') as Banner
       bannerElement.config = bannerConfig
       bannerElementRef.current = bannerElement
 
@@ -201,5 +197,5 @@ const Banner = React.forwardRef<BannerHandle>((props, ref) => {
   )
 })
 
-Banner.displayName = 'Banner'
+BannerPreview.displayName = 'Banner'
 export default BuilderBackground

@@ -9,11 +9,7 @@ import {
   normalizeWalletAddress
 } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
-import type {
-  ConfigVersions,
-  ElementConfigType,
-  ElementErrors
-} from '~/lib/types.js'
+import type { ConfigVersions, ElementErrors } from '~/lib/types.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { validateForm } from '~/utils/validate.server.js'
@@ -47,18 +43,13 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
     }
 
     const ownerWalletAddress = payload.walletAddress as string
-    const defaultData = { default: getDefaultData() }
-    defaultData.default.walletAddress = ownerWalletAddress
-
     try {
       const storageService = new ConfigStorageService(env)
       const fileContentString =
         await storageService.getJson<ConfigVersions>(ownerWalletAddress)
 
-      let fileContent = Object.assign(defaultData, fileContentString)
-      fileContent = filterDeepProperties(fileContent) as {
-        default: ElementConfigType
-      } & ConfigVersions
+      let fileContent = Object.assign({}, fileContentString)
+      fileContent = filterDeepProperties(fileContent) as ConfigVersions
 
       return json(fileContent)
     } catch (error) {

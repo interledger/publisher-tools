@@ -26,7 +26,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   return (
     <label
       className={cx(
-        'flex items-center gap-xs w-[94px]',
+        'flex items-center gap-xs',
         disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         className
       )}

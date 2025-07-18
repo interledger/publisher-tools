@@ -5,3 +5,4 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 FRONTEND_URL = "https://webmonetization.org/tools/"
+AWS_PREFIX = "20250717"

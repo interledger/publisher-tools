@@ -1,20 +1,25 @@
 import { HeadingCore, LinkTagGenerator } from '@/components'
+import { useNavigate } from '@remix-run/react'
 
 export default function LinkTag() {
+  const navigate = useNavigate()
   return (
     <div className="bg-interface-bg-main w-full px-md">
       <div className="w-full max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
-        <HeadingCore title="Link Tag Generator">
+        <HeadingCore
+          title="Link Tag Generator"
+          onBackClick={() => navigate('/')}
+        >
           Use the Link Tag Generator to generate a monetization &lt;link&gt;
-          element for your HTML documents. Just enter your{' '}
+          element for your HTML documents. Just enter your&nbsp;
           <a href="https://paymentpointers.org/" className="underline">
             payment pointer
           </a>
-          or
+          &nbsp;or&nbsp;
           <a href="https://webmonetization.org/wallets/" className="underline">
             wallet address
           </a>
-          into the field and click Generate.
+          &nbsp;into the field and click Generate.
         </HeadingCore>
       </div>
       <div className="flex flex-col items-center gap-md">

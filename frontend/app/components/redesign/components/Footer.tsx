@@ -1,5 +1,5 @@
 import { useLocation } from '@remix-run/react'
-import { EnhancedFooter } from './footer/EnhancedFooter'
+import { EnhancedFooter } from '@/components'
 
 export const Footer = () => {
   const location = useLocation()

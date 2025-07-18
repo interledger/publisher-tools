@@ -19,6 +19,7 @@ export type Env = {
   AWS_SECRET_ACCESS_KEY: string
   AWS_REGION: string
   AWS_BUCKET_NAME: string
+  AWS_PREFIX: string
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string

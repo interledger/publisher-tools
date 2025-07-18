@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react'
 import { NavLink as RemixNavLink } from '@remix-run/react'
-import { GhostButton } from './index.js'
-import { SVGHamburgerIcon } from '~/assets/svg'
+import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
+import { SVGHamburgerIcon } from '@/assets'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
-import { NavLink } from './header/NavigationLink.js'
-import { MobileMenu } from './header/MobileMenu.js'
-import { NavDropdown } from './header/NavDropdown.js'
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
