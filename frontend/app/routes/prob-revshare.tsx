@@ -12,7 +12,7 @@ import {
 } from '@/components'
 import {
   ShareInput,
-  ShareInputMobile
+  ShareInputHeader
 } from '../components/redesign/revshare/ShareInput'
 import { useShares, newShare, SharesProvider } from '../stores/revshareStore'
 
@@ -83,118 +83,51 @@ function Revshare() {
           recipient until the page is closed or reloaded.
         </HeadingCore>
 
-        <div className=" space-y-lg">
-          <Card className="overflow-x-auto">
-            <Heading5>Wallet Address/Payment Pointer</Heading5>
-            <table className="min-w-full  hidden md:table">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="text-left bg-gray-100 p-2 text-gray-400 font-normal rounded-tl-sm rounded-bl-sm">
-                    Name
-                  </th>
-                  <th className="text-left bg-gray-100 p-2 text-gray-400 font-normal">
-                    Payment Pointer
-                  </th>
-                  <th className="text-left bg-gray-100 p-2 text-gray-400 font-normal">
-                    Weight
-                  </th>
-                  <th className="text-left bg-gray-100 p-2 text-gray-400 font-normal">
-                    Percentage
-                  </th>
-                  <th className="text-left bg-gray-100 p-2 text-gray-400 font-normal rounded-tr-sm rounded-br-sm">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {shares.map((share, i) => {
-                  return (
-                    <ShareInput
-                      key={i}
-                      index={i}
-                      name={share.name || ''}
-                      onChangeName={(name) =>
-                        setShares(changeList(shares, i, { name }))
-                      }
-                      pointer={share.pointer}
-                      onChangePointer={(pointer) =>
-                        setShares(changeList(shares, i, { pointer }))
-                      }
-                      weight={share.weight || 0}
-                      onChangeWeight={(weight) =>
-                        setShares(changeList(shares, i, { weight }))
-                      }
-                      weightDisabled={!share.pointer}
-                      percent={
-                        Number(share.weight)
-                          ? (share.weight || 1) / totalWeight
-                          : 100
-                      }
-                      percentDisabled={!share.pointer || shares.length <= 1}
-                      onChangePercent={(percent) =>
-                        setShares(
-                          changeList(shares, i, {
-                            weight: trimDecimal(
-                              weightFromPercent(
-                                percent,
-                                share.weight || 1,
-                                totalWeight
-                              )
-                            )
-                          })
-                        )
-                      }
-                      onRemove={() => setShares(dropIndex(shares, i))}
-                      removeDisabled={shares.length <= 1}
-                    />
-                  )
-                })}
-              </tbody>
-            </table>
-            <div className="md:hidden space-y-4">
-              {shares.map((share, i) => {
-                return (
-                  <ShareInputMobile
-                    key={i}
-                    index={i}
-                    name={share.name || ''}
-                    onChangeName={(name) =>
-                      setShares(changeList(shares, i, { name }))
-                    }
-                    pointer={share.pointer}
-                    onChangePointer={(pointer) =>
-                      setShares(changeList(shares, i, { pointer }))
-                    }
-                    weight={share.weight || 0}
-                    onChangeWeight={(weight) =>
-                      setShares(changeList(shares, i, { weight }))
-                    }
-                    weightDisabled={!share.pointer}
-                    percent={
-                      Number(share.weight)
-                        ? (share.weight || 1) / totalWeight
-                        : 100
-                    }
-                    percentDisabled={!share.pointer || shares.length <= 1}
-                    onChangePercent={(percent) =>
-                      setShares(
-                        changeList(shares, i, {
-                          weight: trimDecimal(
-                            weightFromPercent(
-                              percent,
-                              share.weight || 1,
-                              totalWeight
-                            )
+        <div className="space-y-lg">
+          <Card className="w-full">
+            <Heading5>Wallet Address</Heading5>
+            <ShareInputHeader />
+            {shares.map((share, i) => {
+              return (
+                <ShareInput
+                  key={i}
+                  index={i}
+                  name={share.name || ''}
+                  onChangeName={(name) =>
+                    setShares(changeList(shares, i, { name }))
+                  }
+                  pointer={share.pointer}
+                  onChangePointer={(pointer) =>
+                    setShares(changeList(shares, i, { pointer }))
+                  }
+                  weight={share.weight || 0}
+                  onChangeWeight={(weight) =>
+                    setShares(changeList(shares, i, { weight }))
+                  }
+                  weightDisabled={!share.pointer}
+                  percent={
+                    Number(share.weight)
+                      ? (share.weight || 1) / totalWeight
+                      : 100
+                  }
+                  percentDisabled={!share.pointer || shares.length <= 1}
+                  onChangePercent={(percent) =>
+                    setShares(
+                      changeList(shares, i, {
+                        weight: trimDecimal(
+                          weightFromPercent(
+                            percent,
+                            share.weight || 1,
+                            totalWeight
                           )
-                        })
-                      )
-                    }
-                    onRemove={() => setShares(dropIndex(shares, i))}
-                    removeDisabled={shares.length <= 1}
-                  />
-                )
-              })}
-            </div>
+                        )
+                      })
+                    )
+                  }
+                  onRemove={() => setShares(dropIndex(shares, i))}
+                />
+              )
+            })}
             <hr />
             <div className="flex flex-col-reverse md:flex-col gap-md">
               {/* Payment Pointer Section (Will appear second on mobile, first on desktop) */}
@@ -238,7 +171,7 @@ function Revshare() {
           </Card>
         </div>
         {/* COMPLETE - Chart section */}
-        <div className="my-lg lg:my-md">
+        <div className="my-lg md:my-md">
           <RevShareChart shares={shares} />
         </div>
         {/* COMPLETE - Information section */}
@@ -280,7 +213,7 @@ function Revshare() {
               recipients into the table. The Percent field will open for edits.
               When you&apos;re finished, add the generated monetization link tag
               to your site. The link contains a unique URL hosted on
-              https://webmonetization.org/api/revshare/pay/
+              https://webmonetization.org/api/revshare/pay/.
             </p>
           </div>
         </div>

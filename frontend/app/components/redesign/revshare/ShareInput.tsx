@@ -1,5 +1,7 @@
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { InputField, ToolsSecondaryButton } from '@/components'
+import { BodyStandard } from '../Typography'
 import { SVGDeleteScript } from '~/assets/svg'
 
 interface ShareInputProps {
@@ -13,9 +15,30 @@ interface ShareInputProps {
   onChangeWeight: (weight: number) => void
   onChangePercent: (percent: number) => void
   onRemove: () => void
-  removeDisabled?: boolean
   percentDisabled?: boolean
   weightDisabled?: boolean
+}
+
+const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
+const GRID_GAP = 'md:gap-x-md'
+
+export function ShareInputHeader() {
+  return (
+    <div
+      className={cx(
+        'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
+        'md:grid',
+        GRID_COLS,
+        GRID_GAP
+      )}
+    >
+      <div>Name</div>
+      <div>Payment Pointer</div>
+      <div>Weight</div>
+      <div>Percentage</div>
+      <div>Action</div>
+    </div>
+  )
 }
 
 export function ShareInput({
@@ -29,113 +52,54 @@ export function ShareInput({
   onChangeWeight,
   onChangePercent,
   onRemove,
-  //removeDisabled = false,
   percentDisabled = false,
   weightDisabled = false
 }: ShareInputProps) {
   return (
-    <tr key={index}>
-      <td className="p-2 w-64">
-        <InputField
-          placeholder="Fill in name"
-          value={name}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangeName(ev.target.value)
-          }
-        />
-      </td>
-      <td className="p-2">
-        <InputField
-          placeholder="Wallet address/Payment pointer"
-          value={pointer}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangePointer(ev.target.value)
-          }
-        />
-      </td>
-      <td className="p-2 w-24">
-        <InputField
-          type="number"
-          value={weight}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangeWeight(Number(ev.target.value))
-          }
-          disabled={weightDisabled}
-          min={0}
-        />
-      </td>
-      <td className="p-2 w-24">
-        <InputField
-          type="number"
-          value={percent ? Math.round(percent * 100) : ''}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangePercent(Number(ev.target.value) / 100)
-          }
-          disabled={percentDisabled}
-          min={0}
-          max={100}
-        />
-      </td>
-      <td className="p-2 px-4 w-24">
-        <ToolsSecondaryButton onClick={onRemove} className="!border-none !p-0">
-          <SVGDeleteScript width={32} height={32} />
-        </ToolsSecondaryButton>
-      </td>
-    </tr>
-  )
-}
-
-export function ShareInputMobile({
-  index,
-  name,
-  pointer,
-  weight,
-  percent,
-  onChangeName,
-  onChangePointer,
-  onChangeWeight,
-  onChangePercent,
-  onRemove,
-  //removeDisabled = false,
-  percentDisabled = false,
-  weightDisabled = false
-}: ShareInputProps) {
-  return (
-    <div className="bg-white rounded-lg shadow p-4 mb-4" data-key={index}>
-      <div className="mb-2 flex flex-row justify-between">
-        <span className="font-normal">Revshare #{index + 1} </span>
-
-        <ToolsSecondaryButton onClick={onRemove} className="!border-none !p-0">
+    <div
+      className={cx(
+        'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
+        'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
+        GRID_COLS,
+        GRID_GAP
+      )}
+      data-key={index}
+    >
+      <div className="flex flex-row justify-between items-center md:hidden">
+        <BodyStandard>Revshare #{index + 1}</BodyStandard>
+        <ToolsSecondaryButton
+          onClick={onRemove}
+          className="border-none py-sm px-xs shrink-0"
+        >
           <SVGDeleteScript width={20} height={20} />
         </ToolsSecondaryButton>
       </div>
-
-      <div className="mb-2">
+      <div>
         <InputField
           placeholder="Fill in name"
           value={name}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangeName(ev.target.value)
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChangeName(e.target.value)
           }
         />
       </div>
-      <div className="mb-2">
+      <div>
         <InputField
-          placeholder="Wallet address/Payment pointer"
+          placeholder="Payment pointer"
           value={pointer}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangePointer(ev.target.value)
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChangePointer(e.target.value)
           }
         />
       </div>
-      <div className="mb-2">
+      <div>
         <InputField
           type="number"
           value={weight}
           min={0}
           step="any"
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangeWeight(Number(ev.target.value))
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChangeWeight(Number(e.target.value))
           }
           disabled={weightDisabled}
         />
@@ -147,11 +111,19 @@ export function ShareInputMobile({
           max={100}
           step="any"
           value={percent ? Math.round(percent * 100) : ''}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) =>
-            onChangePercent(Number(ev.target.value) / 100)
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChangePercent(Number(e.target.value) / 100)
           }
           disabled={percentDisabled}
         />
+      </div>
+      <div className="hidden md:block">
+        <ToolsSecondaryButton
+          onClick={onRemove}
+          className="border-none py-sm px-xs shrink-0"
+        >
+          <SVGDeleteScript width={20} height={20} />
+        </ToolsSecondaryButton>
       </div>
     </div>
   )
