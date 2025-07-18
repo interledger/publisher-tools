@@ -3,7 +3,7 @@ import type { ElementConfigType } from '@shared/types'
 
 export function getDefaultData(): ElementConfigType {
   return {
-    // @ts-expect-error TODO
+    // @ts-expect-error added by user later, not part of "default" data. TODO: use correct types at all site to extend default data.
     walletAddress: undefined,
 
     buttonFontName: 'Arial',
