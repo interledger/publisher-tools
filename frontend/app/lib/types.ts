@@ -40,8 +40,7 @@ export interface ConfigVersions {
 
 export interface ElementConfigType {
   // general config
-  css: string
-  version?: string
+  versionName: string // The display name for this configuration version
   tag?: string // when creating a new config
   walletAddress?: string
 
@@ -63,6 +62,7 @@ export interface ElementConfigType {
   bannerBorder: CornerType
   bannerTextColor: string
   bannerBackgroundColor: string
+  bannerAnimation?: string
 
   // widget specific
   widgetFontName: string
@@ -90,7 +90,6 @@ export type SanitizedFields = Pick<
   | 'buttonText'
   | 'buttonDescriptionText'
   | 'walletAddress'
-  | 'version'
   | 'tag'
 >
 

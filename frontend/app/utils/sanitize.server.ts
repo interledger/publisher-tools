@@ -12,8 +12,7 @@ export const sanitizeConfigFields = <T extends Partial<SanitizedFields>>(
     'buttonText',
     'buttonDescriptionText',
     'walletAddress',
-    'tag',
-    'version'
+    'tag'
   ]
 
   const htmlFields: Array<keyof SanitizedFields> = [

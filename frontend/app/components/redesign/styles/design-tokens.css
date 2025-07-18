@@ -1,0 +1,262 @@
+/* Design Tokens CSS Variables */
+:root {
+  /* Base Colors */
+  --Colors-green-50: #dbe9e7;
+  --Colors-green-200: #abe4df;
+  --Colors-green-400: #56b7b5;
+  --Colors-green-600: #27797a;
+  --Colors-green-800: #204d4f;
+
+  --Colors-Purple-50: #f3f4fa;
+  --Colors-Purple-100: #a7a6d3;
+  --Colors-Purple-300: #8075b3;
+  --Colors-Purple-600: #5b5380;
+  --Colors-Purple-800: #2d2a3c;
+
+  --Colors-mint-50: #f2fbf9;
+  --Colors-mint-100: #d4f3eb;
+  --Colors-mint-300: #98e1d0;
+  --Colors-mint-600: #4ab7a5;
+  --Colors-mint-800: #247d71;
+
+  --Colors-blue-50: #f6f8fa;
+  --Colors-blue-100: #d0dded;
+  --Colors-blue-300: #a3bedc;
+  --Colors-blue-600: #5a77b6;
+  --Colors-blue-800: #455588;
+
+  --Colors-orange-50: #fff6ed;
+  --Colors-orange-100: #ffd3a8;
+  --Colors-orange-300: #ff9852;
+  --Colors-orange-600: #ef4c07;
+  --Colors-orange-800: #9d2d0f;
+
+  --Colors-pink-50: #fef1f5;
+  --Colors-pink-100: #fee5ee;
+  --Colors-pink-300: #ffc8dc;
+  --Colors-pink-600: #ff6698;
+  --Colors-pink-800: #eb174a;
+
+  --Colors-red-50: #fff1f2;
+  --Colors-red-100: #fee5ee;
+  --Colors-red-300: #ff7a7f;
+  --Colors-red-600: #e51d25;
+  --Colors-red-800: #a01419;
+
+  --black: #000000;
+  --white: #ffffff;
+
+  --Colors-silver-50: #f7f7f7;
+  --Colors-silver-100: #efefef;
+  --Colors-silver-200: #dfdfdf;
+  --Colors-silver-300: #c9c9c9;
+  --Colors-silver-400: #adadad;
+  --Colors-silver-500: #999999;
+  --Colors-silver-600: #888888;
+  --Colors-silver-700: #7b7b7b;
+  --Colors-silver-800: #676767;
+  --Colors-silver-900: #545454;
+  --Colors-silver-950: #363636;
+
+  /* Spacing */
+  --Spacing-half: 2px;
+  --Spacing-1: 4px;
+  --Spacing-2: 8px;
+  --Spacing-3: 12px;
+  --Spacing-4: 16px;
+  --Spacing-5: 24px;
+  --Spacing-6: 32px;
+  --Spacing-7: 48px;
+  --Spacing-8: 60px;
+  --Spacing-9: 120px;
+
+  /* Padding */
+  --Padding-half: 2px;
+  --Padding-1: 4px;
+  --Padding-2: 8px;
+  --Padding-3: 12px;
+  --Padding-4: 16px;
+  --Padding-5: 24px;
+  --Padding-6: 32px;
+  --Padding-7: 60px;
+  --Padding-8: 120px;
+
+  /* Typography */
+  --Font-Family-Inter: 'Inter', ui-sans-serif, system-ui;
+  --Font-Weight-Light: 300;
+  --Font-Weight-Regular: 400;
+  --Font-Weight-Medium: 500;
+  --Font-Weight-Semi-Bold: 600;
+  --Font-Weight-Bold: 700;
+
+  --Font-Size-text-xs: 12px;
+  --Font-Size-text-sm: 14px;
+  --Font-Size-text-base: 16px;
+  --Font-Size-text-lg: 18px;
+  --Font-Size-text-xl: 20px;
+  --Font-Size-text-2xl: 24px;
+  --Font-Size-text-3xl: 30px;
+  --Font-Size-text-4xl: 36px;
+  --Font-Size-text-5xl: 48px;
+  --Font-Size-text-6xl: 60px;
+  --Font-Size-text-7xl: 72px;
+
+  --Font-Line-Height-xs: 16px;
+  --Font-Line-Height-sm: 20px;
+  --Font-Line-Height-md: 24px;
+  --Font-Line-Height-lg: 26px;
+  --Font-Line-Height-xl: 28px;
+  --Font-Line-Height-2xl: 32px;
+  --Font-Line-Height-3xl: 38px;
+  --Font-Line-Height-4xl: 44px;
+  --Font-Line-Height-5xl: 56px;
+  --Font-Line-Height-6xl: 70px;
+  --Font-Line-Height-7xl: 80px;
+
+  /* Border Radius */
+  --Radius-none: 0px;
+  --Radius-xs: 4px;
+  --Radius-sm: 8px;
+  --Radius-md: 16px;
+  --Radius-full: 99999px;
+}
+
+/* Tokens - Mode 1 */
+:root {
+  --Spacings-3xs: var(--Spacing-half);
+  --Spacings-2xs: var(--Spacing-1);
+  --Spacings-xs: var(--Spacing-2);
+  --Spacings-sm: var(--Spacing-3);
+  --Spacings-md: var(--Spacing-4);
+  --Spacings-lg: var(--Spacing-5);
+  --Spacings-2xl: var(--Spacing-6);
+  --Spacings-3xl: var(--Spacing-7);
+  --Spacings-4xl: var(--Spacing-8);
+  --Spacings-5xl: var(--Spacing-9);
+  --Paddings-3xs: var(--Padding-half);
+  --Paddings-2xs: var(--Padding-1);
+  --Paddings-xs: var(--Padding-2);
+  --Paddings-sm: var(--Padding-3);
+  --Paddings-md: var(--Padding-4);
+  --Paddings-lg: var(--Padding-5);
+  --Paddings-2xl: var(--Padding-6);
+  --Paddings-3xl: var(--Padding-7);
+  --Paddings-4xl: var(--Padding-8);
+  --Typography-Hierarchy-caption-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-caption-Font-size: var(--Font-Size-text-xs);
+  --Typography-Hierarchy-caption-Line-height: var(--Font-Line-Height-xs);
+  --Typography-Hierarchy-caption-Font-weight: var(--Font-Weight-Regular);
+  --Typography-Hierarchy-small-standard-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-small-standard-Font-size: var(--Font-Size-text-sm);
+  --Typography-Hierarchy-small-standard-Line-height: var(--Font-Line-Height-sm);
+  --Typography-Hierarchy-small-standard-Font-weight: var(--Font-Weight-Regular);
+  --Typography-Hierarchy-body-standard-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-body-standard-Font-size: var(--Font-Size-text-base);
+  --Typography-Hierarchy-body-standard-Line-height: var(--Font-Line-Height-md);
+  --Typography-Hierarchy-body-standard-Font-weight: var(--Font-Weight-Regular);
+  --Typography-Hierarchy-H6-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-H5-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-H5-Font-size: var(--Font-Size-text-xl);
+  --Typography-Hierarchy-H5-Line-height: var(--Font-Line-Height-xl);
+  --Typography-Hierarchy-H5-Font-weight: var(--Font-Weight-Regular);
+  --Typography-Hierarchy-H4-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-H4-Font-size: var(--Font-Size-text-2xl);
+  --Typography-Hierarchy-H4-Line-height: var(--Font-Line-Height-2xl);
+  --Typography-Hierarchy-H4-Font-weight: var(--Font-Weight-Bold);
+  --Typography-Hierarchy-H3-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-H3-Font-size: var(--Font-Size-text-3xl);
+  --Typography-Hierarchy-H3-Line-height: var(--Font-Line-Height-3xl);
+  --Typography-Hierarchy-H3-Font-weight: var(--Font-Weight-Medium);
+  --Typography-Hierarchy-H2-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-H2-Font-size: var(--Font-Size-text-4xl);
+  --Typography-Hierarchy-H2-Line-height: var(--Font-Line-Height-4xl);
+  --Typography-Hierarchy-H2-Font-weight: var(--Font-Weight-Bold);
+  --Typography-Hierarchy-H1-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-H1-Font-size: var(--Font-Size-text-5xl);
+  --Typography-Hierarchy-H1-Line-height: var(--Font-Line-Height-5xl);
+  --Typography-Hierarchy-H1-Font-weight: var(--Font-Weight-Bold);
+  --Typography-Hierarchy-Display-2-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-Display-2-Font-size: var(--Font-Size-text-6xl);
+  --Typography-Hierarchy-Display-2-Line-height: var(--Font-Line-Height-6xl);
+  --Typography-Hierarchy-Display-2-Font-weight: var(--Font-Weight-Medium);
+  --Typography-Hierarchy-Display-1-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-Display-1-Font-size: var(--Font-Size-text-7xl);
+  --Typography-Hierarchy-Display-1-Line-height: var(--Font-Line-Height-7xl);
+  --Typography-Hierarchy-Display-1-Font-weight: var(--Font-Weight-Bold);
+  --Typography-Hierarchy-H6-Font-size: var(--Font-Size-text-lg);
+  --Typography-Hierarchy-H6-Line-height: var(--Font-Line-Height-lg);
+  --Typography-Hierarchy-H6-Font-weight: var(--Font-Weight-Bold);
+  --Typography-Hierarchy-body-emphasis-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-body-emphasis-Font-size: var(--Font-Size-text-base);
+  --Typography-Hierarchy-body-emphasis-Line-height: var(--Font-Line-Height-md);
+  --Typography-Hierarchy-body-emphasis-Font-weight: var(--Font-Weight-Bold);
+  --Typography-Hierarchy-small-emphasis-Font-Family: var(--Font-Family-Inter);
+  --Typography-Hierarchy-small-emphasis-Font-size: var(--Font-Size-text-sm);
+  --Typography-Hierarchy-small-emphasis-Line-height: var(--Font-Line-Height-sm);
+  --Typography-Hierarchy-small-emphasis-Font-weight: var(--Font-Weight-Bold);
+  --Radius-Sharp-corners: var(--Radius-none);
+  --Radius-Slight-rounding: var(--Radius-xs);
+  --Radius-Moderate-rounding: var(--Radius-sm);
+  --Radius-Pill-rounding: var(--Radius-md);
+  --Radius-Fully-rounded: var(--Radius-full);
+  --Tools-Colors-Interface-bg-main: var(--Colors-blue-50);
+  --Tools-Colors-Interface-bg-container: var(--white);
+  --Tools-Colors-Interface-edge-container: var(--Colors-silver-200);
+  --Tools-Colors-Interface-heading-container: var(--Colors-Purple-300);
+  --Tools-Colors-Interface-bg-stickymenu: var(--Colors-silver-100);
+  --Tools-Colors-Builder-Tabs-bg-default: var(--Colors-blue-50);
+  --Tools-Colors-Tabs-bg-active-default: var(--white);
+  --Tools-Colors-Tabs-bg-inactive-hover: var(--Colors-Purple-50);
+  --Tools-Colors-Buttons-Primary-bg-default: var(--Colors-green-400);
+  --Tools-Colors-Buttons-Primary-bg-hover: var(--Colors-green-600);
+  --Tools-Colors-Buttons-Primary-edge-focus: var(--Colors-Purple-600);
+  --Tools-Colors-Buttons-Thumbnail-Buttons-edge-default: var(
+    --Colors-silver-300
+  );
+  --Tools-Colors-Buttons-Thumbnail-Buttons-edge-hover: var(--Colors-silver-400);
+  --Tools-Colors-Buttons-Thumbnail-Buttons-edge-focus: var(--Colors-Purple-600);
+  --Tools-Colors-Text-negative-strong: var(--white);
+  --Tools-Colors-Icons-negative-strong: var(--white);
+  --Tools-Colors-Tooltips-background: var(--Colors-Purple-800);
+  --Tools-Colors-Fields-edge-default: var(--Colors-silver-300);
+  --Tools-Colors-Fields-edge-hover: var(--Colors-silver-400);
+  --Tools-Colors-Fields-edge-focus: var(--Colors-Purple-600);
+  --Tools-Colors-Fields-edge-disabled: var(--Colors-silver-200);
+  --Tools-Colors-Fields-bg-disabled: var(--Colors-silver-100);
+  --Tools-Colors-Fields-edge-sentiment-error: var(--Colors-red-600);
+  --Landing-page-colors-Interface-footer-bg: var(--Colors-mint-100);
+  --Landing-page-colors-text-buttons-default: var(--Colors-silver-800);
+  --Landing-page-colors-icons-buttons-default: var(--Colors-silver-800);
+  --Landing-page-colors-icons-buttons-hover: var(--black);
+  --Landing-page-colors-text-buttons-hover: var(--black);
+  --Tools-Colors-Buttons-Secondary-edge-default: var(--Colors-Purple-300);
+  --Tools-Colors-Text-buttons-default: var(--Colors-Purple-300);
+  --Tools-Colors-Icons-buttons-default: var(--Colors-Purple-300);
+  --Tools-Colors-Buttons-Secondary-edge-hover: var(--Colors-Purple-600);
+  --Tools-Colors-Icons-buttons-hover: var(--Colors-Purple-600);
+  --Tools-Colors-Text-buttons-hover: var(--Colors-Purple-600);
+  --Tools-Colors-Buttons-Ghost-surface-hover: var(--Colors-Purple-50);
+  --Tools-Colors-Text-tabs-inactive-default: var(--Colors-silver-600);
+  --Tools-Colors-Text-paragraph-standard: var(--Colors-silver-950);
+  --Tools-Colors-Text-paragraph-error: var(--Colors-red-600);
+  --Tools-Colors-Text-paragraph-success: var(--Colors-green-600);
+  --Tools-Colors-Text-fields-helpertext-default: var(--Colors-silver-800);
+  --Tools-Colors-Icons-sentiment-success: var(--Colors-mint-600);
+  --Tools-Colors-Text-fields-placeholder-default: var(--Colors-silver-700);
+  --Tools-Colors-Text-fields-placeholder-disabled: var(--Colors-silver-300);
+  --Tools-Colors-Icons-field-default: var(--Colors-silver-700);
+  --Tools-Colors-Icons-field-filled: var(--Colors-silver-950);
+  --Tools-Colors-Icons-field-disabled: var(--Colors-silver-300);
+  --Landing-page-colors-buttons-pill-tag-edge: var(--Colors-blue-300);
+  --Landing-page-colors-buttons-primary-button-bg-default: var(--black);
+  --Landing-page-colors-buttons-primary-button-bg-hover: var(
+    --Colors-silver-950
+  );
+  --Landing-page-colors-buttons-primary-button-bg-focus: var(
+    --Colors-silver-950
+  );
+  --Landing-page-colors-buttons-Secondary-button-edge-default: var(
+    --Colors-silver-800
+  );
+  --Landing-page-colors-buttons-Secondary-button-edge-hover: var(--black);
+}
