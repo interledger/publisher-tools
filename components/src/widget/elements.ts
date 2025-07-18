@@ -221,5 +221,3 @@ export class PaymentWidget extends LitElement {
     `
   }
 }
-
-customElements.define('wm-payment-widget', PaymentWidget)
