@@ -188,13 +188,8 @@ export const SVGCopyScript: SvgIcon = ({ className }) => (
   </svg>
 )
 
-export const SVGArrowLeft = ({ className = '' }: { className?: string }) => (
-  <svg
-    className={`w-5 h-5 ${className}`}
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+export const SVGArrowLeft: SvgIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 20 20" fill="none">
     <path
       d="M8.25341 14.4233L3.83008 9.99999L8.25341 5.57666L8.84341 6.17666L5.43591 9.58333H16.1692V10.4167H5.43674L8.84424 13.8242L8.25341 14.4233Z"
       fill="#8075B3"
