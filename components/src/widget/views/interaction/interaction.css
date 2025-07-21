@@ -4,9 +4,11 @@
   flex-direction: column;
   flex: 1 1 0%;
   min-height: 0;
+  --wm-button-radius: 8px;
+  font-family: var(--wm-font-family, system-ui, sans-serif);
 }
 
-/* --- Body (Shared from Widget) --- */
+/* --- Body --- */
 .widget-body {
   display: flex;
   flex-direction: column;
@@ -23,7 +25,6 @@
 .widget-body p {
   align-self: stretch;
   color: var(--Tools-Colors-Text-paragraph-standard, #363636);
-  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -58,7 +59,6 @@
 
 .title {
   text-align: center;
-  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-lg, 18px);
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
@@ -80,7 +80,6 @@
 .description {
   color: var(--Tools-Colors-Text-fields-helpertext-default, #676767);
   text-align: center;
-  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -108,11 +107,10 @@
   align-items: center;
   gap: var(--Spacings-xs, 8px);
   align-self: stretch;
-  border-radius: var(--Radius-Moderate-rounding, 8px);
+  border-radius: var(--wm-button-radius, 8px);
   border: 1px solid var(--Tools-Colors-Buttons-Secondary-edge-default, #8075b3);
   background: #ffffff;
   color: var(--Tools-Colors-Text-buttons-default, #8075b3);
-  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 400);
@@ -129,10 +127,9 @@
   height: 44px;
   outline: none;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--wm-button-radius, 8px);
   background: var(--Colors-green-400, #56b7b5);
   color: #ffffff;
-  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);

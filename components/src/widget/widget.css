@@ -5,6 +5,8 @@
   --primary-color: var(--wm-primary-color, #10b981);
   --background-color: var(--wm-background-color, #ffffff);
   --text-color: var(--wm-text-color, #000000);
+  --wm-button-radius: 8px;
+  --wm-font-family: system-ui, sans-serif;
 }
 
 /* --- Main widget container --- */
@@ -25,9 +27,10 @@
   padding-bottom: 32px;
   align-items: center;
   transition: all 1s ease-in-out;
-  border-radius: 8px;
+  border-radius: var(--wm-button-radius, 8px);
   outline: none;
   flex: 1 1 auto;
+  font-family: var(--wm-font-family, system-ui, sans-serif);
 }
 
 .content:focus {
@@ -92,7 +95,7 @@
 }
 
 .widget-header p {
-  font-family: Inter;
+  font-family: var(--wm-font-family, Inter, system-ui, sans-serif);
   font-size: 18px;
   font-style: normal;
   font-weight: 700;
@@ -128,7 +131,7 @@
 .widget-body p {
   align-self: stretch;
   color: var(--Tools-Colors-Text-paragraph-standard, #363636);
-  font-family: var(--Font-Family-Inter, Inter);
+  font-family: var(--wm-font-family, Inter, system-ui, sans-serif);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -175,10 +178,11 @@
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: var(--wm-button-radius, 6px);
   font-size: 16px;
   box-sizing: border-box;
   transition: border-color 0.2s ease;
+  font-family: var(--wm-font-family, system-ui, sans-serif);
 }
 
 .form-input:focus {
@@ -202,12 +206,13 @@
   background: var(--primary-color);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--wm-button-radius, 8px);
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: auto;
+  font-family: var(--wm-font-family, system-ui, sans-serif);
 }
 
 .support-button:hover:not(:disabled) {
@@ -230,6 +235,7 @@
   padding: 0 16px;
   align-items: center;
   flex: 0 0 auto;
+  font-family: var(--wm-font-family, system-ui, sans-serif);
 }
 
 .widget-footer a {
