@@ -1,4 +1,4 @@
-import { PaymentWidget } from '@tools/components/widget'
+import { PaymentWidget } from '@tools/components'
 import { Banner } from '@tools/components/banner'
 
 customElements.define('wm-payment-widget', PaymentWidget)
