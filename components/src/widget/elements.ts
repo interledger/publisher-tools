@@ -199,6 +199,9 @@ export class PaymentWidget extends LitElement {
   }
 
   render() {
+    if (!this.config) {
+      return html``
+    }
     const triggerIcon = this.config.widgetTriggerIcon || defaultTriggerIcon
 
     return html`
