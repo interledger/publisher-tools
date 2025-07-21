@@ -173,7 +173,7 @@ export class PaymentInteraction extends LitElement {
 
         <button class="button-container filled-button" @click=${this.goBack}>
           Done
-        </button> 
+        </button>
       </div>
     `
   }
