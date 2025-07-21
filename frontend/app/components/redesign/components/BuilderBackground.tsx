@@ -9,7 +9,8 @@ import { useSnapshot } from 'valtio'
 import { toolState } from '~/stores/toolStore'
 
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import type { BannerConfig, Banner } from '@tools/components'
+import { type BannerConfig, Banner } from '@tools/components'
+
 declare module 'react' {
   export interface JSX {
     IntrinsicElements: {
@@ -130,19 +131,17 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   }))
 
   useEffect(() => {
-    const loadBannerComponent = async () => {
+    const initializeBanner = () => {
       if (customElements.get('wm-banner')) {
         setIsLoaded(true)
         return
       }
 
-      // dynamic import - ensure component only runs on the client side and not on SSR
-      const { Banner } = await import('@tools/components/banner')
       customElements.define('wm-banner', Banner)
       setIsLoaded(true)
     }
 
-    loadBannerComponent()
+    initializeBanner()
   }, [])
 
   const bannerConfig = useMemo(
