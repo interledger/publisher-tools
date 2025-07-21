@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { cx } from 'class-variance-authority'
 import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
