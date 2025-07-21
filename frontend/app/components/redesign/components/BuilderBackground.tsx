@@ -77,7 +77,6 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         Preview
       </ToolsSecondaryButton>
 
-      {/* Browser Mockup */}
       <div
         id="browser-mockup"
         className="w-full h-[406px]
@@ -88,7 +87,6 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
           flex flex-col
         "
       >
-        {/* Browser Header */}
         <div className="flex items-center p-md bg-white">
           <div className="flex items-center gap-4 w-full">
             <BrowserDots />
@@ -96,7 +94,6 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
           </div>
         </div>
 
-        {/* Browser Content */}
         <div
           id="browser-content"
           className={`flex-1 p-md flex justify-center bg-transparent ${

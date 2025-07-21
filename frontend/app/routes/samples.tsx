@@ -292,7 +292,6 @@ export function RedesignDemo() {
       <ConfigCondition
         number="1"
         title="Bibi's banner"
-        editCount="3 new edits"
         presetName="Preset one"
         checked={false}
         onCheckedChange={(checked) => console.log('Checkbox changed:', checked)}

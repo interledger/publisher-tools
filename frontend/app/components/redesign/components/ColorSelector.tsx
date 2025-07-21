@@ -84,19 +84,16 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               ref={selectorRef}
             >
               <div className="flex items-center">
-                {/* color preview */}
                 <div
                   className="w-8 h-8 rounded-full border border-silver-200 mr-2"
                   style={{ backgroundColor: selectedColor }}
                 />
 
-                {/* label */}
                 <span className="text-sm leading-sm text-text-primary">
                   {label}
                 </span>
               </div>
 
-              {/* dropdown arrow icon */}
               <span
                 className={cx(
                   'flex items-center justify-center transition-transform duration-200',
@@ -114,7 +111,6 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
             {isOpen && (
               <div className="absolute z-10 mt-1 left-0 w-auto bg-white border border-silver-200 rounded-sm shadow-sm p-3">
                 <div className="flex items-center gap-3 whitespace-nowrap">
-                  {/* color picker icon */}
                   <SVGColorPicker
                     className="w-5 h-5 cursor-pointer fill-purple-300"
                     onClick={() => {
