@@ -5,7 +5,6 @@ import { isGrantValidAndAccepted } from '~/utils/open-payments.server'
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
 
-  const elementType = params.type
   const url = new URL(request.url)
   const interactRef = url.searchParams.get('interact_ref') || ''
   const result = url.searchParams.get('result') || ''

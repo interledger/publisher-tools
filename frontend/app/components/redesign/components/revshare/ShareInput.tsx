@@ -129,3 +129,5 @@ export const ShareInput = React.memo(
     )
   }
 )
+
+ShareInput.displayName = 'ShareInput'

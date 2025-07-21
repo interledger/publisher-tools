@@ -225,7 +225,7 @@ export function validatePointer(pointer: string | undefined): boolean {
   try {
     const _ = new URL(normalizePointerPrefix(pointer))
     return true
-  } catch (err) {
+  } catch (_err) {
     return false
   }
 }
