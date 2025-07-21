@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useContext, useState, createContext, useEffect } from 'react'
+import { useContext, useState, createContext, useEffect, useMemo } from 'react'
 import type { SharesState, Share } from '../lib/revshare'
 import { validateShares } from '../lib/revshare'
 
@@ -60,7 +60,7 @@ export function SharesProvider({ children }: SharesProviderProps) {
     _setShares(newShares)
   }
 
-  const value: SharesContextState = { shares, setShares }
+  const value = useMemo(() => ({ shares, setShares }), [shares, setShares])
 
   return (
     <SharesContext.Provider value={value}>{children}</SharesContext.Provider>
