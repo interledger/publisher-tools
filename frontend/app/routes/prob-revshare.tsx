@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
+import { useNavigate } from '@remix-run/react'
 import { Heading5 } from '../components/redesign/Typography'
 import { SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
 import {
@@ -13,7 +14,7 @@ import {
 import {
   ShareInput,
   ShareInputHeader
-} from '../components/redesign/revshare/ShareInput'
+} from '../components/redesign/components/revshare/ShareInput'
 import { useShares, newShare, SharesProvider } from '../stores/revshareStore'
 
 import {
@@ -36,6 +37,7 @@ export default function RevsharePageWrapper() {
 }
 
 function Revshare() {
+  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [importTag, setImportTag] = useState('')
   const [importError, setImportError] = useState('')
@@ -55,25 +57,74 @@ function Revshare() {
     [shares]
   )
 
-  const addShare = () => {
+  const addShare = useCallback(() => {
     setShares([...shares, newShare()])
-  }
+  }, [shares, setShares])
 
-  const hangLinkTagImport = () => {
+  const handleLinkTagImport = useCallback(() => {
     try {
       setImportError('')
-      const shares = tagOrPointerToShares(importTag) || []
-      setShares(shares)
+      const importedShares = tagOrPointerToShares(importTag) || []
+      setShares(importedShares)
       setIsModalOpen(false)
     } catch {
       setImportError('Invalid monetization tag or payment pointer.')
     }
-  }
+  }, [importTag, setShares, setIsModalOpen])
+
+  const handleChangeName = useCallback(
+    (index: number, name: string) => {
+      setShares(changeList(shares, index, { name }))
+    },
+    [shares, setShares]
+  )
+
+  const handleChangePointer = useCallback(
+    (index: number, pointer: string) => {
+      setShares(changeList(shares, index, { pointer }))
+    },
+    [shares, setShares]
+  )
+
+  const handleChangeWeight = useCallback(
+    (index: number, weight: number) => {
+      setShares(changeList(shares, index, { weight }))
+    },
+    [shares, setShares]
+  )
+
+  const handleChangePercent = useCallback(
+    (
+      index: number,
+      percent: number,
+      shareWeight: number,
+      totalWeight: number
+    ) => {
+      setShares(
+        changeList(shares, index, {
+          weight: trimDecimal(
+            weightFromPercent(percent / 100, shareWeight || 1, totalWeight)
+          )
+        })
+      )
+    },
+    [shares, setShares]
+  )
+
+  const handleRemove = useCallback(
+    (index: number) => {
+      setShares(dropIndex(shares, index))
+    },
+    [shares, setShares]
+  )
 
   return (
     <div className="bg-interface-bg-main w-full px-md">
       <div className="max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
-        <HeadingCore title="Probabilistic revshare">
+        <HeadingCore
+          title="Probabilistic revshare"
+          onBackClick={() => navigate('/')}
+        >
           Probabilistic revenue sharing is a way to share a portion of a web
           monetized page&apos;s earnings between multiple wallet addresses and
           payment pointers. Each time a web monetized user visits the page, a
@@ -89,36 +140,25 @@ function Revshare() {
                 key={i}
                 index={i}
                 name={share.name || ''}
-                onChangeName={(name) =>
-                  setShares(changeList(shares, i, { name }))
-                }
+                onChangeName={(name) => handleChangeName(i, name)}
                 pointer={share.pointer}
-                onChangePointer={(pointer) =>
-                  setShares(changeList(shares, i, { pointer }))
-                }
+                onChangePointer={(pointer) => handleChangePointer(i, pointer)}
                 weight={share.weight || 0}
-                onChangeWeight={(weight) =>
-                  setShares(changeList(shares, i, { weight }))
-                }
+                onChangeWeight={(weight) => handleChangeWeight(i, weight)}
                 weightDisabled={!share.pointer}
                 percent={
                   Number(share.weight) ? (share.weight || 1) / totalWeight : 100
                 }
                 percentDisabled={!share.pointer || shares.length <= 1}
                 onChangePercent={(percent) =>
-                  setShares(
-                    changeList(shares, i, {
-                      weight: trimDecimal(
-                        weightFromPercent(
-                          percent / 100,
-                          share.weight || 1,
-                          totalWeight
-                        )
-                      )
-                    })
+                  handleChangePercent(
+                    i,
+                    percent,
+                    share.weight || 1,
+                    totalWeight
                   )
                 }
-                onRemove={() => setShares(dropIndex(shares, i))}
+                onRemove={() => handleRemove(i)}
               />
             )
           })}
@@ -211,7 +251,7 @@ function Revshare() {
         <ImportTagModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={hangLinkTagImport}
+          onConfirm={handleLinkTagImport}
           tag={importTag}
           setTag={setImportTag}
           errorMessage={importError}
