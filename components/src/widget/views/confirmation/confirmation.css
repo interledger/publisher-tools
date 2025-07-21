@@ -101,7 +101,8 @@
   align-items: center;
   gap: 10px;
   border-radius: 100px;
-  border: 1px solid var(--Tools-Colors-Buttons-Thumbnail-Buttons-edge-default, #c9c9c9);
+  border: 1px solid
+    var(--Tools-Colors-Buttons-Thumbnail-Buttons-edge-default, #c9c9c9);
   background: #ffffff;
   color: var(--Tools-Colors-Text-fields-placeholder-default, #7b7b7b);
   font-family: var(--Font-Family-Inter, Inter);
