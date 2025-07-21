@@ -1,11 +1,12 @@
-import '../confirmation.js'
-import '../interaction.js'
+import './views/confirmation/confirmation.js'
+import './views/interaction/interaction.js'
 
-import { LitElement, html } from 'lit'
+import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { WidgetController } from './controller'
 import type { WidgetConfig, WalletAddress } from './types'
-import { widgetStyles } from './styles.js'
+
+import widgetStyles from './widget.css?raw'
 
 import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
 import closeButtonIcon from '../assets/wm_close_button.svg'
@@ -29,7 +30,7 @@ export class PaymentWidget extends LitElement {
 
   @state() private currentView: string = 'home'
 
-  static styles = widgetStyles
+  static styles = unsafeCSS(widgetStyles)
 
   private async handleSubmit(e: Event) {
     e.preventDefault()
