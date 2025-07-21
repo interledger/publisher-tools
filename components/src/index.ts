@@ -1,2 +1,2 @@
-export * from './widget/index.js'
+export * from './widget'
 export * from './banner.js'
