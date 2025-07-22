@@ -67,6 +67,7 @@ function Revshare() {
       const importedShares = tagOrPointerToShares(importTag) || []
       setShares(importedShares)
       setIsModalOpen(false)
+      setImportTag('')
     } catch {
       setImportError('Invalid monetization tag or payment pointer.')
     }
