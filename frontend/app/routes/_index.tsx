@@ -133,7 +133,12 @@ export default function Index() {
             Monetization on your website
           </Heading5>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 w-full justify-items-center lg:justify-items-start">
+          <div
+            className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
+            }}
+          >
             {setupTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -162,7 +167,12 @@ export default function Index() {
             support.
           </Heading5>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 w-full justify-items-center lg:justify-items-start">
+          <div
+            className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
+            }}
+          >
             {interactionTools.map((tool, index) => (
               <ToolCard
                 key={index}

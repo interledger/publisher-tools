@@ -29,7 +29,7 @@ export const ToolCard = ({
 
   return (
     <div
-      className={`bg-interface-bg-main rounded-2xl w-[340px] max-w-full h-[397px] p-md flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer ${className}`}
+      className={`bg-interface-bg-main rounded-2xl w-full max-w-[330px] p-md pb-xl flex flex-col gap-md relative group hover:bg-white hover:cursor-pointer ${className}`}
     >
       <img src={icon} alt="" className="h-[160px]" />
 
