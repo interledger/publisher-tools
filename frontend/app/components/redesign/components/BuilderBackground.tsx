@@ -131,14 +131,11 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
 
   useEffect(() => {
     const loadBannerComponent = async () => {
-      if (customElements.get('wm-banner')) {
-        setIsLoaded(true)
-        return
+      if (!customElements.get('wm-banner')) {
+        // dynamic import - ensure component only runs on the client side and not on SSR
+        const { Banner } = await import('@tools/components/banner')
+        customElements.define('wm-banner', Banner)
       }
-
-      // dynamic import - ensure component only runs on the client side and not on SSR
-      const { Banner } = await import('@tools/components/banner')
-      customElements.define('wm-banner', Banner)
       setIsLoaded(true)
     }
 
