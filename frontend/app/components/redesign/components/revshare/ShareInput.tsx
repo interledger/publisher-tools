@@ -56,25 +56,6 @@ export const ShareInput = React.memo(
     percentDisabled = false,
     weightDisabled = false
   }: ShareInputProps) => {
-    const handlePercentageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      if (value === '') {
-        onChangePercent(0)
-        return
-      }
-      const numValue = Number(value)
-      if (isNaN(numValue)) {
-        return
-      }
-      let clampedValue = numValue
-      if (clampedValue > 100) {
-        clampedValue = 100
-      }
-      if (clampedValue < 0) {
-        clampedValue = 0
-      }
-      onChangePercent(clampedValue / 100)
-    }
     return (
       <div
         className={cx(
@@ -130,7 +111,9 @@ export const ShareInput = React.memo(
             max={100}
             step="any"
             value={typeof percent === 'number' ? Math.round(percent * 100) : ''}
-            onChange={handlePercentageChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onChangePercent(Number(e.target.value) / 100)
+            }
             disabled={percentDisabled}
           />
         </div>
