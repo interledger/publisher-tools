@@ -129,11 +129,11 @@ export class PaymentWidget extends LitElement {
 
   private renderHomeView() {
     return html`
-      <div class="widget-header-container coloured">
+      <div class="widget-header-container">
         <div class="widget-header">
           <img src=${walletTotemIcon} alt="header wallet totem" />
           <p class="white-text">
-            ${this.config.widgetTitleText || 'Support Me'}
+            ${this.config.widgetTitleText || 'Future of support'}
           </p>
         </div>
         <img
@@ -147,27 +147,27 @@ export class PaymentWidget extends LitElement {
       <div class="widget-body margin-top-24">
         <p>
           ${this.config.widgetDescriptionText ||
-          'Enter your wallet address to make a payment'}
+          'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'}
         </p>
 
         <form class="payment-form" @submit=${this.handleSubmit}>
           <div class="form-wallet-address">
             <label class="form-label">
               Pay from
-              <label class="red-text"> * </label>
+              <span class="red-text"> * </span>
             </label>
 
             <input
               class="form-input"
               type="text"
               name="walletAddress"
-              placeholder="https://ilp.example.com/alice"
+              placeholder="Enter your wallet address"
               required
             />
           </div>
 
-          <button class="support-button" type="submit">
-            ${this.config.action || 'Support Me'}
+          <button class="primary-button" type="submit">
+            ${this.config.action || 'Support me'}
           </button>
         </form>
       </div>

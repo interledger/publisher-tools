@@ -1,4 +1,3 @@
-/* --- Host --- */
 :host {
   display: flex;
   flex-direction: column;
@@ -8,7 +7,6 @@
   font-family: var(--wm-font-family, system-ui, sans-serif);
 }
 
-/* --- Body --- */
 .widget-body {
   display: flex;
   flex-direction: column;
@@ -28,10 +26,9 @@
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  line-height: var(--Font-Line-Height-sm, 20px);
 }
 
-/* --- Interaction Specific --- */
 .interaction-container {
   display: flex;
   flex-direction: column;
@@ -62,7 +59,7 @@
   font-size: var(--Font-Size-text-lg, 18px);
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
-  line-height: var(--Font-Line-Height-lg, 26px); /* 144.444% */
+  line-height: var(--Font-Line-Height-lg, 26px);
 }
 
 .purple {
@@ -83,7 +80,7 @@
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  line-height: var(--Font-Line-Height-sm, 20px);
 }
 
 .icon {
@@ -114,7 +111,7 @@
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 400);
-  line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+  line-height: var(--Font-Line-Height-md, 24px);
 }
 
 .filled-button {
@@ -133,5 +130,5 @@
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  line-height: var(--Font-Line-Height-sm, 20px);
 }

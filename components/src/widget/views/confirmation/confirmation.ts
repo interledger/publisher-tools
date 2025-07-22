@@ -12,9 +12,6 @@ import type { Amount } from '../../types'
 
 import confirmationCss from './confirmation.css?raw'
 
-import backButtonIcon from '../../../assets/wm_back_arrow.svg'
-import closeButtonIcon from '../../../assets/wm_close_button_purple.svg'
-
 export interface PaymentResponse {
   quote: Quote
   incomingPaymentGrant: Grant
@@ -332,34 +329,46 @@ export class PaymentConfirmation extends LitElement {
     return html`
       <div class="confirmation-container">
         <div class="widget-header-container confimation-buttons-header">
-          <div class="widget-header pointer" @click=${this.goBack}>
-            <img src=${backButtonIcon} alt="header wallet totem" />
-            <label>back</label>
-          </div>
-          <img
-            class="close-button"
-            src=${closeButtonIcon}
-            alt="close widget"
-            @click=${this.closeWidget}
-          />
+          <button id="back-button" class="back-button" @click=${this.goBack}>
+            <svg height="20px" width="20px" fill="none" viewBox="0 0 20 20">
+              <path
+                fill="var(--wm-primary-color, #8075B3)"
+                d="M8.251 14.423 3.828 10l4.423-4.423.59.6-3.407 3.406h10.733v.834H5.435l3.407 3.407-.59.6Z"
+              />
+            </svg>
+            <span>back</span>
+          </button>
+          <button class="close-button" @click=${this.closeWidget}>
+            <svg fill="none" viewBox="0 0 20 20">
+              <path
+                fill="var(--wm-primary-color, #8075B3)"
+                d="m5.332 15.257-.59-.59L9.41 10 4.742 5.333l.59-.59L10 9.41l4.666-4.667.59.59L10.59 10l4.666 4.667-.59.59L10 10.59l-4.667 4.667Z"
+              />
+            </svg>
+          </button>
         </div>
 
         <div class="widget-body">
-          <label>Amount</label>
+          <div class="form-wallet-address">
+            <label class="form-label">Amount</label>
 
-          <input
-            id="amount-input"
-            class="form-input"
-            type="text"
-            inputmode="decimal"
-            placeholder="0"
-            .value=${this.inputAmount}
-            @input=${this.handleAmountInput}
-            @paste=${(e: Event) => e.preventDefault()}
-            @keydown=${this.handleKeyDown}
-            autocomplete="off"
-            spellcheck="false"
-          />
+            <div class="amount-input-wrapper">
+              <span class="currency-symbol">${currencySymbol}</span>
+              <input
+                id="amount-input"
+                class="form-input with-currency"
+                type="text"
+                inputmode="decimal"
+                placeholder="0"
+                .value=${this.inputAmount}
+                @input=${this.handleAmountInput}
+                @paste=${(e: Event) => e.preventDefault()}
+                @keydown=${this.handleKeyDown}
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
+          </div>
 
           <div class="preset-buttons">
             <button
@@ -424,10 +433,6 @@ export class PaymentConfirmation extends LitElement {
 
     return html`
       <div class="payment-details">
-        <div class="detail-header">
-          <span class="quote-badge">Payment Details</span>
-        </div>
-
         <div class="summary-row">
           <span class="summary-label">You send:</span>
           <span class="summary-value">${this.formattedDebitAmount}</span>
@@ -451,7 +456,7 @@ export class PaymentConfirmation extends LitElement {
         />
       </div>
 
-      <button class="confirm-button" @click=${this.onPaymentConfirmed}>
+      <button class="primary-button" @click=${this.onPaymentConfirmed}>
         Confirm Payment
       </button>
     `

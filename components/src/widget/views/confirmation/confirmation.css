@@ -1,15 +1,14 @@
-/* --- Host and base styles --- */
 :host {
-  display: block;
+  display: flex;
+  flex: auto;
   font-family: var(--wm-font-family, system-ui, sans-serif);
-  --primary-color: var(--wm-primary-color, #10b981);
-  --background-color: var(--wm-background-color, #ffffff);
-  --text-color: var(--wm-text-color, #000000);
   width: 100%;
-  --wm-button-radius: 8px;
+
+  --primary-color: var(--wm-primary-color, #56b7b5);
+  --background-color: var(--wm-background-color, #ffffff);
+  --text-color: var(--wm-text-color, #363636);
 }
 
-/* --- Header styles  --- */
 .widget-header-container {
   display: flex;
   width: 100%;
@@ -21,7 +20,7 @@
 }
 
 .coloured {
-  background: #56b7b5;
+  background: var(--primary-color);
 }
 
 .widget-header {
@@ -31,20 +30,22 @@
 }
 
 .widget-header img {
-  width: 39px;
-  height: 32px;
-  aspect-ratio: 39/32;
+  width: 20px;
+  height: 20px;
+  color: red;
 }
 
 .widget-header p {
-  font-size: 18px;
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-lg, 18px);
   font-style: normal;
-  font-weight: 700;
-  line-height: 26px;
+  font-weight: var(--Font-Weight-Bold, 700);
+  line-height: var(--Font-Line-Height-lg, 26px);
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
 }
 
 .white-text {
-  color: #fff;
+  color: var(--Colors-white, #ffffff);
 }
 
 .close-button {
@@ -53,22 +54,28 @@
   height: 20px;
   flex-shrink: 0;
   aspect-ratio: 1/1;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
 }
 
-/* --- Confirmation Header Specific --- */
-.confimation-buttons-header {
-  color: var(--Tools-Colors-Text-buttons-default, #8075b3);
+.confirmation-buttons-header {
+  color: var(--primary-color, #8075b3);
+  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+  line-height: var(--Font-Line-Height-md, 24px);
 }
 
 .pointer {
   cursor: pointer;
 }
 
-/* --- Body styles --- */
 .widget-body {
   display: flex;
   flex-direction: column;
@@ -82,7 +89,6 @@
   margin-top: var(--Spacings-lg, 24px);
 }
 
-/* --- Confirmation Body Specific --- */
 .preset-buttons {
   display: flex;
   justify-content: center;
@@ -90,53 +96,71 @@
   margin: var(--Spacings-lg, 24px) 0 var(--Spacings-lg, 24px) 0;
 }
 
+.enter-amount-description {
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-sm, 14px);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular, 400);
+  line-height: var(--Font-Line-Height-sm, 20px);
+}
+
 .preset-btn {
   display: flex;
   width: 56px;
   height: 56px;
   cursor: pointer;
-  padding: var(--Padding-4, 16px) 12px;
+  padding: 16px 12px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   border-radius: 100px;
-  border: 1px solid
-    var(--Tools-Colors-Buttons-Thumbnail-Buttons-edge-default, #c9c9c9);
-  background: #ffffff;
-  color: var(--Tools-Colors-Text-fields-placeholder-default, #7b7b7b);
+  border: 1px solid var(--Colors-silver-300, #c9c9c9);
+  background: var(--Colors-white, #ffffff);
+  color: var(--Colors-silver-700, #7b7b7b);
+  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
-  line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+  line-height: var(--Font-Line-Height-md, 24px);
 }
 
 .preset-btn:hover,
 .preset-btn.selected {
   background: var(--primary-color);
-  color: white;
+  color: var(--Colors-white, #ffffff);
+  opacity: 0.9;
+  border: 1px solid var(--primary-color);
 }
 
 .widget-body p,
-.widget-body label {
-  color: var(--Tools-Colors-Text-fields-helpertext-default, #676767);
+.widget-body label:not(.form-label) {
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  line-height: var(--Font-Line-Height-sm, 20px);
 }
 
-/* --- Payment Card styles --- */
 .confirmation-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
 }
 
 .currency-symbol {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  margin-right: 8px;
-  user-select: none;
+  position: absolute;
+  left: var(--Paddings-md, 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-base, 16px);
+  font-weight: var(--Font-Weight-Regular, 400);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .payment-details {
@@ -154,20 +178,6 @@
 .failed {
   border: 1px solid var(--Colors-red-200, #fecaca);
   background: var(--Colors-red-50, #fef2f2);
-}
-
-.detail-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.quote-badge {
-  color: var(--Tools-Colors-Interface-heading-container, #8075b3);
-  font-size: var(--Font-Size-text-base, 16px);
-  font-style: normal;
-  font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-md, 24px); /* 150% */
 }
 
 .summary-row {
@@ -189,18 +199,18 @@
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
-  line-height: var(--Font-Line-Height-sm, 20px); /* 142.857% */
+  line-height: var(--Font-Line-Height-sm, 20px);
 }
 
 .summary-value {
-  color: var(--Tools-Colors-Text-paragraph-success, #27797a);
+  color: var(--primary-color);
+  font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
-  line-height: var(--Font-Line-Height-md, 24px); /* 150% */
+  line-height: var(--Font-Line-Height-md, 24px);
 }
 
-/* --- Common UI elements --- */
 .receiver-info {
   background: #f0f9ff;
   border: 1px solid #bae6fd;
@@ -212,19 +222,19 @@
 
 .receiver-name {
   font-weight: 600;
-  color: #0369a1;
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
   margin-bottom: 4px;
 }
 
 .receiver-address {
-  color: #0369a1;
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
   opacity: 0.8;
   word-break: break-all;
 }
 
 .note-display {
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
   opacity: 0.7;
   font-style: italic;
   margin-bottom: 12px;
@@ -234,27 +244,37 @@
   margin-top: 16px;
 }
 
-.confirm-button {
+.primary-button {
   width: 100%;
-  background: var(--primary-color);
-  color: white;
+  height: 44px;
+  padding: var(--Spacings-xs) var(--Paddings-md);
+  color: var(--wm-button-text-color);
   border: none;
-  border-radius: var(--wm-button-radius, 8px);
-  padding: 16px;
-  margin-top: 16px;
-  font-weight: 600;
-  font-size: 16px;
+  border-radius: var(--Radius-Moderate-rounding);
+  font-family: var(--Font-Family-Inter);
+  font-weight: var(--Font-Weight-Regular);
+  font-size: var(--Font-Size-text-sm);
+  line-height: var(--Font-Line-Height-sm);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+
+  background: var(--primary-color);
 }
 
-.confirm-button:hover:not(:disabled) {
-  background: #059669;
+.primary-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary-color) 85%, black 15%);
+  filter: brightness(0.85);
 }
 
-.confirm-button:disabled {
-  background: #d1d5db;
-  cursor: not-allowed;
+@supports (background: color-mix(in srgb, red, blue)) {
+  .primary-button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--primary-color) 85%, black 15%);
+    filter: none;
+  }
 }
 
 .loading-state {
@@ -262,7 +282,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  color: var(--text-color);
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
   opacity: 0.6;
 }
 
@@ -274,6 +294,9 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 12px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 @keyframes spin {
@@ -287,7 +310,7 @@
 
 .empty-state {
   text-align: center;
-  color: var(--text-color);
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
   opacity: 0.6;
   padding: 40px 20px;
 }
@@ -303,21 +326,24 @@
 }
 
 .back-button {
+  display: flex;
+  align-items: center;
+  gap: var(--Spacings-xs, 8px);
   background: transparent;
-  border: 2px solid var(--primary-color);
+  border: 1px solid transparent;
   color: var(--primary-color);
-  padding: 8px 16px;
-  border-radius: var(--wm-button-radius, 6px);
-  font-size: 14px;
+  padding: var(--Paddings-sm, 12px) var(--Paddings-md, 12px);
+  border-radius: var(--Radius-Moderate-rounding, 8px);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-sm, 14px);
+  font-weight: var(--Font-Weight-Regular, 400);
+  line-height: var(--Font-Line-Height-sm, 20px);
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 16px;
-  align-self: flex-start;
 }
 
 .back-button:hover {
-  background: var(--primary-color);
-  color: white;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .payment-form {
@@ -332,47 +358,77 @@
   flex-direction: column;
 }
 
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--text-color);
-  font-size: 0.875rem;
+.form-wallet-address {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
 }
 
-.form-input {
+.form-label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2px;
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-xs, 12px);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular, 400);
+  line-height: var(--Font-Line-Height-xs, 16px);
+}
+
+.amount-input-wrapper {
+  position: relative;
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: var(--wm-button-radius, 6px);
-  font-size: 16px;
+}
+
+.form-input.with-currency {
+  padding-left: calc(var(--Paddings-md, 12px) + 1.5em);
+}
+
+.form-input,
+.payment-note-input {
+  width: 100%;
+  height: 48px;
+  padding: var(--Paddings-sm, 12px) var(--Paddings-md, 12px);
+  border: 1px solid var(--Colors-silver-300, #c9c9c9);
+  border-radius: var(--Radius-Moderate-rounding, 8px);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-base, 16px);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular, 400);
+  line-height: var(--Font-Line-Height-md, 24px);
   box-sizing: border-box;
   transition: border-color 0.2s ease;
+  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  background-color: var(--Colors-white, #ffffff);
 }
 
-.form-input:focus {
+.form-input::placeholder,
+.payment-note-input::placeholder {
+  color: var(--Colors-silver-700, #7b7b7b);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-base, 16px);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular, 400);
+  line-height: var(--Font-Line-Height-md, 24px);
+}
+
+.form-input:focus,
+.payment-note-input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--primary-color) 10%, transparent 90%);
 }
 
 .form-input:read-only {
   background-color: #f9fafb;
-  color: #6b7280;
+  color: var(--Colors-silver-700, #7b7b7b);
 }
 
-.payment-note-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: var(--wm-button-radius, 6px);
-  font-size: 16px;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease;
-}
-
-.payment-note-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+.form-input.with-currency {
+  padding-left: calc(var(--Paddings-md, 12px) + 1.5em);
 }
