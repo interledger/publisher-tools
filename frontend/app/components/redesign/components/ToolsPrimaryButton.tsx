@@ -56,7 +56,9 @@ export function ToolsPrimaryButton({
       {icon === 'link' && iconPosition === 'right' && (
         <SVGLinkIcon className="w-5 h-5" />
       )}
-      {icon === 'share' && iconPosition === 'right' && <SVGShareScript />}
+      {icon === 'share' && iconPosition === 'right' && (
+        <SVGShareScript className="w-5 h-5" />
+      )}
     </button>
   )
 }

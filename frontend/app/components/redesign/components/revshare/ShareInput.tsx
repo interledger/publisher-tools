@@ -90,7 +90,7 @@ export const ShareInput = React.memo(
             onClick={onRemove}
             className="border-none py-sm px-xs shrink-0"
           >
-            <SVGDeleteScript width={20} height={20} />
+            <SVGDeleteScript className="w-5 h-5" />
           </ToolsSecondaryButton>
         </div>
         <div>
@@ -139,7 +139,7 @@ export const ShareInput = React.memo(
             onClick={onRemove}
             className="border-none py-sm px-xs shrink-0"
           >
-            <SVGDeleteScript width={20} height={20} />
+            <SVGDeleteScript className="w-5 h-5" />
           </ToolsSecondaryButton>
         </div>
       </div>

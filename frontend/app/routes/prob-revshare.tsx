@@ -140,7 +140,7 @@ function Revshare() {
     <div className="bg-interface-bg-main w-full px-md">
       <div className="max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
         <HeadingCore
-          title="Probabilistic revshare"
+          title="Probabilistic Revenue Share"
           onBackClick={() => navigate('/')}
         >
           Probabilistic revenue sharing is a way to share a portion of a web
