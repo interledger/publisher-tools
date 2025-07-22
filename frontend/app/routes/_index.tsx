@@ -79,7 +79,7 @@ const interactionTools = [
     link: '/button',
     disabled: true
   }
-]
+].filter((e) => !e.disabled)
 
 export const meta: MetaFunction = () => {
   const title = DEFAULT_TITLE
@@ -133,7 +133,7 @@ export default function Index() {
             Monetization on your website
           </Heading5>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-lg:flex-col max-lg:gap-lg max-lg:items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 w-full justify-items-center lg:justify-items-start">
             {setupTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -162,7 +162,7 @@ export default function Index() {
             support.
           </Heading5>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-lg:flex-col max-lg:gap-lg max-lg:items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 w-full justify-items-center lg:justify-items-start">
             {interactionTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -170,7 +170,6 @@ export default function Index() {
                 tags={tool.tags}
                 icon={tool.icon}
                 to={tool.link}
-                className={tool.disabled ? 'max-lg:hidden lg:invisible' : ''}
               >
                 {tool.description}
               </ToolCard>
