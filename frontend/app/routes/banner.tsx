@@ -135,7 +135,7 @@ export default function Redesign() {
             It also adds your wallet address for your site to be monetized.
           </HeadingCore>
           <div className="flex flex-col min-h-[756px]">
-            <div className="flex flex-col xl:flex-row xl:items-start gap-lg mb-3xl">
+            <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
               <div
                 id="steps-indicator"
                 className="hidden xl:block w-[60px] flex-shrink-0 pt-md"
