@@ -100,13 +100,31 @@ function Revshare() {
       shareWeight: number,
       totalWeight: number
     ) => {
-      setShares(
-        changeList(shares, index, {
-          weight: trimDecimal(
-            weightFromPercent(percent, shareWeight || 1, totalWeight || 1)
-          )
+      if (shareWeight > 0 && shareWeight === totalWeight && shares.length > 1) {
+        const newWeight = percent * 100
+        const remainingWeight = 100 - newWeight
+
+        const otherShareIndex = shares.findIndex((s, i) => i !== index)
+
+        const updatedShares = shares.map((share, i) => {
+          if (i === index) {
+            return { ...share, weight: newWeight }
+          }
+          if (i === otherShareIndex) {
+            return { ...share, weight: remainingWeight }
+          }
+          return { ...share, weight: 0 }
         })
-      )
+        setShares(updatedShares)
+      } else {
+        setShares(
+          changeList(shares, index, {
+            weight: trimDecimal(
+              weightFromPercent(percent, shareWeight || 1, totalWeight || 1)
+            )
+          })
+        )
+      }
     },
     [shares, setShares]
   )
