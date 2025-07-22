@@ -68,10 +68,18 @@ function Revshare() {
       setShares(importedShares)
       setIsModalOpen(false)
       setImportTag('')
-    } catch {
-      setImportError('Invalid monetization tag or payment pointer.')
+    } catch (err: any) {
+      setImportError(err.message || 'An unexpected error occurred.')
     }
   }, [importTag, setShares, setIsModalOpen])
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false)
+    if (importError) {
+      setImportError('')
+    }
+    setImportTag('')
+  }, [setIsModalOpen, setImportError, importError, setImportTag])
 
   const handleChangeName = useCallback(
     (index: number, name: string) => {
@@ -251,7 +259,7 @@ function Revshare() {
       {isModalOpen && (
         <ImportTagModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={handleCloseModal}
           onConfirm={handleLinkTagImport}
           tag={importTag}
           setTag={setImportTag}

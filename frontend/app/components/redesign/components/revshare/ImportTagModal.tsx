@@ -89,7 +89,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             onChange={(e) => setTag(e.target.value)}
           />
           {errorMessage && (
-            <p className="text-sm text-red-500 w-full">{errorMessage}</p>
+            <p className="text-sm text-text-error w-full">{errorMessage}</p>
           )}
           <ToolsPrimaryButton className="w-full" onClick={onConfirm}>
             Import revshare(s)
