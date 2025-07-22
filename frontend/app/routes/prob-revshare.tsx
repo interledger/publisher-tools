@@ -103,7 +103,7 @@ function Revshare() {
       setShares(
         changeList(shares, index, {
           weight: trimDecimal(
-            weightFromPercent(percent / 100, shareWeight || 1, totalWeight)
+            weightFromPercent(percent, shareWeight || 1, totalWeight || 1)
           )
         })
       )
@@ -147,7 +147,7 @@ function Revshare() {
                 onChangeWeight={(weight) => handleChangeWeight(i, weight)}
                 weightDisabled={!share.pointer}
                 percent={
-                  Number(share.weight) ? (share.weight || 1) / totalWeight : 100
+                  totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
                 }
                 percentDisabled={!share.pointer || shares.length <= 1}
                 onChangePercent={(percent) =>
