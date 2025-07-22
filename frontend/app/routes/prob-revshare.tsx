@@ -68,8 +68,8 @@ function Revshare() {
       setShares(importedShares)
       setIsModalOpen(false)
       setImportTag('')
-    } catch (err: any) {
-      setImportError(err.message || 'An unexpected error occurred.')
+    } catch (err: unknown) {
+      setImportError((err as Error).message || 'An unexpected error occurred.')
     }
   }, [importTag, setShares, setIsModalOpen])
 
@@ -264,6 +264,7 @@ function Revshare() {
           tag={importTag}
           setTag={setImportTag}
           errorMessage={importError}
+          setImportError={setImportError}
         />
       )}
     </div>

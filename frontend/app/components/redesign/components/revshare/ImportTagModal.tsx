@@ -11,6 +11,7 @@ interface ImportTagModalProps {
   tag: string
   errorMessage: string
   setTag: (tag: string) => void
+  setImportError: (error: string) => void
   className?: string
 }
 
@@ -21,7 +22,8 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   setTag,
   onConfirm,
   className = '',
-  errorMessage
+  errorMessage,
+  setImportError
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<Element | null>(null)
@@ -75,7 +77,12 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
         >
           <SVGClose className="w-6 h-6" />
         </button>
-        <div className="flex flex-col items-center justify-center gap-lg px-md">
+        <div
+          className={cx(
+            'flex flex-col items-center justify-center px-md',
+            errorMessage ? '' : 'gap-lg'
+          )}
+        >
           <BodyStandard>Import existing revshare configuration</BodyStandard>
           <textarea
             id="linkTagInput"
@@ -86,10 +93,15 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             )}
             placeholder="Your link tag here"
             value={tag}
-            onChange={(e) => setTag(e.target.value)}
+            onChange={(e) => {
+              setTag(e.target.value)
+              setImportError('')
+            }}
           />
           {errorMessage && (
-            <p className="text-sm text-text-error w-full">{errorMessage}</p>
+            <p className="text-xs text-text-error w-full my-2">
+              {errorMessage}
+            </p>
           )}
           <ToolsPrimaryButton className="w-full" onClick={onConfirm}>
             Import revshare(s)
