@@ -124,7 +124,7 @@ export default function Redesign() {
   }
 
   return (
-    <div className="bg-interface-bg-main min-h-screen w-full pb-[32px]">
+    <div className="bg-interface-bg-main w-full pb-[32px]">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
