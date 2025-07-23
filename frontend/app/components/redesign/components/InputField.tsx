@@ -1,8 +1,9 @@
-import type { InputHTMLAttributes } from 'react'
+import { useId, type InputHTMLAttributes } from 'react'
 import { cx } from 'class-variance-authority'
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
+  id?: string
   error?: string | string[]
   helpText?: string
 }
@@ -10,14 +11,20 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 export function InputField({
   label,
   error,
+  id,
   helpText,
   className = '',
   ...props
 }: InputFieldProps) {
+  const generatedId = useId()
+  const fieldId = id || generatedId
   return (
     <div className="space-y-2xs">
       {label && (
-        <label className="block text-sm font-medium text-text-primary">
+        <label
+          className="block text-sm font-medium text-text-primary"
+          htmlFor={fieldId}
+        >
           {label}
         </label>
       )}
@@ -32,6 +39,8 @@ export function InputField({
           error ? 'border-field-border-error' : 'border-field-border',
           className
         )}
+        id={fieldId}
+        name={fieldId}
         {...props}
       />
       {error && <p className="text-xs text-text-error">{error}</p>}

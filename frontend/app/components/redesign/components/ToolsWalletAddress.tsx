@@ -97,6 +97,7 @@ export const ToolsWalletAddress = () => {
         >
           <div className="flex-1 min-w-0 h-12">
             <InputField
+              id="wallet-address"
               placeholder={
                 snap.isWalletConnected
                   ? undefined
