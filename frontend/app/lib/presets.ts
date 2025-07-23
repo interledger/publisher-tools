@@ -1,5 +1,5 @@
 import { tooltips } from './tooltips.js'
-import { CornerType, SlideAnimationType, PositionType } from './types.js'
+import { CornerType, SlideAnimationType, PositionType } from '@shared/types'
 import bannerImg from '~/assets/images/banner_representation.svg'
 import widgetImg from '~/assets/images/widget_representation.svg'
 import buttonImg from '~/assets/images/button_representation.svg'

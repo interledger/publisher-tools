@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["ES2022"],
+    "skipLibCheck": true,
     "types": ["./worker-configuration.d.ts", "vite/client"]
   }
 }

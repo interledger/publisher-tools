@@ -8,9 +8,9 @@ import {
   isPendingGrant,
   createAuthenticatedClient
 } from '@interledger/open-payments'
+import { getWalletAddress } from '@shared/utils'
 import {
   createHeaders,
-  toWalletAddressUrl,
   timeout,
   createHTTPException,
   urlWithParams
@@ -122,9 +122,7 @@ export class OpenPaymentsService {
     amount: number
     note?: string
   }) {
-    const receiverWallet = await this.getWalletAddress(
-      args.receiverWalletAddress
-    )
+    const receiverWallet = await getWalletAddress(args.receiverWalletAddress)
     const { quote, incomingPaymentGrant } = await this.fetchQuote(
       {
         walletAddress: args.senderWalletAddress,
@@ -152,7 +150,7 @@ export class OpenPaymentsService {
     },
     receiverWallet: WalletAddress
   ): Promise<CreatePayment> {
-    const walletAddress = await this.getWalletAddress(args.walletAddress)
+    const walletAddress = await getWalletAddress(args.walletAddress)
 
     const amountObj = {
       value: BigInt(
@@ -473,15 +471,5 @@ export class OpenPaymentsService {
     )
 
     return { success: true }
-  }
-
-  private async getWalletAddress(url: string): Promise<WalletAddress> {
-    const walletAddress = await this.client!.walletAddress.get({
-      url: toWalletAddressUrl(url)
-    }).catch(() => {
-      throw new Error('Invalid wallet address.')
-    })
-
-    return walletAddress
   }
 }

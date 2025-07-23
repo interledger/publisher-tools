@@ -1,0 +1,8 @@
+{
+  "name": "@shared/default-data",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "@shared/types": "workspace:^"
+  }
+}

@@ -5,7 +5,7 @@ import {
   PositionType,
   SlideAnimationType,
   type ElementConfigType
-} from '~/lib/types.js'
+} from '@shared/types'
 import { generateConfigCss, getWebMonetizationLink } from '~/lib/utils.js'
 import { NotFoundConfig } from '../index.js'
 import eyeSvg from '~/assets/images/eye.svg'

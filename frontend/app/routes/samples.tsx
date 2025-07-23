@@ -15,7 +15,7 @@ import { PillTagButton } from '../components/redesign/components/PillTagButton'
 import { ScriptReadyModal } from '../components/redesign/components/ScriptReadyModal'
 import { SaveResultModal } from '../components/redesign/components/SaveResultModal'
 import { WalletOwnershipModal } from '../components/redesign/components/WalletOwnershipModal'
-import { CornerType } from '~/lib/types'
+import { CornerType } from '@shared/types'
 
 export function Card({
   children,
@@ -27,7 +27,7 @@ export function Card({
   return (
     <div
       className={`
-      bg-interface-bg-container 
+      bg-interface-bg-container
       border border-interface-edge-container
       rounded-sm
       p-lg

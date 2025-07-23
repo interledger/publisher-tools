@@ -1,7 +1,7 @@
 import { Dialog } from '@headlessui/react'
 import { useFetcher } from '@remix-run/react'
 import { useEffect } from 'react'
-import type { ElementConfigType } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
 import { XIcon } from '~/components/icons.js'
 import { Button } from '~/components/index.js'
 import type { ModalType } from '~/lib/presets.js'

@@ -21,8 +21,9 @@ import {
 } from '~/components/index.js'
 import { validConfigTypes, type ModalType } from '~/lib/presets.js'
 import { tooltips } from '~/lib/tooltips.js'
-import type { ElementConfigType } from '~/lib/types.js'
-import { capitalizeFirstLetter, getDefaultData } from '~/lib/utils.js'
+import type { ElementConfigType } from '@shared/types'
+import { getDefaultData } from '@shared/default-data'
+import { capitalizeFirstLetter } from '~/lib/utils.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
 export async function loader({ params, request, context }: LoaderFunctionArgs) {
