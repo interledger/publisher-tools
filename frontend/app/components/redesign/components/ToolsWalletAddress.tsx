@@ -13,9 +13,7 @@ export const ToolsWalletAddress = () => {
   const snap = useSnapshot(toolState)
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
-
   const handleContinue = async () => {
-    // Validate wallet address first
     if (!toolActions.validateWalletAddress(snap.walletAddress)) {
       setError({
         fieldErrors: { walletAddress: ['Please enter a valid wallet address'] },
@@ -101,7 +99,7 @@ export const ToolsWalletAddress = () => {
               placeholder={
                 snap.isWalletConnected
                   ? undefined
-                  : 'walletprovider.com/MyWallet'
+                  : 'https://walletprovider.com/MyWallet'
               }
               value={snap.walletAddress || ''}
               onChange={handleWalletAddressChange}
