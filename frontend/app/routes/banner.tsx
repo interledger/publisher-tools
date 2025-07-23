@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
-import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import {
+  type LoaderFunctionArgs,
+  json,
+  type MetaFunction
+} from '@remix-run/cloudflare'
 import {
   HeadingCore,
   ToolsWalletAddress,
@@ -24,6 +28,17 @@ import {
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { SVGSpinner } from '@/assets'
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Banner - Web Monetization Tools' },
+    {
+      name: 'description',
+      content:
+        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.'
+    }
+  ]
+}
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
