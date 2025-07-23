@@ -35,8 +35,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   session.set('is-grant-response', isGrantResponse)
   session.set('grant-response', grantResponse)
 
-  // TODO: undo change before merging
-  return redirect(`/redesign`, {
+  return redirect(`/${elementType}`, {
     headers: {
       'Set-Cookie': await commitSession(session)
     }
