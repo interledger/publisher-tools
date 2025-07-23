@@ -34,21 +34,19 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
   }
 
   return (
-    <div
+    <label
+      onClick={handleClick}
       className={`flex items-center w-full px-md py-sm rounded-lg bg-white ${className} ${
         !isDisabled ? 'cursor-pointer hover:bg-gray-50' : 'cursor-not-allowed'
       }`}
       id={id}
-      onClick={handleClick}
     >
       <div className="flex items-center gap-3 mr-4">
-        <div style={{ pointerEvents: 'none' }}>
-          <Checkbox
-            checked={checked}
-            onChange={onCheckedChange}
-            disabled={isDisabled}
-          />
-        </div>
+        <Checkbox
+          checked={checked}
+          onChange={onCheckedChange}
+          disabled={isDisabled}
+        />
 
         <span
           className={`text-style-small-standard ${
@@ -95,7 +93,7 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
           {presetName}
         </p>
       </div>
-    </div>
+    </label>
   )
 }
 
