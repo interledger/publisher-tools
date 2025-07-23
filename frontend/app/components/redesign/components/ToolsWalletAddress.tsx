@@ -101,8 +101,8 @@ export const ToolsWalletAddress = () => {
                   ? undefined
                   : 'https://walletprovider.com/MyWallet'
               }
-              value={snap.walletAddress || ''}
-              onChange={handleWalletAddressChange}
+              defaultValue={snap.walletAddress}
+              onBlur={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
               error={error?.fieldErrors.walletAddress}
             />

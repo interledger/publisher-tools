@@ -7,6 +7,7 @@ interface TextareaFieldProps
   error?: string
   helpText?: string
   showCounter?: boolean
+  currentLength?: number
   maxLength?: number
 }
 
@@ -15,13 +16,11 @@ export function TextareaField({
   error,
   helpText,
   showCounter = false,
+  currentLength = 0,
   maxLength,
   className = '',
-  value = '',
   ...props
 }: TextareaFieldProps) {
-  const currentLength = typeof value === 'string' ? value.length : 0
-
   return (
     <div className="space-y-2xs">
       {label && (
@@ -41,7 +40,6 @@ export function TextareaField({
           error ? 'border-field-border-error' : 'border-field-border',
           className
         )}
-        value={value}
         maxLength={maxLength}
         {...props}
       />

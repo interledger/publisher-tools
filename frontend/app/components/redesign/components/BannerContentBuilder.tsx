@@ -146,7 +146,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
-            value={snap.currentConfig?.bannerTitleText}
+            defaultValue={snap.currentConfig?.bannerTitleText}
             onChange={(e) =>
               toolActions.setToolConfig({ bannerTitleText: e.target.value })
             }
@@ -178,11 +178,14 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
 
             <div className="flex-grow">
               <TextareaField
-                value={snap.currentConfig?.bannerDescriptionText}
+                defaultValue={snap.currentConfig?.bannerDescriptionText}
                 onChange={(e) =>
                   toolActions.setToolConfig({
                     bannerDescriptionText: e.target.value
                   })
+                }
+                currentLength={
+                  snap.currentConfig?.bannerDescriptionText.length || 0
                 }
                 maxLength={300}
                 showCounter={true}
