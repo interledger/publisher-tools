@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useId } from 'react'
 import { useSnapshot } from 'valtio'
 import { Tooltip } from './Tooltip'
 import { InputField } from './InputField'
@@ -13,6 +13,7 @@ export const ToolsWalletAddress = () => {
   const snap = useSnapshot(toolState)
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
+  const generatedId = useId()
   const handleContinue = async () => {
     if (!toolActions.validateWalletAddress(snap.walletAddress)) {
       setError({
@@ -70,16 +71,25 @@ export const ToolsWalletAddress = () => {
       toolActions.setConnectWalletStep('unfilled')
     }
   }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!snap.isWalletConnected && !isLoading) {
+      handleContinue()
+    }
+  }
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
       className={cx(
         'flex flex-col xl:flex-row xl:items-start gap-2xl p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600'
       )}
+      aria-labelledby={generatedId}
     >
       <div className="flex flex-col items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
-          <Heading5>Wallet address</Heading5>
+          <Heading5 id={generatedId}>Wallet address</Heading5>
           <Tooltip>
             Your wallet is required in order for us to save this components
             configuration for you, link it to the original author, and verify
@@ -105,6 +115,7 @@ export const ToolsWalletAddress = () => {
               onChange={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
               error={error?.fieldErrors.walletAddress}
+              aria-labelledby={generatedId}
             />
           </div>
           {snap.isWalletConnected && (
@@ -148,9 +159,9 @@ export const ToolsWalletAddress = () => {
         )}
         {!snap.isWalletConnected && (
           <ToolsSecondaryButton
+            type="submit"
             className="xl:w-[143px]"
             disabled={isLoading}
-            onClick={handleContinue}
           >
             <div className="flex items-center justify-center gap-2">
               {isLoading && <SVGSpinner className="w-4 h-4" />}
@@ -159,6 +170,6 @@ export const ToolsWalletAddress = () => {
           </ToolsSecondaryButton>
         )}
       </div>
-    </div>
+    </form>
   )
 }
