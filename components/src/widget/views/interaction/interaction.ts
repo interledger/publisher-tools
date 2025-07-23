@@ -145,7 +145,7 @@ export class PaymentInteraction extends LitElement {
         <div class="empty-header"></div>
 
         <div class="interaction-body">
-          <div class="title purple">Authorizing payment</div>
+          <div class="title authorizing">Authorizing payment</div>
           <div class="description">
             Please complete the authorization in the opened tab
           </div>
@@ -165,14 +165,14 @@ export class PaymentInteraction extends LitElement {
         <div class="empty-header"></div>
 
         <div class="interaction-body">
-          <div class="title green">Payment complete!</div>
+          <div class="title complete">Payment complete!</div>
           <div class="description">
             Your payment has been processed successfully
           </div>
           <img src=${successIcon} width="122px" height="200px" />
         </div>
 
-        <button class="button-container filled-button" @click=${this.goBack}>
+        <button class="button-container primary-button" @click=${this.goBack}>
           Done
         </button>
       </div>
