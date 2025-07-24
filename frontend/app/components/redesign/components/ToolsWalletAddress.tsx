@@ -1,4 +1,4 @@
-import React, { useState, useId } from 'react'
+import React, { useState, useId, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { Tooltip } from './Tooltip'
 import { InputField } from './InputField'
@@ -14,6 +14,7 @@ export const ToolsWalletAddress = () => {
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
   const generatedId = useId()
+  const inputRef = useRef<HTMLInputElement>(null)
   const handleContinue = async () => {
     if (!toolActions.validateWalletAddress(snap.walletAddress)) {
       setError({
@@ -58,8 +59,10 @@ export const ToolsWalletAddress = () => {
     toolActions.setWalletConnected(false)
     toolActions.setWalletAddress('')
     toolActions.setHasRemoteConfigs(false)
-
     toolActions.setConfigs(null)
+    if (inputRef.current) {
+      inputRef.current.value = ''
+    }
   }
 
   const handleWalletAddressChange = (
@@ -143,14 +146,15 @@ export const ToolsWalletAddress = () => {
         >
           <div className="flex-1 min-w-0 h-12">
             <InputField
+              ref={inputRef}
               id="wallet-address-url"
               placeholder={
                 snap.isWalletConnected
                   ? undefined
                   : 'https://walletprovider.com/MyWallet'
               }
-              value={snap.walletAddress || ''}
-              onChange={handleWalletAddressChange}
+              defaultValue={snap.walletAddress}
+              onBlur={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
               error={error?.fieldErrors.walletAddress}
               aria-labelledby={generatedId}
