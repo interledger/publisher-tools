@@ -1,7 +1,6 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { InputField, ToolsSecondaryButton } from '@/components'
-import { BodyStandard } from '../../Typography'
 import { SVGDeleteScript } from '~/assets/svg'
 
 interface ShareInputProps {
