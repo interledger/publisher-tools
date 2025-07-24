@@ -38,7 +38,9 @@ export const LinkTagGenerator = () => {
   const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
   const [showCodeBox, setShowCodeBox] = useState(false)
-  const { isCopied, handleCopyClick } = useCopyToClipboard(linkTag)
+  const { isCopied, handleCopyClick } = useCopyToClipboard(
+    `<link rel="monetization" href="${linkTag}" />`
+  )
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {

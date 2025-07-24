@@ -15,6 +15,8 @@ interface ImportTagModalProps {
   className?: string
 }
 
+const PLACEHOLDER_LINK_TAG = `<link rel="monetization" href="https://webmonetization.org/api/revshare/pay/your-revshare-id">`
+
 export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   isOpen,
   onClose,
@@ -27,11 +29,13 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<Element | null>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (isOpen) {
       triggerRef.current = document.activeElement
       modalRef.current?.focus()
+      inputRef.current?.focus()
 
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && onClose) {
@@ -83,15 +87,19 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             errorMessage ? '' : 'gap-lg'
           )}
         >
-          <BodyStandard>Import existing revshare configuration</BodyStandard>
+          <label className="text-style-body-standard" htmlFor="linkTagInput">
+            Import existing revshare configuration
+          </label>
           <textarea
             id="linkTagInput"
+            ref={inputRef}
             className={cx(
               'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none',
               'w-full max-w-full h-[136px]',
-              'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus'
+              'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+              'placeholder:text-xs sm:placeholder:text-sm'
             )}
-            placeholder="Your link tag here"
+            placeholder={PLACEHOLDER_LINK_TAG}
             value={tag}
             onChange={(e) => {
               setTag(e.target.value)

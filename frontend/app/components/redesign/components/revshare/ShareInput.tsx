@@ -72,7 +72,9 @@ export const ShareInput = React.memo(
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
-          <BodyStandard>Recipient #{index + 1}</BodyStandard>
+          <label className="text-style-body-standard">
+            Recipient #{index + 1}
+          </label>
           <ToolsSecondaryButton
             onClick={onRemove}
             className="border-none py-sm px-xs shrink-0"

@@ -11,29 +11,31 @@ function genLabel({
   return dataEntry.title
 }
 
-type RevshareChartProps = {
+type RevShareChartProps = {
   shares: Share[]
 }
 
-export function RevShareChart({
-  shares
-}: RevshareChartProps): React.ReactElement | null {
-  const chartData = sharesToChartData(shares)
+export const RevShareChart = React.memo(
+  ({ shares }: RevShareChartProps): React.ReactElement | null => {
+    const chartData = sharesToChartData(shares)
 
-  if (!chartData.length) {
-    return null
+    if (!chartData.length) {
+      return null
+    }
+
+    return (
+      <PieChart
+        style={{ height: '250px', width: '100%' }}
+        data={chartData}
+        label={genLabel}
+        radius={40}
+        labelStyle={() => ({
+          fontSize: '6px'
+        })}
+        labelPosition={112}
+      />
+    )
   }
+)
 
-  return (
-    <PieChart
-      style={{ height: '250px', width: '100%' }}
-      data={chartData}
-      label={genLabel}
-      radius={40}
-      labelStyle={() => ({
-        fontSize: '6px'
-      })}
-      labelPosition={112}
-    />
-  )
-}
+RevShareChart.displayName = 'RevShareChart'

@@ -55,7 +55,7 @@ function Revshare() {
   )
 
   const { isCopied, handleCopyClick } = useCopyToClipboard(
-    revSharePointers ?? ''
+    `<link rel="monetization" href="${revSharePointers}" />`
   )
 
   const totalWeight = useMemo(

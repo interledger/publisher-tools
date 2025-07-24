@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 
-export const useCopyToClipboard = (link: string) => {
+export const useCopyToClipboard = (text: string) => {
   const [isCopied, setIsCopied] = useState(false)
 
   useEffect(() => {
@@ -15,14 +15,12 @@ export const useCopyToClipboard = (link: string) => {
 
   const handleCopyClick = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(
-        `<link rel="monetization" href="${link}" />`
-      )
+      await navigator.clipboard.writeText(text)
       setIsCopied(true)
     } catch (err) {
       console.error('Failed to copy text:', err)
     }
-  }, [link])
+  }, [text])
 
   return { isCopied, handleCopyClick }
 }
