@@ -147,7 +147,7 @@ export const LinkTagGenerator = () => {
       )}
 
       <ToolsPrimaryButton icon="link" className="justify-center" type="submit">
-        Generate link-tag
+        Generate Link Tag
       </ToolsPrimaryButton>
 
       {isCopied && (
