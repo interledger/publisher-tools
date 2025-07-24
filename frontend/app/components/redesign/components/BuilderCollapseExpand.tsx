@@ -110,6 +110,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               e.stopPropagation()
               console.log('Refresh')
             }}
+            aria-label="Reset appearance to default"
           >
             <SVGRefresh className="w-6 h-6" />
           </button>

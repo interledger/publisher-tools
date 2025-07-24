@@ -171,6 +171,51 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
     }
   }
 
+  const handleTabKeyDown = (e: React.KeyboardEvent, tabId: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+
+      if (selectedId === tabId && !editingId) {
+        beginEditing(tabId)
+      } else {
+        if (editingId) {
+          saveEdit()
+        }
+
+        toolActions.selectVersion(tabId as StableKey)
+        if (onSelectTab) {
+          onSelectTab(tabId as StableKey)
+        }
+      }
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault()
+      const currentIndex = options.findIndex((option) => option.id === tabId)
+      let nextIndex: number
+
+      if (e.key === 'ArrowLeft') {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1
+      } else {
+        nextIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0
+      }
+
+      const nextTabId = options[nextIndex].id
+
+      const nextTabElement = document.querySelector(
+        `[data-tab-id="${nextTabId}"]`
+      ) as HTMLElement
+      if (nextTabElement) {
+        nextTabElement.focus()
+      }
+
+      if (!editingId) {
+        toolActions.selectVersion(nextTabId)
+        if (onSelectTab) {
+          onSelectTab(nextTabId)
+        }
+      }
+    }
+  }
+
   const startDragging = (e: React.MouseEvent) => {
     if (editingId || !containerRef.current) return
 
@@ -205,6 +250,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         onMouseMove={move}
         onMouseUp={stopDragging}
         onMouseLeave={stopDragging}
+        role="tablist"
+        aria-label="Configuration versions"
       >
         {options.map((tab) => {
           const isSelected = selectedId === tab.id
@@ -222,7 +269,9 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                 )}
               </div>
               <div
+                data-tab-id={tab.id}
                 onClick={() => handleTabClick(tab.id)}
+                onKeyDown={(e) => handleTabKeyDown(e, tab.id)}
                 onMouseEnter={() => setHoveredId(tab.id)}
                 onMouseLeave={() => setHoveredId(null)}
                 className={`
@@ -235,14 +284,25 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                 `}
                 aria-selected={isSelected}
                 role="tab"
+                tabIndex={0}
+                aria-label={`${displayLabel}${isModified ? ' (modified)' : ''}`}
               >
                 <div className="flex flex-row items-center w-full h-[50px] gap-1 px-3 py-2">
-                  <div
-                    className="cursor-pointer flex-shrink-0"
+                  <button
+                    className="cursor-pointer flex-shrink-0 p-1 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
                     onClick={(e: React.MouseEvent) => {
                       e.stopPropagation()
                       if (isSelected) beginEditing(tab.id)
                     }}
+                    onKeyDown={(e: React.KeyboardEvent) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        if (isSelected) beginEditing(tab.id)
+                      }
+                    }}
+                    tabIndex={isSelected ? 0 : -1}
+                    aria-label={`Edit ${displayLabel} tab name`}
                   >
                     <SVGEdit
                       className={cx(
@@ -252,7 +312,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                           : 'invisible'
                       )}
                     />
-                  </div>
+                  </button>
 
                   {isEditing ? (
                     <input
