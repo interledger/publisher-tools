@@ -36,7 +36,6 @@ export const HeadingCore: React.FC<HeadingCoreProps> = ({
           <Heading1 className="hidden md:block text-center">{title}</Heading1>
         </div>
 
-        {/* Empty spacer for desktop center alignment */}
         <div className="hidden md:block shrink-0 w-[100px] md:order-3" />
       </div>
 

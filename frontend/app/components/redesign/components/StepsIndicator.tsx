@@ -11,12 +11,14 @@ interface StepProps {
   textPosition?: TextPosition
 }
 
+interface StepsIndicatorStep {
+  number: number
+  label: string
+  status: StepStatus
+}
+
 interface StepsIndicatorProps {
-  steps: Array<{
-    number: number
-    label: string
-    status: StepStatus
-  }>
+  steps: [StepsIndicatorStep, StepsIndicatorStep, ...StepsIndicatorStep[]]
   connectorHeight?: string
 }
 
@@ -64,8 +66,8 @@ export const MobileStep: React.FC<{ number: number; status: StepStatus }> = ({
       <div
         className={`
           w-6 h-6
-          rounded-full border 
-          ${getBorderColor(status)} 
+          rounded-full border
+          ${getBorderColor(status)}
           flex items-center justify-center
         `}
       >
@@ -89,8 +91,8 @@ const Step: React.FC<StepProps> = ({
         <div
           className={`
           w-[60px] h-[60px]
-          rounded-full border 
-          ${getBorderColor(status)} 
+          rounded-full border
+          ${getBorderColor(status)}
           flex items-center justify-center
         `}
         >
@@ -106,16 +108,7 @@ const Step: React.FC<StepProps> = ({
 }
 
 export const StepsIndicator: React.FC<StepsIndicatorProps> = ({ steps }) => {
-  const step1 = steps[0] || {
-    number: 1,
-    label: 'Step 1',
-    status: 'unfilled' as StepStatus
-  }
-  const step2 = steps[1] || {
-    number: 2,
-    label: 'Step 2',
-    status: 'unfilled' as StepStatus
-  }
+  const [step1, step2] = steps
 
   return (
     <div className="flex flex-col items-center">

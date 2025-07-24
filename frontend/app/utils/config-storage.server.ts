@@ -34,10 +34,6 @@ export class ConfigStorageService {
     const key = walletAddressToKey(walletAddress)
     const url = new URL(`${this.prefix}/${key}`, this.endpoint)
 
-    console.log(
-      `!!!!!   Fetching config for wallet: ${walletAddress} from ${url}`
-    )
-
     const response = await this.client.fetch(url)
 
     if (!response.ok) {

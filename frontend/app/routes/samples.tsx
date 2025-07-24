@@ -15,7 +15,9 @@ import { PillTagButton } from '../components/redesign/components/PillTagButton'
 import { ScriptReadyModal } from '../components/redesign/components/ScriptReadyModal'
 import { SaveResultModal } from '../components/redesign/components/SaveResultModal'
 import { WalletOwnershipModal } from '../components/redesign/components/WalletOwnershipModal'
+import { OverridePresetModal } from '../components/redesign/components/OverridePresetModal'
 import { CornerType } from '~/lib/types'
+import { ConfigCondition } from '~/components/redesign/components'
 
 export function Card({
   children,
@@ -239,7 +241,6 @@ export function RedesignDemo() {
           </div>
         </div>
       </div>
-
       <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Script Ready Modal Component</h2>
         <div className="flex flex-col items-center max-w-md mx-auto">
@@ -272,6 +273,29 @@ export function RedesignDemo() {
           />
         </div>
       </div>
+
+      <div>
+        <h2 className="text-xl font-bold mb-4">
+          Override Preset Modal Component
+        </h2>
+        <div className="max-w-md">
+          <OverridePresetModal
+            onClose={() => console.log('Override modal closed')}
+            onOverride={async (selectedLocalConfigs) => {
+              console.log('Override configs:', selectedLocalConfigs)
+            }}
+            onAddWalletAddress={() => console.log('Add wallet address clicked')}
+          />
+        </div>
+      </div>
+
+      <ConfigCondition
+        number="1"
+        title="Bibi's banner"
+        presetName="Preset one"
+        checked={false}
+        onCheckedChange={(checked) => console.log('Checkbox changed:', checked)}
+      />
     </div>
   )
 }
