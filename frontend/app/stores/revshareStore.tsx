@@ -33,11 +33,11 @@ export function loadStartingShares(): SharesState {
     if (parsed && validateShares(parsed)) {
       return parsed as SharesState
     } else {
-      return [newShare()]
+      return [newShare(), newShare()]
     }
   } catch (e: unknown) {
     if (e instanceof SyntaxError) {
-      return [newShare()]
+      return [newShare(), newShare()]
     }
     throw e
   }

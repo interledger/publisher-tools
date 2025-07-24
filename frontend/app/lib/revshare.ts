@@ -363,7 +363,7 @@ export function validateWeight(weight: string | number | undefined): boolean {
  * @returns {boolean} True if all shares in the array are valid.
  */
 export function validateShares(shares: SharesState): boolean {
-  if (!Array.isArray(shares)) {
+  if (!Array.isArray(shares) || shares.length === 0) {
     return false
   }
 

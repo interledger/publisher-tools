@@ -104,7 +104,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             </p>
           )}
           <ToolsPrimaryButton className="w-full" onClick={onConfirm}>
-            Import revshare(s)
+            Import revshare
           </ToolsPrimaryButton>
         </div>
       </div>

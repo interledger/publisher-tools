@@ -23,7 +23,9 @@ import {
   dropIndex,
   weightFromPercent,
   trimDecimal,
-  tagOrPointerToShares
+  tagOrPointerToShares,
+  validateShares,
+  validatePointer
 } from '../lib/revshare'
 
 import { useCopyToClipboard } from '~/components/redesign/hooks/useCopyToClipboard'
@@ -35,6 +37,10 @@ export default function RevsharePageWrapper() {
     </SharesProvider>
   )
 }
+
+const DEFAULT_PLACEHOLDER = 'Wallet Address/Payment Pointer'
+const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
+const DEFAULT_PAYMENT_POINTER = '$walletprovider.com/myWallet'
 
 function Revshare() {
   const navigate = useNavigate()
@@ -127,6 +133,15 @@ function Revshare() {
     [shares, setShares]
   )
 
+  const hasValidShares = validateShares(shares)
+
+  const displayPlaceholder = (index: number) => {
+    return index === 0
+      ? DEFAULT_WALLET_ADDRESS
+      : index === 1
+        ? DEFAULT_PAYMENT_POINTER
+        : DEFAULT_PLACEHOLDER
+  }
   return (
     <div className="bg-interface-bg-main w-full px-md">
       <div className="max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
@@ -135,13 +150,13 @@ function Revshare() {
           onBackClick={() => navigate('/')}
         >
           Probabilistic revenue sharing is a way to share a portion of a web
-          monetized page&apos;s earnings between multiple wallet addresses and
-          payment pointers. Each time a web monetized user visits the page, a
-          recipient will be chosen at random. Payments will go to the chosen
-          recipient until the page is closed or reloaded.
+          monetized page&apos;s earnings between multiple recipients. Each time
+          a web monetized user visits the page, a recipient will be chosen at
+          random. Payments will go to the chosen recipient until the page is
+          closed or reloaded.
         </HeadingCore>
         <Card>
-          <Heading5>Wallet Address</Heading5>
+          <Heading5>Recipients</Heading5>
           <ShareInputHeader />
           {shares.map((share, i) => {
             return (
@@ -168,12 +183,14 @@ function Revshare() {
                   )
                 }
                 onRemove={() => handleRemove(i)}
+                validatePointer={validatePointer}
+                placeholder={displayPlaceholder(i)}
               />
             )
           })}
-          <hr />
+          <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
-            {revSharePointers && (
+            {revSharePointers && hasValidShares && (
               <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main p-sm">
                 <CodeBlock
                   link={revSharePointers}
@@ -204,7 +221,7 @@ function Revshare() {
                 className="flex w-full items-center justify-center md:w-auto"
                 onClick={addShare}
               >
-                Add rev share
+                Add recipient
               </ToolsPrimaryButton>
             </div>
           </div>

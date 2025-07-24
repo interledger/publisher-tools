@@ -10,13 +10,15 @@ interface ShareInputProps {
   pointer: string
   weight: number
   percent: number
+  placeholder?: string
+  percentDisabled?: boolean
+  weightDisabled?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
   onChangePercent: (percent: number) => void
   onRemove: () => void
-  percentDisabled?: boolean
-  weightDisabled?: boolean
+  validatePointer: (pointer: string) => boolean
 }
 
 const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
@@ -33,7 +35,7 @@ export const ShareInputHeader = () => {
       )}
     >
       <div>Name</div>
-      <div>Wallet Address</div>
+      <div>Wallet Address/Payment Pointer</div>
       <div>Weight</div>
       <div>Percentage</div>
       <div>Action</div>
@@ -48,25 +50,29 @@ export const ShareInput = React.memo(
     pointer,
     weight,
     percent,
+    placeholder,
     onChangeName,
     onChangePointer,
     onChangeWeight,
     onChangePercent,
     onRemove,
+    validatePointer,
     percentDisabled = false,
     weightDisabled = false
   }: ShareInputProps) => {
+    const hasError = !validatePointer(pointer)
     return (
       <div
         className={cx(
           'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
           GRID_COLS,
-          GRID_GAP
+          GRID_GAP,
+          hasError ? 'md:mb-2xs' : ''
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
-          <BodyStandard>Revshare #{index + 1}</BodyStandard>
+          <BodyStandard>Recipient #{index + 1}</BodyStandard>
           <ToolsSecondaryButton
             onClick={onRemove}
             className="border-none py-sm px-xs shrink-0"
@@ -76,23 +82,26 @@ export const ShareInput = React.memo(
         </div>
         <div>
           <InputField
-            placeholder="Fill in name"
+            placeholder="Fill in name (optional)"
             value={name}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeName(e.target.value)
             }
           />
         </div>
-        <div>
+        <div className="relative">
           <InputField
-            placeholder="Wallet Address/Payment Pointer"
+            placeholder={placeholder}
             value={pointer}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangePointer(e.target.value)
             }
           />
+          <p className="absolute left-0 text-xs mt-2xs text-text-error">
+            {hasError && 'Invalid payment pointer'}
+          </p>
         </div>
-        <div>
+        <div className={hasError ? 'mt-xs' : 'md:mt-0'}>
           <InputField
             type="number"
             value={weight}
