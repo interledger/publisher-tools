@@ -79,7 +79,6 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
-
             toggleExpand()
           }
         }}
