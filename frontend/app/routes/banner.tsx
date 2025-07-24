@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
-import { type LoaderFunctionArgs, json } from '@remix-run/cloudflare'
+import {
+  type LoaderFunctionArgs,
+  json,
+  type MetaFunction
+} from '@remix-run/cloudflare'
 import {
   HeadingCore,
   ToolsWalletAddress,
@@ -24,6 +28,17 @@ import {
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { SVGSpinner } from '@/assets'
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Banner - Web Monetization Tools' },
+    {
+      name: 'description',
+      content:
+        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.'
+    }
+  ]
+}
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
@@ -51,7 +66,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-export default function Redesign() {
+export default function Banner() {
   const snap = useSnapshot(toolState)
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -71,46 +86,38 @@ export default function Redesign() {
   }, [grantResponse, isGrantAccepted, isGrantResponse])
 
   const scrollToWalletAddress = () => {
-    if (walletAddressRef.current) {
-      walletAddressRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'nearest'
-      })
-
-      walletAddressRef.current.style.transition = 'all 0.3s ease'
-      walletAddressRef.current.style.transform = 'scale(1.02)'
-
-      setTimeout(() => {
-        if (walletAddressRef.current) {
-          walletAddressRef.current.style.transform = 'scale(1)'
-        }
-      }, 500)
+    if (!walletAddressRef.current) {
+      return
     }
+    walletAddressRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest'
+    })
+
+    walletAddressRef.current.style.transition = 'all 0.3s ease'
+    walletAddressRef.current.style.transform = 'scale(1.02)'
+
+    setTimeout(() => {
+      if (walletAddressRef.current) {
+        walletAddressRef.current.style.transform = 'scale(1)'
+      }
+    }, 500)
   }
 
-  const handleSaveEditsOnly = async () => {
+  const handleSave = async (action: 'save-success' | 'script') => {
     if (!snap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
     }
 
-    setIsLoading(true)
-    await toolActions.saveConfig('banner', 'save-success')
-    setIsLoading(false)
-  }
+    const isScript = action === 'script'
+    const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
-  const handleSaveAndGenerateScript = async () => {
-    if (!snap.isWalletConnected) {
-      toolActions.setConnectWalletStep('error')
-      scrollToWalletAddress()
-      return
-    }
-
-    setIsLoadingScript(true)
-    await toolActions.saveConfig('banner', 'script')
-    setIsLoadingScript(false)
+    setLoading(true)
+    await toolActions.saveConfig('banner', action)
+    setLoading(false)
   }
 
   const handleConfirmWalletOwnership = () => {
@@ -195,10 +202,10 @@ export default function Redesign() {
                         className="xl:contents flex flex-col gap-xs mx-auto w-full xl:w-auto xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm"
                       >
                         <ToolsSecondaryButton
-                          className="xl:w-auto xl:rounded-lg
+                          className="xl:w-[150px] xl:rounded-lg
                                      w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
-                          onClick={handleSaveEditsOnly}
+                          onClick={() => handleSave('save-success')}
                         >
                           <div className="flex items-center justify-center gap-2">
                             {isLoading && <SVGSpinner className="w-4 h-4" />}
@@ -210,10 +217,10 @@ export default function Redesign() {
                         <ToolsPrimaryButton
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
-                          className="xl:w-auto xl:rounded-lg
+                          className="xl:w-[250px] xl:rounded-lg
                                      w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
-                          onClick={handleSaveAndGenerateScript}
+                          onClick={() => handleSave('script')}
                         >
                           <div className="flex items-center justify-center gap-xs">
                             {isLoadingScript && (

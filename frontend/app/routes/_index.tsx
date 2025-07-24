@@ -79,7 +79,7 @@ const interactionTools = [
     link: '/button',
     disabled: true
   }
-]
+].filter((e) => !e.disabled)
 
 export const meta: MetaFunction = () => {
   const title = DEFAULT_TITLE
@@ -133,7 +133,12 @@ export default function Index() {
             Monetization on your website
           </Heading5>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
+          <div
+            className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
+            }}
+          >
             {setupTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -146,7 +151,7 @@ export default function Index() {
                 {tool.description}
               </ToolCard>
             ))}
-            <div className="w-[340px] opacity-0 max-md:hidden" />
+            <div className="w-[340px] opacity-0 max-lg:hidden" />
           </div>
         </div>
 
@@ -162,7 +167,12 @@ export default function Index() {
             support.
           </Heading5>
 
-          <div className="flex flex-row items-center justify-between p-0 w-full max-md:flex-col max-md:gap-lg max-md:items-center">
+          <div
+            className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
+            }}
+          >
             {interactionTools.map((tool, index) => (
               <ToolCard
                 key={index}
@@ -170,7 +180,6 @@ export default function Index() {
                 tags={tool.tags}
                 icon={tool.icon}
                 to={tool.link}
-                className={tool.disabled ? 'invisible' : ''}
               >
                 {tool.description}
               </ToolCard>

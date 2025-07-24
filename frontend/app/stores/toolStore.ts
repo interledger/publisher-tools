@@ -305,9 +305,7 @@ export const toolActions = {
       .replace('$', '')
       .replace('https://', '')
 
-    const versionName = getVersionNameByStableKey(toolState.activeVersion)
-
-    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${versionName}&types=banner"></script>`
+    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${toolState.activeVersion}&types=banner"></script>`
   },
   updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
     if (!toolState.configurations[stableKey]) {
