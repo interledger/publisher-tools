@@ -40,7 +40,7 @@ const setupTools = [
       'Fair payout'
     ],
     icon: SVGRevShareGenerator,
-    href: 'https://webmonetization.org/tools/prob-revshare/'
+    link: '/prob-revshare/'
   }
 ]
 
@@ -145,8 +145,8 @@ export default function Index() {
                 title={tool.title}
                 tags={tool.tags}
                 icon={tool.icon}
-                to={tool.link || tool.href || ''}
-                target={tool.href ? '_blank' : undefined}
+                to={tool.link || ''}
+                target={tool.link ? undefined : '_blank'}
               >
                 {tool.description}
               </ToolCard>

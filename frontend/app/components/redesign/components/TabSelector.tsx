@@ -86,10 +86,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
     }
 
     if (selectedId === tabId && !editingId) {
-      // Only allow editing if this tab is already selected
       beginEditing(tabId)
     } else {
-      // Save any current edit and select the new tab
       if (editingId) {
         saveEdit()
       }
