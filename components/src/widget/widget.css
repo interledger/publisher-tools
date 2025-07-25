@@ -37,21 +37,13 @@
 
   --Radius-Moderate-rounding: 8px;
 
-  --Tools-Colors-Text-paragraph-standard: var(
-    --text-color,
-    var(--Colors-silver-950)
-  );
-  --Tools-Colors-Text-paragraph-error: var(--Colors-red-600);
-  --Tools-Colors-Text-fields-placeholder-default: var(--Colors-silver-700);
-  --Tools-Colors-Fields-edge-default: var(--Colors-silver-300);
+  --Text-paragraph-standard: var(--text-color, var(--Colors-silver-950));
+  --Text-fields-placeholder-default: var(--Colors-silver-700);
 
-  --Tools-Colors-Buttons-Primary-surface-default: var(
-    --primary-color,
-    var(--Colors-green-400)
-  );
+  --Button-Primary-color-default: var(--primary-color, var(--Colors-green-400));
 
-  --Tools-Colors-Buttons-Secondary-edge-default: var(--Colors-Purple-300);
-  --Tools-Colors-Text-buttons-default: var(--Colors-Purple-300);
+  --Button-Secondary-color-default: var(--Colors-Purple-300);
+  --Button-Secondary-text-default: var(--Colors-Purple-300);
 
   --wm-widget-trigger-bg-color: #f3f4f6;
   --wm-button-text-color: var(--Colors-white);
@@ -69,21 +61,21 @@
   flex-direction: column;
   background: var(--background-color);
   width: 340px;
-  height: 606px;
   overflow: hidden;
   align-items: stretch;
   border-radius: 8px;
   outline: none;
   flex: 1 1 auto;
 
-  transform: scale(0);
   opacity: 0;
-  transform-origin: bottom right;
+  transform: translateY(20px);
   transition:
-    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.2s ease-in-out;
-
+    opacity 0.25s ease-out,
+    transform 0.25s ease-out,
+    visibility 0s linear 0.25s;
+  pointer-events: none;
   visibility: hidden;
+  height: 0;
 }
 
 .content:focus {
@@ -91,28 +83,31 @@
 }
 
 .content.open {
-  transform: scale(1);
   opacity: 1;
-  visibility: visible;
+  transform: translateY(0);
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  pointer-events: auto;
+  visibility: visible;
+  height: 606px;
   transition:
-    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.2s ease-in-out,
-    box-shadow 0.3s ease;
+    opacity 0.25s ease-out,
+    transform 0.25s ease-out,
+    visibility 0s linear 0s;
 }
 
 .content.closed {
-  transform: scale(0);
   opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
   visibility: hidden;
+  height: 0;
   transition:
-    transform 0.25s ease-in,
-    opacity 0.15s ease-in,
+    opacity 0.25s ease-out,
+    transform 0.25s ease-out,
     visibility 0s linear 0.25s;
 }
-
 .trigger {
   cursor: pointer;
   background: var(--wm-widget-trigger-bg-color);
@@ -233,7 +228,7 @@
 
 .widget-body p {
   align-self: stretch;
-  color: var(--Tools-Colors-Text-paragraph-standard);
+  color: var(--Text-paragraph-standard);
   font-family: var(--Font-Family-Inter);
   font-size: var(--Font-Size-text-sm);
   font-style: normal;
@@ -269,7 +264,7 @@
   justify-content: flex-start;
   align-items: center;
   gap: 2px;
-  color: var(--Tools-Colors-Text-paragraph-standard);
+  color: var(--Text-paragraph-standard);
   font-family: var(--Font-Family-Inter);
   font-size: var(--Font-Size-text-xs);
   font-style: normal;
@@ -281,7 +276,7 @@
   width: 100%;
   height: 48px;
   padding: var(--Paddings-sm) var(--Paddings-md);
-  border: 1px solid var(--Tools-Colors-Fields-edge-default);
+  border: 1px solid var(--Colors-silver-300, #c9c9c9);
   border-radius: var(--Radius-Moderate-rounding);
   font-family: var(--Font-Family-Inter);
   font-size: var(--Font-Size-text-base);
@@ -290,12 +285,12 @@
   line-height: var(--Font-Line-Height-md);
   box-sizing: border-box;
   transition: border-color 0.2s ease;
-  color: var(--Tools-Colors-Text-paragraph-standard);
+  color: var(--Text-paragraph-standard);
   background-color: var(--Colors-white);
 }
 
 .form-input::placeholder {
-  color: var(--Tools-Colors-Text-fields-placeholder-default);
+  color: var(--Text-fields-placeholder-default);
   font-family: var(--Font-Family-Inter);
   font-size: var(--Font-Size-text-base);
   font-style: normal;
@@ -305,22 +300,14 @@
 
 .form-input:focus {
   outline: none;
-  border-color: var(--Tools-Colors-Buttons-Primary-surface-default);
+  border-color: var(--Button-Primary-color-default);
   box-shadow: 0 0 0 3px
-    color-mix(
-      in srgb,
-      var(--Tools-Colors-Buttons-Primary-surface-default) 10%,
-      transparent 90%
-    );
+    color-mix(in srgb, var(--Button-Primary-color-default) 10%, transparent 90%);
 }
 
 .form-input:read-only {
   background-color: #f9fafb;
-  color: var(--Tools-Colors-Text-fields-placeholder-default);
-}
-
-.red-text {
-  color: var(--Tools-Colors-Text-paragraph-error);
+  color: var(--Text-fields-placeholder-default);
 }
 
 .close-button {
@@ -360,7 +347,7 @@
   flex-direction: column;
   text-align: center;
   font-size: var(--Font-Size-text-sm);
-  color: var(--Tools-Colors-Text-paragraph-standard);
+  color: var(--Text-paragraph-standard);
   padding: 0 var(--Paddings-2xl) var(--Paddings-2xl) var(--Paddings-2xl);
   align-items: center;
   flex: 0 0 auto;
@@ -410,9 +397,8 @@
     justify-content: center;
   }
 
-  .content.open {
-    transform: scale(1);
-    transform-origin: center;
+  .wm_widget.closed {
+    height: auto;
   }
 
   .trigger {
@@ -421,37 +407,5 @@
     right: 20px;
     z-index: 1001;
     margin-top: 0;
-  }
-}
-
-@media (max-width: 360px) {
-  .content {
-    width: calc(100vw - 16px);
-    height: calc(100vh - 40px);
-    margin: 8px;
-  }
-
-  .widget-header-container {
-    padding: var(--Paddings-sm) var(--Paddings-md);
-    height: 56px;
-  }
-
-  .widget-body {
-    padding: 0px var(--Paddings-md);
-  }
-
-  .widget-footer {
-    padding: 0 var(--Paddings-md) var(--Paddings-md) var(--Paddings-md);
-  }
-
-  .trigger {
-    bottom: 16px;
-    right: 16px;
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .trigger img {
-    width: 1.75rem;
   }
 }

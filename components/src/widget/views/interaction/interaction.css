@@ -22,7 +22,7 @@
 
 .widget-body p {
   align-self: stretch;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -70,12 +70,8 @@
   color: var(--Colors-green-600, #27797a);
 }
 
-/* .green {
-  color: var(--Tools-Colors-Text-paragraph-success, #27797a);
-} */
-
-.red {
-  color: var(--Tools-Colors-Text-paragraph-error, #e51d25);
+.interaction-body .failed {
+  color: var(--Colors-red-600, #e51d25);
 }
 
 .description {
@@ -109,9 +105,9 @@
   gap: var(--Spacings-xs);
   align-self: stretch;
   border-radius: var(--Radius-Moderate-rounding);
-  border: 1px solid var(--Tools-Colors-Buttons-Secondary-edge-default);
+  border: 1px solid var(--Button-Secondary-color-default);
   background: var(--Colors-white);
-  color: var(--Tools-Colors-Text-buttons-default);
+  color: var(--Button-Secondary-text-default);
   font-family: var(--Font-Family-Inter);
   font-size: var(--Font-Size-text-sm);
   font-style: normal;
@@ -127,7 +123,7 @@
     var(--Colors-Purple-300) 5%,
     var(--Colors-white) 95%
   );
-  border-color: var(--Tools-Colors-Buttons-Secondary-edge-default);
+  border-color: var(--Button-Secondary-color-default);
 }
 
 .empty-button:focus {
@@ -156,7 +152,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
 
   background: var(--primary-color);
 }

@@ -41,7 +41,7 @@
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
   line-height: var(--Font-Line-Height-lg, 26px);
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
 }
 
 .white-text {
@@ -97,7 +97,7 @@
 }
 
 .enter-amount-description {
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
@@ -135,7 +135,7 @@
 
 .widget-body p,
 .widget-body label:not(.form-label) {
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
@@ -155,7 +155,7 @@
   left: var(--Paddings-md, 12px);
   top: 50%;
   transform: translateY(-50%);
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-weight: var(--Font-Weight-Regular, 400);
@@ -195,7 +195,7 @@
 }
 
 .summary-label {
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   font-size: var(--Font-Size-text-sm, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -222,19 +222,19 @@
 
 .receiver-name {
   font-weight: 600;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   margin-bottom: 4px;
 }
 
 .receiver-address {
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   opacity: 0.8;
   word-break: break-all;
 }
 
 .note-display {
   font-size: 0.875rem;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   opacity: 0.7;
   font-style: italic;
   margin-bottom: 12px;
@@ -282,7 +282,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   opacity: 0.6;
 }
 
@@ -310,7 +310,7 @@
 
 .empty-state {
   text-align: center;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   opacity: 0.6;
   padding: 40px 20px;
 }
@@ -371,7 +371,7 @@
   justify-content: flex-start;
   align-items: center;
   gap: 2px;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-xs, 12px);
   font-style: normal;
@@ -402,7 +402,7 @@
   line-height: var(--Font-Line-Height-md, 24px);
   box-sizing: border-box;
   transition: border-color 0.2s ease;
-  color: var(--Tools-Colors-Text-paragraph-standard, #363636);
+  color: var(--Text-paragraph-standard, #363636);
   background-color: var(--Colors-white, #ffffff);
 }
 

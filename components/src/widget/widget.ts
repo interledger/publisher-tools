@@ -13,7 +13,8 @@ import closeButtonIcon from '../assets/wm_close_button.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
 import interledgerLogoIcon from '../assets/interledger_logo.svg'
 
-const defaultDescription = 'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
+const defaultDescription =
+  'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 
 export class PaymentWidget extends LitElement {
   private configController = new WidgetController(this)
@@ -86,7 +87,6 @@ export class PaymentWidget extends LitElement {
 
   private toggleWidget() {
     this.isOpen = !this.isOpen
-    this.requestUpdate()
 
     this.dispatchEvent(
       new CustomEvent('widget-toggle', {
@@ -138,15 +138,17 @@ export class PaymentWidget extends LitElement {
             ${this.config.widgetTitleText || 'Future of support'}
           </p>
         </div>
-        <button class="close-button" @click=${this.toggleWidget}>
+        <button
+          class="close-button"
+          @click=${this.toggleWidget}
+          aria-label="Close widget"
+        >
           <img src=${closeButtonIcon} alt="close widget" />
         </button>
       </div>
 
       <div class="widget-body margin-top-24">
-        <p>
-          ${this.config.widgetDescriptionText || defaultDescription}
-        </p>
+        <p>${this.config.widgetDescriptionText || defaultDescription}</p>
 
         <form class="payment-form" @submit=${this.handleSubmit}>
           <div class="form-wallet-address">
@@ -204,7 +206,7 @@ export class PaymentWidget extends LitElement {
     const triggerIcon = this.config.widgetTriggerIcon || defaultTriggerIcon
 
     return html`
-      <div class="wm_widget">
+      <div class="wm_widget ${this.isOpen ? '' : 'closed'}">
         <div class="content ${this.isOpen ? 'open' : 'closed'}">
           ${this.renderCurrentView()}
 
@@ -213,13 +215,21 @@ export class PaymentWidget extends LitElement {
             <div class="powered-by">
               Powered by
               <a href="https://webmonetization.org" target="_blank">
-                <img src=${interledgerLogoIcon} widht="100px" height="24px" />
+                <img
+                  src=${interledgerLogoIcon}
+                  height="24px"
+                  alt="Interledger logo"
+                />
               </a>
             </div>
           </div>
         </div>
 
-        <button class="trigger" @click=${this.toggleWidget}>
+        <button
+          class="trigger"
+          @click=${this.toggleWidget}
+          aria-label="Toggle payment widget"
+        >
           <img src="${triggerIcon}" alt="widget trigger" />
         </button>
       </div>
