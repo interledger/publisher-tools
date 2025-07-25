@@ -10087,11 +10087,6 @@ snapshots:
       micromatch: 4.0.8
       vite: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.29.2)(yaml@2.7.1)
 
-  vite-plugin-restart@0.4.2(vite@6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.29.2)(yaml@2.7.1)):
-    dependencies:
-      micromatch: 4.0.8
-      vite: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.29.2)(yaml@2.7.1)
-
   vite-tsconfig-paths@4.3.2(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2)):
     dependencies:
       debug: 4.4.0

@@ -21,22 +21,6 @@ declare module 'react' {
   }
 }
 
-// Import the banner web component
-import type { BannerConfig, PaymentBanner } from '@tools/components'
-
-// Declare the custom element for TypeScript
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      'wm-banner': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<PaymentBanner> },
-        HTMLElement
-      >
-    }
-  }
-}
-
 const BrowserDots = () => (
   <svg width="39" height="8" viewBox="0 0 39 8" fill="none">
     <circle cx="4" cy="4" r="3.5" fill="#FF5F57" stroke="#E0443E" />

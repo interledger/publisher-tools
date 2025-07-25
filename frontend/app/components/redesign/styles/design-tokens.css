@@ -229,8 +229,8 @@
   --Landing-page-colors-icons-buttons-default: var(--Colors-silver-800);
   --Landing-page-colors-icons-buttons-hover: var(--black);
   --Landing-page-colors-text-buttons-hover: var(--black);
-  --Button-Secondary-color-default: var(--Colors-Purple-300);
-  --Button-Secondary-text-default: var(--Colors-Purple-300);
+  --Tools-Colors-Buttons-Secondary-edge-default: var(--Colors-Purple-300);
+  --Tools-Colors-Text-buttons-default: var(--Colors-Purple-300);
   --Tools-Colors-Icons-buttons-default: var(--Colors-Purple-300);
   --Tools-Colors-Buttons-Secondary-edge-hover: var(--Colors-Purple-600);
   --Tools-Colors-Icons-buttons-hover: var(--Colors-Purple-600);

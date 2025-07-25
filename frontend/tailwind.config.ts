@@ -83,20 +83,6 @@ export default {
     'text-style-caption-standard',
     'text-style-caption-emphasis'
   ],
-  safelist: [
-    'text-style-h1',
-    'text-style-h2',
-    'text-style-h3',
-    'text-style-h4',
-    'text-style-h5',
-    'text-style-h6',
-    'text-style-body-standard',
-    'text-style-body-emphasis',
-    'text-style-small-standard',
-    'text-style-small-emphasis',
-    'text-style-caption-standard',
-    'text-style-caption-emphasis'
-  ],
   theme: {
     extend: {
       colors: {
@@ -145,9 +131,6 @@ export default {
 
         'nav-link-default': palettes['purple-300'],
         'nav-link-hover': palettes['purple-600'],
-
-        'nav-link-default': palettes['purple-300'], // #8075B3
-        'nav-link-hover': palettes['purple-600'], // #5B5380
 
         // Custom old WM colors
         'wm-green': '#5BC8BB',

@@ -208,6 +208,7 @@ export class BannerController implements ReactiveController {
 
     this.host.requestUpdate()
   }
+
   updateState(updates: Partial<BannerState>) {
     this._state = { ...this._state, ...updates }
     this.host.requestUpdate()
