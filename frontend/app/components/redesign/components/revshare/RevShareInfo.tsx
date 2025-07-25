@@ -1,4 +1,4 @@
-import { Heading5 } from '../../Typography'
+import { Heading5 } from '@/typography'
 
 export const RevShareInfo = () => {
   return (
