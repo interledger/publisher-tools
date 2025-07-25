@@ -186,7 +186,7 @@ export class PaymentInteraction extends LitElement {
 
         <div class="interaction-body">
           <div class="title red">Payment authorization rejected</div>
-          <img src=${failedIcon} width="122px" height="200px" />
+          <img src=${failedIcon} width="122px" height="200px" alt="failed payment icon" />
         </div>
 
         <button class="button-container empty-button" @click=${this.cancel}>

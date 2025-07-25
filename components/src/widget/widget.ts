@@ -13,6 +13,8 @@ import closeButtonIcon from '../assets/wm_close_button.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
 import interledgerLogoIcon from '../assets/interledger_logo.svg'
 
+const defaultDescription = 'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
+
 export class PaymentWidget extends LitElement {
   private configController = new WidgetController(this)
 
@@ -97,7 +99,7 @@ export class PaymentWidget extends LitElement {
 
   // Always have 'home' screen when opening the widget
   updated(changedProps: Map<string, unknown>) {
-    if (changedProps.has('isOpen') && this.isOpen) {
+    if (changedProps.get('isOpen') && this.isOpen) {
       this.currentView = 'home'
     }
   }
@@ -136,18 +138,14 @@ export class PaymentWidget extends LitElement {
             ${this.config.widgetTitleText || 'Future of support'}
           </p>
         </div>
-        <img
-          class="close-button"
-          src=${closeButtonIcon}
-          alt="close widget"
-          @click=${this.toggleWidget}
-        />
+        <button class="close-button" @click=${this.toggleWidget}>
+          <img src=${closeButtonIcon} alt="close widget" />
+        </button>
       </div>
 
       <div class="widget-body margin-top-24">
         <p>
-          ${this.config.widgetDescriptionText ||
-          'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'}
+          ${this.config.widgetDescriptionText || defaultDescription}
         </p>
 
         <form class="payment-form" @submit=${this.handleSubmit}>
@@ -221,9 +219,9 @@ export class PaymentWidget extends LitElement {
           </div>
         </div>
 
-        <div class="trigger" @click=${this.toggleWidget}>
+        <button class="trigger" @click=${this.toggleWidget}>
           <img src="${triggerIcon}" alt="widget trigger" />
-        </div>
+        </button>
       </div>
     `
   }
