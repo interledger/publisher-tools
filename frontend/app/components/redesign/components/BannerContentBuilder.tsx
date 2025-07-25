@@ -62,6 +62,16 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
       <div
         className=" bg-interface-bg-main rounded-lg cursor-pointer"
         onClick={toggleExpand}
+        role="button"
+        tabIndex={0}
+        aria-label="Expand content section"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+
+            toggleExpand()
+          }
+        }}
       >
         <div className="px-4 pr-1 py-2 flex flex-col gap-4">
           <div className="flex items-center justify-between">
