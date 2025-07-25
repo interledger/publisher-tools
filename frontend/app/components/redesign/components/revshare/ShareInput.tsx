@@ -1,6 +1,7 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { InputField, ToolsSecondaryButton } from '@/components'
+import { BodyStandard } from '@/typography'
 import { SVGDeleteScript } from '@/assets'
 
 interface ShareInputProps {
@@ -71,12 +72,11 @@ export const ShareInput = React.memo(
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
-          <label className="text-style-body-standard">
-            Recipient #{index + 1}
-          </label>
+          <BodyStandard>Recipient #{index + 1}</BodyStandard>
           <ToolsSecondaryButton
             onClick={onRemove}
             className="border-none py-sm px-xs shrink-0"
+            aria-label={`Recipient ${index + 1}`}
           >
             <SVGDeleteScript className="w-5 h-5" />
           </ToolsSecondaryButton>
