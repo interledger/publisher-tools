@@ -131,6 +131,7 @@ export const ShareInput = React.memo(
           <ToolsSecondaryButton
             onClick={onRemove}
             className="border-none py-sm px-xs shrink-0"
+            aria-label={`Remove recipient ${index + 1}`}
           >
             <SVGDeleteScript className="w-5 h-5" />
           </ToolsSecondaryButton>
