@@ -101,7 +101,7 @@ const Widget = ({
         }
 
         // dynamic import - ensure component only runs on the client side and not on SSR
-        const { PaymentWidget } = await import('@tools/components/widget')
+        const { PaymentWidget } = await import('@tools/components')
         customElements.define('wm-payment-widget', PaymentWidget)
         setIsLoaded(true)
       } catch (error) {
