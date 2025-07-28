@@ -7,10 +7,27 @@ import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '~/assets/svg'
 import Divider from './Divider'
 import { Checkbox } from './Checkbox'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { useSnapshot } from 'valtio'
-import { toolState, toolActions } from '~/stores/toolStore'
 
-interface BannerContentBuilderProps {
+export interface ToolContent {
+  suggestedTitles: string[]
+  titleHelpText: string
+  titleMaxLength: number
+  messageLabel: string
+  messagePlaceholder: string
+  messageHelpText: string
+  messageMaxLength: number
+
+  currentTitle: string
+  currentMessage: string
+
+  onTitleChange: (title: string) => void
+  onMessageChange: (message: string) => void
+  onSuggestedTitleClick: (title: string) => void
+  onRefresh: () => void
+}
+
+interface ContentBuilderProps {
+  content: ToolContent
   isComplete?: boolean
   className?: string
   isExpanded?: boolean
@@ -18,29 +35,14 @@ interface BannerContentBuilderProps {
   onDone?: () => void
 }
 
-export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
+export const ContentBuilder: React.FC<ContentBuilderProps> = ({
+  content,
   isComplete,
   isExpanded = false,
   onToggle,
   onDone
 }) => {
-  const snap = useSnapshot(toolState)
-  const [isBannerActive, setIsBannerActive] = useState(true)
-
-  const suggestedTitles = [
-    'How to support?',
-    'Fund me',
-    'Pay as you browse',
-    'Easy donate',
-    'Support my work'
-  ]
-
-  const handleSuggestedTitleClick = (title: string) => {
-    toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') })
-  }
-  const handleRefresh = () => {
-    toolActions.setToolConfig({ bannerTitleText: 'How to support?' })
-  }
+  const [isMessageActive, setIsMessageActive] = useState(true)
 
   const toggleExpand = () => {
     if (onToggle) {
@@ -107,7 +109,7 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
             onClick={(e) => {
               e.stopPropagation()
               console.log('Refresh')
-              handleRefresh()
+              content.onRefresh()
             }}
             aria-label="Reset content to default"
           >
@@ -134,15 +136,11 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
             Suggested title
           </h4>
           <div className="flex flex-wrap gap-2">
-            {suggestedTitles.map((title) => (
+            {content.suggestedTitles.map((title) => (
               <PillTagButton
                 key={title}
-                variant={
-                  snap.currentConfig?.bannerTitleText === title
-                    ? 'active'
-                    : 'default'
-                }
-                onClick={() => handleSuggestedTitleClick(title)}
+                variant={content.currentTitle === title ? 'active' : 'default'}
+                onClick={() => content.onSuggestedTitleClick(title)}
               >
                 {title}
               </PillTagButton>
@@ -156,17 +154,15 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
-            defaultValue={snap.currentConfig?.bannerTitleText}
-            onChange={(e) =>
-              toolActions.setToolConfig({ bannerTitleText: e.target.value })
-            }
-            maxLength={60}
-            helpText="Strong message to help people engage with Web Monetization"
+            defaultValue={content.currentTitle}
+            onChange={(e) => content.onTitleChange(e.target.value)}
+            maxLength={content.titleMaxLength}
+            helpText={content.titleHelpText}
             className="h-12 text-base leading-md"
           />
           <div className="flex justify-end">
             <span className="text-xs leading-xs text-text-secondary">
-              {snap.currentConfig?.bannerTitleText.length}/60
+              {content.currentTitle.length}/{content.titleMaxLength}
             </span>
           </div>
         </div>
@@ -175,33 +171,27 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
 
         <div className="flex flex-col gap-2">
           <h4 className="text-base leading-md font-bold text-text-primary">
-            Banner message
+            {content.messageLabel}
           </h4>
           <div className="flex gap-lg items-start xl:flex-row flex-col">
             <div className="flex items-center gap-2 shrink-0">
               <Checkbox
-                checked={isBannerActive}
-                onChange={() => setIsBannerActive(!isBannerActive)}
+                checked={isMessageActive}
+                onChange={() => setIsMessageActive(!isMessageActive)}
                 label="Active"
               />
             </div>
 
             <div className="flex-grow">
               <TextareaField
-                defaultValue={snap.currentConfig?.bannerDescriptionText}
-                onChange={(e) =>
-                  toolActions.setToolConfig({
-                    bannerDescriptionText: e.target.value
-                  })
-                }
-                currentLength={
-                  snap.currentConfig?.bannerDescriptionText.length || 0
-                }
-                maxLength={300}
+                defaultValue={content.currentMessage}
+                onChange={(e) => content.onMessageChange(e.target.value)}
+                currentLength={content.currentMessage.length || 0}
+                maxLength={content.messageMaxLength}
                 showCounter={true}
-                helpText="Strong message to help people engage with Web Monetization"
+                helpText={content.messageHelpText}
                 className="h-[84px]"
-                placeholder="Enter your banner message..."
+                placeholder={content.messagePlaceholder}
               />
             </div>
           </div>
@@ -221,4 +211,4 @@ export const BannerContentBuilder: React.FC<BannerContentBuilderProps> = ({
   )
 }
 
-export default BannerContentBuilder
+export default ContentBuilder

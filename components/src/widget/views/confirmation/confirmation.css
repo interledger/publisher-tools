@@ -196,7 +196,7 @@
 
 .summary-label {
   color: var(--Text-paragraph-standard, #363636);
-  font-size: var(--Font-Size-text-sm, 14px);
+  font-size: var(--Font-Size-text-base, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
   line-height: var(--Font-Line-Height-sm, 20px);
@@ -250,7 +250,7 @@
   padding: var(--Spacings-xs) var(--Paddings-md);
   color: var(--wm-button-text-color);
   border: none;
-  border-radius: var(--Radius-Moderate-rounding);
+  border-radius: var(--widget-border-radius, 8px);
   font-family: var(--Font-Family-Inter);
   font-weight: var(--Font-Weight-Regular);
   font-size: var(--Font-Size-text-sm);

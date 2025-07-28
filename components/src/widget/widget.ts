@@ -4,7 +4,14 @@ import './views/interaction/interaction.js'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { WidgetController } from './controller'
-import type { WidgetConfig, WalletAddress } from './types'
+import type { WalletAddress, WidgetConfig } from './types'
+import {
+  toWalletAddressUrl,
+  isWalletAddress,
+  normalizeWalletAddress,
+  checkHrefFormat,
+  WalletAddressFormatError
+} from '../utils'
 
 import widgetStyles from './widget.css?raw'
 
@@ -28,61 +35,71 @@ export class PaymentWidget extends LitElement {
   }
 
   @property({ type: Boolean }) isOpen = false
-  @property({ type: Boolean }) requestQuote?: boolean = true
-  @property({ type: Boolean }) requestPayment?: boolean = true
+  @property({ type: Boolean }) isPreview?: boolean = false
 
   @state() private currentView: string = 'home'
+  @state() private walletAddressError: string = ''
 
   static styles = unsafeCSS(widgetStyles)
 
   private async handleSubmit(e: Event) {
     e.preventDefault()
-
     const formData = new FormData(e.target as HTMLFormElement)
     const walletAddress = String(formData.get('walletAddress') ?? '')
 
+    if (this.isPreview && !walletAddress) {
+      this.configController.updateState({
+        walletAddress: {
+          id: 'https://ilp.dev/mock-wallet',
+          assetCode: 'USD',
+          assetScale: 2,
+          authServer: 'https://auth.interledger.cards',
+          resourceServer: 'https://ilp.dev',
+          publicName: 'Mock Wallet (Preview)'
+        }
+      })
+      this.currentView = 'confirmation'
+      return
+    }
+
     if (!walletAddress) {
-      alert('Please enter a valid wallet address')
+      this.walletAddressError = 'Please fill out your wallet address.'
       return
     }
 
-    const response = await fetch(this.toWalletAddressUrl(walletAddress))
-    if (!response.ok) {
-      alert('Unable to fetch wallet details')
-      return
+    try {
+      const formattedUrl = checkHrefFormat(toWalletAddressUrl(walletAddress))
+
+      const response = await fetch(formattedUrl)
+      if (!response.ok) {
+        if (response.status === 404) {
+          this.walletAddressError = 'This wallet address does not exist.'
+        } else {
+          this.walletAddressError = 'Failed to fetch wallet address.'
+        }
+        return
+      }
+
+      const json = (await response.json()) as WalletAddress
+      if (!isWalletAddress(json)) {
+        this.walletAddressError = 'Provided URL is not a valid wallet address.'
+        return
+      }
+
+      this.configController.updateState({
+        walletAddress: {
+          ...json,
+          id: normalizeWalletAddress(json)
+        }
+      })
+      this.currentView = 'confirmation'
+    } catch (error) {
+      if (error instanceof WalletAddressFormatError) {
+        this.walletAddressError = error.message
+      } else {
+        this.walletAddressError = 'Network error. Please try again.'
+      }
     }
-
-    const json = (await response.json()) as WalletAddress
-    if (!this.isWalletAddress(json)) {
-      alert('Invalid wallet address format')
-      return
-    }
-
-    this.configController.updateState({ walletAddress: json })
-    this.currentView = 'confirmation'
-  }
-
-  // TODO: Move this to the shared utils module!
-  private toWalletAddressUrl(s: string): string {
-    return s.startsWith('$') ? s.replace('$', 'https://') : s
-  }
-
-  // TODO: Move this to the shared utils module!
-  private isWalletAddress = (
-    o: Record<string, unknown>
-  ): o is WalletAddress => {
-    return !!(
-      o.id &&
-      typeof o.id === 'string' &&
-      o.assetScale &&
-      typeof o.assetScale === 'number' &&
-      o.assetCode &&
-      typeof o.assetCode === 'string' &&
-      o.authServer &&
-      typeof o.authServer === 'string' &&
-      o.resourceServer &&
-      typeof o.resourceServer === 'string'
-    )
   }
 
   private toggleWidget() {
@@ -95,13 +112,6 @@ export class PaymentWidget extends LitElement {
         composed: true
       })
     )
-  }
-
-  // Always have 'home' screen when opening the widget
-  updated(changedProps: Map<string, unknown>) {
-    if (changedProps.get('isOpen') && this.isOpen) {
-      this.currentView = 'home'
-    }
   }
 
   private handleInteractionCancelled() {
@@ -158,12 +168,17 @@ export class PaymentWidget extends LitElement {
             </label>
 
             <input
-              class="form-input"
+              class="form-input ${this.walletAddressError ? 'error' : ''}"
               type="text"
               name="walletAddress"
               placeholder="Enter your wallet address"
-              required
             />
+
+            ${this.walletAddressError
+              ? html`<div class="error-message">
+                  ${this.walletAddressError}
+                </div>`
+              : ''}
           </div>
 
           <button class="primary-button" type="submit">
@@ -179,8 +194,7 @@ export class PaymentWidget extends LitElement {
       <wm-payment-confirmation
         .configController=${this.configController}
         .note=${this.config.note || ''}
-        .requestQuote=${this.requestQuote}
-        .requestPayment=${this.requestPayment}
+        .isPreview=${this.isPreview}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
@@ -192,7 +206,7 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-interaction
         .configController=${this.configController}
-        .requestPayment=${this.requestPayment}
+        .isPreview=${this.isPreview}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
       ></wm-payment-interaction>

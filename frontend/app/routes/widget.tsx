@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useImperativeHandle
-} from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
 import {
@@ -34,31 +28,21 @@ import {
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { SVGSpinner } from '@/assets'
-import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
+import type {
+  WidgetConfig,
+  PaymentWidget as WidgetComponent
+} from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { ToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import type { SlideAnimationType, CornerType, PositionType } from '~/lib/types'
 
-declare module 'react' {
-  export interface JSX {
-    IntrinsicElements: {
-      'wm-banner': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          ref?: React.Ref<BannerComponent>
-        },
-        HTMLElement
-      >
-    }
-  }
-}
-
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Banner - Web Monetization Tools' },
+    { title: 'Widget - Web Monetization Tools' },
     {
       name: 'description',
       content:
-        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.'
+        'Create and customize a Web Monetization payment widget for your website. The widget allows visitors to make one-time payments to support your content.'
     }
   ]
 }
@@ -89,152 +73,135 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-interface BannerHandle {
-  triggerPreview: () => void
-}
-
-const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
+const WidgetPreview: React.FC = () => {
   const snap = useSnapshot(toolState)
   const [isLoaded, setIsLoaded] = useState(false)
-  const bannerContainerRef = useRef<HTMLDivElement>(null)
-  const bannerElementRef = useRef<BannerComponent | null>(null)
-
-  useImperativeHandle(ref, () => ({
-    triggerPreview: () => {
-      if (bannerElementRef.current) {
-        bannerElementRef.current.previewAnimation()
-      }
-    }
-  }))
+  const widgetRef = useRef<WidgetComponent>(null)
 
   useEffect(() => {
-    const loadBannerComponent = async () => {
-      if (!customElements.get('wm-banner')) {
+    const loadWidgetComponent = async () => {
+      try {
+        if (customElements.get('wm-payment-widget')) {
+          setIsLoaded(true)
+          return
+        }
+
         // dynamic import - ensure component only runs on the client side and not on SSR
-        const { Banner } = await import('@tools/components/banner')
-        customElements.define('wm-banner', Banner)
+        const { PaymentWidget } = await import('@tools/components')
+        customElements.define('wm-payment-widget', PaymentWidget)
+        setIsLoaded(true)
+      } catch (error) {
+        console.error('Failed to load widget component:', error)
       }
-      setIsLoaded(true)
     }
 
-    loadBannerComponent()
+    loadWidgetComponent()
   }, [])
 
-  const bannerConfig = useMemo(
+  const widgetConfig = useMemo(
     () =>
       ({
-        bannerTitleText: snap.currentConfig?.bannerTitleText,
-        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
-        bannerPosition: snap.currentConfig?.bannerPosition,
-        bannerBorderRadius: snap.currentConfig?.bannerBorder,
-        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
+        apiUrl: snap.apiUrl,
+        receiverAddress: snap.opWallet,
+        action: snap.currentConfig.widgetButtonText,
+        widgetTitleText: snap.currentConfig.widgetTitleText,
+        widgetDescriptionText: snap.currentConfig.widgetDescriptionText,
+        widgetTriggerIcon: snap.currentConfig.widgetTriggerIcon,
         theme: {
-          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
-          textColor: snap.currentConfig?.bannerTextColor,
-          fontSize: snap.currentConfig?.bannerFontSize,
-          fontFamily: snap.currentConfig?.bannerFontName
+          primaryColor: snap.currentConfig.widgetButtonBackgroundColor,
+          backgroundColor: snap.currentConfig.widgetBackgroundColor,
+          textColor: snap.currentConfig.widgetTextColor,
+          fontSize: snap.currentConfig.widgetFontSize,
+          fontFamily: snap.currentConfig.widgetFontName,
+          widgetBorderRadius: snap.currentConfig.widgetButtonBorder,
+          widgetButtonBackgroundColor:
+            snap.currentConfig.widgetTriggerBackgroundColor
         }
-      }) as BannerConfig,
+      }) as WidgetConfig,
     [snap.currentConfig]
   )
 
   useEffect(() => {
-    if (bannerContainerRef.current && isLoaded) {
-      if (bannerElementRef.current) {
-        bannerElementRef.current.config = bannerConfig
-        return
-      }
-
-      const bannerElement = document.createElement(
-        'wm-banner'
-      ) as BannerComponent
-      bannerElement.config = bannerConfig
-      bannerElementRef.current = bannerElement
-
-      bannerContainerRef.current.appendChild(bannerElement)
+    if (widgetRef.current && isLoaded) {
+      const widget = widgetRef.current
+      widget.config = widgetConfig
+      widget.isPreview = true
     }
-  }, [bannerConfig, isLoaded])
+  }, [widgetConfig, isLoaded])
 
   if (!isLoaded) {
-    return <div>Loading...</div>
+    return <div>Loading widget...</div>
   }
 
-  const isTopPosition = bannerConfig.bannerPosition === 'Top'
-
   return (
-    <div
-      ref={bannerContainerRef}
-      className={`w-full max-w-full overflow-hidden ${
-        isTopPosition ? 'order-first' : 'order-last'
-      }`}
-    />
+    <div className="w-full max-w-full overflow-visible flex justify-end">
+      <wm-payment-widget ref={widgetRef} />
+    </div>
   )
-})
+}
 
-BannerPreview.displayName = 'BannerPreview'
-
-export default function Banner() {
+export default function Widget() {
   const snap = useSnapshot(toolState)
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
-  const bannerRef = useRef<BannerHandle>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
 
   const contentConfiguration: ToolContent = {
     suggestedTitles: [
-      'How to support?',
-      'Fund me',
-      'Pay as you browse',
-      'Easy donate',
-      'Support my work'
+      'Support this content',
+      'Make a payment',
+      'Contribute now',
+      'Help support',
+      'One-time donation'
     ],
-    titleHelpText: 'Strong message to help people engage with Web Monetization',
-    titleMaxLength: 60,
-    messageLabel: 'Banner message',
-    messagePlaceholder: 'Enter your banner message...',
-    messageHelpText:
-      'Strong message to help people engage with Web Monetization',
+    titleHelpText: 'Message to encourage one-time payments',
+    titleMaxLength: 30,
+    messageLabel: 'Widget message',
+    messagePlaceholder: 'Enter your widget message...',
+    messageHelpText: 'Describe how payments support your work',
     messageMaxLength: 300,
-    currentTitle: snap.currentConfig?.bannerTitleText,
-    currentMessage: snap.currentConfig?.bannerDescriptionText,
+    currentTitle: snap.currentConfig?.widgetTitleText,
+    currentMessage: snap.currentConfig?.widgetDescriptionText,
     onTitleChange: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title }),
+      toolActions.setToolConfig({ widgetTitleText: title }),
     onMessageChange: (message: string) =>
-      toolActions.setToolConfig({ bannerDescriptionText: message }),
+      toolActions.setToolConfig({ widgetDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
+      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
     onRefresh: () =>
-      toolActions.setToolConfig({ bannerTitleText: 'How to support?' })
+      toolActions.setToolConfig({ widgetTitleText: 'Support this content' })
   }
 
   const appearanceConfiguration: ToolAppearance = {
-    fontName: snap.currentConfig?.bannerFontName,
-    fontSize: snap.currentConfig?.bannerFontSize || 16,
-    backgroundColor: snap.currentConfig?.bannerBackgroundColor,
-    textColor: snap.currentConfig?.bannerTextColor,
-    borderRadius: snap.currentConfig?.bannerBorder,
-    position: snap.currentConfig?.bannerPosition,
-    slideAnimation: snap.currentConfig?.bannerSlideAnimation,
-    onFontNameChange: (fontName: string) =>
-      toolActions.setToolConfig({ bannerFontName: fontName }),
-    onFontSizeChange: (fontSize: number) =>
-      toolActions.setToolConfig({ bannerFontSize: fontSize }),
-    onBackgroundColorChange: (color: string) =>
-      toolActions.setToolConfig({ bannerBackgroundColor: color }),
-    onTextColorChange: (color: string) =>
-      toolActions.setToolConfig({ bannerTextColor: color }),
-    onBorderChange: (border: CornerType) =>
-      toolActions.setToolConfig({ bannerBorder: border }),
-    onPositionChange: (position: PositionType) =>
-      toolActions.setToolConfig({ bannerPosition: position }),
-    onSlideAnimationChange: (animation: SlideAnimationType) =>
-      toolActions.setToolConfig({ bannerSlideAnimation: animation }),
+    fontName: snap.currentConfig?.widgetFontName,
+    fontSize: snap.currentConfig?.widgetFontSize || 16,
+    backgroundColor: snap.currentConfig?.widgetBackgroundColor,
+    textColor: snap.currentConfig?.widgetTextColor,
+    buttonColor: snap.currentConfig?.widgetButtonBackgroundColor,
+    borderRadius: snap.currentConfig?.widgetButtonBorder,
+    position: undefined,
+    slideAnimation: undefined,
 
-    showAnimation: true,
-    showPosition: true
+    onFontNameChange: (fontName: string) =>
+      toolActions.setToolConfig({ widgetFontName: fontName }),
+    onFontSizeChange: (fontSize: number) =>
+      toolActions.setToolConfig({ widgetFontSize: fontSize }),
+    onBackgroundColorChange: (color: string) =>
+      toolActions.setToolConfig({ widgetBackgroundColor: color }),
+    onTextColorChange: (color: string) =>
+      toolActions.setToolConfig({ widgetTextColor: color }),
+    onButtonColorChange: (color: string) =>
+      toolActions.setToolConfig({ widgetButtonBackgroundColor: color }),
+    onBorderChange: (border: CornerType) =>
+      toolActions.setToolConfig({ widgetButtonBorder: border }),
+    onPositionChange: (_position: PositionType) => {},
+    onSlideAnimationChange: (_animation: SlideAnimationType) => {},
+
+    showAnimation: false,
+    showPosition: false
   }
 
   useEffect(() => {
@@ -278,14 +245,8 @@ export default function Banner() {
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
     setLoading(true)
-    await toolActions.saveConfig('banner', action)
+    await toolActions.saveConfig('widget', action)
     setLoading(false)
-  }
-
-  const handlePreviewClick = () => {
-    if (bannerRef.current) {
-      bannerRef.current.triggerPreview()
-    }
   }
 
   const handleConfirmWalletOwnership = () => {
@@ -302,12 +263,13 @@ export default function Banner() {
     <div className="bg-interface-bg-main w-full pb-[32px]">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
-            The drawer banner informs visitors who don&apos;t have the Web
-            Monetization extension active, with a call-to-action linking to the
-            extension or providing details about the options available.
+          <HeadingCore title="Widget" onBackClick={() => navigate('/')}>
+            The payment widget allows visitors to make one-time payments to
+            support your content directly. It provides a clean, customizable
+            interface for Web Monetization payments.
             <br />
-            It also adds your wallet address for your site to be monetized.
+            Configure your wallet address to receive payments from your
+            supporters.
           </HeadingCore>
           <div className="flex flex-col min-h-[756px]">
             <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
@@ -411,8 +373,8 @@ export default function Banner() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground onPreviewClick={handlePreviewClick}>
-                      <BannerPreview ref={bannerRef} />
+                    <BuilderBackground>
+                      <WidgetPreview />
                     </BuilderBackground>
                   </div>
                 </div>
@@ -496,7 +458,7 @@ export default function Banner() {
                 onClose={handleCloseModal}
                 onOverride={async (selectedLocalConfigs) => {
                   toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-                  await toolActions.saveConfig('banner', 'save-success')
+                  await toolActions.saveConfig('widget', 'save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()

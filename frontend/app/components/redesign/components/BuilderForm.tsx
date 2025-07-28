@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useSnapshot } from 'valtio'
-import { BannerContentBuilder } from './BannerContentBuilder'
-import { BuilderCollapseExpand } from './BuilderCollapseExpand'
+import { ContentBuilder, type ToolContent } from './ContentBuilder'
+import { AppearanceBuilder, type ToolAppearance } from './AppearanceBuilder'
 import TabSelector from './TabSelector'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 
 interface BuilderFormProps {
+  content: ToolContent
+  appearance: ToolAppearance
   className?: string
   onBuildStepComplete?: (isComplete: boolean) => void
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
   className = '',
-  onBuildStepComplete
+  onBuildStepComplete,
+  content,
+  appearance
 }) => {
   const snap = useSnapshot(toolState)
   const [expandedSection, setExpandedSection] = useState<
@@ -88,19 +92,21 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
       `}
       >
         <div className="w-full">
-          <BannerContentBuilder
+          <ContentBuilder
             isComplete={contentComplete}
             isExpanded={expandedSection === 'content'}
             onToggle={handleContentToggle}
             onDone={handleContentDone}
+            content={content}
           />
         </div>
         <div className="w-full">
-          <BuilderCollapseExpand
+          <AppearanceBuilder
             isComplete={appearanceComplete}
             isExpanded={expandedSection === 'appearance'}
             onToggle={handleAppearanceToggle}
             onDone={handleAppearanceDone}
+            appearance={appearance}
           />
         </div>
       </div>

@@ -104,7 +104,7 @@
   align-items: center;
   gap: var(--Spacings-xs);
   align-self: stretch;
-  border-radius: var(--Radius-Moderate-rounding);
+  border-radius: var(--widget-border-radius);
   border: 1px solid var(--Button-Secondary-color-default);
   background: var(--Colors-white);
   color: var(--Button-Secondary-text-default);
@@ -142,7 +142,7 @@
   padding: var(--Spacings-xs) var(--Paddings-md);
   color: var(--wm-button-text-color);
   border: none;
-  border-radius: var(--Radius-Moderate-rounding);
+  border-radius: var(--widget-border-radius);
   font-family: var(--Font-Family-Inter);
   font-weight: var(--Font-Weight-Regular);
   font-size: var(--Font-Size-text-sm);

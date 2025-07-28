@@ -20,8 +20,7 @@ export interface PaymentResponse {
 export class PaymentConfirmation extends LitElement {
   @property({ type: Object }) configController!: WidgetController
   @property({ type: String }) note = ''
-  @property({ type: Boolean }) requestQuote?: boolean = true
-  @property({ type: Boolean }) requestPayment?: boolean = true
+  @property({ type: Boolean }) isPreview?: boolean = false
 
   @state() private inputAmount = ''
   @state() private inputWidth = ''
@@ -71,10 +70,10 @@ export class PaymentConfirmation extends LitElement {
       amount: Number(amount)
     }
 
-    if (this.requestQuote) {
-      await this.getPaymentQuote(paymentData)
-    } else {
+    if (this.isPreview) {
       await this.previewPaymentQuote(paymentData)
+    } else {
+      await this.getPaymentQuote(paymentData)
     }
 
     this.isLoadingPreview = false
@@ -161,10 +160,6 @@ export class PaymentConfirmation extends LitElement {
     return input ? width + 20 + 'px' : '50px'
   }
 
-  updated(): void {
-    this.style.setProperty('--input-width', this.inputWidth)
-  }
-
   private async getPaymentQuote(paymentData: {
     walletAddress: string
     receiver: string
@@ -226,7 +221,7 @@ export class PaymentConfirmation extends LitElement {
   }
 
   private onPaymentConfirmed = () => {
-    if (!this.requestPayment) {
+    if (this.isPreview) {
       this.previewPaymentConfirmed()
       return
     }
@@ -421,7 +416,7 @@ export class PaymentConfirmation extends LitElement {
     }
 
     const { quote } = this.configController.state
-    if (this.requestQuote && !quote) {
+    if (!this.isPreview && !quote) {
       return html`
         <div class="payment-details failed">
           <div class="loading-state">

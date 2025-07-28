@@ -6,6 +6,7 @@ import type {
   FormatAmountArgs,
   FormattedAmount
 } from './types'
+import { BORDER_RADIUS_VALUES, type BorderRadiusKey } from '../types'
 
 export interface WidgetState {
   walletAddress: WalletAddress
@@ -100,6 +101,14 @@ export class WidgetController implements ReactiveController {
     }
   }
 
+  private applyBorderRadius(borderRadius: BorderRadiusKey) {
+    const borderRadiusValue = BORDER_RADIUS_VALUES[borderRadius]
+    this.host.style.setProperty(
+      '--wm-border-radius',
+      borderRadiusValue || BORDER_RADIUS_VALUES.None
+    )
+  }
+
   applyTheme(element: HTMLElement) {
     const theme = this._config.theme
     if (!theme) return
@@ -115,6 +124,18 @@ export class WidgetController implements ReactiveController {
     }
     if (theme.fontFamily) {
       element.style.setProperty('--wm-font-family', theme.fontFamily)
+    }
+    if (theme.fontSize) {
+      element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
+    }
+    if (theme.widgetBorderRadius) {
+      element.style.setProperty(
+        '--wm-widget-border-radius',
+        theme.widgetBorderRadius
+      )
+    }
+    if (theme.widgetBorderRadius) {
+      this.applyBorderRadius(theme.widgetBorderRadius)
     }
     if (theme.widgetButtonBackgroundColor) {
       element.style.setProperty(

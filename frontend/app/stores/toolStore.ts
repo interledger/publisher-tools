@@ -189,8 +189,12 @@ export const toolState = proxy({
   isSubmitting: false,
   loadingState: 'idle' as 'idle' | 'loading' | 'submitting',
 
-  // wallet and connection state
+  // environment variables
   scriptBaseUrl: '',
+  apiUrl: '',
+  opWallet: '',
+
+  // wallet and connection state
   walletAddress: '',
   grantResponse: '',
   isGrantAccepted: false,
@@ -355,34 +359,14 @@ export const toolActions = {
       }
 
       const formData = new FormData()
-      if (configToSave.bannerFontName)
-        formData.append('bannerFontName', configToSave.bannerFontName)
-      if (configToSave.bannerFontSize)
-        formData.append(
-          'bannerFontSize',
-          configToSave.bannerFontSize.toString()
-        )
-      if (configToSave.bannerDescriptionText)
-        formData.append(
-          'bannerDescriptionText',
-          configToSave.bannerDescriptionText
-        )
-      if (configToSave.bannerTextColor)
-        formData.append('bannerTextColor', configToSave.bannerTextColor)
-      if (configToSave.bannerBackgroundColor)
-        formData.append(
-          'bannerBackgroundColor',
-          configToSave.bannerBackgroundColor
-        )
-      if (configToSave.bannerSlideAnimation)
-        formData.append(
-          'bannerSlideAnimation',
-          configToSave.bannerSlideAnimation
-        )
-      if (configToSave.bannerPosition)
-        formData.append('bannerPosition', configToSave.bannerPosition)
-      if (configToSave.bannerBorder)
-        formData.append('bannerBorder', configToSave.bannerBorder)
+
+      Object.entries(configToSave).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && key !== 'walletAddress') {
+          const stringValue =
+            typeof value === 'number' ? value.toString() : value
+          formData.append(key, stringValue)
+        }
+      })
 
       formData.append('walletAddress', toolState.walletAddress)
       formData.append('version', toolState.activeVersion)
@@ -629,7 +613,7 @@ export const toolActions = {
 }
 
 /** Load from localStorage on init */
-export function loadState(env: { SCRIPT_EMBED_URL: string }) {
+export function loadState(env: Env) {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     const parsed = JSON.parse(saved)
@@ -641,6 +625,8 @@ export function loadState(env: { SCRIPT_EMBED_URL: string }) {
     }
   }
   toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
+  toolState.apiUrl = env.API_URL
+  toolState.opWallet = env.OP_WALLET_ADDRESS
 }
 
 export function persistState() {

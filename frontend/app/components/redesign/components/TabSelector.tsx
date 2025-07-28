@@ -187,7 +187,10 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
           onSelectTab(tabId as StableKey)
         }
       }
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    } else if (
+      (e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
+      !editingId
+    ) {
       e.preventDefault()
       const currentIndex = options.findIndex((option) => option.id === tabId)
       let nextIndex: number
@@ -207,11 +210,9 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         nextTabElement.focus()
       }
 
-      if (!editingId) {
-        toolActions.selectVersion(nextTabId)
-        if (onSelectTab) {
-          onSelectTab(nextTabId)
-        }
+      toolActions.selectVersion(nextTabId)
+      if (onSelectTab) {
+        onSelectTab(nextTabId)
       }
     }
   }
@@ -318,7 +319,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                     <input
                       ref={inputRef}
                       type="text"
-                      value={inputValue}
+                      defaultValue={inputValue}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
                       className={`bg-transparent border-none outline-none text-base leading-md font-normal w-full box-border ${
