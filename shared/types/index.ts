@@ -4,9 +4,11 @@ export interface ConfigVersions {
 
 export interface ElementConfigType {
   // general config
-  css: string
-  version?: string
+  /** the display name for this configuration version */
+  versionName: string
+  /** necessary when creating a new configuration */
   tag?: string
+  /** added by user later, not part of "default" data. TODO: use correct types at all site to extend default data. */
   walletAddress: string
 
   // button specific

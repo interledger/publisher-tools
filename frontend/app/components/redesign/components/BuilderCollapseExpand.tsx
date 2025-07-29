@@ -24,7 +24,7 @@ import { Thumbnail } from './Thumbnail'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
-import { SlideAnimationType } from '~/lib/types'
+import { SlideAnimationType } from '@shared/types'
 
 interface BuilderCollapseExpandProps {
   isComplete?: boolean
