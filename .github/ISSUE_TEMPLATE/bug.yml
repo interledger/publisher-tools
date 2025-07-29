@@ -57,9 +57,10 @@ body:
       description: Which component of the Web Monetization Tools are you having issues with?
       multiple: true
       options:
-        - Payment Button
-        - Monetization Widget
         - Banner
+        - Widget
+        - Payment Button
+        - Link Tag
         - Revenue Share
         - Others
     validations:
