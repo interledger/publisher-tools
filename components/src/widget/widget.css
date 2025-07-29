@@ -29,11 +29,11 @@
   --Font-Line-Height-md: 24px;
   --Font-Line-Height-lg: 26px;
 
-  --Spacings-xs: 8px;
-  --Paddings-sm: 12px;
-  --Paddings-md: 12px;
+  --Spacings-xs: 4px;
+  --Spacings-sm: 8px;
+  --Spacings-md: 12px;
   --Spacings-lg: 24px;
-  --Paddings-2xl: 32px;
+  --Spacings-2xl: 32px;
 
   --Radius-Moderate-rounding: 8px;
   --widget-border-radius: var(--wm-border-radius, 8px);
@@ -148,7 +148,7 @@
   width: 100%;
   box-sizing: border-box;
   height: 64px;
-  padding: var(--Paddings-md) var(--Paddings-2xl);
+  padding: var(--Spacings-md) var(--Spacings-2xl);
   background-color: var(--primary-color);
   justify-content: space-between;
   align-items: center;
@@ -157,7 +157,7 @@
 .widget-header {
   display: flex;
   align-items: center;
-  gap: var(--Spacings-xs);
+  gap: var(--Spacings-sm);
 }
 
 .widget-header img {
@@ -182,7 +182,7 @@
 .primary-button {
   width: 100%;
   height: 44px;
-  padding: var(--Spacings-xs) var(--Paddings-md);
+  padding: var(--Spacings-sm) var(--Spacings-md);
   color: var(--wm-button-text-color);
   border: none;
   border-radius: var(--widget-border-radius);
@@ -218,13 +218,10 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  padding: 0px var(--Paddings-2xl);
+  padding: 0px var(--Spacings-2xl);
+  margin-top: var(--Spacings-lg);
   flex: 1 1 auto;
   gap: var(--Spacings-lg);
-}
-
-.margin-top-24 {
-  margin-top: var(--Spacings-lg);
 }
 
 .widget-body p {
@@ -276,7 +273,7 @@
 .form-input {
   width: 100%;
   height: 48px;
-  padding: var(--Paddings-sm) var(--Paddings-md);
+  padding: var(--Spacings-md);
   border: 1px solid var(--Colors-silver-300, #c9c9c9);
   border-radius: var(--Radius-Moderate-rounding, 8px);
   font-family: var(--Font-Family-Inter);
@@ -372,7 +369,8 @@
   text-align: center;
   font-size: var(--Font-Size-text-sm);
   color: var(--Text-paragraph-standard);
-  padding: 0 var(--Paddings-2xl) var(--Paddings-2xl) var(--Paddings-2xl);
+  padding: var(--Spacings-2xl);
+  padding-top: 0;
   align-items: center;
   flex: 0 0 auto;
   gap: var(--Spacings-lg);
@@ -393,7 +391,7 @@
 .widget-footer .powered-by {
   display: flex;
   align-items: center;
-  gap: var(--Spacings-xs);
+  gap: var(--Spacings-sm);
   font-family: var(--Font-Family-Inter);
   font-size: var(--Font-Size-text-sm);
   font-style: normal;
@@ -403,33 +401,30 @@
 
 @media (max-width: 480px) {
   .content {
-    width: calc(100vw - 32px);
-    max-width: 340px;
-    height: calc(100vh - 80px);
-    max-height: 606px;
-    margin: 16px;
+    width: auto;
   }
 
-  .wm_widget {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
+  .widget-header-container {
+    padding: var(--Spacings-xs) var(--Spacings-md);
   }
 
-  .wm_widget.closed {
-    height: auto;
+  .widget-body {
+    padding: 0px var(--Spacings-md);
+  }
+
+  .widget-footer {
+    padding: var(--Spacings-md);
+    padding-top: 0;
   }
 
   .trigger {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1001;
-    margin-top: 0;
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .trigger img,
+  .trigger .svg-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }

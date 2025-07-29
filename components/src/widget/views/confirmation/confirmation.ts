@@ -323,7 +323,7 @@ export class PaymentConfirmation extends LitElement {
 
     return html`
       <div class="confirmation-container">
-        <div class="widget-header-container confimation-buttons-header">
+        <div class="widget-header-container confirmation-buttons-header">
           <button id="back-button" class="back-button" @click=${this.goBack}>
             <svg height="20px" width="20px" fill="none" viewBox="0 0 20 20">
               <path

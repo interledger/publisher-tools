@@ -12,12 +12,8 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  padding: 0px var(--Paddings-2xl, 32px);
+  padding: 0px var(--Spacings-2xl, 32px);
   flex: 1 1 auto;
-}
-
-.margin-top-24 {
-  margin-top: var(--Spacings-lg, 24px);
 }
 
 .widget-body p {
@@ -35,7 +31,7 @@
   box-sizing: border-box;
   align-items: center;
   flex: 1;
-  padding: 0px var(--Paddings-2xl, 32px);
+  padding: 0px var(--Spacings-2xl, 32px);
 }
 
 .empty-header {
@@ -51,7 +47,7 @@
 }
 
 .interaction-body img {
-  margin-top: var(--Paddings-2xl, 32px);
+  margin-top: var(--Spacings-2xl, 32px);
 }
 
 .title {
@@ -99,10 +95,10 @@
 
 .empty-button {
   display: flex;
-  padding: var(--Paddings-sm) var(--Paddings-sm);
+  padding: var(--Spacings-md);
   justify-content: center;
   align-items: center;
-  gap: var(--Spacings-xs);
+  gap: var(--Spacings-sm);
   align-self: stretch;
   border-radius: var(--widget-border-radius);
   border: 1px solid var(--Button-Secondary-color-default);
@@ -139,7 +135,7 @@
 .primary-button {
   width: 100%;
   height: 44px;
-  padding: var(--Spacings-xs) var(--Paddings-md);
+  padding: var(--Spacings-sm) var(--Spacings-md);
   color: var(--wm-button-text-color);
   border: none;
   border-radius: var(--widget-border-radius);

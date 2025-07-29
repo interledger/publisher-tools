@@ -146,7 +146,7 @@ export class PaymentWidget extends LitElement {
         </button>
       </div>
 
-      <div class="widget-body margin-top-24">
+      <div class="widget-body">
         <p>${this.config.widgetDescriptionText || defaultDescription}</p>
 
         <form class="payment-form" @submit=${this.handleSubmit}>
