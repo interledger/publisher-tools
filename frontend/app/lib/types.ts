@@ -29,7 +29,6 @@ export type SanitizedFields = Pick<
   | 'buttonText'
   | 'buttonDescriptionText'
   | 'walletAddress'
-  | 'version'
   | 'tag'
 >
 

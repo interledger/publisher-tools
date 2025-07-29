@@ -1,7 +1,13 @@
-import { html, css, LitElement } from 'lit'
+import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
-import type { WidgetController } from './widget'
+import type { WidgetController } from '../../controller'
+
+import interactionStyles from './interaction.css?raw'
+
+import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
+import successIcon from '../../../assets/interaction/authorization_success.svg'
+import failedIcon from '../../../assets/interaction/authorization_failed.svg'
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
@@ -11,143 +17,7 @@ export class PaymentInteraction extends LitElement {
     'authorizing'
   @state() private errorMessage = ''
 
-  static styles = css`
-    :host {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .interaction-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      text-align: center;
-      padding: 24px;
-      box-sizing: border-box;
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid #e5e7eb;
-      border-top: 3px solid var(--primary-color, #10b981);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 16px;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .status-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    .success-icon {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .error-icon {
-      background: #fef2f2;
-      color: #dc2626;
-    }
-
-    .status-icon svg {
-      width: 32px;
-      height: 32px;
-    }
-
-    .status-title {
-      margin: 0 0 8px 0;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-color, #000);
-    }
-
-    .status-title.success {
-      color: #16a34a;
-    }
-
-    .status-title.error {
-      color: #dc2626;
-    }
-
-    .status-description {
-      margin: 0 0 24px 0;
-      font-size: 0.875rem;
-      opacity: 0.7;
-      color: var(--text-color, #000);
-    }
-
-    .error-code {
-      font-weight: 600;
-      color: #dc2626;
-      font-size: 0.75rem;
-      margin-bottom: 4px;
-    }
-
-    .error-message {
-      color: #dc2626;
-      font-size: 0.875rem;
-      line-height: 1.4;
-    }
-
-    .action-button {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      min-width: 120px;
-    }
-
-    .cancel-button {
-      background: transparent;
-      border: 2px solid #dc2626;
-      color: #dc2626;
-    }
-
-    .cancel-button:hover {
-      background: #dc2626;
-      color: white;
-    }
-
-    .success-button {
-      background: #16a34a;
-      color: white;
-    }
-
-    .success-button:hover {
-      background: #15803d;
-    }
-
-    .retry-button {
-      background: #dc2626;
-      color: white;
-    }
-
-    .retry-button:hover {
-      background: #b91c1c;
-    }
-  `
+  static styles = unsafeCSS(interactionStyles)
 
   connectedCallback() {
     super.connectedCallback()
@@ -272,13 +142,23 @@ export class PaymentInteraction extends LitElement {
   private renderAuthorizingView() {
     return html`
       <div class="interaction-container">
-        <div class="spinner"></div>
-        <h3 class="status-title">Authorizing Payment</h3>
-        <p class="status-description">
-          Please complete the authorization in the opened tab
-        </p>
-        <button class="action-button cancel-button" @click=${this.cancel}>
-          Cancel
+        <div class="empty-header"></div>
+
+        <div class="interaction-body">
+          <div class="title authorizing">Authorizing payment</div>
+          <div class="description">
+            Please complete the authorization in the opened tab
+          </div>
+          <img
+            src=${loadingIcon}
+            width="122px"
+            height="200px"
+            alt="Payment authorization in progress"
+          />
+        </div>
+
+        <button class="button-container empty-button" @click=${this.cancel}>
+          Cancel payment
         </button>
       </div>
     `
@@ -287,21 +167,22 @@ export class PaymentInteraction extends LitElement {
   private renderSuccessView() {
     return html`
       <div class="interaction-container">
-        <div class="status-icon success-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+        <div class="empty-header"></div>
+
+        <div class="interaction-body">
+          <div class="title complete">Payment complete!</div>
+          <div class="description">
+            Your payment has been processed successfully
+          </div>
+          <img
+            src=${successIcon}
+            width="122px"
+            height="200px"
+            alt="Payment successful"
+          />
         </div>
-        <h3 class="status-title success">Payment Complete!</h3>
-        <p class="status-description">
-          Your payment has been processed successfully.
-        </p>
-        <button class="action-button success-button" @click=${this.goBack}>
+
+        <button class="button-container primary-button" @click=${this.goBack}>
           Done
         </button>
       </div>
@@ -311,23 +192,21 @@ export class PaymentInteraction extends LitElement {
   private renderFailedView() {
     return html`
       <div class="interaction-container">
-        <div class="status-icon error-icon">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </div>
-        <h3 class="status-title error">${this.errorMessage}</h3>
+        <div class="empty-header"></div>
 
-        <div style="display: flex; gap: 12px;">
-          <button class="action-button cancel-button" @click=${this.goBack}>
-            Go to homepage
-          </button>
+        <div class="interaction-body">
+          <div class="title failed">Payment authorization rejected</div>
+          <img
+            src=${failedIcon}
+            width="122px"
+            height="200px"
+            alt="Payment failed"
+          />
         </div>
+
+        <button class="button-container empty-button" @click=${this.cancel}>
+          Cancel payment
+        </button>
       </div>
     `
   }
@@ -344,5 +223,4 @@ export class PaymentInteraction extends LitElement {
     }
   }
 }
-
 customElements.define('wm-payment-interaction', PaymentInteraction)

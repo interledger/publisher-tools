@@ -1,6 +1,4 @@
 import type { WalletAddress } from '@interledger/open-payments'
-import type { ElementConfigType } from '@shared/types'
-import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
 import { toWalletAddressUrl } from '@shared/utils'
 
 export function normalizeWalletAddress(walletAddress: WalletAddress): string {

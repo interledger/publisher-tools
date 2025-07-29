@@ -23,14 +23,23 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+      e.preventDefault()
+      handleChange()
+    }
+  }
+
   return (
     <label
       className={cx(
-        'flex items-center gap-xs w-[94px]',
+        'flex items-center gap-xs',
         disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         className
       )}
       onClick={disabled ? undefined : handleChange}
+      onKeyDown={handleKeyDown}
+      tabIndex={disabled ? -1 : 0}
     >
       <div
         className={cx(

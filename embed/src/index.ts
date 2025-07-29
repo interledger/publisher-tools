@@ -1,4 +1,4 @@
-import { PaymentWidget } from '@tools/components/widget'
+import { PaymentWidget } from '@tools/components'
 import { Banner } from '@tools/components/banner'
 
 customElements.define('wm-payment-widget', PaymentWidget)
@@ -144,7 +144,6 @@ const drawBanner = (config: Config) => {
 
 const drawWidget = (walletAddressUrl: string, config: Config) => {
   const element = document.createElement('wm-payment-widget')
-
   element.config = {
     apiUrl: API_URL,
     receiverAddress: walletAddressUrl,

@@ -29,7 +29,6 @@ export function TypographyExample() {
       <section className="space-y-4">
         <h3 className="text-style-h4">Display and Heading Styles</h3>
 
-        {/* Using convenience components */}
         <Heading1>Heading 1</Heading1>
         <Heading2>Heading 2</Heading2>
         <h2 className="text-style-h2">Heading 2</h2>
@@ -39,14 +38,12 @@ export function TypographyExample() {
         <Heading5>Heading 5</Heading5>
         <Heading6>Heading 6</Heading6>
 
-        {/* Alternative usage with the base Typography component */}
         <Typography variant="h1">Alternative Heading 1</Typography>
       </section>
 
       <section className="space-y-4">
         <h3 className="text-style-h4">Text Styles</h3>
 
-        {/* Body text */}
         <div className="space-y-2">
           <BodyStandard>
             Body Standard - Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -60,7 +57,6 @@ export function TypographyExample() {
           </BodyEmphasis>
         </div>
 
-        {/* Small text */}
         <div className="space-y-2">
           <SmallStandard>
             Small Standard - Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -75,7 +71,6 @@ export function TypographyExample() {
           </SmallEmphasis>
         </div>
 
-        {/* Caption */}
         <CaptionEmphasis>
           Caption - Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </CaptionEmphasis>
@@ -84,7 +79,6 @@ export function TypographyExample() {
       <section className="space-y-4">
         <h3 className="text-style-h4">Using Tailwind Utilities Directly</h3>
 
-        {/* Using the text-style-{token} utilities directly */}
         <p className="text-style-h1">Direct Utility-Heading 1</p>
         <p className="text-style-body-standard">Direct Utility-Body Standard</p>
         <p className="text-style-small-emphasis">

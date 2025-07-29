@@ -16,7 +16,7 @@ export const Label = forwardRef<HTMLLabelElement, LabelProps>(
         {...props}
         ref={ref}
       >
-        <span>{children}</span>{' '}
+        <span>{children}</span>
         {required ? <span className="text-red-500">*</span> : ''}
         <InfoWithTooltip tooltip={tooltip} />
       </label>

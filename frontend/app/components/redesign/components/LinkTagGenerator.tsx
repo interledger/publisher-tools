@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { cx } from 'class-variance-authority'
-import { InputField, ToolsPrimaryButton } from '@/components'
+import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
 import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
+import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
 const isValidPointer = (input: string): string | false => {
   try {
@@ -37,34 +38,14 @@ export const LinkTagGenerator = () => {
   const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
   const [showCodeBox, setShowCodeBox] = useState(false)
-  const [isCopied, setIsCopied] = useState(false)
-
-  useEffect(() => {
-    if (isCopied) {
-      const timer = setTimeout(() => {
-        setIsCopied(false)
-      }, 2000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [isCopied])
-
-  const handleCopyClick = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(
-        `<link rel="monetization" href="${linkTag}" />`
-      )
-      setIsCopied(true)
-    } catch (err) {
-      console.error('Failed to copy text:', err)
-    }
-  }, [linkTag])
+  const { isCopied, handleCopyClick } = useCopyToClipboard(
+    `<link rel="monetization" href="${linkTag}" />`
+  )
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault()
       setInvalidUrl(false)
-      setIsCopied(false)
 
       const validatedPointer = isValidPointer(pointerInput)
 
@@ -120,19 +101,11 @@ export const LinkTagGenerator = () => {
       </div>
 
       {showCodeBox && linkTag && (
-        <div className="flex min-h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-          <output className="grow shrink font-sans text-sm font-normal leading-normal whitespace-pre-wrap min-w-0 overflow-x-auto">
-            <span>&lt;</span>
-            <span style={{ color: '#00009F' }}>link </span>
-            <span style={{ color: '#00A4DB' }}>rel</span>
-            <span>=&quot;</span>
-            <span style={{ color: '#E3116C' }}>monetization</span>
-            <span>&quot; </span>
-            <span style={{ color: '#00A4DB' }}>href</span>
-            <span>=&quot;</span>
-            <span style={{ color: '#E3116C' }}>{linkTag}</span>
-            <span>&quot; /&gt;</span>
-          </output>
+        <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
+          <CodeBlock
+            link={linkTag}
+            className="flex-1 text-sm leading-normal whitespace-nowrap min-w-0 overflow-x-auto"
+          />
           <button
             onClick={handleCopyClick}
             aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
@@ -147,7 +120,7 @@ export const LinkTagGenerator = () => {
       )}
 
       <ToolsPrimaryButton icon="link" className="justify-center" type="submit">
-        Generate link-tag
+        Generate Link Tag
       </ToolsPrimaryButton>
 
       {isCopied && (

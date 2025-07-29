@@ -129,7 +129,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
             aria-haspopup="listbox"
           >
             <div className="flex items-center">
-              {/* left icon */}
               <span className="flex items-center justify-center mr-xs">
                 <SVGDropdown
                   className={cx(

@@ -20,7 +20,7 @@ import { Button, Snackbar } from './components/index.js'
 import { Header, Footer } from '@/components'
 import { XCircle } from './components/icons.js'
 import faviconPng from '~/assets/images/favicon.png?url'
-import faviconIco from '~/assets/images/favicon.ico?url'
+import faviconSvg from '~/assets/images/favicon.svg?url'
 
 export const loader = async () => {
   let message
@@ -151,20 +151,13 @@ export const links: LinksFunction = () => [
   },
   {
     rel: 'icon',
-    type: 'image/png',
-    sizes: '32x32',
-    href: faviconPng
+    href: faviconSvg,
+    type: 'image/svg+xml'
   },
   {
     rel: 'icon',
-    type: 'image/png',
-    sizes: '16x16',
-    href: faviconPng
-  },
-  {
-    rel: 'icon',
-    href: faviconIco,
-    type: 'image/x-icon'
+    href: faviconPng,
+    type: 'image/png'
   },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {

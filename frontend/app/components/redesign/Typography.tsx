@@ -21,7 +21,7 @@ type TypographyProps = {
   as?: React.ElementType
   className?: string
   children: React.ReactNode
-}
+} & React.HTMLAttributes<HTMLElement>
 
 export function Typography({
   variant,
