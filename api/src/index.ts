@@ -3,7 +3,8 @@ import { cors } from 'hono/cors'
 import { zValidator } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
-import { ConfigStorageService } from './utils/config-storage.js'
+import { ConfigStorageService } from '@shared/config-storage-service'
+import type { ConfigVersions } from '@shared/types'
 import { OpenPaymentsService } from './utils/open-payments.js'
 import {
   PaymentQuoteSchema,
@@ -11,7 +12,6 @@ import {
   PaymentFinalizeSchema,
   WalletAddressParamSchema
 } from './schemas/payment.js'
-import type { ConfigVersions } from './types.js'
 import { createHTTPException, serializeError } from './utils/utils.js'
 
 export type Env = {

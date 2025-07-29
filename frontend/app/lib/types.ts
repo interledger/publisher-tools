@@ -4,22 +4,7 @@ import type {
   createButtonSchema,
   createWidgetSchema
 } from '../utils/validate.server.js'
-
-export enum CornerType {
-  None = 'None',
-  Light = 'Light',
-  Pill = 'Pill'
-}
-
-export enum SlideAnimationType {
-  None = 'None',
-  Down = 'Down'
-}
-
-export enum PositionType {
-  Top = 'Top',
-  Bottom = 'Bottom'
-}
+import type { ElementConfigType } from '@shared/types'
 
 export interface CreateConfigRequest {
   walletAddress: string
@@ -32,52 +17,6 @@ export interface SaveUserConfigRequest {
   fullconfig: string // JSON stringified object containing all versions
   version: string
   // ... other fields
-}
-
-export interface ConfigVersions {
-  [key: string]: ElementConfigType
-}
-
-export interface ElementConfigType {
-  // general config
-  versionName: string // The display name for this configuration version
-  tag?: string // when creating a new config
-  walletAddress?: string
-
-  // button specific
-  buttonFontName: string
-  buttonText: string
-  buttonBorder: CornerType
-  buttonTextColor: string
-  buttonBackgroundColor: string
-  buttonDescriptionText?: string
-
-  // banner specific
-  bannerFontName: string
-  bannerFontSize: number
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: PositionType
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  bannerAnimation?: string
-
-  // widget specific
-  widgetFontName: string
-  widgetFontSize: number
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
 }
 
 export type SanitizedFields = Pick<

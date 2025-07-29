@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  CornerType,
-  PositionType,
-  SlideAnimationType,
-  type ElementConfigType
-} from './types.js'
+import { CornerType, type ElementConfigType } from '@shared/types'
 
 const getSelectedFont = (name: string) => {
   switch (name) {
@@ -46,7 +41,7 @@ export const getIlpayCss = (config: ElementConfigType) => {
       }
       .ilpay_body+#headlessui-portal-root {
         all: revert;
-      }   
+      }
       #extension-pay-form+input {
         color: #000000;
       }
@@ -98,7 +93,7 @@ export const generateConfigCss = (
         ? '1rem'
         : '0'
 
-  const css = `       
+  const css = `
         .wm_button {
             font-family: ${selectedWidgetFont}, system-ui, sans-serif !important;
             font-size: 16px;
@@ -108,7 +103,7 @@ export const generateConfigCss = (
             background-color: ${config.buttonBackgroundColor};
             border-radius: ${buttonBorder};
             transition: all 0.5s ease;
-        }       
+        }
         .wm_banner {
             font-family: ${selectedBannerFont}, system-ui, sans-serif !important;
             font-size: ${config.bannerFontSize}px;
@@ -321,42 +316,6 @@ export const getWebMonetizationLink = () => {
     //     return "Internet Explorer"
   } else {
     return `Learn more&nbsp;<a rel="noindex nofollow" target="_blank" href="https://webmonetization.org/">here</a>.`
-  }
-}
-
-export function getDefaultData(): ElementConfigType {
-  return {
-    versionName: 'Default preset', // Default version name
-    walletAddress: undefined,
-    buttonFontName: 'Arial',
-    buttonText: 'Support me',
-    buttonBorder: CornerType.Light,
-    buttonTextColor: '#ffffff',
-    buttonBackgroundColor: '#ff808c',
-    bannerFontName: 'Arial',
-    bannerFontSize: 16,
-    bannerTitleText: 'How to support?',
-    bannerDescriptionText:
-      'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-    bannerSlideAnimation: SlideAnimationType.Down,
-    bannerPosition: PositionType.Bottom,
-    bannerTextColor: '#ffffff',
-    bannerBackgroundColor: '#7f76b2',
-    bannerBorder: CornerType.Light,
-    widgetFontName: 'Arial',
-    widgetFontSize: 16,
-    widgetDonateAmount: 1,
-    widgetTitleText: 'Future of support',
-    widgetDescriptionText:
-      'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
-    widgetButtonText: 'Support me',
-    widgetButtonBackgroundColor: '#4ec6c0',
-    widgetButtonTextColor: '#000000',
-    widgetButtonBorder: CornerType.Light,
-    widgetTextColor: '#000000',
-    widgetBackgroundColor: '#ffffff',
-    widgetTriggerBackgroundColor: '#ffffff',
-    widgetTriggerIcon: ''
   }
 }
 
