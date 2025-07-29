@@ -22,11 +22,7 @@ import { Heading5 } from '../Typography'
 import { Divider } from './Divider'
 import { Thumbnail } from './Thumbnail'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
-import {
-  SlideAnimationType,
-  type CornerType,
-  type PositionType
-} from '~/lib/types'
+import { SlideAnimationType } from '@shared/types'
 
 export interface ToolAppearance {
   fontName?: string

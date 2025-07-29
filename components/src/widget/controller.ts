@@ -1,11 +1,11 @@
-import type { Grant, Quote, PendingGrant } from '@interledger/open-payments'
-import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import type {
-  WalletAddress,
-  WidgetConfig,
-  FormatAmountArgs,
-  FormattedAmount
-} from './types'
+  Grant,
+  Quote,
+  PendingGrant,
+  WalletAddress
+} from '@interledger/open-payments'
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
+import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
 import { BORDER_RADIUS_VALUES, type BorderRadiusKey } from '../types'
 
 export interface WidgetState {

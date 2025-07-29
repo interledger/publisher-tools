@@ -22,15 +22,6 @@ export interface WidgetConfig {
   apiUrl?: string
 }
 
-export type WalletAddress = {
-  id: string
-  publicName: string
-  assetCode: string
-  assetScale: number
-  authServer: string
-  resourceServer: string
-}
-
 export type FormattedAmount = {
   amount: number
   amountWithCurrency: string

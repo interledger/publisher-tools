@@ -1,9 +1,9 @@
 import { proxy, subscribe } from 'valtio'
-import type { ElementConfigType } from '~/lib/types.js'
-import type { ModalType } from '~/lib/presets.js'
 import { APP_BASEPATH } from '~/lib/constants'
+import { getDefaultData } from '@shared/default-data'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
-import { getDefaultData } from '~/lib/utils'
+import type { ElementConfigType } from '@shared/types'
+import type { ModalType } from '~/lib/presets.js'
 
 const STORAGE_KEY = 'valtio-store'
 

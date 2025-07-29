@@ -4,21 +4,16 @@ import './views/interaction/interaction.js'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { WidgetController } from './controller'
-import type { WalletAddress, WidgetConfig } from './types'
-import {
-  toWalletAddressUrl,
-  isWalletAddress,
-  normalizeWalletAddress,
-  checkHrefFormat,
-  WalletAddressFormatError
-} from '../utils'
-
-import widgetStyles from './widget.css?raw'
+import { getWalletAddress, toWalletAddressUrl } from '@shared/utils'
+import { checkHrefFormat, normalizeWalletAddress } from '../utils.js'
+import type { WalletAddress } from '@interledger/open-payments'
+import type { WidgetConfig } from './types'
 
 import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
 import closeButtonIcon from '../assets/wm_close_button.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
 import interledgerLogoIcon from '../assets/interledger_logo.svg'
+import widgetStyles from './widget.css?raw'
 
 const defaultDescription =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
@@ -67,34 +62,24 @@ export class PaymentWidget extends LitElement {
       return
     }
 
+    let walletAddressInfo: WalletAddress
     try {
-      const formattedUrl = checkHrefFormat(toWalletAddressUrl(walletAddress))
+      const walletAddressUrl = checkHrefFormat(
+        toWalletAddressUrl(walletAddress)
+      )
 
-      const response = await fetch(formattedUrl)
-      if (!response.ok) {
-        if (response.status === 404) {
-          this.walletAddressError = 'This wallet address does not exist.'
-        } else {
-          this.walletAddressError = 'Failed to fetch wallet address.'
-        }
-        return
-      }
-
-      const json = (await response.json()) as WalletAddress
-      if (!isWalletAddress(json)) {
-        this.walletAddressError = 'Provided URL is not a valid wallet address.'
-        return
-      }
+      walletAddressInfo = await getWalletAddress(walletAddressUrl)
 
       this.configController.updateState({
         walletAddress: {
-          ...json,
-          id: normalizeWalletAddress(json)
+          ...walletAddressInfo,
+          id: normalizeWalletAddress(walletAddressInfo)
         }
       })
+      this.walletAddressError = ''
       this.currentView = 'confirmation'
     } catch (error) {
-      if (error instanceof WalletAddressFormatError) {
+      if (error instanceof Error) {
         this.walletAddressError = error.message
       } else {
         this.walletAddressError = 'Network error. Please try again.'
