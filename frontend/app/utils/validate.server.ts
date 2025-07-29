@@ -1,7 +1,11 @@
 import { z } from 'zod'
 import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
-import { WalletAddressFormatError } from '~/lib/types.js'
-import { isWalletAddress, toWalletAddressUrl } from '@shared/utils'
+import {
+  checkHrefFormat,
+  isWalletAddress,
+  toWalletAddressUrl,
+  WalletAddressFormatError
+} from '@shared/utils'
 
 const rangeError = { message: 'Value has to be between 16 and 24' }
 
@@ -132,33 +136,6 @@ export const validateForm = async (
   const payload = result.data as unknown as any
 
   return { result, payload }
-}
-
-function checkHrefFormat(href: string): void {
-  let url: URL
-  try {
-    url = new URL(href)
-    if (url.protocol !== 'https:') {
-      throw new WalletAddressFormatError(
-        'Wallet address must use HTTPS protocol'
-      )
-    }
-  } catch (e) {
-    if (e instanceof WalletAddressFormatError) {
-      throw e
-    }
-    throw new WalletAddressFormatError(
-      `Invalid wallet address URL: ${JSON.stringify(href)}`
-    )
-  }
-
-  const { hash, search, port, username, password } = url
-
-  if (hash || search || port || username || password) {
-    throw new WalletAddressFormatError(
-      `Wallet address URL must not contain query/fragment/port/username/password elements.`
-    )
-  }
 }
 
 async function isValidWalletAddress(

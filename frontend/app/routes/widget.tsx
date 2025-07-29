@@ -34,7 +34,11 @@ import type {
 } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { ToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
-import type { SlideAnimationType, CornerType, PositionType } from '~/lib/types'
+import type {
+  CornerType,
+  PositionType,
+  SlideAnimationType
+} from '@shared/types'
 
 export const meta: MetaFunction = () => {
   return [

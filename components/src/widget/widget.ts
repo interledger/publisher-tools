@@ -4,8 +4,12 @@ import './views/interaction/interaction.js'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { WidgetController } from './controller'
-import { getWalletAddress, toWalletAddressUrl } from '@shared/utils'
-import { checkHrefFormat, normalizeWalletAddress } from '../utils.js'
+import {
+  checkHrefFormat,
+  getWalletAddress,
+  normalizeWalletAddress,
+  toWalletAddressUrl
+} from '@shared/utils'
 import type { WalletAddress } from '@interledger/open-payments'
 import type { WidgetConfig } from './types'
 

@@ -37,7 +37,11 @@ import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { ToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
-import type { SlideAnimationType, CornerType, PositionType } from '~/lib/types'
+import type {
+  CornerType,
+  PositionType,
+  SlideAnimationType
+} from '@shared/types'
 
 declare module 'react' {
   export interface JSX {
