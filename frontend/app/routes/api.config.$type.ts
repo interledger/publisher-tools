@@ -3,13 +3,14 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs
 } from '@remix-run/cloudflare'
+import { getDefaultData } from '@shared/default-data'
 import {
   filterDeepProperties,
-  getDefaultData,
   normalizeWalletAddress
 } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
-import type { ConfigVersions, ElementErrors } from '~/lib/types.js'
+import type { ConfigVersions } from '@shared/types'
+import type { ElementErrors } from '~/lib/types.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { validateForm } from '~/utils/validate.server.js'

@@ -4,7 +4,7 @@ import {
   SlideAnimationType,
   PositionType,
   type ElementConfigType
-} from './types.js'
+} from '@shared/types'
 import bannerImg from '~/assets/images/banner_representation.svg'
 import widgetImg from '~/assets/images/widget_representation.svg'
 import buttonImg from '~/assets/images/button_representation.svg'

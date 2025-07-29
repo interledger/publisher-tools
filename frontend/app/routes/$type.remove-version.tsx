@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext, useParams } from '@remix-run/react'
 import { RemoveVersionModal } from '~/components/modals/index.js'
-import type { ElementConfigType } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
 
 type ContextType = {

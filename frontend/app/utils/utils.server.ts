@@ -1,31 +1,5 @@
 import type { WalletAddress } from '@interledger/open-payments'
-import type { ElementConfigType } from '~/lib/types.js'
-import { CornerType, PositionType, SlideAnimationType } from '~/lib/types.js'
-
-export function toWalletAddressUrl(s: string): string {
-  return s.startsWith('$') ? s.replace('$', 'https://') : s
-}
-
-export function walletAddressToKey(walletAddress: string): string {
-  return `${decodeURIComponent(walletAddress).replace('$', '').replace('https://', '')}.json`
-}
-
-export const isWalletAddress = (
-  o: Record<string, unknown>
-): o is WalletAddress => {
-  return !!(
-    o.id &&
-    typeof o.id === 'string' &&
-    o.assetScale &&
-    typeof o.assetScale === 'number' &&
-    o.assetCode &&
-    typeof o.assetCode === 'string' &&
-    o.authServer &&
-    typeof o.authServer === 'string' &&
-    o.resourceServer &&
-    typeof o.resourceServer === 'string'
-  )
-}
+import { toWalletAddressUrl } from '@shared/utils'
 
 export function normalizeWalletAddress(walletAddress: WalletAddress): string {
   const IS_INTERLEDGER_CARDS =
@@ -92,42 +66,4 @@ export const filterDeepProperties = (
 
   traverse(obj, [], result)
   return result
-}
-
-export function getDefaultData(): ElementConfigType {
-  return {
-    versionName: 'Default preset',
-    buttonFontName: 'Arial',
-    buttonText: 'Support me',
-    buttonBorder: CornerType.Light,
-    buttonTextColor: '#ffffff',
-    buttonBackgroundColor: '#ff808c',
-
-    bannerFontName: 'Arial',
-    bannerFontSize: 16,
-    bannerTitleText: 'How to support?',
-    bannerDescriptionText:
-      'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-    bannerSlideAnimation: SlideAnimationType.Down,
-    bannerPosition: PositionType.Bottom,
-    bannerTextColor: '#ffffff',
-    bannerBackgroundColor: '#7f76b2',
-    bannerBorder: CornerType.Light,
-    bannerAnimation: '',
-
-    widgetFontName: 'Arial',
-    widgetFontSize: 16,
-    widgetDonateAmount: 1,
-    widgetTitleText: 'Future of support',
-    widgetDescriptionText:
-      'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
-    widgetButtonText: 'Support me',
-    widgetButtonBackgroundColor: '#4ec6c0',
-    widgetButtonTextColor: '#000000',
-    widgetButtonBorder: CornerType.Light,
-    widgetTextColor: '#000000',
-    widgetBackgroundColor: '#ffffff',
-    widgetTriggerBackgroundColor: '#ffffff',
-    widgetTriggerIcon: ''
-  }
 }

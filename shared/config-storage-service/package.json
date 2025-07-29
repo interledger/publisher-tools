@@ -1,0 +1,9 @@
+{
+  "name": "@shared/config-storage-service",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@shared/utils": "workspace:^",
+    "aws4fetch": "^1.0.20"
+  }
+}

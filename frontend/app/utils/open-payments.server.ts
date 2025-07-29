@@ -7,7 +7,7 @@ import {
   createAuthenticatedClient
 } from '@interledger/open-payments'
 import { createId } from '@paralleldrive/cuid2'
-import { toWalletAddressUrl } from './utils.server'
+import { getWalletAddress } from '@shared/utils'
 import { createContentDigestHeader } from 'httpbis-digest-headers'
 import { signMessage } from 'http-message-signatures/lib/httpbis'
 import type { Request } from 'http-message-signatures'
@@ -86,8 +86,7 @@ async function createClient(env: Env) {
 }
 
 export async function getValidWalletAddress(env: Env, walletAddress: string) {
-  const opClient = await createClient(env)
-  const response = await getWalletAddress(env, walletAddress, opClient)
+  const response = await getWalletAddress(walletAddress)
   return response
 }
 
@@ -208,23 +207,6 @@ export async function isGrantValidAndAccepted(
 
   // when continuation has access_token value it has been accepted by user
   return continuation?.access_token?.value ? true : false
-}
-
-export async function getWalletAddress(
-  env: Env,
-  url: string,
-  opClient?: AuthenticatedClient
-) {
-  opClient ??= await createClient(env)
-  const walletAddress = await opClient.walletAddress
-    .get({
-      url: toWalletAddressUrl(url)
-    })
-    .catch(() => {
-      throw new Error('Invalid wallet address.')
-    })
-
-  return walletAddress
 }
 
 async function createHeaders({

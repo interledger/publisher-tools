@@ -1,7 +1,7 @@
 import { useNavigate, useOutletContext, useParams } from '@remix-run/react'
 import { ImportModal } from '~/components/modals/index.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
-import type { ElementConfigType } from '~/lib/types.js'
+import type { ElementConfigType } from '@shared/types'
 
 type ContextType = {
   toolConfig: ElementConfigType

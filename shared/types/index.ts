@@ -1,0 +1,63 @@
+export interface ConfigVersions {
+  [key: string]: ElementConfigType
+}
+
+export interface ElementConfigType {
+  // general config
+  /** the display name for this configuration version */
+  versionName: string
+  /** necessary when creating a new configuration */
+  tag?: string
+  /** added by user later, not part of "default" data. TODO: use correct types at all site to extend default data. */
+  walletAddress: string
+
+  // button specific
+  buttonFontName: string
+  buttonText: string
+  buttonBorder: CornerType
+  buttonTextColor: string
+  buttonBackgroundColor: string
+  buttonDescriptionText?: string
+
+  // banner specific
+  bannerFontName: string
+  bannerFontSize: number
+  bannerTitleText: string
+  bannerDescriptionText: string
+  bannerSlideAnimation: SlideAnimationType
+  bannerPosition: PositionType
+  bannerBorder: CornerType
+  bannerTextColor: string
+  bannerBackgroundColor: string
+
+  // widget specific
+  widgetFontName: string
+  widgetFontSize: number
+  widgetTitleText: string
+  widgetDescriptionText: string
+  widgetDonateAmount: number // not posibble currently
+  widgetButtonText: string
+  widgetButtonBorder: CornerType
+  widgetTextColor: string
+  widgetBackgroundColor: string
+  widgetButtonTextColor: string
+  widgetButtonBackgroundColor: string
+  widgetTriggerBackgroundColor: string
+  widgetTriggerIcon: string
+}
+
+export enum CornerType {
+  None = 'None',
+  Light = 'Light',
+  Pill = 'Pill'
+}
+
+export enum SlideAnimationType {
+  None = 'None',
+  Down = 'Down'
+}
+
+export enum PositionType {
+  Top = 'Top',
+  Bottom = 'Bottom'
+}
