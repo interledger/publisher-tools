@@ -4,7 +4,9 @@ import './views/interaction/interaction.js'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { WidgetController } from './controller'
-import type { WidgetConfig, WalletAddress } from './types'
+import type { WalletAddress } from '@interledger/open-payments'
+import type { WidgetConfig } from './types'
+import { getWalletAddress, toWalletAddressUrl } from '@shared/utils'
 
 import widgetStyles from './widget.css?raw'
 
@@ -46,43 +48,18 @@ export class PaymentWidget extends LitElement {
       return
     }
 
-    const response = await fetch(this.toWalletAddressUrl(walletAddress))
-    if (!response.ok) {
-      alert('Unable to fetch wallet details')
+    let walletAddressInfo: WalletAddress
+
+    try {
+      const walletAddressUrl = toWalletAddressUrl(walletAddress)
+      walletAddressInfo = await getWalletAddress(walletAddressUrl)
+    } catch (error) {
+      alert((error as Error).message)
       return
     }
 
-    const json = (await response.json()) as WalletAddress
-    if (!this.isWalletAddress(json)) {
-      alert('Invalid wallet address format')
-      return
-    }
-
-    this.configController.updateState({ walletAddress: json })
+    this.configController.updateState({ walletAddress: walletAddressInfo })
     this.currentView = 'confirmation'
-  }
-
-  // TODO: Move this to the shared utils module!
-  private toWalletAddressUrl(s: string): string {
-    return s.startsWith('$') ? s.replace('$', 'https://') : s
-  }
-
-  // TODO: Move this to the shared utils module!
-  private isWalletAddress = (
-    o: Record<string, unknown>
-  ): o is WalletAddress => {
-    return !!(
-      o.id &&
-      typeof o.id === 'string' &&
-      o.assetScale &&
-      typeof o.assetScale === 'number' &&
-      o.assetCode &&
-      typeof o.assetCode === 'string' &&
-      o.authServer &&
-      typeof o.authServer === 'string' &&
-      o.resourceServer &&
-      typeof o.resourceServer === 'string'
-    )
   }
 
   private toggleWidget() {

@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  CornerType,
-  PositionType,
-  SlideAnimationType,
-  type ElementConfigType
-} from '@shared/types'
+import { CornerType, type ElementConfigType } from '@shared/types'
 
 const getSelectedFont = (name: string) => {
   switch (name) {
