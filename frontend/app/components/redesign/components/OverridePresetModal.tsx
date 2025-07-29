@@ -4,7 +4,7 @@ import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { ConfigCondition } from './ConfigCondition'
 import { SVGClose } from '~/assets/svg'
 import { SVGSpinner } from '~/assets/svg'
-import type { ElementConfigType } from '~/lib/types'
+import type { ElementConfigType } from '@shared/types'
 
 interface ConfigItem {
   id: string
