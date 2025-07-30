@@ -209,7 +209,11 @@ export class PaymentWidget extends LitElement {
     const triggerIcon = this.config.widgetTriggerIcon || defaultTriggerIcon
 
     return html`
-      <div class="content ${this.isOpen ? 'open' : 'closed'}">
+      <div
+        class="content ${this.isOpen ? 'open' : 'closed'} ${this.isPreview
+          ? 'preview-mode'
+          : ''}"
+      >
         ${this.renderCurrentView()}
 
         <div class="widget-footer">

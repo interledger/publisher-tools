@@ -402,10 +402,6 @@
 }
 
 @media (max-width: 480px) {
-  .content {
-    width: auto;
-  }
-
   .widget-header-container {
     padding: var(--Spacings-xs) var(--Spacings-md);
   }
@@ -428,5 +424,9 @@
   .trigger .svg-icon svg {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .content.preview-mode {
+    width: auto;
   }
 }

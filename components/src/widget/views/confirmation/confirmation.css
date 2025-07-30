@@ -1,8 +1,5 @@
 :host {
-  display: flex;
-  flex: auto;
   font-family: var(--wm-font-family, system-ui, sans-serif);
-  width: 100%;
 
   --primary-color: var(--wm-primary-color, #56b7b5);
   --background-color: var(--wm-background-color, #ffffff);
