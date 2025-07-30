@@ -7,6 +7,7 @@ import type { ModalType } from '~/lib/presets.js'
 
 const STORAGE_KEY = 'valtio-store'
 
+export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -15,6 +16,7 @@ const DEFAULT_VERSION_NAMES = [
 ] as const
 
 export type StableKey = (typeof STABLE_KEYS)[number]
+export type ToolType = (typeof TOOL_TYPES)[number]
 
 interface SaveConfigResponse {
   grantRequired?: string
@@ -180,6 +182,7 @@ export const toolState = proxy({
    */
   modifiedVersions: [] as StableKey[],
   activeVersion: 'version1' as StableKey,
+  currentToolType: 'unknown' as ToolType,
 
   // UI state
   modal: undefined as ModalType | undefined,
@@ -276,6 +279,10 @@ export const toolActions = {
     toolState.modal = modal
   },
 
+  setCurrentToolType: (toolType: ToolType) => {
+    toolState.currentToolType = toolType
+  },
+
   setSubmitting: (isSubmitting: boolean) => {
     toolState.isSubmitting = isSubmitting
   },
@@ -309,7 +316,7 @@ export const toolActions = {
       .replace('$', '')
       .replace('https://', '')
 
-    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${toolState.activeVersion}&types=banner"></script>`
+    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${toolState.activeVersion}&types=${toolState.currentToolType}"></script>`
   },
   updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
     if (!toolState.configurations[stableKey]) {
@@ -342,10 +349,7 @@ export const toolActions = {
    * Checks if any local changes have been made to the configurations.
    */
   hasCustomEdits: (): boolean => toolState.modifiedVersions.length > 0,
-  saveConfig: async (
-    elementType: string,
-    callToActionType: 'save-success' | 'script'
-  ) => {
+  saveConfig: async (callToActionType: 'save-success' | 'script') => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
     }
@@ -380,10 +384,13 @@ export const toolActions = {
       formData.append('intent', 'update')
 
       const baseUrl = location.origin + APP_BASEPATH
-      const response = await fetch(`${baseUrl}/api/config/${elementType}`, {
-        method: 'PUT',
-        body: formData
-      })
+      const response = await fetch(
+        `${baseUrl}/api/config/${toolState.currentToolType}`,
+        {
+          method: 'PUT',
+          body: formData
+        }
+      )
 
       const data = (await response.json()) as SaveConfigResponse
 
@@ -427,7 +434,7 @@ export const toolActions = {
   },
   handleGrantResponse: () => {
     if (toolState.isGrantAccepted) {
-      toolActions.saveConfig('banner', toolState.lastSaveAction)
+      toolActions.saveConfig(toolState.lastSaveAction)
     } else {
       toolState.modal = {
         type: 'save-error'
@@ -533,8 +540,9 @@ export const toolActions = {
     }
 
     const baseUrl = location.origin + APP_BASEPATH
+    const tool = toolState.currentToolType
     const response = await fetch(
-      `${baseUrl}/api/config/banner?walletAddress=${encodeURIComponent(walletAddress)}`
+      `${baseUrl}/api/config/${tool}?walletAddress=${encodeURIComponent(walletAddress)}`
     )
 
     if (!response.ok) {
@@ -618,11 +626,6 @@ export function loadState(env: Env) {
   if (saved) {
     const parsed = JSON.parse(saved)
     Object.assign(toolState, parsed)
-
-    // ensure savedConfigurations exists for modification tracking
-    if (!toolState.savedConfigurations) {
-      toolState.savedConfigurations = { ...toolState.configurations }
-    }
   }
   toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
   toolState.apiUrl = env.API_URL

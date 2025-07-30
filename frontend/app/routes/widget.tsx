@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
+import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
   json,
@@ -152,6 +153,7 @@ export default function Widget() {
   const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
+  usePathTracker()
 
   const contentConfiguration: ToolContent = {
     suggestedTitles: [
@@ -249,7 +251,7 @@ export default function Widget() {
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
     setLoading(true)
-    await toolActions.saveConfig('widget', action)
+    await toolActions.saveConfig(action)
     setLoading(false)
   }
 
@@ -462,7 +464,7 @@ export default function Widget() {
                 onClose={handleCloseModal}
                 onOverride={async (selectedLocalConfigs) => {
                   toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-                  await toolActions.saveConfig('widget', 'save-success')
+                  await toolActions.saveConfig('save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()

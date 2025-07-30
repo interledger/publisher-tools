@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
+import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
   json,
@@ -186,6 +187,7 @@ export default function Banner() {
   const bannerRef = useRef<BannerHandle>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
+  usePathTracker()
 
   const contentConfiguration: ToolContent = {
     suggestedTitles: [
@@ -282,7 +284,7 @@ export default function Banner() {
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
     setLoading(true)
-    await toolActions.saveConfig('banner', action)
+    await toolActions.saveConfig(action)
     setLoading(false)
   }
 
@@ -500,7 +502,7 @@ export default function Banner() {
                 onClose={handleCloseModal}
                 onOverride={async (selectedLocalConfigs) => {
                   toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-                  await toolActions.saveConfig('banner', 'save-success')
+                  await toolActions.saveConfig('save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
