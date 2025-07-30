@@ -29,22 +29,58 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<Element | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const focusableElementsRef = useRef<NodeListOf<HTMLElement> | null>(null)
 
   useEffect(() => {
     if (isOpen) {
       triggerRef.current = document.activeElement
-      modalRef.current?.focus()
+
+      focusableElementsRef.current = modalRef.current?.querySelectorAll(
+        'button:not([disabled]), textarea:not([disabled])'
+      ) as NodeListOf<HTMLElement> | null
+
       inputRef.current?.focus()
 
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && onClose) {
           onClose()
         }
+
+        if (event.key === 'Tab') {
+          const focusableElements = focusableElementsRef.current
+
+          if (!focusableElements || focusableElements.length === 0) {
+            event.preventDefault()
+            return
+          }
+
+          const firstFocusableElement = focusableElements[0]
+          const lastFocusableElement =
+            focusableElements[focusableElements.length - 1]
+
+          const currentActiveElement = document.activeElement as HTMLElement
+          if (event.shiftKey) {
+            if (currentActiveElement === firstFocusableElement) {
+              lastFocusableElement.focus()
+              event.preventDefault()
+            }
+          } else {
+            if (currentActiveElement === lastFocusableElement) {
+              firstFocusableElement.focus()
+              event.preventDefault()
+            }
+          }
+        }
       }
 
       document.addEventListener('keydown', handleKeyDown)
       return () => {
         document.removeEventListener('keydown', handleKeyDown)
+
+        if (triggerRef.current) {
+          ;(triggerRef.current as HTMLElement).focus()
+        }
+        focusableElementsRef.current = null
       }
     }
   }, [isOpen, onClose])
@@ -72,10 +108,16 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           'pt-2xl pb-md rounded-lg',
           className
         )}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="linkTagInput"
       >
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-silver-800 hover:text-text-secondary transition-colors"
+          className={cx(
+            'absolute top-3 right-3 text-silver-800 hover:text-text-secondary transition-colors rounded-sm',
+            'focus:border-field-border-focus focus:outline-none focus:ring-2 focus:ring-primary-focus'
+          )}
           aria-label="Close modal"
         >
           <SVGClose className="w-6 h-6" />
