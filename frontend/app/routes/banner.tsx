@@ -27,6 +27,7 @@ import {
   loadState
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
+import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
 
 export const meta: MetaFunction = () => {
@@ -74,6 +75,8 @@ export default function Banner() {
   const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
+
+  useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
     loadState(env)
@@ -131,7 +134,7 @@ export default function Banner() {
   }
 
   return (
-    <div className="bg-interface-bg-main w-full pb-[32px]">
+    <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Banner" onBackClick={() => navigate('/')}>

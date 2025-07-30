@@ -45,4 +45,18 @@
   .placeholder-ellipsis[placeholder] {
     text-overflow: ellipsis;
   }
+
+  .has-fixed-action-bar footer {
+    padding-bottom: var(--action-bar-height) !important;
+  }
+
+  .has-fixed-action-bar {
+    --action-bar-height: 169px;
+  }
+
+  @media (min-width: 1280px) {
+    .has-fixed-action-bar {
+      --action-bar-height: 32px;
+    }
+  }
 }
