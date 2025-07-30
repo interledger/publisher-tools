@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSnapshot } from 'valtio'
-import { useLocation } from '@remix-run/react'
 import { toolState } from '~/stores/toolStore'
 import { ToolsSecondaryButton } from '@/components'
 
@@ -24,8 +23,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   onPreviewClick
 }) => {
   const snap = useSnapshot(toolState)
-  const location = useLocation()
-  const isWidgetRoute = location.pathname === '/widget'
+  const isWidgetTool = snap.currentToolType === 'widget'
 
   const createDotPattern = () => {
     const svgString = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
@@ -51,7 +49,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         backgroundSize: '16px 16px'
       }}
     >
-      {!isWidgetRoute && onPreviewClick && (
+      {onPreviewClick && (
         <ToolsSecondaryButton
           icon="play"
           className="w-[130px] order-first mb-auto"
@@ -64,7 +62,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
       <div
         id="browser-mockup"
         className={`w-full bg-transparent rounded-2xl border border-field-border overflow-hidden flex flex-col ${
-          isWidgetRoute ? 'h-[752px]' : 'h-[406px]'
+          isWidgetTool ? 'h-[752px]' : 'h-[406px]'
         }`}
       >
         <div className="flex items-center p-md bg-white">
@@ -77,11 +75,9 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         <div
           id="browser-content"
           className={`flex-1 p-md flex justify-center bg-transparent ${
-            isWidgetRoute
-              ? 'items-end justify-end'
-              : snap.currentConfig?.bannerPosition === 'Top'
-                ? 'items-start'
-                : 'items-end'
+            snap.currentConfig?.bannerPosition === 'Top'
+              ? 'items-start'
+              : 'items-end'
           }`}
         >
           {children}
