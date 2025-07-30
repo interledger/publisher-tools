@@ -2,8 +2,7 @@ import React from 'react'
 import { useSnapshot } from 'valtio'
 import { useLocation } from '@remix-run/react'
 import { toolState } from '~/stores/toolStore'
-
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import { ToolsSecondaryButton } from '@/components'
 
 const BrowserDots = () => (
   <svg width="39" height="8" viewBox="0 0 39 8" fill="none">

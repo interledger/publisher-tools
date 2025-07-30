@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { PillTagButton } from './PillTagButton'
-import { InputField } from './InputField'
-import { TextareaField } from './TextareaField'
-import { Heading5 } from '../Typography'
-import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '~/assets/svg'
-import Divider from './Divider'
-import { Checkbox } from './Checkbox'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
+import {
+  ToolsSecondaryButton,
+  InputField,
+  TextareaField,
+  Divider,
+  Checkbox,
+  PillTagButton
+} from '@/components'
+import { Heading5 } from '@/typography'
 
 export interface ToolContent {
   suggestedTitles: string[]

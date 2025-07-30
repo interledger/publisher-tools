@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useSnapshot } from 'valtio'
-import { ContentBuilder, type ToolContent } from './ContentBuilder'
-import { AppearanceBuilder, type ToolAppearance } from './AppearanceBuilder'
-import TabSelector from './TabSelector'
+import { ContentBuilder, AppearanceBuilder, TabSelector } from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
+import type { ToolContent } from './ContentBuilder'
+import type { ToolAppearance } from './AppearanceBuilder'
 
 interface BuilderFormProps {
   content: ToolContent

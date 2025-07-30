@@ -1,7 +1,7 @@
 import { cx } from 'class-variance-authority'
 import React, { useState, useRef, useEffect } from 'react'
-import { SVGEdit } from '~/assets/svg'
-import { TabTooltip } from './TabTooltip'
+import { SVGEdit } from '@/assets'
+import { TabTooltip } from '@/components'
 import { toolActions, toolState, type StableKey } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
 

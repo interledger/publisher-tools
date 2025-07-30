@@ -10,17 +10,19 @@ import {
   SVGRefresh,
   SVGArrowCollapse,
   SVGGreenVector
-} from '../../../assets/svg'
-import { ToolsDropdown } from './ToolsDropdown'
-import { ColorSelector } from './ColorSelector'
-import { CornerRadiusSelector } from './CornerRadiusSelector'
-import { PositionSelector } from './PositionSelector'
-import { Slider } from './Slider'
-import { Checkbox } from './Checkbox'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { Heading5 } from '../Typography'
-import { Divider } from './Divider'
-import { Thumbnail } from './Thumbnail'
+} from '@/assets'
+import {
+  Thumbnail,
+  ToolsSecondaryButton,
+  ToolsDropdown,
+  ColorSelector,
+  CornerRadiusSelector,
+  PositionSelector,
+  Divider,
+  Slider,
+  Checkbox
+} from '@/components'
+import { Heading5 } from '@/typography'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 import {
   SlideAnimationType,
