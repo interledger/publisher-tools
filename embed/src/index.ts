@@ -165,6 +165,7 @@ const drawWidget = (walletAddressUrl: string, config: Config) => {
   element.style.position = 'fixed'
   element.style.bottom = '20px'
   element.style.right = '20px'
+  element.style.left = '20px'
   element.style.zIndex = '9999'
 
   return element

@@ -139,8 +139,8 @@ const WidgetPreview: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-full overflow-visible flex justify-end">
-      <wm-payment-widget ref={widgetRef} />
+    <div className="w-full max-w-full">
+      <wm-payment-widget style={{ position: 'relative' }} ref={widgetRef} />
     </div>
   )
 }

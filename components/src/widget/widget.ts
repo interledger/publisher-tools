@@ -209,33 +209,31 @@ export class PaymentWidget extends LitElement {
     const triggerIcon = this.config.widgetTriggerIcon || defaultTriggerIcon
 
     return html`
-      <div class="wm_widget ${this.isOpen ? '' : 'closed'}">
-        <div class="content ${this.isOpen ? 'open' : 'closed'}">
-          ${this.renderCurrentView()}
+      <div class="content ${this.isOpen ? 'open' : 'closed'}">
+        ${this.renderCurrentView()}
 
-          <div class="widget-footer">
-            <div class="delimiter"></div>
-            <div class="powered-by">
-              Powered by
-              <a href="https://webmonetization.org" target="_blank">
-                <img
-                  src=${interledgerLogoIcon}
-                  height="24px"
-                  alt="Interledger logo"
-                />
-              </a>
-            </div>
+        <div class="widget-footer">
+          <div class="delimiter"></div>
+          <div class="powered-by">
+            Powered by
+            <a href="https://webmonetization.org" target="_blank">
+              <img
+                src=${interledgerLogoIcon}
+                height="24px"
+                alt="Interledger logo"
+              />
+            </a>
           </div>
         </div>
-
-        <button
-          class="trigger"
-          @click=${this.toggleWidget}
-          aria-label="Toggle payment widget"
-        >
-          <img src="${triggerIcon}" alt="widget trigger" />
-        </button>
       </div>
+
+      <button
+        class="trigger"
+        @click=${this.toggleWidget}
+        aria-label="Toggle payment widget"
+      >
+        <img src="${triggerIcon}" alt="widget trigger" />
+      </button>
     `
   }
 }

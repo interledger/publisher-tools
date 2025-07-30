@@ -84,7 +84,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
                 : 'items-end'
           }`}
         >
-          <div className="w-full max-w-full">{children}</div>
+          {children}
         </div>
       </div>
     </div>

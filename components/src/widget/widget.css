@@ -1,5 +1,7 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   font-family: var(--wm-font-family, system-ui, sans-serif);
 
   --primary-color: var(--wm-primary-color, #56b7b5);
@@ -50,12 +52,12 @@
   --wm-button-text-color: var(--Colors-white);
 }
 
-.wm_widget {
+/* .wm_widget {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   position: relative;
-}
+} */
 
 .content {
   display: flex;
