@@ -3,53 +3,83 @@ import { SectionHeader } from './SectionHeader'
 import {
   SVGAnimation,
   SVGColorPicker,
-  SVGPosition,
+  SVGHeaderPosition,
   SVGRoundedCorner,
   SVGText,
   SVGThumbnail,
   SVGRefresh,
   SVGArrowCollapse,
   SVGGreenVector
-} from '../../../assets/svg'
-import { ToolsDropdown } from './ToolsDropdown'
-import { ColorSelector } from './ColorSelector'
-import { CornerRadiusSelector } from './CornerRadiusSelector'
-import { PositionSelector } from './PositionSelector'
-import { Slider } from './Slider'
-import { Checkbox } from './Checkbox'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { Heading5 } from '../Typography'
-import { Divider } from './Divider'
-import { Thumbnail } from './Thumbnail'
+} from '@/assets'
+import {
+  Thumbnail,
+  ToolsSecondaryButton,
+  ToolsDropdown,
+  ColorSelector,
+  CornerRadiusSelector,
+  BannerPositionSelector,
+  WidgetPositionSelector,
+  Divider,
+  Slider,
+  Checkbox
+} from '@/components'
+import { Heading5 } from '@/typography'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
-import { toolState, toolActions } from '~/stores/toolStore'
+import {
+  SlideAnimationType,
+  type CornerType,
+  type PositionType
+} from '@shared/types'
 import { useSnapshot } from 'valtio'
-import { SlideAnimationType } from '@shared/types'
+import { toolState } from '~/stores/toolStore'
 
-interface BuilderCollapseExpandProps {
+export interface ToolAppearance {
+  fontName?: string
+  fontSize?: number
+  backgroundColor?: string
+  textColor?: string
+  buttonColor?: string
+  borderRadius?: CornerType
+  position?: PositionType
+  slideAnimation?: SlideAnimationType
+
+  onFontNameChange: (fontName: string) => void
+  onFontSizeChange: (fontSize: number) => void
+  onBackgroundColorChange: (color: string) => void
+  onTextColorChange: (color: string) => void
+  onButtonColorChange?: (color: string) => void
+  onBorderChange: (border: CornerType) => void
+  onPositionChange: (position: PositionType) => void
+  onSlideAnimationChange: (animation: SlideAnimationType) => void
+
+  showAnimation?: boolean
+}
+
+interface AppearanceBuilderProps {
+  appearance: ToolAppearance
   isComplete?: boolean
   isExpanded?: boolean
   onToggle?: () => void
   onDone?: () => void
 }
 
-export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
+export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
+  appearance,
   isComplete,
   isExpanded = false,
   onToggle,
   onDone
 }) => {
-  const snap = useSnapshot(toolState)
-  const minFontSize = 16
-  const maxFontSize = 24
+  const minFontSize = 12
+  const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const isAnimated =
-    snap.currentConfig?.bannerSlideAnimation !== SlideAnimationType.None
+  const isAnimated = appearance.slideAnimation !== SlideAnimationType.None
+  const snap = useSnapshot(toolState)
 
   const FontsType = ['Arial', 'Inherit', 'Open Sans', 'Cookie', 'Titillium Web']
   const defaultFontIndex = FontsType.findIndex(
-    (option) => option == snap.currentConfig?.bannerFontName
+    (option) => option == appearance.fontName
   )
   const thumbnails = [wmLogo]
 
@@ -146,7 +176,7 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
             const fontName = FontsType[parseInt(value)]
-            toolActions.setToolConfig({ bannerFontName: fontName })
+            appearance.onFontNameChange(fontName)
           }}
           options={FontsType.map((font, index) => ({
             label: font,
@@ -161,9 +191,9 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               onClick={() => {
                 const newSize = Math.max(
                   minFontSize,
-                  (snap.currentConfig?.bannerFontSize ?? minFontSize) - 1
+                  (appearance.fontSize ?? minFontSize) - 1
                 )
-                toolActions.setToolConfig({ bannerFontSize: newSize })
+                appearance.onFontSizeChange(newSize)
               }}
               aria-label="Decrease font size"
             >
@@ -171,12 +201,12 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
             </button>
 
             <Slider
-              value={snap.currentConfig?.bannerFontSize ?? minFontSize}
+              value={appearance.fontSize ?? minFontSize}
               min={minFontSize}
               max={maxFontSize}
               onChange={(value) => {
                 console.log('Font size changed to:', value)
-                toolActions.setToolConfig({ bannerFontSize: value })
+                appearance.onFontSizeChange(value)
               }}
             />
 
@@ -185,9 +215,9 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
               onClick={() => {
                 const newSize = Math.min(
                   maxFontSize,
-                  (snap.currentConfig?.bannerFontSize ?? minFontSize) + 1
+                  (appearance.fontSize ?? minFontSize) + 1
                 )
-                toolActions.setToolConfig({ bannerFontSize: newSize })
+                appearance.onFontSizeChange(newSize)
               }}
               aria-label="Increase font size"
             >
@@ -207,16 +237,23 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
         <div className="flex justify-between xl:flex-row flex-col gap-md">
           <ColorSelector
             label="Background"
-            value={snap.currentConfig?.bannerBackgroundColor}
+            value={appearance.backgroundColor}
             onChange={(color) => {
-              toolActions.setToolConfig({ bannerBackgroundColor: color })
+              appearance.onBackgroundColorChange(color)
             }}
           />
           <ColorSelector
             label="Text"
-            value={snap.currentConfig?.bannerTextColor}
+            value={appearance.textColor}
             onChange={(color) => {
-              toolActions.setToolConfig({ bannerTextColor: color })
+              appearance.onTextColorChange(color)
+            }}
+          />
+          <ColorSelector
+            label="Button"
+            value={appearance.buttonColor}
+            onChange={(color) => {
+              appearance.onButtonColorChange?.(color)
             }}
           />
           <div className="w-[150px] xl:block hidden"></div>
@@ -230,61 +267,78 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
-          defaultValue={snap.currentConfig?.bannerBorder}
-          onChange={(value) =>
-            toolActions.setToolConfig({ bannerBorder: value })
-          }
+          defaultValue={appearance.borderRadius}
+          onChange={(value) => appearance.onBorderChange(value)}
         />
       </div>
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGPosition className="w-5 h-5" />}
-          label="Position (Appears from)"
-        />
-        <PositionSelector
-          defaultValue={snap.currentConfig?.bannerPosition}
-          onChange={(value) =>
-            toolActions.setToolConfig({ bannerPosition: value })
-          }
-        />
-      </div>
-      <Divider />
-
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGAnimation className="w-5 h-5" />}
-          label="Animation"
-        />
-        <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={isAnimated}
-            onChange={() => {
-              toolActions.setToolConfig({
-                bannerSlideAnimation: isAnimated
-                  ? SlideAnimationType.None
-                  : SlideAnimationType.Down
-              })
-            }}
-            label="Animated"
-          />
-          <div className="flex-1 w-full xl:w-auto">
-            <ToolsDropdown
-              label="Type"
-              disabled={!isAnimated}
-              defaultValue={SlideAnimationType.Down}
-              options={[{ label: 'Slide up', value: SlideAnimationType.Down }]}
-              onChange={(value) =>
-                toolActions.setToolConfig({
-                  bannerSlideAnimation: value as SlideAnimationType
-                })
+      {snap.currentToolType !== 'unknown' && (
+        <>
+          <div className="flex flex-col gap-xs">
+            <SectionHeader
+              icon={<SVGHeaderPosition className="w-5 h-5" />}
+              label={
+                snap.currentToolType === 'widget'
+                  ? 'Position (Left/Right)'
+                  : 'Position (Appears from)'
               }
             />
+            {snap.currentToolType === 'widget' ? (
+              <WidgetPositionSelector
+                defaultValue={appearance.position}
+                onChange={(value) => appearance.onPositionChange(value)}
+              />
+            ) : (
+              <BannerPositionSelector
+                defaultValue={appearance.position}
+                onChange={(value) => appearance.onPositionChange(value)}
+              />
+            )}
           </div>
-        </div>
-      </div>
-      <Divider />
+          <Divider />
+        </>
+      )}
+
+      {appearance.showAnimation && (
+        <>
+          <div className="flex flex-col gap-xs">
+            <SectionHeader
+              icon={<SVGAnimation className="w-5 h-5" />}
+              label="Animation"
+            />
+            <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
+              <Checkbox
+                checked={isAnimated}
+                onChange={() => {
+                  appearance.onSlideAnimationChange(
+                    isAnimated
+                      ? SlideAnimationType.None
+                      : SlideAnimationType.Down
+                  )
+                }}
+                label="Animated"
+              />
+              <div className="flex-1 w-full xl:w-auto">
+                <ToolsDropdown
+                  label="Type"
+                  disabled={!isAnimated}
+                  defaultValue={SlideAnimationType.Down}
+                  options={[
+                    { label: 'Slide up', value: SlideAnimationType.Down }
+                  ]}
+                  onChange={(value) =>
+                    appearance.onSlideAnimationChange(
+                      value as SlideAnimationType
+                    )
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          <Divider />
+        </>
+      )}
 
       <div className="flex flex-col gap-xs">
         <SectionHeader
@@ -323,4 +377,4 @@ export const BuilderCollapseExpand: React.FC<BuilderCollapseExpandProps> = ({
   )
 }
 
-export default BuilderCollapseExpand
+export default AppearanceBuilder

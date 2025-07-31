@@ -4,10 +4,7 @@ import {
   type LoaderFunctionArgs
 } from '@remix-run/cloudflare'
 import { getDefaultData } from '@shared/default-data'
-import {
-  filterDeepProperties,
-  normalizeWalletAddress
-} from '~/utils/utils.server.js'
+import { filterDeepProperties } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
 import type { ConfigVersions } from '@shared/types'
 import type { ElementErrors } from '~/lib/types.js'
@@ -19,6 +16,7 @@ import {
   getValidWalletAddress
 } from '~/utils/open-payments.server.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import { normalizeWalletAddress } from '@shared/utils'
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   try {

@@ -9,19 +9,13 @@ import { property, state } from 'lit/decorators.js'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
 import { getWebMonetizationLinkHref } from './utils.js'
+import { BORDER_RADIUS_VALUES, type BorderRadiusKey } from './types'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =
   'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
 const DEFAULT_BANNER_LINK_TEXT =
   'Install the Web Monetization browser extension'
-
-type BorderRadiusKey = 'Light' | 'Pill' | 'None'
-const BORDER_RADIUS_VALUES: Record<BorderRadiusKey, string> = {
-  Light: '0.375rem',
-  Pill: '1rem',
-  None: '0'
-}
 
 type FontFamilyKey =
   | 'Cookie'

@@ -1,3 +1,5 @@
+import type { BorderRadiusKey } from '../types'
+
 export interface WidgetConfig {
   walletAddress: string
   receiverAddress: string
@@ -12,7 +14,9 @@ export interface WidgetConfig {
     primaryColor?: string
     backgroundColor?: string
     textColor?: string
+    fontSize?: number
     fontFamily?: string
+    widgetBorderRadius?: BorderRadiusKey
     widgetButtonBackgroundColor?: string
   }
   apiUrl?: string

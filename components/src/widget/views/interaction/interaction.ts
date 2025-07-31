@@ -12,7 +12,7 @@ import failedIcon from '../../../assets/interaction/authorization_failed.svg'
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   @property({ type: Object }) configController!: WidgetController
-  @property({ type: Boolean }) requestPayment?: boolean = true
+  @property({ type: Boolean }) isPreview?: boolean = false
   @state() private currentView: 'authorizing' | 'success' | 'failed' =
     'authorizing'
   @state() private errorMessage = ''
@@ -21,7 +21,7 @@ export class PaymentInteraction extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    if (!this.requestPayment) {
+    if (this.isPreview) {
       this.previewInteractionCompleted()
       return
     }

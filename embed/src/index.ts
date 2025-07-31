@@ -152,7 +152,9 @@ const drawWidget = (walletAddressUrl: string, config: Config) => {
       primaryColor: config.widgetButtonBackgroundColor,
       backgroundColor: config.widgetBackgroundColor,
       textColor: config.widgetTextColor,
+      fontSize: config.widgetFontSize,
       fontFamily: config.widgetFontName,
+      widgetBorderRadius: config.widgetButtonBorder,
       widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
     },
     widgetTitleText: config.widgetTitleText,
@@ -163,6 +165,7 @@ const drawWidget = (walletAddressUrl: string, config: Config) => {
   element.style.position = 'fixed'
   element.style.bottom = '20px'
   element.style.right = '20px'
+  element.style.left = '20px'
   element.style.zIndex = '9999'
 
   return element

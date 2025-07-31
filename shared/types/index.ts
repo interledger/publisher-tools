@@ -59,5 +59,7 @@ export enum SlideAnimationType {
 
 export enum PositionType {
   Top = 'Top',
-  Bottom = 'Bottom'
+  Bottom = 'Bottom',
+  Left = 'Left',
+  Right = 'Right'
 }

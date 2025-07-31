@@ -1,8 +1,5 @@
 :host {
-  display: flex;
-  flex: auto;
   font-family: var(--wm-font-family, system-ui, sans-serif);
-  width: 100%;
 
   --primary-color: var(--wm-primary-color, #56b7b5);
   --background-color: var(--wm-background-color, #ffffff);
@@ -81,12 +78,8 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  padding: 0px var(--Paddings-2xl, 32px);
+  padding: 0px var(--Spacings-2xl, 32px);
   flex: 1 1 auto;
-}
-
-.margin-top-24 {
-  margin-top: var(--Spacings-lg, 24px);
 }
 
 .preset-buttons {
@@ -152,7 +145,7 @@
 
 .currency-symbol {
   position: absolute;
-  left: var(--Paddings-md, 12px);
+  left: var(--Spacings-md, 12px);
   top: 50%;
   transform: translateY(-50%);
   color: var(--Text-paragraph-standard, #363636);
@@ -165,7 +158,7 @@
 
 .payment-details {
   display: flex;
-  padding: var(--Paddings-sm, 12px);
+  padding: var(--Spacings-md, 12px);
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
@@ -196,7 +189,7 @@
 
 .summary-label {
   color: var(--Text-paragraph-standard, #363636);
-  font-size: var(--Font-Size-text-sm, 14px);
+  font-size: var(--Font-Size-text-base, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
   line-height: var(--Font-Line-Height-sm, 20px);
@@ -247,10 +240,10 @@
 .primary-button {
   width: 100%;
   height: 44px;
-  padding: var(--Spacings-xs) var(--Paddings-md);
+  padding: var(--Spacings-sm) var(--Spacings-md);
   color: var(--wm-button-text-color);
   border: none;
-  border-radius: var(--Radius-Moderate-rounding);
+  border-radius: var(--widget-border-radius, 8px);
   font-family: var(--Font-Family-Inter);
   font-weight: var(--Font-Weight-Regular);
   font-size: var(--Font-Size-text-sm);
@@ -328,11 +321,11 @@
 .back-button {
   display: flex;
   align-items: center;
-  gap: var(--Spacings-xs, 8px);
+  gap: var(--Spacings-sm, 8px);
   background: transparent;
   border: 1px solid transparent;
   color: var(--primary-color);
-  padding: var(--Paddings-sm, 12px) var(--Paddings-md, 12px);
+  padding: var(--Spacings-md, 12px);
   border-radius: var(--Radius-Moderate-rounding, 8px);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
@@ -385,14 +378,14 @@
 }
 
 .form-input.with-currency {
-  padding-left: calc(var(--Paddings-md, 12px) + 1.5em);
+  padding-left: calc(var(--Spacings-md, 12px) + 1.5em);
 }
 
 .form-input,
 .payment-note-input {
   width: 100%;
   height: 48px;
-  padding: var(--Paddings-sm, 12px) var(--Paddings-md, 12px);
+  padding: var(--Spacings-md, 12px);
   border: 1px solid var(--Colors-silver-300, #c9c9c9);
   border-radius: var(--Radius-Moderate-rounding, 8px);
   font-family: var(--Font-Family-Inter, Inter);
@@ -430,5 +423,11 @@
 }
 
 .form-input.with-currency {
-  padding-left: calc(var(--Paddings-md, 12px) + 1.5em);
+  padding-left: calc(var(--Spacings-md, 12px) + 1.5em);
+}
+
+@media (max-width: 480px) {
+  .widget-header-container {
+    padding: var(--Spacings-xs) var(--Spacings-md);
+  }
 }
