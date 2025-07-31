@@ -10,9 +10,9 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="w-full pb-[169px] xl:pb-xl bg-interface-bg-main">
+    <footer className="w-full pb-xl mt-2xl bg-interface-bg-main">
       <div className="flex flex-row items-center justify-center w-full">
-        <p className="!text-footer-content text-style-small-standard">
+        <p className="!text-footer-content text-style-small-standard text-center">
           Copyright© {new Date().getFullYear()} Interledger Foundation.
         </p>
       </div>
