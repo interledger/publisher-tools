@@ -3,7 +3,7 @@ import { SectionHeader } from './SectionHeader'
 import {
   SVGAnimation,
   SVGColorPicker,
-  SVGPosition,
+  SVGHeaderPosition,
   SVGRoundedCorner,
   SVGText,
   SVGThumbnail,
@@ -17,7 +17,8 @@ import {
   ToolsDropdown,
   ColorSelector,
   CornerRadiusSelector,
-  PositionSelector,
+  BannerPositionSelector,
+  WidgetPositionSelector,
   Divider,
   Slider,
   Checkbox
@@ -29,6 +30,8 @@ import {
   type CornerType,
   type PositionType
 } from '@shared/types'
+import { useSnapshot } from 'valtio'
+import { toolState } from '~/stores/toolStore'
 
 export interface ToolAppearance {
   fontName?: string
@@ -50,7 +53,6 @@ export interface ToolAppearance {
   onSlideAnimationChange: (animation: SlideAnimationType) => void
 
   showAnimation?: boolean
-  showPosition?: boolean
 }
 
 interface AppearanceBuilderProps {
@@ -73,6 +75,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const isAnimated = appearance.slideAnimation !== SlideAnimationType.None
+  const snap = useSnapshot(toolState)
 
   const FontsType = ['Arial', 'Inherit', 'Open Sans', 'Cookie', 'Titillium Web']
   const defaultFontIndex = FontsType.findIndex(
@@ -270,17 +273,28 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       </div>
       <Divider />
 
-      {appearance.showPosition !== false && (
+      {snap.currentToolType !== 'unknown' && (
         <>
           <div className="flex flex-col gap-xs">
             <SectionHeader
-              icon={<SVGPosition className="w-5 h-5" />}
-              label="Position (Appears from)"
+              icon={<SVGHeaderPosition className="w-5 h-5" />}
+              label={
+                snap.currentToolType === 'widget'
+                  ? 'Position (Left/Right)'
+                  : 'Position (Appears from)'
+              }
             />
-            <PositionSelector
-              defaultValue={appearance.position}
-              onChange={(value) => appearance.onPositionChange(value)}
-            />
+            {snap.currentToolType === 'widget' ? (
+              <WidgetPositionSelector
+                defaultValue={appearance.position}
+                onChange={(value) => appearance.onPositionChange(value)}
+              />
+            ) : (
+              <BannerPositionSelector
+                defaultValue={appearance.position}
+                onChange={(value) => appearance.onPositionChange(value)}
+              />
+            )}
           </div>
           <Divider />
         </>

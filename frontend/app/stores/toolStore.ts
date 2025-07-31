@@ -7,6 +7,8 @@ import type { ModalType } from '~/lib/presets.js'
 
 const STORAGE_KEY = 'valtio-store'
 
+const EXCLUDED_FROM_STORAGE: (keyof typeof toolState)[] = ['currentToolType']
+
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
@@ -625,8 +627,9 @@ export function loadState(env: Env) {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     const parsed = JSON.parse(saved)
-    Object.assign(toolState, parsed)
+    Object.assign(toolState, parsedStorageData(parsed))
   }
+
   toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
   toolState.apiUrl = env.API_URL
   toolState.opWallet = env.OP_WALLET_ADDRESS
@@ -634,6 +637,28 @@ export function loadState(env: Env) {
 
 export function persistState() {
   subscribe(toolState, () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toolState))
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(createStorageState(toolState))
+    )
   })
+}
+
+function createStorageState(state: typeof toolState) {
+  return omit(state, EXCLUDED_FROM_STORAGE)
+}
+
+function parsedStorageData(parsed: Record<string, unknown>) {
+  return omit(parsed, EXCLUDED_FROM_STORAGE)
+}
+
+function omit<T extends Record<string, unknown>>(
+  obj: T,
+  keys: readonly (keyof T | string)[]
+): Partial<T> {
+  const excludedKeys = new Set(keys.map(String))
+
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
+  ) as Partial<T>
 }

@@ -206,8 +206,7 @@ export default function Widget() {
     onPositionChange: (_position: PositionType) => {},
     onSlideAnimationChange: (_animation: SlideAnimationType) => {},
 
-    showAnimation: false,
-    showPosition: false
+    showAnimation: false
   }
 
   useEffect(() => {

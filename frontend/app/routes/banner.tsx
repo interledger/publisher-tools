@@ -239,8 +239,7 @@ export default function Banner() {
     onSlideAnimationChange: (animation: SlideAnimationType) =>
       toolActions.setToolConfig({ bannerSlideAnimation: animation }),
 
-    showAnimation: true,
-    showPosition: true
+    showAnimation: true
   }
 
   useEffect(() => {
