@@ -110,7 +110,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
         )}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="linkTagInput"
+        aria-labelledby="import-modal-title"
       >
         <button
           onClick={onClose}
@@ -120,7 +120,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           )}
           aria-label="Close modal"
         >
-          <SVGClose className="w-6 h-6" />
+          <SVGClose className="w-6 h-6" aria-hidden="true" />
         </button>
         <div
           className={cx(
@@ -128,8 +128,11 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             errorMessage ? '' : 'gap-lg'
           )}
         >
-          <label className="text-style-body-standard" htmlFor="linkTagInput">
+          <h2 id="import-modal-title" className="text-style-body-standard">
             Import existing revshare configuration
+          </h2>
+          <label htmlFor="linkTagInput" className="sr-only">
+            Paste monetization link tag
           </label>
           <textarea
             id="linkTagInput"
@@ -146,9 +149,16 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
               setTag(e.target.value)
               setImportError('')
             }}
+            aria-invalid={!!errorMessage}
+            aria-describedby={errorMessage ? 'import-error-message' : undefined}
           />
           {errorMessage && (
-            <p className="text-xs text-text-error w-full my-2">
+            <p
+              id="import-error-message"
+              className="text-xs text-text-error w-full my-2"
+              role="alert"
+              aria-live="polite"
+            >
               {errorMessage}
             </p>
           )}
