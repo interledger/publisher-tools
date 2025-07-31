@@ -2,7 +2,7 @@ import { Heading5 } from '@/typography'
 
 export const RevShareInfo = () => {
   return (
-    <div className="flex flex-col gap-md mb-2xl">
+    <div className="flex flex-col gap-md">
       <Heading5>Information</Heading5>
       <div>
         <p className="text-sm leading-sm text-field-helpertext-default">
