@@ -10,6 +10,7 @@ import {
   RevShareInfo,
   ShareInput,
   ShareInputHeader,
+  ShareInputTable,
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
@@ -167,37 +168,43 @@ function Revshare() {
         </HeadingCore>
         <Card>
           <Heading5>Recipients</Heading5>
-          <ShareInputHeader />
-          {shares.map((share, i) => {
-            return (
-              <ShareInput
-                key={i}
-                index={i}
-                name={share.name || ''}
-                onChangeName={(name) => handleChangeName(i, name)}
-                pointer={share.pointer}
-                onChangePointer={(pointer) => handleChangePointer(i, pointer)}
-                weight={share.weight || 0}
-                onChangeWeight={(weight) => handleChangeWeight(i, weight)}
-                weightDisabled={!share.pointer}
-                percent={
-                  totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
-                }
-                percentDisabled={!share.pointer || shares.length <= 1}
-                onChangePercent={(percent) =>
-                  handleChangePercent(
-                    i,
-                    percent,
-                    share.weight || 1,
-                    totalWeight
-                  )
-                }
-                onRemove={() => handleRemove(i)}
-                validatePointer={validatePointer}
-                placeholder={getPlaceholderText(i)}
-              />
-            )
-          })}
+          <ShareInputTable>
+            <ShareInputHeader />
+            <div role="rowgroup" className="contents">
+              {shares.map((share, i) => {
+                return (
+                  <ShareInput
+                    key={i}
+                    index={i}
+                    name={share.name || ''}
+                    onChangeName={(name) => handleChangeName(i, name)}
+                    pointer={share.pointer}
+                    onChangePointer={(pointer) =>
+                      handleChangePointer(i, pointer)
+                    }
+                    weight={share.weight || 0}
+                    onChangeWeight={(weight) => handleChangeWeight(i, weight)}
+                    weightDisabled={!share.pointer}
+                    percent={
+                      totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
+                    }
+                    percentDisabled={!share.pointer || shares.length <= 1}
+                    onChangePercent={(percent) =>
+                      handleChangePercent(
+                        i,
+                        percent,
+                        share.weight || 1,
+                        totalWeight
+                      )
+                    }
+                    onRemove={() => handleRemove(i)}
+                    validatePointer={validatePointer}
+                    placeholder={getPlaceholderText(i)}
+                  />
+                )
+              })}
+            </div>
+          </ShareInputTable>
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {revSharePointers && hasValidShares && (
@@ -208,12 +215,16 @@ function Revshare() {
                 />
                 <button
                   onClick={handleCopyClick}
-                  aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
+                  aria-label={
+                    isCopied
+                      ? 'Monetization tag copied to clipboard'
+                      : 'Copy monetization tag to clipboard'
+                  }
                 >
                   {isCopied ? (
-                    <SVGCheckIcon className="h-6 w-6" />
+                    <SVGCheckIcon className="h-6 w-6" aria-hidden="true" />
                   ) : (
-                    <SVGCopyIcon className="h-6 w-6" />
+                    <SVGCopyIcon className="h-6 w-6" aria-hidden="true" />
                   )}
                 </button>
               </div>
