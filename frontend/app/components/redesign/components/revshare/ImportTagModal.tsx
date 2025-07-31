@@ -32,56 +32,55 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   const focusableElementsRef = useRef<NodeListOf<HTMLElement> | null>(null)
 
   useEffect(() => {
-    if (isOpen) {
-      triggerRef.current = document.activeElement
+    if (!isOpen) {
+      return
+    }
 
-      focusableElementsRef.current = modalRef.current?.querySelectorAll(
-        'button:not([disabled]), textarea:not([disabled])'
-      ) as NodeListOf<HTMLElement> | null
+    triggerRef.current = document.activeElement
+    focusableElementsRef.current = modalRef.current?.querySelectorAll(
+      'button:not([disabled]), textarea:not([disabled])'
+    ) as NodeListOf<HTMLElement> | null
 
-      inputRef.current?.focus()
+    inputRef.current?.focus()
 
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === 'Escape' && onClose) {
-          onClose()
-        }
-
-        if (event.key === 'Tab') {
-          const focusableElements = focusableElementsRef.current
-
-          if (!focusableElements || focusableElements.length === 0) {
-            event.preventDefault()
-            return
-          }
-
-          const firstFocusableElement = focusableElements[0]
-          const lastFocusableElement =
-            focusableElements[focusableElements.length - 1]
-
-          const currentActiveElement = document.activeElement as HTMLElement
-          if (event.shiftKey) {
-            if (currentActiveElement === firstFocusableElement) {
-              lastFocusableElement.focus()
-              event.preventDefault()
-            }
-          } else {
-            if (currentActiveElement === lastFocusableElement) {
-              firstFocusableElement.focus()
-              event.preventDefault()
-            }
-          }
-        }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && onClose) {
+        onClose()
       }
 
-      document.addEventListener('keydown', handleKeyDown)
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown)
+      if (event.key !== 'Tab') return
 
-        if (triggerRef.current) {
-          ;(triggerRef.current as HTMLElement).focus()
-        }
-        focusableElementsRef.current = null
+      const focusableElements = focusableElementsRef.current
+      if (!focusableElements || focusableElements.length === 0) {
+        event.preventDefault()
+        return
       }
+
+      const firstFocusableElement = focusableElements[0]
+      const lastFocusableElement =
+        focusableElements[focusableElements.length - 1]
+
+      const currentActiveElement = document.activeElement as HTMLElement
+      if (event.shiftKey) {
+        if (currentActiveElement === firstFocusableElement) {
+          lastFocusableElement.focus()
+          event.preventDefault()
+        }
+      } else {
+        if (currentActiveElement === lastFocusableElement) {
+          firstFocusableElement.focus()
+          event.preventDefault()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+
+      const previous = triggerRef.current as HTMLElement | null
+      previous?.focus()
+      focusableElementsRef.current = null
     }
   }, [isOpen, onClose])
 
