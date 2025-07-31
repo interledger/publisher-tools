@@ -149,6 +149,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
               setTag(e.target.value)
               setImportError('')
             }}
+            aria-label="Paste monetization link tag"
             aria-invalid={!!errorMessage}
             aria-describedby={errorMessage ? 'import-error-message' : undefined}
           />
