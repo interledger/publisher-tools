@@ -11,7 +11,7 @@ const palettes = {
   // Purple palette
   'purple-50': '#F3F4FA',
   'purple-100': '#A7A6D3',
-  'purple-300': '#8075B3',
+  'purple-300': '#7469A8',
   'purple-600': '#5B5380',
   'purple-800': '#2D2A3C',
 
