@@ -52,8 +52,6 @@ export type ElementErrors = {
   message: string[]
 }
 
-export class WalletAddressFormatError extends Error {}
-
 declare global {
   interface Env {
     SCRIPT_EMBED_URL: string

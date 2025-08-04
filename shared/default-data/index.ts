@@ -1,4 +1,9 @@
-import { CornerType, SlideAnimationType, PositionType } from '@shared/types'
+import {
+  CornerType,
+  SlideAnimationType,
+  PositionType,
+  WIDGET_POSITION
+} from '@shared/types'
 import type { ElementConfigType } from '@shared/types'
 
 export function getDefaultData(): ElementConfigType {
@@ -26,6 +31,7 @@ export function getDefaultData(): ElementConfigType {
 
     widgetFontName: 'Arial',
     widgetFontSize: 16,
+    widgetPosition: WIDGET_POSITION.Right,
     widgetDonateAmount: 1,
     widgetTitleText: 'Future of support',
     widgetDescriptionText:

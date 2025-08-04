@@ -7,6 +7,9 @@ import type { ModalType } from '~/lib/presets.js'
 
 const STORAGE_KEY = 'valtio-store'
 
+const EXCLUDED_FROM_STORAGE: (keyof typeof toolState)[] = ['currentToolType']
+
+export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -15,6 +18,7 @@ const DEFAULT_VERSION_NAMES = [
 ] as const
 
 export type StableKey = (typeof STABLE_KEYS)[number]
+export type ToolType = (typeof TOOL_TYPES)[number]
 
 interface SaveConfigResponse {
   grantRequired?: string
@@ -180,6 +184,7 @@ export const toolState = proxy({
    */
   modifiedVersions: [] as StableKey[],
   activeVersion: 'version1' as StableKey,
+  currentToolType: 'unknown' as ToolType,
 
   // UI state
   modal: undefined as ModalType | undefined,
@@ -189,8 +194,12 @@ export const toolState = proxy({
   isSubmitting: false,
   loadingState: 'idle' as 'idle' | 'loading' | 'submitting',
 
-  // wallet and connection state
+  // environment variables
   scriptBaseUrl: '',
+  apiUrl: '',
+  opWallet: '',
+
+  // wallet and connection state
   walletAddress: '',
   grantResponse: '',
   isGrantAccepted: false,
@@ -272,6 +281,10 @@ export const toolActions = {
     toolState.modal = modal
   },
 
+  setCurrentToolType: (toolType: ToolType) => {
+    toolState.currentToolType = toolType
+  },
+
   setSubmitting: (isSubmitting: boolean) => {
     toolState.isSubmitting = isSubmitting
   },
@@ -305,7 +318,7 @@ export const toolActions = {
       .replace('$', '')
       .replace('https://', '')
 
-    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${toolState.activeVersion}&types=banner"></script>`
+    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${toolState.activeVersion}&types=${toolState.currentToolType}"></script>`
   },
   updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
     if (!toolState.configurations[stableKey]) {
@@ -338,10 +351,7 @@ export const toolActions = {
    * Checks if any local changes have been made to the configurations.
    */
   hasCustomEdits: (): boolean => toolState.modifiedVersions.length > 0,
-  saveConfig: async (
-    elementType: string,
-    callToActionType: 'save-success' | 'script'
-  ) => {
+  saveConfig: async (callToActionType: 'save-success' | 'script') => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
     }
@@ -355,34 +365,14 @@ export const toolActions = {
       }
 
       const formData = new FormData()
-      if (configToSave.bannerFontName)
-        formData.append('bannerFontName', configToSave.bannerFontName)
-      if (configToSave.bannerFontSize)
-        formData.append(
-          'bannerFontSize',
-          configToSave.bannerFontSize.toString()
-        )
-      if (configToSave.bannerDescriptionText)
-        formData.append(
-          'bannerDescriptionText',
-          configToSave.bannerDescriptionText
-        )
-      if (configToSave.bannerTextColor)
-        formData.append('bannerTextColor', configToSave.bannerTextColor)
-      if (configToSave.bannerBackgroundColor)
-        formData.append(
-          'bannerBackgroundColor',
-          configToSave.bannerBackgroundColor
-        )
-      if (configToSave.bannerSlideAnimation)
-        formData.append(
-          'bannerSlideAnimation',
-          configToSave.bannerSlideAnimation
-        )
-      if (configToSave.bannerPosition)
-        formData.append('bannerPosition', configToSave.bannerPosition)
-      if (configToSave.bannerBorder)
-        formData.append('bannerBorder', configToSave.bannerBorder)
+
+      Object.entries(configToSave).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && key !== 'walletAddress') {
+          const stringValue =
+            typeof value === 'number' ? value.toString() : value
+          formData.append(key, stringValue)
+        }
+      })
 
       formData.append('walletAddress', toolState.walletAddress)
       formData.append('version', toolState.activeVersion)
@@ -396,10 +386,13 @@ export const toolActions = {
       formData.append('intent', 'update')
 
       const baseUrl = location.origin + APP_BASEPATH
-      const response = await fetch(`${baseUrl}/api/config/${elementType}`, {
-        method: 'PUT',
-        body: formData
-      })
+      const response = await fetch(
+        `${baseUrl}/api/config/${toolState.currentToolType}`,
+        {
+          method: 'PUT',
+          body: formData
+        }
+      )
 
       const data = (await response.json()) as SaveConfigResponse
 
@@ -443,7 +436,7 @@ export const toolActions = {
   },
   handleGrantResponse: () => {
     if (toolState.isGrantAccepted) {
-      toolActions.saveConfig('banner', toolState.lastSaveAction)
+      toolActions.saveConfig(toolState.lastSaveAction)
     } else {
       toolState.modal = {
         type: 'save-error'
@@ -549,8 +542,9 @@ export const toolActions = {
     }
 
     const baseUrl = location.origin + APP_BASEPATH
+    const tool = toolState.currentToolType
     const response = await fetch(
-      `${baseUrl}/api/config/banner?walletAddress=${encodeURIComponent(walletAddress)}`
+      `${baseUrl}/api/config/${tool}?walletAddress=${encodeURIComponent(walletAddress)}`
     )
 
     if (!response.ok) {
@@ -629,22 +623,42 @@ export const toolActions = {
 }
 
 /** Load from localStorage on init */
-export function loadState(env: { SCRIPT_EMBED_URL: string }) {
+export function loadState(env: Env) {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     const parsed = JSON.parse(saved)
-    Object.assign(toolState, parsed)
-
-    // ensure savedConfigurations exists for modification tracking
-    if (!toolState.savedConfigurations) {
-      toolState.savedConfigurations = { ...toolState.configurations }
-    }
+    Object.assign(toolState, parsedStorageData(parsed))
   }
+
   toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
+  toolState.apiUrl = env.API_URL
+  toolState.opWallet = env.OP_WALLET_ADDRESS
 }
 
 export function persistState() {
   subscribe(toolState, () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toolState))
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(createStorageState(toolState))
+    )
   })
+}
+
+function createStorageState(state: typeof toolState) {
+  return omit(state, EXCLUDED_FROM_STORAGE)
+}
+
+function parsedStorageData(parsed: Record<string, unknown>) {
+  return omit(parsed, EXCLUDED_FROM_STORAGE)
+}
+
+function omit<T extends Record<string, unknown>>(
+  obj: T,
+  keys: readonly (keyof T | string)[]
+): Partial<T> {
+  const excludedKeys = new Set(keys.map(String))
+
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
+  ) as Partial<T>
 }
