@@ -7,7 +7,9 @@ import type { ModalType } from '~/lib/presets.js'
 
 const STORAGE_KEY = 'valtio-store'
 
-const EXCLUDED_FROM_STORAGE: (keyof typeof toolState)[] = ['currentToolType']
+const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
+  'currentToolType'
+])
 
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
@@ -386,13 +388,11 @@ export const toolActions = {
       formData.append('intent', 'update')
 
       const baseUrl = location.origin + APP_BASEPATH
-      const response = await fetch(
-        `${baseUrl}/api/config/${toolState.currentToolType}`,
-        {
-          method: 'PUT',
-          body: formData
-        }
-      )
+      const url = new URL(`${baseUrl}/api/config/${toolState.currentToolType}`)
+      const response = await fetch(url, {
+        method: 'PUT',
+        body: formData
+      })
 
       const data = (await response.json()) as SaveConfigResponse
 
@@ -623,7 +623,9 @@ export const toolActions = {
 }
 
 /** Load from localStorage on init */
-export function loadState(env: Env) {
+export function loadState(
+  env: Pick<Env, 'SCRIPT_EMBED_URL' | 'API_URL' | 'OP_WALLET_ADDRESS'>
+) {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     const parsed = JSON.parse(saved)
@@ -654,9 +656,9 @@ function parsedStorageData(parsed: Record<string, unknown>) {
 
 function omit<T extends Record<string, unknown>>(
   obj: T,
-  keys: readonly (keyof T | string)[]
+  keys: readonly (keyof T | string)[] | Set<keyof T | string>
 ): Partial<T> {
-  const excludedKeys = new Set(keys.map(String))
+  const excludedKeys = keys instanceof Set ? keys : new Set(keys)
 
   return Object.fromEntries(
     Object.entries(obj).filter(([key]) => !excludedKeys.has(key))

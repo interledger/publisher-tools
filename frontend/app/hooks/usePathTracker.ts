@@ -7,15 +7,11 @@ export const usePathTracker = (): string => {
   useEffect(() => {
     const tool = location.pathname.split('/')[1]
 
-    let toolType: ToolType
-
-    if (isValidToolType(tool)) {
-      toolType = tool
-    } else {
-      toolType = 'unknown'
+    if (!isValidToolType(tool)) {
+      throw new Error(`Unknown tool type: "${tool}".`)
     }
 
-    toolActions.setCurrentToolType(toolType)
+    toolActions.setCurrentToolType(tool)
   }, [location.pathname])
 
   return location.pathname
