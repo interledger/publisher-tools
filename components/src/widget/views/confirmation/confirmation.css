@@ -64,7 +64,7 @@
 }
 
 .confirmation-buttons-header {
-  color: var(--primary-color, #8075b3);
+  color: var(--primary-color, #7469a8);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
