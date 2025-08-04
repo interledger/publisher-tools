@@ -6,7 +6,8 @@ import type {
 } from '@interledger/open-payments'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
-import { BORDER_RADIUS_VALUES, type BorderRadiusKey } from '../types'
+import { BORDER_RADIUS, type BorderRadiusKey } from '../../../shared/types'
+import { WIDGET_POSITION } from '../../../shared/types'
 
 export interface WidgetState {
   walletAddress: WalletAddress
@@ -47,6 +48,7 @@ export class WidgetController implements ReactiveController {
     this._config = { ...this._config, ...updates }
 
     this.applyTheme(this.host)
+    this.applyPosition()
     this.host.requestUpdate()
   }
 
@@ -102,11 +104,22 @@ export class WidgetController implements ReactiveController {
   }
 
   private applyBorderRadius(borderRadius: BorderRadiusKey) {
-    const borderRadiusValue = BORDER_RADIUS_VALUES[borderRadius]
+    const borderRadiusValue = BORDER_RADIUS[borderRadius]
     this.host.style.setProperty(
       '--wm-border-radius',
-      borderRadiusValue || BORDER_RADIUS_VALUES.None
+      borderRadiusValue || BORDER_RADIUS.None
     )
+  }
+
+  private applyPosition() {
+    this.host.classList.remove('position-left', 'position-right')
+
+    const position = this._config.widgetPosition || WIDGET_POSITION.Right
+    if (position === WIDGET_POSITION.Left) {
+      this.host.classList.add('position-left')
+    } else {
+      this.host.classList.add('position-right')
+    }
   }
 
   applyTheme(element: HTMLElement) {

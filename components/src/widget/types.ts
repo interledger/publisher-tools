@@ -1,4 +1,4 @@
-import type { BorderRadiusKey } from '../types'
+import type { BorderRadiusKey, WidgetPositionKey } from '../../../shared/types'
 
 export interface WidgetConfig {
   walletAddress: string
@@ -10,6 +10,7 @@ export interface WidgetConfig {
   widgetTitleText?: string
   widgetDescriptionText?: string
   widgetTriggerIcon?: string
+  widgetPosition?: WidgetPositionKey
   theme?: {
     primaryColor?: string
     backgroundColor?: string

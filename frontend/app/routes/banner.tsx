@@ -37,7 +37,7 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
-import type { ToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import type {
   CornerType,
   PositionType,
@@ -216,7 +216,7 @@ export default function Banner() {
       toolActions.setToolConfig({ bannerTitleText: 'How to support?' })
   }
 
-  const appearanceConfiguration: ToolAppearance = {
+  const appearanceConfiguration: BannerToolAppearance = {
     fontName: snap.currentConfig?.bannerFontName,
     fontSize: snap.currentConfig?.bannerFontSize || 16,
     backgroundColor: snap.currentConfig?.bannerBackgroundColor,

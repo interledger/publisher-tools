@@ -76,6 +76,7 @@ export const createWidgetSchema = z
     elementType: z.literal('widget'),
     widgetFontName: z.string().min(1, { message: 'Choose a font' }),
     widgetFontSize: z.coerce.number().min(10, rangeError).max(30, rangeError),
+    widgetPosition: z.nativeEnum(PositionType),
     widgetButtonText: z.string().min(1),
     widgetDescriptionText: z.string().min(1),
     widgetButtonBorder: z.nativeEnum(CornerType),

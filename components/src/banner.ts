@@ -9,7 +9,7 @@ import { property, state } from 'lit/decorators.js'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
 import { getWebMonetizationLinkHref } from './utils.js'
-import { BORDER_RADIUS_VALUES, type BorderRadiusKey } from './types'
+import { BORDER_RADIUS, type BorderRadiusKey } from '../../shared/types'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =
@@ -214,10 +214,10 @@ export class BannerController implements ReactiveController {
    * @param borderRadius The border radius value to apply.
    */
   private applyBorderRadius(borderRadius: BorderRadiusKey) {
-    const borderRadiusValue = BORDER_RADIUS_VALUES[borderRadius]
+    const borderRadiusValue = BORDER_RADIUS[borderRadius]
     this.host.style.setProperty(
       '--wm-border-radius',
-      borderRadiusValue || BORDER_RADIUS_VALUES.None
+      borderRadiusValue || BORDER_RADIUS.None
     )
   }
 

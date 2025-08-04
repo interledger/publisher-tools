@@ -34,11 +34,11 @@ import type {
   PaymentWidget as WidgetComponent
 } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
-import type { ToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import type { WidgetToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import type {
   CornerType,
-  PositionType,
-  SlideAnimationType
+  SlideAnimationType,
+  WidgetPositionKey
 } from '@shared/types'
 
 export const meta: MetaFunction = () => {
@@ -112,6 +112,7 @@ const WidgetPreview: React.FC = () => {
         widgetTitleText: snap.currentConfig.widgetTitleText,
         widgetDescriptionText: snap.currentConfig.widgetDescriptionText,
         widgetTriggerIcon: snap.currentConfig.widgetTriggerIcon,
+        widgetPosition: snap.currentConfig.widgetPosition,
         theme: {
           primaryColor: snap.currentConfig.widgetButtonBackgroundColor,
           backgroundColor: snap.currentConfig.widgetBackgroundColor,
@@ -181,14 +182,14 @@ export default function Widget() {
       toolActions.setToolConfig({ widgetTitleText: 'Support this content' })
   }
 
-  const appearanceConfiguration: ToolAppearance = {
+  const appearanceConfiguration: WidgetToolAppearance = {
     fontName: snap.currentConfig?.widgetFontName,
     fontSize: snap.currentConfig?.widgetFontSize || 16,
     backgroundColor: snap.currentConfig?.widgetBackgroundColor,
     textColor: snap.currentConfig?.widgetTextColor,
     buttonColor: snap.currentConfig?.widgetButtonBackgroundColor,
     borderRadius: snap.currentConfig?.widgetButtonBorder,
-    position: undefined,
+    position: snap.currentConfig?.widgetPosition,
     slideAnimation: undefined,
 
     onFontNameChange: (fontName: string) =>
@@ -203,7 +204,8 @@ export default function Widget() {
       toolActions.setToolConfig({ widgetButtonBackgroundColor: color }),
     onBorderChange: (border: CornerType) =>
       toolActions.setToolConfig({ widgetButtonBorder: border }),
-    onPositionChange: (_position: PositionType) => {},
+    onPositionChange: (position: WidgetPositionKey) =>
+      toolActions.setToolConfig({ widgetPosition: position }),
     onSlideAnimationChange: (_animation: SlideAnimationType) => {},
 
     showAnimation: false

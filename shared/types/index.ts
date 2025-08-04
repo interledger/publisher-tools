@@ -35,6 +35,7 @@ export interface ElementConfigType {
   widgetFontSize: number
   widgetTitleText: string
   widgetDescriptionText: string
+  widgetPosition: WidgetPositionKey
   widgetDonateAmount: number // not posibble currently
   widgetButtonText: string
   widgetButtonBorder: CornerType
@@ -63,3 +64,16 @@ export enum PositionType {
   Left = 'Left',
   Right = 'Right'
 }
+
+export const BORDER_RADIUS = {
+  Light: '0.375rem',
+  Pill: '1rem',
+  None: '0'
+} as const
+export type BorderRadiusKey = keyof typeof BORDER_RADIUS
+
+export const WIDGET_POSITION = {
+  Left: 'Left',
+  Right: 'Right'
+} as const
+export type WidgetPositionKey = keyof typeof WIDGET_POSITION

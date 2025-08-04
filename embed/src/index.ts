@@ -158,10 +158,10 @@ const drawWidget = (walletAddressUrl: string, config: Config) => {
       widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
     },
     widgetTitleText: config.widgetTitleText,
-    widgetDescriptionText: config.widgetDescriptionText
+    widgetDescriptionText: config.widgetDescriptionText,
+    widgetPosition: config.widgetPosition
   }
 
-  // TODO: add support for widget positioning
   element.style.position = 'fixed'
   element.style.bottom = '20px'
   element.style.right = '20px'

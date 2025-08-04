@@ -52,6 +52,14 @@
   --wm-button-text-color: var(--Colors-white);
 }
 
+:host(.position-left) {
+  align-items: flex-start;
+}
+
+:host(.position-right) {
+  align-items: flex-end;
+}
+
 .content {
   display: flex;
   flex-direction: column;

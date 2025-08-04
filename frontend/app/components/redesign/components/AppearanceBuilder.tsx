@@ -28,19 +28,19 @@ import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 import {
   SlideAnimationType,
   type CornerType,
-  type PositionType
+  type PositionType,
+  type WidgetPositionKey
 } from '@shared/types'
 import { useSnapshot } from 'valtio'
 import { toolState } from '~/stores/toolStore'
 
-export interface ToolAppearance {
+interface BaseToolAppearance {
   fontName?: string
   fontSize?: number
   backgroundColor?: string
   textColor?: string
   buttonColor?: string
   borderRadius?: CornerType
-  position?: PositionType
   slideAnimation?: SlideAnimationType
 
   onFontNameChange: (fontName: string) => void
@@ -49,11 +49,22 @@ export interface ToolAppearance {
   onTextColorChange: (color: string) => void
   onButtonColorChange?: (color: string) => void
   onBorderChange: (border: CornerType) => void
-  onPositionChange: (position: PositionType) => void
   onSlideAnimationChange: (animation: SlideAnimationType) => void
 
   showAnimation?: boolean
 }
+
+export interface BannerToolAppearance extends BaseToolAppearance {
+  position?: PositionType
+  onPositionChange: (position: PositionType) => void
+}
+
+export interface WidgetToolAppearance extends BaseToolAppearance {
+  position?: WidgetPositionKey
+  onPositionChange: (position: WidgetPositionKey) => void
+}
+
+export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 
 interface AppearanceBuilderProps {
   appearance: ToolAppearance
@@ -286,13 +297,17 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
             />
             {snap.currentToolType === 'widget' ? (
               <WidgetPositionSelector
-                defaultValue={appearance.position}
-                onChange={(value) => appearance.onPositionChange(value)}
+                defaultValue={appearance.position as WidgetPositionKey}
+                onChange={(value) =>
+                  (appearance as WidgetToolAppearance).onPositionChange(value)
+                }
               />
             ) : (
               <BannerPositionSelector
-                defaultValue={appearance.position}
-                onChange={(value) => appearance.onPositionChange(value)}
+                defaultValue={appearance.position as PositionType}
+                onChange={(value) =>
+                  (appearance as BannerToolAppearance).onPositionChange(value)
+                }
               />
             )}
           </div>
