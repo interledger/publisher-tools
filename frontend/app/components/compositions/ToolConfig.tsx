@@ -263,9 +263,6 @@ const BannerConfig = ({
             placeholder="Select Font"
             options={fontOptions}
             value={defaultFontValue}
-            onChange={(value) =>
-              setToolConfig({ ...config, bannerFontName: value ?? '' })
-            }
           />
         </div>
         <div className="flex items-center max-w-20 w-18 shrink-0">
@@ -440,9 +437,6 @@ const WidgetConfig = ({
             placeholder="Select Font"
             options={fontOptions}
             value={defaultFontValue}
-            onChange={(value) =>
-              setToolConfig({ ...config, widgetFontName: value ?? '' })
-            }
           />
         </div>
         <div className="flex items-center max-w-20 w-18 shrink-0">

@@ -1,6 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useImperativeHandle
+} from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
+import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
   json,
@@ -18,7 +25,8 @@ import {
   WalletOwnershipModal,
   OverridePresetModal,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
+  BannerPositionSelector
 } from '@/components'
 import {
   toolState,
@@ -29,6 +37,15 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
+import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
+import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
+import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import type {
+  CornerType,
+  FontFamilyKey,
+  PositionType,
+  SlideAnimationType
+} from '@shared/types'
 
 export const meta: MetaFunction = () => {
   return [
@@ -67,14 +84,153 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
+interface BannerHandle {
+  triggerPreview: () => void
+}
+
+const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
+  const snap = useSnapshot(toolState)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const bannerContainerRef = useRef<HTMLDivElement>(null)
+  const bannerElementRef = useRef<BannerComponent | null>(null)
+
+  useImperativeHandle(ref, () => ({
+    triggerPreview: () => {
+      if (bannerElementRef.current) {
+        bannerElementRef.current.previewAnimation()
+      }
+    }
+  }))
+
+  useEffect(() => {
+    const loadBannerComponent = async () => {
+      if (!customElements.get('wm-banner')) {
+        // dynamic import - ensure component only runs on the client side and not on SSR
+        const { Banner } = await import('@tools/components/banner')
+        customElements.define('wm-banner', Banner)
+      }
+      setIsLoaded(true)
+    }
+
+    loadBannerComponent()
+  }, [])
+
+  const bannerConfig = useMemo(
+    () =>
+      ({
+        bannerTitleText: snap.currentConfig?.bannerTitleText,
+        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
+        bannerPosition: snap.currentConfig?.bannerPosition,
+        bannerBorderRadius: snap.currentConfig?.bannerBorder,
+        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
+        theme: {
+          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
+          textColor: snap.currentConfig?.bannerTextColor,
+          fontSize: snap.currentConfig?.bannerFontSize,
+          fontFamily: snap.currentConfig?.bannerFontName
+        }
+      }) as BannerConfig,
+    [snap.currentConfig]
+  )
+
+  useEffect(() => {
+    if (bannerContainerRef.current && isLoaded) {
+      if (bannerElementRef.current) {
+        bannerElementRef.current.config = bannerConfig
+        return
+      }
+
+      const bannerElement = document.createElement(
+        'wm-banner'
+      ) as BannerComponent
+      bannerElement.config = bannerConfig
+      bannerElementRef.current = bannerElement
+
+      bannerContainerRef.current.appendChild(bannerElement)
+    }
+  }, [bannerConfig, isLoaded])
+
+  if (!isLoaded) {
+    return <div>Loading...</div>
+  }
+
+  return (
+    <div
+      ref={bannerContainerRef}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%'
+      }}
+    />
+  )
+})
+
+BannerPreview.displayName = 'BannerPreview'
+
 export default function Banner() {
   const snap = useSnapshot(toolState)
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
+  const bannerRef = useRef<BannerHandle>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, env } =
     useLoaderData<typeof loader>()
+  usePathTracker()
+
+  const contentConfiguration: ToolContent = {
+    suggestedTitles: [
+      'How to support?',
+      'Fund me',
+      'Pay as you browse',
+      'Easy donate',
+      'Support my work'
+    ],
+    titleHelpText: 'Strong message to help people engage with Web Monetization',
+    titleMaxLength: 60,
+    messageLabel: 'Banner message',
+    messagePlaceholder: 'Enter your banner message...',
+    messageHelpText:
+      'Strong message to help people engage with Web Monetization',
+    messageMaxLength: 300,
+    currentTitle: snap.currentConfig?.bannerTitleText,
+    currentMessage: snap.currentConfig?.bannerDescriptionText,
+    onTitleChange: (title: string) =>
+      toolActions.setToolConfig({ bannerTitleText: title }),
+    onMessageChange: (message: string) =>
+      toolActions.setToolConfig({ bannerDescriptionText: message }),
+    onSuggestedTitleClick: (title: string) =>
+      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
+    onRefresh: () =>
+      toolActions.setToolConfig({ bannerTitleText: 'How to support?' })
+  }
+
+  const appearanceConfiguration: BannerToolAppearance = {
+    fontName: snap.currentConfig?.bannerFontName,
+    fontSize: snap.currentConfig?.bannerFontSize || 16,
+    backgroundColor: snap.currentConfig?.bannerBackgroundColor,
+    textColor: snap.currentConfig?.bannerTextColor,
+    borderRadius: snap.currentConfig?.bannerBorder,
+    position: snap.currentConfig?.bannerPosition,
+    slideAnimation: snap.currentConfig?.bannerSlideAnimation,
+    onFontNameChange: (fontName: FontFamilyKey) =>
+      toolActions.setToolConfig({ bannerFontName: fontName }),
+    onFontSizeChange: (fontSize: number) =>
+      toolActions.setToolConfig({ bannerFontSize: fontSize }),
+    onBackgroundColorChange: (color: string) =>
+      toolActions.setToolConfig({ bannerBackgroundColor: color }),
+    onTextColorChange: (color: string) =>
+      toolActions.setToolConfig({ bannerTextColor: color }),
+    onBorderChange: (border: CornerType) =>
+      toolActions.setToolConfig({ bannerBorder: border }),
+    onPositionChange: (position: PositionType) =>
+      toolActions.setToolConfig({ bannerPosition: position }),
+    onSlideAnimationChange: (animation: SlideAnimationType) =>
+      toolActions.setToolConfig({ bannerSlideAnimation: animation }),
+
+    showAnimation: true
+  }
 
   useBodyClass('has-fixed-action-bar')
 
@@ -119,8 +275,14 @@ export default function Banner() {
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
     setLoading(true)
-    await toolActions.saveConfig('banner', action)
+    await toolActions.saveConfig(action)
     setLoading(false)
+  }
+
+  const handlePreviewClick = () => {
+    if (bannerRef.current) {
+      bannerRef.current.triggerPreview()
+    }
   }
 
   const handleConfirmWalletOwnership = () => {
@@ -188,10 +350,20 @@ export default function Banner() {
                     />
 
                     <BuilderForm
+                      content={contentConfiguration}
+                      appearance={appearanceConfiguration}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
                         )
+                      }
+                      positionSelector={
+                        <BannerPositionSelector
+                          defaultValue={snap.currentConfig?.bannerPosition}
+                          onChange={(value) =>
+                            toolActions.setToolConfig({ bannerPosition: value })
+                          }
+                        />
                       }
                     />
 
@@ -244,7 +416,9 @@ export default function Banner() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground />
+                    <BuilderBackground onPreviewClick={handlePreviewClick}>
+                      <BannerPreview ref={bannerRef} />
+                    </BuilderBackground>
                   </div>
                 </div>
               </div>
@@ -327,7 +501,7 @@ export default function Banner() {
                 onClose={handleCloseModal}
                 onOverride={async (selectedLocalConfigs) => {
                   toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-                  await toolActions.saveConfig('banner', 'save-success')
+                  await toolActions.saveConfig('save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
