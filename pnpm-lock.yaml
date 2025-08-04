@@ -106,6 +106,9 @@ importers:
       '@interledger/open-payments':
         specifier: ^7.1.0
         version: 7.1.0
+      '@shared/types':
+        specifier: workspace:^
+        version: link:../shared/types
       publisher-tools-api:
         specifier: workspace:^
         version: link:../api
