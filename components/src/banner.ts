@@ -200,6 +200,10 @@ export class BannerController implements ReactiveController {
       this.applyBorderRadius(updates.bannerBorderRadius)
     }
 
+    if (updates.bannerPosition) {
+      this.applyPosition()
+    }
+
     this.host.requestUpdate()
   }
 
@@ -219,6 +223,20 @@ export class BannerController implements ReactiveController {
       '--wm-border-radius',
       borderRadiusValue || BORDER_RADIUS.None
     )
+  }
+
+  /**
+   * Applies the specified position to the host element.
+   */
+  applyPosition() {
+    this.host.classList.remove('position-top', 'position-bottom')
+
+    const position = this._config.bannerPosition || 'Bottom'
+    if (position === 'Top') {
+      this.host.classList.add('position-top')
+    } else {
+      this.host.classList.add('position-bottom')
+    }
   }
 
   /**

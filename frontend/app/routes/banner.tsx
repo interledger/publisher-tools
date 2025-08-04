@@ -165,14 +165,14 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
     return <div>Loading...</div>
   }
 
-  const isTopPosition = bannerConfig.bannerPosition === 'Top'
-
   return (
     <div
       ref={bannerContainerRef}
-      className={`w-full max-w-full overflow-hidden ${
-        isTopPosition ? 'order-first' : 'order-last'
-      }`}
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%'
+      }}
     />
   )
 })

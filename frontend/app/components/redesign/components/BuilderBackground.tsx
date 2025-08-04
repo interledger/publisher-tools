@@ -1,7 +1,10 @@
 import React from 'react'
 import { useSnapshot } from 'valtio'
+import { cx } from 'class-variance-authority'
 import { toolState } from '~/stores/toolStore'
 import { ToolsSecondaryButton } from '@/components'
+
+const DOT_PATTERN_SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
 
 const BrowserDots = () => (
   <svg width="39" height="8" viewBox="0 0 39 8" fill="none">
@@ -26,23 +29,20 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   const isWidgetTool = snap.currentToolType === 'widget'
 
   const createDotPattern = () => {
-    const svgString = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
-
-    return `data:image/svg+xml;base64,${btoa(svgString)}`
+    return `data:image/svg+xml;base64,${btoa(DOT_PATTERN_SVG)}`
   }
 
   return (
     <div
       id="builder-background"
-      className={`
-        bg-[#efefef]
-        rounded-[20px]
-        p-4
-        flex flex-col gap-2.5 items-center justify-end
-        min-h-[600px]
-        relative
-        ${className}
-      `}
+      className={cx(
+        'bg-silver-100',
+        'rounded-[20px]',
+        'p-md',
+        'flex flex-col items-center justify-end',
+        'min-h-[600px]',
+        className
+      )}
       style={{
         backgroundImage: `url("${createDotPattern()}")`,
         backgroundRepeat: 'repeat',
@@ -61,9 +61,10 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
       <div
         id="browser-mockup"
-        className={`w-full bg-transparent rounded-2xl border border-field-border overflow-hidden flex flex-col ${
+        className={cx(
+          'w-full bg-transparent rounded-2xl border border-field-border overflow-hidden flex flex-col',
           isWidgetTool ? 'h-[752px]' : 'h-[406px]'
-        }`}
+        )}
       >
         <div className="flex items-center p-md bg-white">
           <div className="flex items-center gap-4 w-full">
@@ -72,14 +73,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
           </div>
         </div>
 
-        <div
-          id="browser-content"
-          className={`flex-1 p-md flex justify-center bg-transparent ${
-            snap.currentConfig?.bannerPosition === 'Top'
-              ? 'items-start'
-              : 'items-end'
-          }`}
-        >
+        <div id="browser-content" className="flex-1 p-md bg-transparent">
           {children}
         </div>
       </div>
