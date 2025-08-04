@@ -140,8 +140,17 @@ const WidgetPreview: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-full">
-      <wm-payment-widget style={{ position: 'relative' }} ref={widgetRef} />
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end'
+      }}
+    >
+      <wm-payment-widget ref={widgetRef} />
     </div>
   )
 }
