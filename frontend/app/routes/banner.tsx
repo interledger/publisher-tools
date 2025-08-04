@@ -41,6 +41,7 @@ import type { ToolContent } from '~/components/redesign/components/ContentBuilde
 import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import type {
   CornerType,
+  FontFamilyKey,
   PositionType,
   SlideAnimationType
 } from '@shared/types'
@@ -225,7 +226,7 @@ export default function Banner() {
     borderRadius: snap.currentConfig?.bannerBorder,
     position: snap.currentConfig?.bannerPosition,
     slideAnimation: snap.currentConfig?.bannerSlideAnimation,
-    onFontNameChange: (fontName: string) =>
+    onFontNameChange: (fontName: FontFamilyKey) =>
       toolActions.setToolConfig({ bannerFontName: fontName }),
     onFontSizeChange: (fontSize: number) =>
       toolActions.setToolConfig({ bannerFontSize: fontSize }),

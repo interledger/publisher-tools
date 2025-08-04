@@ -37,6 +37,7 @@ import type { ToolContent } from '~/components/redesign/components/ContentBuilde
 import type { WidgetToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import type {
   CornerType,
+  FontFamilyKey,
   SlideAnimationType,
   WidgetPositionKey
 } from '@shared/types'
@@ -201,7 +202,7 @@ export default function Widget() {
     position: snap.currentConfig?.widgetPosition,
     slideAnimation: undefined,
 
-    onFontNameChange: (fontName: string) =>
+    onFontNameChange: (fontName: FontFamilyKey) =>
       toolActions.setToolConfig({ widgetFontName: fontName }),
     onFontSizeChange: (fontSize: number) =>
       toolActions.setToolConfig({ widgetFontSize: fontSize }),

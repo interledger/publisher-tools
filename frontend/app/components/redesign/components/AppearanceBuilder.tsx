@@ -29,13 +29,15 @@ import {
   SlideAnimationType,
   type CornerType,
   type PositionType,
-  type WidgetPositionKey
+  type WidgetPositionKey,
+  type FontFamilyKey,
+  FONT_FAMILY_OPTIONS
 } from '@shared/types'
 import { useSnapshot } from 'valtio'
 import { toolState } from '~/stores/toolStore'
 
 interface BaseToolAppearance {
-  fontName?: string
+  fontName?: FontFamilyKey
   fontSize?: number
   backgroundColor?: string
   textColor?: string
@@ -43,7 +45,7 @@ interface BaseToolAppearance {
   borderRadius?: CornerType
   slideAnimation?: SlideAnimationType
 
-  onFontNameChange: (fontName: string) => void
+  onFontNameChange: (fontName: FontFamilyKey) => void
   onFontSizeChange: (fontSize: number) => void
   onBackgroundColorChange: (color: string) => void
   onTextColorChange: (color: string) => void
@@ -88,9 +90,8 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const isAnimated = appearance.slideAnimation !== SlideAnimationType.None
   const snap = useSnapshot(toolState)
 
-  const FontsType = ['Arial', 'Inherit', 'Open Sans', 'Cookie', 'Titillium Web']
-  const defaultFontIndex = FontsType.findIndex(
-    (option) => option == appearance.fontName
+  const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
+    (option) => option === appearance.fontName
   )
   const thumbnails = [wmLogo]
 
@@ -186,10 +187,10 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
-            const fontName = FontsType[parseInt(value)]
+            const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
             appearance.onFontNameChange(fontName)
           }}
-          options={FontsType.map((font, index) => ({
+          options={FONT_FAMILY_OPTIONS.map((font, index) => ({
             label: font,
             value: index.toString()
           }))}

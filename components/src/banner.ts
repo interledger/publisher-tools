@@ -8,34 +8,15 @@ import {
 import { property, state } from 'lit/decorators.js'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
-import { getWebMonetizationLinkHref } from './utils.js'
-import { BORDER_RADIUS, type BorderRadiusKey } from '../../shared/types'
+import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
+import { BORDER_RADIUS } from '@shared/types'
+import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =
   'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
 const DEFAULT_BANNER_LINK_TEXT =
   'Install the Web Monetization browser extension'
-
-type FontFamilyKey =
-  | 'Cookie'
-  | 'Roboto'
-  | 'Open Sans'
-  | 'Titillium Web'
-  | 'Arial'
-  | 'Inherit'
-const FONT_FAMILY_URLS: Record<
-  Exclude<FontFamilyKey, 'Arial' | 'Inherit'>,
-  string
-> = {
-  'Open Sans':
-    'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap',
-  'Cookie': 'https://fonts.googleapis.com/css2?family=Cookie&display=swap',
-  'Roboto':
-    'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
-  'Titillium Web':
-    'https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap'
-}
 
 export interface BannerConfig {
   bannerTitleText?: string
@@ -240,43 +221,12 @@ export class BannerController implements ReactiveController {
   }
 
   /**
-   * Applies the specified font family to the host element, removing any existing font link,
-   * loading the font if necessary, and setting the CSS custom property.
+   * Applies the specified font family to the host element.
    *
    * @param fontName The name of the font family to apply.
    */
   private applyFontFamily(fontName: FontFamilyKey) {
-    const existingFont = document.getElementById(
-      'wmt-font-family-banner'
-    ) as HTMLLinkElement
-    if (existingFont) {
-      existingFont.remove()
-    }
-
-    if (fontName === 'Inherit') {
-      this.host.style.setProperty('--wm-font-family', 'inherit')
-      return
-    }
-
-    if (fontName === 'Arial') {
-      this.host.style.setProperty('--wm-font-family', fontName)
-      return
-    }
-
-    const fontFamilyUrl = FONT_FAMILY_URLS[fontName]
-    if (!fontFamilyUrl) {
-      this.host.style.setProperty('--wm-font-family', 'inherit')
-      return
-    }
-
-    const fontLink = document.createElement('link') as HTMLLinkElement
-    fontLink.id = 'wmt-font-family-banner'
-    fontLink.rel = 'stylesheet'
-    fontLink.type = 'text/css'
-    fontLink.href = fontFamilyUrl
-    document.head.appendChild(fontLink)
-
-    this.host.style.setProperty('--wm-font-family', fontName)
+    applyFontFamily(this.host, fontName, 'banner')
   }
   applyTheme(element: HTMLElement) {
     const theme = this.config.theme

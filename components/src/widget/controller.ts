@@ -4,10 +4,11 @@ import type {
   PendingGrant,
   WalletAddress
 } from '@interledger/open-payments'
+import { applyFontFamily } from '../utils.js'
+import { WIDGET_POSITION, BORDER_RADIUS } from '@shared/types'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
-import { BORDER_RADIUS, type BorderRadiusKey } from '../../../shared/types'
-import { WIDGET_POSITION } from '../../../shared/types'
+import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 
 export interface WidgetState {
   walletAddress: WalletAddress
@@ -122,6 +123,10 @@ export class WidgetController implements ReactiveController {
     }
   }
 
+  private applyFontFamily(fontName: FontFamilyKey) {
+    applyFontFamily(this.host, fontName, 'widget')
+  }
+
   applyTheme(element: HTMLElement) {
     const theme = this._config.theme
     if (!theme) return
@@ -136,7 +141,7 @@ export class WidgetController implements ReactiveController {
       element.style.setProperty('--wm-text-color', theme.textColor)
     }
     if (theme.fontFamily) {
-      element.style.setProperty('--wm-font-family', theme.fontFamily)
+      this.applyFontFamily(theme.fontFamily)
     }
     if (theme.fontSize) {
       element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
