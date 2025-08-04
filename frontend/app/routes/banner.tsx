@@ -34,6 +34,7 @@ import {
   loadState
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
+import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
@@ -242,6 +243,8 @@ export default function Banner() {
     showAnimation: true
   }
 
+  useBodyClass('has-fixed-action-bar')
+
   useEffect(() => {
     loadState(env)
     persistState()
@@ -304,7 +307,7 @@ export default function Banner() {
   }
 
   return (
-    <div className="bg-interface-bg-main w-full pb-[32px]">
+    <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
