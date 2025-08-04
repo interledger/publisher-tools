@@ -25,7 +25,8 @@ import {
   WalletOwnershipModal,
   OverridePresetModal,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
+  BannerPositionSelector
 } from '@/components'
 import {
   toolState,
@@ -355,6 +356,14 @@ export default function Banner() {
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
                         )
+                      }
+                      positionSelector={
+                        <BannerPositionSelector
+                          defaultValue={snap.currentConfig?.bannerPosition}
+                          onChange={(value) =>
+                            toolActions.setToolConfig({ bannerPosition: value })
+                          }
+                        />
                       }
                     />
 
