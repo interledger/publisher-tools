@@ -20,7 +20,7 @@ export interface ElementConfigType {
   buttonDescriptionText?: string
 
   // banner specific
-  bannerFontName: string
+  bannerFontName: FontFamilyKey
   bannerFontSize: number
   bannerTitleText: string
   bannerDescriptionText: string
@@ -31,10 +31,11 @@ export interface ElementConfigType {
   bannerBackgroundColor: string
 
   // widget specific
-  widgetFontName: string
+  widgetFontName: FontFamilyKey
   widgetFontSize: number
   widgetTitleText: string
   widgetDescriptionText: string
+  widgetPosition: WidgetPositionKey
   widgetDonateAmount: number // not posibble currently
   widgetButtonText: string
   widgetButtonBorder: CornerType
@@ -59,5 +60,44 @@ export enum SlideAnimationType {
 
 export enum PositionType {
   Top = 'Top',
-  Bottom = 'Bottom'
+  Bottom = 'Bottom',
+  Left = 'Left',
+  Right = 'Right'
+}
+
+export const BORDER_RADIUS = {
+  Light: '0.375rem',
+  Pill: '1rem',
+  None: '0'
+} as const
+export type BorderRadiusKey = keyof typeof BORDER_RADIUS
+
+export const WIDGET_POSITION = {
+  Left: 'Left',
+  Right: 'Right'
+} as const
+export type WidgetPositionKey = keyof typeof WIDGET_POSITION
+
+export const FONT_FAMILY_OPTIONS = [
+  'Arial',
+  'Inherit',
+  'Open Sans',
+  'Cookie',
+  'Titillium Web',
+  'Roboto'
+] as const
+
+export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]
+
+export const FONT_FAMILY_URLS: Record<
+  Exclude<FontFamilyKey, 'Arial' | 'Inherit'>,
+  string
+> = {
+  'Open Sans':
+    'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap',
+  'Cookie': 'https://fonts.googleapis.com/css2?family=Cookie&display=swap',
+  'Roboto':
+    'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
+  'Titillium Web':
+    'https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap'
 }
