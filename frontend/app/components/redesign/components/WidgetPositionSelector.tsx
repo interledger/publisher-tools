@@ -26,7 +26,7 @@ const widgetPositionOptions: Option<WidgetPositionKey>[] = [
   {
     id: 'position-empty',
     label: '',
-    value: WIDGET_POSITION.Right,
+    value: WIDGET_POSITION.Empty,
     icon: <div className="w-11 h-11 hidden xl:invisible" />
   }
 ]

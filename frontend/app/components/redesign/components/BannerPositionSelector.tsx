@@ -39,7 +39,7 @@ const bannerPositionOptions: Option<PositionType>[] = [
   {
     id: 'position-empty',
     label: '',
-    value: PositionType.Top,
+    value: PositionType.Empty,
     icon: <div className="w-11 h-11 hidden xl:invisible" />
   }
 ]

@@ -10,13 +10,15 @@ interface BuilderFormProps {
   appearance: ToolAppearance
   className?: string
   onBuildStepComplete?: (isComplete: boolean) => void
+  positionSelector?: React.ReactNode
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
   className = '',
   onBuildStepComplete,
   content,
-  appearance
+  appearance,
+  positionSelector
 }) => {
   const snap = useSnapshot(toolState)
   const [expandedSection, setExpandedSection] = useState<
@@ -107,6 +109,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
             onToggle={handleAppearanceToggle}
             onDone={handleAppearanceDone}
             appearance={appearance}
+            positionSelector={positionSelector}
           />
         </div>
       </div>

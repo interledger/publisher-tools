@@ -19,7 +19,8 @@ import {
   WalletOwnershipModal,
   OverridePresetModal,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
+  WidgetPositionSelector
 } from '@/components'
 import {
   toolState,
@@ -338,6 +339,14 @@ export default function Widget() {
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
                         )
+                      }
+                      positionSelector={
+                        <WidgetPositionSelector
+                          defaultValue={snap.currentConfig?.widgetPosition}
+                          onChange={(value) =>
+                            toolActions.setToolConfig({ widgetPosition: value })
+                          }
+                        />
                       }
                     />
 
