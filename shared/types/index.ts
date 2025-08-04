@@ -61,8 +61,7 @@ export enum SlideAnimationType {
 export enum PositionType {
   Top = 'Top',
   Bottom = 'Bottom',
-  Left = 'Left',
-  Right = 'Right'
+  Empty = 'Empty'
 }
 
 export const BORDER_RADIUS = {
@@ -74,7 +73,8 @@ export type BorderRadiusKey = keyof typeof BORDER_RADIUS
 
 export const WIDGET_POSITION = {
   Left: 'Left',
-  Right: 'Right'
+  Right: 'Right',
+  Empty: 'Empty'
 } as const
 export type WidgetPositionKey = keyof typeof WIDGET_POSITION
 

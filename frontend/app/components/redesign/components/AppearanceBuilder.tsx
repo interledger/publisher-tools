@@ -17,8 +17,6 @@ import {
   ToolsDropdown,
   ColorSelector,
   CornerRadiusSelector,
-  BannerPositionSelector,
-  WidgetPositionSelector,
   Divider,
   Slider,
   Checkbox
@@ -33,8 +31,6 @@ import {
   type FontFamilyKey,
   FONT_FAMILY_OPTIONS
 } from '@shared/types'
-import { useSnapshot } from 'valtio'
-import { toolState } from '~/stores/toolStore'
 
 interface BaseToolAppearance {
   fontName?: FontFamilyKey
@@ -74,6 +70,7 @@ interface AppearanceBuilderProps {
   isExpanded?: boolean
   onToggle?: () => void
   onDone?: () => void
+  positionSelector?: React.ReactNode
 }
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
@@ -81,14 +78,14 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   isComplete,
   isExpanded = false,
   onToggle,
-  onDone
+  onDone,
+  positionSelector
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const isAnimated = appearance.slideAnimation !== SlideAnimationType.None
-  const snap = useSnapshot(toolState)
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === appearance.fontName
@@ -285,32 +282,14 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       </div>
       <Divider />
 
-      {snap.currentToolType !== 'unknown' && (
+      {positionSelector && (
         <>
           <div className="flex flex-col gap-xs">
             <SectionHeader
               icon={<SVGHeaderPosition className="w-5 h-5" />}
-              label={
-                snap.currentToolType === 'widget'
-                  ? 'Position (Left/Right)'
-                  : 'Position (Appears from)'
-              }
+              label="Position"
             />
-            {snap.currentToolType === 'widget' ? (
-              <WidgetPositionSelector
-                defaultValue={appearance.position as WidgetPositionKey}
-                onChange={(value) =>
-                  (appearance as WidgetToolAppearance).onPositionChange(value)
-                }
-              />
-            ) : (
-              <BannerPositionSelector
-                defaultValue={appearance.position as PositionType}
-                onChange={(value) =>
-                  (appearance as BannerToolAppearance).onPositionChange(value)
-                }
-              />
-            )}
+            {positionSelector}
           </div>
           <Divider />
         </>

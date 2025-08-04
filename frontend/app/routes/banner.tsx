@@ -25,7 +25,8 @@ import {
   WalletOwnershipModal,
   OverridePresetModal,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
+  BannerPositionSelector
 } from '@/components'
 import {
   toolState,
@@ -45,19 +46,6 @@ import type {
   PositionType,
   SlideAnimationType
 } from '@shared/types'
-
-declare module 'react' {
-  export interface JSX {
-    IntrinsicElements: {
-      'wm-banner': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          ref?: React.Ref<BannerComponent>
-        },
-        HTMLElement
-      >
-    }
-  }
-}
 
 export const meta: MetaFunction = () => {
   return [
@@ -368,6 +356,14 @@ export default function Banner() {
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
                         )
+                      }
+                      positionSelector={
+                        <BannerPositionSelector
+                          defaultValue={snap.currentConfig?.bannerPosition}
+                          onChange={(value) =>
+                            toolActions.setToolConfig({ bannerPosition: value })
+                          }
+                        />
                       }
                     />
 
