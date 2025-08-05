@@ -7,7 +7,7 @@ import {
   WalletAddressFormatError
 } from '@shared/utils'
 
-const rangeError = { message: 'Value has to be between 16 and 24' }
+const rangeError = { message: 'Value has to be between 10 and 30' }
 
 export const walletSchema = z.object({
   walletAddress: z
