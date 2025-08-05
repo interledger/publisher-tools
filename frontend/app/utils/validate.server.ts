@@ -1,9 +1,13 @@
 import { z } from 'zod'
 import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
-import { WalletAddressFormatError } from '~/lib/types.js'
-import { isWalletAddress, toWalletAddressUrl } from '@shared/utils'
+import {
+  checkHrefFormat,
+  getWalletAddress,
+  toWalletAddressUrl,
+  WalletAddressFormatError
+} from '@shared/utils'
 
-const rangeError = { message: 'Value has to be between 16 and 24' }
+const rangeError = { message: 'Value has to be between 10 and 30' }
 
 export const walletSchema = z.object({
   walletAddress: z
@@ -15,7 +19,7 @@ export const walletSchema = z.object({
 
       try {
         checkHrefFormat(updatedUrl)
-        await isValidWalletAddress(updatedUrl)
+        await getWalletAddress(updatedUrl)
       } catch (e) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -71,7 +75,8 @@ export const createWidgetSchema = z
   .object({
     elementType: z.literal('widget'),
     widgetFontName: z.string().min(1, { message: 'Choose a font' }),
-    widgetFontSize: z.coerce.number().min(16, rangeError).max(24, rangeError),
+    widgetFontSize: z.coerce.number().min(10, rangeError).max(30, rangeError),
+    widgetPosition: z.nativeEnum(PositionType),
     widgetButtonText: z.string().min(1),
     widgetDescriptionText: z.string().min(1),
     widgetButtonBorder: z.nativeEnum(CornerType),
@@ -132,61 +137,4 @@ export const validateForm = async (
   const payload = result.data as unknown as any
 
   return { result, payload }
-}
-
-function checkHrefFormat(href: string): void {
-  let url: URL
-  try {
-    url = new URL(href)
-    if (url.protocol !== 'https:') {
-      throw new WalletAddressFormatError(
-        'Wallet address must use HTTPS protocol'
-      )
-    }
-  } catch (e) {
-    if (e instanceof WalletAddressFormatError) {
-      throw e
-    }
-    throw new WalletAddressFormatError(
-      `Invalid wallet address URL: ${JSON.stringify(href)}`
-    )
-  }
-
-  const { hash, search, port, username, password } = url
-
-  if (hash || search || port || username || password) {
-    throw new WalletAddressFormatError(
-      `Wallet address URL must not contain query/fragment/port/username/password elements.`
-    )
-  }
-}
-
-async function isValidWalletAddress(
-  walletAddressUrl: string
-): Promise<boolean> {
-  const response = await fetch(walletAddressUrl, {
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new WalletAddressFormatError('This wallet address does not exist.')
-    }
-    throw new WalletAddressFormatError('Failed to fetch wallet address.')
-  }
-
-  const msgInvalidWalletAddress = 'Provided URL is not a valid wallet address.'
-  const json = await response.json().catch((error) => {
-    throw new WalletAddressFormatError(msgInvalidWalletAddress, {
-      cause: error
-    })
-  })
-
-  if (!isWalletAddress(json as Record<string, unknown>)) {
-    throw new WalletAddressFormatError(msgInvalidWalletAddress)
-  }
-
-  return true
 }
