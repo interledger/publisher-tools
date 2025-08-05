@@ -16,6 +16,7 @@ import {
   getValidWalletAddress
 } from '~/utils/open-payments.server.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import { normalizeWalletAddress } from '@shared/utils'
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   try {
@@ -96,7 +97,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
     return json({ errors, success: false, intent }, { status: 400 })
   }
 
-  const ownerWalletAddress: string = payload.walletAddress
+  let ownerWalletAddress: string = payload.walletAddress
   const walletAddress = await getValidWalletAddress(env, ownerWalletAddress)
 
   const session = await getSession(request.headers.get('Cookie'))
@@ -135,6 +136,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
     }
   }
 
+  ownerWalletAddress = normalizeWalletAddress(walletAddress)
   const storageService = new ConfigStorageService(env)
   switch (request.method) {
     case 'POST':

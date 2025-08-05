@@ -32,7 +32,7 @@ export async function getWalletAddress(
     throw new WalletAddressFormatError('Invalid wallet address format')
   }
 
-  return normalizeWalletAddress(json)
+  return json
 }
 
 export function isWalletAddress(
@@ -56,9 +56,7 @@ export function toWalletAddressUrl(s: string): string {
   return s.startsWith('$') ? s.replace('$', 'https://') : s
 }
 
-export function normalizeWalletAddress(
-  walletAddress: WalletAddress
-): WalletAddress {
+export function normalizeWalletAddress(walletAddress: WalletAddress): string {
   const IS_INTERLEDGER_CARDS =
     walletAddress.authServer === 'https://auth.interledger.cards'
   const url = new URL(toWalletAddressUrl(walletAddress.id))
@@ -74,12 +72,9 @@ export function normalizeWalletAddress(
     //
     // Not all `ilp.interledger.cards` wallet addresses can be used with `ilp.dev`.
     // Manually created wallet addresses cannot be used with `ilp.dev`.
-    return {
-      ...walletAddress,
-      id: walletAddress.id.replace('ilp.dev', 'ilp.interledger.cards')
-    }
+    return walletAddress.id.replace('ilp.dev', 'ilp.interledger.cards')
   }
-  return walletAddress
+  return walletAddress.id
 }
 
 export class WalletAddressFormatError extends Error {
