@@ -154,7 +154,7 @@ export const ShareInput = React.memo(
             aria-describedby={`name-description-${index}`}
           />
           <div id={`name-description-${index}`} className="sr-only">
-            Optional display name for recipient {index + 1}
+            Optional name for this recipient.
           </div>
         </div>
         <div
@@ -180,7 +180,7 @@ export const ShareInput = React.memo(
             aria-required="true"
           />
           <div id={`pointer-description-${index}`} className="sr-only">
-            Wallet address or payment pointer for recipient {index + 1}
+            Required wallet address for this recipient.
           </div>
           {hasError && (
             <div
@@ -216,9 +216,7 @@ export const ShareInput = React.memo(
             aria-required="true"
           />
           <div id={`weight-description-${index}`} className="sr-only">
-            Weight value for revenue distribution calculation for
-            recipient&nbsp;
-            {index + 1}
+            Weight value for calculating revenue share.
           </div>
         </div>
         <div role="cell" aria-labelledby="col-percent">
@@ -240,7 +238,7 @@ export const ShareInput = React.memo(
             aria-describedby={`percent-description-${index}`}
           />
           <div id={`percent-description-${index}`} className="sr-only">
-            Calculated percentage of total revenue for recipient {index + 1}
+            Calculated from weight, or can be edited directly.
           </div>
         </div>
         <div
