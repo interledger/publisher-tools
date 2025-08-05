@@ -2,12 +2,12 @@ import { z } from 'zod'
 import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
 import {
   checkHrefFormat,
-  isWalletAddress,
+  getWalletAddress,
   toWalletAddressUrl,
   WalletAddressFormatError
 } from '@shared/utils'
 
-const rangeError = { message: 'Value has to be between 16 and 24' }
+const rangeError = { message: 'Value has to be between 10 and 30' }
 
 export const walletSchema = z.object({
   walletAddress: z
@@ -19,7 +19,7 @@ export const walletSchema = z.object({
 
       try {
         checkHrefFormat(updatedUrl)
-        await isValidWalletAddress(updatedUrl)
+        await getWalletAddress(updatedUrl)
       } catch (e) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -137,34 +137,4 @@ export const validateForm = async (
   const payload = result.data as unknown as any
 
   return { result, payload }
-}
-
-async function isValidWalletAddress(
-  walletAddressUrl: string
-): Promise<boolean> {
-  const response = await fetch(walletAddressUrl, {
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new WalletAddressFormatError('This wallet address does not exist.')
-    }
-    throw new WalletAddressFormatError('Failed to fetch wallet address.')
-  }
-
-  const msgInvalidWalletAddress = 'Provided URL is not a valid wallet address.'
-  const json = await response.json().catch((error) => {
-    throw new WalletAddressFormatError(msgInvalidWalletAddress, {
-      cause: error
-    })
-  })
-
-  if (!isWalletAddress(json as Record<string, unknown>)) {
-    throw new WalletAddressFormatError(msgInvalidWalletAddress)
-  }
-
-  return true
 }
