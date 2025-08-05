@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
 import {
   checkHrefFormat,
-  isValidWalletAddress,
+  getWalletAddress,
   toWalletAddressUrl,
   WalletAddressFormatError
 } from '@shared/utils'
@@ -19,7 +19,7 @@ export const walletSchema = z.object({
 
       try {
         checkHrefFormat(updatedUrl)
-        await isValidWalletAddress(updatedUrl)
+        await getWalletAddress(updatedUrl)
       } catch (e) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

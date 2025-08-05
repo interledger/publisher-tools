@@ -1,30 +1,38 @@
 import type { WalletAddress } from '@interledger/open-payments'
 
-export function toWalletAddressUrl(s: string): string {
-  return s.startsWith('$') ? s.replace('$', 'https://') : s
-}
-
 export async function getWalletAddress(
   walletAddressUrl: string
 ): Promise<WalletAddress> {
   const url = toWalletAddressUrl(walletAddressUrl)
 
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error('Unable to fetch wallet details', {
-      cause: new Error(res.statusText || `HTTP ${res.status}`)
+  const response = await fetch(url)
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new WalletAddressFormatError('This wallet address does not exist')
+    }
+    throw new WalletAddressFormatError('Unable to fetch wallet details', {
+      cause: new WalletAddressFormatError(
+        response.statusText || `HTTP ${response.status}`
+      )
     })
   }
 
+  let json: Record<string, unknown>
   try {
-    const json: Record<string, unknown> = await res.json()
-    if (!isWalletAddress(json)) {
-      throw new Error('Invalid wallet address format')
-    }
-    return json
+    json = await response.json()
   } catch (error) {
-    throw new Error('Failed to parse wallet address content', { cause: error })
+    throw new WalletAddressFormatError(
+      'Provided URL is not a valid wallet address',
+      {
+        cause: error
+      }
+    )
   }
+  if (!isWalletAddress(json)) {
+    throw new WalletAddressFormatError('Invalid wallet address format')
+  }
+
+  return normalizeWalletAddress(json)
 }
 
 export function isWalletAddress(
@@ -44,7 +52,13 @@ export function isWalletAddress(
   )
 }
 
-export function normalizeWalletAddress(walletAddress: WalletAddress): string {
+export function toWalletAddressUrl(s: string): string {
+  return s.startsWith('$') ? s.replace('$', 'https://') : s
+}
+
+export function normalizeWalletAddress(
+  walletAddress: WalletAddress
+): WalletAddress {
   const IS_INTERLEDGER_CARDS =
     walletAddress.authServer === 'https://auth.interledger.cards'
   const url = new URL(toWalletAddressUrl(walletAddress.id))
@@ -60,9 +74,12 @@ export function normalizeWalletAddress(walletAddress: WalletAddress): string {
     //
     // Not all `ilp.interledger.cards` wallet addresses can be used with `ilp.dev`.
     // Manually created wallet addresses cannot be used with `ilp.dev`.
-    return walletAddress.id.replace('ilp.dev', 'ilp.interledger.cards')
+    return {
+      ...walletAddress,
+      id: walletAddress.id.replace('ilp.dev', 'ilp.interledger.cards')
+    }
   }
-  return walletAddress.id
+  return walletAddress
 }
 
 export class WalletAddressFormatError extends Error {
@@ -99,34 +116,4 @@ export function checkHrefFormat(href: string): string {
   }
 
   return href
-}
-
-export async function isValidWalletAddress(
-  walletAddressUrl: string
-): Promise<boolean> {
-  const response = await fetch(walletAddressUrl, {
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new WalletAddressFormatError('This wallet address does not exist.')
-    }
-    throw new WalletAddressFormatError('Failed to fetch wallet address.')
-  }
-
-  const msgInvalidWalletAddress = 'Provided URL is not a valid wallet address.'
-  const json = await response.json().catch((error) => {
-    throw new WalletAddressFormatError(msgInvalidWalletAddress, {
-      cause: error
-    })
-  })
-
-  if (!isWalletAddress(json as Record<string, unknown>)) {
-    throw new WalletAddressFormatError(msgInvalidWalletAddress)
-  }
-
-  return true
 }
