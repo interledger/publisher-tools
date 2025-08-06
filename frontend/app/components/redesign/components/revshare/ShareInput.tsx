@@ -36,7 +36,7 @@ export const ShareInputTable = ({
       className="contents"
     >
       <div id="revshare-table-caption" className="sr-only">
-        Revenue sharing recipients configuration table
+        Revenue sharing recipients table
       </div>
       {children}
     </div>
@@ -163,7 +163,7 @@ export const ShareInput = React.memo(
           aria-labelledby="col-payment-pointer"
         >
           <label htmlFor={pointerInputId} className="sr-only">
-            Wallet Address or Payment Pointer *
+            Wallet Address or Payment Pointer
           </label>
           <InputField
             id={pointerInputId}
@@ -199,7 +199,7 @@ export const ShareInput = React.memo(
           aria-labelledby="col-weight"
         >
           <label htmlFor={weightInputId} className="sr-only">
-            Weight *
+            Weight
           </label>
           <InputField
             id={weightInputId}
