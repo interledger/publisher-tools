@@ -140,7 +140,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
               'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none',
               'w-full max-w-full h-[136px]',
               'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
-              'placeholder:text-xs sm:placeholder:text-sm'
+              'placeholder:text-xs sm:placeholder:text-sm text-sm font-mono'
             )}
             placeholder={PLACEHOLDER_LINK_TAG}
             value={tag}

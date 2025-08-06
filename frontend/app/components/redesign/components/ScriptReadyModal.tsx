@@ -59,9 +59,9 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
         </p>
       </div>
       <div className="w-full bg-mint-50 border border-green-200 rounded-lg p-sm">
-        <p className="text-sm leading-sm font-normal text-text-primary break-all">
+        <output className="text-sm font-mono text-text-primary">
           {scriptContent}
-        </p>
+        </output>
       </div>
       <div className="w-full">
         <ToolsPrimaryButton

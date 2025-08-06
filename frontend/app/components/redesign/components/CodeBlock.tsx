@@ -1,3 +1,5 @@
+import { cx } from 'class-variance-authority'
+
 type CodeBlockProps = {
   link: string
   className?: string
@@ -5,7 +7,7 @@ type CodeBlockProps = {
 
 export const CodeBlock = ({ link, className }: CodeBlockProps) => {
   return (
-    <output className={className}>
+    <output className={cx('font-mono', className)}>
       <span>&lt;</span>
       <span style={{ color: '#00009F' }}>link </span>
       <span style={{ color: '#00A4DB' }}>rel</span>
