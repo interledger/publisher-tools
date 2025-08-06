@@ -57,12 +57,8 @@ export const ToolsWalletAddress = () => {
 
   const handleRefresh = () => {
     toolActions.setWalletConnected(false)
-    toolActions.setWalletAddress('')
     toolActions.setHasRemoteConfigs(false)
     toolActions.setConfigs(null)
-    if (inputRef.current) {
-      inputRef.current.value = ''
-    }
   }
 
   const handleWalletAddressChange = (
