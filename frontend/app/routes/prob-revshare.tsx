@@ -222,9 +222,9 @@ function Revshare() {
                   }
                 >
                   {isCopied ? (
-                    <SVGCheckIcon className="h-6 w-6" aria-hidden="true" />
+                    <SVGCheckIcon className="h-6 w-6" />
                   ) : (
-                    <SVGCopyIcon className="h-6 w-6" aria-hidden="true" />
+                    <SVGCopyIcon className="h-6 w-6" />
                   )}
                 </button>
               </div>

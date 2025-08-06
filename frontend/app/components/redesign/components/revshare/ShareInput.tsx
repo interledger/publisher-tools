@@ -138,7 +138,7 @@ export const ShareInput = React.memo(
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
           >
-            <SVGDeleteScript className="w-5 h-5" aria-hidden="true" />
+            <SVGDeleteScript className="w-5 h-5" />
           </ToolsSecondaryButton>
         </div>
         <div role="cell" aria-labelledby="col-recipient-name">
@@ -257,7 +257,7 @@ export const ShareInput = React.memo(
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
           >
-            <SVGDeleteScript className="w-5 h-5" aria-hidden="true" />
+            <SVGDeleteScript className="w-5 h-5" />
           </ToolsSecondaryButton>
         </div>
       </div>
