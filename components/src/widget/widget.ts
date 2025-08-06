@@ -47,17 +47,7 @@ export class PaymentWidget extends LitElement {
     const walletAddress = String(formData.get('walletAddress') ?? '')
 
     if (this.isPreview && !walletAddress) {
-      this.configController.updateState({
-        walletAddress: {
-          id: 'https://ilp.dev/mock-wallet',
-          assetCode: 'USD',
-          assetScale: 2,
-          authServer: 'https://auth.interledger.cards',
-          resourceServer: 'https://ilp.dev',
-          publicName: 'Mock Wallet (Preview)'
-        }
-      })
-      this.currentView = 'confirmation'
+      this.previewWalletAddress()
       return
     }
 
@@ -126,6 +116,20 @@ export class PaymentWidget extends LitElement {
 
   private navigateToHome() {
     this.currentView = 'home'
+  }
+
+  private previewWalletAddress() {
+    this.configController.updateState({
+      walletAddress: {
+        id: 'https://ilp.dev/mock-wallet',
+        assetCode: 'USD',
+        assetScale: 2,
+        authServer: 'https://auth.interledger.cards',
+        resourceServer: 'https://ilp.dev',
+        publicName: 'Wallet (Preview)'
+      }
+    })
+    this.currentView = 'confirmation'
   }
 
   private renderHomeView() {

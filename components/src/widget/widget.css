@@ -428,6 +428,6 @@
   }
 
   .content.preview-mode {
-    width: auto;
+    width: 100%;
   }
 }
