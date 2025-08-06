@@ -59,7 +59,7 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
         </p>
       </div>
       <div className="w-full bg-mint-50 border border-green-200 rounded-lg p-sm">
-        <output className="text-sm font-mono text-text-primary">
+        <output className="text-sm font-mono text-text-primary break-all">
           {scriptContent}
         </output>
       </div>
