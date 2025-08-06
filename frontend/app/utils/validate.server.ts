@@ -1,5 +1,10 @@
 import { z } from 'zod'
-import { CornerType, PositionType, SlideAnimationType } from '@shared/types'
+import {
+  CORNER_OPTION,
+  BANNER_POSITION,
+  WIDGET_POSITION,
+  SLIDE_ANIMATION
+} from '@shared/types'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -46,7 +51,7 @@ export const createButtonSchema = z
     elementType: z.literal('button'),
     buttonFontName: z.string().min(1, { message: 'Choose a font' }),
     buttonText: z.string().min(1, { message: 'Button label cannot be empty' }),
-    buttonBorder: z.nativeEnum(CornerType),
+    buttonBorder: z.nativeEnum(CORNER_OPTION),
     buttonTextColor: z.string().min(6),
     buttonBackgroundColor: z.string().min(6)
   })
@@ -64,9 +69,9 @@ export const createBannerSchema = z
       .min(1, { message: 'Banner text cannot be empty' }),
     bannerTextColor: z.string().min(6),
     bannerBackgroundColor: z.string().min(6),
-    bannerSlideAnimation: z.nativeEnum(SlideAnimationType),
-    bannerPosition: z.nativeEnum(PositionType),
-    bannerBorder: z.nativeEnum(CornerType)
+    bannerSlideAnimation: z.nativeEnum(SLIDE_ANIMATION),
+    bannerPosition: z.nativeEnum(BANNER_POSITION),
+    bannerBorder: z.nativeEnum(CORNER_OPTION)
   })
   .merge(walletSchema)
   .merge(versionSchema)
@@ -76,10 +81,10 @@ export const createWidgetSchema = z
     elementType: z.literal('widget'),
     widgetFontName: z.string().min(1, { message: 'Choose a font' }),
     widgetFontSize: z.coerce.number().min(10, rangeError).max(30, rangeError),
-    widgetPosition: z.nativeEnum(PositionType),
+    widgetPosition: z.nativeEnum(WIDGET_POSITION),
     widgetButtonText: z.string().min(1),
     widgetDescriptionText: z.string().min(1),
-    widgetButtonBorder: z.nativeEnum(CornerType),
+    widgetButtonBorder: z.nativeEnum(CORNER_OPTION),
     widgetButtonBackgroundColor: z.string().min(1),
     widgetButtonTextColor: z.string().min(1),
     widgetTextColor: z.string().min(1),

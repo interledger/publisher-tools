@@ -3,11 +3,11 @@ import { useState } from 'react'
 import type {
   CornerType,
   ElementConfigType,
-  SlideAnimationType,
-  PositionType
+  SlideAnimationType
 } from '@shared/types'
 import type { ElementErrors } from '~/lib/types.js'
 import {
+  type PositionType,
   bgColors,
   controlOptions,
   cornerOptions,

@@ -1,14 +1,26 @@
 import { tooltips } from './tooltips.js'
-import {
-  CornerType,
-  SlideAnimationType,
-  PositionType,
-  type ElementConfigType
-} from '@shared/types'
+import type { ElementConfigType } from '@shared/types'
 import bannerImg from '~/assets/images/banner_representation.svg'
 import widgetImg from '~/assets/images/widget_representation.svg'
 import buttonImg from '~/assets/images/button_representation.svg'
 import linkImg from '~/assets/images/link_representation.svg'
+
+export enum PositionType {
+  Top = 'Top',
+  Bottom = 'Bottom',
+  Empty = 'Empty'
+}
+
+export enum CornerType {
+  None = 'None',
+  Light = 'Light',
+  Pill = 'Pill'
+}
+
+export enum SlideAnimationType {
+  None = 'None',
+  Down = 'Down'
+}
 
 export const validConfigTypes = ['button', 'widget']
 export const modalTypes = [

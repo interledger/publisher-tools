@@ -622,19 +622,32 @@ export const toolActions = {
   }
 }
 
-/** Load from localStorage on init */
+/** Load from localStorage on init, remove storage if invalid */
 export function loadState(
   env: Pick<Env, 'SCRIPT_EMBED_URL' | 'API_URL' | 'OP_WALLET_ADDRESS'>
 ) {
-  const saved = localStorage.getItem(STORAGE_KEY)
-  if (saved) {
-    const parsed = JSON.parse(saved)
-    Object.assign(toolState, parsedStorageData(parsed))
-  }
-
   toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
   toolState.apiUrl = env.API_URL
   toolState.opWallet = env.OP_WALLET_ADDRESS
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const parsed: typeof toolState = JSON.parse(saved)
+
+      if (
+        typeof parsed === 'object' &&
+        Object.keys(parsed.configurations).every(
+          (key) => key in toolState.configurations
+        )
+      ) {
+        Object.assign(toolState, parsedStorageData(parsed))
+      } else {
+        localStorage.removeItem(STORAGE_KEY)
+      }
+    }
+  } catch (_error) {
+    localStorage.removeItem(STORAGE_KEY)
+  }
 }
 
 export function persistState() {
