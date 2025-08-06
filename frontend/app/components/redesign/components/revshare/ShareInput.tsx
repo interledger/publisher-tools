@@ -188,8 +188,12 @@ export const ShareInput = React.memo(
               className="absolute left-0 text-xs mt-2xs text-text-error"
               role="alert"
               aria-live="polite"
+              aria-atomic="true"
             >
-              Invalid payment pointer
+              Invalid payment pointer.
+              <span className="sr-only">
+                &nbsp;Please check the format and try again.
+              </span>
             </div>
           )}
         </div>
