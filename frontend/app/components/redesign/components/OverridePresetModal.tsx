@@ -103,14 +103,12 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
 
   const handleConfigSelection = (configId: string, checked: boolean) => {
     setSelectedConfigs((prev) => {
-      let updated: string[]
       if (checked) {
         if (prev.includes(configId)) return prev
-        updated = [...prev, configId]
+        return [...prev, configId]
       } else {
-        updated = prev.filter((id) => id !== configId)
+        return prev.filter((id) => id !== configId)
       }
-      return updated
     })
   }
 
