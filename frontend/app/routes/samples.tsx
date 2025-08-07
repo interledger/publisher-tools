@@ -244,10 +244,7 @@ export function RedesignDemo() {
       <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Script Ready Modal Component</h2>
         <div className="flex flex-col items-center max-w-md mx-auto">
-          <ScriptReadyModal
-            onClose={() => console.log('Modal closed')}
-            onCopy={() => console.log('Script copied to clipboard')}
-          />
+          <ScriptReadyModal onClose={() => console.log('Modal closed')} />
         </div>
       </div>
       <div className="mt-8 mb-8">

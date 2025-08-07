@@ -3,6 +3,7 @@ import { cx } from 'class-variance-authority'
 import {
   SVGScriptCode,
   SVGCopyScript,
+  SVGCheckIcon,
   SVGLinkIcon,
   SVGShareScript
 } from '@/assets'
@@ -11,7 +12,7 @@ interface ToolsPrimaryButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   iconPosition?: 'left' | 'right' | 'none'
-  icon?: 'script' | 'copy' | 'link' | 'share'
+  icon?: 'script' | 'copy' | 'link' | 'share' | 'check'
   className?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
@@ -58,6 +59,9 @@ export function ToolsPrimaryButton({
       )}
       {icon === 'share' && iconPosition === 'right' && (
         <SVGShareScript className="w-5 h-5" />
+      )}
+      {icon === 'check' && iconPosition === 'right' && (
+        <SVGCheckIcon className="w-5 h-5" />
       )}
     </button>
   )
