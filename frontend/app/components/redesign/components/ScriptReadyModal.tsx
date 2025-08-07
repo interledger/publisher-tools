@@ -8,7 +8,6 @@ interface ScriptReadyModalProps {
   isOpen?: boolean
   onClose?: () => void
   scriptContent?: string
-  onCopy?: () => void
   className?: string
 }
 
