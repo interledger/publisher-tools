@@ -11,12 +11,10 @@ interface ShareInputProps {
   weight: number
   percent: number
   placeholder?: string
-  percentDisabled?: boolean
   weightDisabled?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
-  onChangePercent: (percent: number) => void
   onRemove: () => void
   validatePointer: (pointer: string) => boolean
 }
@@ -105,10 +103,8 @@ export const ShareInput = React.memo(
     onChangeName,
     onChangePointer,
     onChangeWeight,
-    onChangePercent,
     onRemove,
     validatePointer,
-    percentDisabled = false,
     weightDisabled = false
   }: ShareInputProps) => {
     const hasError = !validatePointer(pointer)
@@ -224,26 +220,13 @@ export const ShareInput = React.memo(
             Weight value for calculating revenue share.
           </div>
         </div>
-        <div role="cell" aria-labelledby="col-percent">
-          <label htmlFor={percentInputId} className="sr-only">
-            Percentage
-          </label>
-          <InputField
+        <div role="cell" aria-labelledby="col-percentage">
+          <div
             id={percentInputId}
-            type="number"
-            min={0}
-            max={100}
-            step="any"
-            value={typeof percent === 'number' ? Math.round(percent * 100) : ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onChangePercent(Number(e.target.value) / 100)
-            }
-            disabled={percentDisabled}
-            aria-disabled={percentDisabled}
-            aria-describedby={`percent-description-${index}`}
-          />
-          <div id={`percent-description-${index}`} className="sr-only">
-            Calculated from weight, or can be edited directly.
+            aria-label={`Calculated percentage: ${Math.round(percent * 100)}%`}
+            className="w-full px-sm py-xs rounded-sm border border-field-border"
+          >
+            {Math.round(percent * 100)}%
           </div>
         </div>
         <div
