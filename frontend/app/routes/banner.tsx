@@ -435,7 +435,6 @@ export default function Banner() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 scriptContent={toolActions.getScriptToDisplay()}
-                onCopy={() => console.log('Script copied to clipboard')}
               />
             </div>
           </div>
