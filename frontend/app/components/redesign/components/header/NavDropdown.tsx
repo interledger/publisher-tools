@@ -86,7 +86,7 @@ export const NavDropdown = ({
         isOpen ? 'text-nav-link-hover' : 'text-nav-link-default'
       )}
     >
-      <span className='flex w-full gap-xs justify-between'>
+      <span className="flex w-full gap-xs justify-between">
         <span aria-hidden="true">{title}</span>
         <button
           id="nav-dropdown-trigger"
