@@ -111,9 +111,8 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
         updated = prev.filter((id) => id !== configId)
       }
       return updated
-    });
-  };
-
+    })
+  }
 
   const handleOverride = async () => {
     if (onOverride && currentLocalConfigs) {
