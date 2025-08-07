@@ -102,12 +102,18 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   })
 
   const handleConfigSelection = (configId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedConfigs((prev) => [...prev, configId])
-    } else {
-      setSelectedConfigs((prev) => prev.filter((id) => id !== configId))
-    }
-  }
+    setSelectedConfigs((prev) => {
+      let updated: string[]
+      if (checked) {
+        if (prev.includes(configId)) return prev
+        updated = [...prev, configId]
+      } else {
+        updated = prev.filter((id) => id !== configId)
+      }
+      return updated
+    });
+  };
+
 
   const handleOverride = async () => {
     if (onOverride && currentLocalConfigs) {
