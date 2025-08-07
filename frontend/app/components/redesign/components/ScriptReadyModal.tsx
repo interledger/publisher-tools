@@ -19,7 +19,7 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
   onCopy,
   className = ''
 }) => {
-  const { isCopied, handleCopyClick } = useCopyToClipboard(`${scriptContent}`)
+  const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
 
   if (!isOpen) return null
 
