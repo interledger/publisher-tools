@@ -1,7 +1,7 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
-import { CornerType } from '@shared/types'
+import { CORNER_OPTION, type CornerType } from '@shared/types'
 
 export interface CornerRadiusSelectorProps {
   defaultValue?: CornerType
@@ -10,13 +10,13 @@ export interface CornerRadiusSelectorProps {
 }
 
 const cornerRadiusOptions: Option<CornerType>[] = [
-  { id: 'no-rounding', label: 'No rounding', value: CornerType.None },
-  { id: 'light-rounding', label: 'Light rounding', value: CornerType.Light },
-  { id: 'pill-rounding', label: 'Pill rounding', value: CornerType.Pill }
+  { id: 'no-rounding', label: 'No rounding', value: CORNER_OPTION.None },
+  { id: 'light-rounding', label: 'Light rounding', value: CORNER_OPTION.Light },
+  { id: 'pill-rounding', label: 'Pill rounding', value: CORNER_OPTION.Pill }
 ]
 
 export function CornerRadiusSelector({
-  defaultValue = CornerType.Light,
+  defaultValue = CORNER_OPTION.Light,
   onChange,
   className
 }: CornerRadiusSelectorProps) {

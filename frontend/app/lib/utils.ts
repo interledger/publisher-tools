@@ -1,5 +1,6 @@
 import React from 'react'
-import { CornerType, type ElementConfigType } from '@shared/types'
+import { type ElementConfigType } from '@shared/types'
+import { CornerType } from './presets'
 
 const getSelectedFont = (name: string) => {
   switch (name) {

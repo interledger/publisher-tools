@@ -421,7 +421,6 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 scriptContent={toolActions.getScriptToDisplay()}
-                onCopy={() => console.log('Script copied to clipboard')}
               />
             </div>
           </div>

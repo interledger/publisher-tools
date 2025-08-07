@@ -24,12 +24,13 @@ import {
 import { Heading5 } from '@/typography'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 import {
-  SlideAnimationType,
   type CornerType,
-  type PositionType,
+  type BannerPositionKey,
   type WidgetPositionKey,
   type FontFamilyKey,
-  FONT_FAMILY_OPTIONS
+  type SlideAnimationType,
+  FONT_FAMILY_OPTIONS,
+  SLIDE_ANIMATION
 } from '@shared/types'
 
 interface BaseToolAppearance {
@@ -53,8 +54,8 @@ interface BaseToolAppearance {
 }
 
 export interface BannerToolAppearance extends BaseToolAppearance {
-  position?: PositionType
-  onPositionChange: (position: PositionType) => void
+  position?: BannerPositionKey
+  onPositionChange: (position: BannerPositionKey) => void
 }
 
 export interface WidgetToolAppearance extends BaseToolAppearance {
@@ -85,7 +86,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const isAnimated = appearance.slideAnimation !== SlideAnimationType.None
+  const isAnimated = appearance.slideAnimation !== SLIDE_ANIMATION.None
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === appearance.fontName
@@ -307,9 +308,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                 checked={isAnimated}
                 onChange={() => {
                   appearance.onSlideAnimationChange(
-                    isAnimated
-                      ? SlideAnimationType.None
-                      : SlideAnimationType.Down
+                    isAnimated ? SLIDE_ANIMATION.None : SLIDE_ANIMATION.Down
                   )
                 }}
                 label="Animated"
@@ -318,10 +317,8 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                 <ToolsDropdown
                   label="Type"
                   disabled={!isAnimated}
-                  defaultValue={SlideAnimationType.Down}
-                  options={[
-                    { label: 'Slide up', value: SlideAnimationType.Down }
-                  ]}
+                  defaultValue={SLIDE_ANIMATION.Down}
+                  options={[{ label: 'Slide up', value: SLIDE_ANIMATION.Down }]}
                   onChange={(value) =>
                     appearance.onSlideAnimationChange(
                       value as SlideAnimationType

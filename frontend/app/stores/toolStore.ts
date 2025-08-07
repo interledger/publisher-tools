@@ -4,11 +4,14 @@ import { getDefaultData } from '@shared/default-data'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
+import { validateConfigurations } from '~/utils/validate.client.js'
 
 const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
-  'currentToolType'
+  'currentToolType',
+  'opWallet',
+  'scriptBaseUrl'
 ])
 
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
@@ -512,7 +515,6 @@ export const toolActions = {
 
   resetWalletConnection: () => {
     toolActions.setWalletConnected(false)
-    toolActions.setWalletAddress('')
     toolActions.setHasRemoteConfigs(false)
     toolActions.clearConflictState()
     toolActions.setModal(undefined)
@@ -622,19 +624,30 @@ export const toolActions = {
   }
 }
 
-/** Load from localStorage on init */
+/** Load from localStorage on init, remove storage if invalid */
 export function loadState(
   env: Pick<Env, 'SCRIPT_EMBED_URL' | 'API_URL' | 'OP_WALLET_ADDRESS'>
 ) {
-  const saved = localStorage.getItem(STORAGE_KEY)
-  if (saved) {
-    const parsed = JSON.parse(saved)
-    Object.assign(toolState, parsedStorageData(parsed))
-  }
-
   toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
   toolState.apiUrl = env.API_URL
   toolState.opWallet = env.OP_WALLET_ADDRESS
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const parsed: typeof toolState = JSON.parse(saved)
+      const validKeys =
+        typeof parsed === 'object' &&
+        Object.keys(parsed).every((key) => key in toolState)
+
+      if (validKeys && validateConfigurations(parsed.configurations).success) {
+        Object.assign(toolState, parsedStorageData(parsed))
+      } else {
+        throw new Error('saved configuration not valid')
+      }
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY)
+  }
 }
 
 export function persistState() {
