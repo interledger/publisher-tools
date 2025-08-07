@@ -1,7 +1,7 @@
 import {
-  CornerType,
-  SlideAnimationType,
-  PositionType,
+  BANNER_POSITION,
+  CORNER_OPTION,
+  SLIDE_ANIMATION,
   WIDGET_POSITION
 } from '@shared/types'
 import type { ElementConfigType } from '@shared/types'
@@ -14,7 +14,7 @@ export function getDefaultData(): ElementConfigType {
 
     buttonFontName: 'Arial',
     buttonText: 'Support me',
-    buttonBorder: CornerType.Light,
+    buttonBorder: CORNER_OPTION.Light,
     buttonTextColor: '#ffffff',
     buttonBackgroundColor: '#ff808c',
 
@@ -23,11 +23,11 @@ export function getDefaultData(): ElementConfigType {
     bannerTitleText: 'How to support?',
     bannerDescriptionText:
       'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-    bannerSlideAnimation: SlideAnimationType.Down,
-    bannerPosition: PositionType.Bottom,
+    bannerSlideAnimation: SLIDE_ANIMATION.Down,
+    bannerPosition: BANNER_POSITION.Bottom,
     bannerTextColor: '#ffffff',
     bannerBackgroundColor: '#7f76b2',
-    bannerBorder: CornerType.Light,
+    bannerBorder: CORNER_OPTION.Light,
 
     widgetFontName: 'Arial',
     widgetFontSize: 16,
@@ -39,7 +39,7 @@ export function getDefaultData(): ElementConfigType {
     widgetButtonText: 'Support me',
     widgetButtonBackgroundColor: '#4ec6c0',
     widgetButtonTextColor: '#000000',
-    widgetButtonBorder: CornerType.Light,
+    widgetButtonBorder: CORNER_OPTION.Light,
     widgetTextColor: '#000000',
     widgetBackgroundColor: '#ffffff',
     widgetTriggerBackgroundColor: '#ffffff',

@@ -41,9 +41,9 @@ import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import type {
+  BannerPositionKey,
   CornerType,
   FontFamilyKey,
-  PositionType,
   SlideAnimationType
 } from '@shared/types'
 
@@ -224,7 +224,7 @@ export default function Banner() {
       toolActions.setToolConfig({ bannerTextColor: color }),
     onBorderChange: (border: CornerType) =>
       toolActions.setToolConfig({ bannerBorder: border }),
-    onPositionChange: (position: PositionType) =>
+    onPositionChange: (position: BannerPositionKey) =>
       toolActions.setToolConfig({ bannerPosition: position }),
     onSlideAnimationChange: (animation: SlideAnimationType) =>
       toolActions.setToolConfig({ bannerSlideAnimation: animation }),
