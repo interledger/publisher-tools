@@ -161,7 +161,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
       <div className="px-md w-full text-center">
         <div className="text-style-body-standard space-y-2xs">
           <p>We found previous edits correlated to this wallet address.</p>
-          <p>Choose configurations to keep</p>
+          <p>Choose configurations to keep:</p>
         </div>
       </div>
 
