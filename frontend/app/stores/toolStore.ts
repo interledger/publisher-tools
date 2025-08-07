@@ -642,10 +642,10 @@ export function loadState(
       if (validKeys && validateConfigurations(parsed.configurations).success) {
         Object.assign(toolState, parsedStorageData(parsed))
       } else {
-        localStorage.removeItem(STORAGE_KEY)
+        throw new Error('saved configuration not valid')
       }
     }
-  } catch (_error) {
+  } catch {
     localStorage.removeItem(STORAGE_KEY)
   }
 }

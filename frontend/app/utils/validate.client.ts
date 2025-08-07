@@ -11,7 +11,7 @@ export const elementConfigStorageSchema = z
     versionName: z.string(),
     tag: z.string().optional(),
     // can be undefined initially
-    walletAddress: z.string().optional().or(z.undefined())
+    walletAddress: z.string().optional()
   })
   .merge(buttonFieldsSchema)
   .merge(bannerFieldsSchema)
