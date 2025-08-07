@@ -17,7 +17,7 @@ import { SaveResultModal } from '../components/redesign/components/SaveResultMod
 import { WalletOwnershipModal } from '../components/redesign/components/WalletOwnershipModal'
 import { OverridePresetModal } from '../components/redesign/components/OverridePresetModal'
 import { ConfigCondition } from '~/components/redesign/components'
-import { CornerType } from '@shared/types'
+import { CORNER_OPTION } from '@shared/types'
 
 export function Card({
   children,
@@ -202,7 +202,7 @@ export function RedesignDemo() {
           Corner Radius Selector Component
         </h2>
         <div className="flex flex-col gap-6 max-w-md">
-          <CornerRadiusSelector defaultValue={CornerType.Light} />
+          <CornerRadiusSelector defaultValue={CORNER_OPTION.Light} />
         </div>
       </div>
       <div className="mt-8 mb-8">
@@ -244,10 +244,7 @@ export function RedesignDemo() {
       <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Script Ready Modal Component</h2>
         <div className="flex flex-col items-center max-w-md mx-auto">
-          <ScriptReadyModal
-            onClose={() => console.log('Modal closed')}
-            onCopy={() => console.log('Script copied to clipboard')}
-          />
+          <ScriptReadyModal onClose={() => console.log('Modal closed')} />
         </div>
       </div>
       <div className="mt-8 mb-8">

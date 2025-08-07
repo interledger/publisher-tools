@@ -25,7 +25,7 @@ export interface ElementConfigType {
   bannerTitleText: string
   bannerDescriptionText: string
   bannerSlideAnimation: SlideAnimationType
-  bannerPosition: PositionType
+  bannerPosition: BannerPositionKey
   bannerBorder: CornerType
   bannerTextColor: string
   bannerBackgroundColor: string
@@ -47,22 +47,25 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
-export enum CornerType {
-  None = 'None',
-  Light = 'Light',
-  Pill = 'Pill'
-}
+export const CORNER_OPTION = {
+  Light: 'Light',
+  Pill: 'Pill',
+  None: 'None'
+} as const
+export type CornerType = keyof typeof CORNER_OPTION
 
-export enum SlideAnimationType {
-  None = 'None',
-  Down = 'Down'
-}
+export const SLIDE_ANIMATION = {
+  None: 'None',
+  Down: 'Down'
+} as const
+export type SlideAnimationType = keyof typeof SLIDE_ANIMATION
 
-export enum PositionType {
-  Top = 'Top',
-  Bottom = 'Bottom',
-  Empty = 'Empty'
-}
+export const BANNER_POSITION = {
+  Top: 'Top',
+  Bottom: 'Bottom',
+  Empty: 'Empty'
+} as const
+export type BannerPositionKey = keyof typeof BANNER_POSITION
 
 export const BORDER_RADIUS = {
   Light: '0.375rem',

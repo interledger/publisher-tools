@@ -2,12 +2,12 @@ import React from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { SVGMarkSuccess, SVGClose } from '~/assets/svg'
+import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
 interface ScriptReadyModalProps {
   isOpen?: boolean
   onClose?: () => void
   scriptContent?: string
-  onCopy?: () => void
   className?: string
 }
 
@@ -15,16 +15,9 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
   isOpen = true,
   onClose,
   scriptContent = `<script id="wmt-init-script" type="module" src="https://cdn.webmonetization.org/init.js?wa=https://ilp.interledger-test.dev/e2bddaeb&tag=default&types=banner"></script>`,
-  onCopy,
   className = ''
 }) => {
-  const handleCopy = () => {
-    navigator.clipboard.writeText(scriptContent).then(() => {
-      if (onCopy) {
-        onCopy()
-      }
-    })
-  }
+  const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
 
   if (!isOpen) return null
 
@@ -65,12 +58,12 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
       </div>
       <div className="w-full">
         <ToolsPrimaryButton
-          icon="copy"
+          icon={isCopied ? 'check' : 'copy'}
           iconPosition="right"
           className="w-full flex items-center justify-center"
-          onClick={handleCopy}
+          onClick={handleCopyClick}
         >
-          Copy to clipboard
+          {isCopied ? 'Copied' : 'Copy'} to clipboard
         </ToolsPrimaryButton>
       </div>
     </div>
