@@ -119,7 +119,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           )}
           aria-label="Close modal"
         >
-          <SVGClose className="w-6 h-6" aria-hidden="true" />
+          <SVGClose className="w-6 h-6" />
         </button>
         <div
           className={cx(
