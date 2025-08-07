@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate } from '@remix-run/react'
+import type { MetaFunction } from '@remix-run/cloudflare'
 import {
   Card,
   CodeBlock,
@@ -26,6 +27,17 @@ import {
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Probabilistic Revshare - Web Monetization Tools' },
+    {
+      name: 'description',
+      content:
+        'Create a probabilistic revenue share to split Web Monetization earnings among multiple recipients.'
+    }
+  ]
+}
 
 export default function RevsharePageWrapper() {
   return (

@@ -512,7 +512,6 @@ export const toolActions = {
 
   resetWalletConnection: () => {
     toolActions.setWalletConnected(false)
-    toolActions.setWalletAddress('')
     toolActions.setHasRemoteConfigs(false)
     toolActions.clearConflictState()
     toolActions.setModal(undefined)
