@@ -4,11 +4,14 @@ import { getDefaultData } from '@shared/default-data'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
+import { validateConfigurations } from '~/utils/validate.client.js'
 
 const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
-  'currentToolType'
+  'currentToolType',
+  'opWallet',
+  'scriptBaseUrl'
 ])
 
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
@@ -633,13 +636,11 @@ export function loadState(
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       const parsed: typeof toolState = JSON.parse(saved)
-
-      if (
+      const validKeys =
         typeof parsed === 'object' &&
-        Object.keys(parsed.configurations).every(
-          (key) => key in toolState.configurations
-        )
-      ) {
+        Object.keys(parsed).every((key) => key in toolState)
+
+      if (validKeys && validateConfigurations(parsed.configurations).success) {
         Object.assign(toolState, parsedStorageData(parsed))
       } else {
         localStorage.removeItem(STORAGE_KEY)
