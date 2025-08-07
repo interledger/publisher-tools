@@ -1,6 +1,6 @@
 import type { MetaFunction } from '@remix-run/cloudflare'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
-import { Heading1, Heading3, Heading5 } from '~/components/redesign/Typography'
+import { Heading1, Heading3 } from '~/components/redesign/Typography'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
