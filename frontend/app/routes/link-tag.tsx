@@ -1,5 +1,17 @@
 import { HeadingCore, LinkTagGenerator } from '@/components'
 import { useNavigate } from '@remix-run/react'
+import type { MetaFunction } from '@remix-run/cloudflare'
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Link Tag Generator - Web Monetization Tools' },
+    {
+      name: 'description',
+      content:
+        'Use the Link Tag Generator to generate a monetization <link> element for your HTML documents. Enter a payment pointer or wallet address to get started.'
+    }
+  ]
+}
 
 export default function LinkTag() {
   const navigate = useNavigate()
