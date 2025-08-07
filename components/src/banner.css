@@ -9,6 +9,18 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+:host(.position-top) {
+  top: 0;
+}
+
+:host(.position-bottom) {
+  bottom: 0;
 }
 
 .banner {

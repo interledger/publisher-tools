@@ -1,11 +1,7 @@
 import { cx } from 'class-variance-authority'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { bgColors } from '~/lib/presets.js'
-import {
-  PositionType,
-  SlideAnimationType,
-  type ElementConfigType
-} from '@shared/types'
+import { bgColors, PositionType } from '~/lib/presets.js'
+import { SLIDE_ANIMATION, type ElementConfigType } from '@shared/types'
 import { generateConfigCss, getWebMonetizationLink } from '~/lib/utils.js'
 import { NotFoundConfig } from '../index.js'
 import eyeSvg from '~/assets/images/eye.svg'
@@ -21,15 +17,15 @@ const ButtonConfig = ({ config }: { config: ElementConfigType }) => {
 
 const BannerConfig = ({ config }: { config: ElementConfigType }) => {
   const [animated, setAnimated] = useState(
-    config.bannerSlideAnimation != SlideAnimationType.None
+    config.bannerSlideAnimation != SLIDE_ANIMATION.None
   )
   const [position, setPosition] = useState(PositionType.Bottom)
   const [triggerAnimation, setTriggerAnimation] = useState(false)
   const [extensionLink, setExtensionLink] = useState('')
 
   useEffect(() => {
-    setAnimated(config.bannerSlideAnimation != SlideAnimationType.None)
-    setPosition(config.bannerPosition)
+    setAnimated(config.bannerSlideAnimation != SLIDE_ANIMATION.None)
+    setPosition(PositionType.Top)
   }, [config])
 
   useEffect(() => {
@@ -137,8 +133,7 @@ const Widget = ({
     if (widgetRef.current && isLoaded) {
       const widget = widgetRef.current
       widget.config = widgetConfig
-      widget.requestPayment = false
-      widget.requestQuote = false
+      widget.isPreview = true
     }
   }, [widgetConfig, isLoaded])
 

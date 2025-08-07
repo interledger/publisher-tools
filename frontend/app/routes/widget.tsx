@@ -30,6 +30,7 @@ import {
   loadState
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
+import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
 import type {
   WidgetConfig,
@@ -134,7 +135,7 @@ const WidgetPreview: React.FC = () => {
     if (widgetRef.current && isLoaded) {
       const widget = widgetRef.current
       widget.config = widgetConfig
-      // widget.isPreview = true
+      widget.isPreview = true
     }
   }, [widgetConfig, isLoaded])
 
@@ -224,6 +225,8 @@ export default function Widget() {
     showAnimation: false
   }
 
+  useBodyClass('has-fixed-action-bar')
+
   useEffect(() => {
     loadState(env)
     persistState()
@@ -280,7 +283,7 @@ export default function Widget() {
   }
 
   return (
-    <div className="bg-interface-bg-main w-full pb-[32px]">
+    <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Widget" onBackClick={() => navigate('/')}>
@@ -420,7 +423,6 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 scriptContent={toolActions.getScriptToDisplay()}
-                onCopy={() => console.log('Script copied to clipboard')}
               />
             </div>
           </div>
