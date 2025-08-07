@@ -37,19 +37,22 @@ const socialLinks = [
 ]
 
 const SocialLinks = ({ className }: { className: string }) => (
-  <div className={className}>
-    {socialLinks.map((social, index) => (
-      <a key={index} href={social.href} target="_blank" rel="noreferrer">
-        <img src={social.icon} alt={social.text} />
+  <nav className={className} aria-label="Social media links">
+    {socialLinks.map((social) => (
+      <a key={social.href} href={social.href} target="_blank" rel="noreferrer">
+        <img src={social.icon} alt={`Visit our ${social.text} page`} />
       </a>
     ))}
-  </div>
+  </nav>
 )
 
 export const EnhancedFooter = () => {
   return (
     <footer className="w-full rounded-2xl bg-footer-bg p-md md:p-xl mx-auto max-w-none flex flex-col gap-2xl md:gap-lg items-center justify-center">
-      <div className="flex flex-col md:flex-row gap-2xl md:gap-lg items-center md:items-start justify-center md:justify-start w-full max-w-4xl">
+      <nav
+        className="flex flex-col md:flex-row gap-2xl md:gap-lg items-center md:items-start justify-center md:justify-start w-full max-w-4xl"
+        aria-label="Footer"
+      >
         <div className="flex-1 flex flex-col gap-sm items-center md:items-start justify-center w-full md:w-auto">
           <SVGFooterDivider className="w-[38px] h-[5px]" />
           <BodyStandardLink href="https://community.interledger.org/">
@@ -95,27 +98,39 @@ export const EnhancedFooter = () => {
             Terms & Conditions
           </BodyStandardLink>
         </div>
-      </div>
+      </nav>
 
-      <div className="flex md:hidden flex-col gap-md items-center justify-start w-full">
+      <section
+        className="flex md:hidden flex-col gap-md items-center justify-start w-full"
+        aria-label="Mobile footer content"
+      >
         <div className="flex flex-row gap-sm items-center justify-start">
           <img src={wmLogo} alt="Web Monetization Logo" />
           <p className="text-style-small-standard">Web Monetization</p>
         </div>
-        <div className="w-full h-px bg-purple-100" />
+        <div className="w-full h-px bg-purple-100" aria-hidden="true" />
         <SocialLinks className="w-full flex flex-row items-center justify-between" />
-      </div>
+      </section>
 
       <SocialLinks className="hidden md:flex w-[200px] flex-row items-center justify-between" />
 
-      <div className="hidden md:block w-full h-px bg-purple-100" />
+      <div
+        className="hidden md:block w-full h-px bg-purple-100"
+        aria-hidden="true"
+      />
 
-      <div className="hidden md:flex flex-row gap-sm items-center justify-start">
+      <section
+        className="hidden md:flex flex-row gap-sm items-center justify-start"
+        aria-label="Branding"
+      >
         <img src={wmLogo} alt="Web Monetization Logo" />
         <p className="text-style-small-standard">Web Monetization</p>
-      </div>
+      </section>
 
-      <p className="!text-footer-content text-style-small-standard">
+      <p
+        className="!text-footer-content text-style-small-standard"
+        role="contentinfo"
+      >
         Copyright © {new Date().getFullYear()} Interledger Foundation.
       </p>
     </footer>
