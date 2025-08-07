@@ -217,6 +217,15 @@ export default {
           'Segoe UI Emoji',
           'Segoe UI Symbol',
           'Noto Color Emoji'
+        ],
+        mono: [
+          'ui-monospace',
+          'Cascadia Code',
+          'Source Code Pro',
+          'Menlo',
+          'Consolas',
+          'DejaVu Sans Mono',
+          'monospace'
         ]
       },
 
