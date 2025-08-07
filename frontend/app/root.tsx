@@ -21,6 +21,7 @@ import { Header, Footer } from '@/components'
 import { XCircle } from './components/icons.js'
 import faviconPng from '~/assets/images/favicon.png?url'
 import faviconSvg from '~/assets/images/favicon.svg?url'
+import { UIProvider } from '~/stores/uiStore'
 
 export const loader = async () => {
   let message
@@ -52,11 +53,13 @@ export default function App() {
         <Links />
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
-        <Header />
-        <main className="flex-grow flex flex-col">
-          <Outlet />
-        </main>
-        <Footer />
+        <UIProvider>
+          <Header />
+          <main className="flex-grow flex flex-col">
+            <Outlet />
+          </main>
+          <Footer />
+        </UIProvider>
         <Snackbar
           id="snackbar"
           onClose={() => setSnackbarOpen(false)}

@@ -1,4 +1,4 @@
-import React, { useState, useId, useRef } from 'react'
+import React, { useState, useId, useRef, useEffect } from 'react'
 import { useSnapshot } from 'valtio'
 import { Tooltip } from './Tooltip'
 import { InputField } from './InputField'
@@ -8,13 +8,29 @@ import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { toolState, toolActions } from '~/stores/toolStore'
 import type { ElementErrors } from '~/lib/types'
 import { Heading5 } from '../Typography'
+import { useUI } from '~/stores/uiStore'
 
 export const ToolsWalletAddress = () => {
   const snap = useSnapshot(toolState)
+  const { actions: uiActions } = useUI()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
   const generatedId = useId()
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const walletInputApi = {
+      focus: () => {
+        inputRef.current?.focus()
+      }
+    }
+    uiActions.registerWalletInput(walletInputApi)
+
+    return () => {
+      uiActions.unregisterWalletInput()
+    }
+  }, [])
+
   const handleContinue = async () => {
     if (!toolActions.validateWalletAddress(snap.walletAddress)) {
       setError({
@@ -55,7 +71,7 @@ export const ToolsWalletAddress = () => {
     }
   }
 
-  const handleRefresh = () => {
+  const handleDisconnect = () => {
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
     toolActions.setConfigs(null)
@@ -151,6 +167,12 @@ export const ToolsWalletAddress = () => {
               }
               defaultValue={snap.walletAddress}
               onBlur={handleWalletAddressChange}
+              onFocus={(e) =>
+                e.currentTarget.setSelectionRange(
+                  e.currentTarget.value.length,
+                  e.currentTarget.value.length
+                )
+              }
               disabled={snap.isWalletConnected}
               error={error?.fieldErrors.walletAddress}
               aria-labelledby={generatedId}
@@ -158,7 +180,10 @@ export const ToolsWalletAddress = () => {
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={handleRefresh}
+              onClick={() => {
+                handleDisconnect()
+                uiActions.focusWalletInput()
+              }}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >
