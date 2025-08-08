@@ -112,3 +112,33 @@ export function checkHrefFormat(href: string): string {
 
   return href
 }
+
+export const isValidPointer = (input: string): string | false => {
+  try {
+    if (!input || typeof input !== 'string') return false
+
+    let urlString = input.trim()
+    if (input.startsWith('$')) {
+      urlString = input.replace(/^\$/, 'https://')
+    }
+
+    if (!urlString.startsWith('https://')) return false
+    if (urlString.includes(' ')) return false
+
+    const allowedChars = /^[a-zA-Z0-9\-._~:/]+$/
+    if (!allowedChars.test(urlString)) return false
+
+    const url = new URL(urlString)
+
+    if (url.protocol !== 'https:') return false
+    if (!url.hostname) return false
+    if (url.search || url.hash) return false
+    if (url.pathname && !url.pathname.startsWith('/')) return false
+
+    const path = url.pathname === '/' ? '/.well-known/pay' : url.pathname
+
+    return `${url.origin}${path}`
+  } catch {
+    return false
+  }
+}

@@ -4,25 +4,7 @@ import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
 import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
-
-const isValidPointer = (input: string): string | false => {
-  try {
-    let urlString = input.trim()
-    if (input.charAt(0) === '$') {
-      urlString = input.replace('$', 'https://')
-    }
-
-    const url = new URL(urlString)
-
-    if (url.pathname === '/') {
-      return `${url.origin}/.well-known/pay`
-    }
-
-    return url.origin + url.pathname
-  } catch {
-    return false
-  }
-}
+import { isValidPointer } from '@shared/utils/index'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
