@@ -4,8 +4,11 @@ import type {
   PendingGrant,
   WalletAddress
 } from '@interledger/open-payments'
+import { applyFontFamily } from '../utils.js'
+import { WIDGET_POSITION, BORDER_RADIUS } from '@shared/types'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
+import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 
 export interface WidgetState {
   walletAddress: WalletAddress
@@ -46,6 +49,7 @@ export class WidgetController implements ReactiveController {
     this._config = { ...this._config, ...updates }
 
     this.applyTheme(this.host)
+    this.applyPosition()
     this.host.requestUpdate()
   }
 
@@ -100,6 +104,29 @@ export class WidgetController implements ReactiveController {
     }
   }
 
+  private applyBorderRadius(borderRadius: BorderRadiusKey) {
+    const borderRadiusValue = BORDER_RADIUS[borderRadius]
+    this.host.style.setProperty(
+      '--wm-border-radius',
+      borderRadiusValue || BORDER_RADIUS.None
+    )
+  }
+
+  private applyPosition() {
+    this.host.classList.remove('position-left', 'position-right')
+
+    const position = this._config.widgetPosition || WIDGET_POSITION.Right
+    if (position === WIDGET_POSITION.Left) {
+      this.host.classList.add('position-left')
+    } else {
+      this.host.classList.add('position-right')
+    }
+  }
+
+  private applyFontFamily(fontName: FontFamilyKey) {
+    applyFontFamily(this.host, fontName, 'widget')
+  }
+
   applyTheme(element: HTMLElement) {
     const theme = this._config.theme
     if (!theme) return
@@ -114,7 +141,19 @@ export class WidgetController implements ReactiveController {
       element.style.setProperty('--wm-text-color', theme.textColor)
     }
     if (theme.fontFamily) {
-      element.style.setProperty('--wm-font-family', theme.fontFamily)
+      this.applyFontFamily(theme.fontFamily)
+    }
+    if (theme.fontSize) {
+      element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
+    }
+    if (theme.widgetBorderRadius) {
+      element.style.setProperty(
+        '--wm-widget-border-radius',
+        theme.widgetBorderRadius
+      )
+    }
+    if (theme.widgetBorderRadius) {
+      this.applyBorderRadius(theme.widgetBorderRadius)
     }
     if (theme.widgetButtonBackgroundColor) {
       element.style.setProperty(

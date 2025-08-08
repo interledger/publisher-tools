@@ -133,8 +133,7 @@ const Widget = ({
     if (widgetRef.current && isLoaded) {
       const widget = widgetRef.current
       widget.config = widgetConfig
-      widget.requestPayment = false
-      widget.requestQuote = false
+      widget.isPreview = true
     }
   }, [widgetConfig, isLoaded])
 
