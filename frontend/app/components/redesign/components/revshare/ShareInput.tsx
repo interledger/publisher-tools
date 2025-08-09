@@ -22,19 +22,15 @@ interface ShareInputProps {
 const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
 const GRID_GAP = 'md:gap-x-md'
 
-export const ShareInputTable = ({
-  children
-}: {
-  children: React.ReactNode
-}) => {
+export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
   return (
     <div
       role="table"
       aria-labelledby="revshare-table-caption"
       className="contents"
     >
-      <div id="revshare-table-caption" className="sr-only">
-        Revenue sharing recipients table
+      <div id="revshare-table-caption" role="caption" className="sr-only">
+        Revenue sharing recipients
       </div>
       {children}
     </div>
@@ -43,50 +39,52 @@ export const ShareInputTable = ({
 
 export const ShareInputHeader = () => {
   return (
-    <div
-      role="row"
-      aria-rowindex={1}
-      className={cx(
-        'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
-        'md:grid',
-        GRID_COLS,
-        GRID_GAP
-      )}
-    >
+    <div role="rowgroup">
       <div
-        role="columnheader"
-        id="col-recipient-name"
-        aria-label="Recipient name, optional field"
+        role="row"
+        aria-rowindex={1}
+        className={cx(
+          'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
+          'md:grid',
+          GRID_COLS,
+          GRID_GAP
+        )}
       >
-        Name
-      </div>
-      <div
-        role="columnheader"
-        id="col-payment-pointer"
-        aria-label="Wallet address or payment pointer for recipient, required field"
-      >
-        Wallet Address/Payment Pointer
-      </div>
-      <div
-        role="columnheader"
-        id="col-weight"
-        aria-label="Weight value for revenue distribution, required field"
-      >
-        Weight
-      </div>
-      <div
-        role="columnheader"
-        id="col-percentage"
-        aria-label="Calculated percentage of total revenue based on weight"
-      >
-        Percentage
-      </div>
-      <div
-        role="columnheader"
-        id="col-action"
-        aria-label="Action to remove recipient from table"
-      >
-        Action
+        <div
+          role="columnheader"
+          id="col-recipient-name"
+          aria-label="Recipient name, optional field"
+        >
+          Name
+        </div>
+        <div
+          role="columnheader"
+          id="col-payment-pointer"
+          aria-label="Wallet address or payment pointer for recipient, required field"
+        >
+          Wallet Address/Payment Pointer
+        </div>
+        <div
+          role="columnheader"
+          id="col-weight"
+          aria-label="Weight value for revenue distribution, required field"
+        >
+          Weight
+        </div>
+        <div
+          role="columnheader"
+          id="col-percentage"
+          aria-label="Calculated percentage of total revenue based on weight"
+        >
+          Percentage
+        </div>
+        <div
+          role="columnheader"
+          id="col-action"
+          aria-label="Action to remove recipient from table"
+        >
+          Action
+        </div>
       </div>
     </div>
   )
