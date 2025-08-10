@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
 import {
   ToolsSecondaryButton,
@@ -35,6 +35,8 @@ interface ContentBuilderProps {
   isExpanded?: boolean
   onToggle?: () => void
   onDone?: () => void
+  /** key identifier that changes only when switching configurations */
+  key?: string
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
@@ -42,9 +44,20 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   isComplete,
   isExpanded = false,
   onToggle,
-  onDone
+  onDone,
+  key
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
+  const titleInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (
+      titleInputRef.current &&
+      titleInputRef.current.value !== content.currentTitle
+    ) {
+      titleInputRef.current.value = content.currentTitle
+    }
+  }, [content.currentTitle])
 
   const toggleExpand = () => {
     if (onToggle) {
@@ -156,8 +169,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
+            key={`${key}-title`}
+            ref={titleInputRef}
             defaultValue={content.currentTitle}
-            onChange={(e) => content.onTitleChange(e.target.value)}
+            onChange={(e) => {
+              content.onTitleChange(e.target.value)
+            }}
             maxLength={content.titleMaxLength}
             helpText={content.titleHelpText}
             className="h-12 text-base leading-md"
@@ -186,8 +203,11 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
             <div className="flex-grow">
               <TextareaField
+                key={`${key}-message`}
                 defaultValue={content.currentMessage}
-                onChange={(e) => content.onMessageChange(e.target.value)}
+                onChange={(e) => {
+                  content.onMessageChange(e.target.value)
+                }}
                 currentLength={content.currentMessage.length || 0}
                 maxLength={content.messageMaxLength}
                 showCounter={true}

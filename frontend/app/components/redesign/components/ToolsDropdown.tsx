@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, forwardRef } from 'react'
 import type { SelectHTMLAttributes } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGDropdown, SVGArrowDropdown } from '../../../assets/svg'
+import { useId } from 'react'
 
 export type DropdownOption = {
   label: string
@@ -48,6 +49,7 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
     const [isFocused, setIsFocused] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
+    const uniqueId = useId()
 
     useEffect(() => {
       function handleClickOutside(event: MouseEvent) {
@@ -85,7 +87,7 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
     }
 
     return (
-      <div ref={ref} className={cx('space-y-3xs', className)}>
+      <div key={uniqueId} ref={ref} className={cx('space-y-3xs', className)}>
         {label && (
           <label
             className={cx(

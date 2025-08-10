@@ -61,9 +61,11 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
     }
 
     return (
-      <div className={cx('flex flex-col gap-2 min-w-[147px]', className)}>
+      <div
+        className={cx('flex flex-row flex-1 items-center gap-xs', className)}
+      >
         <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-          <div ref={ref} className={cx('relative', className)}>
+          <div ref={ref} className={cx('relative w-full', className)}>
             <button
               type="button"
               onClick={toggleDropdown}
