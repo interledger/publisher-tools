@@ -360,7 +360,6 @@ export default function Banner() {
                       }
                       positionSelector={
                         <BannerPositionSelector
-                          key={snap.currentConfig?.bannerPosition}
                           defaultValue={snap.currentConfig?.bannerPosition}
                           onChange={(value) =>
                             toolActions.setToolConfig({ bannerPosition: value })
