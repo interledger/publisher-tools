@@ -27,7 +27,8 @@ import {
   OverridePresetModal,
   StepsIndicator,
   MobileStepsIndicator,
-  BannerPositionSelector
+  BannerPositionSelector,
+  BannerColorsSelector
 } from '@/components'
 import {
   toolState,
@@ -364,6 +365,24 @@ export default function Banner() {
                           defaultValue={snap.currentConfig?.bannerPosition}
                           onChange={(value) =>
                             toolActions.setToolConfig({ bannerPosition: value })
+                          }
+                        />
+                      }
+                      colorsSelector={
+                        <BannerColorsSelector
+                          backgroundColor={
+                            snap.currentConfig?.bannerBackgroundColor
+                          }
+                          textColor={snap.currentConfig?.bannerTextColor}
+                          onBackgroundColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              bannerBackgroundColor: color
+                            })
+                          }
+                          onTextColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              bannerTextColor: color
+                            })
                           }
                         />
                       }

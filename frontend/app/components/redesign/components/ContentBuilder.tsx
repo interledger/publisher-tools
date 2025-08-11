@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
 import {
   ToolsSecondaryButton,
@@ -35,6 +35,7 @@ interface ContentBuilderProps {
   isExpanded?: boolean
   onToggle?: () => void
   onDone?: () => void
+  activeVersion?: string
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
@@ -42,9 +43,20 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   isComplete,
   isExpanded = false,
   onToggle,
-  onDone
+  onDone,
+  activeVersion
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
+  const titleInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (
+      titleInputRef.current &&
+      titleInputRef.current.value !== content.currentTitle
+    ) {
+      titleInputRef.current.value = content.currentTitle
+    }
+  }, [content.currentTitle])
 
   const toggleExpand = () => {
     if (onToggle) {
@@ -98,7 +110,10 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   }
 
   return (
-    <div className="flex flex-col bg-interface-bg-container rounded-sm gap-sm">
+    <div
+      key={activeVersion}
+      className="flex flex-col bg-interface-bg-container rounded-sm gap-sm"
+    >
       <div
         className="px-1 py-2 flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
@@ -156,8 +171,11 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
+            ref={titleInputRef}
             defaultValue={content.currentTitle}
-            onChange={(e) => content.onTitleChange(e.target.value)}
+            onChange={(e) => {
+              content.onTitleChange(e.target.value)
+            }}
             maxLength={content.titleMaxLength}
             helpText={content.titleHelpText}
             className="h-12 text-base leading-md"
@@ -187,7 +205,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             <div className="flex-grow">
               <TextareaField
                 defaultValue={content.currentMessage}
-                onChange={(e) => content.onMessageChange(e.target.value)}
+                onChange={(e) => {
+                  content.onMessageChange(e.target.value)
+                }}
                 currentLength={content.currentMessage.length || 0}
                 maxLength={content.messageMaxLength}
                 showCounter={true}

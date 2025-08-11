@@ -21,7 +21,8 @@ import {
   OverridePresetModal,
   StepsIndicator,
   MobileStepsIndicator,
-  WidgetPositionSelector
+  WidgetPositionSelector,
+  WidgetColorsSelector
 } from '@/components'
 import {
   toolState,
@@ -350,6 +351,32 @@ export default function Widget() {
                           defaultValue={snap.currentConfig?.widgetPosition}
                           onChange={(value) =>
                             toolActions.setToolConfig({ widgetPosition: value })
+                          }
+                        />
+                      }
+                      colorsSelector={
+                        <WidgetColorsSelector
+                          backgroundColor={
+                            snap.currentConfig?.widgetBackgroundColor
+                          }
+                          textColor={snap.currentConfig?.widgetTextColor}
+                          buttonColor={
+                            snap.currentConfig?.widgetButtonBackgroundColor
+                          }
+                          onBackgroundColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              widgetBackgroundColor: color
+                            })
+                          }
+                          onTextColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              widgetTextColor: color
+                            })
+                          }
+                          onButtonColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              widgetButtonBackgroundColor: color
+                            })
                           }
                         />
                       }
