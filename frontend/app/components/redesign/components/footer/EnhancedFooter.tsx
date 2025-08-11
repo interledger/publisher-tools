@@ -37,13 +37,13 @@ const socialLinks = [
 ]
 
 const SocialLinks = ({ className }: { className: string }) => (
-  <nav className={className} aria-label="Social media links">
-    {socialLinks.map((social) => (
-      <a key={social.href} href={social.href} target="_blank" rel="noreferrer">
-        <img src={social.icon} alt={`Visit our ${social.text} page`} />
+  <div className={className}>
+    {socialLinks.map((social, index) => (
+      <a key={index} href={social.href} target="_blank" rel="noreferrer">
+        <img src={social.icon} alt={social.text} />
       </a>
     ))}
-  </nav>
+  </div>
 )
 
 export const EnhancedFooter = () => {
