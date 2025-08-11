@@ -100,10 +100,7 @@ export const EnhancedFooter = () => {
         </div>
       </nav>
 
-      <section
-        className="flex md:hidden flex-col gap-md items-center justify-start w-full"
-        aria-label="Mobile footer content"
-      >
+      <section className="flex md:hidden flex-col gap-md items-center justify-start w-full">
         <div className="flex flex-row gap-sm items-center justify-start">
           <img src={wmLogo} alt="Web Monetization Logo" />
           <p className="text-style-small-standard">Web Monetization</p>
@@ -119,18 +116,12 @@ export const EnhancedFooter = () => {
         aria-hidden="true"
       />
 
-      <section
-        className="hidden md:flex flex-row gap-sm items-center justify-start"
-        aria-label="Branding"
-      >
+      <div className="hidden md:flex flex-row gap-sm items-center justify-start">
         <img src={wmLogo} alt="Web Monetization Logo" />
         <p className="text-style-small-standard">Web Monetization</p>
-      </section>
+      </div>
 
-      <p
-        className="!text-footer-content text-style-small-standard"
-        role="contentinfo"
-      >
+      <p className="!text-footer-content text-style-small-standard">
         Copyright © {new Date().getFullYear()} Interledger Foundation.
       </p>
     </footer>
