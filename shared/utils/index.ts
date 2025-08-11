@@ -113,32 +113,92 @@ export function checkHrefFormat(href: string): string {
   return href
 }
 
-export const isValidPointer = (input: string): string | false => {
-  try {
-    if (!input || typeof input !== 'string') return false
-
-    let urlString = input.trim()
-    if (input.startsWith('$')) {
-      urlString = input.replace(/^\$/, 'https://')
+export class WalletValidationError extends Error {
+  constructor(message: string, options?: { cause?: unknown }) {
+    super(message)
+    this.name = 'WalletValidationError'
+    if (options?.cause !== undefined) {
+      // @ts-expect-error: Error.cause is available in modern TS/Node; keep for browsers too
+      this.cause = options.cause
     }
-
-    if (!urlString.startsWith('https://')) return false
-    if (urlString.includes(' ')) return false
-
-    const allowedChars = /^[a-zA-Z0-9\-._~:/]+$/
-    if (!allowedChars.test(urlString)) return false
-
-    const url = new URL(urlString)
-
-    if (url.protocol !== 'https:') return false
-    if (!url.hostname) return false
-    if (url.search || url.hash) return false
-    if (url.pathname && !url.pathname.startsWith('/')) return false
-
-    const path = url.pathname === '/' ? '/.well-known/pay' : url.pathname
-
-    return `${url.origin}${path}`
-  } catch {
-    return false
   }
+}
+
+export async function fetchWalletDetails(url: string): Promise<WalletAddress> {
+  const res = await fetch(url, {
+    headers: { Accept: 'application/json' }
+  })
+  if (!res.ok) {
+    throw new WalletValidationError('is not a valid wallet address')
+  }
+  return await res.json()
+}
+
+export async function confirmWalletAddress(
+  walletAddress: string
+): Promise<void> {
+  const wallet = await fetchWalletDetails(walletAddress)
+
+  if (!isWalletAddress(wallet)) {
+    throw new WalletValidationError('does not have a valid wallet response')
+  }
+}
+
+export const validateWalletAddressOrPointer = (input: string): string => {
+  if (!input || typeof input !== 'string') {
+    throw new WalletValidationError('must be a string')
+  }
+
+  let urlString = input.trim()
+  if (urlString.startsWith('$')) {
+    urlString = urlString.replace(/^\$/, 'https://')
+  }
+
+  if (!urlString.startsWith('https://')) {
+    throw new WalletValidationError('must start with https:// or $')
+  }
+
+  if (urlString.includes(' ')) {
+    throw new WalletValidationError('must not contain spaces')
+  }
+
+  const allowedChars = /^[a-zA-Z0-9\-._~:?#/]+$/
+  if (!allowedChars.test(urlString)) {
+    throw new WalletValidationError('contains invalid characters')
+  }
+
+  let url: URL
+  try {
+    url = new URL(urlString)
+  } catch (err) {
+    throw new WalletValidationError('is not a valid URL', { cause: err })
+  }
+
+  if (url.protocol !== 'https:') {
+    throw new WalletValidationError('must use HTTPS protocol')
+  }
+  if (!url.hostname) {
+    throw new WalletValidationError('must include a domain name')
+  }
+  if (url.search || url.hash) {
+    throw new WalletValidationError('must not contain query string or fragment')
+  }
+  if (url.pathname && !url.pathname.startsWith('/')) {
+    throw new WalletValidationError('path must start with a slash')
+  }
+
+  const hostnameRegex =
+    /^(?=.{1,253}$)(?!.*\.\.)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)(\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+  if (!hostnameRegex.test(url.hostname)) {
+    throw new WalletValidationError('domain name is not valid')
+  }
+
+  const path = url.pathname === '/' ? '/.well-known/pay' : url.pathname
+  return `${url.origin}${path}`
+}
+
+export async function validateAndConfirmPointer(url: string): Promise<string> {
+  const validUrl = validateWalletAddressOrPointer(url)
+  await confirmWalletAddress(validUrl)
+  return validUrl
 }

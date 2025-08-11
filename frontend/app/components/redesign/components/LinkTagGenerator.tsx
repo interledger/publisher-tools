@@ -4,7 +4,10 @@ import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
 import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
-import { isValidPointer } from '@shared/utils/index'
+import {
+  validateAndConfirmPointer,
+  WalletValidationError
+} from '@shared/utils/index'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
@@ -19,23 +22,28 @@ export const LinkTagGenerator = () => {
   const [pointerInput, setPointerInput] = useState('')
   const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
+  const [error, setError] = useState('')
   const [showCodeBox, setShowCodeBox] = useState(false)
   const { isCopied, handleCopyClick } = useCopyToClipboard(
     `<link rel="monetization" href="${linkTag}" />`
   )
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault()
       setInvalidUrl(false)
-
-      const validatedPointer = isValidPointer(pointerInput)
-
-      if (validatedPointer) {
+      setError('')
+      try {
+        const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
-      } else {
+      } catch (err) {
+        const message =
+          err instanceof WalletValidationError
+            ? err.message
+            : 'is not a valid wallet address'
         setInvalidUrl(true)
+        setError(message)
         setShowCodeBox(false)
       }
     },
@@ -76,7 +84,9 @@ export const LinkTagGenerator = () => {
           onChange={(e) => handleOnChange(e)}
           error={
             invalidUrl
-              ? 'The payment pointer you have entered is not valid or cannot be found'
+              ? error
+                ? error
+                : 'The payment pointer you have entered is not valid or cannot be found'
               : ''
           }
         />
