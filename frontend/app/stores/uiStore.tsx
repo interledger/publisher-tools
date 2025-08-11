@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useRef, useCallback } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useRef,
+  useCallback,
+  useState,
+  useEffect
+} from 'react'
 import type { ReactNode } from 'react'
 
 type UIState = Record<string, never>
@@ -9,8 +16,7 @@ interface WalletInputRef {
 
 interface UIActions {
   focusWalletInput: () => void
-  registerWalletInput: (ref: WalletInputRef) => void
-  unregisterWalletInput: () => void
+  registerWalletInput: (ref: WalletInputRef) => () => void
 }
 
 interface UIContextType {
@@ -26,28 +32,32 @@ interface UIProviderProps {
 
 export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const walletInputRef = useRef<WalletInputRef | null>(null)
+  const [shouldFocusWallet, setShouldFocusWallet] = useState(false)
+
+  useEffect(() => {
+    if (shouldFocusWallet && walletInputRef.current) {
+      walletInputRef.current.focus()
+      setShouldFocusWallet(false)
+    }
+  }, [shouldFocusWallet])
 
   const focusWalletInput = useCallback(() => {
-    setTimeout(() => {
-      // small delay to ensure DOM is ready (e.g., modal is closed)
-      walletInputRef.current?.focus()
-    }, 100)
+    setShouldFocusWallet(true)
   }, [])
 
   const registerWalletInput = useCallback((ref: WalletInputRef) => {
     walletInputRef.current = ref
-  }, [])
 
-  const unregisterWalletInput = useCallback(() => {
-    walletInputRef.current = null
+    return () => {
+      walletInputRef.current = null
+    }
   }, [])
 
   const state: UIState = {}
 
   const actions: UIActions = {
     focusWalletInput,
-    registerWalletInput,
-    unregisterWalletInput
+    registerWalletInput
   }
 
   return (

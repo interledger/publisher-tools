@@ -21,14 +21,14 @@ export const ToolsWalletAddress = () => {
   useEffect(() => {
     const walletInputApi = {
       focus: () => {
-        inputRef.current?.focus()
+        if (inputRef.current) {
+          inputRef.current.focus()
+          const length = inputRef.current.value.length
+          inputRef.current.setSelectionRange(length, length)
+        }
       }
     }
     uiActions.registerWalletInput(walletInputApi)
-
-    return () => {
-      uiActions.unregisterWalletInput()
-    }
   }, [])
 
   const handleContinue = async () => {
@@ -167,12 +167,6 @@ export const ToolsWalletAddress = () => {
               }
               defaultValue={snap.walletAddress}
               onBlur={handleWalletAddressChange}
-              onFocus={(e) =>
-                e.currentTarget.setSelectionRange(
-                  e.currentTarget.value.length,
-                  e.currentTarget.value.length
-                )
-              }
               disabled={snap.isWalletConnected}
               error={error?.fieldErrors.walletAddress}
               aria-labelledby={generatedId}
