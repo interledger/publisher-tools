@@ -146,7 +146,7 @@ function Revshare() {
   const handleRemove = useCallback(
     (index: number) => {
       const newShares = dropIndex(shares, index)
-      setShares(newShares.length > 0 ? newShares : [newShare(), newShare()])
+      setShares(newShares.length > 1 ? newShares : [...newShares, newShare()])
     },
     [shares, setShares]
   )
