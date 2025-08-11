@@ -73,64 +73,79 @@ export const NavDropdown = ({
   }
 
   return (
-    <li className="group relative inline-flex flex-col items-start justify-center">
-      <button
-        id="nav-dropdown-trigger"
-        ref={triggerRef}
-        type="button"
-        onClick={toggleDropdown}
-        className={cx(
-          'flex w-full items-center justify-between gap-xs rounded-lg px-md py-sm font-sans text-sm font-normal leading-sm transition-colors hover:bg-secondary-hover-surface hover:text-nav-link-hover focus:outline-none focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover focus-visible:outline-nav-link-hover focus-visible:outline-offset-1 md:w-auto md:justify-normal',
-          isOpen ? 'text-nav-link-hover' : 'text-nav-link-default'
-        )}
-        aria-label="Toggle Dropdown"
-        aria-expanded={isOpen}
-        aria-controls="nav-dropdown-content"
-      >
-        {title}
-        <span
-          className={cx(
-            'flex items-center justify-center transition-transform duration-200',
-            isOpen && 'rotate-180'
-          )}
+    <li
+      className={cx(
+        'group relative ',
+        'flex flex-col md:flex-row items-center justify-between gap-xs md:w-auto md:justify-normal',
+        'rounded-lg px-md py-sm',
+        'font-sans text-sm font-normal leading-sm',
+        'cursor-pointer transition-colors',
+        'hover:bg-secondary-hover-surface hover:text-nav-link-hover',
+        'md:focus-within:bg-secondary-hover-surface md:focus-within:text-nav-link-hover',
+        'focus:outline-none md:focus-within:outline focus-within:outline-2 focus-within:outline-nav-link-hover focus-within:outline-offset-2',
+        isOpen ? 'text-nav-link-hover' : 'text-nav-link-default'
+      )}
+    >
+      <span className="flex w-full gap-xs justify-between">
+        <span aria-hidden="true">{title}</span>
+        <button
+          id="nav-dropdown-trigger"
+          ref={triggerRef}
+          type="button"
+          onClick={toggleDropdown}
+          className="after:absolute after:inset-0 focus:outline-none"
+          aria-label={`Toggle submenu for ${title}`}
+          aria-expanded={isOpen}
+          aria-haspopup="menu"
+          aria-controls="nav-dropdown-content"
         >
           <SVGDownArrow
             className={cx(
               'w-4 h-4',
+              'flex items-center justify-center transition-transform duration-200',
+              isOpen && 'rotate-180',
               isOpen ? 'fill-nav-link-hover' : 'fill-nav-link-default'
             )}
           />
-        </span>
-      </button>
+        </button>
+      </span>
 
-      {isOpen && (
-        <ClickAwayListener onClickAway={handleClickAway}>
-          <div
-            id="nav-dropdown-content"
-            className="relative z-50 flex flex-col gap-xs overflow-hidden rounded-lg p-sm md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[472px] md:w-[299px] md:items-start md:justify-start md:bg-interface-bg-container md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)] md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container"
-            role="menu"
-            aria-hidden={!isOpen}
-          >
-            <ul className="flex w-full flex-grow list-none flex-col gap-xs">
-              <ToolsMenuItem
-                to="/publishers"
-                imgSrc={pubHeroSVG}
-                text="Publisher tools"
-              />
-              <ToolsMenuItem
-                to="/supporters"
-                imgSrc={supHeroSVG}
-                text="Supporter tools"
-              />
-              <ToolsMenuItem
-                to="/developers"
-                imgSrc={devHeroSVG}
-                text="Developer tools"
-              />
-            </ul>
-          </div>
-        </ClickAwayListener>
-      )}
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <div
+          id="nav-dropdown-content"
+          aria-label={title}
+          role="menu"
+          tabIndex={0}
+          inert={!isOpen}
+          className={cx(
+            !isOpen && '!sr-only',
+            'flex flex-col gap-xs md:justify-start md:items-start',
+            'relative z-50 overflow-hidden',
+            'rounded-lg p-sm',
+            'md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[472px] md:w-[299px]',
+            'md:bg-interface-bg-container md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)] md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container',
+            'focus-visible:outline focus-visible:outline-current'
+          )}
+        >
+          <ul className="flex w-full flex-grow list-none flex-col gap-xs">
+            <ToolsMenuItem
+              to="/publishers"
+              imgSrc={pubHeroSVG}
+              text="Publisher tools"
+            />
+            <ToolsMenuItem
+              to="/supporters"
+              imgSrc={supHeroSVG}
+              text="Supporter tools"
+            />
+            <ToolsMenuItem
+              to="/developers"
+              imgSrc={devHeroSVG}
+              text="Developer tools"
+            />
+          </ul>
+        </div>
+      </ClickAwayListener>
     </li>
   )
 }

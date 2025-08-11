@@ -11,6 +11,7 @@ interface BuilderFormProps {
   className?: string
   onBuildStepComplete?: (isComplete: boolean) => void
   positionSelector?: React.ReactNode
+  colorsSelector?: React.ReactNode
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
@@ -18,7 +19,8 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   onBuildStepComplete,
   content,
   appearance,
-  positionSelector
+  positionSelector,
+  colorsSelector
 }) => {
   const snap = useSnapshot(toolState)
   const [expandedSection, setExpandedSection] = useState<
@@ -100,6 +102,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
             onToggle={handleContentToggle}
             onDone={handleContentDone}
             content={content}
+            activeVersion={snap.activeVersion}
           />
         </div>
         <div className="w-full">
@@ -110,6 +113,8 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
             onDone={handleAppearanceDone}
             appearance={appearance}
             positionSelector={positionSelector}
+            colorsSelector={colorsSelector}
+            activeVersion={snap.activeVersion}
           />
         </div>
       </div>
