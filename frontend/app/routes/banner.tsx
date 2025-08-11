@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
+import { useUI } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
@@ -26,7 +27,8 @@ import {
   OverridePresetModal,
   StepsIndicator,
   MobileStepsIndicator,
-  BannerPositionSelector
+  BannerPositionSelector,
+  BannerColorsSelector
 } from '@/components'
 import {
   toolState,
@@ -170,6 +172,7 @@ BannerPreview.displayName = 'BannerPreview'
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
+  const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -365,6 +368,24 @@ export default function Banner() {
                           }
                         />
                       }
+                      colorsSelector={
+                        <BannerColorsSelector
+                          backgroundColor={
+                            snap.currentConfig?.bannerBackgroundColor
+                          }
+                          textColor={snap.currentConfig?.bannerTextColor}
+                          onBackgroundColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              bannerBackgroundColor: color
+                            })
+                          }
+                          onTextColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              bannerTextColor: color
+                            })
+                          }
+                        />
+                      }
                     />
 
                     <div
@@ -504,6 +525,7 @@ export default function Banner() {
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
+                  uiActions.focusWalletInput()
                 }}
                 fetchedConfigs={snap.modal?.fetchedConfigs}
                 currentLocalConfigs={snap.modal?.currentLocalConfigs}
