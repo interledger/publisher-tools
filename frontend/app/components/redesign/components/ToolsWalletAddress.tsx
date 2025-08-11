@@ -28,7 +28,8 @@ export const ToolsWalletAddress = () => {
         }
       }
     }
-    uiActions.registerWalletInput(walletInputApi)
+
+    return uiActions.registerWalletInput(walletInputApi)
   }, [])
 
   const handleContinue = async () => {
