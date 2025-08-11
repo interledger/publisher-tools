@@ -15,7 +15,7 @@ export function BannerColorsSelector({
   onTextColorChange
 }: BannerColorsSelectorProps) {
   return (
-    <div className="flex justify-between xl:flex-row flex-col gap-md">
+    <div className="flex justify-between sm:flex-row flex-col gap-md">
       <ColorSelector
         label="Background"
         value={backgroundColor}

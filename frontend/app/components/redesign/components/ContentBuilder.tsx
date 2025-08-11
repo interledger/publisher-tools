@@ -35,8 +35,7 @@ interface ContentBuilderProps {
   isExpanded?: boolean
   onToggle?: () => void
   onDone?: () => void
-  /** key identifier that changes only when switching configurations */
-  key?: string
+  activeVersion?: string
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
@@ -45,7 +44,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   isExpanded = false,
   onToggle,
   onDone,
-  key
+  activeVersion
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)
@@ -169,7 +168,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
-            key={`${key}-title`}
+            key={`${activeVersion}-title`}
             ref={titleInputRef}
             defaultValue={content.currentTitle}
             onChange={(e) => {
@@ -203,7 +202,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
             <div className="flex-grow">
               <TextareaField
-                key={`${key}-message`}
+                key={`${activeVersion}-message`}
                 defaultValue={content.currentMessage}
                 onChange={(e) => {
                   content.onMessageChange(e.target.value)

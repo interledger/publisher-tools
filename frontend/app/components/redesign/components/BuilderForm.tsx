@@ -102,7 +102,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
             onToggle={handleContentToggle}
             onDone={handleContentDone}
             content={content}
-            key={snap.activeVersion}
+            activeVersion={snap.activeVersion}
           />
         </div>
         <div className="w-full">

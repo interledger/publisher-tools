@@ -346,7 +346,6 @@ export default function Widget() {
                       }
                       positionSelector={
                         <WidgetPositionSelector
-                          key={`position-${snap.currentConfig.widgetPosition}`}
                           defaultValue={snap.currentConfig?.widgetPosition}
                           onChange={(value) =>
                             toolActions.setToolConfig({ widgetPosition: value })
