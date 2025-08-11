@@ -15,7 +15,6 @@ import {
   Thumbnail,
   ToolsSecondaryButton,
   ToolsDropdown,
-  ColorSelector,
   CornerRadiusSelector,
   Divider,
   Slider,
@@ -72,6 +71,8 @@ interface AppearanceBuilderProps {
   onToggle?: () => void
   onDone?: () => void
   positionSelector?: React.ReactNode
+  colorsSelector?: React.ReactNode
+  activeVersion?: string
 }
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
@@ -80,7 +81,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   isExpanded = false,
   onToggle,
   onDone,
-  positionSelector
+  positionSelector,
+  colorsSelector,
+  activeVersion
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
@@ -145,7 +148,10 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   }
 
   return (
-    <div className="flex flex-col bg-interface-bg-container rounded-lg gap-sm">
+    <div
+      key={activeVersion}
+      className="flex flex-col bg-interface-bg-container rounded-lg gap-sm"
+    >
       <div
         className="px-1 py-2 flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
@@ -243,31 +249,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           icon={<SVGColorPicker className="w-5 h-5" />}
           label="Colors"
         />
-
-        <div className="flex justify-between xl:flex-row flex-col gap-md">
-          <ColorSelector
-            label="Background"
-            value={appearance.backgroundColor}
-            onChange={(color) => {
-              appearance.onBackgroundColorChange(color)
-            }}
-          />
-          <ColorSelector
-            label="Text"
-            value={appearance.textColor}
-            onChange={(color) => {
-              appearance.onTextColorChange(color)
-            }}
-          />
-          <ColorSelector
-            label="Button"
-            value={appearance.buttonColor}
-            onChange={(color) => {
-              appearance.onButtonColorChange?.(color)
-            }}
-          />
-          <div className="w-[150px] xl:block hidden"></div>
-        </div>
+        {colorsSelector}
       </div>
       <Divider />
 
@@ -317,7 +299,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                 <ToolsDropdown
                   label="Type"
                   disabled={!isAnimated}
-                  defaultValue={SLIDE_ANIMATION.Down}
+                  defaultValue={appearance.slideAnimation}
                   options={[{ label: 'Slide up', value: SLIDE_ANIMATION.Down }]}
                   onChange={(value) =>
                     appearance.onSlideAnimationChange(
