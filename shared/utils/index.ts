@@ -118,7 +118,6 @@ export class WalletValidationError extends Error {
     super(message)
     this.name = 'WalletValidationError'
     if (options?.cause !== undefined) {
-      // @ts-expect-error: Error.cause is available in modern TS/Node; keep for browsers too
       this.cause = options.cause
     }
   }
