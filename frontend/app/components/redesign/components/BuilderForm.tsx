@@ -114,6 +114,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
             appearance={appearance}
             positionSelector={positionSelector}
             colorsSelector={colorsSelector}
+            activeVersion={snap.activeVersion}
           />
         </div>
       </div>

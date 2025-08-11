@@ -110,7 +110,10 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   }
 
   return (
-    <div className="flex flex-col bg-interface-bg-container rounded-sm gap-sm">
+    <div
+      key={activeVersion}
+      className="flex flex-col bg-interface-bg-container rounded-sm gap-sm"
+    >
       <div
         className="px-1 py-2 flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
@@ -168,7 +171,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             Custom title
           </h4>
           <InputField
-            key={`${activeVersion}-title`}
             ref={titleInputRef}
             defaultValue={content.currentTitle}
             onChange={(e) => {
@@ -202,7 +204,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
             <div className="flex-grow">
               <TextareaField
-                key={`${activeVersion}-message`}
                 defaultValue={content.currentMessage}
                 onChange={(e) => {
                   content.onMessageChange(e.target.value)

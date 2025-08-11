@@ -72,6 +72,7 @@ interface AppearanceBuilderProps {
   onDone?: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
+  activeVersion?: string
 }
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
@@ -81,7 +82,8 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   onToggle,
   onDone,
   positionSelector,
-  colorsSelector
+  colorsSelector,
+  activeVersion
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
@@ -146,7 +148,10 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   }
 
   return (
-    <div className="flex flex-col bg-interface-bg-container rounded-lg gap-sm">
+    <div
+      key={activeVersion}
+      className="flex flex-col bg-interface-bg-container rounded-lg gap-sm"
+    >
       <div
         className="px-1 py-2 flex items-center justify-between cursor-pointer"
         onClick={toggleExpand}
