@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
+import { useUI } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
@@ -20,7 +21,8 @@ import {
   OverridePresetModal,
   StepsIndicator,
   MobileStepsIndicator,
-  WidgetPositionSelector
+  WidgetPositionSelector,
+  WidgetColorsSelector
 } from '@/components'
 import {
   toolState,
@@ -160,6 +162,7 @@ const WidgetPreview: React.FC = () => {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
+  const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -351,6 +354,32 @@ export default function Widget() {
                           }
                         />
                       }
+                      colorsSelector={
+                        <WidgetColorsSelector
+                          backgroundColor={
+                            snap.currentConfig?.widgetBackgroundColor
+                          }
+                          textColor={snap.currentConfig?.widgetTextColor}
+                          buttonColor={
+                            snap.currentConfig?.widgetButtonBackgroundColor
+                          }
+                          onBackgroundColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              widgetBackgroundColor: color
+                            })
+                          }
+                          onTextColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              widgetTextColor: color
+                            })
+                          }
+                          onButtonColorChange={(color: string) =>
+                            toolActions.setToolConfig({
+                              widgetButtonBackgroundColor: color
+                            })
+                          }
+                        />
+                      }
                     />
 
                     <div
@@ -490,6 +519,7 @@ export default function Widget() {
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
+                  uiActions.focusWalletInput()
                 }}
                 fetchedConfigs={snap.modal?.fetchedConfigs}
                 currentLocalConfigs={snap.modal?.currentLocalConfigs}
