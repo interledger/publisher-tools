@@ -1,6 +1,6 @@
 import type { MetaFunction } from '@remix-run/cloudflare'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
-import { Heading1, Heading3, Heading5 } from '~/components/redesign/Typography'
+import { Heading1, Heading3 } from '~/components/redesign/Typography'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
@@ -109,83 +109,99 @@ export default function Index() {
             Web Monetization Tools
           </Heading1>
           <img
-            alt="Decorative underline"
+            alt=""
             className="block max-w-none h-[23px] w-[442px] max-xl:h-[13px] max-xl:w-[247px]"
             src={SVGHeadingVector}
           />
         </div>
 
-        <Heading5 className="!text-landing-content text-center w-full max-xl:!text-style-body-standard">
+        <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-body-standard">
           Use our suite of tools to set up and promote Web Monetization.
           Encourage your visitors to support your content and website.
-        </Heading5>
+        </p>
       </div>
 
       <div
         id="content"
         className="flex flex-col gap-2.5 items-center justify-start p-0 w-full"
       >
-        <div className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0">
-          <Heading3 className="w-full max-xl:text-center">Setup tools</Heading3>
+        <section
+          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          aria-labelledby="heading-setup-tools"
+        >
+          <Heading3
+            className="w-full max-xl:text-center"
+            id="heading-setup-tools"
+          >
+            Setup tools
+          </Heading3>
 
-          <Heading5 className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Get started quickly with tools designed to help you set up Web
             Monetization on your website
-          </Heading5>
+          </p>
 
-          <div
+          <ul
             className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
             style={{
               gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
             }}
           >
             {setupTools.map((tool, index) => (
-              <ToolCard
-                key={index}
-                title={tool.title}
-                tags={tool.tags}
-                icon={tool.icon}
-                to={tool.link || ''}
-                target={tool.link ? undefined : '_blank'}
-              >
-                {tool.description}
-              </ToolCard>
+              <li key={index}>
+                <ToolCard
+                  title={tool.title}
+                  tags={tool.tags}
+                  icon={tool.icon}
+                  to={tool.link || ''}
+                  target={tool.link ? undefined : '_blank'}
+                >
+                  {tool.description}
+                </ToolCard>
+              </li>
             ))}
             <div className="w-[340px] opacity-0 max-lg:hidden" />
-          </div>
-        </div>
+          </ul>
+        </section>
 
-        <div className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0">
-          <Heading3 className="w-full max-xl:text-center">
+        <section
+          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          aria-labelledby="heading-interaction-tools"
+        >
+          <Heading3
+            className="w-full max-xl:text-center"
+            id="heading-interaction-tools"
+          >
             Interaction tools
           </Heading3>
 
-          <Heading5 className="!text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Add lightweight and embeddable tools, like banners and widgets, to
             your site with simple scripts. They&apos;re easily customizable,
             helping you connect with your audience to encourage Web Monetization
             support.
-          </Heading5>
+          </p>
 
-          <div
+          <ul
             className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
             style={{
               gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
             }}
           >
             {interactionTools.map((tool, index) => (
-              <ToolCard
-                key={index}
-                title={tool.title}
-                tags={tool.tags}
-                icon={tool.icon}
-                to={tool.link}
-              >
-                {tool.description}
-              </ToolCard>
+              <li key={index}>
+                <ToolCard
+                  title={tool.title}
+                  tags={tool.tags}
+                  icon={tool.icon}
+                  to={tool.link}
+                >
+                  {tool.description}
+                </ToolCard>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       </div>
     </div>
   )
