@@ -95,7 +95,6 @@ export class Banner extends LitElement {
       this.animationClass =
         position === 'Top' ? 'slide-down-preview' : 'slide-up-preview'
     } else {
-      // No animation for None or any other value
       this.animationClass = ''
     }
 
