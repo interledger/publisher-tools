@@ -10,7 +10,12 @@ import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
 import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
 import { BORDER_RADIUS } from '@shared/types'
-import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
+import type {
+  FontFamilyKey,
+  BorderRadiusKey,
+  SlideAnimationType,
+  BannerPositionKey
+} from '@shared/types'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =
@@ -22,8 +27,8 @@ export interface BannerConfig {
   bannerTitleText?: string
   bannerDescriptionText?: string
   bannerBorderRadius?: BorderRadiusKey
-  bannerPosition?: 'Top' | 'Bottom'
-  bannerSlideAnimation?: 'Down' | 'None'
+  bannerPosition?: BannerPositionKey
+  bannerSlideAnimation?: SlideAnimationType
   theme?: {
     primaryColor?: string
     backgroundColor?: string
@@ -84,11 +89,14 @@ export class Banner extends LitElement {
     this.isAnimating = true
     const position = this.config.bannerPosition || 'Bottom'
 
-    if (this.config.bannerSlideAnimation === 'Down') {
+    if (this.config.bannerSlideAnimation === 'FadeIn') {
+      this.animationClass = 'fade-in-preview'
+    } else if (this.config.bannerSlideAnimation === 'Slide') {
       this.animationClass =
         position === 'Top' ? 'slide-down-preview' : 'slide-up-preview'
     } else {
-      this.animationClass = 'fade-in-preview'
+      // No animation for None or any other value
+      this.animationClass = ''
     }
 
     this.requestUpdate()

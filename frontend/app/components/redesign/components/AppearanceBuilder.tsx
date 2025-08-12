@@ -89,6 +89,12 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
+  const [lastSelectedAnimation, setLastSelectedAnimation] =
+    useState<SlideAnimationType>(
+      appearance.slideAnimation === SLIDE_ANIMATION.None
+        ? SLIDE_ANIMATION.Slide
+        : appearance.slideAnimation || SLIDE_ANIMATION.Slide
+    )
   const isAnimated = appearance.slideAnimation !== SLIDE_ANIMATION.None
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -290,7 +296,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                 checked={isAnimated}
                 onChange={() => {
                   appearance.onSlideAnimationChange(
-                    isAnimated ? SLIDE_ANIMATION.None : SLIDE_ANIMATION.Down
+                    isAnimated ? SLIDE_ANIMATION.None : lastSelectedAnimation
                   )
                 }}
                 label="Animated"
@@ -299,13 +305,20 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                 <ToolsDropdown
                   label="Type"
                   disabled={!isAnimated}
-                  defaultValue={appearance.slideAnimation}
-                  options={[{ label: 'Slide up', value: SLIDE_ANIMATION.Down }]}
-                  onChange={(value) =>
-                    appearance.onSlideAnimationChange(
-                      value as SlideAnimationType
-                    )
+                  defaultValue={
+                    isAnimated
+                      ? appearance.slideAnimation
+                      : lastSelectedAnimation
                   }
+                  options={[
+                    { label: 'Slide', value: SLIDE_ANIMATION.Slide },
+                    { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
+                  ]}
+                  onChange={(value) => {
+                    const selectedAnimation = value as SlideAnimationType
+                    setLastSelectedAnimation(selectedAnimation)
+                    appearance.onSlideAnimationChange(selectedAnimation)
+                  }}
                 />
               </div>
             </div>
