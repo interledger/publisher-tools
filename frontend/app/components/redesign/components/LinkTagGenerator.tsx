@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react'
-import { cx } from 'class-variance-authority'
 import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
 import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import {
-  validateAndConfirmPointer,
+  validateWalletAddressOrPointer,
+  WalletAddressFormatError,
   WalletValidationError
 } from '@shared/utils/index'
 
@@ -33,18 +33,27 @@ export const LinkTagGenerator = () => {
       e.preventDefault()
       setInvalidUrl(false)
       setError('')
+
+      setParsedLinkTag(htmlEncodePointer(pointerInput))
+
       try {
-        const validatedPointer = await validateAndConfirmPointer(pointerInput)
-        setParsedLinkTag(htmlEncodePointer(validatedPointer))
+        await validateWalletAddressOrPointer(pointerInput)
         setShowCodeBox(true)
+
+        setError('')
+        setInvalidUrl(false)
       } catch (err) {
         const message =
+          err instanceof WalletAddressFormatError ||
           err instanceof WalletValidationError
             ? err.message
-            : 'is not a valid wallet address'
+            : 'Invalid wallet address'
         setInvalidUrl(true)
         setError(message)
-        setShowCodeBox(false)
+
+        if (!(err instanceof WalletAddressFormatError)) {
+          setShowCodeBox(true)
+        }
       }
     },
     [pointerInput]
@@ -68,27 +77,14 @@ export const LinkTagGenerator = () => {
         <Heading5>Link tag generator</Heading5>
       </div>
       <div>
-        <label
-          htmlFor="paymentPointer"
-          className={cx(
-            'text-field-helpertext-default font-sans text-xs font-normal leading-xs',
-            invalidUrl && 'text-text-error'
-          )}
-        >
-          Your payment pointer
-        </label>
         <InputField
           id="paymentPointer"
+          label="Your payment pointer"
+          required
           placeholder="Fill in your payment pointer/wallet address"
           value={pointerInput}
           onChange={(e) => handleOnChange(e)}
-          error={
-            invalidUrl
-              ? error
-                ? error
-                : 'The payment pointer you have entered is not valid or cannot be found'
-              : ''
-          }
+          error={invalidUrl ? error : ''}
         />
       </div>
 

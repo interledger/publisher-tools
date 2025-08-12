@@ -3,7 +3,7 @@ import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl,
-  WalletAddressFormatError
+  WalletValidationError
 } from '@shared/utils'
 import {
   bannerFieldsSchema,
@@ -26,7 +26,7 @@ export const walletSchema = z.object({
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            e instanceof WalletAddressFormatError
+            e instanceof WalletValidationError
               ? e.message
               : 'Invalid wallet address format'
         })

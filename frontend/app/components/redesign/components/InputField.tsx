@@ -9,17 +9,21 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
-  ({ label, error, id, helpText, className = '', ...props }, ref) => {
+  ({ label, error, id, helpText, className = '', required, ...props }, ref) => {
     const generatedId = useId()
     const fieldId = id || generatedId
+    const displayError =
+      required && !props.value ? 'This field is required' : error
+
     return (
       <div className="space-y-2xs">
         {label && (
           <label
-            className="block text-sm font-medium text-text-primary"
+            className={`block text-sm font-medium ${error ? 'text-text-error' : 'text-text-primary'}`}
             htmlFor={fieldId}
           >
             {label}
+            {required && <span className="text-text-error ml-1">*</span>}
           </label>
         )}
         <input
@@ -38,7 +42,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           name={fieldId}
           {...props}
         />
-        {error && <p className="text-xs text-text-error">{error}</p>}
+        <p className="text-xs text-text-error min-h-5">
+          {error ? displayError : ''}
+        </p>
         {helpText && !error && (
           <p className="text-xs text-text-secondary">{helpText}</p>
         )}
