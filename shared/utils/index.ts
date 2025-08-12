@@ -8,10 +8,10 @@ export async function getWalletAddress(
   const response = await fetch(url)
   if (!response.ok) {
     if (response.status === 404) {
-      throw new WalletValidationError('This wallet address does not exist')
+      throw new WalletAddressFormatError('This wallet address does not exist')
     }
-    throw new WalletValidationError('Unable to fetch wallet details', {
-      cause: new WalletValidationError(
+    throw new WalletAddressFormatError('Unable to fetch wallet details', {
+      cause: new WalletAddressFormatError(
         response.statusText || `HTTP ${response.status}`
       )
     })
@@ -21,7 +21,7 @@ export async function getWalletAddress(
   try {
     json = await response.json()
   } catch (error) {
-    throw new WalletValidationError(
+    throw new WalletAddressFormatError(
       'Provided URL is not a valid wallet address',
       {
         cause: error
@@ -29,7 +29,7 @@ export async function getWalletAddress(
     )
   }
   if (!isWalletAddress(json)) {
-    throw new WalletValidationError('Invalid wallet address format')
+    throw new WalletAddressFormatError('Invalid wallet address format')
   }
 
   return json
@@ -81,13 +81,6 @@ export class WalletAddressFormatError extends Error {
   constructor(message: string, options?: ErrorOptions) {
     super(message, options)
     this.name = 'WalletAddressFormatError'
-  }
-}
-
-export class WalletValidationError extends Error {
-  constructor(message: string, options?: { cause?: unknown }) {
-    super(message, { cause: options?.cause })
-    this.name = 'WalletValidationError'
   }
 }
 

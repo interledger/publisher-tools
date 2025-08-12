@@ -5,8 +5,7 @@ import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import {
   validateWalletAddressOrPointer,
-  WalletAddressFormatError,
-  WalletValidationError
+  WalletAddressFormatError
 } from '@shared/utils/index'
 
 const htmlEncodePointer = (pointer: string): string => {
@@ -44,16 +43,11 @@ export const LinkTagGenerator = () => {
         setInvalidUrl(false)
       } catch (err) {
         const message =
-          err instanceof WalletAddressFormatError ||
-          err instanceof WalletValidationError
+          err instanceof WalletAddressFormatError
             ? err.message
             : 'Invalid wallet address'
         setInvalidUrl(true)
         setError(message)
-
-        if (!(err instanceof WalletAddressFormatError)) {
-          setShowCodeBox(true)
-        }
       }
     },
     [pointerInput]
