@@ -80,10 +80,10 @@ export const ShareInputHeader = () => {
         </div>
         <div
           role="columnheader"
-          id="col-action"
-          aria-label="Action to remove recipient from table"
+          id="col-delete"
+          aria-label="Delete recipient from table"
         >
-          Action
+          Delete
         </div>
       </div>
     </div>
@@ -132,7 +132,7 @@ export const ShareInput = React.memo(
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
           >
-            <SVGDeleteScript className="w-5 h-5" />
+            <SVGDeleteScript className="w-6 h-6" />
           </ToolsSecondaryButton>
         </div>
         <div role="cell" aria-labelledby="col-recipient-name">
@@ -226,7 +226,7 @@ export const ShareInput = React.memo(
         <div
           role="cell"
           className="hidden md:block"
-          aria-labelledby="col-action"
+          aria-labelledby="col-delete"
         >
           <ToolsSecondaryButton
             onClick={onRemove}
@@ -234,7 +234,7 @@ export const ShareInput = React.memo(
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
           >
-            <SVGDeleteScript className="w-5 h-5" />
+            <SVGDeleteScript className="w-6 h-6" />
           </ToolsSecondaryButton>
         </div>
       </div>
