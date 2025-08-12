@@ -75,6 +75,12 @@ interface AppearanceBuilderProps {
   activeVersion?: string
 }
 
+function getValidSlideAnimation(value: unknown): SlideAnimationType {
+  return typeof value === 'string' && value in SLIDE_ANIMATION
+    ? (value as SlideAnimationType)
+    : SLIDE_ANIMATION.Slide
+}
+
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   appearance,
   isComplete,
@@ -90,11 +96,12 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const [lastSelectedAnimation, setLastSelectedAnimation] =
-    useState<SlideAnimationType>(
-      appearance.slideAnimation === SLIDE_ANIMATION.None
+    useState<SlideAnimationType>(() => {
+      const validated = getValidSlideAnimation(appearance.slideAnimation)
+      return validated === SLIDE_ANIMATION.None
         ? SLIDE_ANIMATION.Slide
-        : appearance.slideAnimation || SLIDE_ANIMATION.Slide
-    )
+        : validated
+    })
   const isAnimated = appearance.slideAnimation !== SLIDE_ANIMATION.None
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -107,6 +114,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       onToggle()
     }
   }
+
+  // console.log('!!! lastSelectedAnimation:', lastSelectedAnimation)
+  console.log('!!! appearance.slideAnimation:', appearance.slideAnimation)
 
   const handleDoneClick = () => {
     if (onToggle) {
@@ -307,7 +317,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                   disabled={!isAnimated}
                   defaultValue={
                     isAnimated
-                      ? appearance.slideAnimation
+                      ? getValidSlideAnimation(appearance.slideAnimation)
                       : lastSelectedAnimation
                   }
                   options={[
