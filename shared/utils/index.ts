@@ -115,11 +115,8 @@ export function checkHrefFormat(href: string): string {
 
 export class WalletValidationError extends Error {
   constructor(message: string, options?: { cause?: unknown }) {
-    super(message)
+    super(message, { cause: options?.cause })
     this.name = 'WalletValidationError'
-    if (options?.cause !== undefined) {
-      this.cause = options.cause
-    }
   }
 }
 
