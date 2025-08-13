@@ -23,7 +23,7 @@ export function getDefaultData(): ElementConfigType {
     bannerTitleText: 'How to support?',
     bannerDescriptionText:
       'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-    bannerSlideAnimation: SLIDE_ANIMATION.Down,
+    bannerSlideAnimation: SLIDE_ANIMATION.Slide,
     bannerPosition: BANNER_POSITION.Bottom,
     bannerTextColor: '#ffffff',
     bannerBackgroundColor: '#7f76b2',
