@@ -42,9 +42,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           name={fieldId}
           {...props}
         />
-        <p className="text-xs text-text-error min-h-5">
-          {error ? displayError : ''}
-        </p>
+        {error && <p className="text-xs text-text-error">{displayError}</p>}
         {helpText && !error && (
           <p className="text-xs text-text-secondary">{helpText}</p>
         )}
