@@ -3,6 +3,7 @@ import { useSnapshot } from 'valtio'
 import { cx } from 'class-variance-authority'
 import { toolState } from '~/stores/toolStore'
 import { ToolsSecondaryButton } from '@/components'
+import { SLIDE_ANIMATION } from '@shared/types'
 
 const DOT_PATTERN_SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
 
@@ -27,6 +28,8 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 }) => {
   const snap = useSnapshot(toolState)
   const isWidgetTool = snap.currentToolType === 'widget'
+  const isAnimationDisabled =
+    snap.currentConfig.bannerSlideAnimation === SLIDE_ANIMATION.None
 
   const createDotPattern = () => {
     return `data:image/svg+xml;base64,${btoa(DOT_PATTERN_SVG)}`
@@ -49,7 +52,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         backgroundSize: '16px 16px'
       }}
     >
-      {onPreviewClick && (
+      {onPreviewClick && !isAnimationDisabled && (
         <ToolsSecondaryButton
           icon="play"
           className="w-[130px] order-first mb-auto"
