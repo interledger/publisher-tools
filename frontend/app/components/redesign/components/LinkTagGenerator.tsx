@@ -33,8 +33,6 @@ export const LinkTagGenerator = () => {
       setInvalidUrl(false)
       setError('')
 
-      setParsedLinkTag(htmlEncodePointer(pointerInput))
-
       try {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
