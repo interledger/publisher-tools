@@ -115,9 +115,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
     }
   }
 
-  // console.log('!!! lastSelectedAnimation:', lastSelectedAnimation)
-  console.log('!!! appearance.slideAnimation:', appearance.slideAnimation)
-
   const handleDoneClick = () => {
     if (onToggle) {
       onToggle()
