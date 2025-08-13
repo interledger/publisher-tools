@@ -36,16 +36,14 @@ export const LinkTagGenerator = () => {
       setParsedLinkTag(htmlEncodePointer(pointerInput))
 
       try {
-        await validateAndConfirmPointer(pointerInput)
+        const validatedPointer = await validateAndConfirmPointer(pointerInput)
+        setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
-
-        setError('')
-        setInvalidUrl(false)
       } catch (err) {
         const message =
           err instanceof WalletAddressFormatError
             ? err.message
-            : 'Invalid wallet address'
+            : 'invalid wallet address'
         setInvalidUrl(true)
         setError(message)
       }
