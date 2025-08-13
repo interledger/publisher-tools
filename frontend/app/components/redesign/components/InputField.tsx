@@ -19,7 +19,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       <div className="space-y-2xs">
         {label && (
           <label
-            className={`block text-sm font-medium ${error ? 'text-text-error' : 'text-text-primary'}`}
+            className={'block text-sm font-medium text-text-primary'}
             htmlFor={fieldId}
           >
             {label}

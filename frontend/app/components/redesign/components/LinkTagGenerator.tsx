@@ -4,7 +4,7 @@ import { Heading5 } from '@/typography'
 import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import {
-  validateWalletAddressOrPointer,
+  validateAndConfirmPointer,
   WalletAddressFormatError
 } from '@shared/utils/index'
 
@@ -36,7 +36,7 @@ export const LinkTagGenerator = () => {
       setParsedLinkTag(htmlEncodePointer(pointerInput))
 
       try {
-        await validateWalletAddressOrPointer(pointerInput)
+        await validateAndConfirmPointer(pointerInput)
         setShowCodeBox(true)
 
         setError('')
