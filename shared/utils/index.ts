@@ -119,7 +119,7 @@ export async function fetchWalletDetails(url: string): Promise<WalletAddress> {
   })
   if (!res.ok) {
     if (res.status === 404) {
-      throw new WalletAddressFormatError('this wallet address does not exist')
+      throw new WalletAddressFormatError('does not exist')
     }
     throw new WalletAddressFormatError('is not a valid wallet address')
   }
@@ -138,7 +138,7 @@ export async function confirmWalletAddress(
 
 export const validateWalletAddressOrPointer = (input: string): string => {
   if (!input || typeof input !== 'string') {
-    throw new WalletAddressFormatError('must be a string')
+    throw new WalletAddressFormatError('is required')
   }
 
   let urlString = input.trim()
