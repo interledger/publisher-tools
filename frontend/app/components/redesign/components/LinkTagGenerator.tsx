@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
-import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
+import { SVGCopyIcon, SVGCheckIcon, SVGSpinner } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import {
   validateAndConfirmPointer,
@@ -18,6 +18,7 @@ const htmlEncodePointer = (pointer: string): string => {
 }
 
 export const LinkTagGenerator = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [pointerInput, setPointerInput] = useState('')
   const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
@@ -30,6 +31,7 @@ export const LinkTagGenerator = () => {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault()
+      setIsLoading(true)
       setInvalidUrl(false)
       setError('')
 
@@ -44,6 +46,8 @@ export const LinkTagGenerator = () => {
             : 'invalid wallet address'
         setInvalidUrl(true)
         setError(message)
+      } finally {
+        setIsLoading(false)
       }
     },
     [pointerInput]
@@ -97,8 +101,15 @@ export const LinkTagGenerator = () => {
         </div>
       )}
 
-      <ToolsPrimaryButton icon="link" className="justify-center" type="submit">
-        Generate Link Tag
+      <ToolsPrimaryButton
+        icon={!isLoading ? 'link' : undefined}
+        className="justify-center"
+        type="submit"
+      >
+        <div className="flex items-center justify-center gap-2">
+          {isLoading && <SVGSpinner className="w-4 h-4" />}
+          <span>{isLoading ? 'Checking...' : 'Generate Link Tag'}</span>
+        </div>
       </ToolsPrimaryButton>
 
       {isCopied && (
