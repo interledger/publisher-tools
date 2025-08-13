@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "prConcurrentLimit": 10,
+  "branchConcurrentLimit": 0,
+  "prHourlyLimit": 10,
+  "schedule": ["before 4am on tuesday"],
+  "rebaseWhen": "conflicted",
+  "rangeStrategy": "bump",
+  "prCreation": "not-pending",
+  "labels": ["dependencies"]
+}
