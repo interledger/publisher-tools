@@ -37,13 +37,13 @@ const socialLinks = [
 ]
 
 const SocialLinks = ({ className }: { className: string }) => (
-  <div className={className}>
-    {socialLinks.map((social, index) => (
-      <a key={index} href={social.href} target="_blank" rel="noreferrer">
+  <nav className={className} aria-label="Social media links">
+    {socialLinks.map((social) => (
+      <a key={social.text} href={social.href} target="_blank" rel="noreferrer">
         <img src={social.icon} alt={social.text} />
       </a>
     ))}
-  </div>
+  </nav>
 )
 
 export const EnhancedFooter = () => {
@@ -100,14 +100,14 @@ export const EnhancedFooter = () => {
         </div>
       </nav>
 
-      <section className="flex md:hidden flex-col gap-md items-center justify-start w-full">
+      <div className="flex md:hidden flex-col gap-md items-center justify-start w-full">
         <div className="flex flex-row gap-sm items-center justify-start">
           <img src={wmLogo} alt="Web Monetization Logo" />
           <p className="text-style-small-standard">Web Monetization</p>
         </div>
         <div className="w-full h-px bg-purple-100" aria-hidden="true" />
         <SocialLinks className="w-full flex flex-row items-center justify-between" />
-      </section>
+      </div>
 
       <SocialLinks className="hidden md:flex w-[200px] flex-row items-center justify-between" />
 
