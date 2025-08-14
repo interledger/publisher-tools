@@ -43,21 +43,12 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
 
   const handleContentDone = () => {
     uiActions.setContentComplete(true)
-    uiActions.setExpandedSection(null)
-
-    if (!uiState.appearanceComplete) {
-      uiActions.setExpandedSection('appearance')
-    }
   }
 
   const handleAppearanceDone = () => {
     uiActions.setAppearanceComplete(true)
-    uiActions.setExpandedSection(null)
-
-    if (!uiState.contentComplete) {
-      uiActions.setExpandedSection('content')
-    }
   }
+
   return (
     <div className="flex flex-col">
       <TabSelector
@@ -78,24 +69,20 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         ${className}
       `}
       >
-        <div className="w-full">
-          <ContentBuilder
-            isComplete={uiState.contentComplete}
-            onDone={handleContentDone}
-            content={content}
-            activeVersion={snap.activeVersion}
-          />
-        </div>
-        <div className="w-full">
-          <AppearanceBuilder
-            isComplete={uiState.appearanceComplete}
-            onDone={handleAppearanceDone}
-            appearance={appearance}
-            positionSelector={positionSelector}
-            colorsSelector={colorsSelector}
-            activeVersion={snap.activeVersion}
-          />
-        </div>
+        <ContentBuilder
+          isComplete={uiState.contentComplete}
+          onDone={handleContentDone}
+          content={content}
+          activeVersion={snap.activeVersion}
+        />
+        <AppearanceBuilder
+          isComplete={uiState.appearanceComplete}
+          onDone={handleAppearanceDone}
+          appearance={appearance}
+          positionSelector={positionSelector}
+          colorsSelector={colorsSelector}
+          activeVersion={snap.activeVersion}
+        />
       </div>
     </div>
   )

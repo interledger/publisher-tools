@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { useUI } from '~/stores/uiStore'
 import { SectionHeader } from './SectionHeader'
 import {
@@ -92,10 +92,8 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const { state: uiState, actions: uiActions } = useUI()
-
-  const isExpanded = uiState.expandedSection === 'appearance'
-  const [shouldRenderContent, setShouldRenderContent] = useState(isExpanded)
+  const [isOpen, setIsOpen] = useState(false)
+  const { actions: uiActions } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
       const validated = getValidSlideAnimation(appearance.slideAnimation)
@@ -110,72 +108,45 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   )
   const thumbnails = [wmLogo]
 
-  useEffect(() => {
-    if (isExpanded && !shouldRenderContent) {
-      setShouldRenderContent(true)
-    }
-  }, [isExpanded, shouldRenderContent])
-
-  const toggleExpand = () => {
-    if (!isExpanded) {
-      setShouldRenderContent(true)
-      requestAnimationFrame(() => {
-        uiActions.setExpandedSection('appearance')
-        uiActions.setAppearanceComplete(true)
-      })
+  const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
+    const details = e.currentTarget
+    if (details.open) {
+      // set as complete when opened for the first time
+      setIsOpen(true)
+      uiActions.setAppearanceComplete(true)
     } else {
-      uiActions.setExpandedSection(null)
-    }
-  }
-
-  const handleTransitionEnd = () => {
-    if (!isExpanded) {
-      setShouldRenderContent(false)
+      setIsOpen(false)
     }
   }
 
   const handleDoneClick = () => {
-    uiActions.setExpandedSection(null)
     if (onDone) {
       onDone()
     }
   }
 
   return (
-    <div
+    <details
       key={activeVersion}
+      name="builder-accordion"
       className={`flex flex-col rounded-lg transition-all duration-300 ease-in-out ${
-        isExpanded ? 'bg-interface-bg-container gap-sm' : 'bg-interface-bg-main'
+        isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'
       }`}
+      onToggle={handleToggle}
     >
-      <div
-        className={`flex items-center justify-between transition-all duration-300 ease-in-out ${
-          isExpanded ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
+      <summary
+        className={`flex items-center justify-between cursor-pointer transition-all duration-300 ease-in-out list-none ${
+          isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
         }`}
-        onClick={toggleExpand}
-        role="button"
-        tabIndex={0}
-        aria-label={
-          isExpanded
-            ? 'Collapse appearance section'
-            : 'Expand appearance section'
-        }
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpand()
-          }
-        }}
+        aria-label="Toggle appearance section"
       >
         <div className="flex items-center gap-2">
-          {isComplete && !isExpanded && (
-            <SVGGreenVector className="w-6 h-[18px]" />
-          )}
+          {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
           <Heading5>Appearance</Heading5>
         </div>
 
         <div className="flex gap-2">
-          {isExpanded && (
+          {isOpen && (
             <button
               className="w-12 h-12 rounded-lg flex items-center justify-center"
               onClick={(e) => {
@@ -187,220 +158,191 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               <SVGRefresh className="w-6 h-6" />
             </button>
           )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleExpand()
-            }}
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
+          <div
+            className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+              !isOpen ? 'rotate-180' : ''
+            }`}
           >
-            <div className={isExpanded ? 'rotate-180' : ''}>
-              <SVGArrowCollapse className="w-5 h-5" />
-            </div>
-          </button>
+            <SVGArrowCollapse className="w-5 h-5" />
+          </div>
         </div>
-      </div>
+      </summary>
 
-      {shouldRenderContent && (
-        <div
-          className={`grid transition-all duration-300 ease-in-out overflow-hidden ${
-            isExpanded
-              ? 'grid-rows-[1fr] opacity-100'
-              : 'grid-rows-[0fr] opacity-0'
-          }`}
-          onTransitionEnd={handleTransitionEnd}
-        >
-          <div className="min-h-0">
-            <div className="flex flex-col gap-sm">
-              <div className="flex flex-col gap-2">
-                <SectionHeader
-                  icon={<SVGText className="w-5 h-5" />}
-                  label="Text"
-                />
-                <ToolsDropdown
-                  label="Font Family"
-                  defaultValue={defaultFontIndex.toString()}
-                  onChange={(value) => {
-                    const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
-                    appearance.onFontNameChange(fontName)
-                  }}
-                  options={FONT_FAMILY_OPTIONS.map((font, index) => ({
-                    label: font,
-                    value: index.toString()
-                  }))}
-                />
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs leading-xs text-silver-700">
-                    Size
-                  </label>
-                  <div className="flex items-center h-12 gap-4">
-                    <button
-                      className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
-                      onClick={() => {
-                        const newSize = Math.max(
-                          minFontSize,
-                          (appearance.fontSize ?? minFontSize) - 1
-                        )
-                        appearance.onFontSizeChange(newSize)
-                      }}
-                      aria-label="Decrease font size"
-                    >
-                      <span className="text-sm leading-sm text-text-primary">
-                        A
-                      </span>
-                    </button>
+      <div className="flex flex-col gap-sm">
+        <div className="flex flex-col gap-xs">
+          <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
+          <ToolsDropdown
+            label="Font Family"
+            defaultValue={defaultFontIndex.toString()}
+            onChange={(value) => {
+              const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
+              appearance.onFontNameChange(fontName)
+            }}
+            options={FONT_FAMILY_OPTIONS.map((font, index) => ({
+              label: font,
+              value: index.toString()
+            }))}
+          />
+          <div className="flex flex-col gap-1">
+            <label className="text-xs leading-xs text-silver-700">Size</label>
+            <div className="flex items-center h-12 gap-4">
+              <button
+                className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
+                onClick={() => {
+                  const newSize = Math.max(
+                    minFontSize,
+                    (appearance.fontSize ?? minFontSize) - 1
+                  )
+                  appearance.onFontSizeChange(newSize)
+                }}
+                aria-label="Decrease font size"
+              >
+                <span className="text-sm leading-sm text-text-primary">A</span>
+              </button>
 
-                    <Slider
-                      value={appearance.fontSize ?? minFontSize}
-                      min={minFontSize}
-                      max={maxFontSize}
-                      onChange={(value) => {
-                        console.log('Font size changed to:', value)
-                        appearance.onFontSizeChange(value)
-                      }}
-                    />
+              <Slider
+                value={appearance.fontSize ?? minFontSize}
+                min={minFontSize}
+                max={maxFontSize}
+                onChange={(value) => {
+                  console.log('Font size changed to:', value)
+                  appearance.onFontSizeChange(value)
+                }}
+              />
 
-                    <button
-                      className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
-                      onClick={() => {
-                        const newSize = Math.min(
-                          maxFontSize,
-                          (appearance.fontSize ?? minFontSize) + 1
-                        )
-                        appearance.onFontSizeChange(newSize)
-                      }}
-                      aria-label="Increase font size"
-                    >
-                      <span className="text-3xl leading-3xl text-text-primary">
-                        A
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <Divider />
-
-              <div className="flex flex-col gap-2">
-                <SectionHeader
-                  icon={<SVGColorPicker className="w-5 h-5" />}
-                  label="Colors"
-                />
-                {colorsSelector}
-              </div>
-              <Divider />
-
-              <div className="flex flex-col gap-xs">
-                <SectionHeader
-                  icon={<SVGRoundedCorner className="w-5 h-5" />}
-                  label="Container Corner Radius"
-                />
-                <CornerRadiusSelector
-                  defaultValue={appearance.borderRadius}
-                  onChange={(value) => appearance.onBorderChange(value)}
-                />
-              </div>
-              <Divider />
-
-              {positionSelector && (
-                <>
-                  <div className="flex flex-col gap-xs">
-                    <SectionHeader
-                      icon={<SVGHeaderPosition className="w-5 h-5" />}
-                      label="Position"
-                    />
-                    {positionSelector}
-                  </div>
-                  <Divider />
-                </>
-              )}
-
-              {appearance.showAnimation && (
-                <>
-                  <div className="flex flex-col gap-xs">
-                    <SectionHeader
-                      icon={<SVGAnimation className="w-5 h-5" />}
-                      label="Animation"
-                    />
-                    <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-                      <Checkbox
-                        checked={isAnimated}
-                        onChange={() => {
-                          appearance.onSlideAnimationChange(
-                            isAnimated
-                              ? SLIDE_ANIMATION.None
-                              : lastSelectedAnimation
-                          )
-                        }}
-                        label="Animated"
-                      />
-                      <div className="flex-1 w-full xl:w-auto">
-                        <ToolsDropdown
-                          label="Type"
-                          disabled={!isAnimated}
-                          defaultValue={
-                            isAnimated
-                              ? getValidSlideAnimation(
-                                  appearance.slideAnimation
-                                )
-                              : lastSelectedAnimation
-                          }
-                          options={[
-                            { label: 'Slide', value: SLIDE_ANIMATION.Slide },
-                            { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
-                          ]}
-                          onChange={(value) => {
-                            const selectedAnimation =
-                              value as SlideAnimationType
-                            setLastSelectedAnimation(selectedAnimation)
-                            appearance.onSlideAnimationChange(selectedAnimation)
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <Divider />
-                </>
-              )}
-
-              <div className="flex flex-col gap-xs">
-                <SectionHeader
-                  icon={<SVGThumbnail className="w-5 h-5" />}
-                  label="Thumbnail"
-                />
-                <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-                  <Checkbox
-                    checked={isThumbnailVisible}
-                    onChange={() => setIsThumbnailVisible(!isThumbnailVisible)}
-                    label="Visible"
-                  />
-                  <div className="flex gap-md">
-                    {thumbnails.map((thumbnail, index) => (
-                      <Thumbnail
-                        key={index}
-                        isSelected={selectedThumbnail === index}
-                        imageUrl={thumbnail}
-                        onClick={() => setSelectedThumbnail(index)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <Divider />
-
-              <div className="flex justify-end">
-                <ToolsSecondaryButton
-                  className="w-full xl:w-[140px]"
-                  onClick={handleDoneClick}
-                >
-                  Done
-                </ToolsSecondaryButton>
-              </div>
+              <button
+                className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
+                onClick={() => {
+                  const newSize = Math.min(
+                    maxFontSize,
+                    (appearance.fontSize ?? minFontSize) + 1
+                  )
+                  appearance.onFontSizeChange(newSize)
+                }}
+                aria-label="Increase font size"
+              >
+                <span className="text-3xl leading-3xl text-text-primary">
+                  A
+                </span>
+              </button>
             </div>
           </div>
         </div>
-      )}
-    </div>
+        <Divider />
+
+        <div className="flex flex-col gap-2">
+          <SectionHeader
+            icon={<SVGColorPicker className="w-5 h-5" />}
+            label="Colors"
+          />
+          {colorsSelector}
+        </div>
+        <Divider />
+
+        <div className="flex flex-col gap-xs">
+          <SectionHeader
+            icon={<SVGRoundedCorner className="w-5 h-5" />}
+            label="Container Corner Radius"
+          />
+          <CornerRadiusSelector
+            defaultValue={appearance.borderRadius}
+            onChange={(value) => appearance.onBorderChange(value)}
+          />
+        </div>
+        <Divider />
+
+        {positionSelector && (
+          <>
+            <div className="flex flex-col gap-xs">
+              <SectionHeader
+                icon={<SVGHeaderPosition className="w-5 h-5" />}
+                label="Position"
+              />
+              {positionSelector}
+            </div>
+            <Divider />
+          </>
+        )}
+
+        {appearance.showAnimation && (
+          <>
+            <div className="flex flex-col gap-xs">
+              <SectionHeader
+                icon={<SVGAnimation className="w-5 h-5" />}
+                label="Animation"
+              />
+              <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
+                <Checkbox
+                  checked={isAnimated}
+                  onChange={() => {
+                    appearance.onSlideAnimationChange(
+                      isAnimated ? SLIDE_ANIMATION.None : lastSelectedAnimation
+                    )
+                  }}
+                  label="Animated"
+                />
+                <div className="flex-1 w-full xl:w-auto">
+                  <ToolsDropdown
+                    label="Type"
+                    disabled={!isAnimated}
+                    defaultValue={
+                      isAnimated
+                        ? getValidSlideAnimation(appearance.slideAnimation)
+                        : lastSelectedAnimation
+                    }
+                    options={[
+                      { label: 'Slide', value: SLIDE_ANIMATION.Slide },
+                      { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
+                    ]}
+                    onChange={(value) => {
+                      const selectedAnimation = value as SlideAnimationType
+                      setLastSelectedAnimation(selectedAnimation)
+                      appearance.onSlideAnimationChange(selectedAnimation)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <Divider />
+          </>
+        )}
+
+        <div className="flex flex-col gap-xs">
+          <SectionHeader
+            icon={<SVGThumbnail className="w-5 h-5" />}
+            label="Thumbnail"
+          />
+          <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
+            <Checkbox
+              checked={isThumbnailVisible}
+              onChange={() => setIsThumbnailVisible(!isThumbnailVisible)}
+              label="Visible"
+            />
+            <div className="flex gap-md">
+              {thumbnails.map((thumbnail, index) => (
+                <Thumbnail
+                  key={index}
+                  isSelected={selectedThumbnail === index}
+                  imageUrl={thumbnail}
+                  onClick={() => setSelectedThumbnail(index)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <Divider />
+
+        <div className="flex justify-end">
+          <ToolsSecondaryButton
+            className="w-full xl:w-[140px]"
+            onClick={handleDoneClick}
+          >
+            Done
+          </ToolsSecondaryButton>
+        </div>
+      </div>
+    </details>
   )
 }
 

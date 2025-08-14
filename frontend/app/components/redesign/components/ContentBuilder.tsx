@@ -44,11 +44,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   activeVersion
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
-  const { state: uiState, actions: uiActions } = useUI()
+  const [isOpen, setIsOpen] = useState(false)
   const titleInputRef = useRef<HTMLInputElement>(null)
-
-  const isExpanded = uiState.expandedSection === 'content'
-  const [shouldRenderContent, setShouldRenderContent] = useState(isExpanded)
+  const { actions: uiActions } = useUI()
 
   useEffect(() => {
     if (
@@ -59,70 +57,47 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     }
   }, [content.currentTitle])
 
-  useEffect(() => {
-    if (isExpanded && !shouldRenderContent) {
-      setShouldRenderContent(true)
-    }
-  }, [isExpanded, shouldRenderContent])
-
-  const toggleExpand = () => {
-    if (!isExpanded) {
-      setShouldRenderContent(true)
-      requestAnimationFrame(() => {
-        uiActions.setExpandedSection('content')
-        uiActions.setContentComplete(true)
-      })
+  const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
+    const details = e.currentTarget
+    if (details.open) {
+      // set as complete when opened for the first time
+      setIsOpen(true)
+      uiActions.setContentComplete(true)
     } else {
-      uiActions.setExpandedSection(null)
-    }
-  }
-
-  const handleTransitionEnd = () => {
-    if (!isExpanded) {
-      setShouldRenderContent(false)
+      setIsOpen(false)
     }
   }
 
   const handleDoneClick = () => {
-    uiActions.setExpandedSection(null)
     if (onDone) {
       onDone()
     }
   }
 
   return (
-    <div
+    <details
       key={activeVersion}
+      name="builder-accordion"
       className={`flex flex-col rounded-lg transition-all duration-300 ease-in-out ${
-        isExpanded ? 'bg-interface-bg-container gap-sm' : 'bg-interface-bg-main'
+        isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'
       }`}
+      onToggle={handleToggle}
+      open={isOpen}
     >
-      <div
-        className={`flex items-center justify-between cursor-pointer transition-all duration-300 ease-in-out ${
-          isExpanded ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
+      <summary
+        className={`flex items-center justify-between cursor-pointer transition-all duration-300 ease-in-out list-none ${
+          isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
         }`}
-        onClick={toggleExpand}
-        role="button"
-        tabIndex={0}
-        aria-label={
-          isExpanded ? 'Collapse content section' : 'Expand content section'
-        }
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpand()
-          }
-        }}
+        aria-label="Toggle content section"
+        aria-expanded={isOpen}
       >
         <div className="flex items-center gap-2">
-          {isComplete && !isExpanded && (
-            <SVGGreenVector className="w-6 h-[18px]" />
-          )}
+          {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
           <Heading5>Content</Heading5>
         </div>
 
         <div className="flex gap-2">
-          {isExpanded && (
+          {isOpen && (
             <button
               className="w-12 h-12 rounded-lg flex items-center justify-center"
               onClick={(e) => {
@@ -135,119 +110,112 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
               <SVGRefresh className="w-6 h-6" />
             </button>
           )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleExpand()
-            }}
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
+          <div
+            className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+              !isOpen ? 'rotate-180' : ''
+            }`}
+            aria-hidden="true"
           >
-            <div className={isExpanded ? 'rotate-180' : ''}>
-              <SVGArrowCollapse className="w-5 h-5" />
-            </div>
-          </button>
+            <SVGArrowCollapse className="w-5 h-5" />
+          </div>
         </div>
-      </div>
+      </summary>
 
-      {shouldRenderContent && (
-        <div
-          className={`grid transition-all duration-300 ease-in-out overflow-hidden ${
-            isExpanded
-              ? 'grid-rows-[1fr] opacity-100'
-              : 'grid-rows-[0fr] opacity-0'
-          }`}
-          onTransitionEnd={handleTransitionEnd}
-        >
-          <div className="min-h-0">
-            <div className="flex flex-col gap-lg">
-              <div className="flex flex-col gap-2">
-                <h4 className="text-base leading-md font-bold text-text-primary">
-                  Suggested title
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {content.suggestedTitles.map((title) => (
-                    <PillTagButton
-                      key={title}
-                      variant={
-                        content.currentTitle === title ? 'active' : 'default'
-                      }
-                      onClick={() => content.onSuggestedTitleClick(title)}
-                    >
-                      {title}
-                    </PillTagButton>
-                  ))}
-                </div>
-              </div>
-              <Divider />
-
-              <div className="flex flex-col gap-2">
-                <h4 className="text-base leading-md font-bold text-text-primary">
-                  Custom title
-                </h4>
-                <InputField
-                  ref={titleInputRef}
-                  defaultValue={content.currentTitle}
-                  onChange={(e) => {
-                    content.onTitleChange(e.target.value)
-                  }}
-                  maxLength={content.titleMaxLength}
-                  helpText={content.titleHelpText}
-                  className="h-12 text-base leading-md"
-                />
-                <div className="flex justify-end">
-                  <span className="text-xs leading-xs text-text-secondary">
-                    {content.currentTitle.length}/{content.titleMaxLength}
-                  </span>
-                </div>
-              </div>
-
-              <Divider />
-
-              <div className="flex flex-col gap-2">
-                <h4 className="text-base leading-md font-bold text-text-primary">
-                  {content.messageLabel}
-                </h4>
-                <div className="flex gap-lg items-start xl:flex-row flex-col">
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Checkbox
-                      checked={isMessageActive}
-                      onChange={() => setIsMessageActive(!isMessageActive)}
-                      label="Active"
-                    />
-                  </div>
-
-                  <div className="flex-grow">
-                    <TextareaField
-                      defaultValue={content.currentMessage}
-                      onChange={(e) => {
-                        content.onMessageChange(e.target.value)
-                      }}
-                      currentLength={content.currentMessage.length || 0}
-                      maxLength={content.messageMaxLength}
-                      showCounter={true}
-                      helpText={content.messageHelpText}
-                      className="h-[84px]"
-                      placeholder={content.messagePlaceholder}
-                    />
-                  </div>
-                </div>
-              </div>
+      <div
+        className="flex flex-col"
+        role="region"
+        aria-labelledby="content-section"
+      >
+        <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-xs">
+            <h4
+              id="content-section"
+              className="text-base leading-md font-bold text-text-primary"
+            >
+              Suggested title
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {content.suggestedTitles.map((title) => (
+                <PillTagButton
+                  key={title}
+                  variant={
+                    content.currentTitle === title ? 'active' : 'default'
+                  }
+                  onClick={() => content.onSuggestedTitleClick(title)}
+                >
+                  {title}
+                </PillTagButton>
+              ))}
             </div>
+          </div>
+          <Divider />
 
-            <Divider />
-
+          <div className="flex flex-col gap-2">
+            <h4 className="text-base leading-md font-bold text-text-primary">
+              Custom title
+            </h4>
+            <InputField
+              ref={titleInputRef}
+              defaultValue={content.currentTitle}
+              onChange={(e) => {
+                content.onTitleChange(e.target.value)
+              }}
+              maxLength={content.titleMaxLength}
+              helpText={content.titleHelpText}
+              className="h-12 text-base leading-md"
+            />
             <div className="flex justify-end">
-              <ToolsSecondaryButton
-                className="w-full xl:w-[140px]"
-                onClick={handleDoneClick}
-              >
-                Done
-              </ToolsSecondaryButton>
+              <span className="text-xs leading-xs text-text-secondary">
+                {content.currentTitle.length}/{content.titleMaxLength}
+              </span>
+            </div>
+          </div>
+
+          <Divider />
+
+          <div className="flex flex-col gap-2">
+            <h4 className="text-base leading-md font-bold text-text-primary">
+              {content.messageLabel}
+            </h4>
+            <div className="flex gap-lg items-start xl:flex-row flex-col">
+              <div className="flex items-center gap-2 shrink-0">
+                <Checkbox
+                  checked={isMessageActive}
+                  onChange={() => setIsMessageActive(!isMessageActive)}
+                  label="Active"
+                />
+              </div>
+
+              <div className="flex-grow">
+                <TextareaField
+                  defaultValue={content.currentMessage}
+                  onChange={(e) => {
+                    content.onMessageChange(e.target.value)
+                  }}
+                  currentLength={content.currentMessage.length || 0}
+                  maxLength={content.messageMaxLength}
+                  showCounter={true}
+                  helpText={content.messageHelpText}
+                  className="h-[84px]"
+                  placeholder={content.messagePlaceholder}
+                />
+              </div>
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        <Divider />
+
+        <div className="flex justify-end">
+          <ToolsSecondaryButton
+            className="w-full xl:w-[140px]"
+            onClick={handleDoneClick}
+          >
+            Done
+          </ToolsSecondaryButton>
+        </div>
+      </div>
+    </details>
   )
 }
 

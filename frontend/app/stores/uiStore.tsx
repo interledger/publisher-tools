@@ -9,7 +9,6 @@ import React, {
 import type { ReactNode } from 'react'
 
 type UIState = {
-  expandedSection: 'content' | 'appearance' | null
   contentComplete: boolean
   appearanceComplete: boolean
 }
@@ -21,7 +20,6 @@ interface WalletInputRef {
 interface UIActions {
   focusWalletInput: () => void
   registerWalletInput: (ref: WalletInputRef) => () => void
-  setExpandedSection: (section: 'content' | 'appearance' | null) => void
   setContentComplete: (complete: boolean) => void
   setAppearanceComplete: (complete: boolean) => void
 }
@@ -40,9 +38,6 @@ interface UIProviderProps {
 export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const walletInputRef = useRef<WalletInputRef | null>(null)
   const [shouldFocusWallet, setShouldFocusWallet] = useState(false)
-  const [expandedSection, setExpandedSection] = useState<
-    'content' | 'appearance' | null
-  >(null)
   const [contentComplete, setContentComplete] = useState(false)
   const [appearanceComplete, setAppearanceComplete] = useState(false)
 
@@ -66,7 +61,6 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   }, [])
 
   const state: UIState = {
-    expandedSection,
     contentComplete,
     appearanceComplete
   }
@@ -74,7 +68,6 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const actions: UIActions = {
     focusWalletInput,
     registerWalletInput,
-    setExpandedSection,
     setContentComplete,
     setAppearanceComplete
   }
