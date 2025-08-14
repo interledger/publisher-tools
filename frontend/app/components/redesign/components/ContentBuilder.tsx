@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
+import { useUI } from '~/stores/uiStore'
+import { BuilderAccordion } from './BuilderAccordion'
 import {
   ToolsSecondaryButton,
   InputField,
@@ -8,7 +9,6 @@ import {
   Checkbox,
   PillTagButton
 } from '@/components'
-import { Heading5 } from '@/typography'
 
 export interface ToolContent {
   suggestedTitles: string[]
@@ -32,8 +32,6 @@ interface ContentBuilderProps {
   content: ToolContent
   isComplete?: boolean
   className?: string
-  isExpanded?: boolean
-  onToggle?: () => void
   onDone?: () => void
   activeVersion?: string
 }
@@ -41,13 +39,12 @@ interface ContentBuilderProps {
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   content,
   isComplete,
-  isExpanded = false,
-  onToggle,
   onDone,
   activeVersion
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)
+  const { actions: uiActions } = useUI()
 
   useEffect(() => {
     if (
@@ -58,101 +55,37 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     }
   }, [content.currentTitle])
 
-  const toggleExpand = () => {
-    if (onToggle) {
-      onToggle()
+  const handleToggle = (isOpen: boolean) => {
+    if (isOpen) {
+      uiActions.setContentComplete(true)
     }
   }
 
+  const handleRefresh = () => {
+    console.log('Refresh')
+    content.onRefresh()
+  }
+
   const handleDoneClick = () => {
-    if (onToggle) {
-      onToggle()
-    }
     if (onDone) {
       onDone()
     }
   }
 
-  if (!isExpanded) {
-    return (
-      <div
-        className=" bg-interface-bg-main rounded-lg cursor-pointer"
-        onClick={toggleExpand}
-        role="button"
-        tabIndex={0}
-        aria-label="Expand content section"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpand()
-          }
-        }}
-      >
-        <div className="px-4 pr-1 py-2 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {isComplete && <SVGGreenVector className="w-6 h-[18px]" />}
-              <Heading5>Content</Heading5>
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                toggleExpand()
-              }}
-              className="w-12 h-12 rounded-lg flex items-center justify-center"
-            >
-              <SVGArrowCollapse className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div
-      key={activeVersion}
-      className="flex flex-col bg-interface-bg-container rounded-sm gap-sm"
+    <BuilderAccordion
+      title="Content"
+      isComplete={isComplete}
+      activeVersion={activeVersion}
+      onToggle={handleToggle}
+      onRefresh={handleRefresh}
     >
-      <div
-        className="px-1 py-2 flex items-center justify-between cursor-pointer"
-        onClick={toggleExpand}
-      >
-        <Heading5>Content</Heading5>
-
-        <div className="flex gap-2">
-          <button
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation()
-              console.log('Refresh')
-              content.onRefresh()
-            }}
-            aria-label="Reset content to default"
-          >
-            <SVGRefresh className="w-6 h-6" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              if (onToggle) {
-                onToggle()
-              }
-            }}
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
-          >
-            <div className="rotate-180">
-              <SVGArrowCollapse className="w-5 h-5" />
-            </div>
-          </button>
-        </div>
-      </div>
       <div className="flex flex-col gap-lg">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-xs">
           <h4 className="text-base leading-md font-bold text-text-primary">
             Suggested title
           </h4>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-xs">
             {content.suggestedTitles.map((title) => (
               <PillTagButton
                 key={title}
@@ -166,7 +99,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
         </div>
         <Divider />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-xs">
           <h4 className="text-base leading-md font-bold text-text-primary">
             Custom title
           </h4>
@@ -189,12 +122,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
         <Divider />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-xs">
           <h4 className="text-base leading-md font-bold text-text-primary">
             {content.messageLabel}
           </h4>
           <div className="flex gap-lg items-start xl:flex-row flex-col">
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-xs shrink-0">
               <Checkbox
                 checked={isMessageActive}
                 onChange={() => setIsMessageActive(!isMessageActive)}
@@ -219,6 +152,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
           </div>
         </div>
       </div>
+
       <Divider />
 
       <div className="flex justify-end">
@@ -229,7 +163,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
           Done
         </ToolsSecondaryButton>
       </div>
-    </div>
+    </BuilderAccordion>
   )
 }
 
