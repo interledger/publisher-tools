@@ -1,28 +1,12 @@
 import { useState, useCallback } from 'react'
-import { cx } from 'class-variance-authority'
 import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
 import { Heading5 } from '@/typography'
-import { SVGCopyIcon, SVGCheckIcon } from '@/assets'
+import { SVGCopyIcon, SVGCheckIcon, SVGSpinner } from '@/assets'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
-
-const isValidPointer = (input: string): string | false => {
-  try {
-    let urlString = input.trim()
-    if (input.charAt(0) === '$') {
-      urlString = input.replace('$', 'https://')
-    }
-
-    const url = new URL(urlString)
-
-    if (url.pathname === '/') {
-      return `${url.origin}/.well-known/pay`
-    }
-
-    return url.origin + url.pathname
-  } catch {
-    return false
-  }
-}
+import {
+  validateAndConfirmPointer,
+  WalletAddressFormatError
+} from '@shared/utils/index'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
@@ -34,27 +18,36 @@ const htmlEncodePointer = (pointer: string): string => {
 }
 
 export const LinkTagGenerator = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [pointerInput, setPointerInput] = useState('')
   const [linkTag, setParsedLinkTag] = useState('')
   const [invalidUrl, setInvalidUrl] = useState(false)
+  const [error, setError] = useState('')
   const [showCodeBox, setShowCodeBox] = useState(false)
   const { isCopied, handleCopyClick } = useCopyToClipboard(
     `<link rel="monetization" href="${linkTag}" />`
   )
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault()
+      setIsLoading(true)
       setInvalidUrl(false)
+      setError('')
 
-      const validatedPointer = isValidPointer(pointerInput)
-
-      if (validatedPointer) {
+      try {
+        const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
-      } else {
+      } catch (err) {
+        const message =
+          err instanceof WalletAddressFormatError
+            ? err.message
+            : 'invalid wallet address'
         setInvalidUrl(true)
-        setShowCodeBox(false)
+        setError(message)
+      } finally {
+        setIsLoading(false)
       }
     },
     [pointerInput]
@@ -78,25 +71,14 @@ export const LinkTagGenerator = () => {
         <Heading5>Link tag generator</Heading5>
       </div>
       <div>
-        <label
-          htmlFor="paymentPointer"
-          className={cx(
-            'text-field-helpertext-default font-sans text-xs font-normal leading-xs',
-            invalidUrl && 'text-text-error'
-          )}
-        >
-          Your payment pointer
-        </label>
         <InputField
           id="paymentPointer"
+          label="Your payment pointer"
+          required
           placeholder="Fill in your payment pointer/wallet address"
           value={pointerInput}
           onChange={(e) => handleOnChange(e)}
-          error={
-            invalidUrl
-              ? 'The payment pointer you have entered is not valid or cannot be found'
-              : ''
-          }
+          error={invalidUrl ? error : ''}
         />
       </div>
 
@@ -119,8 +101,15 @@ export const LinkTagGenerator = () => {
         </div>
       )}
 
-      <ToolsPrimaryButton icon="link" className="justify-center" type="submit">
-        Generate Link Tag
+      <ToolsPrimaryButton
+        icon={!isLoading ? 'link' : undefined}
+        className="justify-center"
+        type="submit"
+      >
+        <div className="flex items-center justify-center gap-2">
+          {isLoading && <SVGSpinner className="w-4 h-4" />}
+          <span>{isLoading ? 'Checking...' : 'Generate Link Tag'}</span>
+        </div>
       </ToolsPrimaryButton>
 
       {isCopied && (

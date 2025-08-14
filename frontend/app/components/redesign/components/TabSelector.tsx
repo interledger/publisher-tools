@@ -260,6 +260,17 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
           const displayLabel = getDisplayLabel(tab.id)
           const isModified = isConfigModified(tab.id)
 
+          const handleEditButtonAction = () => {
+            if (isSelected && !editingId) {
+              beginEditing(tab.id)
+            } else {
+              toolActions.selectVersion(tab.id)
+              if (onSelectTab) {
+                onSelectTab(tab.id)
+              }
+            }
+          }
+
           return (
             <div key={tab.id} className="flex flex-col flex-1">
               <div className="h-4 flex items-end">
@@ -288,18 +299,19 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                 tabIndex={0}
                 aria-label={`${displayLabel}${isModified ? ' (modified)' : ''}`}
               >
-                <div className="flex flex-row items-center w-full h-[50px] gap-1 px-3 py-2">
+                <div className="flex flex-row items-center w-full h-[50px] gap-2xs p-xs">
                   <button
-                    className="cursor-pointer flex-shrink-0 p-1 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    id="edit-button"
+                    className="cursor-pointer flex-shrink-0 p-2xs rounded"
                     onClick={(e: React.MouseEvent) => {
                       e.stopPropagation()
-                      if (isSelected) beginEditing(tab.id)
+                      handleEditButtonAction()
                     }}
                     onKeyDown={(e: React.KeyboardEvent) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault()
                         e.stopPropagation()
-                        if (isSelected) beginEditing(tab.id)
+                        handleEditButtonAction()
                       }
                     }}
                     tabIndex={isSelected ? 0 : -1}
@@ -329,7 +341,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                       autoFocus
                     />
                   ) : (
-                    <div className="flex-1 min-w-0 flex items-center gap-1">
+                    <div className="flex-1 min-w-0 flex items-center gap-2xs">
                       <TabTooltip
                         text={displayLabel}
                         className={`

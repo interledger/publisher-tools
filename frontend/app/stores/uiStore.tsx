@@ -8,7 +8,10 @@ import React, {
 } from 'react'
 import type { ReactNode } from 'react'
 
-type UIState = Record<string, never>
+type UIState = {
+  contentComplete: boolean
+  appearanceComplete: boolean
+}
 
 interface WalletInputRef {
   focus: () => void
@@ -17,6 +20,8 @@ interface WalletInputRef {
 interface UIActions {
   focusWalletInput: () => void
   registerWalletInput: (ref: WalletInputRef) => () => void
+  setContentComplete: (complete: boolean) => void
+  setAppearanceComplete: (complete: boolean) => void
 }
 
 interface UIContextType {
@@ -33,6 +38,8 @@ interface UIProviderProps {
 export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const walletInputRef = useRef<WalletInputRef | null>(null)
   const [shouldFocusWallet, setShouldFocusWallet] = useState(false)
+  const [contentComplete, setContentComplete] = useState(false)
+  const [appearanceComplete, setAppearanceComplete] = useState(false)
 
   useEffect(() => {
     if (shouldFocusWallet && walletInputRef.current) {
@@ -53,11 +60,16 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     }
   }, [])
 
-  const state: UIState = {}
+  const state: UIState = {
+    contentComplete,
+    appearanceComplete
+  }
 
   const actions: UIActions = {
     focusWalletInput,
-    registerWalletInput
+    registerWalletInput,
+    setContentComplete,
+    setAppearanceComplete
   }
 
   return (
