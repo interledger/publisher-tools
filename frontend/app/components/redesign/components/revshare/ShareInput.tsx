@@ -219,7 +219,10 @@ export const ShareInput = React.memo(
           </div>
         </div>
         <div role="cell" aria-labelledby="col-percentage">
-          <div id={percentInputId} className="ml-2xs md:ml-0 md:text-center">
+          <div
+            id={percentInputId}
+            className="ml-2xs md:ml-0 md:text-center text-field-helpertext-default"
+          >
             {Math.round(percent * 100)}%
           </div>
         </div>
