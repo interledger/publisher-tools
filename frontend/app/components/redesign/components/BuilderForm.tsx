@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { ContentBuilder, AppearanceBuilder, TabSelector } from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
+import { useUI } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
 import type { ToolContent } from './ContentBuilder'
 import type { ToolAppearance } from './AppearanceBuilder'
@@ -23,18 +24,14 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   colorsSelector
 }) => {
   const snap = useSnapshot(toolState)
-  const [expandedSection, setExpandedSection] = useState<
-    'content' | 'appearance' | null
-  >(null)
-  const [contentComplete, setContentComplete] = useState(false)
-  const [appearanceComplete, setAppearanceComplete] = useState(false)
+  const { state: uiState, actions: uiActions } = useUI()
 
   useEffect(() => {
-    const bothComplete = contentComplete && appearanceComplete
+    const bothComplete = uiState.contentComplete && uiState.appearanceComplete
     if (onBuildStepComplete) {
       onBuildStepComplete(bothComplete)
     }
-  }, [contentComplete, appearanceComplete, onBuildStepComplete])
+  }, [uiState.contentComplete, uiState.appearanceComplete, onBuildStepComplete])
 
   const handleTabSelect = (stableKey: StableKey) => {
     toolActions.selectVersion(stableKey)
@@ -44,37 +41,14 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
     toolActions.updateVersionLabel(stableKey, newLabel)
   }
 
-  const handleContentToggle = () => {
-    setExpandedSection(expandedSection === 'content' ? null : 'content')
-
-    // mark content as complete after first toggle
-    setContentComplete(true)
-  }
-
-  const handleAppearanceToggle = () => {
-    setExpandedSection(expandedSection === 'appearance' ? null : 'appearance')
-
-    // mark appearance as complete after first toggle
-    setAppearanceComplete(true)
-  }
-
   const handleContentDone = () => {
-    setContentComplete(true)
-    setExpandedSection(null)
-
-    if (!appearanceComplete) {
-      setExpandedSection('appearance')
-    }
+    uiActions.setContentComplete(true)
   }
 
   const handleAppearanceDone = () => {
-    setAppearanceComplete(true)
-    setExpandedSection(null)
-
-    if (!contentComplete) {
-      setExpandedSection('content')
-    }
+    uiActions.setAppearanceComplete(true)
   }
+
   return (
     <div className="flex flex-col">
       <TabSelector
@@ -95,28 +69,20 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         ${className}
       `}
       >
-        <div className="w-full">
-          <ContentBuilder
-            isComplete={contentComplete}
-            isExpanded={expandedSection === 'content'}
-            onToggle={handleContentToggle}
-            onDone={handleContentDone}
-            content={content}
-            activeVersion={snap.activeVersion}
-          />
-        </div>
-        <div className="w-full">
-          <AppearanceBuilder
-            isComplete={appearanceComplete}
-            isExpanded={expandedSection === 'appearance'}
-            onToggle={handleAppearanceToggle}
-            onDone={handleAppearanceDone}
-            appearance={appearance}
-            positionSelector={positionSelector}
-            colorsSelector={colorsSelector}
-            activeVersion={snap.activeVersion}
-          />
-        </div>
+        <ContentBuilder
+          isComplete={uiState.contentComplete}
+          onDone={handleContentDone}
+          content={content}
+          activeVersion={snap.activeVersion}
+        />
+        <AppearanceBuilder
+          isComplete={uiState.appearanceComplete}
+          onDone={handleAppearanceDone}
+          appearance={appearance}
+          positionSelector={positionSelector}
+          colorsSelector={colorsSelector}
+          activeVersion={snap.activeVersion}
+        />
       </div>
     </div>
   )

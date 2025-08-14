@@ -56,7 +56,8 @@ export type CornerType = keyof typeof CORNER_OPTION
 
 export const SLIDE_ANIMATION = {
   None: 'None',
-  Down: 'Down'
+  FadeIn: 'FadeIn',
+  Slide: 'Slide'
 } as const
 export type SlideAnimationType = keyof typeof SLIDE_ANIMATION
 

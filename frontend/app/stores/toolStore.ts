@@ -4,7 +4,6 @@ import { getDefaultData } from '@shared/default-data'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
-import { validateConfigurations } from '~/utils/validate.client.js'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -639,7 +638,7 @@ export function loadState(
         typeof parsed === 'object' &&
         Object.keys(parsed).every((key) => key in toolState)
 
-      if (validKeys && validateConfigurations(parsed.configurations).success) {
+      if (validKeys) {
         Object.assign(toolState, parsedStorageData(parsed))
       } else {
         throw new Error('saved configuration not valid')
