@@ -111,7 +111,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
     const details = e.currentTarget
     if (details.open) {
-      // set as complete when opened for the first time
       setIsOpen(true)
       uiActions.setAppearanceComplete(true)
     } else {
@@ -129,7 +128,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
     <details
       key={activeVersion}
       name="builder-accordion"
-      className={`flex flex-col rounded-lg transition-all duration-300 ease-in-out ${
+      className={`flex flex-col rounded-lg transition-transform duration-300 ease-in-out ${
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'
       }`}
       onToggle={handleToggle}
@@ -140,12 +139,12 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         }`}
         aria-label="Toggle appearance section"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-xs">
           {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
           <Heading5>Appearance</Heading5>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-xs">
           {isOpen && (
             <button
               className="w-12 h-12 rounded-lg flex items-center justify-center"
@@ -168,7 +167,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         </div>
       </summary>
 
-      <div className="flex flex-col gap-sm">
+      <div className="flex flex-col gap-sm mt-sm">
         <div className="flex flex-col gap-xs">
           <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
           <ToolsDropdown
@@ -183,9 +182,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               value: index.toString()
             }))}
           />
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2xs">
             <label className="text-xs leading-xs text-silver-700">Size</label>
-            <div className="flex items-center h-12 gap-4">
+            <div className="flex items-center h-12 gap-md">
               <button
                 className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
                 onClick={() => {
@@ -230,7 +229,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         </div>
         <Divider />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-xs">
           <SectionHeader
             icon={<SVGColorPicker className="w-5 h-5" />}
             label="Colors"

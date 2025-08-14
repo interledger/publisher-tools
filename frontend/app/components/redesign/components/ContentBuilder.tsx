@@ -60,7 +60,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
     const details = e.currentTarget
     if (details.open) {
-      // set as complete when opened for the first time
       setIsOpen(true)
       uiActions.setContentComplete(true)
     } else {
@@ -78,7 +77,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     <details
       key={activeVersion}
       name="builder-accordion"
-      className={`flex flex-col rounded-lg transition-all duration-300 ease-in-out ${
+      className={`flex flex-col rounded-lg transition-transform duration-300 ease-in-out ${
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'
       }`}
       onToggle={handleToggle}
@@ -91,12 +90,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
         aria-label="Toggle content section"
         aria-expanded={isOpen}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-xs">
           {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
           <Heading5>Content</Heading5>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-xs">
           {isOpen && (
             <button
               className="w-12 h-12 rounded-lg flex items-center justify-center"
@@ -121,20 +120,13 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
         </div>
       </summary>
 
-      <div
-        className="flex flex-col"
-        role="region"
-        aria-labelledby="content-section"
-      >
+      <div className="flex flex-col mt-sm">
         <div className="flex flex-col gap-lg">
           <div className="flex flex-col gap-xs">
-            <h4
-              id="content-section"
-              className="text-base leading-md font-bold text-text-primary"
-            >
+            <h4 className="text-base leading-md font-bold text-text-primary">
               Suggested title
             </h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-xs">
               {content.suggestedTitles.map((title) => (
                 <PillTagButton
                   key={title}
@@ -150,7 +142,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
           </div>
           <Divider />
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-xs">
             <h4 className="text-base leading-md font-bold text-text-primary">
               Custom title
             </h4>
@@ -173,12 +165,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
           <Divider />
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-xs">
             <h4 className="text-base leading-md font-bold text-text-primary">
               {content.messageLabel}
             </h4>
             <div className="flex gap-lg items-start xl:flex-row flex-col">
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-xs shrink-0">
                 <Checkbox
                   checked={isMessageActive}
                   onChange={() => setIsMessageActive(!isMessageActive)}
