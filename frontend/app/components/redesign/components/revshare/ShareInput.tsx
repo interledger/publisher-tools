@@ -11,12 +11,10 @@ interface ShareInputProps {
   weight: number
   percent: number
   placeholder?: string
-  percentDisabled?: boolean
   weightDisabled?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
-  onChangePercent: (percent: number) => void
   onRemove: () => void
   validatePointer: (pointer: string) => boolean
 }
@@ -24,19 +22,15 @@ interface ShareInputProps {
 const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
 const GRID_GAP = 'md:gap-x-md'
 
-export const ShareInputTable = ({
-  children
-}: {
-  children: React.ReactNode
-}) => {
+export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
   return (
     <div
       role="table"
       aria-labelledby="revshare-table-caption"
       className="contents"
     >
-      <div id="revshare-table-caption" className="sr-only">
-        Revenue sharing recipients table
+      <div id="revshare-table-caption" role="caption" className="sr-only">
+        Revenue sharing recipients
       </div>
       {children}
     </div>
@@ -45,50 +39,52 @@ export const ShareInputTable = ({
 
 export const ShareInputHeader = () => {
   return (
-    <div
-      role="row"
-      aria-rowindex={1}
-      className={cx(
-        'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
-        'md:grid',
-        GRID_COLS,
-        GRID_GAP
-      )}
-    >
+    <div role="rowgroup">
       <div
-        role="columnheader"
-        id="col-recipient-name"
-        aria-label="Recipient name, optional field"
+        role="row"
+        aria-rowindex={1}
+        className={cx(
+          'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
+          'md:grid',
+          GRID_COLS,
+          GRID_GAP
+        )}
       >
-        Name
-      </div>
-      <div
-        role="columnheader"
-        id="col-payment-pointer"
-        aria-label="Wallet address or payment pointer for recipient, required field"
-      >
-        Wallet Address/Payment Pointer
-      </div>
-      <div
-        role="columnheader"
-        id="col-weight"
-        aria-label="Weight value for revenue distribution, required field"
-      >
-        Weight
-      </div>
-      <div
-        role="columnheader"
-        id="col-percentage"
-        aria-label="Calculated percentage of total revenue based on weight"
-      >
-        Percentage
-      </div>
-      <div
-        role="columnheader"
-        id="col-action"
-        aria-label="Action to remove recipient from table"
-      >
-        Action
+        <div
+          role="columnheader"
+          id="col-recipient-name"
+          aria-label="Recipient name, optional field"
+        >
+          Name
+        </div>
+        <div
+          role="columnheader"
+          id="col-payment-pointer"
+          aria-label="Wallet address or payment pointer for recipient, required field"
+        >
+          Wallet Address/Payment Pointer
+        </div>
+        <div
+          role="columnheader"
+          id="col-weight"
+          aria-label="Weight value for revenue distribution, required field"
+        >
+          Weight
+        </div>
+        <div
+          role="columnheader"
+          id="col-percentage"
+          aria-label="Calculated percentage of total revenue based on weight"
+        >
+          Percentage
+        </div>
+        <div
+          role="columnheader"
+          id="col-delete"
+          aria-label="Delete recipient from table"
+        >
+          Delete
+        </div>
       </div>
     </div>
   )
@@ -105,10 +101,8 @@ export const ShareInput = React.memo(
     onChangeName,
     onChangePointer,
     onChangeWeight,
-    onChangePercent,
     onRemove,
     validatePointer,
-    percentDisabled = false,
     weightDisabled = false
   }: ShareInputProps) => {
     const hasError = !validatePointer(pointer)
@@ -138,7 +132,7 @@ export const ShareInput = React.memo(
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
           >
-            <SVGDeleteScript className="w-5 h-5" />
+            <SVGDeleteScript className="w-6 h-6" />
           </ToolsSecondaryButton>
         </div>
         <div role="cell" aria-labelledby="col-recipient-name">
@@ -224,32 +218,18 @@ export const ShareInput = React.memo(
             Weight value for calculating revenue share.
           </div>
         </div>
-        <div role="cell" aria-labelledby="col-percent">
-          <label htmlFor={percentInputId} className="sr-only">
-            Percentage
-          </label>
-          <InputField
+        <div role="cell" aria-labelledby="col-percentage">
+          <div
             id={percentInputId}
-            type="number"
-            min={0}
-            max={100}
-            step="any"
-            value={typeof percent === 'number' ? Math.round(percent * 100) : ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onChangePercent(Number(e.target.value) / 100)
-            }
-            disabled={percentDisabled}
-            aria-disabled={percentDisabled}
-            aria-describedby={`percent-description-${index}`}
-          />
-          <div id={`percent-description-${index}`} className="sr-only">
-            Calculated from weight, or can be edited directly.
+            className="ml-2xs md:ml-0 md:text-center text-field-helpertext-default"
+          >
+            {Math.round(percent * 100)}%
           </div>
         </div>
         <div
           role="cell"
           className="hidden md:block"
-          aria-labelledby="col-action"
+          aria-labelledby="col-delete"
         >
           <ToolsSecondaryButton
             onClick={onRemove}
@@ -257,7 +237,7 @@ export const ShareInput = React.memo(
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
           >
-            <SVGDeleteScript className="w-5 h-5" />
+            <SVGDeleteScript className="w-6 h-6" />
           </ToolsSecondaryButton>
         </div>
       </div>
