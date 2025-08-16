@@ -152,6 +152,11 @@ function Revshare() {
     [shares, setShares]
   )
 
+  const showDeleteColumn = useMemo(
+    () => shares.some((share) => !!share.pointer),
+    [shares]
+  )
+
   const hasValidShares = validateShares(shares)
 
   return (
@@ -170,7 +175,7 @@ function Revshare() {
         <Card>
           <Heading5>Recipients</Heading5>
           <ShareInputTable>
-            <ShareInputHeader />
+            <ShareInputHeader showDelete={showDeleteColumn} />
             <div role="rowgroup" className="contents">
               {shares.map((share, i) => {
                 return (
@@ -200,6 +205,7 @@ function Revshare() {
                     }
                     onRemove={() => handleRemove(i)}
                     validatePointer={validatePointer}
+                    showDelete={showDeleteColumn}
                     placeholder={getPlaceholderText(i)}
                   />
                 )
