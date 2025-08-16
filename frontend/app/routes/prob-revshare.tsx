@@ -197,7 +197,9 @@ function Revshare() {
           </div>
         </Card>
         <div className="my-lg md:my-md">
-          <RevShareChart shares={shares} />
+          {revSharePointers && hasValidShares && (
+            <RevShareChart shares={shares} />
+          )}
         </div>
         <RevShareInfo />
       </div>
