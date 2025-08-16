@@ -32,6 +32,7 @@ export function ToolsSecondaryButton({
         'gap-2',
         'focus:outline-none focus:ring-2 focus:ring-primary-focus',
         'transition-all duration-200',
+        'disabled:cursor-not-allowed disabled:hover:bg-transparent',
         className
       )}
       onClick={onClick}
