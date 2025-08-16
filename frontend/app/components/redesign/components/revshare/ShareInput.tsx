@@ -13,6 +13,7 @@ interface ShareInputProps {
   placeholder?: string
   percentDisabled?: boolean
   weightDisabled?: boolean
+  showDelete?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
@@ -20,8 +21,8 @@ interface ShareInputProps {
   onRemove: () => void
   validatePointer: (pointer: string) => boolean
 }
-
-const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
+const GRID_COLS_WITH_DELETE = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
+const GRID_COLS_WITHOUT_DELETE = 'md:grid-cols-[16rem_1fr_6rem_6rem]'
 const GRID_GAP = 'md:gap-x-md'
 
 export const ShareInputTable = ({
@@ -43,7 +44,7 @@ export const ShareInputTable = ({
   )
 }
 
-export const ShareInputHeader = () => {
+export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
   return (
     <div
       role="row"
@@ -51,7 +52,7 @@ export const ShareInputHeader = () => {
       className={cx(
         'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
         'md:grid',
-        GRID_COLS,
+        showDelete ? GRID_COLS_WITH_DELETE : GRID_COLS_WITHOUT_DELETE,
         GRID_GAP
       )}
     >
@@ -83,13 +84,15 @@ export const ShareInputHeader = () => {
       >
         Percentage
       </div>
-      <div
-        role="columnheader"
-        id="col-delete"
-        aria-label="Delete recipient from table"
-      >
-        Delete
-      </div>
+      {showDelete && (
+        <div
+          role="columnheader"
+          id="col-delete"
+          aria-label="Delete recipient from table"
+        >
+          Delete
+        </div>
+      )}
     </div>
   )
 }
@@ -109,7 +112,8 @@ export const ShareInput = React.memo(
     onRemove,
     validatePointer,
     percentDisabled = false,
-    weightDisabled = false
+    weightDisabled = false,
+    showDelete = false
   }: ShareInputProps) => {
     const hasError = !validatePointer(pointer)
     const nameInputId = `name-input-${index}`
@@ -125,7 +129,7 @@ export const ShareInput = React.memo(
         className={cx(
           'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
-          GRID_COLS,
+          showDelete ? GRID_COLS_WITH_DELETE : GRID_COLS_WITHOUT_DELETE,
           GRID_GAP,
           hasError ? 'md:mb-2xs' : ''
         )}
@@ -248,22 +252,24 @@ export const ShareInput = React.memo(
             Calculated from weight, or can be edited directly.
           </div>
         </div>
-        <div
-          role="cell"
-          className="hidden md:block"
-          aria-labelledby="col-delete"
-        >
-          <ToolsSecondaryButton
-            onClick={onRemove}
-            className="border-none py-sm px-xs shrink-0"
-            aria-label="Remove recipient"
-            aria-describedby={pointerInputId}
-            disabled={!pointer}
-            aria-disabled={!pointer}
+        {showDelete && (
+          <div
+            role="cell"
+            className="hidden md:block"
+            aria-labelledby="col-delete"
           >
-            <SVGDeleteScript className="w-6 h-6" />
-          </ToolsSecondaryButton>
-        </div>
+            <ToolsSecondaryButton
+              onClick={onRemove}
+              className="border-none py-sm px-xs shrink-0"
+              aria-label="Remove recipient"
+              aria-describedby={pointerInputId}
+              disabled={!pointer}
+              aria-disabled={!pointer}
+            >
+              <SVGDeleteScript className="w-6 h-6" />
+            </ToolsSecondaryButton>
+          </div>
+        )}
       </div>
     )
   }
