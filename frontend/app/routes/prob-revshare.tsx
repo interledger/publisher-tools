@@ -208,7 +208,7 @@ function Revshare() {
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {revSharePointers && hasValidShares && (
-              <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main">
+              <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main pr-sm">
                 <CodeBlock
                   link={revSharePointers}
                   className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal"
