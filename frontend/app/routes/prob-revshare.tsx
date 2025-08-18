@@ -21,10 +21,8 @@ import {
   dropIndex,
   sharesToPaymentPointer,
   tagOrPointerToShares,
-  trimDecimal,
   validatePointer,
-  validateShares,
-  weightFromPercent
+  validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
