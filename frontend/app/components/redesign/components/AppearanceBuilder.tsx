@@ -12,7 +12,6 @@ import {
 } from '@/assets'
 import {
   Thumbnail,
-  ToolsSecondaryButton,
   ToolsDropdown,
   CornerRadiusSelector,
   Divider,
@@ -66,6 +65,7 @@ interface AppearanceBuilderProps {
   appearance: ToolAppearance
   isComplete?: boolean
   onDone?: () => void
+  onRefresh?: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
   activeVersion?: string
@@ -81,6 +81,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   appearance,
   isComplete,
   onDone,
+  onRefresh,
   positionSelector,
   colorsSelector,
   activeVersion
@@ -111,12 +112,8 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   }
 
   const handleRefresh = () => {
-    console.log('Refresh')
-  }
-
-  const handleDoneClick = () => {
-    if (onDone) {
-      onDone()
+    if (onRefresh) {
+      onRefresh()
     }
   }
 
@@ -127,10 +124,12 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       activeVersion={activeVersion}
       onToggle={handleToggle}
       onRefresh={handleRefresh}
+      onDone={onDone}
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
         <ToolsDropdown
+          key={`font-${appearance.fontName}`}
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
@@ -201,6 +200,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
+          key={`corner-${appearance.borderRadius}}`}
           defaultValue={appearance.borderRadius}
           onChange={(value) => appearance.onBorderChange(value)}
         />
@@ -209,7 +209,10 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
 
       {positionSelector && (
         <>
-          <div className="flex flex-col gap-xs">
+          <div
+            className="flex flex-col gap-xs"
+            key={`position-${appearance.position}`}
+          >
             <SectionHeader
               icon={<SVGHeaderPosition className="w-5 h-5" />}
               label="Position"
@@ -239,6 +242,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               />
               <div className="flex-1 w-full xl:w-auto">
                 <ToolsDropdown
+                  key={`animation-${appearance.slideAnimation}`}
                   label="Type"
                   disabled={!isAnimated}
                   defaultValue={
@@ -285,17 +289,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
             ))}
           </div>
         </div>
-      </div>
-
-      <Divider />
-
-      <div className="flex justify-end">
-        <ToolsSecondaryButton
-          className="w-full xl:w-[140px]"
-          onClick={handleDoneClick}
-        >
-          Done
-        </ToolsSecondaryButton>
       </div>
     </BuilderAccordion>
   )

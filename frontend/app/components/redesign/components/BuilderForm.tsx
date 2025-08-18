@@ -11,6 +11,8 @@ interface BuilderFormProps {
   appearance: ToolAppearance
   className?: string
   onBuildStepComplete?: (isComplete: boolean) => void
+  onAppearanceRefresh?: () => void
+  onContentRefresh?: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
 }
@@ -18,6 +20,8 @@ interface BuilderFormProps {
 export const BuilderForm: React.FC<BuilderFormProps> = ({
   className = '',
   onBuildStepComplete,
+  onAppearanceRefresh,
+  onContentRefresh,
   content,
   appearance,
   positionSelector,
@@ -72,12 +76,14 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         <ContentBuilder
           isComplete={uiState.contentComplete}
           onDone={handleContentDone}
+          onRefresh={onContentRefresh}
           content={content}
           activeVersion={snap.activeVersion}
         />
         <AppearanceBuilder
           isComplete={uiState.appearanceComplete}
           onDone={handleAppearanceDone}
+          onRefresh={onAppearanceRefresh}
           appearance={appearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}

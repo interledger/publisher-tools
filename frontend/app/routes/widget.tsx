@@ -192,9 +192,7 @@ export default function Widget() {
     onMessageChange: (message: string) =>
       toolActions.setToolConfig({ widgetDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
-    onRefresh: () =>
-      toolActions.setToolConfig({ widgetTitleText: 'Support this content' })
+      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') })
   }
 
   const appearanceConfiguration: WidgetToolAppearance = {
@@ -283,6 +281,31 @@ export default function Widget() {
     toolActions.setModal(undefined)
   }
 
+  const handleAppearanceRefresh = () => {
+    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    if (savedConfig) {
+      toolActions.setToolConfig({
+        widgetFontName: savedConfig.widgetFontName,
+        widgetFontSize: savedConfig.widgetFontSize,
+        widgetBackgroundColor: savedConfig.widgetBackgroundColor,
+        widgetTextColor: savedConfig.widgetTextColor,
+        widgetButtonBackgroundColor: savedConfig.widgetButtonBackgroundColor,
+        widgetButtonBorder: savedConfig.widgetButtonBorder,
+        widgetPosition: savedConfig.widgetPosition
+      })
+    }
+  }
+
+  const handleContentRefresh = () => {
+    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    if (savedConfig) {
+      toolActions.setToolConfig({
+        widgetTitleText: savedConfig.widgetTitleText,
+        widgetDescriptionText: savedConfig.widgetDescriptionText
+      })
+    }
+  }
+
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -346,6 +369,8 @@ export default function Widget() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }
+                      onAppearanceRefresh={handleAppearanceRefresh}
+                      onContentRefresh={handleContentRefresh}
                       positionSelector={
                         <WidgetPositionSelector
                           defaultValue={snap.currentConfig?.widgetPosition}

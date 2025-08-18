@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
 import { GhostButton } from './GhostButton'
 import { Heading5 } from '@/typography'
+import { ToolsSecondaryButton, Divider } from '@/components'
 
 interface BuilderAccordionProps {
   title: string
@@ -9,6 +10,7 @@ interface BuilderAccordionProps {
   activeVersion?: string
   onToggle?: (isOpen: boolean) => void
   onRefresh?: () => void
+  onDone?: () => void
   children: React.ReactNode
   className?: string
 }
@@ -19,6 +21,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   activeVersion,
   onToggle,
   onRefresh,
+  onDone,
   children,
   className = ''
 }) => {
@@ -46,6 +49,17 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   const handleRefresh = (e: React.MouseEvent) => {
     e.stopPropagation()
     onRefresh?.()
+  }
+
+  const handleDoneClick = () => {
+    setIsOpen(false)
+    if (detailsRef.current) {
+      detailsRef.current.open = false
+    }
+
+    if (onDone) {
+      onDone()
+    }
   }
 
   return (
@@ -89,7 +103,23 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         </GhostButton>
       )}
 
-      <div className="flex flex-col gap-sm mt-sm">{children}</div>
+      <div className="flex flex-col gap-sm mt-sm">
+        {children}
+
+        {isOpen && onDone && (
+          <>
+            <Divider />
+            <div className="flex justify-end">
+              <ToolsSecondaryButton
+                className="w-full xl:w-[140px]"
+                onClick={handleDoneClick}
+              >
+                Done
+              </ToolsSecondaryButton>
+            </div>
+          </>
+        )}
+      </div>
     </details>
   )
 }

@@ -204,9 +204,7 @@ export default function Banner() {
     onMessageChange: (message: string) =>
       toolActions.setToolConfig({ bannerDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
-    onRefresh: () =>
-      toolActions.setToolConfig({ bannerTitleText: 'How to support?' })
+      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') })
   }
 
   const appearanceConfiguration: BannerToolAppearance = {
@@ -298,6 +296,31 @@ export default function Banner() {
     toolActions.setModal(undefined)
   }
 
+  const handleAppearanceRefresh = () => {
+    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    if (savedConfig) {
+      toolActions.setToolConfig({
+        bannerFontName: savedConfig.bannerFontName,
+        bannerFontSize: savedConfig.bannerFontSize,
+        bannerBackgroundColor: savedConfig.bannerBackgroundColor,
+        bannerTextColor: savedConfig.bannerTextColor,
+        bannerBorder: savedConfig.bannerBorder,
+        bannerPosition: savedConfig.bannerPosition,
+        bannerSlideAnimation: savedConfig.bannerSlideAnimation
+      })
+    }
+  }
+
+  const handleContentRefresh = () => {
+    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    if (savedConfig) {
+      toolActions.setToolConfig({
+        bannerTitleText: savedConfig.bannerTitleText,
+        bannerDescriptionText: savedConfig.bannerDescriptionText
+      })
+    }
+  }
+
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -360,6 +383,8 @@ export default function Banner() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }
+                      onAppearanceRefresh={handleAppearanceRefresh}
+                      onContentRefresh={handleContentRefresh}
                       positionSelector={
                         <BannerPositionSelector
                           defaultValue={snap.currentConfig?.bannerPosition}
