@@ -134,8 +134,7 @@ function Revshare() {
     [shares, setShares]
   )
 
-  const showDeleteColumn = useMemo(() => shares.length > 2, [shares])
-
+  const showDeleteColumn = shares.length > 2
   const hasValidShares = validateShares(shares)
 
   return (
