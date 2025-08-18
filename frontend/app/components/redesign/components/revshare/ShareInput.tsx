@@ -141,8 +141,6 @@ export const ShareInput = React.memo(
             className="border-none py-sm px-xs shrink-0"
             aria-label="Remove recipient"
             aria-describedby={pointerInputId}
-            disabled={!pointer}
-            aria-disabled={!pointer}
           >
             <SVGDeleteScript className="w-6 h-6" />
           </ToolsSecondaryButton>
@@ -263,8 +261,6 @@ export const ShareInput = React.memo(
               className="border-none py-sm px-xs shrink-0"
               aria-label="Remove recipient"
               aria-describedby={pointerInputId}
-              disabled={!pointer}
-              aria-disabled={!pointer}
             >
               <SVGDeleteScript className="w-6 h-6" />
             </ToolsSecondaryButton>
