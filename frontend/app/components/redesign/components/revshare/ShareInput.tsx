@@ -129,14 +129,16 @@ export const ShareInput = React.memo(
       >
         <div className="flex flex-row justify-between items-center md:hidden">
           <BodyStandard>Recipient #{index + 1}</BodyStandard>
-          <ToolsSecondaryButton
-            onClick={onRemove}
-            className="border-none py-sm px-xs shrink-0"
-            aria-label="Remove recipient"
-            aria-describedby={pointerInputId}
-          >
-            <SVGDeleteScript className="w-6 h-6" />
-          </ToolsSecondaryButton>
+          {showDelete && (
+            <ToolsSecondaryButton
+              onClick={onRemove}
+              className="border-none py-sm px-xs shrink-0"
+              aria-label="Remove recipient"
+              aria-describedby={pointerInputId}
+            >
+              <SVGDeleteScript className="w-6 h-6" />
+            </ToolsSecondaryButton>
+          )}
         </div>
         <div role="cell" aria-labelledby="col-recipient-name">
           <label htmlFor={nameInputId} className="sr-only">
