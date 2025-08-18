@@ -12,14 +12,14 @@ interface ShareInputProps {
   percent: number
   placeholder?: string
   weightDisabled?: boolean
+  showDelete?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
   onRemove: () => void
   validatePointer: (pointer: string) => boolean
 }
-
-const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_auto]'
+const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
@@ -37,7 +37,7 @@ export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
   )
 }
 
-export const ShareInputHeader = () => {
+export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
   return (
     <div role="rowgroup">
       <div
@@ -78,13 +78,15 @@ export const ShareInputHeader = () => {
         >
           Percentage
         </div>
-        <div
-          role="columnheader"
-          id="col-delete"
-          aria-label="Delete recipient from table"
-        >
-          Delete
-        </div>
+        {showDelete && (
+          <div
+            role="columnheader"
+            id="col-delete"
+            aria-label="Delete recipient from table"
+          >
+            Delete
+          </div>
+        )}
       </div>
     </div>
   )
@@ -103,7 +105,8 @@ export const ShareInput = React.memo(
     onChangeWeight,
     onRemove,
     validatePointer,
-    weightDisabled = false
+    weightDisabled = false,
+    showDelete = false
   }: ShareInputProps) => {
     const hasError = !validatePointer(pointer)
     const nameInputId = `name-input-${index}`
@@ -226,20 +229,22 @@ export const ShareInput = React.memo(
             {Math.round(percent * 100)}%
           </div>
         </div>
-        <div
-          role="cell"
-          className="hidden md:block"
-          aria-labelledby="col-delete"
-        >
-          <ToolsSecondaryButton
-            onClick={onRemove}
-            className="border-none py-sm px-xs shrink-0"
-            aria-label="Remove recipient"
-            aria-describedby={pointerInputId}
+        {showDelete && (
+          <div
+            role="cell"
+            className="hidden md:block"
+            aria-labelledby="col-delete"
           >
-            <SVGDeleteScript className="w-6 h-6" />
-          </ToolsSecondaryButton>
-        </div>
+            <ToolsSecondaryButton
+              onClick={onRemove}
+              className="border-none py-sm px-xs shrink-0"
+              aria-label="Remove recipient"
+              aria-describedby={pointerInputId}
+            >
+              <SVGDeleteScript className="w-6 h-6" />
+            </ToolsSecondaryButton>
+          </div>
+        )}
       </div>
     )
   }

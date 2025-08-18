@@ -21,10 +21,8 @@ import {
   dropIndex,
   sharesToPaymentPointer,
   tagOrPointerToShares,
-  trimDecimal,
   validatePointer,
-  validateShares,
-  weightFromPercent
+  validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
@@ -128,11 +126,13 @@ function Revshare() {
 
   const handleRemove = useCallback(
     (index: number) => {
-      setShares(dropIndex(shares, index))
+      const newShares = dropIndex(shares, index)
+      setShares(newShares.length > 1 ? newShares : [...newShares, newShare()])
     },
     [shares, setShares]
   )
 
+  const showDeleteColumn = shares.length > 2
   const hasValidShares = validateShares(shares)
 
   return (
@@ -151,7 +151,7 @@ function Revshare() {
         <Card>
           <Heading5>Recipients</Heading5>
           <ShareInputTable>
-            <ShareInputHeader />
+            <ShareInputHeader showDelete={showDeleteColumn} />
             <div role="rowgroup" className="contents">
               {shares.map((share, i) => {
                 return (
@@ -172,6 +172,7 @@ function Revshare() {
                     }
                     onRemove={() => handleRemove(i)}
                     validatePointer={validatePointer}
+                    showDelete={showDeleteColumn}
                     placeholder={getPlaceholderText(i)}
                   />
                 )
