@@ -126,24 +126,6 @@ function Revshare() {
     [shares, setShares]
   )
 
-  const handleChangePercent = useCallback(
-    (
-      index: number,
-      percent: number,
-      shareWeight: number,
-      totalWeight: number
-    ) => {
-      setShares(
-        changeList(shares, index, {
-          weight: trimDecimal(
-            weightFromPercent(percent, shareWeight || 1, totalWeight)
-          )
-        })
-      )
-    },
-    [shares, setShares]
-  )
-
   const handleRemove = useCallback(
     (index: number) => {
       const newShares = dropIndex(shares, index)
@@ -189,15 +171,6 @@ function Revshare() {
                     weightDisabled={!share.pointer}
                     percent={
                       totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
-                    }
-                    percentDisabled={!share.pointer || shares.length <= 1}
-                    onChangePercent={(percent) =>
-                      handleChangePercent(
-                        i,
-                        percent,
-                        share.weight || 1,
-                        totalWeight
-                      )
                     }
                     onRemove={() => handleRemove(i)}
                     validatePointer={validatePointer}
