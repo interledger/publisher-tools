@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
-import { SVGDeleteScript } from '@/assets'
+import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
+import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {
   index: number
@@ -16,8 +17,8 @@ interface ShareInputProps {
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
+  onValidationChange: (isValid: boolean | null) => void
   onRemove: () => void
-  validatePointer: (pointer: string) => boolean
 }
 const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
@@ -103,12 +104,23 @@ export const ShareInput = React.memo(
     onChangeName,
     onChangePointer,
     onChangeWeight,
+    onValidationChange,
     onRemove,
-    validatePointer,
-    weightDisabled = false,
-    showDelete = false
+    showDelete = false,
+    weightDisabled = false
   }: ShareInputProps) => {
-    const hasError = !validatePointer(pointer)
+    const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
+
+    useEffect(() => {
+      onValidationChange(isValid)
+    }, [isValid, onValidationChange])
+
+    // Use the debounced validation result, but fall back to the original validation for empty strings
+    const hasError = Boolean(error)
+    const showValidationSpinner = isValidating
+    const showSuccessIcon = isValid === true && !isValidating
+    const showIcon = showValidationSpinner || showSuccessIcon
+
     const nameInputId = `name-input-${index}`
     const pointerInputId = `pointer-input-${index}`
     const weightInputId = `weight-input-${index}`
@@ -177,12 +189,25 @@ export const ShareInput = React.memo(
               `pointer-description-${index}`,
               hasError ? `pointer-error-${index}` : ''
             )}
+            required
             aria-required="true"
+            className={cx(
+              showIcon && 'pr-10',
+              hasError && 'border-field-border-error'
+            )}
           />
+          {showIcon && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              {showValidationSpinner && <SVGSpinner className="w-4 h-4" />}
+              {showSuccessIcon && (
+                <SVGCheckIcon className="w-4 h-4 text-text-success" />
+              )}
+            </div>
+          )}
           <div id={`pointer-description-${index}`} className="sr-only">
             Required wallet address for this recipient.
           </div>
-          {hasError && (
+          {hasError && error && (
             <div
               id={`pointer-error-${index}`}
               className="absolute left-0 text-xs mt-2xs text-text-error"
@@ -190,7 +215,7 @@ export const ShareInput = React.memo(
               aria-live="polite"
               aria-atomic="true"
             >
-              Invalid payment pointer.
+              {error}
               <span className="sr-only">
                 &nbsp;Please check the format and try again.
               </span>
@@ -214,8 +239,10 @@ export const ShareInput = React.memo(
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeWeight(Number(e.target.value))
             }
-            disabled={weightDisabled}
-            aria-disabled={weightDisabled}
+            disabled={weightDisabled || (Boolean(pointer) && isValid !== true)}
+            aria-disabled={
+              weightDisabled || (Boolean(pointer) && isValid !== true)
+            }
             aria-describedby={`weight-description-${index}`}
             aria-required="true"
           />

@@ -62,6 +62,9 @@ function Revshare() {
   const [importTag, setImportTag] = useState('')
   const [importError, setImportError] = useState('')
   const { shares, setShares } = useShares()
+  const [validityMap, setValidityMap] = useState<
+    Record<number, boolean | null>
+  >({})
 
   const revSharePointers = useMemo(
     () => sharesToPaymentPointer(shares),
@@ -106,7 +109,7 @@ function Revshare() {
 
   const handleChangePointer = useCallback(
     (index: number, pointer: string) => {
-      setShares(changeList(shares, index, { pointer }))
+      setShares(changeList(shares, index, { pointer: pointer.trim() }))
     },
     [shares, setShares]
   )
@@ -127,7 +130,26 @@ function Revshare() {
   )
 
   const showDeleteColumn = shares.length > 2
-  const hasValidShares = validateShares(shares)
+  const handleValidationChange = useCallback(
+    (index: number, isValid: boolean | null) => {
+      setValidityMap((prevMap) => ({
+        ...prevMap,
+        [index]: isValid
+      }))
+    },
+    []
+  )
+
+  const hasValidShares = useMemo(() => {
+    if (
+      shares.length === 0 ||
+      shares.length !== Object.keys(validityMap).length
+    ) {
+      return false
+    }
+    // Every share must have a validation result of `true`.
+    return Object.values(validityMap).every((isValid) => isValid === true)
+  }, [shares.length, validityMap])
 
   return (
     <div className="bg-interface-bg-main w-full px-md">
@@ -164,8 +186,10 @@ function Revshare() {
                     percent={
                       totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
                     }
+                    onValidationChange={(isValid) =>
+                      handleValidationChange(i, isValid)
+                    }
                     onRemove={() => handleRemove(i)}
-                    validatePointer={validatePointer}
                     showDelete={showDeleteColumn}
                     placeholder={getPlaceholderText(i)}
                   />
