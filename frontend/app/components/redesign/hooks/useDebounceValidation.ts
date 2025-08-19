@@ -10,7 +10,10 @@ interface ValidationState {
   error: string | null
 }
 
-export function useDebounceValidation(value: string, delay: number = 500): ValidationState {
+export function useDebounceValidation(
+  value: string,
+  delay: number = 500
+): ValidationState {
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
     isValid: null,
@@ -30,13 +33,13 @@ export function useDebounceValidation(value: string, delay: number = 500): Valid
         return
       }
 
-    setValidationState({
-      isValidating: true,
-      isValid: null,
-      error: null
-    })
+      setValidationState({
+        isValidating: true,
+        isValid: null,
+        error: null
+      })
 
-      let finalState: Pick<ValidationState, 'isValid' | 'error'>;
+      let finalState: Pick<ValidationState, 'isValid' | 'error'>
 
       try {
         await validateAndConfirmPointer(pointer)
