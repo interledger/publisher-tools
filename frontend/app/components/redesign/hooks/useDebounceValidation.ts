@@ -10,12 +10,6 @@ interface ValidationState {
   error: string | null
 }
 
-/**
- * Custom hook for debounced wallet address validation
- * @param value - The wallet address/pointer to validate
- * @param delay - Debounce delay in milliseconds (default: 500ms)
- * @returns ValidationState with isValidating, isValid, and error
- */
 export function useDebounceValidation(value: string, delay: number = 500): ValidationState {
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
@@ -24,8 +18,6 @@ export function useDebounceValidation(value: string, delay: number = 500): Valid
   })
 
   useEffect(() => {
-    // A flag to handle race conditions.
-    // We only want to update state if this is the most recent validation request.
     let isCurrent = true
 
     const validatePointer = async (pointer: string) => {
@@ -72,8 +64,6 @@ export function useDebounceValidation(value: string, delay: number = 500): Valid
       validatePointer(value)
     }, delay)
 
-    // Cleanup function to run when the effect is re-run or component unmounts.
-    // This prevents state updates from stale validation requests.
     return () => {
       isCurrent = false
       clearTimeout(timeoutId)

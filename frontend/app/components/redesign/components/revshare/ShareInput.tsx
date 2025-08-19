@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
@@ -110,16 +110,30 @@ export const ShareInput = React.memo(
     weightDisabled = false
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
+    const [showSuccess, setShowSuccess] = useState(false)
 
     useEffect(() => {
       onValidationChange(isValid)
     }, [isValid, onValidationChange])
 
-    // Use the debounced validation result, but fall back to the original validation for empty strings
+    useEffect(() => {
+      let timerId: NodeJS.Timeout | undefined
+      if (isValid === true) {
+        setShowSuccess(true)
+        timerId = setTimeout(() => {
+          setShowSuccess(false)
+        }, 1500)
+      } else {
+        setShowSuccess(false)
+      }
+      return () => {
+        clearTimeout(timerId)
+      }
+    }, [isValid])
+
     const hasError = Boolean(error)
     const showValidationSpinner = isValidating
-    const showSuccessIcon = isValid === true && !isValidating
-    const showIcon = showValidationSpinner || showSuccessIcon
+    const showIcon = showValidationSpinner || showSuccess
 
     const nameInputId = `name-input-${index}`
     const pointerInputId = `pointer-input-${index}`
@@ -199,9 +213,7 @@ export const ShareInput = React.memo(
           {showIcon && (
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
               {showValidationSpinner && <SVGSpinner className="w-4 h-4" />}
-              {showSuccessIcon && (
-                <SVGCheckIcon className="w-4 h-4 text-text-success" />
-              )}
+              {showSuccess && <SVGCheckIcon className="w-4 h-4" />}
             </div>
           )}
           <div id={`pointer-description-${index}`} className="sr-only">
