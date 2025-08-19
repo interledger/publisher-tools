@@ -42,7 +42,7 @@ export const CodeBlock = ({
       <button
         type="button"
         className={cx(
-          'sticky right-0 h-full flex items-center justify-center px-xs rounded-sm bg-interface-bg-main flex-shrink-0',
+          'sticky right-0 h-full flex items-center justify-center p-xs rounded-sm bg-interface-bg-main flex-shrink-0',
           copyButtonClassName
         )}
         onClick={handleCopyClick}
