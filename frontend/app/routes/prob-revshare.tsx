@@ -19,10 +19,8 @@ import {
   dropIndex,
   sharesToPaymentPointer,
   tagOrPointerToShares,
-  trimDecimal,
   validatePointer,
-  validateShares,
-  weightFromPercent
+  validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
@@ -120,31 +118,15 @@ function Revshare() {
     [shares, setShares]
   )
 
-  const handleChangePercent = useCallback(
-    (
-      index: number,
-      percent: number,
-      shareWeight: number,
-      totalWeight: number
-    ) => {
-      setShares(
-        changeList(shares, index, {
-          weight: trimDecimal(
-            weightFromPercent(percent, shareWeight || 1, totalWeight)
-          )
-        })
-      )
-    },
-    [shares, setShares]
-  )
-
   const handleRemove = useCallback(
     (index: number) => {
-      setShares(dropIndex(shares, index))
+      const newShares = dropIndex(shares, index)
+      setShares(newShares.length > 1 ? newShares : [...newShares, newShare()])
     },
     [shares, setShares]
   )
 
+  const showDeleteColumn = shares.length > 2
   const hasValidShares = validateShares(shares)
 
   return (
@@ -163,7 +145,7 @@ function Revshare() {
         <Card>
           <Heading5>Recipients</Heading5>
           <ShareInputTable>
-            <ShareInputHeader />
+            <ShareInputHeader showDelete={showDeleteColumn} />
             <div role="rowgroup" className="contents">
               {shares.map((share, i) => {
                 return (
@@ -182,17 +164,9 @@ function Revshare() {
                     percent={
                       totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
                     }
-                    percentDisabled={!share.pointer || shares.length <= 1}
-                    onChangePercent={(percent) =>
-                      handleChangePercent(
-                        i,
-                        percent,
-                        share.weight || 1,
-                        totalWeight
-                      )
-                    }
                     onRemove={() => handleRemove(i)}
                     validatePointer={validatePointer}
+                    showDelete={showDeleteColumn}
                     placeholder={getPlaceholderText(i)}
                   />
                 )
