@@ -32,11 +32,11 @@ export function useDebounceValidation(
       return
     }
 
-    setValidationState({
-      isValidating: true,
+    setValidationState(prevState => ({
+      ...prevState,
       isValid: null,
       error: null
-    })
+    }))
 
     const validatePointer = async (pointer: string) => {
       let finalState: Pick<ValidationState, 'isValid' | 'error'>
@@ -64,6 +64,10 @@ export function useDebounceValidation(
     }
 
     const timeoutId = setTimeout(() => {
+      setValidationState(prevState => ({
+        ...prevState,
+        isValidating: true
+      }))
       validatePointer(value)
     }, delay)
 
