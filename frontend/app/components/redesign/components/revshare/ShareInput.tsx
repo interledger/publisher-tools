@@ -11,7 +11,6 @@ interface ShareInputProps {
   pointer: string
   weight: number
   percent: number
-  placeholder?: string
   weightDisabled?: boolean
   showDelete?: boolean
   onChangeName: (name: string) => void
@@ -20,6 +19,8 @@ interface ShareInputProps {
   onValidationChange: (isValid: boolean | null) => void
   onRemove: () => void
 }
+
+const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
 const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
@@ -100,7 +101,6 @@ export const ShareInput = React.memo(
     pointer,
     weight,
     percent,
-    placeholder,
     onChangeName,
     onChangePointer,
     onChangeWeight,
@@ -193,7 +193,7 @@ export const ShareInput = React.memo(
           </label>
           <InputField
             id={pointerInputId}
-            placeholder={placeholder}
+            placeholder={DEFAULT_WALLET_ADDRESS}
             value={pointer}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangePointer(e.target.value)

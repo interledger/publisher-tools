@@ -23,22 +23,22 @@ export function useDebounceValidation(
   useEffect(() => {
     let isCurrent = true
 
-    const validatePointer = async (pointer: string) => {
-      if (!value.trim()) {
-        setValidationState({
-          isValidating: false,
-          isValid: null,
-          error: null
-        })
-        return
-      }
-
+    if (!value.trim()) {
       setValidationState({
-        isValidating: true,
+        isValidating: false,
         isValid: null,
         error: null
       })
+      return
+    }
 
+    setValidationState({
+      isValidating: true,
+      isValid: null,
+      error: null
+    })
+
+    const validatePointer = async (pointer: string) => {
       let finalState: Pick<ValidationState, 'isValid' | 'error'>
 
       try {

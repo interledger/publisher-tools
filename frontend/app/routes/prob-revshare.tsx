@@ -44,18 +44,6 @@ export default function RevsharePageWrapper() {
   )
 }
 
-const DEFAULT_PLACEHOLDER = 'Wallet Address/Payment Pointer'
-const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
-const DEFAULT_PAYMENT_POINTER = '$walletprovider.com/myWallet'
-
-const getPlaceholderText = (index: number) => {
-  return index === 0
-    ? DEFAULT_WALLET_ADDRESS
-    : index === 1
-      ? DEFAULT_PAYMENT_POINTER
-      : DEFAULT_PLACEHOLDER
-}
-
 function Revshare() {
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -191,7 +179,6 @@ function Revshare() {
                     }
                     onRemove={() => handleRemove(i)}
                     showDelete={showDeleteColumn}
-                    placeholder={getPlaceholderText(i)}
                   />
                 )
               })}
