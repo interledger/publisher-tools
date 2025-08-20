@@ -3,7 +3,7 @@ import { useNavigate } from '@remix-run/react'
 import type { MetaFunction } from '@remix-run/cloudflare'
 import {
   Card,
-  CodeBlock,
+  CodeBlockLink,
   HeadingCore,
   ImportTagModal,
   RevShareChart,
@@ -176,7 +176,7 @@ function Revshare() {
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {revSharePointers && hasValidShares && (
-              <CodeBlock link={revSharePointers} />
+              <CodeBlockLink link={revSharePointers} />
             )}
             <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
               <ToolsSecondaryButton

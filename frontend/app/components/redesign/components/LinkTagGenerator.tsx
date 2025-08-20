@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
+import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
 import { SVGSpinner } from '@/assets'
 import {
@@ -84,7 +84,7 @@ export const LinkTagGenerator = () => {
       </div>
 
       {showCodeBox && linkTag && (
-        <CodeBlock link={linkTag} onCopy={handleCopyStatusChange} />
+        <CodeBlockLink link={linkTag} onCopy={handleCopyStatusChange} />
       )}
 
       <ToolsPrimaryButton

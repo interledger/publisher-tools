@@ -9,7 +9,7 @@ type CodeBlockProps = {
   onCopy?: (copied: boolean) => void
 }
 
-export const CodeBlock = ({
+export const CodeBlockLink = ({
   link,
   className,
   copyButtonClassName,
