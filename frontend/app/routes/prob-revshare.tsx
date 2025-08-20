@@ -141,7 +141,7 @@ function Revshare() {
               {shares.map((share, i) => {
                 return (
                   <ShareInput
-                    key={i}
+                    key={share.id}
                     index={i}
                     name={share.name || ''}
                     pointer={share.pointer}

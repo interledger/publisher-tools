@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { useContext, useState, createContext, useEffect, useMemo } from 'react'
 import type { SharesState, Share } from '../lib/revshare'
 import { validateShares } from '../lib/revshare'
+import { generateShareId } from '@shared/utils'
 
 const SHARES_KEY = 'prob-revshare-shares'
 
@@ -19,6 +20,7 @@ SharesContext.displayName = 'SharesContext'
 
 export function newShare(): Share {
   return {
+    id: generateShareId(),
     name: '',
     pointer: '',
     weight: 1

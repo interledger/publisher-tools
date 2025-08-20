@@ -1,3 +1,4 @@
+import { generateShareId } from '@shared/utils'
 const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
@@ -15,6 +16,8 @@ const CHART_COLORS = [
 
 /** Represents a single revenue share participant */
 export type Share = {
+  /** Unique identifier for the share */
+  id: string
   /** An optional name for the recipient for display purposes */
   name?: string
   /** The payment pointer or wallet address of the recipient */
@@ -78,6 +81,7 @@ export function sharesFromPointerList(
   pointerList: [string, number, string][]
 ): SharesState {
   return pointerList.map(([pointer, weight, name]) => ({
+    id: generateShareId(),
     pointer,
     weight,
     name

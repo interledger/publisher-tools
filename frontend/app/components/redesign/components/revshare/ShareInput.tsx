@@ -114,7 +114,7 @@ export const ShareInput = React.memo(
 
     useEffect(() => {
       onValidationChange(index, isValid)
-    }, [index, isValid])
+    }, [isValid])
 
     useEffect(() => {
       let timerId: NodeJS.Timeout | undefined
