@@ -196,3 +196,7 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   await confirmWalletAddress(validUrl)
   return validUrl
 }
+
+export function generateShareId(): string {
+  return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
