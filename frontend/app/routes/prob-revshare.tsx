@@ -19,7 +19,6 @@ import {
   dropIndex,
   sharesToPaymentPointer,
   tagOrPointerToShares,
-  validatePointer,
   validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
@@ -50,23 +49,58 @@ function Revshare() {
   const [importTag, setImportTag] = useState('')
   const [importError, setImportError] = useState('')
   const { shares, setShares } = useShares()
-  const [validityMap, setValidityMap] = useState<
-    Record<number, boolean | null>
-  >({})
 
-  const revSharePointers = useMemo(
-    () => sharesToPaymentPointer(shares),
+  const showDeleteColumn = shares.length > 2
+  const revShareUrl = useMemo(
+    () => sharesToPaymentPointer(shares) ?? '',
     [shares]
   )
-
   const totalWeight = useMemo(
     () => shares.reduce((a, b) => a + Number(b.weight), 0),
     [shares]
   )
+  const hasValidShares = validateShares(shares)
 
   const addShare = useCallback(() => {
-    setShares([...shares, newShare()])
-  }, [shares, setShares])
+    setShares((prevShares) => [...prevShares, newShare()])
+  }, [setShares])
+
+  const handleRemove = useCallback(
+    (index: number) => {
+      setShares((prevShares) => dropIndex(prevShares, index))
+    },
+    [setShares]
+  )
+
+  const handleChangeName = useCallback(
+    (index: number, name: string) => {
+      setShares((prevShares) => changeList(prevShares, index, { name }))
+    },
+    [setShares]
+  )
+
+  const handleChangePointer = useCallback(
+    (index: number, pointer: string) => {
+      setShares((prevShares) =>
+        changeList(prevShares, index, { pointer: pointer.trim() })
+      )
+    },
+    [setShares]
+  )
+
+  const handleChangeWeight = useCallback(
+    (index: number, weight: number) => {
+      setShares((prevShares) => changeList(prevShares, index, { weight }))
+    },
+    [setShares]
+  )
+
+  const handleValidationChange = useCallback(
+    (index: number, isValid: boolean) => {
+      setShares((prevShares) => changeList(prevShares, index, { isValid }))
+    },
+    [setShares]
+  )
 
   const handleLinkTagImport = useCallback(() => {
     try {
@@ -82,62 +116,9 @@ function Revshare() {
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
-    if (importError) {
-      setImportError('')
-    }
+    setImportError('')
     setImportTag('')
-  }, [setIsModalOpen, setImportError, importError, setImportTag])
-
-  const handleChangeName = useCallback(
-    (index: number, name: string) => {
-      setShares(changeList(shares, index, { name }))
-    },
-    [shares, setShares]
-  )
-
-  const handleChangePointer = useCallback(
-    (index: number, pointer: string) => {
-      setShares(changeList(shares, index, { pointer: pointer.trim() }))
-    },
-    [shares, setShares]
-  )
-
-  const handleChangeWeight = useCallback(
-    (index: number, weight: number) => {
-      setShares(changeList(shares, index, { weight }))
-    },
-    [shares, setShares]
-  )
-
-  const handleRemove = useCallback(
-    (index: number) => {
-      const newShares = dropIndex(shares, index)
-      setShares(newShares.length > 1 ? newShares : [...newShares, newShare()])
-    },
-    [shares, setShares]
-  )
-
-  const showDeleteColumn = shares.length > 2
-  const handleValidationChange = useCallback(
-    (index: number, isValid: boolean | null) => {
-      setValidityMap((prevMap) => ({
-        ...prevMap,
-        [index]: isValid
-      }))
-    },
-    []
-  )
-
-  const hasValidShares = useMemo(() => {
-    if (
-      shares.length === 0 ||
-      shares.length !== Object.keys(validityMap).length
-    ) {
-      return false
-    }
-    // Every share must have a validation result of `true`.
-    return Object.values(validityMap).every((isValid) => isValid === true)
-  }, [shares.length, validityMap])
+  }, [setIsModalOpen, setImportError, setImportTag])
 
   return (
     <div className="bg-interface-bg-main w-full px-md">
@@ -163,22 +144,20 @@ function Revshare() {
                     key={i}
                     index={i}
                     name={share.name || ''}
-                    onChangeName={(name) => handleChangeName(i, name)}
                     pointer={share.pointer}
-                    onChangePointer={(pointer) =>
-                      handleChangePointer(i, pointer)
-                    }
                     weight={share.weight || 0}
-                    onChangeWeight={(weight) => handleChangeWeight(i, weight)}
-                    weightDisabled={!share.pointer}
                     percent={
                       totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
                     }
-                    onValidationChange={(isValid) =>
-                      handleValidationChange(i, isValid)
+                    onChangeName={(name) => handleChangeName(i, name)}
+                    onChangePointer={(pointer) =>
+                      handleChangePointer(i, pointer)
                     }
+                    onChangeWeight={(weight) => handleChangeWeight(i, weight)}
+                    onValidationChange={handleValidationChange}
                     onRemove={() => handleRemove(i)}
                     showDelete={showDeleteColumn}
+                    weightDisabled={!share.pointer}
                   />
                 )
               })}
@@ -186,9 +165,7 @@ function Revshare() {
           </ShareInputTable>
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
-            {revSharePointers && hasValidShares && (
-              <CodeBlockLink link={revSharePointers} />
-            )}
+            {hasValidShares && <CodeBlockLink link={revShareUrl} />}
             <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
               <ToolsSecondaryButton
                 className="w-full md:w-auto"
@@ -208,9 +185,7 @@ function Revshare() {
           </div>
         </Card>
         <div className="my-lg md:my-md">
-          {revSharePointers && hasValidShares && (
-            <RevShareChart shares={shares} />
-          )}
+          {hasValidShares && <RevShareChart shares={shares} />}
         </div>
         <RevShareInfo />
       </div>

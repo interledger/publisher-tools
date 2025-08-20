@@ -23,6 +23,8 @@ export type Share = {
   weight?: number
   /** The percentage of revenue this share should receive, if applicable */
   percent?: number
+  /** Indicates if the share is valid, used for validation purposes */
+  isValid?: boolean
 }
 
 /** Represents the state of all shares in the revenue distribution */
@@ -346,25 +348,10 @@ export function validateWeight(weight: string | number | undefined): boolean {
   return !Number.isNaN(num) && num >= 0
 }
 
-/**
- * Validates if a given share is valid, checking both pointer and weight
- * @param shares - Array of shares to validate
- * @returns True if all shares are valid (non-empty array with valid pointers and weights)
- */
 export function validateShares(shares: SharesState): boolean {
-  if (!Array.isArray(shares) || shares.length === 0) {
-    return false
-  }
-
-  for (const share of shares) {
-    if (!validatePointer(share.pointer)) {
-      return false
-    }
-
-    if (!validateWeight(share.weight)) {
-      return false
-    }
-  }
-
-  return true
+  return (
+    Array.isArray(shares) &&
+    shares.length > 0 &&
+    shares.every((share) => share.isValid === true)
+  )
 }

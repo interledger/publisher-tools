@@ -6,7 +6,7 @@ import {
 
 interface ValidationState {
   isValidating: boolean
-  isValid: boolean | null
+  isValid: boolean
   error: string | null
 }
 
@@ -16,7 +16,7 @@ export function useDebounceValidation(
 ): ValidationState {
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
-    isValid: null,
+    isValid: false,
     error: null
   })
 
@@ -26,15 +26,15 @@ export function useDebounceValidation(
     if (!value.trim()) {
       setValidationState({
         isValidating: false,
-        isValid: null,
+        isValid: false,
         error: null
       })
       return
     }
 
-    setValidationState(prevState => ({
+    setValidationState((prevState) => ({
       ...prevState,
-      isValid: null,
+      isValid: false,
       error: null
     }))
 
@@ -64,7 +64,7 @@ export function useDebounceValidation(
     }
 
     const timeoutId = setTimeout(() => {
-      setValidationState(prevState => ({
+      setValidationState((prevState) => ({
         ...prevState,
         isValidating: true
       }))

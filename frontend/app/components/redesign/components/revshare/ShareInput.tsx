@@ -16,7 +16,7 @@ interface ShareInputProps {
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
-  onValidationChange: (isValid: boolean | null) => void
+  onValidationChange: (index: number, isValid: boolean) => void
   onRemove: () => void
 }
 
@@ -113,8 +113,8 @@ export const ShareInput = React.memo(
     const [showSuccess, setShowSuccess] = useState(false)
 
     useEffect(() => {
-      onValidationChange(isValid)
-    }, [isValid, onValidationChange])
+      onValidationChange(index, isValid)
+    }, [index, isValid])
 
     useEffect(() => {
       let timerId: NodeJS.Timeout | undefined
@@ -131,7 +131,7 @@ export const ShareInput = React.memo(
       }
     }, [isValid])
 
-    const hasError = Boolean(error)
+    const hasError = !!error
     const showValidationSpinner = isValidating
     const showIcon = showValidationSpinner || showSuccess
 
@@ -198,13 +198,13 @@ export const ShareInput = React.memo(
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangePointer(e.target.value)
             }
+            required
+            aria-required="true"
             aria-invalid={hasError}
             aria-describedby={cx(
               `pointer-description-${index}`,
               hasError ? `pointer-error-${index}` : ''
             )}
-            required
-            aria-required="true"
             className={cx(
               showIcon && 'pr-10',
               hasError && 'border-field-border-error'
@@ -219,7 +219,7 @@ export const ShareInput = React.memo(
           <div id={`pointer-description-${index}`} className="sr-only">
             Required wallet address for this recipient.
           </div>
-          {hasError && error && (
+          {hasError && (
             <div
               id={`pointer-error-${index}`}
               className="absolute left-0 text-xs mt-2xs text-text-error"
@@ -251,10 +251,8 @@ export const ShareInput = React.memo(
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeWeight(Number(e.target.value))
             }
-            disabled={weightDisabled || (Boolean(pointer) && isValid !== true)}
-            aria-disabled={
-              weightDisabled || (Boolean(pointer) && isValid !== true)
-            }
+            disabled={weightDisabled || (!!pointer && isValid !== true)}
+            aria-disabled={weightDisabled || (!!pointer && isValid !== true)}
             aria-describedby={`weight-description-${index}`}
             aria-required="true"
           />
