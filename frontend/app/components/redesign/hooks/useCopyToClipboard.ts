@@ -2,16 +2,16 @@ import { useState, useEffect, useCallback } from 'react'
 
 export const useCopyToClipboard = (
   text: string,
-  onCopy?: (copied: boolean) => void
+  callback?: (copied: boolean) => void
 ) => {
   const [isCopied, setIsCopied] = useState(false)
 
   useEffect(() => {
     if (isCopied) {
-      onCopy?.(isCopied)
+      callback?.(isCopied)
       const timer = setTimeout(() => {
         setIsCopied(false)
-        onCopy?.(!isCopied)
+        callback?.(!isCopied)
       }, 2000)
 
       return () => clearTimeout(timer)
