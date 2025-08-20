@@ -5,16 +5,10 @@ import { SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
 type CodeBlockProps = {
   link: string
   className?: string
-  copyButtonClassName?: string
   onCopy?: (copied: boolean) => void
 }
 
-export const CodeBlockLink = ({
-  link,
-  className,
-  copyButtonClassName,
-  onCopy
-}: CodeBlockProps) => {
+export const CodeBlockLink = ({ link, className, onCopy }: CodeBlockProps) => {
   const { isCopied, handleCopyClick } = useCopyToClipboard(
     `<link rel="monetization" href="${link}" />`,
     onCopy
@@ -28,28 +22,14 @@ export const CodeBlockLink = ({
       )}
     >
       <CodeOutput link={link} />
-      <CopyButton
-        isCopied={isCopied}
-        onCopyClick={handleCopyClick}
-        className={copyButtonClassName}
-      />
+      <CopyButton isCopied={isCopied} onCopyClick={handleCopyClick} />
     </div>
   )
 }
 
-type CodeOutputProps = {
-  link: string
-  className?: string
-}
-
-const CodeOutput = ({ link, className }: CodeOutputProps) => {
+const CodeOutput = ({ link }: { link: string }) => {
   return (
-    <output
-      className={cx(
-        'font-mono flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal',
-        className
-      )}
-    >
+    <output className="font-mono flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal">
       <span>&lt;</span>
       <span style={{ color: '#00009F' }}>link </span>
       <span style={{ color: '#00A4DB' }}>rel</span>
@@ -64,20 +44,17 @@ const CodeOutput = ({ link, className }: CodeOutputProps) => {
   )
 }
 
-type CopyButtonProps = {
+const CopyButton = ({
+  isCopied,
+  onCopyClick
+}: {
   isCopied: boolean
   onCopyClick: () => void
-  className?: string
-}
-
-const CopyButton = ({ isCopied, onCopyClick, className }: CopyButtonProps) => {
+}) => {
   return (
     <button
       type="button"
-      className={cx(
-        'sticky right-0 h-full flex items-center justify-center p-xs rounded-sm bg-interface-bg-main flex-shrink-0',
-        className
-      )}
+      className="sticky right-0 h-full flex items-center justify-center p-xs rounded-sm bg-interface-bg-main flex-shrink-0"
       onClick={onCopyClick}
       aria-label={
         isCopied
