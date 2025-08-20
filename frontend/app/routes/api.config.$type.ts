@@ -41,7 +41,9 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       return json({ errors, success: false }, { status: 400 })
     }
 
-    const ownerWalletAddress = payload.walletAddress as string
+    const ownerWalletAddress = normalizeWalletAddress(
+      await getValidWalletAddress(env, payload.walletAddress as string)
+    )
     try {
       const storageService = new ConfigStorageService(env)
       const fileContentString =
