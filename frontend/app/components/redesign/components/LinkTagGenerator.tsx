@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react'
-import { InputField, ToolsPrimaryButton, CodeBlock } from '@/components'
+import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
-import { SVGCopyIcon, SVGCheckIcon, SVGSpinner } from '@/assets'
-import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
+import { SVGSpinner } from '@/assets'
 import {
   validateAndConfirmPointer,
   WalletAddressFormatError
@@ -24,9 +23,7 @@ export const LinkTagGenerator = () => {
   const [invalidUrl, setInvalidUrl] = useState(false)
   const [error, setError] = useState('')
   const [showCodeBox, setShowCodeBox] = useState(false)
-  const { isCopied, handleCopyClick } = useCopyToClipboard(
-    `<link rel="monetization" href="${linkTag}" />`
-  )
+  const [isCopied, setIsCopied] = useState(false)
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -62,6 +59,10 @@ export const LinkTagGenerator = () => {
     []
   )
 
+  const handleCopyStatusChange = useCallback((copied: boolean) => {
+    setIsCopied(copied)
+  }, [])
+
   return (
     <form
       className="flex w-full max-w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container"
@@ -83,22 +84,7 @@ export const LinkTagGenerator = () => {
       </div>
 
       {showCodeBox && linkTag && (
-        <div className="flex h-[40px] p-sm justify-between items-center rounded-sm bg-interface-bg-main">
-          <CodeBlock
-            link={linkTag}
-            className="flex-1 text-sm leading-normal whitespace-nowrap min-w-0 overflow-x-auto"
-          />
-          <button
-            onClick={handleCopyClick}
-            aria-label={isCopied ? 'Copied' : 'Copy code to clipboard'}
-          >
-            {isCopied ? (
-              <SVGCheckIcon className="w-6 h-6" />
-            ) : (
-              <SVGCopyIcon className="w-6 h-6" />
-            )}
-          </button>
-        </div>
+        <CodeBlockLink link={linkTag} onCopy={handleCopyStatusChange} />
       )}
 
       <ToolsPrimaryButton
