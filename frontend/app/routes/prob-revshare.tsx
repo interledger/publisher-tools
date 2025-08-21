@@ -3,7 +3,7 @@ import { useNavigate } from '@remix-run/react'
 import type { MetaFunction } from '@remix-run/cloudflare'
 import {
   Card,
-  CodeBlock,
+  CodeBlockLink,
   HeadingCore,
   ImportTagModal,
   RevShareChart,
@@ -14,17 +14,13 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
-import { useCopyToClipboard } from '~/components/redesign/hooks/useCopyToClipboard'
-import { SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
 import {
   changeList,
   dropIndex,
   sharesToPaymentPointer,
   tagOrPointerToShares,
-  trimDecimal,
   validatePointer,
-  validateShares,
-  weightFromPercent
+  validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
@@ -70,10 +66,6 @@ function Revshare() {
   const revSharePointers = useMemo(
     () => sharesToPaymentPointer(shares),
     [shares]
-  )
-
-  const { isCopied, handleCopyClick } = useCopyToClipboard(
-    `<link rel="monetization" href="${revSharePointers}" />`
   )
 
   const totalWeight = useMemo(
@@ -126,31 +118,15 @@ function Revshare() {
     [shares, setShares]
   )
 
-  const handleChangePercent = useCallback(
-    (
-      index: number,
-      percent: number,
-      shareWeight: number,
-      totalWeight: number
-    ) => {
-      setShares(
-        changeList(shares, index, {
-          weight: trimDecimal(
-            weightFromPercent(percent, shareWeight || 1, totalWeight)
-          )
-        })
-      )
-    },
-    [shares, setShares]
-  )
-
   const handleRemove = useCallback(
     (index: number) => {
-      setShares(dropIndex(shares, index))
+      const newShares = dropIndex(shares, index)
+      setShares(newShares.length > 1 ? newShares : [...newShares, newShare()])
     },
     [shares, setShares]
   )
 
+  const showDeleteColumn = shares.length > 2
   const hasValidShares = validateShares(shares)
 
   return (
@@ -169,7 +145,7 @@ function Revshare() {
         <Card>
           <Heading5>Recipients</Heading5>
           <ShareInputTable>
-            <ShareInputHeader />
+            <ShareInputHeader showDelete={showDeleteColumn} />
             <div role="rowgroup" className="contents">
               {shares.map((share, i) => {
                 return (
@@ -188,17 +164,9 @@ function Revshare() {
                     percent={
                       totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
                     }
-                    percentDisabled={!share.pointer || shares.length <= 1}
-                    onChangePercent={(percent) =>
-                      handleChangePercent(
-                        i,
-                        percent,
-                        share.weight || 1,
-                        totalWeight
-                      )
-                    }
                     onRemove={() => handleRemove(i)}
                     validatePointer={validatePointer}
+                    showDelete={showDeleteColumn}
                     placeholder={getPlaceholderText(i)}
                   />
                 )
@@ -208,26 +176,7 @@ function Revshare() {
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {revSharePointers && hasValidShares && (
-              <div className="flex h-[40px] items-center justify-between rounded-sm bg-interface-bg-main p-sm">
-                <CodeBlock
-                  link={revSharePointers}
-                  className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap p-sm text-sm leading-normal"
-                />
-                <button
-                  onClick={handleCopyClick}
-                  aria-label={
-                    isCopied
-                      ? 'Monetization tag copied to clipboard'
-                      : 'Copy monetization tag to clipboard'
-                  }
-                >
-                  {isCopied ? (
-                    <SVGCheckIcon className="h-6 w-6" />
-                  ) : (
-                    <SVGCopyIcon className="h-6 w-6" />
-                  )}
-                </button>
-              </div>
+              <CodeBlockLink link={revSharePointers} />
             )}
             <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
               <ToolsSecondaryButton
