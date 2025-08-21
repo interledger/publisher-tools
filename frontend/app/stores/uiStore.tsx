@@ -23,7 +23,7 @@ interface UIActions {
   registerWalletInput: (ref: WalletInputRef) => () => void
   setContentComplete: (complete: boolean) => void
   setAppearanceComplete: (complete: boolean) => void
-  setActiveSession: (section: UIState['activeSection']) => void
+  setActiveSection: (section: UIState['activeSection']) => void
 }
 
 interface UIContextType {
@@ -64,10 +64,6 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     }
   }, [])
 
-  const setActiveSession = useCallback((section: UIState['activeSection']) => {
-    setActiveSection(section)
-  }, [])
-
   const state: UIState = {
     contentComplete,
     activeSection,
@@ -79,7 +75,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     registerWalletInput,
     setContentComplete,
     setAppearanceComplete,
-    setActiveSession
+    setActiveSection
   }
 
   return (

@@ -106,7 +106,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const thumbnails = [wmLogo]
 
   const handleToggle = (isOpen: boolean) => {
-    uiActions.setActiveSession(isOpen ? 'appearance' : null)
+    uiActions.setActiveSection(isOpen ? 'appearance' : null)
     if (isOpen) {
       uiActions.setAppearanceComplete(true)
     }

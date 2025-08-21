@@ -60,7 +60,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   }, [content.currentTitle, content.currentMessage])
 
   const handleToggle = (isOpen: boolean) => {
-    uiActions.setActiveSession(isOpen ? 'content' : null)
+    uiActions.setActiveSection(isOpen ? 'content' : null)
     if (isOpen) {
       uiActions.setContentComplete(true)
     }
