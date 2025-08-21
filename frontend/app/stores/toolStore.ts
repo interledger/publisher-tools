@@ -685,9 +685,7 @@ function groupBy<T, K extends PropertyKey>(
 
   for (const item of items) {
     const key = keySelector(item)
-    if (!result[key]) {
-      result[key] = []
-    }
+    result[key] ??= []
     result[key].push(item)
   }
 
