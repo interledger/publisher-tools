@@ -206,7 +206,7 @@ export function groupBy<T, K extends PropertyKey>(
   for (const item of items) {
     const key = keySelector(item)
     result[key] ??= []
-    result[key].push(item)
+    result[key]?.push(item)
   }
 
   return result

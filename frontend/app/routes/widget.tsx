@@ -288,15 +288,7 @@ export default function Widget() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    toolActions.setToolConfig(
-      section === 'content'
-        ? {
-            ...content
-          }
-        : {
-            ...appearance
-          }
-    )
+    toolActions.setToolConfig(section === 'content' ? content : appearance)
   }
   return (
     <div className="bg-interface-bg-main w-full">
