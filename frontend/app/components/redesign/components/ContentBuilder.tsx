@@ -29,16 +29,12 @@ export interface ToolContent {
 interface ContentBuilderProps {
   content: ToolContent
   onRefresh: () => void
-  onDone: () => void
-  isComplete?: boolean
   className?: string
   activeVersion?: string
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   content,
-  isComplete,
-  onDone,
   onRefresh,
   activeVersion
 }) => {
@@ -73,11 +69,13 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
+      isComplete={uiState.contentComplete}
       activeVersion={activeVersion}
       onToggle={handleToggle}
       onRefresh={onRefresh}
-      onDone={onDone}
+      onDone={() => {
+        uiActions.setContentComplete(true)
+      }}
       initialIsOpen={uiState.activeSection === 'content'}
     >
       <div className="flex flex-col gap-lg">
