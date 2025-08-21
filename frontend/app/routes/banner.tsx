@@ -34,8 +34,10 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState
+  loadState,
+  splitConfigProperties
 } from '~/stores/toolStore'
+
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
@@ -204,9 +206,7 @@ export default function Banner() {
     onMessageChange: (message: string) =>
       toolActions.setToolConfig({ bannerDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
-    onRefresh: () =>
-      toolActions.setToolConfig({ bannerTitleText: 'How to support?' })
+      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') })
   }
 
   const appearanceConfiguration: BannerToolAppearance = {
@@ -298,6 +298,13 @@ export default function Banner() {
     toolActions.setModal(undefined)
   }
 
+  const handleRefresh = (section: 'content' | 'appearance') => {
+    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    if (!savedConfig) return
+
+    const { content, appearance } = splitConfigProperties(savedConfig)
+    toolActions.setToolConfig(section === 'content' ? content : appearance)
+  }
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -360,6 +367,7 @@ export default function Banner() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }
+                      onRefresh={handleRefresh}
                       positionSelector={
                         <BannerPositionSelector
                           defaultValue={snap.currentConfig?.bannerPosition}

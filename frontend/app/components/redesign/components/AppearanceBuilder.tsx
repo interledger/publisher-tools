@@ -63,8 +63,9 @@ export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 
 interface AppearanceBuilderProps {
   appearance: ToolAppearance
-  isComplete?: boolean
+  onRefresh: () => void
   onDone: () => void
+  isComplete?: boolean
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
   activeVersion?: string
@@ -78,8 +79,9 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   appearance,
-  isComplete,
+  onRefresh,
   onDone,
+  isComplete,
   positionSelector,
   colorsSelector,
   activeVersion
@@ -109,17 +111,13 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
     }
   }
 
-  const handleRefresh = () => {
-    console.log('Refresh')
-  }
-
   return (
     <BuilderAccordion
       title="Appearance"
       isComplete={isComplete}
       activeVersion={activeVersion}
       onToggle={handleToggle}
-      onRefresh={handleRefresh}
+      onRefresh={onRefresh}
       onDone={onDone}
     >
       <div className="flex flex-col gap-xs">
