@@ -28,8 +28,25 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState
+  loadState,
+  omit
 } from '~/stores/toolStore'
+import type { ElementConfigType } from '@shared/types'
+
+type WidgetContentKeys = keyof Pick<
+  ElementConfigType,
+  'widgetTitleText' | 'widgetDescriptionText'
+>
+type WidgetAppearanceKeys = keyof Pick<
+  ElementConfigType,
+  | 'widgetFontName'
+  | 'widgetFontSize'
+  | 'widgetBackgroundColor'
+  | 'widgetTextColor'
+  | 'widgetButtonBackgroundColor'
+  | 'widgetButtonBorder'
+  | 'widgetPosition'
+>
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
@@ -286,20 +303,22 @@ export default function Widget() {
     if (!savedConfig) return
 
     if (section === 'appearance') {
-      toolActions.setToolConfig({
-        widgetFontName: savedConfig.widgetFontName,
-        widgetFontSize: savedConfig.widgetFontSize,
-        widgetBackgroundColor: savedConfig.widgetBackgroundColor,
-        widgetTextColor: savedConfig.widgetTextColor,
-        widgetButtonBackgroundColor: savedConfig.widgetButtonBackgroundColor,
-        widgetButtonBorder: savedConfig.widgetButtonBorder,
-        widgetPosition: savedConfig.widgetPosition
-      })
+      const config = omit(savedConfig as unknown as Record<string, unknown>, [
+        'widgetTitleText',
+        'widgetDescriptionText'
+      ] satisfies WidgetContentKeys[])
+      toolActions.setToolConfig(config)
     } else {
-      toolActions.setToolConfig({
-        widgetTitleText: savedConfig.widgetTitleText,
-        widgetDescriptionText: savedConfig.widgetDescriptionText
-      })
+      const config = omit(savedConfig as unknown as Record<string, unknown>, [
+        'widgetFontName',
+        'widgetFontSize',
+        'widgetBackgroundColor',
+        'widgetTextColor',
+        'widgetButtonBackgroundColor',
+        'widgetButtonBorder',
+        'widgetPosition'
+      ] satisfies WidgetAppearanceKeys[])
+      toolActions.setToolConfig(config)
     }
   }
 

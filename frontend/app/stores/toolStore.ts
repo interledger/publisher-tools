@@ -666,7 +666,7 @@ function parsedStorageData(parsed: Record<string, unknown>) {
   return omit(parsed, EXCLUDED_FROM_STORAGE)
 }
 
-function omit<T extends Record<string, unknown>>(
+export function omit<T extends Record<string, unknown>>(
   obj: T,
   keys: readonly (keyof T | string)[] | Set<keyof T | string>
 ): Partial<T> {

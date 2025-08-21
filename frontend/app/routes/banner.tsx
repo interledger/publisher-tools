@@ -34,8 +34,26 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState
+  loadState,
+  omit
 } from '~/stores/toolStore'
+import type { ElementConfigType } from '@shared/types'
+
+type BannerContentKeys = keyof Pick<
+  ElementConfigType,
+  'bannerTitleText' | 'bannerDescriptionText'
+>
+type BannerAppearanceKeys = keyof Pick<
+  ElementConfigType,
+  | 'bannerFontName'
+  | 'bannerFontSize'
+  | 'bannerBackgroundColor'
+  | 'bannerTextColor'
+  | 'bannerBorder'
+  | 'bannerPosition'
+  | 'bannerSlideAnimation'
+>
+
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
@@ -301,20 +319,22 @@ export default function Banner() {
     if (!savedConfig) return
 
     if (section === 'appearance') {
-      toolActions.setToolConfig({
-        bannerFontName: savedConfig.bannerFontName,
-        bannerFontSize: savedConfig.bannerFontSize,
-        bannerBackgroundColor: savedConfig.bannerBackgroundColor,
-        bannerTextColor: savedConfig.bannerTextColor,
-        bannerBorder: savedConfig.bannerBorder,
-        bannerPosition: savedConfig.bannerPosition,
-        bannerSlideAnimation: savedConfig.bannerSlideAnimation
-      })
+      const config = omit(savedConfig as unknown as Record<string, unknown>, [
+        'bannerTitleText',
+        'bannerDescriptionText'
+      ] satisfies BannerContentKeys[])
+      toolActions.setToolConfig(config)
     } else {
-      toolActions.setToolConfig({
-        bannerTitleText: savedConfig.bannerTitleText,
-        bannerDescriptionText: savedConfig.bannerDescriptionText
-      })
+      const config = omit(savedConfig as unknown as Record<string, unknown>, [
+        'bannerFontName',
+        'bannerFontSize',
+        'bannerBackgroundColor',
+        'bannerTextColor',
+        'bannerBorder',
+        'bannerPosition',
+        'bannerSlideAnimation'
+      ] satisfies BannerAppearanceKeys[])
+      toolActions.setToolConfig(config)
     }
   }
 
