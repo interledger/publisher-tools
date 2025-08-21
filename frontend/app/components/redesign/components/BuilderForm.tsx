@@ -62,7 +62,6 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         w-full
         ${className}
         `}
-        key={snap.activeVersion}
       >
         <ContentBuilder
           onRefresh={() => onRefresh('content')}
