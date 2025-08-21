@@ -4,6 +4,7 @@ import { getDefaultData } from '@shared/default-data'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
+import { groupBy } from '@shared/utils'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -675,21 +676,6 @@ export function omit<T extends Record<string, unknown>>(
   return Object.fromEntries(
     Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
   ) as Partial<T>
-}
-
-function groupBy<T, K extends PropertyKey>(
-  items: T[],
-  keySelector: (item: T) => K
-): Partial<Record<K, T[]>> {
-  const result: Partial<Record<K, T[]>> = {}
-
-  for (const item of items) {
-    const key = keySelector(item)
-    result[key] ??= []
-    result[key].push(item)
-  }
-
-  return result
 }
 
 function isContentProperty(key: string): boolean {

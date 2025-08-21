@@ -196,3 +196,18 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   await confirmWalletAddress(validUrl)
   return validUrl
 }
+
+export function groupBy<T, K extends PropertyKey>(
+  items: T[],
+  keySelector: (item: T) => K
+): Partial<Record<K, T[]>> {
+  const result: Partial<Record<K, T[]>> = {}
+
+  for (const item of items) {
+    const key = keySelector(item)
+    result[key] ??= []
+    result[key].push(item)
+  }
+
+  return result
+}
