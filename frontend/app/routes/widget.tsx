@@ -28,8 +28,10 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState
+  loadState,
+  splitConfigProperties
 } from '~/stores/toolStore'
+
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
@@ -192,9 +194,7 @@ export default function Widget() {
     onMessageChange: (message: string) =>
       toolActions.setToolConfig({ widgetDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
-    onRefresh: () =>
-      toolActions.setToolConfig({ widgetTitleText: 'Support this content' })
+      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') })
   }
 
   const appearanceConfiguration: WidgetToolAppearance = {
@@ -287,6 +287,13 @@ export default function Widget() {
     toolActions.setModal(undefined)
   }
 
+  const handleRefresh = (section: 'content' | 'appearance') => {
+    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    if (!savedConfig) return
+
+    const { content, appearance } = splitConfigProperties(savedConfig)
+    toolActions.setToolConfig(section === 'content' ? content : appearance)
+  }
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -350,6 +357,7 @@ export default function Widget() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }
+                      onRefresh={handleRefresh}
                       positionSelector={
                         <WidgetPositionSelector
                           defaultValue={snap.currentConfig?.widgetPosition}
