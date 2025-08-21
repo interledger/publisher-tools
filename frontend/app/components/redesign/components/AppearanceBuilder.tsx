@@ -12,7 +12,6 @@ import {
 } from '@/assets'
 import {
   Thumbnail,
-  ToolsSecondaryButton,
   ToolsDropdown,
   CornerRadiusSelector,
   Divider,
@@ -65,7 +64,7 @@ export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 interface AppearanceBuilderProps {
   appearance: ToolAppearance
   isComplete?: boolean
-  onDone?: () => void
+  onDone: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
   activeVersion?: string
@@ -114,12 +113,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
     console.log('Refresh')
   }
 
-  const handleDoneClick = () => {
-    if (onDone) {
-      onDone()
-    }
-  }
-
   return (
     <BuilderAccordion
       title="Appearance"
@@ -127,6 +120,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       activeVersion={activeVersion}
       onToggle={handleToggle}
       onRefresh={handleRefresh}
+      onDone={onDone}
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
@@ -285,17 +279,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
             ))}
           </div>
         </div>
-      </div>
-
-      <Divider />
-
-      <div className="flex justify-end">
-        <ToolsSecondaryButton
-          className="w-full xl:w-[140px]"
-          onClick={handleDoneClick}
-        >
-          Done
-        </ToolsSecondaryButton>
       </div>
     </BuilderAccordion>
   )
