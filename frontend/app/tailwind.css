@@ -49,4 +49,24 @@
       --action-bar-height: 32px;
     }
   }
+
+  details[name='builder-accordion']:not([open]) > div {
+    display: none;
+  }
+
+  details[name='builder-accordion'][open] > div {
+    display: flex;
+    animation: accordion-open 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes accordion-open {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

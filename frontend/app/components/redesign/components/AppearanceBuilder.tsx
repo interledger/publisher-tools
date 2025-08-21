@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
+import { useUI } from '~/stores/uiStore'
 import { SectionHeader } from './SectionHeader'
+import { BuilderAccordion } from './BuilderAccordion'
 import {
   SVGAnimation,
   SVGColorPicker,
   SVGHeaderPosition,
   SVGRoundedCorner,
   SVGText,
-  SVGThumbnail,
-  SVGRefresh,
-  SVGArrowCollapse,
-  SVGGreenVector
+  SVGThumbnail
 } from '@/assets'
 import {
   Thumbnail,
@@ -20,7 +19,6 @@ import {
   Slider,
   Checkbox
 } from '@/components'
-import { Heading5 } from '@/typography'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 import {
   type CornerType,
@@ -67,8 +65,6 @@ export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 interface AppearanceBuilderProps {
   appearance: ToolAppearance
   isComplete?: boolean
-  isExpanded?: boolean
-  onToggle?: () => void
   onDone?: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
@@ -84,8 +80,6 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   appearance,
   isComplete,
-  isExpanded = false,
-  onToggle,
   onDone,
   positionSelector,
   colorsSelector,
@@ -95,6 +89,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
+  const { actions: uiActions } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
       const validated = getValidSlideAnimation(appearance.slideAnimation)
@@ -109,96 +104,31 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   )
   const thumbnails = [wmLogo]
 
-  const toggleExpand = () => {
-    if (onToggle) {
-      onToggle()
+  const handleToggle = (isOpen: boolean) => {
+    if (isOpen) {
+      uiActions.setAppearanceComplete(true)
     }
   }
 
+  const handleRefresh = () => {
+    console.log('Refresh')
+  }
+
   const handleDoneClick = () => {
-    if (onToggle) {
-      onToggle()
-    }
     if (onDone) {
       onDone()
     }
   }
 
-  if (!isExpanded) {
-    return (
-      <div
-        className="bg-interface-bg-main rounded-lg cursor-pointer"
-        onClick={toggleExpand}
-        role="button"
-        tabIndex={0}
-        aria-label="Expand appearance section"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            toggleExpand()
-          }
-        }}
-      >
-        <div className="px-4 pr-1 py-2 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {isComplete && <SVGGreenVector className="w-6 h-[18px]" />}
-              <Heading5>Appearance</Heading5>
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                toggleExpand()
-              }}
-              className="w-12 h-12 rounded-lg flex items-center justify-center"
-            >
-              <SVGArrowCollapse className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div
-      key={activeVersion}
-      className="flex flex-col bg-interface-bg-container rounded-lg gap-sm"
+    <BuilderAccordion
+      title="Appearance"
+      isComplete={isComplete}
+      activeVersion={activeVersion}
+      onToggle={handleToggle}
+      onRefresh={handleRefresh}
     >
-      <div
-        className="px-1 py-2 flex items-center justify-between cursor-pointer"
-        onClick={toggleExpand}
-      >
-        <Heading5>Appearance</Heading5>
-
-        <div className="flex gap-2">
-          <button
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation()
-              console.log('Refresh')
-            }}
-            aria-label="Reset appearance to default"
-          >
-            <SVGRefresh className="w-6 h-6" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              if (onToggle) {
-                onToggle()
-              }
-            }}
-            className="w-12 h-12 rounded-lg flex items-center justify-center"
-          >
-            <div className="rotate-180">
-              <SVGArrowCollapse className="w-5 h-5" />
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
         <ToolsDropdown
           label="Font Family"
@@ -212,9 +142,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
             value: index.toString()
           }))}
         />
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2xs">
           <label className="text-xs leading-xs text-silver-700">Size</label>
-          <div className="flex items-center h-12 gap-4">
+          <div className="flex items-center h-12 gap-md">
             <button
               className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
               onClick={() => {
@@ -248,7 +178,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                 )
                 appearance.onFontSizeChange(newSize)
               }}
-              aria-label="Increase font size"
             >
               <span className="text-3xl leading-3xl text-text-primary">A</span>
             </button>
@@ -257,7 +186,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       </div>
       <Divider />
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-xs">
         <SectionHeader
           icon={<SVGColorPicker className="w-5 h-5" />}
           label="Colors"
@@ -357,6 +286,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           </div>
         </div>
       </div>
+
       <Divider />
 
       <div className="flex justify-end">
@@ -367,7 +297,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           Done
         </ToolsSecondaryButton>
       </div>
-    </div>
+    </BuilderAccordion>
   )
 }
 
