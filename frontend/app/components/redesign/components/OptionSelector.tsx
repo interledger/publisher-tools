@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import type { ReactNode } from 'react'
 import { cx } from 'class-variance-authority'
 
@@ -24,13 +24,7 @@ export function OptionSelector<T extends string | number>({
   onChange,
   renderCustomOption
 }: OptionSelectorProps<T>) {
-  const [selectedValue, setSelectedValue] = useState<T>(
-    defaultValue ||
-      (options.length > 0 ? options[0].value : ('' as unknown as T))
-  )
-
   const handleChange = (value: T) => {
-    setSelectedValue(value)
     if (onChange) {
       onChange(value)
     }
@@ -41,7 +35,7 @@ export function OptionSelector<T extends string | number>({
       className={cx('flex flex-row max-xl:self-center items-start', className)}
     >
       {options.map((option) => {
-        const isSelected = selectedValue === option.value
+        const isSelected = defaultValue === option.value
 
         if (renderCustomOption) {
           return (
