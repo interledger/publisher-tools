@@ -30,9 +30,9 @@ export interface ToolContent {
 
 interface ContentBuilderProps {
   content: ToolContent
+  onDone: () => void
   isComplete?: boolean
   className?: string
-  onDone?: () => void
   activeVersion?: string
 }
 
@@ -66,12 +66,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     content.onRefresh()
   }
 
-  const handleDoneClick = () => {
-    if (onDone) {
-      onDone()
-    }
-  }
-
   return (
     <BuilderAccordion
       title="Content"
@@ -79,6 +73,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
       activeVersion={activeVersion}
       onToggle={handleToggle}
       onRefresh={handleRefresh}
+      onDone={onDone}
     >
       <div className="flex flex-col gap-lg">
         <div className="flex flex-col gap-xs">
@@ -151,17 +146,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             </div>
           </div>
         </div>
-      </div>
-
-      <Divider />
-
-      <div className="flex justify-end">
-        <ToolsSecondaryButton
-          className="w-full xl:w-[140px]"
-          onClick={handleDoneClick}
-        >
-          Done
-        </ToolsSecondaryButton>
       </div>
     </BuilderAccordion>
   )
