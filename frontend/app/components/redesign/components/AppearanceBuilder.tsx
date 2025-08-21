@@ -12,7 +12,6 @@ import {
 } from '@/assets'
 import {
   Thumbnail,
-  ToolsSecondaryButton,
   ToolsDropdown,
   CornerRadiusSelector,
   Divider,

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useUI } from '~/stores/uiStore'
 import { BuilderAccordion } from './BuilderAccordion'
 import {
-  ToolsSecondaryButton,
   InputField,
   TextareaField,
   Divider,
