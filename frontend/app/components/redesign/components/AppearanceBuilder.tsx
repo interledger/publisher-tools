@@ -129,7 +129,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
         <ToolsDropdown
-          key={`font-${appearance.fontName}`}
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
@@ -200,7 +199,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
-          key={`corner-${appearance.borderRadius}}`}
           defaultValue={appearance.borderRadius}
           onChange={(value) => appearance.onBorderChange(value)}
         />
@@ -209,10 +207,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
 
       {positionSelector && (
         <>
-          <div
-            className="flex flex-col gap-xs"
-            key={`position-${appearance.position}`}
-          >
+          <div className="flex flex-col gap-xs">
             <SectionHeader
               icon={<SVGHeaderPosition className="w-5 h-5" />}
               label="Position"
@@ -242,7 +237,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               />
               <div className="flex-1 w-full xl:w-auto">
                 <ToolsDropdown
-                  key={`animation-${appearance.slideAnimation}`}
                   label="Type"
                   disabled={!isAnimated}
                   defaultValue={

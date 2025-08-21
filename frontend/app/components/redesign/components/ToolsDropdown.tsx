@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, forwardRef } from 'react'
+import { useState, useRef, useEffect, useMemo, forwardRef } from 'react'
 import type { SelectHTMLAttributes } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGDropdown, SVGArrowDropdown } from '../../../assets/svg'
@@ -38,16 +38,14 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
     ref
   ) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedOption, setSelectedOption] = useState<
-      DropdownOption | undefined
-    >(
-      defaultValue
-        ? options.find((opt) => opt.value === defaultValue)
-        : undefined
-    )
     const [isFocused, setIsFocused] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
+
+    const selectedOption = useMemo(
+      () => options.find((opt) => opt.value === defaultValue),
+      [defaultValue, options]
+    )
 
     useEffect(() => {
       function handleClickOutside(event: MouseEvent) {
@@ -67,7 +65,6 @@ export const ToolsDropdown = forwardRef<HTMLDivElement, ToolsDropdownProps>(
     }, [])
 
     const handleOptionSelect = (option: DropdownOption) => {
-      setSelectedOption(option)
       setIsOpen(false)
       if (onChange) {
         onChange(option.value)
