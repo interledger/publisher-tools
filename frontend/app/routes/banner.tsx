@@ -298,16 +298,22 @@ export default function Banner() {
     toolActions.setModal(undefined)
   }
 
-  const handleRefresh = () => {
+  const handleRefresh = (section: 'content' | 'appearance') => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-
-    toolActions.setToolConfig({
-      ...content,
-      ...appearance
-    })
+    toolActions.setToolConfig(
+      section === 'content'
+        ? {
+            ...content,
+            walletAddress: savedConfig.walletAddress
+          }
+        : {
+            ...appearance,
+            walletAddress: savedConfig.walletAddress
+          }
+    )
   }
   return (
     <div className="bg-interface-bg-main w-full">

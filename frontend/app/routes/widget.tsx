@@ -283,16 +283,20 @@ export default function Widget() {
     toolActions.setModal(undefined)
   }
 
-  const handleRefresh = () => {
+  const handleRefresh = (section: 'content' | 'appearance') => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-
-    toolActions.setToolConfig({
-      ...content,
-      ...appearance
-    })
+    toolActions.setToolConfig(
+      section === 'content'
+        ? {
+            ...content
+          }
+        : {
+            ...appearance
+          }
+    )
   }
   return (
     <div className="bg-interface-bg-main w-full">
