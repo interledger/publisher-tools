@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
-import { SVGDeleteScript } from '@/assets'
+import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
+import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {
   index: number
@@ -10,15 +11,16 @@ interface ShareInputProps {
   pointer: string
   weight: number
   percent: number
-  placeholder?: string
   weightDisabled?: boolean
   showDelete?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
   onChangeWeight: (weight: number) => void
+  onValidationChange: (index: number, isValid: boolean) => void
   onRemove: () => void
-  validatePointer: (pointer: string) => boolean
 }
+
+const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
 const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
@@ -99,16 +101,40 @@ export const ShareInput = React.memo(
     pointer,
     weight,
     percent,
-    placeholder,
     onChangeName,
     onChangePointer,
     onChangeWeight,
+    onValidationChange,
     onRemove,
-    validatePointer,
-    weightDisabled = false,
-    showDelete = false
+    showDelete = false,
+    weightDisabled = false
   }: ShareInputProps) => {
-    const hasError = !validatePointer(pointer)
+    const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
+    const [showSuccess, setShowSuccess] = useState(false)
+
+    useEffect(() => {
+      onValidationChange(index, isValid)
+    }, [isValid])
+
+    useEffect(() => {
+      let timerId: NodeJS.Timeout | undefined
+      if (isValid === true) {
+        setShowSuccess(true)
+        timerId = setTimeout(() => {
+          setShowSuccess(false)
+        }, 1500)
+      } else {
+        setShowSuccess(false)
+      }
+      return () => {
+        clearTimeout(timerId)
+      }
+    }, [isValid])
+
+    const hasError = !!error
+    const showValidationSpinner = isValidating
+    const showIcon = showValidationSpinner || showSuccess
+
     const nameInputId = `name-input-${index}`
     const pointerInputId = `pointer-input-${index}`
     const weightInputId = `weight-input-${index}`
@@ -167,18 +193,29 @@ export const ShareInput = React.memo(
           </label>
           <InputField
             id={pointerInputId}
-            placeholder={placeholder}
+            placeholder={DEFAULT_WALLET_ADDRESS}
             value={pointer}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangePointer(e.target.value)
             }
+            required
+            aria-required="true"
             aria-invalid={hasError}
             aria-describedby={cx(
               `pointer-description-${index}`,
               hasError ? `pointer-error-${index}` : ''
             )}
-            aria-required="true"
+            className={cx(
+              showIcon && 'pr-10',
+              hasError && 'border-field-border-error'
+            )}
           />
+          {showIcon && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              {showValidationSpinner && <SVGSpinner className="w-4 h-4" />}
+              {showSuccess && <SVGCheckIcon className="w-4 h-4" />}
+            </div>
+          )}
           <div id={`pointer-description-${index}`} className="sr-only">
             Required wallet address for this recipient.
           </div>
@@ -190,7 +227,7 @@ export const ShareInput = React.memo(
               aria-live="polite"
               aria-atomic="true"
             >
-              Invalid payment pointer.
+              {error}
               <span className="sr-only">
                 &nbsp;Please check the format and try again.
               </span>
@@ -214,8 +251,8 @@ export const ShareInput = React.memo(
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeWeight(Number(e.target.value))
             }
-            disabled={weightDisabled}
-            aria-disabled={weightDisabled}
+            disabled={weightDisabled || (!!pointer && isValid !== true)}
+            aria-disabled={weightDisabled || (!!pointer && isValid !== true)}
             aria-describedby={`weight-description-${index}`}
             aria-required="true"
           />

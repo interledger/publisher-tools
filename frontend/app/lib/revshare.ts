@@ -1,3 +1,4 @@
+import { generateShareId } from '@shared/utils'
 const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
@@ -15,6 +16,8 @@ const CHART_COLORS = [
 
 /** Represents a single revenue share participant */
 export type Share = {
+  /** Unique identifier for the share */
+  id: string
   /** An optional name for the recipient for display purposes */
   name?: string
   /** The payment pointer or wallet address of the recipient */
@@ -23,6 +26,8 @@ export type Share = {
   weight?: number
   /** The percentage of revenue this share should receive, if applicable */
   percent?: number
+  /** Indicates if the share is valid, used for validation purposes */
+  isValid?: boolean
 }
 
 /** Represents the state of all shares in the revenue distribution */
@@ -76,6 +81,7 @@ export function sharesFromPointerList(
   pointerList: [string, number, string][]
 ): SharesState {
   return pointerList.map(([pointer, weight, name]) => ({
+    id: generateShareId(),
     pointer,
     weight,
     name
@@ -346,25 +352,10 @@ export function validateWeight(weight: string | number | undefined): boolean {
   return !Number.isNaN(num) && num >= 0
 }
 
-/**
- * Validates if a given share is valid, checking both pointer and weight
- * @param shares - Array of shares to validate
- * @returns True if all shares are valid (non-empty array with valid pointers and weights)
- */
 export function validateShares(shares: SharesState): boolean {
-  if (!Array.isArray(shares) || shares.length === 0) {
-    return false
-  }
-
-  for (const share of shares) {
-    if (!validatePointer(share.pointer)) {
-      return false
-    }
-
-    if (!validateWeight(share.weight)) {
-      return false
-    }
-  }
-
-  return true
+  return (
+    Array.isArray(shares) &&
+    shares.length > 0 &&
+    shares.every((share) => share.isValid === true)
+  )
 }
