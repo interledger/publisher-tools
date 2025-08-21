@@ -67,7 +67,8 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         flex flex-col gap-md
         w-full
         ${className}
-      `}
+        `}
+        key={snap.activeVersion}
       >
         <ContentBuilder
           isComplete={uiState.contentComplete}

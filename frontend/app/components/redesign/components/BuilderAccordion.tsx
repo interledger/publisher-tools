@@ -9,6 +9,7 @@ interface BuilderAccordionProps {
   onDone: () => void
   isComplete?: boolean
   activeVersion?: string
+  initialIsOpen?: boolean
   onToggle?: (isOpen: boolean) => void
   onRefresh?: () => void
   children: React.ReactNode
@@ -19,13 +20,14 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   title,
   isComplete = false,
   activeVersion,
+  initialIsOpen = false,
   onToggle,
   onRefresh,
   onDone,
   children,
   className = ''
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(initialIsOpen)
   const detailsRef = useRef<HTMLDetailsElement>(null)
   const wasOpenRef = useRef(false)
 
@@ -63,7 +65,6 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   return (
     <details
       ref={detailsRef}
-      key={activeVersion}
       name="builder-accordion"
       className={`flex flex-col rounded-lg transition-transform duration-300 ease-in-out relative ${
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'

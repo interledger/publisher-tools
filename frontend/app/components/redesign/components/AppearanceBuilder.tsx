@@ -92,7 +92,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
     typeof appearance.thumbnail === 'undefined' || !!appearance.thumbnail
   )
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const { actions: uiActions } = useUI()
+  const { actions: uiActions, state: uiState } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
       const validated = getValidSlideAnimation(appearance.slideAnimation)
@@ -108,6 +108,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const thumbnails = [wmLogo]
 
   const handleToggle = (isOpen: boolean) => {
+    uiActions.setActiveSession(isOpen ? 'appearance' : null)
     if (isOpen) {
       uiActions.setAppearanceComplete(true)
     }
@@ -125,6 +126,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       onToggle={handleToggle}
       onRefresh={handleRefresh}
       onDone={onDone}
+      initialIsOpen={uiState.activeSection === 'appearance'}
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />

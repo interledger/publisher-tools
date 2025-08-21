@@ -43,7 +43,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)
-  const { actions: uiActions } = useUI()
+  const { actions: uiActions, state: uiState } = useUI()
 
   useEffect(() => {
     if (
@@ -55,6 +55,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   }, [content.currentTitle])
 
   const handleToggle = (isOpen: boolean) => {
+    uiActions.setActiveSession(isOpen ? 'content' : null)
     if (isOpen) {
       uiActions.setContentComplete(true)
     }
@@ -73,6 +74,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
       onToggle={handleToggle}
       onRefresh={handleRefresh}
       onDone={onDone}
+      initialIsOpen={uiState.activeSection === 'content'}
     >
       <div className="flex flex-col gap-lg">
         <div className="flex flex-col gap-xs">

@@ -11,6 +11,7 @@ import type { ReactNode } from 'react'
 type UIState = {
   contentComplete: boolean
   appearanceComplete: boolean
+  activeSection: 'content' | 'appearance' | null
 }
 
 interface WalletInputRef {
@@ -22,6 +23,7 @@ interface UIActions {
   registerWalletInput: (ref: WalletInputRef) => () => void
   setContentComplete: (complete: boolean) => void
   setAppearanceComplete: (complete: boolean) => void
+  setActiveSession: (section: UIState['activeSection']) => void
 }
 
 interface UIContextType {
@@ -40,6 +42,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [shouldFocusWallet, setShouldFocusWallet] = useState(false)
   const [contentComplete, setContentComplete] = useState(false)
   const [appearanceComplete, setAppearanceComplete] = useState(false)
+  const [activeSection, setActiveSection] =
+    useState<UIState['activeSection']>(null)
 
   useEffect(() => {
     if (shouldFocusWallet && walletInputRef.current) {
@@ -60,8 +64,13 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     }
   }, [])
 
+  const setActiveSession = useCallback((section: UIState['activeSection']) => {
+    setActiveSection(section)
+  }, [])
+
   const state: UIState = {
     contentComplete,
+    activeSection,
     appearanceComplete
   }
 
@@ -69,7 +78,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     focusWalletInput,
     registerWalletInput,
     setContentComplete,
-    setAppearanceComplete
+    setAppearanceComplete,
+    setActiveSession
   }
 
   return (
