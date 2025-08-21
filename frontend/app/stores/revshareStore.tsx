@@ -2,12 +2,15 @@ import type { ReactNode } from 'react'
 import { useContext, useState, createContext, useEffect, useMemo } from 'react'
 import type { SharesState, Share } from '../lib/revshare'
 import { validateShares } from '../lib/revshare'
+import { generateShareId } from '@shared/utils'
 
 const SHARES_KEY = 'prob-revshare-shares'
 
 interface SharesContextState {
   shares: SharesState
-  setShares: (shares: SharesState) => void
+  setShares: (
+    shares: SharesState | ((prevShares: SharesState) => SharesState)
+  ) => void
 }
 
 export const SharesContext = createContext<SharesContextState | undefined>(
@@ -17,6 +20,7 @@ SharesContext.displayName = 'SharesContext'
 
 export function newShare(): Share {
   return {
+    id: generateShareId(),
     name: '',
     pointer: '',
     weight: 1
@@ -55,9 +59,19 @@ export function SharesProvider({ children }: SharesProviderProps) {
     _setShares(loadedShares)
   }, [])
 
-  const setShares = (newShares: SharesState) => {
-    localStorage.setItem(SHARES_KEY, JSON.stringify(newShares))
-    _setShares(newShares)
+  const setShares = (
+    newShares: SharesState | ((prevShares: SharesState) => SharesState)
+  ) => {
+    if (typeof newShares === 'function') {
+      _setShares((prevShares) => {
+        const result = newShares(prevShares)
+        localStorage.setItem(SHARES_KEY, JSON.stringify(result))
+        return result
+      })
+    } else {
+      localStorage.setItem(SHARES_KEY, JSON.stringify(newShares))
+      _setShares(newShares)
+    }
   }
 
   const value = useMemo(() => ({ shares, setShares }), [shares, setShares])

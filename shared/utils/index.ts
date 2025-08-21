@@ -197,6 +197,10 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   return validUrl
 }
 
+export function generateShareId(): string {
+  return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 export function groupBy<T, K extends PropertyKey>(
   items: T[],
   keySelector: (item: T) => K
