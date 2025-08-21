@@ -123,7 +123,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         uiActions.setAppearanceComplete(true)
       }}
       initialIsOpen={uiState.activeSection === 'appearance'}
-      key={activeVersion}
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />

@@ -77,7 +77,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
         uiActions.setContentComplete(true)
       }}
       initialIsOpen={uiState.activeSection === 'content'}
-      key={activeVersion}
     >
       <div className="flex flex-col gap-lg">
         <div className="flex flex-col gap-xs">
