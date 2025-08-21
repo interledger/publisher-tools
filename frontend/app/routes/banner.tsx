@@ -35,24 +35,8 @@ import {
   toolActions,
   persistState,
   loadState,
-  omit
+  splitConfigProperties
 } from '~/stores/toolStore'
-import type { ElementConfigType } from '@shared/types'
-
-type BannerContentKeys = keyof Pick<
-  ElementConfigType,
-  'bannerTitleText' | 'bannerDescriptionText'
->
-type BannerAppearanceKeys = keyof Pick<
-  ElementConfigType,
-  | 'bannerFontName'
-  | 'bannerFontSize'
-  | 'bannerBackgroundColor'
-  | 'bannerTextColor'
-  | 'bannerBorder'
-  | 'bannerPosition'
-  | 'bannerSlideAnimation'
->
 
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
@@ -314,30 +298,17 @@ export default function Banner() {
     toolActions.setModal(undefined)
   }
 
-  const handleRefresh = (section: 'appearance' | 'content') => {
+  const handleRefresh = () => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
     if (!savedConfig) return
 
-    if (section === 'appearance') {
-      const config = omit(savedConfig as unknown as Record<string, unknown>, [
-        'bannerTitleText',
-        'bannerDescriptionText'
-      ] satisfies BannerContentKeys[])
-      toolActions.setToolConfig(config)
-    } else {
-      const config = omit(savedConfig as unknown as Record<string, unknown>, [
-        'bannerFontName',
-        'bannerFontSize',
-        'bannerBackgroundColor',
-        'bannerTextColor',
-        'bannerBorder',
-        'bannerPosition',
-        'bannerSlideAnimation'
-      ] satisfies BannerAppearanceKeys[])
-      toolActions.setToolConfig(config)
-    }
-  }
+    const { content, appearance } = splitConfigProperties(savedConfig)
 
+    toolActions.setToolConfig({
+      ...content,
+      ...appearance
+    })
+  }
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">

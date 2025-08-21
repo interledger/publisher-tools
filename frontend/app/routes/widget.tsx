@@ -29,24 +29,9 @@ import {
   toolActions,
   persistState,
   loadState,
-  omit
+  splitConfigProperties
 } from '~/stores/toolStore'
-import type { ElementConfigType } from '@shared/types'
 
-type WidgetContentKeys = keyof Pick<
-  ElementConfigType,
-  'widgetTitleText' | 'widgetDescriptionText'
->
-type WidgetAppearanceKeys = keyof Pick<
-  ElementConfigType,
-  | 'widgetFontName'
-  | 'widgetFontSize'
-  | 'widgetBackgroundColor'
-  | 'widgetTextColor'
-  | 'widgetButtonBackgroundColor'
-  | 'widgetButtonBorder'
-  | 'widgetPosition'
->
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
@@ -298,30 +283,17 @@ export default function Widget() {
     toolActions.setModal(undefined)
   }
 
-  const handleRefresh = (section: 'appearance' | 'content') => {
+  const handleRefresh = () => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
     if (!savedConfig) return
 
-    if (section === 'appearance') {
-      const config = omit(savedConfig as unknown as Record<string, unknown>, [
-        'widgetTitleText',
-        'widgetDescriptionText'
-      ] satisfies WidgetContentKeys[])
-      toolActions.setToolConfig(config)
-    } else {
-      const config = omit(savedConfig as unknown as Record<string, unknown>, [
-        'widgetFontName',
-        'widgetFontSize',
-        'widgetBackgroundColor',
-        'widgetTextColor',
-        'widgetButtonBackgroundColor',
-        'widgetButtonBorder',
-        'widgetPosition'
-      ] satisfies WidgetAppearanceKeys[])
-      toolActions.setToolConfig(config)
-    }
-  }
+    const { content, appearance } = splitConfigProperties(savedConfig)
 
+    toolActions.setToolConfig({
+      ...content,
+      ...appearance
+    })
+  }
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">

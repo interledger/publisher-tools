@@ -676,3 +676,36 @@ export function omit<T extends Record<string, unknown>>(
     Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
   ) as Partial<T>
 }
+
+function groupBy<T, K extends PropertyKey>(
+  items: T[],
+  keySelector: (item: T) => K
+): Partial<Record<K, T[]>> {
+  const result: Partial<Record<K, T[]>> = {}
+
+  for (const item of items) {
+    const key = keySelector(item)
+    if (!result[key]) {
+      result[key] = []
+    }
+    result[key].push(item)
+  }
+
+  return result
+}
+
+function isContentProperty(key: string): boolean {
+  return key.endsWith('Text')
+}
+
+export function splitConfigProperties<T extends ElementConfigType>(config: T) {
+  const { content = [], appearance = [] } = groupBy(
+    Object.entries(config),
+    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
+  )
+
+  return {
+    content: Object.fromEntries(content) as Partial<T>,
+    appearance: Object.fromEntries(appearance) as Partial<T>
+  }
+}
