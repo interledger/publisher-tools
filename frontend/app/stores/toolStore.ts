@@ -4,6 +4,7 @@ import { getDefaultData } from '@shared/default-data'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
+import { groupBy } from '@shared/utils'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -666,7 +667,7 @@ function parsedStorageData(parsed: Record<string, unknown>) {
   return omit(parsed, EXCLUDED_FROM_STORAGE)
 }
 
-function omit<T extends Record<string, unknown>>(
+export function omit<T extends Record<string, unknown>>(
   obj: T,
   keys: readonly (keyof T | string)[] | Set<keyof T | string>
 ): Partial<T> {
@@ -675,4 +676,20 @@ function omit<T extends Record<string, unknown>>(
   return Object.fromEntries(
     Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
   ) as Partial<T>
+}
+
+function isContentProperty(key: string): boolean {
+  return key.endsWith('Text')
+}
+
+export function splitConfigProperties<T extends ElementConfigType>(config: T) {
+  const { content = [], appearance = [] } = groupBy(
+    Object.entries(config),
+    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
+  )
+
+  return {
+    content: Object.fromEntries(content) as Partial<T>,
+    appearance: Object.fromEntries(appearance) as Partial<T>
+  }
 }

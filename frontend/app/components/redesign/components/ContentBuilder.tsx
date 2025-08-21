@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useUI } from '~/stores/uiStore'
 import { BuilderAccordion } from './BuilderAccordion'
 import {
-  ToolsSecondaryButton,
   InputField,
   TextareaField,
   Divider,
@@ -25,14 +24,14 @@ export interface ToolContent {
   onTitleChange: (title: string) => void
   onMessageChange: (message: string) => void
   onSuggestedTitleClick: (title: string) => void
-  onRefresh: () => void
 }
 
 interface ContentBuilderProps {
   content: ToolContent
+  onRefresh: () => void
+  onDone: () => void
   isComplete?: boolean
   className?: string
-  onDone?: () => void
   activeVersion?: string
 }
 
@@ -40,10 +39,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   content,
   isComplete,
   onDone,
+  onRefresh,
   activeVersion
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)
+  const messageTextareaRef = useRef<HTMLTextAreaElement>(null)
   const { actions: uiActions } = useUI()
 
   useEffect(() => {
@@ -53,22 +54,18 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     ) {
       titleInputRef.current.value = content.currentTitle
     }
-  }, [content.currentTitle])
+
+    if (
+      messageTextareaRef.current &&
+      messageTextareaRef.current.value !== content.currentMessage
+    ) {
+      messageTextareaRef.current.value = content.currentMessage
+    }
+  }, [content.currentTitle, content.currentMessage])
 
   const handleToggle = (isOpen: boolean) => {
     if (isOpen) {
       uiActions.setContentComplete(true)
-    }
-  }
-
-  const handleRefresh = () => {
-    console.log('Refresh')
-    content.onRefresh()
-  }
-
-  const handleDoneClick = () => {
-    if (onDone) {
-      onDone()
     }
   }
 
@@ -78,7 +75,8 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
       isComplete={isComplete}
       activeVersion={activeVersion}
       onToggle={handleToggle}
-      onRefresh={handleRefresh}
+      onRefresh={onRefresh}
+      onDone={onDone}
     >
       <div className="flex flex-col gap-lg">
         <div className="flex flex-col gap-xs">
@@ -137,6 +135,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
             <div className="flex-grow">
               <TextareaField
+                ref={messageTextareaRef}
                 defaultValue={content.currentMessage}
                 onChange={(e) => {
                   content.onMessageChange(e.target.value)
@@ -151,17 +150,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             </div>
           </div>
         </div>
-      </div>
-
-      <Divider />
-
-      <div className="flex justify-end">
-        <ToolsSecondaryButton
-          className="w-full xl:w-[140px]"
-          onClick={handleDoneClick}
-        >
-          Done
-        </ToolsSecondaryButton>
       </div>
     </BuilderAccordion>
   )
