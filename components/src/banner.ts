@@ -29,6 +29,7 @@ export interface BannerConfig {
   bannerBorderRadius?: BorderRadiusKey
   bannerPosition?: BannerPositionKey
   bannerSlideAnimation?: SlideAnimationType
+  bannerThumbnail?: string
   theme?: {
     primaryColor?: string
     backgroundColor?: string
@@ -117,9 +118,20 @@ export class Banner extends LitElement {
     const description =
       this.config.bannerDescriptionText || DEFAULT_BANNER_DESCRIPTION
 
+    const showThumbnail =
+      typeof this.config.bannerThumbnail === 'undefined' ||
+      !!this.config.bannerThumbnail
+    const thumbnail = showThumbnail
+      ? html`<img
+          src="${logo}"
+          alt="Web Monetization Logo"
+          class="banner-logo"
+        />`
+      : html``
+
     return html`
       <div class="banner ${this.animationClass}">
-        <img src="${logo}" alt="Web Monetization Logo" class="banner-logo" />
+        ${thumbnail}
 
         <div class="banner-content">
           <h3 class="banner-title">${title}</h3>

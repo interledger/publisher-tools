@@ -38,6 +38,7 @@ interface BaseToolAppearance {
   buttonColor?: string
   borderRadius?: CornerType
   slideAnimation?: SlideAnimationType
+  thumbnail?: string
 
   onFontNameChange: (fontName: FontFamilyKey) => void
   onFontSizeChange: (fontSize: number) => void
@@ -46,6 +47,7 @@ interface BaseToolAppearance {
   onButtonColorChange?: (color: string) => void
   onBorderChange: (border: CornerType) => void
   onSlideAnimationChange: (animation: SlideAnimationType) => void
+  onThumbnailVisibilityChange: (visible: boolean) => void
 
   showAnimation?: boolean
 }
@@ -87,7 +89,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
-  const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
+  const [isThumbnailVisible, setIsThumbnailVisible] = useState(
+    typeof appearance.thumbnail === 'undefined' || !!appearance.thumbnail
+  )
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const { actions: uiActions } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
@@ -271,7 +275,10 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
             checked={isThumbnailVisible}
-            onChange={() => setIsThumbnailVisible(!isThumbnailVisible)}
+            onChange={(checked) => {
+              setIsThumbnailVisible(checked)
+              appearance.onThumbnailVisibilityChange(checked)
+            }}
             label="Visible"
           />
           <div className="flex gap-md">

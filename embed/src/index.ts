@@ -115,6 +115,7 @@ const drawBanner = (config: Config) => {
     bannerBorderRadius: config.bannerBorder,
     bannerPosition: config.bannerPosition,
     bannerSlideAnimation: config.bannerSlideAnimation,
+    bannerThumbnail: config.bannerThumbnail,
     theme: {
       backgroundColor: config.bannerBackgroundColor,
       textColor: config.bannerTextColor,
