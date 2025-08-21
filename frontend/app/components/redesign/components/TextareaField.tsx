@@ -1,9 +1,6 @@
-import { forwardRef } from 'react'
-import type { TextareaHTMLAttributes } from 'react'
 import { cx } from 'class-variance-authority'
 
-interface TextareaFieldProps
-  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaFieldProps extends React.ComponentPropsWithRef<'textarea'> {
   label?: string
   error?: string
   helpText?: string
@@ -12,22 +9,17 @@ interface TextareaFieldProps
   maxLength?: number
 }
 
-export const TextareaField = forwardRef<
-  HTMLTextAreaElement,
-  TextareaFieldProps
->(function TextareaField(
-  {
-    label,
-    error,
-    helpText,
-    showCounter = false,
-    currentLength = 0,
-    maxLength,
-    className = '',
-    ...props
-  },
-  ref
-) {
+export function TextareaField({
+  label,
+  error,
+  helpText,
+  showCounter = false,
+  currentLength = 0,
+  maxLength,
+  className = '',
+  ref,
+  ...props
+}: TextareaFieldProps) {
   return (
     <div className="space-y-2xs">
       {label && (
@@ -70,4 +62,4 @@ export const TextareaField = forwardRef<
       </div>
     </div>
   )
-})
+}

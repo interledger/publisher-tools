@@ -281,9 +281,11 @@ export default function Widget() {
     toolActions.setModal(undefined)
   }
 
-  const handleAppearanceRefresh = () => {
+  const handleRefresh = (section: 'appearance' | 'content') => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (savedConfig) {
+    if (!savedConfig) return
+
+    if (section === 'appearance') {
       toolActions.setToolConfig({
         widgetFontName: savedConfig.widgetFontName,
         widgetFontSize: savedConfig.widgetFontSize,
@@ -293,12 +295,7 @@ export default function Widget() {
         widgetButtonBorder: savedConfig.widgetButtonBorder,
         widgetPosition: savedConfig.widgetPosition
       })
-    }
-  }
-
-  const handleContentRefresh = () => {
-    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (savedConfig) {
+    } else {
       toolActions.setToolConfig({
         widgetTitleText: savedConfig.widgetTitleText,
         widgetDescriptionText: savedConfig.widgetDescriptionText
@@ -369,8 +366,7 @@ export default function Widget() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }
-                      onAppearanceRefresh={handleAppearanceRefresh}
-                      onContentRefresh={handleContentRefresh}
+                      onRefresh={handleRefresh}
                       positionSelector={
                         <WidgetPositionSelector
                           defaultValue={snap.currentConfig?.widgetPosition}

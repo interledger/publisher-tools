@@ -28,10 +28,10 @@ export interface ToolContent {
 
 interface ContentBuilderProps {
   content: ToolContent
+  onRefresh: () => void
+  onDone: () => void
   isComplete?: boolean
   className?: string
-  onDone?: () => void
-  onRefresh?: () => void
   activeVersion?: string
 }
 
@@ -69,19 +69,13 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     }
   }
 
-  const handleRefresh = () => {
-    if (onRefresh) {
-      onRefresh()
-    }
-  }
-
   return (
     <BuilderAccordion
       title="Content"
       isComplete={isComplete}
       activeVersion={activeVersion}
       onToggle={handleToggle}
-      onRefresh={handleRefresh}
+      onRefresh={onRefresh}
       onDone={onDone}
     >
       <div className="flex flex-col gap-lg">

@@ -6,11 +6,11 @@ import { ToolsSecondaryButton, Divider } from '@/components'
 
 interface BuilderAccordionProps {
   title: string
+  onRefresh: () => void
+  onDone: () => void
   isComplete?: boolean
   activeVersion?: string
   onToggle?: (isOpen: boolean) => void
-  onRefresh?: () => void
-  onDone?: () => void
   children: React.ReactNode
   className?: string
 }
@@ -48,7 +48,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
 
   const handleRefresh = (e: React.MouseEvent) => {
     e.stopPropagation()
-    onRefresh?.()
+    onRefresh()
   }
 
   const handleDoneClick = () => {
@@ -57,9 +57,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
       detailsRef.current.open = false
     }
 
-    if (onDone) {
-      onDone()
-    }
+    onDone()
   }
 
   return (
@@ -93,7 +91,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         </div>
       </summary>
 
-      {isOpen && onRefresh && (
+      {isOpen && (
         <GhostButton
           className="absolute top-2 right-14 w-12 h-12 z-10 p-0"
           onClick={handleRefresh}
@@ -106,7 +104,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
       <div className="flex flex-col gap-sm mt-sm">
         {children}
 
-        {isOpen && onDone && (
+        {isOpen && (
           <>
             <Divider />
             <div className="flex justify-end">

@@ -296,9 +296,11 @@ export default function Banner() {
     toolActions.setModal(undefined)
   }
 
-  const handleAppearanceRefresh = () => {
+  const handleRefresh = (section: 'appearance' | 'content') => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (savedConfig) {
+    if (!savedConfig) return
+
+    if (section === 'appearance') {
       toolActions.setToolConfig({
         bannerFontName: savedConfig.bannerFontName,
         bannerFontSize: savedConfig.bannerFontSize,
@@ -308,12 +310,7 @@ export default function Banner() {
         bannerPosition: savedConfig.bannerPosition,
         bannerSlideAnimation: savedConfig.bannerSlideAnimation
       })
-    }
-  }
-
-  const handleContentRefresh = () => {
-    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (savedConfig) {
+    } else {
       toolActions.setToolConfig({
         bannerTitleText: savedConfig.bannerTitleText,
         bannerDescriptionText: savedConfig.bannerDescriptionText
@@ -383,8 +380,7 @@ export default function Banner() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }
-                      onAppearanceRefresh={handleAppearanceRefresh}
-                      onContentRefresh={handleContentRefresh}
+                      onRefresh={handleRefresh}
                       positionSelector={
                         <BannerPositionSelector
                           defaultValue={snap.currentConfig?.bannerPosition}
