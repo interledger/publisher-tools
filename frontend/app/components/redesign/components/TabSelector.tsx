@@ -244,7 +244,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
     <div id="tab-selector" className={`w-full overflow-hidden ${className}`}>
       <div
         ref={containerRef}
-        className={`flex w-full overflow-x-auto scrollbar-hide select-none ${
+        className={`flex w-full overflow-x-auto select-none ${
           mouseDownRef.current ? 'cursor-grabbing' : 'cursor-grab'
         }`}
         onMouseDown={startDragging}

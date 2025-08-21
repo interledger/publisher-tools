@@ -1,8 +1,6 @@
-import type { TextareaHTMLAttributes } from 'react'
 import { cx } from 'class-variance-authority'
 
-interface TextareaFieldProps
-  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaFieldProps extends React.ComponentPropsWithRef<'textarea'> {
   label?: string
   error?: string
   helpText?: string
@@ -19,6 +17,7 @@ export function TextareaField({
   currentLength = 0,
   maxLength,
   className = '',
+  ref,
   ...props
 }: TextareaFieldProps) {
   return (
@@ -29,6 +28,7 @@ export function TextareaField({
         </label>
       )}
       <textarea
+        ref={ref}
         className={cx(
           'w-full px-md py-sm',
           'border rounded-sm',

@@ -9,15 +9,17 @@ import type { ToolAppearance } from './AppearanceBuilder'
 interface BuilderFormProps {
   content: ToolContent
   appearance: ToolAppearance
-  className?: string
+  onRefresh: (section: 'appearance' | 'content') => void
   onBuildStepComplete?: (isComplete: boolean) => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
+  className?: string
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
   className = '',
   onBuildStepComplete,
+  onRefresh,
   content,
   appearance,
   positionSelector,
@@ -72,12 +74,14 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         <ContentBuilder
           isComplete={uiState.contentComplete}
           onDone={handleContentDone}
+          onRefresh={() => onRefresh('content')}
           content={content}
           activeVersion={snap.activeVersion}
         />
         <AppearanceBuilder
           isComplete={uiState.appearanceComplete}
           onDone={handleAppearanceDone}
+          onRefresh={() => onRefresh('appearance')}
           appearance={appearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
