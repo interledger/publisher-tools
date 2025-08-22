@@ -6,7 +6,7 @@ import socialInstagramIcon from '~/assets/images/icons/social-instagram.svg?url'
 import socialGitGubIcon from '~/assets/images/icons/social-github.svg?url'
 import socialYoutubeIcon from '~/assets/images/icons/social-youtube.svg?url'
 import { SVGFooterDivider } from '@/assets'
-import { BodyStandardLink } from '@/components'
+import { BodyStandardLink, Copyright } from '@/components'
 
 const socialLinks = [
   {
@@ -121,9 +121,7 @@ export const EnhancedFooter = () => {
         <p className="text-style-small-standard">Web Monetization</p>
       </div>
 
-      <p className="!text-footer-content text-style-small-standard">
-        Copyright © {new Date().getFullYear()} Interledger Foundation.
-      </p>
+      <Copyright />
     </footer>
   )
 }
