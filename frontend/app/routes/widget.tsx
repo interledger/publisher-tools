@@ -350,6 +350,7 @@ export default function Widget() {
                     />
 
                     <BuilderForm
+                      toolName="widget"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
                       onBuildStepComplete={(isComplete) =>

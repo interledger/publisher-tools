@@ -366,6 +366,7 @@ export default function Banner() {
                     />
 
                     <BuilderForm
+                      toolName="banner"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
                       onBuildStepComplete={(isComplete) =>
