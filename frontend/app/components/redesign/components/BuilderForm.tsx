@@ -26,7 +26,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   colorsSelector
 }) => {
   const snap = useSnapshot(toolState)
-  const { state: uiState, actions: uiActions } = useUI()
+  const { state: uiState } = useUI()
 
   useEffect(() => {
     const bothComplete = uiState.contentComplete && uiState.appearanceComplete
@@ -41,14 +41,6 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
 
   const handleTabLabelChange = (stableKey: StableKey, newLabel: string) => {
     toolActions.updateVersionLabel(stableKey, newLabel)
-  }
-
-  const handleContentDone = () => {
-    uiActions.setContentComplete(true)
-  }
-
-  const handleAppearanceDone = () => {
-    uiActions.setAppearanceComplete(true)
   }
 
   return (
@@ -69,23 +61,18 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         flex flex-col gap-md
         w-full
         ${className}
-      `}
+        `}
+        key={snap.activeVersion}
       >
         <ContentBuilder
-          isComplete={uiState.contentComplete}
-          onDone={handleContentDone}
           onRefresh={() => onRefresh('content')}
           content={content}
-          activeVersion={snap.activeVersion}
         />
         <AppearanceBuilder
-          isComplete={uiState.appearanceComplete}
-          onDone={handleAppearanceDone}
           onRefresh={() => onRefresh('appearance')}
           appearance={appearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
-          activeVersion={snap.activeVersion}
         />
       </div>
     </div>
