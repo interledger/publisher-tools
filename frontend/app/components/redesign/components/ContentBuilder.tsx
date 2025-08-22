@@ -29,14 +29,11 @@ export interface ToolContent {
 interface ContentBuilderProps {
   content: ToolContent
   onRefresh: () => void
-  className?: string
-  activeVersion?: string
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   content,
-  onRefresh,
-  activeVersion
+  onRefresh
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)

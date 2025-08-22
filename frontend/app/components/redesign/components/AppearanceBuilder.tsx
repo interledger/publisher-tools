@@ -68,7 +68,6 @@ interface AppearanceBuilderProps {
   onRefresh: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
-  activeVersion?: string
 }
 
 function getValidSlideAnimation(value: unknown): SlideAnimationType {
@@ -81,8 +80,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   appearance,
   onRefresh,
   positionSelector,
-  colorsSelector,
-  activeVersion
+  colorsSelector
 }) => {
   const minFontSize = 12
   const maxFontSize = 20

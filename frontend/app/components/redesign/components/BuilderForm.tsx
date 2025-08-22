@@ -67,14 +67,12 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         <ContentBuilder
           onRefresh={() => onRefresh('content')}
           content={content}
-          activeVersion={snap.activeVersion}
         />
         <AppearanceBuilder
           onRefresh={() => onRefresh('appearance')}
           appearance={appearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
-          activeVersion={snap.activeVersion}
         />
       </div>
     </div>
