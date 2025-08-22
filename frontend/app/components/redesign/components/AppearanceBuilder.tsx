@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { cx } from 'class-variance-authority'
 import { useUI } from '~/stores/uiStore'
 import { SectionHeader } from './SectionHeader'
 import { BuilderAccordion } from './BuilderAccordion'
@@ -37,6 +38,7 @@ interface BaseToolAppearance {
   buttonColor?: string
   borderRadius?: CornerType
   slideAnimation?: SlideAnimationType
+  thumbnail?: string
 
   onFontNameChange: (fontName: FontFamilyKey) => void
   onFontSizeChange: (fontSize: number) => void
@@ -45,6 +47,7 @@ interface BaseToolAppearance {
   onButtonColorChange?: (color: string) => void
   onBorderChange: (border: CornerType) => void
   onSlideAnimationChange: (animation: SlideAnimationType) => void
+  onThumbnailVisibilityChange: (visible: boolean) => void
 
   showAnimation?: boolean
 }
@@ -62,13 +65,11 @@ export interface WidgetToolAppearance extends BaseToolAppearance {
 export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 
 interface AppearanceBuilderProps {
+  toolName: 'widget' | 'banner'
   appearance: ToolAppearance
   onRefresh: () => void
-  onDone: () => void
-  isComplete?: boolean
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
-  activeVersion?: string
 }
 
 function getValidSlideAnimation(value: unknown): SlideAnimationType {
@@ -78,19 +79,17 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 }
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
+  toolName,
   appearance,
   onRefresh,
-  onDone,
-  isComplete,
   positionSelector,
-  colorsSelector,
-  activeVersion
+  colorsSelector
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
-  const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
+
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const { actions: uiActions } = useUI()
+  const { actions: uiActions, state: uiState } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
       const validated = getValidSlideAnimation(appearance.slideAnimation)
@@ -106,6 +105,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const thumbnails = [wmLogo]
 
   const handleToggle = (isOpen: boolean) => {
+    uiActions.setActiveSection(isOpen ? 'appearance' : null)
     if (isOpen) {
       uiActions.setAppearanceComplete(true)
     }
@@ -114,11 +114,13 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
-      activeVersion={activeVersion}
+      isComplete={uiState.appearanceComplete}
       onToggle={handleToggle}
       onRefresh={onRefresh}
-      onDone={onDone}
+      onDone={() => {
+        uiActions.setAppearanceComplete(true)
+      }}
+      initialIsOpen={uiState.activeSection === 'appearance'}
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
@@ -197,10 +199,10 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           onChange={(value) => appearance.onBorderChange(value)}
         />
       </div>
-      <Divider />
 
       {positionSelector && (
         <>
+          <Divider />
           <div className="flex flex-col gap-xs">
             <SectionHeader
               icon={<SVGHeaderPosition className="w-5 h-5" />}
@@ -208,12 +210,12 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
             />
             {positionSelector}
           </div>
-          <Divider />
         </>
       )}
 
       {appearance.showAnimation && (
         <>
+          <Divider />
           <div className="flex flex-col gap-xs">
             <SectionHeader
               icon={<SVGAnimation className="w-5 h-5" />}
@@ -251,19 +253,26 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               </div>
             </div>
           </div>
-          <Divider />
         </>
       )}
 
-      <div className="flex flex-col gap-xs">
+      <div
+        className={cx(
+          toolName === 'widget' ? 'hidden' : 'flex flex-col gap-xs'
+        )}
+      >
+        <Divider />
         <SectionHeader
           icon={<SVGThumbnail className="w-5 h-5" />}
           label="Thumbnail"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
-            checked={isThumbnailVisible}
-            onChange={() => setIsThumbnailVisible(!isThumbnailVisible)}
+            checked={
+              typeof appearance.thumbnail === 'undefined' ||
+              !!appearance.thumbnail
+            }
+            onChange={appearance.onThumbnailVisibilityChange}
             label="Visible"
           />
           <div className="flex gap-md">

@@ -9,24 +9,24 @@ import type { ToolAppearance } from './AppearanceBuilder'
 interface BuilderFormProps {
   content: ToolContent
   appearance: ToolAppearance
+  toolName: 'widget' | 'banner'
   onRefresh: (section: 'appearance' | 'content') => void
   onBuildStepComplete?: (isComplete: boolean) => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
-  className?: string
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
-  className = '',
   onBuildStepComplete,
   onRefresh,
   content,
   appearance,
+  toolName,
   positionSelector,
   colorsSelector
 }) => {
   const snap = useSnapshot(toolState)
-  const { state: uiState, actions: uiActions } = useUI()
+  const { state: uiState } = useUI()
 
   useEffect(() => {
     const bothComplete = uiState.contentComplete && uiState.appearanceComplete
@@ -43,14 +43,6 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
     toolActions.updateVersionLabel(stableKey, newLabel)
   }
 
-  const handleContentDone = () => {
-    uiActions.setContentComplete(true)
-  }
-
-  const handleAppearanceDone = () => {
-    uiActions.setAppearanceComplete(true)
-  }
-
   return (
     <div className="flex flex-col">
       <TabSelector
@@ -62,30 +54,19 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         onTabLabelChange={handleTabLabelChange}
       />
       <div
-        className={`
-        bg-interface-bg-container
-        rounded-b-sm
-        p-md
-        flex flex-col gap-md
-        w-full
-        ${className}
-      `}
+        className="bg-interface-bg-container rounded-b-sm p-md flex flex-col gap-md w-full"
+        key={snap.activeVersion}
       >
         <ContentBuilder
-          isComplete={uiState.contentComplete}
-          onDone={handleContentDone}
           onRefresh={() => onRefresh('content')}
           content={content}
-          activeVersion={snap.activeVersion}
         />
         <AppearanceBuilder
-          isComplete={uiState.appearanceComplete}
-          onDone={handleAppearanceDone}
           onRefresh={() => onRefresh('appearance')}
           appearance={appearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
-          activeVersion={snap.activeVersion}
+          toolName={toolName}
         />
       </div>
     </div>

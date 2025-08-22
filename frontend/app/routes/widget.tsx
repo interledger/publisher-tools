@@ -206,6 +206,7 @@ export default function Widget() {
     borderRadius: snap.currentConfig?.widgetButtonBorder,
     position: snap.currentConfig?.widgetPosition,
     slideAnimation: undefined,
+    thumbnail: snap.currentConfig?.widgetTriggerIcon,
 
     onFontNameChange: (fontName: FontFamilyKey) =>
       toolActions.setToolConfig({ widgetFontName: fontName }),
@@ -222,6 +223,9 @@ export default function Widget() {
     onPositionChange: (position: WidgetPositionKey) =>
       toolActions.setToolConfig({ widgetPosition: position }),
     onSlideAnimationChange: (_animation: SlideAnimationType) => {},
+    onThumbnailVisibilityChange: (visible: boolean) => {
+      toolActions.setToolConfig({ widgetTriggerIcon: visible ? 'default' : '' })
+    },
 
     showAnimation: false
   }
@@ -346,6 +350,7 @@ export default function Widget() {
                     />
 
                     <BuilderForm
+                      toolName="widget"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
                       onBuildStepComplete={(isComplete) =>

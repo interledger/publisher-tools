@@ -127,6 +127,7 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
         bannerPosition: snap.currentConfig?.bannerPosition,
         bannerBorderRadius: snap.currentConfig?.bannerBorder,
         bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
+        bannerThumbnail: snap.currentConfig?.bannerThumbnail,
         theme: {
           backgroundColor: snap.currentConfig?.bannerBackgroundColor,
           textColor: snap.currentConfig?.bannerTextColor,
@@ -217,6 +218,8 @@ export default function Banner() {
     borderRadius: snap.currentConfig?.bannerBorder,
     position: snap.currentConfig?.bannerPosition,
     slideAnimation: snap.currentConfig?.bannerSlideAnimation,
+    thumbnail: snap.currentConfig?.bannerThumbnail ?? 'default',
+
     onFontNameChange: (fontName: FontFamilyKey) =>
       toolActions.setToolConfig({ bannerFontName: fontName }),
     onFontSizeChange: (fontSize: number) =>
@@ -231,6 +234,9 @@ export default function Banner() {
       toolActions.setToolConfig({ bannerPosition: position }),
     onSlideAnimationChange: (animation: SlideAnimationType) =>
       toolActions.setToolConfig({ bannerSlideAnimation: animation }),
+    onThumbnailVisibilityChange: (visible: boolean) => {
+      toolActions.setToolConfig({ bannerThumbnail: visible ? 'default' : '' })
+    },
 
     showAnimation: true
   }
@@ -360,6 +366,7 @@ export default function Banner() {
                     />
 
                     <BuilderForm
+                      toolName="banner"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
                       onBuildStepComplete={(isComplete) =>

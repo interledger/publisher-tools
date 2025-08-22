@@ -28,6 +28,7 @@ export function getDefaultData(): ElementConfigType {
     bannerTextColor: '#ffffff',
     bannerBackgroundColor: '#7f76b2',
     bannerBorder: CORNER_OPTION.Light,
+    bannerThumbnail: 'default',
 
     widgetFontName: 'Arial',
     widgetFontSize: 16,

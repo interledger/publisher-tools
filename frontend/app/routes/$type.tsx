@@ -266,6 +266,7 @@ export default function Create() {
     formData.append('bannerTextColor', toolConfig.bannerTextColor)
     formData.append('bannerBackgroundColor', toolConfig.bannerBackgroundColor)
     formData.append('bannerSlideAnimation', toolConfig.bannerSlideAnimation)
+    formData.append('bannerThumbnail', toolConfig.bannerThumbnail)
     formData.append('bannerPosition', toolConfig.bannerPosition)
     formData.append('bannerBorder', toolConfig.bannerBorder)
     formData.append('walletAddress', toolConfig.walletAddress!)
