@@ -84,9 +84,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
-  const [isThumbnailVisible, setIsThumbnailVisible] = useState(
-    typeof appearance.thumbnail === 'undefined' || !!appearance.thumbnail
-  )
+
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const { actions: uiActions, state: uiState } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
@@ -263,11 +261,11 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
-            checked={isThumbnailVisible}
-            onChange={(checked) => {
-              setIsThumbnailVisible(checked)
-              appearance.onThumbnailVisibilityChange(checked)
-            }}
+            checked={
+              typeof appearance.thumbnail === 'undefined' ||
+              !!appearance.thumbnail
+            }
+            onChange={appearance.onThumbnailVisibilityChange}
             label="Visible"
           />
           <div className="flex gap-md">
