@@ -70,7 +70,6 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     <BuilderAccordion
       title="Content"
       isComplete={uiState.contentComplete}
-      activeVersion={activeVersion}
       onToggle={handleToggle}
       onRefresh={onRefresh}
       onDone={() => {

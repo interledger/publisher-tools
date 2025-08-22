@@ -116,7 +116,6 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
     <BuilderAccordion
       title="Appearance"
       isComplete={uiState.appearanceComplete}
-      activeVersion={activeVersion}
       onToggle={handleToggle}
       onRefresh={onRefresh}
       onDone={() => {
