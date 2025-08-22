@@ -64,11 +64,8 @@ export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 interface AppearanceBuilderProps {
   appearance: ToolAppearance
   onRefresh: () => void
-  onDone: () => void
-  isComplete?: boolean
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
-  activeVersion?: string
 }
 
 function getValidSlideAnimation(value: unknown): SlideAnimationType {
@@ -80,17 +77,14 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   appearance,
   onRefresh,
-  onDone,
-  isComplete,
   positionSelector,
-  colorsSelector,
-  activeVersion
+  colorsSelector
 }) => {
   const minFontSize = 12
   const maxFontSize = 20
   const [isThumbnailVisible, setIsThumbnailVisible] = useState(true)
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-  const { actions: uiActions } = useUI()
+  const { actions: uiActions, state: uiState } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
       const validated = getValidSlideAnimation(appearance.slideAnimation)
@@ -106,6 +100,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   const thumbnails = [wmLogo]
 
   const handleToggle = (isOpen: boolean) => {
+    uiActions.setActiveSection(isOpen ? 'appearance' : null)
     if (isOpen) {
       uiActions.setAppearanceComplete(true)
     }
@@ -114,11 +109,13 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
-      activeVersion={activeVersion}
+      isComplete={uiState.appearanceComplete}
       onToggle={handleToggle}
       onRefresh={onRefresh}
-      onDone={onDone}
+      onDone={() => {
+        uiActions.setAppearanceComplete(true)
+      }}
+      initialIsOpen={uiState.activeSection === 'appearance'}
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />

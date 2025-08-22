@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
+import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
 import { GhostButton } from './GhostButton'
 import { Heading5 } from '@/typography'
@@ -9,36 +10,21 @@ interface BuilderAccordionProps {
   onRefresh: () => void
   onDone: () => void
   isComplete?: boolean
-  activeVersion?: string
+  initialIsOpen?: boolean
   onToggle?: (isOpen: boolean) => void
   children: React.ReactNode
-  className?: string
 }
 
 export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   title,
   isComplete = false,
-  activeVersion,
+  initialIsOpen = false,
   onToggle,
   onRefresh,
   onDone,
-  children,
-  className = ''
+  children
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const detailsRef = useRef<HTMLDetailsElement>(null)
-  const wasOpenRef = useRef(false)
-
-  useEffect(() => {
-    if (wasOpenRef.current && detailsRef.current) {
-      detailsRef.current.open = true
-      setIsOpen(true)
-    }
-  }, [activeVersion])
-
-  useEffect(() => {
-    wasOpenRef.current = isOpen
-  }, [isOpen])
+  const [isOpen, setIsOpen] = useState(initialIsOpen)
 
   const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
     const isOpen = e.currentTarget.open
@@ -46,55 +32,42 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
     onToggle?.(isOpen)
   }
 
-  const handleRefresh = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onRefresh()
-  }
-
   const handleDoneClick = () => {
     setIsOpen(false)
-    if (detailsRef.current) {
-      detailsRef.current.open = false
-    }
-
     onDone()
   }
 
   return (
     <details
-      ref={detailsRef}
-      key={activeVersion}
+      open={isOpen}
       name="builder-accordion"
-      className={`flex flex-col rounded-lg transition-transform duration-300 ease-in-out relative ${
+      className={cx(
+        'flex flex-col rounded-lg relative',
+        'transition-transform duration-300 ease-in-out',
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'
-      } ${className}`}
+      )}
       onToggle={handleToggle}
     >
       <summary
-        className={`flex items-center justify-between cursor-pointer transition-all duration-300 ease-in-out list-none ${
+        className={cx(
+          'flex gap-xs items-center cursor-pointer list-none',
+          'transition-all duration-300 ease-in-out',
           isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
-        }`}
+        )}
       >
-        <div className="flex items-center gap-xs">
-          {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
-          <Heading5>{title}</Heading5>
-        </div>
+        {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
+        <Heading5>{title}</Heading5>
 
-        <div className="flex gap-xs">
-          <div
-            className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-              !isOpen ? 'rotate-180' : ''
-            }`}
-          >
-            <SVGArrowCollapse className="w-5 h-5" />
-          </div>
-        </div>
+        <SVGArrowCollapse
+          className={cx('w-12 h-12 p-3.5 ml-auto', !isOpen && 'rotate-180')}
+        />
       </summary>
 
       {isOpen && (
         <GhostButton
+          type="button"
           className="absolute top-2 right-14 w-12 h-12 z-10 p-0"
-          onClick={handleRefresh}
+          onClick={onRefresh}
           aria-label={`Reset ${title.toLowerCase()} to default`}
         >
           <SVGRefresh className="w-6 h-6" />

@@ -29,23 +29,16 @@ export interface ToolContent {
 interface ContentBuilderProps {
   content: ToolContent
   onRefresh: () => void
-  onDone: () => void
-  isComplete?: boolean
-  className?: string
-  activeVersion?: string
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   content,
-  isComplete,
-  onDone,
-  onRefresh,
-  activeVersion
+  onRefresh
 }) => {
   const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)
   const messageTextareaRef = useRef<HTMLTextAreaElement>(null)
-  const { actions: uiActions } = useUI()
+  const { actions: uiActions, state: uiState } = useUI()
 
   useEffect(() => {
     if (
@@ -64,6 +57,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   }, [content.currentTitle, content.currentMessage])
 
   const handleToggle = (isOpen: boolean) => {
+    uiActions.setActiveSection(isOpen ? 'content' : null)
     if (isOpen) {
       uiActions.setContentComplete(true)
     }
@@ -72,11 +66,13 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
-      activeVersion={activeVersion}
+      isComplete={uiState.contentComplete}
       onToggle={handleToggle}
       onRefresh={onRefresh}
-      onDone={onDone}
+      onDone={() => {
+        uiActions.setContentComplete(true)
+      }}
+      initialIsOpen={uiState.activeSection === 'content'}
     >
       <div className="flex flex-col gap-lg">
         <div className="flex flex-col gap-xs">
