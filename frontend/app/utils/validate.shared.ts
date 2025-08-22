@@ -26,6 +26,7 @@ export const bannerFieldsSchema = z.object({
   bannerTextColor: z.string().min(6),
   bannerBackgroundColor: z.string().min(6),
   bannerSlideAnimation: z.nativeEnum(SLIDE_ANIMATION),
+  bannerThumbnail: z.string().optional(),
   bannerPosition: z.nativeEnum(BANNER_POSITION),
   bannerBorder: z.nativeEnum(CORNER_OPTION)
 })

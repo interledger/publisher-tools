@@ -9,19 +9,19 @@ import type { ToolAppearance } from './AppearanceBuilder'
 interface BuilderFormProps {
   content: ToolContent
   appearance: ToolAppearance
+  toolName: 'widget' | 'banner'
   onRefresh: (section: 'appearance' | 'content') => void
   onBuildStepComplete?: (isComplete: boolean) => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
-  className?: string
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
-  className = '',
   onBuildStepComplete,
   onRefresh,
   content,
   appearance,
+  toolName,
   positionSelector,
   colorsSelector
 }) => {
@@ -54,14 +54,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         onTabLabelChange={handleTabLabelChange}
       />
       <div
-        className={`
-        bg-interface-bg-container
-        rounded-b-sm
-        p-md
-        flex flex-col gap-md
-        w-full
-        ${className}
-        `}
+        className="bg-interface-bg-container rounded-b-sm p-md flex flex-col gap-md w-full"
         key={snap.activeVersion}
       >
         <ContentBuilder
@@ -73,6 +66,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
           appearance={appearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
+          toolName={toolName}
         />
       </div>
     </div>

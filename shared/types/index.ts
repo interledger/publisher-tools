@@ -29,6 +29,8 @@ export interface ElementConfigType {
   bannerBorder: CornerType
   bannerTextColor: string
   bannerBackgroundColor: string
+  /** empty: not visible; default: visible */
+  bannerThumbnail: string
 
   // widget specific
   widgetFontName: FontFamilyKey
