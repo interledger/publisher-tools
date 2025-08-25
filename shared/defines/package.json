@@ -1,0 +1,6 @@
+{
+  "name": "@shared/defines",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Build time constants for API, CDN/embed and the frontend."
+}

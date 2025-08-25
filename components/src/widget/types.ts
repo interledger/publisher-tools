@@ -24,7 +24,8 @@ export interface WidgetConfig {
     widgetBorderRadius?: BorderRadiusKey
     widgetButtonBackgroundColor?: string
   }
-  apiUrl?: string
+  frontendUrl: string
+  apiUrl: string
 }
 
 export type FormattedAmount = {

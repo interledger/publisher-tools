@@ -6,6 +6,7 @@ import {
   Outlet
 } from '@remix-run/react'
 import { useEffect, useState, type ReactElement } from 'react'
+import { API_URL, CDN_URL } from '@shared/defines'
 import {
   ConfirmModal,
   InfoModal,
@@ -43,8 +44,12 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   session.unset('is-grant-response')
 
   const defaultConfig = getDefaultData()
-  const scriptInitUrl = env.SCRIPT_EMBED_URL
-  const apiUrl = env.API_URL
+  const scriptInitUrl = CDN_URL
+  const apiUrl = API_URL
+  const frontendUrl = new URL(
+    '/tools/',
+    request.headers.get('origin') || request.url
+  ).href
   const opWallet = env.OP_WALLET_ADDRESS
 
   return json(
@@ -53,6 +58,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       defaultConfig,
       scriptInitUrl,
       apiUrl,
+      frontendUrl,
       opWallet,
       walletAddress,
       grantResponse,
@@ -74,6 +80,7 @@ export default function Create() {
     defaultConfig,
     scriptInitUrl,
     apiUrl,
+    frontendUrl,
     opWallet,
     walletAddress,
     isGrantAccepted,
@@ -315,6 +322,7 @@ export default function Create() {
               <ToolPreview
                 type={elementType}
                 apiUrl={apiUrl}
+                frontendUrl={frontendUrl}
                 opWallet={opWallet}
                 toolConfig={toolConfig}
               />

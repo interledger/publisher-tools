@@ -25,6 +25,7 @@ const WalletAddressSchema = z
   .brand('WalletAddress')
 
 export const PaymentGrantSchema = z.object({
+  redirectUrl: z.url(),
   walletAddress: WalletAddressSchema,
   debitAmount: AmountSchema,
   receiveAmount: AmountSchema

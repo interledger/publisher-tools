@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "vite build --mode development",
     "build": "vite build",
-    "prepare": "pnpm build"
+    "prepare": "vite build --mode prepare"
   },
   "dependencies": {
     "@tools/components": "workspace:*"
   },
   "devDependencies": {
+    "@shared/defines": "workspace:^",
+    "@shared/types": "workspace:^",
     "typescript": "^5.1.6",
     "vite": "^6.3.5"
   },
