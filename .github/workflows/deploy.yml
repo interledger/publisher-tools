@@ -43,7 +43,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
-          script: 'echo TODO 1'
+          script: 'console.log(1)'
 
 
       #region Deploy
@@ -103,7 +103,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
-          script: 'echo TODO 2'
+          script: 'console.log(2)'
 
       - name: Create Job summary
         if: always()
