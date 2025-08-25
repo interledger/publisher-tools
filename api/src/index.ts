@@ -117,13 +117,8 @@ app.post(
   zValidator('json', PaymentGrantSchema),
   async ({ req, json, env }) => {
     try {
-      const { walletAddress, debitAmount, receiveAmount } = req.valid('json')
-
-      const redirectUrl = new URL(
-        '/tools/payment-confirmation',
-        req.header('Origin')
-      ).href
-      console.log({ redirectUrl })
+      const { walletAddress, debitAmount, receiveAmount, redirectUrl } =
+        req.valid('json')
 
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.initializePayment({

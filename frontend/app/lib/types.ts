@@ -54,9 +54,6 @@ export type ElementErrors = {
 
 declare global {
   interface Env {
-    SCRIPT_EMBED_URL: string
-    API_URL: string
-
     OP_KEY_ID: string
     OP_PRIVATE_KEY: string
     OP_WALLET_ADDRESS: string

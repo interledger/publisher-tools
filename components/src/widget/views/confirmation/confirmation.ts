@@ -6,7 +6,7 @@ import type {
 } from '@interledger/open-payments'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { PaymentQuoteInput } from 'publisher-tools-api'
+import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 
@@ -268,20 +268,23 @@ export class PaymentConfirmation extends LitElement {
     debitAmount: Amount
     receiveAmount: Amount
   }): Promise<PendingGrant> {
-    const response = await fetch(
-      `${this.configController.config.apiUrl}tools/payment/grant`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          walletAddress: paymentData.walletAddress,
-          debitAmount: paymentData.debitAmount,
-          receiveAmount: paymentData.receiveAmount
-        })
-      }
-    )
+    const { apiUrl, frontendUrl } = this.configController.config
+    const url = new URL('/tools/payment/grant', apiUrl).href
+    const redirectUrl = new URL('payment-confirmation', frontendUrl).href
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        redirectUrl,
+        walletAddress:
+          paymentData.walletAddress as PaymentGrantInput['walletAddress'],
+        debitAmount: paymentData.debitAmount,
+        receiveAmount: paymentData.receiveAmount
+      } satisfies PaymentGrantInput)
+    })
 
     if (!response.ok) {
       throw new Error('Failed to request outgoing payment grant')

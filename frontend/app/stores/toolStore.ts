@@ -1,6 +1,7 @@
 import { proxy, subscribe } from 'valtio'
 import { APP_BASEPATH } from '~/lib/constants'
 import { getDefaultData } from '@shared/default-data'
+import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
@@ -11,7 +12,7 @@ const STORAGE_KEY = 'valtio-store'
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
   'opWallet',
-  'scriptBaseUrl'
+  'cdnUrl'
 ])
 
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
@@ -199,9 +200,11 @@ export const toolState = proxy({
   isSubmitting: false,
   loadingState: 'idle' as 'idle' | 'loading' | 'submitting',
 
-  // environment variables
-  scriptBaseUrl: '',
+  // build-time constants
+  cdnUrl: '',
   apiUrl: '',
+
+  // environment variables
   opWallet: '',
 
   // wallet and connection state
@@ -323,7 +326,7 @@ export const toolActions = {
       .replace('$', '')
       .replace('https://', '')
 
-    return `<script id="wmt-init-script" type="module" src="${toolState.scriptBaseUrl}init.js?wa=${wa}&tag=${toolState.activeVersion}&types=${toolState.currentToolType}"></script>`
+    return `<script id="wmt-init-script" type="module" src="${toolState.cdnUrl}/init.js?wa=${wa}&tag=${toolState.activeVersion}&types=${toolState.currentToolType}"></script>`
   },
   updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
     if (!toolState.configurations[stableKey]) {
@@ -625,11 +628,9 @@ export const toolActions = {
 }
 
 /** Load from localStorage on init, remove storage if invalid */
-export function loadState(
-  env: Pick<Env, 'SCRIPT_EMBED_URL' | 'API_URL' | 'OP_WALLET_ADDRESS'>
-) {
-  toolState.scriptBaseUrl = env.SCRIPT_EMBED_URL
-  toolState.apiUrl = env.API_URL
+export function loadState(env: Pick<Env, 'OP_WALLET_ADDRESS'>) {
+  toolState.cdnUrl = CDN_URL
+  toolState.apiUrl = API_URL
   toolState.opWallet = env.OP_WALLET_ADDRESS
   try {
     const saved = localStorage.getItem(STORAGE_KEY)

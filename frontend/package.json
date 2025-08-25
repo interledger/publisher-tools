@@ -47,6 +47,7 @@
     "@lit/react": "^1.0.7",
     "@remix-run/dev": "^2.16.6",
     "@shared/default-data": "workspace:^",
+    "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "@tailwindcss/forms": "^0.5.9",
     "@types/he": "^1.2.3",
