@@ -83,6 +83,7 @@ runs:
         apiToken: ${{ inputs.apiToken }}
         accountId: ${{ inputs.accountId }}
         command: ${{ steps.command.outputs.command }}
+        workingDirectory: ${{ inputs.name }}
 
     - name: Get deploy URL
       id: get-url

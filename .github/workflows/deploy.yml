@@ -21,6 +21,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/workflows/setup
+      - name: Install wrangler globally
+        run: pnpm install -g wrangler@3
 
       - uses: dorny/paths-filter@v3
         id: changes
