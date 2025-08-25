@@ -92,7 +92,7 @@ runs:
       run: |
         echo "did-deploy=$DID_DEPLOY" >> $GITHUB_OUTPUT
 
-        if [ "$DID_DEPLOY" = 'true']; then
+        if [[ "$DID_DEPLOY" = 'true']]; then
           echo "versioned-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
           echo "url=$DEPLOY_ALIAS_URL" >> $GITHUB_OUTPUT
           exit 0
