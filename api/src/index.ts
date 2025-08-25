@@ -23,7 +23,6 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
-  FRONTEND_URL: string
 }
 
 const app = new Hono<{ Bindings: Env }>()
@@ -120,11 +119,18 @@ app.post(
     try {
       const { walletAddress, debitAmount, receiveAmount } = req.valid('json')
 
+      const redirectUrl = new URL(
+        '/tools/payment-confirmation',
+        req.header('Origin')
+      ).href
+      console.log({ redirectUrl })
+
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.initializePayment({
         walletAddress,
         debitAmount,
-        receiveAmount
+        receiveAmount,
+        redirectUrl
       })
 
       return json(result)

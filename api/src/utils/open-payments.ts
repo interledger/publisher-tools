@@ -54,14 +54,10 @@ type CreateOutgoingPaymentParams = {
 export class OpenPaymentsService {
   private client: AuthenticatedClient | null = null
   private static _instance: OpenPaymentsService
-  private readonly frontendUrl: string
-  private constructor(env: Env) {
-    this.frontendUrl = env.FRONTEND_URL
-  }
 
   public static async getInstance(env: Env): Promise<OpenPaymentsService> {
     if (!OpenPaymentsService._instance) {
-      OpenPaymentsService._instance = new OpenPaymentsService(env)
+      OpenPaymentsService._instance = new OpenPaymentsService()
       OpenPaymentsService._instance.client =
         await OpenPaymentsService._instance.initClient(env)
     }
@@ -196,6 +192,7 @@ export class OpenPaymentsService {
     walletAddress: WalletAddress
     debitAmount: Amount
     receiveAmount: Amount
+    redirectUrl: string
   }): Promise<PendingGrant> {
     const clientNonce = crypto.randomUUID()
     const paymentId = createId()
@@ -206,7 +203,7 @@ export class OpenPaymentsService {
       receiveAmount: args.receiveAmount,
       nonce: clientNonce,
       paymentId: paymentId,
-      redirectUrl: this.frontendUrl + 'payment-confirmation'
+      redirectUrl: args.redirectUrl
     })
 
     return outgoingPaymentGrant
