@@ -90,23 +90,22 @@ export class PaymentInteraction extends LitElement {
         incomingPaymentGrant,
         note
       } = this.configController.state
-      const response = await fetch(
-        `${this.configController.config.apiUrl}/tools/payment/finalize`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            walletAddress,
-            pendingGrant: outgoingPaymentGrant,
-            quote,
-            incomingPaymentGrant,
-            interactRef,
-            note
-          })
-        }
-      )
+      const { apiUrl } = this.configController.config
+      const url = new URL('/tools/payment/finalize', apiUrl).href
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          walletAddress,
+          pendingGrant: outgoingPaymentGrant,
+          quote,
+          incomingPaymentGrant,
+          interactRef,
+          note
+        })
+      })
 
       if (!response.ok) {
         this.currentView = 'failed'

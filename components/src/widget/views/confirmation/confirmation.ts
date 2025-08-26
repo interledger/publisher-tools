@@ -165,21 +165,20 @@ export class PaymentConfirmation extends LitElement {
     receiver: string
     amount: number
   }): Promise<void> {
-    const response = await fetch(
-      `${this.configController.config.apiUrl}tools/payment/quote`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          senderWalletAddress: paymentData.walletAddress,
-          receiverWalletAddress: paymentData.receiver,
-          amount: paymentData.amount,
-          note: this.note
-        } satisfies PaymentQuoteInput)
-      }
-    )
+    const { apiUrl } = this.configController.config
+    const url = new URL(`/tools/payment/quote`, apiUrl)
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        senderWalletAddress: paymentData.walletAddress,
+        receiverWalletAddress: paymentData.receiver,
+        amount: paymentData.amount,
+        note: this.note
+      } satisfies PaymentQuoteInput)
+    })
 
     if (!response.ok) {
       throw new Error('Failed to fetch payment quote')
