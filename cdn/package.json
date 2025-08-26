@@ -16,6 +16,6 @@
     "publisher-tools-embed": "workspace:^",
     "vite": "^6.3.5",
     "vite-plugin-restart": "^0.4.2",
-    "wrangler": "^4.16.1"
+    "wrangler": "^4.32.0"
   }
 }

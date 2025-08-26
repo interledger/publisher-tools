@@ -29,6 +29,11 @@
   "resolutions": {
     "esbuild": "0.23.1"
   },
+  "pnpm": {
+    "overrides": {
+      "wrangler": "4.32.0"
+    }
+  },
   "engines": {
     "pnpm": "^9.12.1",
     "npm": "pnpm",
