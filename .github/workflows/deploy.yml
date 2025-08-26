@@ -44,6 +44,19 @@ jobs:
               - *cdn
               - 'frontend/**'
 
+      - name: Get deploy mode
+        id: deploy-mode
+        run: |
+          mode="preview"
+          if [[ "$EVENT_NAME" == 'push' ]]; then
+            [[ "$GH_REF" == 'refs/heads/main' ]] && mode="staging"
+            [[ "$GH_REF" == 'refs/heads/release' ]] && mode="production"
+          fi
+          echo "mode=${mode}" >> $GITHUB_OUTPUT
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_REF: ${{ github.ref }}
+
       #region Deploy
 
       # cdn (embed) needs: API_URL, APP_URL (infer from API_URL to prevent cycle)
@@ -61,7 +74,7 @@ jobs:
         with:
           name: 'api'
           changed: ${{ steps.changes.outputs.api }}
-          mode: 'preview'
+          mode: ${{ steps.deploy-mode.outputs.mode }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           stagingUrl: 'https://staging-publisher-tools-api.webmonetization.workers.dev'
@@ -73,7 +86,7 @@ jobs:
         with:
           name: 'cdn'
           changed: ${{ steps.changes.outputs.cdn }}
-          mode: 'preview'
+          mode: ${{ steps.deploy-mode.outputs.mode }}
           build: 'pnpm -C embed run build && pnpm -C cdn run build'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -87,7 +100,7 @@ jobs:
         with:
           name: 'frontend'
           changed: ${{ steps.changes.outputs.frontend }}
-          mode: 'preview'
+          mode: ${{ steps.deploy-mode.outputs.mode }}
           build: 'pnpm -C frontend run build'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
