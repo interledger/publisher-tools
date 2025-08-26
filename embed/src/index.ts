@@ -142,9 +142,9 @@ const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
   element.config = {
     apiUrl: API_URL,
-    frontendUrl: API_URL.includes('staging')
-      ? 'https://staging-publisher-tools.webmonetization.workers.dev/tools/'
-      : 'https://webmonetization.org/tools/',
+    frontendUrl: API_URL.includes('webmonetization.org')
+      ? 'https://webmonetization.org/tools/'
+      : 'https://staging-publisher-tools.webmonetization.workers.dev/tools/',
     receiverAddress: walletAddressUrl,
     action: config.widgetButtonText || 'Pay',
     theme: {
