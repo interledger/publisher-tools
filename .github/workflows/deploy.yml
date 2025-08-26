@@ -124,8 +124,9 @@ jobs:
 
             function getText(url, outcome) {
               if (url) {
-                const RE = /https?:\/\/(.*?)\//;
-                return `[${url.match(RE)?.[1] ?? url}](${url})`;
+                const RE = /^https?:\/\/([a-z0-9]+)-/i;
+                const text = url.match(RE)?.[1] ?? url;
+                return `[${text}](${url})`;
               }
               return outcome;
             }
