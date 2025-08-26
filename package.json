@@ -26,6 +26,11 @@
     "typescript": "5.8.3",
     "typescript-eslint": "^8.33.0"
   },
+  "pnpm": {
+    "overrides": {
+      "wrangler": "4.32.0"
+    }
+  },
   "resolutions": {
     "esbuild": "0.23.1"
   },

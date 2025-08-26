@@ -28,7 +28,7 @@
   "devDependencies": {
     "@shared/types": "workspace:^",
     "typescript": "5.1.6",
-    "wrangler": "^4.16.1"
+    "wrangler": "^4.32.0"
   },
   "engines": {
     "node": ">=20.0.0"
