@@ -68,7 +68,7 @@ runs:
       run: |
         case "$DEPLOY_MODE" in
           preview)    DEPLOY_COMMAND="versions upload" ;;
-          staging)    DEPLOY_COMMAND="versions upload --alias staging" ;;
+          staging)    DEPLOY_COMMAND="versions upload --preview-alias staging" ;;
           production) DEPLOY_COMMAND="deploy" ;;
         esac
         echo "command=$DEPLOY_COMMAND" >> $GITHUB_OUTPUT
