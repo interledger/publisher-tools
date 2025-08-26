@@ -110,9 +110,10 @@ jobs:
             | API    | ${getText('${{ steps.api.outputs.url }}', '${{ steps.api.outcome }}')} |
             | CDN    | ${getText('${{ steps.cdn.outputs.url }}', '${{ steps.cdn.outcome }}')} |
             | App    | ${getText('${{ steps.frontend.outputs.url }}', '${{ steps.frontend.outcome }}')} |
-            `);
+            `, true);
             const repoUrl = '${{ github.server_url }}/${{ github.repository }}';
             const runId = '${{ github.run_id }}';
+            core.summary.addSeparator();
             core.summary.addLink(`Logs #${runId}`, `${repoUrl}/actions/runs/${runId}`);
 
             await core.setOutput('summary', core.summary.stringify());
