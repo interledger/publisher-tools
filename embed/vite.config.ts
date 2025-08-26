@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
   return {
     envDir: resolve(__dirname),
     define: {
-      BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL),
+      BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL)
     },
     build: {
       lib: {
