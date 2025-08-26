@@ -91,8 +91,6 @@ runs:
       # if `deploy` was run: set output versioned-url=deployment-url, and url=deployment-alias-url, and did-deploy='true'
       # if not, set did-deploy='false', url=versioned-url=staging-url if mode=preview|staging; url=versioned-url=production-url if mode=production
       run: |
-        set -ex
-
         echo "did-deploy=$DID_DEPLOY" >> $GITHUB_OUTPUT
 
         if [[ "$DID_DEPLOY" = 'true' ]]; then
