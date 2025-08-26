@@ -113,10 +113,17 @@ jobs:
         with:
           script: |
             core.summary.addHeading('Deployment results', 'h2');
-            core.summary.addTable([
-              [{ data: 'Worker', header: true }, { data: 'URL', header: true }],
-              ['API', '${{ steps.api.outputs.url }}'],
-              ['CDN', '${{ steps.cdn.outputs.url }}'],
-              ['App', '${{ steps.frontend.outputs.url }}'],
-            ]);
+
+            const apiUrl = '${{ steps.api.outputs.url }}';
+            const cdnUrl = '${{ steps.cdn.outputs.url }}';
+            const appUrl = '${{ steps.frontend.outputs.url }}';
+            const RE = /https?:\/\/(.*?)\//;
+            
+            core.summary.addRaw(`
+            | Worker | URL                                 |
+            | ------ | ----------------------------------- |
+            | API    | [${apiUrl.match(RE)[1]}](${apiUrl}) |
+            | CDN    | [${cdnUrl.match(RE)[1]}](${cdnUrl}) |
+            | App    | [${appUrl.match(RE)[1]}](${appUrl}) |
+            `);
             await core.summary.write();
