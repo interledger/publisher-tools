@@ -3,7 +3,13 @@ declare const BUILD_CDN_URL: string
 
 const DEV_API_URL = 'http://localhost:8787'
 const DEV_CDN_URL = 'http://localhost:5173'
-const _DEV_FRONTEND_URL = 'http://localhost:3000/tools/' // contains trailing slash and pathname
+const DEV_FRONTEND_URL = 'http://localhost:3000/tools/' // contains trailing slash and pathname.
+
+export const APP_URL = {
+  production: 'https://webmonetization.org',
+  staging: 'https://staging-publisher-tools.webmonetization.workers.dev',
+  development: new URL(DEV_FRONTEND_URL).origin
+}
 
 export const API_URL =
   typeof BUILD_API_URL === 'string' && BUILD_API_URL
