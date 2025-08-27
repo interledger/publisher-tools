@@ -67,6 +67,9 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
     devDependencies:
+      '@shared/defines':
+        specifier: workspace:^
+        version: link:../shared/defines
       '@shared/types':
         specifier: workspace:^
         version: link:../shared/types
