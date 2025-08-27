@@ -66,14 +66,13 @@ runs:
       id: command
       shell: bash
       run: |
+        DEPLOY_MODE='${{ inputs.mode }}'
         case "$DEPLOY_MODE" in
           preview)    DEPLOY_COMMAND="versions upload" ;;
           staging)    DEPLOY_COMMAND="versions upload --preview-alias staging" ;;
           production) DEPLOY_COMMAND="deploy" ;;
         esac
         echo "command=$DEPLOY_COMMAND" >> $GITHUB_OUTPUT
-      env:
-        DEPLOY_MODE: ${{ inputs.mode }}
 
     - name: Deploy Worker
       if: inputs.changed == 'true'
@@ -91,6 +90,13 @@ runs:
       # if `deploy` was run: set output versioned-url=deployment-url, and url=deployment-alias-url, and did-deploy='true'
       # if not, set did-deploy='false', url=versioned-url=staging-url if mode=preview|staging; url=versioned-url=production-url if mode=production
       run: |
+        DEPLOY_MODE='${{ inputs.mode }}'
+        STAGING_URL='${{ inputs.stagingUrl }}'
+        PRODUCTION_URL='${{ inputs.productionUrl }}'
+        DID_DEPLOY='${{ inputs.changed }}'
+        DEPLOY_URL='${{ steps.deploy.outputs.deployment-url }}'
+        DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url || steps.deploy.outputs.deployment-url }}'
+
         echo "did-deploy=$DID_DEPLOY" >> $GITHUB_OUTPUT
 
         if [[ "$DID_DEPLOY" = 'true' ]]; then
@@ -106,10 +112,3 @@ runs:
         esac
         echo "versioned-url=$VERSIONED_URL" >> $GITHUB_OUTPUT
         echo "url=$VERSIONED_URL" >> $GITHUB_OUTPUT
-      env:
-        DEPLOY_MODE: ${{ inputs.mode }}
-        STAGING_URL: ${{ inputs.stagingUrl }}
-        PRODUCTION_URL: ${{ inputs.productionUrl }}
-        DID_DEPLOY: ${{ inputs.changed }}
-        DEPLOY_URL: ${{ steps.deploy.outputs.deployment-url }}
-        DEPLOY_URL_ALIAS: ${{ steps.deploy.outputs.deployment-alias-url || steps.deploy.outputs.deployment-url }}

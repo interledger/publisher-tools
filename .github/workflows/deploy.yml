@@ -47,15 +47,14 @@ jobs:
       - name: Get deploy mode
         id: deploy-mode
         run: |
+          GH_EVENT_NAME='${{ github.event_name }}'
+          GH_REF='${{ github.ref }}'
           mode="preview"
           if [[ "$EVENT_NAME" == 'push' ]]; then
             [[ "$GH_REF" == 'refs/heads/main' ]] && mode="staging"
             [[ "$GH_REF" == 'refs/heads/release' ]] && mode="production"
           fi
           echo "mode=${mode}" >> $GITHUB_OUTPUT
-        env:
-          GH_EVENT_NAME: ${{ github.event_name }}
-          GH_REF: ${{ github.ref }}
 
       #region Deploy
 
