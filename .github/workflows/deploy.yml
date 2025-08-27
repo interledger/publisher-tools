@@ -22,8 +22,9 @@ jobs:
       - uses: actions/checkout@v5
       - uses: ./.github/workflows/setup
       - name: Install wrangler globally
+        # The wrangler Action expects a global installation, so we better reuse
+        # what we've in our project.
         run: |
-          # the wrangler action expects a global installation, so we better reuse what we've in our project
           wrangler_version=$(cat package.json | jq -r '.pnpm.overrides.wrangler')
           pnpm install -g "wrangler@${wrangler_version}"
 
@@ -74,10 +75,10 @@ jobs:
           name: 'api'
           changed: ${{ steps.changes.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
+          stagingUrl: ${{ vars.API_STAGING_URL }}
+          productionUrl: ${{ vars.API_PRODUCTION_URL }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          stagingUrl: 'https://staging-publisher-tools-api.webmonetization.workers.dev'
-          productionUrl: 'https://api.webmonetization.org'
 
       - name: Deploy CDN
         uses: ./.github/workflows/deploy-worker
@@ -87,11 +88,11 @@ jobs:
           changed: ${{ steps.changes.outputs.cdn }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           build: 'pnpm -C embed run build && pnpm -C cdn run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          stagingUrl: ${{ vars.CDN_STAGING_URL }}
+          productionUrl: ${{ vars.CDN_PRODUCTION_URL }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          stagingUrl: 'https://staging-publisher-tools-cdn.webmonetization.workers.dev'
-          productionUrl: 'https://cdn.webmonetization.org'
-          BUILD_API_URL: ${{ steps.api.outputs.url }}
 
       - name: Deploy Frontend
         uses: ./.github/workflows/deploy-worker
@@ -101,12 +102,12 @@ jobs:
           changed: ${{ steps.changes.outputs.frontend }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           build: 'pnpm -C frontend run build'
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          stagingUrl: 'https://staging-publisher-tools.webmonetization.workers.dev'
-          productionUrl: 'https://webmonetization.org'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
+          stagingUrl: ${{ vars.APP_STAGING_URL }}
+          productionUrl: ${{ vars.APP_PRODUCTION_URL }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       #endregion
 
       - name: Create Job summary
@@ -116,6 +117,7 @@ jobs:
         with:
           script: |
             core.summary.addHeading('Deployment results', 'h2');
+
             core.summary.addRaw(`
             | Worker | URL                                            |
             | ------ | ---------------------------------------------- |
@@ -123,6 +125,7 @@ jobs:
             | CDN    | ${getText('${{ steps.cdn.outputs.url }}', '${{ steps.cdn.outcome }}')} |
             | App    | ${getText('${{ steps.frontend.outputs.url }}', '${{ steps.frontend.outcome }}')} |
             `, true);
+
             const repoUrl = '${{ github.server_url }}/${{ github.repository }}';
             const runId = '${{ github.run_id }}';
             core.summary.addSeparator();
