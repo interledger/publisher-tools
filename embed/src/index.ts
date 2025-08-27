@@ -1,33 +1,28 @@
 import { PaymentWidget } from '@tools/components'
 import { Banner } from '@tools/components/banner'
+import type { ElementConfigType } from '@shared/types'
 
 customElements.define('wm-payment-widget', PaymentWidget)
 customElements.define('wm-banner', Banner)
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wm-banner': BannerElement
-    'wm-payment-widget': WidgetElement
+    'wm-banner': Banner
+    'wm-payment-widget': PaymentWidget
   }
 }
 
-/* eslint-disable no-case-declarations */
-const API_URL = import.meta.env.VITE_SCRIPT_API_URL
+type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
+type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
+type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
+type Config = WidgetConfig | BannerConfig
+
+const API_URL = import.meta.env.VITE_SCRIPT_API_URL.replace(/\/$/, '')
 
 let paramTypes: string[] | undefined,
   paramWallet: string | undefined,
   paramTag: string = 'default',
   urlWallet
-
-// TODO: Have a defined interface for the config
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Config = Record<string, any>
-interface BannerElement extends HTMLElement {
-  config: Config
-}
-interface WidgetElement extends HTMLElement {
-  config: Config
-}
 
 const currentScript = document.getElementById(
   'wmt-init-script'
@@ -45,7 +40,7 @@ if (!paramTypes || !paramWallet) {
   throw 'Missing parameters! Could not initialise WM Tools.'
 }
 
-fetch(`${API_URL}tools/config/${urlWallet}/${paramTag}`)
+fetch(`${API_URL}/tools/config/${urlWallet}/${paramTag}`)
   .then((response) => response.json())
   .then((resp) => {
     const config = resp
@@ -77,21 +72,22 @@ const drawElement = async (
     const type = types[Number(key)]
     switch (type) {
       case 'widget': {
-        const element = drawWidget(walletAddressUrl, config)
+        const element = drawWidget(walletAddressUrl, config as WidgetConfig)
         document.body.appendChild(element)
         break
       }
       case 'banner':
-      default:
-        const element = drawBanner(config)
+      default: {
+        const element = drawBanner(config as BannerConfig)
         if (element) {
           document.body.appendChild(element)
         }
+      }
     }
   }
 }
 
-const drawBanner = (config: Config) => {
+const drawBanner = (config: BannerConfig) => {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
@@ -143,7 +139,7 @@ const drawBanner = (config: Config) => {
   return bannerElement
 }
 
-const drawWidget = (walletAddressUrl: string, config: Config) => {
+const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
   element.config = {
     apiUrl: API_URL,

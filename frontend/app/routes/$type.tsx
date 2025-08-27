@@ -44,7 +44,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
 
   const defaultConfig = getDefaultData()
   const scriptInitUrl = env.SCRIPT_EMBED_URL
-  const apiUrl = env.API_URL
+  const apiUrl = env.API_URL.replace(/\/$/, '')
   const opWallet = env.OP_WALLET_ADDRESS
 
   return json(

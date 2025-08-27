@@ -6,7 +6,7 @@ import type {
 } from '@interledger/open-payments'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { PaymentQuoteInput } from 'publisher-tools-api'
+import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 
@@ -165,21 +165,20 @@ export class PaymentConfirmation extends LitElement {
     receiver: string
     amount: number
   }): Promise<void> {
-    const response = await fetch(
-      `${this.configController.config.apiUrl}tools/payment/quote`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          senderWalletAddress: paymentData.walletAddress,
-          receiverWalletAddress: paymentData.receiver,
-          amount: paymentData.amount,
-          note: this.note
-        } satisfies PaymentQuoteInput)
-      }
-    )
+    const { apiUrl } = this.configController.config
+    const url = new URL(`/tools/payment/quote`, apiUrl)
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        senderWalletAddress: paymentData.walletAddress,
+        receiverWalletAddress: paymentData.receiver,
+        amount: paymentData.amount,
+        note: this.note
+      } satisfies PaymentQuoteInput)
+    })
 
     if (!response.ok) {
       throw new Error('Failed to fetch payment quote')
@@ -268,20 +267,21 @@ export class PaymentConfirmation extends LitElement {
     debitAmount: Amount
     receiveAmount: Amount
   }): Promise<PendingGrant> {
-    const response = await fetch(
-      `${this.configController.config.apiUrl}tools/payment/grant`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          walletAddress: paymentData.walletAddress,
-          debitAmount: paymentData.debitAmount,
-          receiveAmount: paymentData.receiveAmount
-        })
-      }
-    )
+    const { apiUrl } = this.configController.config
+    const url = new URL('/tools/payment/grant', apiUrl).href
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        walletAddress:
+          paymentData.walletAddress as PaymentGrantInput['walletAddress'],
+        debitAmount: paymentData.debitAmount,
+        receiveAmount: paymentData.receiveAmount
+      } satisfies PaymentGrantInput)
+    })
 
     if (!response.ok) {
       throw new Error('Failed to request outgoing payment grant')
