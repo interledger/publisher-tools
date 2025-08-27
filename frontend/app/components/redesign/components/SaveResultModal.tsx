@@ -54,7 +54,7 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
         )}
       </div>
       <div className="text-center">
-        <p className="text-base leading-md font-normal text-text-primary">
+        <p className="text-base leading-md font-normal text-text-primary whitespace-pre-wrap">
           {message}
         </p>
       </div>

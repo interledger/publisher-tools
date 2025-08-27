@@ -396,6 +396,12 @@ export const toolActions = {
         method: 'PUT',
         body: formData
       })
+      if (!response.ok) {
+        const details = await response.json()
+        throw new Error(`Save request failed with status: ${response.status}`, {
+          cause: { details }
+        })
+      }
 
       const data = (await response.json()) as SaveConfigResponse
 

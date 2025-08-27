@@ -284,8 +284,24 @@ export default function Banner() {
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
     setLoading(true)
-    await toolActions.saveConfig(action)
-    setLoading(false)
+    try {
+      await toolActions.saveConfig(action)
+    } catch (err) {
+      const error = err as Error
+      console.error({ error })
+      let message = error.message
+      // @ts-expect-error TODO
+      const fieldErrors = error.cause?.details?.errors?.fieldErrors
+      if (fieldErrors) {
+        message += '\n'
+        for (const [key, msg] of Object.entries(fieldErrors)) {
+          message += `\n${key}: ${msg}`
+        }
+      }
+      toolActions.setModal({ type: 'save-error', message })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handlePreviewClick = () => {
@@ -502,9 +518,10 @@ export default function Banner() {
                 onClose={handleCloseModal}
                 onDone={handleCloseModal}
                 message={
-                  !snap.isGrantAccepted
+                  snap.modal?.message ||
+                  (!snap.isGrantAccepted
                     ? String(snap.grantResponse)
-                    : 'Error saving your edits'
+                    : 'Error saving your edits')
                 }
                 isSuccess={snap.isGrantAccepted}
               />

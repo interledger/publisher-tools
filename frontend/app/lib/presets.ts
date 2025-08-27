@@ -37,6 +37,7 @@ export const modalTypes = [
 ]
 export type ModalType = {
   type: (typeof modalTypes)[number]
+  message?: string; // set when type is "save-error"
   grantRedirectIntent?: string
   grantRedirectURI?: string
   fetchedConfigs?: Record<string, ElementConfigType>
