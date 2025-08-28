@@ -14,8 +14,6 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'opWallet',
   'cdnUrl'
 ])
-// @ts-expect-error: backward compat. without it, storage validation fails
-EXCLUDED_FROM_STORAGE.add('scriptEmbedUrl')
 
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
