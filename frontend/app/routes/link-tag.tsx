@@ -52,8 +52,6 @@ export default function LinkTag() {
             <a
               className="text-style-body-standard !text-text-buttons-default underline"
               href="https://webmonetization.org/docs/"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               docs
             </a>
