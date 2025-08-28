@@ -278,16 +278,13 @@ export default function Widget() {
     } catch (err) {
       const error = err as Error
       console.error({ error })
-      let message = error.message
+      const message = error.message
       // @ts-expect-error TODO
       const fieldErrors = error.cause?.details?.errors?.fieldErrors
-      if (fieldErrors) {
-        message += '\n'
-        for (const [key, msg] of Object.entries(fieldErrors)) {
-          message += `\n${key}: ${msg}`
-        }
-      }
-      toolActions.setModal({ type: 'save-error', message })
+      toolActions.setModal({
+        type: 'save-error',
+        error: { message, fieldErrors }
+      })
     } finally {
       setLoading(false)
     }
@@ -509,13 +506,14 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onDone={handleCloseModal}
+                fieldErrors={snap.modal?.error?.fieldErrors}
                 message={
-                  snap.modal?.message ||
+                  snap.modal?.error?.message ||
                   (!snap.isGrantAccepted
                     ? String(snap.grantResponse)
                     : 'Error saving your edits')
                 }
-                isSuccess={snap.isGrantAccepted}
+                isSuccess={!snap.modal.error && snap.isGrantAccepted}
               />
             </div>
           </div>

@@ -8,6 +8,7 @@ interface SaveResultModalProps {
   onClose?: () => void
   onDone?: () => void
   message?: string
+  fieldErrors?: Record<string, string>
   isSuccess?: boolean
   className?: string
 }
@@ -17,6 +18,7 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
   onClose,
   onDone,
   message = 'Your edits have been saved',
+  fieldErrors,
   isSuccess = true,
   className = ''
 }) => {
@@ -54,10 +56,21 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
         )}
       </div>
       <div className="text-center">
-        <p className="text-base leading-md font-normal text-text-primary whitespace-pre-wrap">
+        <p className="text-base leading-md font-normal text-text-primary">
           {message}
         </p>
       </div>
+      {fieldErrors && Object.keys(fieldErrors).length && (
+        <details className="self-start text-left">
+          <ul className="list-disc ml-6 text-sm text-field-helpertext-default">
+            {Object.entries(fieldErrors).map(([key, msg], i) => (
+              <li key={i}>
+                <span className="font-medium">{key}</span>: {msg as string}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
       <div className="w-full">
         <ToolsSecondaryButton
           className="w-full flex items-center justify-center"
