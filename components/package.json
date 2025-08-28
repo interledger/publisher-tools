@@ -16,7 +16,7 @@
     "@shared/types": "workspace:^",
     "@interledger/open-payments": "^7.1.0",
     "publisher-tools-api": "workspace:^",
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.2",
     "vite": "^7.0.5"
   },
   "scripts": {
