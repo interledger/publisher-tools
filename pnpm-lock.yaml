@@ -67,6 +67,9 @@ importers:
         specifier: ^3.25.67
         version: 3.25.67
     devDependencies:
+      '@shared/defines':
+        specifier: workspace:^
+        version: link:../shared/defines
       '@shared/types':
         specifier: workspace:^
         version: link:../shared/types
@@ -126,6 +129,12 @@ importers:
         specifier: workspace:*
         version: link:../components
     devDependencies:
+      '@shared/defines':
+        specifier: workspace:^
+        version: link:../shared/defines
+      '@shared/types':
+        specifier: workspace:^
+        version: link:../shared/types
       typescript:
         specifier: ^5.1.6
         version: 5.8.3
@@ -235,6 +244,9 @@ importers:
       '@shared/default-data':
         specifier: workspace:^
         version: link:../shared/default-data
+      '@shared/defines':
+        specifier: workspace:^
+        version: link:../shared/defines
       '@shared/types':
         specifier: workspace:^
         version: link:../shared/types
@@ -295,6 +307,8 @@ importers:
       '@shared/types':
         specifier: workspace:^
         version: link:../types
+
+  shared/defines: {}
 
   shared/types: {}
 

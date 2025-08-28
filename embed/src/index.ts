@@ -1,5 +1,6 @@
 import { PaymentWidget } from '@tools/components'
 import { Banner } from '@tools/components/banner'
+import { API_URL, APP_URL } from '@shared/defines'
 import type { ElementConfigType } from '@shared/types'
 
 customElements.define('wm-payment-widget', PaymentWidget)
@@ -16,8 +17,6 @@ type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
 type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
 type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
 type Config = WidgetConfig | BannerConfig
-
-const API_URL = import.meta.env.VITE_SCRIPT_API_URL.replace(/\/$/, '')
 
 let paramTypes: string[] | undefined,
   paramWallet: string | undefined,
@@ -141,8 +140,10 @@ const drawBanner = (config: BannerConfig) => {
 
 const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
+
   element.config = {
     apiUrl: API_URL,
+    frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
     receiverAddress: walletAddressUrl,
     action: config.widgetButtonText || 'Pay',
     theme: {
@@ -166,4 +167,21 @@ const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
   element.style.zIndex = '9999'
 
   return element
+}
+
+// We've a cyclic dependency between embed and frontend URLs, so we infer it
+// from the API instead to avoid this conflict during deployment.
+function getFrontendUrlOrigin() {
+  if (API_URL.includes('api.webmonetization.org')) {
+    return APP_URL.production
+  }
+
+  if (
+    API_URL.startsWith('http://localhost') ||
+    API_URL.startsWith('http://127.0.0.1')
+  ) {
+    return APP_URL.development
+  }
+
+  return APP_URL.staging
 }

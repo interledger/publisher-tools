@@ -4,6 +4,7 @@ import { zValidator } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
+import { APP_URL } from '@shared/defines'
 import type { ConfigVersions } from '@shared/types'
 import { OpenPaymentsService } from './utils/open-payments.js'
 import {
@@ -23,7 +24,6 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
-  FRONTEND_URL: string
 }
 
 const app = new Hono<{ Bindings: Env }>()
@@ -118,13 +118,18 @@ app.post(
   zValidator('json', PaymentGrantSchema),
   async ({ req, json, env }) => {
     try {
-      const { walletAddress, debitAmount, receiveAmount } = req.valid('json')
+      const { walletAddress, debitAmount, receiveAmount, redirectUrl } =
+        req.valid('json')
+      if (!isAllowedRedirectUrl(redirectUrl)) {
+        throw createHTTPException(400, 'Invalid redirect URL', {})
+      }
 
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.initializePayment({
         walletAddress,
         debitAmount,
-        receiveAmount
+        receiveAmount,
+        redirectUrl
       })
 
       return json(result)
@@ -185,3 +190,9 @@ app.get('/', (c) => {
 })
 
 export default app
+
+function isAllowedRedirectUrl(redirectUrl: string) {
+  const redirectUrlOrigin = new URL(redirectUrl).origin
+  const ALLOWED_ORIGINS = Object.values(APP_URL)
+  return ALLOWED_ORIGINS.some((origin) => redirectUrlOrigin === origin)
+}
