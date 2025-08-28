@@ -13,8 +13,6 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-const WEB_MONETIZATION_URL = 'https://webmonetization.org'
-
 export default function LinkTag() {
   const navigate = useNavigate()
   return (
@@ -30,7 +28,7 @@ export default function LinkTag() {
             payment pointer
           </a>
           &nbsp;or&nbsp;
-          <a href={`${WEB_MONETIZATION_URL}/wallets/`} className="underline">
+          <a href="https://webmonetization.org/wallets/" className="underline">
             wallet address
           </a>
           &nbsp;into the field and click Generate.
@@ -53,7 +51,7 @@ export default function LinkTag() {
             Visit our&nbsp;
             <a
               className="text-style-body-standard !text-text-buttons-default underline"
-              href={`${WEB_MONETIZATION_URL}/docs/`}
+              href="https://webmonetization.org/docs/"
             >
               docs
             </a>
