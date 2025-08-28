@@ -93,10 +93,11 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 
   const { result, payload } = await validateForm(entries, elementType)
   if (!result.success || !payload) {
+    const message = result.error?.message
     errors.fieldErrors = result.error?.flatten().fieldErrors || {
       walletAddress: undefined
     }
-    return json({ errors, success: false, intent }, { status: 400 })
+    return json({ message, errors, success: false, intent }, { status: 400 })
   }
 
   let ownerWalletAddress: string = payload.walletAddress

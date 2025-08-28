@@ -273,8 +273,21 @@ export default function Widget() {
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
     setLoading(true)
-    await toolActions.saveConfig(action)
-    setLoading(false)
+    try {
+      await toolActions.saveConfig(action)
+    } catch (err) {
+      const error = err as Error
+      console.error({ error })
+      const message = error.message
+      // @ts-expect-error TODO
+      const fieldErrors = error.cause?.details?.errors?.fieldErrors
+      toolActions.setModal({
+        type: 'save-error',
+        error: { message, fieldErrors }
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleConfirmWalletOwnership = () => {
@@ -493,12 +506,14 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onDone={handleCloseModal}
+                fieldErrors={snap.modal?.error?.fieldErrors}
                 message={
-                  !snap.isGrantAccepted
+                  snap.modal?.error?.message ||
+                  (!snap.isGrantAccepted
                     ? String(snap.grantResponse)
-                    : 'Error saving your edits'
+                    : 'Error saving your edits')
                 }
-                isSuccess={snap.isGrantAccepted}
+                isSuccess={!snap.modal.error && snap.isGrantAccepted}
               />
             </div>
           </div>
