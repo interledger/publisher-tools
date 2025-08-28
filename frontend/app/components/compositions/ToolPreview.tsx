@@ -79,10 +79,12 @@ const BannerConfig = ({ config }: { config: ElementConfigType }) => {
 const Widget = ({
   config,
   apiUrl,
+  frontendUrl,
   opWallet
 }: {
   config: ElementConfigType
   apiUrl: string
+  frontendUrl: string
   opWallet: string
 }) => {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -112,6 +114,7 @@ const Widget = ({
     () =>
       ({
         apiUrl,
+        frontendUrl,
         receiverAddress: opWallet,
         action: config.widgetButtonText || 'Pay',
         note: '',
@@ -147,11 +150,13 @@ const Widget = ({
 const RenderElementConfig = ({
   type,
   apiUrl,
+  frontendUrl,
   opWallet,
   toolConfig
 }: {
   type: string
   apiUrl: string
+  frontendUrl: string
   opWallet: string
   toolConfig: ElementConfigType
 }) => {
@@ -161,7 +166,14 @@ const RenderElementConfig = ({
     case 'banner':
       return <BannerConfig config={toolConfig} />
     case 'widget':
-      return <Widget apiUrl={apiUrl} opWallet={opWallet} config={toolConfig} />
+      return (
+        <Widget
+          apiUrl={apiUrl}
+          frontendUrl={frontendUrl}
+          opWallet={opWallet}
+          config={toolConfig}
+        />
+      )
     default:
       return <NotFoundConfig />
   }
@@ -170,6 +182,7 @@ const RenderElementConfig = ({
 type ToolPreviewProps = {
   type?: string
   apiUrl: string
+  frontendUrl: string
   opWallet: string
   toolConfig: ElementConfigType
 }
@@ -177,6 +190,7 @@ type ToolPreviewProps = {
 export const ToolPreview = ({
   type,
   apiUrl,
+  frontendUrl,
   opWallet,
   toolConfig
 }: ToolPreviewProps) => {
@@ -194,6 +208,7 @@ export const ToolPreview = ({
         type={type ?? ''}
         toolConfig={toolConfig}
         apiUrl={apiUrl}
+        frontendUrl={frontendUrl}
         opWallet={opWallet}
       />
     </div>

@@ -267,8 +267,9 @@ export class PaymentConfirmation extends LitElement {
     debitAmount: Amount
     receiveAmount: Amount
   }): Promise<PendingGrant> {
-    const { apiUrl } = this.configController.config
+    const { apiUrl, frontendUrl } = this.configController.config
     const url = new URL('/tools/payment/grant', apiUrl).href
+    const redirectUrl = new URL('payment-confirmation', frontendUrl).href
 
     const response = await fetch(url, {
       method: 'POST',
@@ -276,6 +277,7 @@ export class PaymentConfirmation extends LitElement {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        redirectUrl,
         walletAddress:
           paymentData.walletAddress as PaymentGrantInput['walletAddress'],
         debitAmount: paymentData.debitAmount,

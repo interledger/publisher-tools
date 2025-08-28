@@ -4,8 +4,17 @@ import { resolve } from 'path'
 export default defineConfig(({ mode }) => {
   const isDevelopment = mode === 'development'
 
+  if (!isDevelopment && mode !== 'prepare') {
+    if (!process.env.BUILD_API_URL) {
+      throw new Error('env var BUILD_API_URL is not set')
+    }
+  }
+
   return {
     envDir: resolve(__dirname),
+    define: {
+      BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL)
+    },
     build: {
       lib: {
         // entry point for the script file
