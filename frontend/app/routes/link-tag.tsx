@@ -54,7 +54,6 @@ export default function LinkTag() {
             <a
               className="text-style-body-standard !text-text-buttons-default underline"
               href={`${WEB_MONETIZATION_URL}/docs/`}
-              rel="noopener noreferrer"
             >
               docs
             </a>
