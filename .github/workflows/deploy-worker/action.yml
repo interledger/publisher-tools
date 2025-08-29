@@ -68,7 +68,7 @@ runs:
       run: |
         DEPLOY_MODE='${{ inputs.mode }}'
         case "$DEPLOY_MODE" in
-          preview)    DEPLOY_COMMAND="versions upload" ;;
+          preview)    DEPLOY_COMMAND="versions upload --preview-alias pr${{ github.event.pull_request.number }}" ;;
           staging)    DEPLOY_COMMAND="versions upload --preview-alias staging" ;;
           production) DEPLOY_COMMAND="deploy" ;;
         esac
