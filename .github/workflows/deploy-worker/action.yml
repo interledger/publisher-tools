@@ -53,7 +53,7 @@ runs:
   using: 'composite'
   steps:
     - name: Build worker
-      if: inputs.build
+      if: ${{ inputs.build && inputs.changed == 'true' }}
       shell: bash
       run: ${{ inputs.build }}
       env:
