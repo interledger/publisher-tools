@@ -119,11 +119,11 @@ jobs:
             core.summary.addHeading('Deployment results', 'h2');
 
             core.summary.addRaw(`
-            | Worker | URL                                            |
-            | ------ | ---------------------------------------------- |
-            | API    | ${getText('${{ steps.api.outputs.url }}', '${{ steps.api.outcome }}')} |
-            | CDN    | ${getText('${{ steps.cdn.outputs.url }}', '${{ steps.cdn.outcome }}')} |
-            | App    | ${getText('${{ steps.frontend.outputs.url }}', '${{ steps.frontend.outcome }}')} |
+            | Worker | Alias | URL  | Outcome |
+            | ------ | --- | --- | --- |
+            | API    | ${getTableText('${{ steps.api.outputs.url }}', '${{ steps.api.outputs.versioned-url }}', '${{ steps.api.outcome }}')} |
+            | CDN    | ${getTableText('${{ steps.cdn.outputs.url }}', '${{ steps.cdn.outputs.versioned-url }}', '${{ steps.cdn.outcome }}')} |
+            | App    | ${getTableText('${{ steps.frontend.outputs.url }}', '${{ steps.frontend.outputs.versioned-url }}', '${{ steps.frontend.outcome }}')} |
             `, true);
 
             const repoUrl = '${{ github.server_url }}/${{ github.repository }}';
@@ -134,7 +134,18 @@ jobs:
             await core.setOutput('summary', core.summary.stringify());
             await core.summary.write();
 
-            function getText(url, outcome) {
+            function getTableText(url, versionedUrl, outcome) {
+              if (outcome !== 'success') {
+                return ['-', '-', outcome].join(' | ');
+              }
+              return [
+                url !== versionedUrl ? getUrlText(url, outcome) : '-',
+                getUrlText(versionedUrl, outcome),
+                outcome,
+              ].join(' | ');
+            }
+
+            function getUrlText(url, outcome) {
               if (url) {
                 const RE = /^https?:\/\/([a-z0-9]+)-/i;
                 const text = url.match(RE)?.[1] ?? url;
