@@ -32,15 +32,21 @@ jobs:
         id: changes
         with:
           filters: |
+            workflow: &workflow
+              - '.github/workflows/deploy.yml'
+              - '.github/workflows/deploy-worker/**'
             api: &api
+              - *workflow
               - 'api/**'
               - 'shared/**'
             cdn: &cdn
+              - *workflow
               - *api
               - 'components/**'
               - 'embed/**'
               - 'cdn/**'
             frontend:
+              - *workflow
               - *api
               - *cdn
               - 'frontend/**'
