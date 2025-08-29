@@ -53,7 +53,7 @@ runs:
   using: 'composite'
   steps:
     - name: Build worker
-      if: inputs.build
+      if: ${{ inputs.build && inputs.changed == 'true' }}
       shell: bash
       run: ${{ inputs.build }}
       env:
@@ -68,7 +68,7 @@ runs:
       run: |
         DEPLOY_MODE='${{ inputs.mode }}'
         case "$DEPLOY_MODE" in
-          preview)    DEPLOY_COMMAND="versions upload" ;;
+          preview)    DEPLOY_COMMAND="versions upload --preview-alias pr${{ github.event.pull_request.number }}" ;;
           staging)    DEPLOY_COMMAND="versions upload --preview-alias staging" ;;
           production) DEPLOY_COMMAND="deploy" ;;
         esac
@@ -95,13 +95,14 @@ runs:
         PRODUCTION_URL='${{ inputs.productionUrl }}'
         DID_DEPLOY='${{ inputs.changed }}'
         DEPLOY_URL='${{ steps.deploy.outputs.deployment-url }}'
-        DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url || steps.deploy.outputs.deployment-url }}'
+        DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url }}'
 
         echo "did-deploy=$DID_DEPLOY" >> $GITHUB_OUTPUT
 
         if [[ "$DID_DEPLOY" = 'true' ]]; then
           echo "versioned-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
-          echo "url=$DEPLOY_URL_ALIAS" >> $GITHUB_OUTPUT
+          url="$DEPLOY_URL_ALIAS"; [ -z "${url}" ] && url="$DEPLOY_URL"
+          echo "url=$url" >> $GITHUB_OUTPUT
           exit 0
         fi
 
