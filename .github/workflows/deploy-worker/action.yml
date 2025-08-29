@@ -101,7 +101,8 @@ runs:
 
         if [[ "$DID_DEPLOY" = 'true' ]]; then
           echo "versioned-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
-          echo "url=$DEPLOY_URL_ALIAS:=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          url="$DEPLOY_URL_ALIAS"; [ -z "${url}" ] && url="$DEPLOY_URL"
+          echo "url=$url" >> $GITHUB_OUTPUT
           exit 0
         fi
 
