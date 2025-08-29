@@ -95,13 +95,13 @@ runs:
         PRODUCTION_URL='${{ inputs.productionUrl }}'
         DID_DEPLOY='${{ inputs.changed }}'
         DEPLOY_URL='${{ steps.deploy.outputs.deployment-url }}'
-        DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url || steps.deploy.outputs.deployment-url }}'
+        DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url || steps.deploy.outputs.pages-deployment-alias-url }}'
 
         echo "did-deploy=$DID_DEPLOY" >> $GITHUB_OUTPUT
 
         if [[ "$DID_DEPLOY" = 'true' ]]; then
           echo "versioned-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
-          echo "url=$DEPLOY_URL_ALIAS" >> $GITHUB_OUTPUT
+          echo "url=$DEPLOY_URL_ALIAS:=$DEPLOY_URL" >> $GITHUB_OUTPUT
           exit 0
         fi
 
