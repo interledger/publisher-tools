@@ -77,28 +77,6 @@ export default function App() {
 export function ErrorBoundary() {
   const error = useRouteError()
 
-  const ErrorPage = ({ children }: { children: ReactNode }) => {
-    return (
-      <html lang="en" className="h-full">
-        <head>
-          <Meta />
-          <Links />
-        </head>
-        <body className="h-full text-tealish">
-          <div className="min-h-full">
-            <div className="flex pt-20 md:pt-0 flex-1 flex-col">
-              <main className="grid min-h-screen place-items-center">
-                {children}
-              </main>
-            </div>
-          </div>
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    )
-  }
-
   if (isRouteErrorResponse(error)) {
     return (
       <ErrorPage>
@@ -137,6 +115,28 @@ export function ErrorBoundary() {
         </Button>
       </div>
     </ErrorPage>
+  )
+}
+
+const ErrorPage = ({ children }: { children: ReactNode }) => {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full text-tealish">
+        <div className="min-h-full">
+          <div className="flex pt-20 md:pt-0 flex-1 flex-col">
+            <main className="grid min-h-screen place-items-center">
+              {children}
+            </main>
+          </div>
+        </div>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   )
 }
 
