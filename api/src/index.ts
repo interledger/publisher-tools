@@ -6,6 +6,7 @@ import { ZodError } from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { APP_URL } from '@shared/defines'
 import type { ConfigVersions } from '@shared/types'
+import * as probabilisticRevShare from './routes/probabilistic-revshare.js'
 import { OpenPaymentsService } from './utils/open-payments.js'
 import {
   PaymentQuoteSchema,
@@ -37,41 +38,48 @@ app.use(
   })
 )
 
-app.use('*', async (c, next) => {
-  try {
-    await next()
-  } catch (error) {
-    if (error instanceof HTTPException) {
-      return error.getResponse()
+app.onError((error, c) => {
+  if (error instanceof HTTPException) {
+    console.error(error, { req: c.req })
+    const err = {
+      status: error.status,
+      statusText: error.res?.statusText,
+      message: error.message,
+      details: {
+        // @ts-expect-error if there's a cause, it should have a message
+        message: error.cause?.message
+      }
     }
-    if (error instanceof ZodError) {
-      return c.json(
-        {
-          error: {
-            message: 'Validation failed',
-            code: 'VALIDATION_ERROR',
-            details: {
-              issues: error.errors.map((err) => ({
-                path: err.path.join('.'),
-                message: err.message,
-                code: err.code
-              }))
-            }
-          }
-        },
-        400
-      )
-    }
+    return c.json({ error: err }, error.status)
+  }
 
-    const serializedError = serializeError(error)
-    console.error('Unexpected error: ', serializedError)
+  if (error instanceof ZodError) {
     return c.json(
       {
-        error: { message: 'INTERNAL_ERROR', ...serializedError }
+        error: {
+          message: 'Validation failed',
+          code: 'VALIDATION_ERROR',
+          details: {
+            issues: error.errors.map((err) => ({
+              path: err.path.join('.'),
+              message: err.message,
+              code: err.code
+            }))
+          }
+        }
       },
-      500
+      400
     )
   }
+
+  const serializedError = serializeError(error)
+  console.error('Unexpected error: ', serializedError)
+  return c.json(
+    {
+      error: { message: 'INTERNAL_ERROR', ...serializedError }
+    },
+    500
+  )
 })
 
 app.get(
@@ -166,6 +174,27 @@ app.post(
       return json(result)
     } catch (error) {
       throw createHTTPException(500, 'Payment finalization error: ', error)
+    }
+  }
+)
+
+app.get(
+  '/tools/revshare/:payload',
+  zValidator('param', probabilisticRevShare.paramsSchema),
+  async ({ req, json }) => {
+    const payload = req.param('payload')
+
+    const isImportRequest =
+      new URL(req.url).searchParams.has('import') &&
+      !!req.header('Accept')?.includes('application/json')
+    const format = isImportRequest ? 'import' : 'address'
+
+    try {
+      const result = await probabilisticRevShare.handler(payload, format)
+      return json(result)
+    } catch (error) {
+      if (error instanceof HTTPException) throw error
+      throw createHTTPException(500, 'Revenue share error', error)
     }
   }
 )
