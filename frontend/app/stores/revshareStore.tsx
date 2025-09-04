@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react'
 import { useContext, useState, createContext, useEffect, useMemo } from 'react'
-import type { SharesState, Share } from '../lib/revshare'
-import { validateShares } from '../lib/revshare'
-import { generateShareId } from '@shared/utils'
+import {
+  generateShareId,
+  validateShares,
+  type Share,
+  type SharesState
+} from '../lib/revshare'
 
 const SHARES_KEY = 'prob-revshare-shares'
 

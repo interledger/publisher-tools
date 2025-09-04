@@ -119,12 +119,11 @@ export function createHTTPException(
   error: unknown
 ) {
   const serializedError = serializeError(error)
-  console.error(message, serializedError)
-  return new HTTPException(statusCode, {
-    message: JSON.stringify({
-      error: { ...serializedError }
-    })
+  const err = new HTTPException(statusCode, {
+    message,
+    cause: serializedError
   })
+  return err;
 }
 
 export function urlWithParams(

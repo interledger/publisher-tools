@@ -1,4 +1,9 @@
-import { generateShareId } from '@shared/utils'
+import {
+  encode,
+  decode,
+  type PayloadEntry
+} from '@shared/probabilistic-revenue-share'
+
 const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
@@ -15,15 +20,9 @@ const CHART_COLORS = [
 ]
 
 /** Represents a single revenue share participant */
-export type Share = {
+export interface Share extends PayloadEntry {
   /** Unique identifier for the share */
   id: string
-  /** An optional name for the recipient for display purposes */
-  name?: string
-  /** The payment pointer or wallet address of the recipient */
-  pointer: string
-  /** The numerical weight of the share, used to calculate the distribution */
-  weight?: number
   /** The percentage of revenue this share should receive, if applicable */
   percent?: number
   /** Indicates if the share is valid, used for validation purposes */
@@ -32,6 +31,10 @@ export type Share = {
 
 /** Represents the state of all shares in the revenue distribution */
 export type SharesState = Share[]
+
+export function generateShareId(): string {
+  return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
 
 /**
  * Returns an array of valid shares, filtering out any shares that do not have a pointer or weight
@@ -54,37 +57,6 @@ export function sharesToChartData(
     title: share.name || share.pointer,
     value: Number(share.weight),
     color: CHART_COLORS[i % CHART_COLORS.length]
-  }))
-}
-
-/**
- * Converts an array of Share objects into a list of payment pointers, weights, and names
- * @param shares - Array of shares to convert
- * @returns Array of tuples containing [pointer, weight, name]
- */
-export function sharesToPointerList(
-  shares: SharesState
-): [string, number, string][] {
-  return shares.flatMap((share) =>
-    share.pointer && share.weight
-      ? [[share.pointer, Number(share.weight), share.name || '']]
-      : []
-  )
-}
-
-/**
- * Converts a simplified pointer list back into an array of Share objects
- * @param pointerList - Array of tuples containing [pointer, weight, name]
- * @returns Array of Share objects
- */
-export function sharesFromPointerList(
-  pointerList: [string, number, string][]
-): SharesState {
-  return pointerList.map(([pointer, weight, name]) => ({
-    id: generateShareId(),
-    pointer,
-    weight,
-    name
   }))
 }
 
@@ -133,39 +105,23 @@ export function weightFromPercent(
 }
 
 /**
- * Encodes a string into a URL-safe base64 format
- * @param str - The string to encode
- * @returns URL-safe base64 encoded string
- */
-export function base64url(str: string): string {
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-}
-
-/**
- * Decodes a URL-safe base64 string back to its original format
- * @param str - The URL-safe base64 string to decode
- * @returns Decoded original string
- */
-export function fromBase64url(str: string): string {
-  return atob(str.replace(/-/g, '+').replace(/_/g, '/'))
-}
-
-/**
  * Constructs a complete revshare payment pointer from an array of shares
  * @param shares - Array of shares to convert into a payment pointer
  * @returns Complete revshare payment pointer string, or undefined if no valid shares
  */
-export function sharesToPaymentPointer(shares: Share[]): string | undefined {
+export function sharesToPaymentPointer(
+  shares: Share[],
+  /** Must end with a trailing slash */
+  baseUrl: string
+): string | undefined {
   const validShares = getValidShares(shares)
 
   if (!validShares.length) {
     return
   }
 
-  const pointerList = sharesToPointerList(validShares)
-  const encodedShares = base64url(JSON.stringify(pointerList))
-
-  return normalizePointerPrefix(BASE_REVSHARE_POINTER) + encodedShares
+  const encodedShares = encode(validShares)
+  return baseUrl + encodedShares
 }
 
 /**
@@ -189,14 +145,16 @@ export function pointerToShares(pointer: string): SharesState {
       )
     }
 
-    const pointerList = JSON.parse(fromBase64url(encodedList))
-
-    if (!validatePointerList(pointerList)) {
+    try {
+      return decode(encodedList).map((e) => ({
+        id: generateShareId(),
+        ...e
+      }))
+    } catch {
       throw new Error(
         'Share data is invalid. Make sure you copy the whole "content" from your meta tag.'
       )
     }
-    return sharesFromPointerList(pointerList as [string, number, string][])
   } catch (err: unknown) {
     if (err instanceof TypeError) {
       throw new Error('Meta tag or payment pointer is malformed')

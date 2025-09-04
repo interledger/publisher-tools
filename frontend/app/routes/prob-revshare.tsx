@@ -14,6 +14,7 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
+import { API_URL } from '@shared/defines'
 import {
   changeList,
   dropIndex,
@@ -49,10 +50,11 @@ function Revshare() {
   const [importTag, setImportTag] = useState('')
   const [importError, setImportError] = useState('')
   const { shares, setShares } = useShares()
+  const baseUrl = new URL('/tools/revshare/', API_URL).href
 
   const showDeleteColumn = shares.length > 2
   const revShareUrl = useMemo(
-    () => sharesToPaymentPointer(shares) ?? '',
+    () => sharesToPaymentPointer(shares, baseUrl) ?? '',
     [shares]
   )
   const totalWeight = useMemo(
