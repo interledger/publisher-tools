@@ -21,7 +21,8 @@ interface ShareInputProps {
 }
 
 const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
-const GRID_COLS = 'md:grid-cols-[16rem_1fr_6rem_6rem_minmax(0,auto)]'
+const GRID_COLS =
+  'md:grid-cols-[1fr_3fr_1fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_6rem_6rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
