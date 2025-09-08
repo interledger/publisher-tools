@@ -5,7 +5,6 @@ import {
   type Payload
 } from '@shared/probabilistic-revenue-share'
 
-const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
   '#fae6f1',
@@ -210,10 +209,26 @@ export function tagToShares(tag: string): Promise<SharesState> {
  * @returns True if the string is a revshare payment pointer
  */
 function isRevsharePointer(str: string): boolean {
-  return (
-    str.startsWith(BASE_REVSHARE_POINTER) ||
-    str.startsWith(normalizePointerPrefix(BASE_REVSHARE_POINTER))
-  )
+  if (str.startsWith('<')) return false
+
+  let url: URL
+  try {
+    url = new URL(normalizePointerPrefix(str))
+  } catch {
+    return false
+  }
+
+  if (url.pathname.startsWith('/tools/revshare/')) {
+    return true
+  }
+  // older version
+  if (
+    url.hostname === 'webmonetization.org' &&
+    url.pathname.startsWith('/api/revshare/pay')
+  ) {
+    return true
+  }
+  return false
 }
 
 /**
