@@ -90,21 +90,6 @@ export function dropIndex(arr: SharesState, i: number): SharesState {
 }
 
 /**
- * Calculates the required weight for a share to achieve a target percentage of the total
- * @param percent - The target percentage (0 to 1)
- * @param weight - The current weight of the share
- * @param totalWeight - The total weight of all shares
- * @returns The required weight to achieve the target percentage
- */
-export function weightFromPercent(
-  percent: number,
-  weight: number,
-  totalWeight: number
-): number {
-  return (-percent * (totalWeight - weight)) / (percent - 1)
-}
-
-/**
  * Constructs a complete revshare payment pointer from an array of shares
  * @param shares - Array of shares to convert into a payment pointer
  * @returns Complete revshare payment pointer string, or undefined if no valid shares
@@ -251,83 +236,12 @@ export async function tagOrPointerToShares(tag: string): Promise<SharesState> {
 }
 
 /**
- * Trims a decimal number to 3 decimal places
- * @param dec - The decimal number to trim
- * @returns Number rounded to 3 decimal places
- */
-export function trimDecimal(dec: number): number {
-  return Number(dec.toFixed(3))
-}
-
-/**
- * Validates if a given pointer list is an array of [string, number, string?] tuples
- * @param pointerList - The value to validate
- * @returns True if the pointer list is valid, with type guard
- */
-export function validatePointerList(
-  pointerList: unknown
-): pointerList is [string, number, string?][] {
-  if (!Array.isArray(pointerList)) {
-    return false
-  }
-
-  for (const entry of pointerList) {
-    if (
-      !Array.isArray(entry) ||
-      typeof entry[0] !== 'string' ||
-      typeof entry[1] !== 'number' ||
-      (entry[2] !== undefined && typeof entry[2] !== 'string')
-    ) {
-      return false
-    }
-  }
-
-  return true
-}
-
-/**
  * Normalizes a payment pointer prefix, converting `$` to `https://`
  * @param pointer - The payment pointer to normalize
  * @returns Payment pointer with https:// prefix
  */
 export function normalizePointerPrefix(pointer: string): string {
   return pointer.startsWith('$') ? 'https://' + pointer.substring(1) : pointer
-}
-
-/**
- * Validates if a given pointer is a valid URL or payment pointer
- * @param pointer - The pointer string to validate (can be undefined)
- * @returns True if the pointer is valid or undefined, false otherwise
- */
-export function validatePointer(pointer: string | undefined): boolean {
-  if (!pointer) {
-    return true
-  }
-
-  if (typeof pointer !== 'string') {
-    return false
-  }
-
-  try {
-    const _ = new URL(normalizePointerPrefix(pointer))
-    return true
-  } catch (_err) {
-    return false
-  }
-}
-
-/**
- * Validates if a given weight is a valid number greater than or equal to 0
- * @param weight - The weight value to validate (string, number, or undefined)
- * @returns True if the weight is valid (undefined, empty string, or non-negative number)
- */
-export function validateWeight(weight: string | number | undefined): boolean {
-  if (weight === undefined || weight === '') {
-    return true
-  }
-
-  const num = Number(weight)
-  return !Number.isNaN(num) && num >= 0
 }
 
 export function validateShares(shares: SharesState): boolean {
