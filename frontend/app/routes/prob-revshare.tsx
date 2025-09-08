@@ -107,7 +107,7 @@ function Revshare() {
   const handleLinkTagImport = useCallback(async () => {
     try {
       setImportError('')
-      const importedShares = await tagOrPointerToShares(importTag) || []
+      const importedShares = (await tagOrPointerToShares(importTag)) || []
       setShares(importedShares)
       setIsModalOpen(false)
       setImportTag('')

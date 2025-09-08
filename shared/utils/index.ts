@@ -197,7 +197,6 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   return validUrl
 }
 
-
 export function groupBy<T, K extends PropertyKey>(
   items: T[],
   keySelector: (item: T) => K

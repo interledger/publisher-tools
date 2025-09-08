@@ -123,7 +123,7 @@ export function createHTTPException(
     message,
     cause: serializedError
   })
-  return err;
+  return err
 }
 
 export function urlWithParams(
