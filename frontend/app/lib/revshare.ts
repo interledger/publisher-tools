@@ -1,7 +1,8 @@
+import { API_URL } from '@shared/defines'
 import {
   encode,
-  decode,
-  type PayloadEntry
+  type PayloadEntry,
+  type Payload
 } from '@shared/probabilistic-revenue-share'
 
 const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
@@ -130,7 +131,7 @@ export function sharesToPaymentPointer(
  * @returns Array of Share objects extracted from the pointer
  * @throws Error if the pointer is malformed or contains invalid data
  */
-export function pointerToShares(pointer: string): SharesState {
+export async function pointerToShares(pointer: string): Promise<SharesState> {
   try {
     const parsed = new URL(normalizePointerPrefix(pointer))
     const params = new URLSearchParams(parsed.search)
@@ -146,7 +147,13 @@ export function pointerToShares(pointer: string): SharesState {
     }
 
     try {
-      return decode(encodedList).map((e) => ({
+      const url = new URL(`/tools/revshare/${encodedList}`, API_URL)
+      url.searchParams.append('import', '1')
+      const res = await fetch(url, {
+        headers: { Accept: 'application/json' }
+      })
+      const json = await res.json<{ options: Payload }>()
+      return json.options.map((e) => ({
         id: generateShareId(),
         ...e
       }))
@@ -174,21 +181,15 @@ export function pointerToShares(pointer: string): SharesState {
  * @returns Array of Share objects, or undefined if no valid monetization tag found
  * @throws Error if the tag is malformed
  */
-export function tagToShares(tag: string): SharesState | undefined {
+export function tagToShares(tag: string): Promise<SharesState> {
   const parser = new DOMParser()
   const node = parser.parseFromString(tag, 'text/html')
-  const meta = node.head.querySelector(
+  const meta = node.head.querySelector<HTMLMetaElement>(
     'meta[name="monetization"]'
-  ) as HTMLMetaElement
-  const link = node.head.querySelector(
+  )
+  const link = node.head.querySelector<HTMLLinkElement>(
     'link[rel="monetization"]'
-  ) as HTMLLinkElement
-
-  if (!meta && !link) {
-    throw new Error(
-      'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
-    )
-  }
+  )
 
   if (meta) {
     return pointerToShares(meta.content)
@@ -197,6 +198,10 @@ export function tagToShares(tag: string): SharesState | undefined {
   if (link) {
     return pointerToShares(link.href)
   }
+
+  throw new Error(
+    'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
+  )
 }
 
 /**
@@ -217,7 +222,7 @@ function isRevsharePointer(str: string): boolean {
  * @returns Array of Share objects, or undefined if parsing fails
  * @throws Error if the input is empty or malformed
  */
-export function tagOrPointerToShares(tag: string): SharesState | undefined {
+export async function tagOrPointerToShares(tag: string): Promise<SharesState> {
   const trimmedTag = tag.trim()
   if (!trimmedTag) {
     throw new Error('Field is empty')
