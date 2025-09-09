@@ -24,7 +24,7 @@
     "@tippyjs/react": "^4.2.6",
     "@tools/components": "workspace:*",
     "@typescript-eslint/parser": "^8.41.0",
-    "autoprefixer": "^10.4.20",
+    "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.0",
     "crypto-browserify": "^3.12.1",
     "he": "^1.2.0",
