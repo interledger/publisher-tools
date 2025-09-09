@@ -146,7 +146,7 @@ importers:
     dependencies:
       '@headlessui/react':
         specifier: ^1.7.19
-        version: 1.7.19(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 1.7.19(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@interledger/open-payments':
         specifier: ^7.0.0
         version: 7.0.0
@@ -161,7 +161,7 @@ importers:
         version: 2.16.6(@cloudflare/workers-types@4.20250507.0)(typescript@5.9.2)
       '@remix-run/react':
         specifier: ^2.16.6
-        version: 2.16.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)
+        version: 2.16.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
@@ -173,7 +173,7 @@ importers:
         version: 4.1.6
       '@tippyjs/react':
         specifier: ^4.2.6
-        version: 4.2.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 4.2.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@tools/components':
         specifier: workspace:*
         version: link:../components
@@ -205,20 +205,20 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0
       react:
-        specifier: ^19.1.0
-        version: 19.1.0
+        specifier: ^19.1.1
+        version: 19.1.1
       react-click-away-listener:
         specifier: ^2.2.3
-        version: 2.4.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 2.4.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react-colorful:
         specifier: ^5.6.1
-        version: 5.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 5.6.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
+        specifier: ^19.1.1
+        version: 19.1.1(react@19.1.1)
       react-minimal-pie-chart:
         specifier: ^9.1.1
-        version: 9.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 9.1.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       sanitize-html:
         specifier: ^2.14.0
         version: 2.16.0
@@ -230,17 +230,17 @@ importers:
         version: 6.3.7
       valtio:
         specifier: ^2.1.5
-        version: 2.1.5(@types/react@19.1.3)(react@19.1.0)
+        version: 2.1.5(@types/react@19.1.12)(react@19.1.1)
       zod:
         specifier: ^3.23.8
         version: 3.24.4
     devDependencies:
       '@lit/react':
         specifier: ^1.0.7
-        version: 1.0.7(@types/react@19.1.3)
+        version: 1.0.7(@types/react@19.1.12)
       '@remix-run/dev':
         specifier: ^2.16.6
-        version: 2.16.6(@remix-run/react@2.16.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2))(@remix-run/serve@2.16.6(typescript@5.9.2))(@types/node@22.15.17)(lightningcss@1.29.2)(ts-node@10.9.2(@types/node@22.15.17)(typescript@5.9.2))(typescript@5.9.2)(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2))(wrangler@4.32.0(@cloudflare/workers-types@4.20250507.0))
+        version: 2.16.6(@remix-run/react@2.16.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2))(@remix-run/serve@2.16.6(typescript@5.9.2))(@types/node@22.15.17)(lightningcss@1.29.2)(ts-node@10.9.2(@types/node@22.15.17)(typescript@5.9.2))(typescript@5.9.2)(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2))(wrangler@4.32.0(@cloudflare/workers-types@4.20250507.0))
       '@shared/default-data':
         specifier: workspace:^
         version: link:../shared/default-data
@@ -260,11 +260,11 @@ importers:
         specifier: ^22.15.17
         version: 22.15.17
       '@types/react':
-        specifier: ^19.1.0
-        version: 19.1.3
+        specifier: ^19.1.12
+        version: 19.1.12
       '@types/react-dom':
-        specifier: ^19.1.2
-        version: 19.1.3(@types/react@19.1.3)
+        specifier: ^19.1.9
+        version: 19.1.9(@types/react@19.1.12)
       '@types/sanitize-html':
         specifier: ^2.15.0
         version: 2.16.0
@@ -1388,13 +1388,13 @@ packages:
   '@types/node@22.15.17':
     resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
 
-  '@types/react-dom@19.1.3':
-    resolution: {integrity: sha512-rJXC08OG0h3W6wDMFxQrZF00Kq6qQvw0djHRdzl3U5DnIERz0MRce3WVc7IS6JYBwtaP/DwYtRRjVlvivNveKg==}
+  '@types/react-dom@19.1.9':
+    resolution: {integrity: sha512-qXRuZaOsAdXKFyOhRBg6Lqqc0yay13vN7KrIg4L7N4aaHN68ma9OK3NE1BoDFgFOTfM7zg+3/8+2n8rLUH3OKQ==}
     peerDependencies:
       '@types/react': ^19.0.0
 
-  '@types/react@19.1.3':
-    resolution: {integrity: sha512-dLWQ+Z0CkIvK1J8+wrDPwGxEYFA4RAyHoZPxHVGspYmFVnwGSNT24cGIhFJrtfRnWVuW8X7NO52gCXmhkVUWGQ==}
+  '@types/react@19.1.12':
+    resolution: {integrity: sha512-cMoR+FoAf/Jyq6+Df2/Z41jISvGZZ2eTlnsaJRptmZ76Caldwy1odD4xTr/gNV9VLj0AWgg/nmkevIyUfIIq5w==}
 
   '@types/sanitize-html@2.16.0':
     resolution: {integrity: sha512-l6rX1MUXje5ztPT0cAFtUayXF06DqPhRyfVXareEN5gGCFaP/iwsxIyKODr9XDhfxPpN6vXUFNfo5kZMXCxBtw==}
@@ -3801,10 +3801,10 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  react-dom@19.1.0:
-    resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
+  react-dom@19.1.1:
+    resolution: {integrity: sha512-Dlq/5LAZgF0Gaz6yiqZCf6VCcZs1ghAJyrsu84Q/GT0gV+mCxbfmKNoGRKBYMJ8IEdGPqu49YWXD02GCknEDkw==}
     peerDependencies:
-      react: ^19.1.0
+      react: ^19.1.1
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -3832,8 +3832,8 @@ packages:
     peerDependencies:
       react: '>=16.8'
 
-  react@19.1.0:
-    resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
+  react@19.1.1:
+    resolution: {integrity: sha512-w8nqGImo45dmMIfljjMwOGtbmC/mk4CMYhWIicdSflH91J9TyCyczcPFXJzrZ/ZXcgGRFeP6BU0BEJTw6tZdfQ==}
     engines: {node: '>=0.10.0'}
 
   read-cache@1.0.0:
@@ -5205,12 +5205,12 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@headlessui/react@1.7.19(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@headlessui/react@1.7.19(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
-      '@tanstack/react-virtual': 3.13.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tanstack/react-virtual': 3.13.8(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       client-only: 0.0.1
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   '@hono/zod-validator@0.7.0(hono@4.7.10)(zod@3.25.67)':
     dependencies:
@@ -5391,9 +5391,9 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.3.0': {}
 
-  '@lit/react@1.0.7(@types/react@19.1.3)':
+  '@lit/react@1.0.7(@types/react@19.1.12)':
     dependencies:
-      '@types/react': 19.1.3
+      '@types/react': 19.1.12
 
   '@lit/reactive-element@2.1.0':
     dependencies:
@@ -5501,7 +5501,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.2
 
-  '@remix-run/dev@2.16.6(@remix-run/react@2.16.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2))(@remix-run/serve@2.16.6(typescript@5.9.2))(@types/node@22.15.17)(lightningcss@1.29.2)(ts-node@10.9.2(@types/node@22.15.17)(typescript@5.9.2))(typescript@5.9.2)(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2))(wrangler@4.32.0(@cloudflare/workers-types@4.20250507.0))':
+  '@remix-run/dev@2.16.6(@remix-run/react@2.16.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2))(@remix-run/serve@2.16.6(typescript@5.9.2))(@types/node@22.15.17)(lightningcss@1.29.2)(ts-node@10.9.2(@types/node@22.15.17)(typescript@5.9.2))(typescript@5.9.2)(vite@5.4.19(@types/node@22.15.17)(lightningcss@1.29.2))(wrangler@4.32.0(@cloudflare/workers-types@4.20250507.0))':
     dependencies:
       '@babel/core': 7.27.1
       '@babel/generator': 7.27.1
@@ -5514,7 +5514,7 @@ snapshots:
       '@mdx-js/mdx': 2.3.0
       '@npmcli/package-json': 4.0.1
       '@remix-run/node': 2.16.6(typescript@5.9.2)
-      '@remix-run/react': 2.16.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)
+      '@remix-run/react': 2.16.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)
       '@remix-run/router': 1.23.0
       '@remix-run/server-runtime': 2.16.6(typescript@5.9.2)
       '@types/mdx': 2.0.13
@@ -5601,14 +5601,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.2
 
-  '@remix-run/react@2.16.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)':
+  '@remix-run/react@2.16.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2)':
     dependencies:
       '@remix-run/router': 1.23.0
       '@remix-run/server-runtime': 2.16.6(typescript@5.9.2)
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      react-router: 6.30.0(react@19.1.0)
-      react-router-dom: 6.30.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+      react-router: 6.30.0(react@19.1.1)
+      react-router-dom: 6.30.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       turbo-stream: 2.4.1
     optionalDependencies:
       typescript: 5.9.2
@@ -5826,18 +5826,18 @@ snapshots:
       postcss: 8.5.3
       tailwindcss: 4.1.6
 
-  '@tanstack/react-virtual@3.13.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@tanstack/react-virtual@3.13.8(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@tanstack/virtual-core': 3.13.8
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
   '@tanstack/virtual-core@3.13.8': {}
 
-  '@tippyjs/react@4.2.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@tippyjs/react@4.2.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
       tippy.js: 6.3.7
 
   '@tsconfig/node10@1.0.11':
@@ -5888,11 +5888,11 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/react-dom@19.1.3(@types/react@19.1.3)':
+  '@types/react-dom@19.1.9(@types/react@19.1.12)':
     dependencies:
-      '@types/react': 19.1.3
+      '@types/react': 19.1.12
 
-  '@types/react@19.1.3':
+  '@types/react@19.1.12':
     dependencies:
       csstype: 3.1.3
 
@@ -6077,7 +6077,7 @@ snapshots:
 
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
     optional: true
 
   acorn@8.14.0: {}
@@ -8805,44 +8805,44 @@ snapshots:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
-  react-click-away-listener@2.4.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-click-away-listener@2.4.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
-  react-colorful@5.6.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-colorful@5.6.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
 
-  react-dom@19.1.0(react@19.1.0):
+  react-dom@19.1.1(react@19.1.1):
     dependencies:
-      react: 19.1.0
+      react: 19.1.1
       scheduler: 0.26.0
 
   react-is@16.13.1: {}
 
-  react-minimal-pie-chart@9.1.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-minimal-pie-chart@9.1.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
       svg-partial-circle: 1.0.0
 
   react-refresh@0.14.2: {}
 
-  react-router-dom@6.30.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  react-router-dom@6.30.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@remix-run/router': 1.23.0
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      react-router: 6.30.0(react@19.1.0)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+      react-router: 6.30.0(react@19.1.1)
 
-  react-router@6.30.0(react@19.1.0):
+  react-router@6.30.0(react@19.1.1):
     dependencies:
       '@remix-run/router': 1.23.0
-      react: 19.1.0
+      react: 19.1.1
 
-  react@19.1.0: {}
+  react@19.1.1: {}
 
   read-cache@1.0.0:
     dependencies:
@@ -9474,7 +9474,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 22.15.17
-      acorn: 8.14.1
+      acorn: 8.15.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -9692,12 +9692,12 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  valtio@2.1.5(@types/react@19.1.3)(react@19.1.0):
+  valtio@2.1.5(@types/react@19.1.12)(react@19.1.1):
     dependencies:
       proxy-compare: 3.0.1
     optionalDependencies:
-      '@types/react': 19.1.3
-      react: 19.1.0
+      '@types/react': 19.1.12
+      react: 19.1.1
 
   vary@1.1.2: {}
 
