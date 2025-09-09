@@ -25,7 +25,7 @@
     "@tools/components": "workspace:*",
     "@typescript-eslint/parser": "^8.41.0",
     "autoprefixer": "^10.4.20",
-    "class-variance-authority": "^0.7.0",
+    "class-variance-authority": "^0.7.1",
     "crypto-browserify": "^3.12.1",
     "he": "^1.2.0",
     "http-message-signatures": "^1.0.4",
