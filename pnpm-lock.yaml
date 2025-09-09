@@ -104,8 +104,8 @@ importers:
         specifier: workspace:^
         version: link:../shared/utils
       lit:
-        specifier: ^3.1.0
-        version: 3.3.0
+        specifier: ^3.3.1
+        version: 3.3.1
     devDependencies:
       '@interledger/open-payments':
         specifier: ^7.1.0
@@ -202,8 +202,8 @@ importers:
         specifier: ^4.4.0
         version: 4.4.0
       lit:
-        specifier: ^3.3.0
-        version: 3.3.0
+        specifier: ^3.3.1
+        version: 3.3.1
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -2985,8 +2985,8 @@ packages:
   lit-html@3.3.0:
     resolution: {integrity: sha512-RHoswrFAxY2d8Cf2mm4OZ1DgzCoBKUKSPvA1fhtSELxUERq2aQQ2h05pO9j81gS1o7RIRJ+CePLogfyahwmynw==}
 
-  lit@3.3.0:
-    resolution: {integrity: sha512-DGVsqsOIHBww2DqnuZzW7QsuCdahp50ojuDaBPC7jUDRpYoH0z7kHBBYZewRzer75FwtrkmkKk7iOAwSaWdBmw==}
+  lit@3.3.1:
+    resolution: {integrity: sha512-Ksr/8L3PTapbdXJCk+EJVB78jDodUMaP54gD24W186zGRARvwrsPfS60wae/SSCTCNZVPd1chXqio1qHQmu4NA==}
 
   loader-utils@3.3.1:
     resolution: {integrity: sha512-FMJTLMXfCLMLfJxcX9PFqX5qD88Z5MRGaZCVzfuqeZSPsyiBzs+pahDQjbIWz2QIzPZz0NX9Zy4FX3lmK6YHIg==}
@@ -6077,7 +6077,7 @@ snapshots:
 
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
     optional: true
 
   acorn@8.14.0: {}
@@ -7777,7 +7777,7 @@ snapshots:
     dependencies:
       '@types/trusted-types': 2.0.7
 
-  lit@3.3.0:
+  lit@3.3.1:
     dependencies:
       '@lit/reactive-element': 2.1.0
       lit-element: 4.2.0
@@ -9474,7 +9474,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 22.15.17
-      acorn: 8.14.1
+      acorn: 8.15.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
