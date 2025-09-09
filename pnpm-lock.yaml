@@ -229,8 +229,8 @@ importers:
         specifier: ^6.3.7
         version: 6.3.7
       valtio:
-        specifier: ^2.1.5
-        version: 2.1.5(@types/react@19.1.3)(react@19.1.0)
+        specifier: ^2.1.7
+        version: 2.1.7(@types/react@19.1.3)(react@19.1.0)
       zod:
         specifier: ^3.23.8
         version: 3.24.4
@@ -4484,8 +4484,8 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  valtio@2.1.5:
-    resolution: {integrity: sha512-vsh1Ixu5mT0pJFZm+Jspvhga5GzHUTYv0/+Th203pLfh3/wbHwxhu/Z2OkZDXIgHfjnjBns7SN9HNcbDvPmaGw==}
+  valtio@2.1.7:
+    resolution: {integrity: sha512-DwJhCDpujuQuKdJ2H84VbTjEJJteaSmqsuUltsfbfdbotVfNeTE4K/qc/Wi57I9x8/2ed4JNdjEna7O6PfavRg==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -6077,7 +6077,7 @@ snapshots:
 
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
     optional: true
 
   acorn@8.14.0: {}
@@ -9474,7 +9474,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 22.15.17
-      acorn: 8.14.1
+      acorn: 8.15.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -9692,7 +9692,7 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  valtio@2.1.5(@types/react@19.1.3)(react@19.1.0):
+  valtio@2.1.7(@types/react@19.1.3)(react@19.1.0):
     dependencies:
       proxy-compare: 3.0.1
     optionalDependencies:
