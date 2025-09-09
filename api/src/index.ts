@@ -37,41 +37,44 @@ app.use(
   })
 )
 
-app.use('*', async (c, next) => {
-  try {
-    await next()
-  } catch (error) {
-    if (error instanceof HTTPException) {
-      return error.getResponse()
+app.onError((error, c) => {
+  if (error instanceof HTTPException) {
+    console.error(error)
+    const err = {
+      status: error.status,
+      statusText: error.res?.statusText,
+      message: error.message,
+      details: {
+        // @ts-expect-error if there's a cause, it should have a message
+        message: error.cause?.message
+      }
     }
-    if (error instanceof ZodError) {
-      return c.json(
-        {
-          error: {
-            message: 'Validation failed',
-            code: 'VALIDATION_ERROR',
-            details: {
-              issues: error.errors.map((err) => ({
-                path: err.path.join('.'),
-                message: err.message,
-                code: err.code
-              }))
-            }
-          }
-        },
-        400
-      )
-    }
-
-    const serializedError = serializeError(error)
-    console.error('Unexpected error: ', serializedError)
-    return c.json(
-      {
-        error: { message: 'INTERNAL_ERROR', ...serializedError }
-      },
-      500
-    )
+    return c.json({ error: err }, error.status)
   }
+
+  if (error instanceof ZodError) {
+    const err = {
+      message: 'Validation failed',
+      code: 'VALIDATION_ERROR',
+      details: {
+        issues: error.errors.map((err) => ({
+          path: err.path.join('.'),
+          message: err.message,
+          code: err.code
+        }))
+      }
+    }
+    return c.json({ error: err }, 400)
+  }
+
+  const serializedError = serializeError(error)
+  console.error('Unexpected error: ', serializedError)
+  const err = {
+    message: 'INTERNAL_ERROR',
+    ...serializedError
+  }
+
+  return c.json({ error: err }, 500)
 })
 
 app.get(
