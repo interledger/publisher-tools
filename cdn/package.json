@@ -15,7 +15,7 @@
     "@cloudflare/vite-plugin": "^1.1.1",
     "publisher-tools-embed": "workspace:^",
     "vite": "^6.3.5",
-    "vite-plugin-restart": "^0.4.2",
+    "vite-plugin-restart": "^1.0.0",
     "wrangler": "^4.32.0"
   }
 }
