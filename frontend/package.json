@@ -20,7 +20,7 @@
     "@remix-run/react": "^2.16.6",
     "@shared/config-storage-service": "workspace:^",
     "@shared/utils": "workspace:^",
-    "@tailwindcss/postcss": "^4.1.6",
+    "@tailwindcss/postcss": "^4.1.13",
     "@tippyjs/react": "^4.2.6",
     "@tools/components": "workspace:*",
     "@typescript-eslint/parser": "^8.41.0",
@@ -38,7 +38,7 @@
     "react-dom": "^19.1.0",
     "react-minimal-pie-chart": "^9.1.1",
     "sanitize-html": "^2.14.0",
-    "tailwindcss": "^3.4.14",
+    "tailwindcss": "^3.4.17",
     "tippy.js": "^6.3.7",
     "valtio": "^2.1.5",
     "zod": "^3.23.8"
