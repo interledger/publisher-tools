@@ -1,5 +1,6 @@
 import {
-  FONT_SIZE_RANGES,
+  WIDGET_FONT_SIZES,
+  BANNER_FONT_SIZES,
   BANNER_POSITION,
   CORNER_OPTION,
   SLIDE_ANIMATION,
@@ -20,8 +21,7 @@ export function getDefaultData(): ElementConfigType {
     buttonBackgroundColor: '#ff808c',
 
     bannerFontName: 'Arial',
-    bannerFontSize:
-      (FONT_SIZE_RANGES.banner.min + FONT_SIZE_RANGES.banner.max) / 2,
+    bannerFontSize: BANNER_FONT_SIZES.default,
     bannerTitleText: 'How to support?',
     bannerDescriptionText:
       'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
@@ -33,8 +33,7 @@ export function getDefaultData(): ElementConfigType {
     bannerThumbnail: 'default',
 
     widgetFontName: 'Arial',
-    widgetFontSize:
-      (FONT_SIZE_RANGES.widget.min + FONT_SIZE_RANGES.widget.max) / 2,
+    widgetFontSize: WIDGET_FONT_SIZES.default,
     widgetPosition: WIDGET_POSITION.Right,
     widgetDonateAmount: 1,
     widgetTitleText: 'Future of support',

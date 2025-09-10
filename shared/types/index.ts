@@ -49,9 +49,16 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
-export const FONT_SIZE_RANGES = {
-  widget: { min: 12, max: 20 },
-  banner: { min: 16, max: 24 }
+export const BANNER_FONT_SIZES = {
+  min: 16,
+  max: 24,
+  default: 20
+} as const
+
+export const WIDGET_FONT_SIZES = {
+  min: 12,
+  max: 20,
+  default: 16
 } as const
 
 export const CORNER_OPTION = {
