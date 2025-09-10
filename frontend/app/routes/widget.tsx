@@ -41,6 +41,7 @@ import type {
 } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { WidgetToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import { FONT_SIZE_RANGES } from '@shared/types'
 import type {
   CornerType,
   FontFamilyKey,
@@ -200,6 +201,7 @@ export default function Widget() {
   const appearanceConfiguration: WidgetToolAppearance = {
     fontName: snap.currentConfig?.widgetFontName,
     fontSize: snap.currentConfig?.widgetFontSize || 16,
+    fontSizeRange: FONT_SIZE_RANGES.widget,
     backgroundColor: snap.currentConfig?.widgetBackgroundColor,
     textColor: snap.currentConfig?.widgetTextColor,
     buttonColor: snap.currentConfig?.widgetButtonBackgroundColor,
