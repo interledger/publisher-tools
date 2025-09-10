@@ -40,7 +40,7 @@ app.use(
 
 app.onError((error, c) => {
   if (error instanceof HTTPException) {
-    console.error(error, { req: c.req })
+    console.error(error)
     const err = {
       status: error.status,
       statusText: error.res?.statusText,
@@ -176,17 +176,11 @@ app.post(
 
 app.get(
   '/tools/revshare/:payload',
-  zValidator('param', probabilisticRevShare.paramsSchema),
+  zValidator('param', probabilisticRevShare.paramSchema),
   async ({ req, json }) => {
-    const payload = req.param('payload')
-
-    const isImportRequest =
-      new URL(req.url).searchParams.has('import') &&
-      !!req.header('Accept')?.includes('application/json')
-    const format = isImportRequest ? 'import' : 'address'
-
+    const encodedPayload = req.param('payload')
     try {
-      const result = await probabilisticRevShare.handler(payload, format)
+      const result = await probabilisticRevShare.handler(encodedPayload)
       return json(result)
     } catch (error) {
       if (error instanceof HTTPException) throw error

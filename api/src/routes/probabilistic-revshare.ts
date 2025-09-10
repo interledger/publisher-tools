@@ -1,36 +1,26 @@
 import type { WalletAddress } from '@interledger/open-payments'
-import { decode, type Payload } from '@shared/probabilistic-revenue-share'
+import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
 import { z } from 'zod'
 import { createHTTPException } from '../utils/utils'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
-type Result = WalletAddress | { options: Payload }
-
-export const paramsSchema = z.object({
+export const paramSchema = z.object({
   payload: z.string().base64url().max(50_000).min(20)
 })
 
-export async function handler(
-  payload: string,
-  format: 'import' | 'address'
-): Promise<Result> {
+export async function handler(encodedPayload: string): Promise<WalletAddress> {
   let pointerMap
   try {
-    pointerMap = decode(payload)
+    pointerMap = decode(encodedPayload)
   } catch (error) {
     throw createHTTPException(400, 'Invalid payload', error)
   }
 
-  if (format === 'import') {
-    return { options: pointerMap }
-  }
-
-  const pointer = pickPointer(pointerMap)
-
+  const selected = pickWeightedRandom(pointerMap)
   let walletAddressUrl
   try {
-    walletAddressUrl = validateWalletAddressOrPointer(pointer)
+    walletAddressUrl = validateWalletAddressOrPointer(selected)
   } catch (error) {
     throw createHTTPException(400, 'Invalid wallet address', error)
   }
@@ -53,16 +43,4 @@ export async function handler(
   }
 
   return json
-}
-
-function pickPointer(entries: Payload) {
-  const sum = entries.reduce((sum2, entry) => sum2 + entry.weight, 0)
-  let choice = Math.random() * sum
-  for (const entry of entries) {
-    const weight = entry.weight
-    if ((choice -= weight) <= 0) {
-      return entry.pointer
-    }
-  }
-  throw new Error('unable to choose pointer; drew invalid value')
 }
