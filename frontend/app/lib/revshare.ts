@@ -1,4 +1,9 @@
-import { generateShareId } from '@shared/utils'
+import {
+  decode,
+  encode,
+  type PayloadEntry
+} from '@shared/probabilistic-revenue-share'
+
 const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
@@ -15,15 +20,9 @@ const CHART_COLORS = [
 ]
 
 /** Represents a single revenue share participant */
-export type Share = {
+export interface Share extends PayloadEntry {
   /** Unique identifier for the share */
   id: string
-  /** An optional name for the recipient for display purposes */
-  name?: string
-  /** The payment pointer or wallet address of the recipient */
-  pointer: string
-  /** The numerical weight of the share, used to calculate the distribution */
-  weight?: number
   /** The percentage of revenue this share should receive, if applicable */
   percent?: number
   /** Indicates if the share is valid, used for validation purposes */
@@ -42,6 +41,10 @@ export function getValidShares(shares: Share[]): SharesState {
   return shares.filter((share) => share.pointer && Number(share.weight))
 }
 
+export function generateShareId(): string {
+  return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 /**
  * Converts an array of Share objects into chart data suitable for rendering in a pie chart
  * @param shares - Array of shares to convert
@@ -54,37 +57,6 @@ export function sharesToChartData(
     title: share.name || share.pointer,
     value: Number(share.weight),
     color: CHART_COLORS[i % CHART_COLORS.length]
-  }))
-}
-
-/**
- * Converts an array of Share objects into a list of payment pointers, weights, and names
- * @param shares - Array of shares to convert
- * @returns Array of tuples containing [pointer, weight, name]
- */
-export function sharesToPointerList(
-  shares: SharesState
-): [string, number, string][] {
-  return shares.flatMap((share) =>
-    share.pointer && share.weight
-      ? [[share.pointer, Number(share.weight), share.name || '']]
-      : []
-  )
-}
-
-/**
- * Converts a simplified pointer list back into an array of Share objects
- * @param pointerList - Array of tuples containing [pointer, weight, name]
- * @returns Array of Share objects
- */
-export function sharesFromPointerList(
-  pointerList: [string, number, string][]
-): SharesState {
-  return pointerList.map(([pointer, weight, name]) => ({
-    id: generateShareId(),
-    pointer,
-    weight,
-    name
   }))
 }
 
@@ -118,39 +90,6 @@ export function dropIndex(arr: SharesState, i: number): SharesState {
 }
 
 /**
- * Calculates the required weight for a share to achieve a target percentage of the total
- * @param percent - The target percentage (0 to 1)
- * @param weight - The current weight of the share
- * @param totalWeight - The total weight of all shares
- * @returns The required weight to achieve the target percentage
- */
-export function weightFromPercent(
-  percent: number,
-  weight: number,
-  totalWeight: number
-): number {
-  return (-percent * (totalWeight - weight)) / (percent - 1)
-}
-
-/**
- * Encodes a string into a URL-safe base64 format
- * @param str - The string to encode
- * @returns URL-safe base64 encoded string
- */
-export function base64url(str: string): string {
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-}
-
-/**
- * Decodes a URL-safe base64 string back to its original format
- * @param str - The URL-safe base64 string to decode
- * @returns Decoded original string
- */
-export function fromBase64url(str: string): string {
-  return atob(str.replace(/-/g, '+').replace(/_/g, '/'))
-}
-
-/**
  * Constructs a complete revshare payment pointer from an array of shares
  * @param shares - Array of shares to convert into a payment pointer
  * @returns Complete revshare payment pointer string, or undefined if no valid shares
@@ -162,9 +101,7 @@ export function sharesToPaymentPointer(shares: Share[]): string | undefined {
     return
   }
 
-  const pointerList = sharesToPointerList(validShares)
-  const encodedShares = base64url(JSON.stringify(pointerList))
-
+  const encodedShares = encode(validShares)
   return normalizePointerPrefix(BASE_REVSHARE_POINTER) + encodedShares
 }
 
@@ -189,14 +126,11 @@ export function pointerToShares(pointer: string): SharesState {
       )
     }
 
-    const pointerList = JSON.parse(fromBase64url(encodedList))
-
-    if (!validatePointerList(pointerList)) {
-      throw new Error(
-        'Share data is invalid. Make sure you copy the whole "content" from your meta tag.'
-      )
-    }
-    return sharesFromPointerList(pointerList as [string, number, string][])
+    const decoded = decode(encodedList)
+    return decoded.map((e) => ({
+      ...e,
+      id: generateShareId()
+    }))
   } catch (err: unknown) {
     if (err instanceof TypeError) {
       throw new Error('Meta tag or payment pointer is malformed')
@@ -216,7 +150,7 @@ export function pointerToShares(pointer: string): SharesState {
  * @returns Array of Share objects, or undefined if no valid monetization tag found
  * @throws Error if the tag is malformed
  */
-export function tagToShares(tag: string): SharesState | undefined {
+export function tagToShares(tag: string): SharesState {
   const parser = new DOMParser()
   const node = parser.parseFromString(tag, 'text/html')
   const meta = node.head.querySelector(
@@ -226,12 +160,6 @@ export function tagToShares(tag: string): SharesState | undefined {
     'link[rel="monetization"]'
   ) as HTMLLinkElement
 
-  if (!meta && !link) {
-    throw new Error(
-      'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
-    )
-  }
-
   if (meta) {
     return pointerToShares(meta.content)
   }
@@ -239,6 +167,10 @@ export function tagToShares(tag: string): SharesState | undefined {
   if (link) {
     return pointerToShares(link.href)
   }
+
+  throw new Error(
+    'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
+  )
 }
 
 /**
@@ -273,83 +205,12 @@ export function tagOrPointerToShares(tag: string): SharesState | undefined {
 }
 
 /**
- * Trims a decimal number to 3 decimal places
- * @param dec - The decimal number to trim
- * @returns Number rounded to 3 decimal places
- */
-export function trimDecimal(dec: number): number {
-  return Number(dec.toFixed(3))
-}
-
-/**
- * Validates if a given pointer list is an array of [string, number, string?] tuples
- * @param pointerList - The value to validate
- * @returns True if the pointer list is valid, with type guard
- */
-export function validatePointerList(
-  pointerList: unknown
-): pointerList is [string, number, string?][] {
-  if (!Array.isArray(pointerList)) {
-    return false
-  }
-
-  for (const entry of pointerList) {
-    if (
-      !Array.isArray(entry) ||
-      typeof entry[0] !== 'string' ||
-      typeof entry[1] !== 'number' ||
-      (entry[2] !== undefined && typeof entry[2] !== 'string')
-    ) {
-      return false
-    }
-  }
-
-  return true
-}
-
-/**
  * Normalizes a payment pointer prefix, converting `$` to `https://`
  * @param pointer - The payment pointer to normalize
  * @returns Payment pointer with https:// prefix
  */
 export function normalizePointerPrefix(pointer: string): string {
   return pointer.startsWith('$') ? 'https://' + pointer.substring(1) : pointer
-}
-
-/**
- * Validates if a given pointer is a valid URL or payment pointer
- * @param pointer - The pointer string to validate (can be undefined)
- * @returns True if the pointer is valid or undefined, false otherwise
- */
-export function validatePointer(pointer: string | undefined): boolean {
-  if (!pointer) {
-    return true
-  }
-
-  if (typeof pointer !== 'string') {
-    return false
-  }
-
-  try {
-    const _ = new URL(normalizePointerPrefix(pointer))
-    return true
-  } catch (_err) {
-    return false
-  }
-}
-
-/**
- * Validates if a given weight is a valid number greater than or equal to 0
- * @param weight - The weight value to validate (string, number, or undefined)
- * @returns True if the weight is valid (undefined, empty string, or non-negative number)
- */
-export function validateWeight(weight: string | number | undefined): boolean {
-  if (weight === undefined || weight === '') {
-    return true
-  }
-
-  const num = Number(weight)
-  return !Number.isNaN(num) && num >= 0
 }
 
 export function validateShares(shares: SharesState): boolean {
