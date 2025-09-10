@@ -35,9 +35,11 @@ export async function getWalletAddress(
   return json
 }
 
-export function isWalletAddress(
-  o: Record<string, unknown>
-): o is WalletAddress {
+export function isWalletAddress(obj: unknown): obj is WalletAddress {
+  if (!obj || typeof obj !== 'object') {
+    return false
+  }
+  const o = obj as Record<string, unknown>
   return !!(
     o.id &&
     typeof o.id === 'string' &&

@@ -37,7 +37,7 @@ export async function handler(encodedPayload: string): Promise<WalletAddress> {
   }
 
   const json = await res.json().catch(() => null)
-  if (!json || !isWalletAddress(json as Record<string, unknown>)) {
+  if (!isWalletAddress(json)) {
     const message = 'did not resolve to a valid wallet address'
     throw createHTTPException(400, message, { message })
   }
