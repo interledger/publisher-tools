@@ -66,7 +66,7 @@ export const Header = () => {
           <GhostButton
             onClick={toggleMobileMenu}
             tabIndex={0}
-            className="md:hidden size-12"
+            className="md:hidden size-12 focusable-nav-item"
           >
             <SVGHamburgerIcon className="w-5 h-5" />
           </GhostButton>

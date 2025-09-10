@@ -17,7 +17,7 @@ const ToolsMenuItem = ({ to, imgSrc, text }: ToolsMenuItemProps) => {
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs p-sm duration-200 focusable-nav-item"
+        className="flex w-full items-center gap-xs p-sm focusable-nav-item"
       >
         <img
           className="size-10 md:size-5xl"
