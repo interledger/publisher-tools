@@ -13,10 +13,9 @@ export type Payload = PayloadEntry[]
 type PointerList = Array<[pointer: string, weight: number, name: string]>
 
 export function encode(payload: Payload) {
-  const pointerList: Array<[pointer: string, weight: number, name: string]> =
-    payload.flatMap((e) =>
-      e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : []
-    )
+  const pointerList: PointerList = payload.flatMap((e) =>
+    e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : []
+  )
   return base64url(JSON.stringify(pointerList))
 }
 
