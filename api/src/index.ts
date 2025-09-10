@@ -54,32 +54,28 @@ app.onError((error, c) => {
   }
 
   if (error instanceof ZodError) {
-    return c.json(
-      {
-        error: {
-          message: 'Validation failed',
-          code: 'VALIDATION_ERROR',
-          details: {
-            issues: error.errors.map((err) => ({
-              path: err.path.join('.'),
-              message: err.message,
-              code: err.code
-            }))
-          }
-        }
-      },
-      400
-    )
+    const err = {
+      message: 'Validation failed',
+      code: 'VALIDATION_ERROR',
+      details: {
+        issues: error.errors.map((err) => ({
+          path: err.path.join('.'),
+          message: err.message,
+          code: err.code
+        }))
+      }
+    }
+    return c.json({ error: err }, 400)
   }
 
   const serializedError = serializeError(error)
   console.error('Unexpected error: ', serializedError)
-  return c.json(
-    {
-      error: { message: 'INTERNAL_ERROR', ...serializedError }
-    },
-    500
-  )
+  const err = {
+    message: 'INTERNAL_ERROR',
+    ...serializedError
+  }
+
+  return c.json({ error: err }, 500)
 })
 
 app.get(
