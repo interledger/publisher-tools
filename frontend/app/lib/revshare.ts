@@ -61,37 +61,6 @@ export function sharesToChartData(
 }
 
 /**
- * Converts an array of Share objects into a list of payment pointers, weights, and names
- * @param shares - Array of shares to convert
- * @returns Array of tuples containing [pointer, weight, name]
- */
-export function sharesToPointerList(
-  shares: SharesState
-): [string, number, string][] {
-  return shares.flatMap((share) =>
-    share.pointer && share.weight
-      ? [[share.pointer, Number(share.weight), share.name || '']]
-      : []
-  )
-}
-
-/**
- * Converts a simplified pointer list back into an array of Share objects
- * @param pointerList - Array of tuples containing [pointer, weight, name]
- * @returns Array of Share objects
- */
-export function sharesFromPointerList(
-  pointerList: [string, number, string][]
-): SharesState {
-  return pointerList.map(([pointer, weight, name]) => ({
-    id: generateShareId(),
-    pointer,
-    weight,
-    name
-  }))
-}
-
-/**
  * Immutably updates a share at a specific index in the shares array
  * @param arr - The shares array to update
  * @param i - The index of the share to update
