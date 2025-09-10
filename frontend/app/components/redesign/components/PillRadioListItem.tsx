@@ -61,7 +61,7 @@ export const PillRadioListItem: React.FC<PillRadioListItemProps> = ({
       <input
         type="radio"
         name={radioGroup}
-        checked={selected}
+        defaultChecked={selected}
         value={value}
         className="sr-only"
       />
