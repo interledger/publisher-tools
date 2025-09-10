@@ -30,6 +30,15 @@
   }
 }
 
+@layer components {
+  .focusable-nav-item {
+    @apply rounded-lg transition-colors ease-in;
+    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover;
+    @apply focus:outline-none focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-nav-link-hover;
+  }
+}
+
 @layer utilities {
   /* Placeholder text with ellipsis */
   .placeholder-ellipsis[placeholder] {

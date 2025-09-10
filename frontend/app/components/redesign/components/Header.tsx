@@ -48,7 +48,7 @@ export const Header = () => {
         >
           <RemixNavLink
             to="/"
-            className="flex items-center focus:outline-none focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-2 rounded-sm"
+            className="flex items-center focus:outline-none focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-0 rounded-sm"
           >
             <img
               src={wmLogo}
