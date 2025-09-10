@@ -1,8 +1,7 @@
-import { API_URL } from '@shared/defines'
 import {
+  decode,
   encode,
-  type PayloadEntry,
-  type Payload
+  type PayloadEntry
 } from '@shared/probabilistic-revenue-share'
 
 const POINTER_LIST_PARAM = 'p'
@@ -31,10 +30,6 @@ export interface Share extends PayloadEntry {
 
 /** Represents the state of all shares in the revenue distribution */
 export type SharesState = Share[]
-
-export function generateShareId(): string {
-  return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
-}
 
 /**
  * Returns an array of valid shares, filtering out any shares that do not have a pointer or weight
@@ -102,12 +97,9 @@ export function sharesToPaymentPointer(
   shares: Share[],
   /** Must end with a trailing slash */
   baseUrl: string
-): string | undefined {
+): string {
   const validShares = getValidShares(shares)
-
-  if (!validShares.length) {
-    return
-  }
+  if (!validShares.length) return ''
 
   const encodedShares = encode(validShares)
   return baseUrl + encodedShares
@@ -119,7 +111,7 @@ export function sharesToPaymentPointer(
  * @returns Array of Share objects extracted from the pointer
  * @throws Error if the pointer is malformed or contains invalid data
  */
-export async function pointerToShares(pointer: string): Promise<SharesState> {
+export function pointerToShares(pointer: string): SharesState {
   try {
     const parsed = new URL(normalizePointerPrefix(pointer))
     const params = new URLSearchParams(parsed.search)
@@ -134,22 +126,11 @@ export async function pointerToShares(pointer: string): Promise<SharesState> {
       )
     }
 
-    try {
-      const url = new URL(`/tools/revshare/${encodedList}`, API_URL)
-      url.searchParams.append('import', '1')
-      const res = await fetch(url, {
-        headers: { Accept: 'application/json' }
-      })
-      const json = await res.json<{ options: Payload }>()
-      return json.options.map((e) => ({
-        id: generateShareId(),
-        ...e
-      }))
-    } catch {
-      throw new Error(
-        'Share data is invalid. Make sure you copy the whole "content" from your meta tag.'
-      )
-    }
+    const decoded = decode(encodedList)
+    return decoded.map((e) => ({
+      ...e,
+      id: generateShareId()
+    }))
   } catch (err: unknown) {
     if (err instanceof TypeError) {
       throw new Error('Meta tag or payment pointer is malformed')
@@ -169,24 +150,18 @@ export async function pointerToShares(pointer: string): Promise<SharesState> {
  * @returns Array of Share objects, or undefined if no valid monetization tag found
  * @throws Error if the tag is malformed
  */
-export function tagToShares(tag: string): Promise<SharesState> {
+export function tagToShares(tag: string): SharesState {
   const parser = new DOMParser()
-  const node = parser.parseFromString(tag, 'text/html')
-  const meta = node.head.querySelector<HTMLMetaElement>(
-    'meta[name="monetization"]'
-  )
-  const link = node.head.querySelector<HTMLLinkElement>(
-    'link[rel="monetization"]'
-  )
+  const el = parser.parseFromString(tag, 'text/html').head
+  const meta = el.querySelector<HTMLMetaElement>('meta[name="monetization"]')
+  const link = el.querySelector<HTMLLinkElement>('link[rel="monetization"]')
 
   if (meta) {
     return pointerToShares(meta.content)
   }
-
   if (link) {
     return pointerToShares(link.href)
   }
-
   throw new Error(
     'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
   )
@@ -226,7 +201,7 @@ function isRevsharePointer(str: string): boolean {
  * @returns Array of Share objects, or undefined if parsing fails
  * @throws Error if the input is empty or malformed
  */
-export async function tagOrPointerToShares(tag: string): Promise<SharesState> {
+export function tagOrPointerToShares(tag: string): SharesState | undefined {
   const trimmedTag = tag.trim()
   if (!trimmedTag) {
     throw new Error('Field is empty')

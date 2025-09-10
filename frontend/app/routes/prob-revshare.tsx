@@ -14,7 +14,6 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
-import { API_URL } from '@shared/defines'
 import {
   changeList,
   dropIndex,
@@ -24,6 +23,7 @@ import {
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
+import { API_URL } from '@shared/defines'
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,6 +35,8 @@ export const meta: MetaFunction = () => {
     }
   ]
 }
+
+const baseUrl = new URL('/tools/revshare/', API_URL).href
 
 export default function RevsharePageWrapper() {
   return (
@@ -50,7 +52,6 @@ function Revshare() {
   const [importTag, setImportTag] = useState('')
   const [importError, setImportError] = useState('')
   const { shares, setShares } = useShares()
-  const baseUrl = new URL('/tools/revshare/', API_URL).href
 
   const showDeleteColumn = shares.length > 2
   const revShareUrl = useMemo(
@@ -104,10 +105,10 @@ function Revshare() {
     [setShares]
   )
 
-  const handleLinkTagImport = useCallback(async () => {
+  const handleLinkTagImport = useCallback(() => {
     try {
       setImportError('')
-      const importedShares = (await tagOrPointerToShares(importTag)) || []
+      const importedShares = tagOrPointerToShares(importTag) || []
       setShares(importedShares)
       setIsModalOpen(false)
       setImportTag('')

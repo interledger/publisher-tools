@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsPrimaryButton } from '@/components'
-import { SVGClose, SVGSpinner } from '@/assets'
-import { API_URL } from '@shared/defines'
+import { SVGClose } from '@/assets'
 
 interface ImportTagModalProps {
   isOpen?: boolean
   onClose?: () => void
-  onConfirm: () => Promise<void>
+  onConfirm?: () => void
   tag: string
   errorMessage: string
   setTag: (tag: string) => void
@@ -15,7 +14,7 @@ interface ImportTagModalProps {
   className?: string
 }
 
-const PLACEHOLDER_LINK_TAG = `<link rel="monetization" href="${API_URL}/tools/revshare/your-revshare-id">`
+const PLACEHOLDER_LINK_TAG = `<link rel="monetization" href="https://webmonetization.org/api/revshare/pay/your-revshare-id">`
 
 export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   isOpen,
@@ -31,11 +30,6 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   const triggerRef = useRef<Element | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const focusableElementsRef = useRef<NodeListOf<HTMLElement> | null>(null)
-
-  const [isSubmitting, startSubmittingTransition] = React.useTransition()
-  const onSubmit = React.useCallback(() => {
-    startSubmittingTransition(onConfirm)
-  }, [onConfirm])
 
   useEffect(() => {
     if (!isOpen) {
@@ -168,15 +162,8 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
               {errorMessage}
             </p>
           )}
-          <ToolsPrimaryButton className="w-full" onClick={onSubmit}>
-            {isSubmitting ? (
-              <>
-                <SVGSpinner className="w-5 h-5 inline-block mr-1" />{' '}
-                Importing...
-              </>
-            ) : (
-              'Import revshare'
-            )}
+          <ToolsPrimaryButton className="w-full" onClick={onConfirm}>
+            Import revshare
           </ToolsPrimaryButton>
         </div>
       </div>
