@@ -15,7 +15,7 @@
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "typescript": "^5.9.2",
-    "vite": "^6.3.5"
+    "vite": "^7.0.0"
   },
   "files": [
     "dist/*"
