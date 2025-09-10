@@ -13,10 +13,9 @@ export type Payload = PayloadEntry[]
 type PointerList = Array<[pointer: string, weight: number, name: string]>
 
 export function encode(payload: Payload) {
-  const pointerList: Array<[pointer: string, weight: number, name: string]> =
-    payload.flatMap((e) =>
-      e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : []
-    )
+  const pointerList: PointerList = payload.flatMap((e) =>
+    e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : []
+  )
   return base64url(JSON.stringify(pointerList))
 }
 
@@ -70,7 +69,7 @@ function isPointerList(pointerList: unknown): pointerList is PointerList {
  * @param str - The string to encode
  * @returns URL-safe base64 encoded string
  */
-export function base64url(str: string): string {
+function base64url(str: string): string {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
 }
 
@@ -79,6 +78,6 @@ export function base64url(str: string): string {
  * @param str - The URL-safe base64 string to decode
  * @returns Decoded original string
  */
-export function fromBase64url(str: string): string {
+function fromBase64url(str: string): string {
   return atob(str.replace(/-/g, '+').replace(/_/g, '/'))
 }

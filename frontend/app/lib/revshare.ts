@@ -45,6 +45,10 @@ export function getValidShares(shares: Share[]): SharesState {
   return shares.filter((share) => share.pointer && Number(share.weight))
 }
 
+export function generateShareId(): string {
+  return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 /**
  * Converts an array of Share objects into chart data suitable for rendering in a pie chart
  * @param shares - Array of shares to convert
