@@ -12,7 +12,7 @@ export interface TabOption {
 interface TabSelectorProps {
   options: TabOption[]
   selectedId?: StableKey
-  onSelectTab?: (tabId: StableKey) => void
+  onSelectTab: (tabId: StableKey) => void
   className?: string
   onTabLabelChange?: (tabId: StableKey, newLabel: string) => void
 }
@@ -93,9 +93,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       }
 
       toolActions.selectVersion(tabId as StableKey)
-      if (onSelectTab) {
-        onSelectTab(tabId as StableKey)
-      }
+      onSelectTab(tabId as StableKey)
     }
   }
 
@@ -183,9 +181,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         }
 
         toolActions.selectVersion(tabId as StableKey)
-        if (onSelectTab) {
-          onSelectTab(tabId as StableKey)
-        }
+        onSelectTab(tabId as StableKey)
       }
     } else if (
       (e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
@@ -211,9 +207,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       }
 
       toolActions.selectVersion(nextTabId)
-      if (onSelectTab) {
-        onSelectTab(nextTabId)
-      }
+      onSelectTab(nextTabId)
     }
   }
 
@@ -265,9 +259,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
               beginEditing(tab.id)
             } else {
               toolActions.selectVersion(tab.id)
-              if (onSelectTab) {
-                onSelectTab(tab.id)
-              }
+              onSelectTab(tab.id)
             }
           }
 
