@@ -115,7 +115,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             ref={titleInputRef}
             defaultValue={content.currentTitle}
             onChange={(e) => {
-              content.onTitleChange(e.target.value)
+              content.onTitleChange(e.target.value.trim())
             }}
             maxLength={content.titleMaxLength}
             helpText={content.titleHelpText}
