@@ -13,7 +13,7 @@ export interface WidgetConfig {
   note?: string
   widgetTitleText?: string
   widgetDescriptionText?: string
-  widgetDescriptionVisible?: string
+  isWidgetDescriptionVisible?: boolean
   widgetTriggerIcon?: string
   widgetPosition?: WidgetPositionKey
   theme?: {

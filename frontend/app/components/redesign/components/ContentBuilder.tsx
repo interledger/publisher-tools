@@ -20,12 +20,12 @@ export interface ToolContent {
 
   currentTitle: string
   currentMessage: string
-  messageVisible: string
+  currentMessageActive: boolean
 
   onTitleChange: (title: string) => void
   onMessageChange: (message: string) => void
   onSuggestedTitleClick: (title: string) => void
-  onMessageVisibleChange: (active: boolean) => void
+  onMessageActiveChange: (active: boolean) => void
 }
 
 interface ContentBuilderProps {
@@ -40,9 +40,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   const titleInputRef = useRef<HTMLInputElement>(null)
   const messageTextareaRef = useRef<HTMLTextAreaElement>(null)
   const { actions: uiActions, state: uiState } = useUI()
-
-  const isMessageVisible =
-    typeof content.messageVisible === 'undefined' || !!content.messageVisible
+  const isMessageActive = content.currentMessageActive
 
   useEffect(() => {
     if (
@@ -141,9 +139,11 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
           <div className="flex gap-lg items-start xl:flex-row flex-col">
             <div className="flex items-center gap-xs shrink-0">
               <Checkbox
-                checked={isMessageVisible}
-                onChange={(active) => content.onMessageVisibleChange(active)}
-                label="Visible"
+                checked={isMessageActive}
+                onChange={(active) => {
+                  content.onMessageActiveChange(active)
+                }}
+                label="Active"
               />
             </div>
 
@@ -160,7 +160,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
                 helpText={content.messageHelpText}
                 className="h-[84px]"
                 placeholder={content.messagePlaceholder}
-                disabled={!isMessageVisible}
+                disabled={!isMessageActive}
               />
             </div>
           </div>

@@ -33,7 +33,7 @@ export const bannerFieldsSchema = z.object({
     .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
   bannerTitleText: z.string().optional(),
   bannerDescriptionText: z.string().optional(),
-  bannerDescriptionVisible: z.string().optional(),
+  isBannerDescriptionVisible: z.boolean().optional(),
   bannerTextColor: z.string().min(6),
   bannerBackgroundColor: z.string().min(6),
   bannerSlideAnimation: z.nativeEnum(SLIDE_ANIMATION),
@@ -52,7 +52,7 @@ export const widgetFieldsSchema = z.object({
     .string()
     .min(1, { message: 'Widget title cannot be empty' }),
   widgetDescriptionText: z.string().optional(),
-  widgetDescriptionVisible: z.string().optional(),
+  isWidgetDescriptionVisible: z.boolean().optional(),
   widgetPosition: z.nativeEnum(WIDGET_POSITION),
   widgetDonateAmount: z.coerce
     .number()

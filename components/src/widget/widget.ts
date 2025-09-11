@@ -135,12 +135,10 @@ export class PaymentWidget extends LitElement {
   private renderHomeView() {
     const description =
       this.config.widgetDescriptionText || DEFAULT_WIDGET_DESCRIPTION
-    const showDescription =
-      typeof this.config.widgetDescriptionVisible === 'undefined' ||
-      !!this.config.widgetDescriptionVisible
+    const showDescription = this.config.isWidgetDescriptionVisible ?? true
     const descriptionElement = showDescription
       ? html`<p>${description}</p>`
-      : html``
+      : null
 
     return html`
       <div class="widget-header-container">
