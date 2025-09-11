@@ -125,6 +125,7 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
       ({
         bannerTitleText: snap.currentConfig?.bannerTitleText,
         bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
+        bannerDescriptionVisible: snap.currentConfig?.bannerDescriptionVisible,
         bannerPosition: snap.currentConfig?.bannerPosition,
         bannerBorderRadius: snap.currentConfig?.bannerBorder,
         bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
@@ -203,12 +204,17 @@ export default function Banner() {
     messageMaxLength: 300,
     currentTitle: snap.currentConfig?.bannerTitleText,
     currentMessage: snap.currentConfig?.bannerDescriptionText,
+    messageVisible: snap.currentConfig?.bannerDescriptionVisible ?? 'default',
     onTitleChange: (title: string) =>
       toolActions.setToolConfig({ bannerTitleText: title }),
     onMessageChange: (message: string) =>
       toolActions.setToolConfig({ bannerDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') })
+      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
+    onMessageVisibleChange: (active: boolean) =>
+      toolActions.setToolConfig({
+        bannerDescriptionVisible: active ? 'default' : ''
+      })
   }
 
   const appearanceConfiguration: BannerToolAppearance = {

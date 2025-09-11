@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useUI } from '~/stores/uiStore'
 import { BuilderAccordion } from './BuilderAccordion'
 import {
@@ -20,10 +20,12 @@ export interface ToolContent {
 
   currentTitle: string
   currentMessage: string
+  messageVisible: string
 
   onTitleChange: (title: string) => void
   onMessageChange: (message: string) => void
   onSuggestedTitleClick: (title: string) => void
+  onMessageVisibleChange: (active: boolean) => void
 }
 
 interface ContentBuilderProps {
@@ -35,10 +37,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   content,
   onRefresh
 }) => {
-  const [isMessageActive, setIsMessageActive] = useState(true)
   const titleInputRef = useRef<HTMLInputElement>(null)
   const messageTextareaRef = useRef<HTMLTextAreaElement>(null)
   const { actions: uiActions, state: uiState } = useUI()
+
+  const isMessageVisible =
+    typeof content.messageVisible === 'undefined' || !!content.messageVisible
 
   useEffect(() => {
     if (
@@ -137,9 +141,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
           <div className="flex gap-lg items-start xl:flex-row flex-col">
             <div className="flex items-center gap-xs shrink-0">
               <Checkbox
-                checked={isMessageActive}
-                onChange={() => setIsMessageActive(!isMessageActive)}
-                label="Active"
+                checked={isMessageVisible}
+                onChange={(active) => content.onMessageVisibleChange(active)}
+                label="Visible"
               />
             </div>
 
@@ -156,6 +160,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
                 helpText={content.messageHelpText}
                 className="h-[84px]"
                 placeholder={content.messagePlaceholder}
+                disabled={!isMessageVisible}
               />
             </div>
           </div>

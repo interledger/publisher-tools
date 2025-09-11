@@ -19,7 +19,7 @@ import walletTotemIcon from '../assets/wm_wallet_totem.svg'
 import interledgerLogoIcon from '../assets/interledger_logo.svg'
 import widgetStyles from './widget.css?raw'
 
-const defaultDescription =
+const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 
 export class PaymentWidget extends LitElement {
@@ -133,6 +133,15 @@ export class PaymentWidget extends LitElement {
   }
 
   private renderHomeView() {
+    const description =
+      this.config.widgetDescriptionText || DEFAULT_WIDGET_DESCRIPTION
+    const showDescription =
+      typeof this.config.widgetDescriptionVisible === 'undefined' ||
+      !!this.config.widgetDescriptionVisible
+    const descriptionElement = showDescription
+      ? html`<p>${description}</p>`
+      : html``
+
     return html`
       <div class="widget-header-container">
         <div class="widget-header">
@@ -150,35 +159,30 @@ export class PaymentWidget extends LitElement {
         </button>
       </div>
 
-      <div class="widget-body">
-        <p>${this.config.widgetDescriptionText || defaultDescription}</p>
+      <form class="payment-form widget-body" @submit=${this.handleSubmit}>
+        <div class="form-wallet-address">
+          ${descriptionElement}
+          <label class="form-label">
+            Pay from
+            <span class="red-text"> * </span>
+          </label>
 
-        <form class="payment-form" @submit=${this.handleSubmit}>
-          <div class="form-wallet-address">
-            <label class="form-label">
-              Pay from
-              <span class="red-text"> * </span>
-            </label>
+          <input
+            class="form-input ${this.walletAddressError ? 'error' : ''}"
+            type="text"
+            name="walletAddress"
+            placeholder="Enter your wallet address"
+          />
 
-            <input
-              class="form-input ${this.walletAddressError ? 'error' : ''}"
-              type="text"
-              name="walletAddress"
-              placeholder="Enter your wallet address"
-            />
+          ${this.walletAddressError
+            ? html`<div class="error-message">${this.walletAddressError}</div>`
+            : ''}
+        </div>
 
-            ${this.walletAddressError
-              ? html`<div class="error-message">
-                  ${this.walletAddressError}
-                </div>`
-              : ''}
-          </div>
-
-          <button class="primary-button" type="submit">
-            ${this.config.action || 'Support me'}
-          </button>
-        </form>
-      </div>
+        <button class="primary-button" type="submit">
+          ${this.config.action || 'Support me'}
+        </button>
+      </form>
     `
   }
 

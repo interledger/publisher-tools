@@ -119,6 +119,7 @@ const WidgetPreview: React.FC = () => {
         action: snap.currentConfig.widgetButtonText,
         widgetTitleText: snap.currentConfig.widgetTitleText,
         widgetDescriptionText: snap.currentConfig.widgetDescriptionText,
+        widgetDescriptionVisible: snap.currentConfig.widgetDescriptionVisible,
         widgetTriggerIcon: snap.currentConfig.widgetTriggerIcon,
         widgetPosition: snap.currentConfig.widgetPosition,
         theme: {
@@ -190,12 +191,17 @@ export default function Widget() {
     messageMaxLength: 300,
     currentTitle: snap.currentConfig?.widgetTitleText,
     currentMessage: snap.currentConfig?.widgetDescriptionText,
+    messageVisible: snap.currentConfig?.widgetDescriptionVisible ?? 'default',
     onTitleChange: (title: string) =>
       toolActions.setToolConfig({ widgetTitleText: title }),
     onMessageChange: (message: string) =>
       toolActions.setToolConfig({ widgetDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') })
+      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
+    onMessageVisibleChange: (active: boolean) =>
+      toolActions.setToolConfig({
+        widgetDescriptionVisible: active ? 'default' : ''
+      })
   }
 
   const appearanceConfiguration: WidgetToolAppearance = {
