@@ -192,7 +192,7 @@ export default function Widget() {
     messageMaxLength: 300,
     currentTitle: snap.currentConfig?.widgetTitleText,
     currentMessage: snap.currentConfig?.widgetDescriptionText,
-    currentMessageActive:
+    isDescriptionVisible:
       snap.currentConfig?.isWidgetDescriptionVisible ?? true,
     onTitleChange: (title: string) =>
       toolActions.setToolConfig({ widgetTitleText: title }),
@@ -200,9 +200,9 @@ export default function Widget() {
       toolActions.setToolConfig({ widgetDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
       toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
-    onMessageActiveChange: (active: boolean) =>
+    onDescriptionVisibilityChange: (visible: boolean) =>
       toolActions.setToolConfig({
-        isWidgetDescriptionVisible: active
+        isWidgetDescriptionVisible: visible
       })
   }
 

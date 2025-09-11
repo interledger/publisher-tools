@@ -205,7 +205,7 @@ export default function Banner() {
     messageMaxLength: 300,
     currentTitle: snap.currentConfig?.bannerTitleText,
     currentMessage: snap.currentConfig?.bannerDescriptionText,
-    currentMessageActive:
+    isDescriptionVisible:
       snap.currentConfig?.isBannerDescriptionVisible ?? true,
     onTitleChange: (title: string) =>
       toolActions.setToolConfig({ bannerTitleText: title }),
@@ -213,9 +213,9 @@ export default function Banner() {
       toolActions.setToolConfig({ bannerDescriptionText: message }),
     onSuggestedTitleClick: (title: string) =>
       toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
-    onMessageActiveChange: (active: boolean) =>
+    onDescriptionVisibilityChange: (visible: boolean) =>
       toolActions.setToolConfig({
-        isBannerDescriptionVisible: active
+        isBannerDescriptionVisible: visible
       })
   }
 
