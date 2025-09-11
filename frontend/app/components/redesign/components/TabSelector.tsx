@@ -329,7 +329,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                       defaultValue={inputValue}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
-                      onBlur={() => setEditingId(null)}
+                      onBlur={() => saveEdit(true)}
                       className={`bg-transparent border-none outline-none text-base leading-md font-normal w-full box-border ${
                         hasError ? 'text-red-500' : 'text-purple-600'
                       }`}
