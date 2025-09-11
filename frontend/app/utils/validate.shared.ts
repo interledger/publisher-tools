@@ -10,10 +10,10 @@ import {
 } from '@shared/types'
 
 const bannerFontSizeError = {
-  message: `Value has to be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`
+  message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`
 }
 const widgetFontSizeError = {
-  message: `Value has to be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`
+  message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`
 }
 
 export const buttonFieldsSchema = z.object({

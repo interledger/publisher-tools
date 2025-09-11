@@ -200,7 +200,7 @@ export default function Widget() {
 
   const appearanceConfiguration: WidgetToolAppearance = {
     fontName: snap.currentConfig?.widgetFontName,
-    fontSize: snap.currentConfig?.widgetFontSize,
+    fontSize: snap.currentConfig?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
     fontSizeRange: WIDGET_FONT_SIZES,
     backgroundColor: snap.currentConfig?.widgetBackgroundColor,
     textColor: snap.currentConfig?.widgetTextColor,

@@ -213,7 +213,7 @@ export default function Banner() {
 
   const appearanceConfiguration: BannerToolAppearance = {
     fontName: snap.currentConfig?.bannerFontName,
-    fontSize: snap.currentConfig?.bannerFontSize,
+    fontSize: snap.currentConfig?.bannerFontSize ?? BANNER_FONT_SIZES.default,
     fontSizeRange: BANNER_FONT_SIZES,
     backgroundColor: snap.currentConfig?.bannerBackgroundColor,
     textColor: snap.currentConfig?.bannerTextColor,
