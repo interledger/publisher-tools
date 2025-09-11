@@ -173,11 +173,11 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
   const handleTabKeyDown = (e: React.KeyboardEvent, tabId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-
       if (selectedId === tabId && !editingId) {
+        e.preventDefault()
         beginEditing(tabId)
-      } else {
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
         if (editingId) {
           saveEdit()
         }
