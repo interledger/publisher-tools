@@ -33,8 +33,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   return (
     <label
       role="checkbox"
-      aria-checked={checked}
-      aria-disabled={disabled}
       className={cx(
         'flex items-center gap-xs',
         disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
