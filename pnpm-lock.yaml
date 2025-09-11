@@ -51,6 +51,9 @@ importers:
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
+      '@shared/probabilistic-revenue-share':
+        specifier: workspace:^
+        version: link:../shared/probabilistic-revenue-share
       '@shared/utils':
         specifier: workspace:^
         version: link:../shared/utils

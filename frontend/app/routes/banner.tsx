@@ -44,6 +44,7 @@ import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import { BANNER_FONT_SIZES } from '@shared/types'
 import type {
   BannerPositionKey,
   CornerType,
@@ -212,7 +213,8 @@ export default function Banner() {
 
   const appearanceConfiguration: BannerToolAppearance = {
     fontName: snap.currentConfig?.bannerFontName,
-    fontSize: snap.currentConfig?.bannerFontSize || 16,
+    fontSize: snap.currentConfig?.bannerFontSize ?? BANNER_FONT_SIZES.default,
+    fontSizeRange: BANNER_FONT_SIZES,
     backgroundColor: snap.currentConfig?.bannerBackgroundColor,
     textColor: snap.currentConfig?.bannerTextColor,
     borderRadius: snap.currentConfig?.bannerBorder,

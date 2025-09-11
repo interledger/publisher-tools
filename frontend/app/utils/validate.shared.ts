@@ -4,10 +4,17 @@ import {
   BANNER_POSITION,
   WIDGET_POSITION,
   SLIDE_ANIMATION,
+  BANNER_FONT_SIZES,
+  WIDGET_FONT_SIZES,
   FONT_FAMILY_OPTIONS
 } from '@shared/types'
 
-const rangeError = { message: 'Value has to be between 10 and 30' }
+const bannerFontSizeError = {
+  message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`
+}
+const widgetFontSizeError = {
+  message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`
+}
 
 export const buttonFieldsSchema = z.object({
   buttonFontName: z.string().min(1, { message: 'Choose a font' }),
@@ -20,7 +27,10 @@ export const buttonFieldsSchema = z.object({
 
 export const bannerFieldsSchema = z.object({
   bannerFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  bannerFontSize: z.coerce.number().min(16, rangeError).max(24, rangeError),
+  bannerFontSize: z.coerce
+    .number()
+    .min(BANNER_FONT_SIZES.min, bannerFontSizeError)
+    .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
   bannerTitleText: z.string().optional(),
   bannerDescriptionText: z.string().optional(),
   bannerTextColor: z.string().min(6),
@@ -33,7 +43,10 @@ export const bannerFieldsSchema = z.object({
 
 export const widgetFieldsSchema = z.object({
   widgetFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  widgetFontSize: z.coerce.number().min(10, rangeError).max(30, rangeError),
+  widgetFontSize: z.coerce
+    .number()
+    .min(WIDGET_FONT_SIZES.min, widgetFontSizeError)
+    .max(WIDGET_FONT_SIZES.max, widgetFontSizeError),
   widgetTitleText: z
     .string()
     .min(1, { message: 'Widget title cannot be empty' }),

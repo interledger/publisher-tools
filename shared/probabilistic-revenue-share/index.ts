@@ -45,6 +45,18 @@ export function decode(pathPart: string): Payload {
   }))
 }
 
+export function pickWeightedRandom(entries: Payload) {
+  const sum = entries.reduce((sum2, entry) => sum2 + entry.weight, 0)
+  let choice = Math.random() * sum
+  for (const entry of entries) {
+    const weight = entry.weight
+    if ((choice -= weight) <= 0) {
+      return entry.pointer
+    }
+  }
+  throw new Error('unable to choose pointer; drew invalid value')
+}
+
 function isPointerList(pointerList: unknown): pointerList is PointerList {
   if (!Array.isArray(pointerList)) {
     return false
