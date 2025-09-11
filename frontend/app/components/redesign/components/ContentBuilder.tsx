@@ -6,7 +6,7 @@ import {
   TextareaField,
   Divider,
   Checkbox,
-  PillTagButton
+  PillRadioListItem
 } from '@/components'
 
 export interface ToolContent {
@@ -75,19 +75,33 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
       initialIsOpen={uiState.activeSection === 'content'}
     >
       <div className="flex flex-col gap-lg">
-        <div className="flex flex-col gap-xs">
-          <h4 className="text-base leading-md font-bold text-text-primary">
+        <div
+          role="group"
+          aria-labelledby="label-suggested-title"
+          className="flex flex-col gap-xs"
+        >
+          <div
+            id="label-suggested-title"
+            className="text-base leading-md font-bold text-text-primary"
+          >
             Suggested title
-          </h4>
-          <div className="flex flex-wrap gap-xs">
+          </div>
+          <div
+            className="flex flex-wrap gap-xs group"
+            onChange={(ev) => {
+              const input = ev.target as HTMLInputElement
+              content.onSuggestedTitleClick(input.value)
+            }}
+          >
             {content.suggestedTitles.map((title) => (
-              <PillTagButton
+              <PillRadioListItem
                 key={title}
-                variant={content.currentTitle === title ? 'active' : 'default'}
-                onClick={() => content.onSuggestedTitleClick(title)}
+                value={title}
+                selected={content.currentTitle === title}
+                radioGroup="suggested-title"
               >
                 {title}
-              </PillTagButton>
+              </PillRadioListItem>
             ))}
           </div>
         </div>
