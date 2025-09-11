@@ -12,7 +12,7 @@ export interface TabOption {
 interface TabSelectorProps {
   options: TabOption[]
   selectedId?: StableKey
-  onSelectTab?: (tabId: StableKey) => void
+  onSelectTab: (tabId: StableKey) => void
   className?: string
   onTabLabelChange?: (tabId: StableKey, newLabel: string) => void
 }
@@ -93,9 +93,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       }
 
       toolActions.selectVersion(tabId as StableKey)
-      if (onSelectTab) {
-        onSelectTab(tabId as StableKey)
-      }
+      onSelectTab(tabId as StableKey)
     }
   }
 
@@ -156,7 +154,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
     }
   }
 
-  const saveEdit = () => {
+  const saveEdit = (stop = false) => {
     if (editingId && inputValue.trim() !== '' && !hasError) {
       const originalLabel = getDisplayLabel(editingId)
       const newLabel = inputValue.trim()
@@ -165,7 +163,9 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         onTabLabelChange(editingId as StableKey, newLabel)
       }
 
-      setEditingId(null)
+      if (stop) {
+        setEditingId(null)
+      }
       setHasError(false)
       setErrorMessage('')
     }
@@ -173,19 +173,17 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
   const handleTabKeyDown = (e: React.KeyboardEvent, tabId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-
       if (selectedId === tabId && !editingId) {
+        e.preventDefault()
         beginEditing(tabId)
-      } else {
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
         if (editingId) {
-          saveEdit()
+          saveEdit(true)
         }
 
         toolActions.selectVersion(tabId as StableKey)
-        if (onSelectTab) {
-          onSelectTab(tabId as StableKey)
-        }
+        onSelectTab(tabId as StableKey)
       }
     } else if (
       (e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
@@ -211,9 +209,8 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       }
 
       toolActions.selectVersion(nextTabId)
-      if (onSelectTab) {
-        onSelectTab(nextTabId)
-      }
+      onSelectTab(nextTabId)
+      setEditingId(null)
     }
   }
 
@@ -265,9 +262,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
               beginEditing(tab.id)
             } else {
               toolActions.selectVersion(tab.id)
-              if (onSelectTab) {
-                onSelectTab(tab.id)
-              }
+              onSelectTab(tab.id)
             }
           }
 
@@ -334,6 +329,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                       defaultValue={inputValue}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
+                      onBlur={() => saveEdit(true)}
                       className={`bg-transparent border-none outline-none text-base leading-md font-normal w-full box-border ${
                         hasError ? 'text-red-500' : 'text-purple-600'
                       }`}
