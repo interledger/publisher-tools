@@ -31,6 +31,7 @@ import {
 } from '@shared/types'
 
 interface BaseToolAppearance {
+  fontSizeRange: { min: number; max: number }
   fontName?: FontFamilyKey
   fontSize?: number
   backgroundColor?: string
@@ -85,8 +86,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   positionSelector,
   colorsSelector
 }) => {
-  const minFontSize = 12
-  const maxFontSize = 20
+  const { min: minFontSize, max: maxFontSize } = appearance.fontSizeRange
 
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const { actions: uiActions, state: uiState } = useUI()
