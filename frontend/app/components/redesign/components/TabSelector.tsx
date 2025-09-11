@@ -154,7 +154,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
     }
   }
 
-  const saveEdit = () => {
+  const saveEdit = (stop = false) => {
     if (editingId && inputValue.trim() !== '' && !hasError) {
       const originalLabel = getDisplayLabel(editingId)
       const newLabel = inputValue.trim()
@@ -163,7 +163,9 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
         onTabLabelChange(editingId as StableKey, newLabel)
       }
 
-      setEditingId(null)
+      if (stop) {
+        setEditingId(null)
+      }
       setHasError(false)
       setErrorMessage('')
     }
@@ -177,7 +179,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
       } else if (e.key === 'Enter') {
         e.preventDefault()
         if (editingId) {
-          saveEdit()
+          saveEdit(true)
         }
 
         toolActions.selectVersion(tabId as StableKey)
@@ -208,6 +210,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
 
       toolActions.selectVersion(nextTabId)
       onSelectTab(nextTabId)
+      setEditingId(null)
     }
   }
 
@@ -326,6 +329,7 @@ export const TabSelector: React.FC<TabSelectorProps> = ({
                       defaultValue={inputValue}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
+                      onBlur={() => setEditingId(null)}
                       className={`bg-transparent border-none outline-none text-base leading-md font-normal w-full box-border ${
                         hasError ? 'text-red-500' : 'text-purple-600'
                       }`}
