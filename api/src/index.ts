@@ -6,6 +6,7 @@ import { ZodError } from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { APP_URL } from '@shared/defines'
 import type { ConfigVersions } from '@shared/types'
+import * as probabilisticRevShare from './routes/probabilistic-revshare.js'
 import { OpenPaymentsService } from './utils/open-payments.js'
 import {
   PaymentQuoteSchema,
@@ -169,6 +170,21 @@ app.post(
       return json(result)
     } catch (error) {
       throw createHTTPException(500, 'Payment finalization error: ', error)
+    }
+  }
+)
+
+app.get(
+  '/tools/revshare/:payload',
+  zValidator('param', probabilisticRevShare.paramSchema),
+  async ({ req, json }) => {
+    const encodedPayload = req.param('payload')
+    try {
+      const result = await probabilisticRevShare.handler(encodedPayload)
+      return json(result)
+    } catch (error) {
+      if (error instanceof HTTPException) throw error
+      throw createHTTPException(500, 'Revenue share error', error)
     }
   }
 )

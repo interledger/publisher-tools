@@ -4,7 +4,6 @@ import {
   type PayloadEntry
 } from '@shared/probabilistic-revenue-share'
 
-const BASE_REVSHARE_POINTER = '$webmonetization.org/api/revshare/pay/'
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
   '#fae6f1',
@@ -94,15 +93,16 @@ export function dropIndex(arr: SharesState, i: number): SharesState {
  * @param shares - Array of shares to convert into a payment pointer
  * @returns Complete revshare payment pointer string, or undefined if no valid shares
  */
-export function sharesToPaymentPointer(shares: Share[]): string | undefined {
+export function sharesToPaymentPointer(
+  shares: Share[],
+  /** Must end with a trailing slash */
+  baseUrl: string
+): string {
   const validShares = getValidShares(shares)
-
-  if (!validShares.length) {
-    return
-  }
+  if (!validShares.length) return ''
 
   const encodedShares = encode(validShares)
-  return normalizePointerPrefix(BASE_REVSHARE_POINTER) + encodedShares
+  return baseUrl + encodedShares
 }
 
 /**
@@ -152,22 +152,16 @@ export function pointerToShares(pointer: string): SharesState {
  */
 export function tagToShares(tag: string): SharesState {
   const parser = new DOMParser()
-  const node = parser.parseFromString(tag, 'text/html')
-  const meta = node.head.querySelector(
-    'meta[name="monetization"]'
-  ) as HTMLMetaElement
-  const link = node.head.querySelector(
-    'link[rel="monetization"]'
-  ) as HTMLLinkElement
+  const el = parser.parseFromString(tag, 'text/html').head
+  const meta = el.querySelector<HTMLMetaElement>('meta[name="monetization"]')
+  const link = el.querySelector<HTMLLinkElement>('link[rel="monetization"]')
 
   if (meta) {
     return pointerToShares(meta.content)
   }
-
   if (link) {
     return pointerToShares(link.href)
   }
-
   throw new Error(
     'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
   )
@@ -179,10 +173,26 @@ export function tagToShares(tag: string): SharesState {
  * @returns True if the string is a revshare payment pointer
  */
 function isRevsharePointer(str: string): boolean {
-  return (
-    str.startsWith(BASE_REVSHARE_POINTER) ||
-    str.startsWith(normalizePointerPrefix(BASE_REVSHARE_POINTER))
-  )
+  if (str.startsWith('<')) return false
+
+  let url: URL
+  try {
+    url = new URL(normalizePointerPrefix(str))
+  } catch {
+    return false
+  }
+
+  if (url.pathname.startsWith('/tools/revshare/')) {
+    return true
+  }
+  // older version
+  if (
+    url.hostname === 'webmonetization.org' &&
+    url.pathname.startsWith('/api/revshare/pay')
+  ) {
+    return true
+  }
+  return false
 }
 
 /**

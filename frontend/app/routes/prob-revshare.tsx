@@ -23,6 +23,7 @@ import {
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 import { Heading5 } from '../components/redesign/Typography'
+import { API_URL } from '@shared/defines'
 
 export const meta: MetaFunction = () => {
   return [
@@ -34,6 +35,8 @@ export const meta: MetaFunction = () => {
     }
   ]
 }
+
+const baseUrl = new URL('/tools/revshare/', API_URL).href
 
 export default function RevsharePageWrapper() {
   return (
@@ -52,7 +55,7 @@ function Revshare() {
 
   const showDeleteColumn = shares.length > 2
   const revShareUrl = useMemo(
-    () => sharesToPaymentPointer(shares) ?? '',
+    () => sharesToPaymentPointer(shares, baseUrl) ?? '',
     [shares]
   )
   const totalWeight = useMemo(
