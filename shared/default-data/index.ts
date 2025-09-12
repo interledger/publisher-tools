@@ -25,6 +25,7 @@ export function getDefaultData(): ElementConfigType {
     bannerTitleText: 'How to support?',
     bannerDescriptionText:
       'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
+    isBannerDescriptionVisible: true,
     bannerSlideAnimation: SLIDE_ANIMATION.Slide,
     bannerPosition: BANNER_POSITION.Bottom,
     bannerTextColor: '#ffffff',
@@ -39,6 +40,7 @@ export function getDefaultData(): ElementConfigType {
     widgetTitleText: 'Future of support',
     widgetDescriptionText:
       'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
+    isWidgetDescriptionVisible: true,
     widgetButtonText: 'Support me',
     widgetButtonBackgroundColor: '#4ec6c0',
     widgetButtonTextColor: '#000000',

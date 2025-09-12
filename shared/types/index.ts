@@ -24,6 +24,7 @@ export interface ElementConfigType {
   bannerFontSize: number
   bannerTitleText: string
   bannerDescriptionText: string
+  isBannerDescriptionVisible: boolean
   bannerSlideAnimation: SlideAnimationType
   bannerPosition: BannerPositionKey
   bannerBorder: CornerType
@@ -37,6 +38,7 @@ export interface ElementConfigType {
   widgetFontSize: number
   widgetTitleText: string
   widgetDescriptionText: string
+  isWidgetDescriptionVisible: boolean
   widgetPosition: WidgetPositionKey
   widgetDonateAmount: number // not posibble currently
   widgetButtonText: string
