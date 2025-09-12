@@ -8,7 +8,7 @@ export const NavLink = ({ to, children }: NavLinkProps) => {
     <li className="group flex md:justify-center md:items-center">
       <a
         href={to}
-        className="w-full px-md py-sm font-sans font-normal text-sm leading-sm rounded-lg bg-transparent text-nav-link-default hover:bg-secondary-hover-surface hover:text-nav-link-hover focus:outline-none focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-2 focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover transition-colors"
+        className="w-full px-md py-sm text-sm leading-sm bg-transparent text-nav-link-default focusable-nav-item"
       >
         {children}
       </a>
