@@ -36,8 +36,7 @@
   a,
   button,
   summary,
-  [role='tab'],
-  [role='checkbox'] {
+  [role='tab'] {
     @apply rounded-lg;
     @apply focus:outline-none;
     @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
