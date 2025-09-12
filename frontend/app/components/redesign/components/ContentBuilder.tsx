@@ -120,15 +120,12 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             onChange={(e) => {
               content.onTitleChange(e.target.value.trim())
             }}
+            showCounter={true}
+            currentLength={content.currentTitle.length}
             maxLength={content.titleMaxLength}
             helpText={content.titleHelpText}
             className="h-12 text-base leading-md"
           />
-          <div className="flex justify-end">
-            <span className="text-xs leading-xs text-text-secondary">
-              {content.currentTitle.length}/{content.titleMaxLength}
-            </span>
-          </div>
         </div>
 
         <Divider />
