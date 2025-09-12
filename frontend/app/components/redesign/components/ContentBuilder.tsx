@@ -148,7 +148,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
               />
             </div>
 
-            <div className="flex-grow">
+            <div className="flex-grow w-full">
               <TextareaField
                 ref={messageTextareaRef}
                 defaultValue={content.currentMessage}
