@@ -43,23 +43,23 @@ export function TextareaField({
         maxLength={maxLength}
         {...props}
       />
-      {(helpText || error) && (
-        <span
-          className={cx(
-            'text-xs leading-xs',
-            error ? 'text-text-error' : 'text-text-secondary'
-          )}
-        >
-          {error || helpText}
-        </span>
-      )}
-      {showCounter && maxLength && (
-        <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-xs">
+        {(helpText || error) && (
+          <span
+            className={cx(
+              'text-xs leading-xs',
+              error ? 'text-text-error' : 'text-text-secondary'
+            )}
+          >
+            {error || helpText}
+          </span>
+        )}
+        {showCounter && maxLength && (
           <span className="text-xs leading-xs text-text-secondary">
             {currentLength}/{maxLength}
           </span>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
