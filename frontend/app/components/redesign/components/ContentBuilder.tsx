@@ -116,8 +116,9 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
           <InputField
             ref={titleInputRef}
             defaultValue={content.currentTitle}
+            placeholder={content.suggestedTitles[0] || 'Enter a custom title'}
             onChange={(e) => {
-              content.onTitleChange(e.target.value)
+              content.onTitleChange(e.target.value.trim())
             }}
             maxLength={content.titleMaxLength}
             helpText={content.titleHelpText}
