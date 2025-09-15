@@ -6,10 +6,26 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   id?: string
   error?: string | string[]
   helpText?: string
+  showCounter?: boolean
+  currentLength?: number
 }
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
-  ({ label, error, id, helpText, className = '', required, ...props }, ref) => {
+  (
+    {
+      label,
+      error,
+      id,
+      helpText,
+      showCounter = false,
+      className = '',
+      required,
+      maxLength,
+      currentLength,
+      ...props
+    },
+    ref
+  ) => {
     const generatedId = useId()
     const fieldId = id || generatedId
     const displayError =
@@ -43,8 +59,15 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           {...props}
         />
         {error && <p className="text-xs text-text-error">{displayError}</p>}
-        {helpText && !error && (
-          <p className="text-xs text-text-secondary">{helpText}</p>
+        {(helpText || showCounter) && !error && (
+          <div className="flex justify-between gap-xs text-xs text-text-secondary">
+            {helpText && <p>{helpText}</p>}
+            {showCounter && maxLength && (
+              <span>
+                {currentLength}/{maxLength}
+              </span>
+            )}
+          </div>
         )}
       </div>
     )
