@@ -230,15 +230,15 @@ a:focus-visible {
   }
 }
 
-.widget-body {
+.payment-form.widget-body {
   display: flex;
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
   padding: 0px var(--Spacings-2xl);
-  margin-top: var(--Spacings-lg);
   flex: 1 1 auto;
   gap: var(--Spacings-lg);
+  justify-content: center;
 }
 
 .widget-body p {
@@ -249,7 +249,6 @@ a:focus-visible {
   font-style: normal;
   font-weight: var(--Font-Weight-Regular);
   line-height: var(--Font-Line-Height-sm);
-  margin: 0;
 }
 
 .payment-content {
@@ -421,7 +420,7 @@ a:focus-visible {
     padding: var(--Spacings-xs) var(--Spacings-md);
   }
 
-  .widget-body {
+  .payment-form.widget-body {
     padding: 0px var(--Spacings-md);
   }
 

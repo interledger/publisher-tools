@@ -26,6 +26,7 @@ const DEFAULT_BANNER_LINK_TEXT =
 export interface BannerConfig {
   bannerTitleText?: string
   bannerDescriptionText?: string
+  isBannerDescriptionVisible?: boolean
   bannerBorderRadius?: BorderRadiusKey
   bannerPosition?: BannerPositionKey
   bannerSlideAnimation?: SlideAnimationType
@@ -129,13 +130,18 @@ export class Banner extends LitElement {
         />`
       : html``
 
+    const showDescription = this.config.isBannerDescriptionVisible ?? true
+    const descriptionElement = showDescription
+      ? html`<p class="banner-description">${description}</p>`
+      : null
+
     return html`
       <div class="banner ${this.animationClass}">
         ${thumbnail}
 
         <div class="banner-content">
           <h3 class="banner-title">${title}</h3>
-          <p class="banner-description">${description}</p>
+          ${descriptionElement}
           <p class="banner-link" @click=${this.handleLinkClick}>
             ${DEFAULT_BANNER_LINK_TEXT}
           </p>

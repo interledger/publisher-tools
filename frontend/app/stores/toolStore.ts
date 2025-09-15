@@ -376,9 +376,7 @@ export const toolActions = {
 
       Object.entries(configToSave).forEach(([key, value]) => {
         if (value !== undefined && value !== null && key !== 'walletAddress') {
-          const stringValue =
-            typeof value === 'number' ? value.toString() : value
-          formData.append(key, stringValue)
+          formData.append(key, String(value))
         }
       })
 
