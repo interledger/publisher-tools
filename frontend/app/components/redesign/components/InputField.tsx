@@ -60,12 +60,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         />
         {error && <p className="text-xs text-text-error">{displayError}</p>}
         {(helpText || showCounter) && !error && (
-          <div className="flex justify-between gap-xs">
-            {helpText && (
-              <p className="text-xs text-text-secondary">{helpText}</p>
-            )}
+          <div className="flex justify-between gap-xs text-xs text-text-secondary">
+            {helpText && <p>{helpText}</p>}
             {showCounter && maxLength && (
-              <span className="text-xs leading-xs text-text-secondary">
+              <span>
                 {currentLength}/{maxLength}
               </span>
             )}
