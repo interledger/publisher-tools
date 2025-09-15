@@ -36,7 +36,7 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-const baseUrl = new URL('/tools/revshare/', API_URL).href
+const baseUrl = new URL('/revshare/', API_URL).href
 
 export default function RevsharePageWrapper() {
   return (

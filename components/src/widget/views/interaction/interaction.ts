@@ -91,7 +91,7 @@ export class PaymentInteraction extends LitElement {
         note
       } = this.configController.state
       const { apiUrl } = this.configController.config
-      const url = new URL('/tools/payment/finalize', apiUrl).href
+      const url = new URL('/payment/finalize', apiUrl).href
       const response = await fetch(url, {
         method: 'POST',
         headers: {

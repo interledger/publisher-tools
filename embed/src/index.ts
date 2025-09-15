@@ -39,7 +39,7 @@ if (!paramTypes || !paramWallet) {
   throw 'Missing parameters! Could not initialise WM Tools.'
 }
 
-fetch(`${API_URL}/tools/config/${urlWallet}/${paramTag}`)
+fetch(`${API_URL}/config/${urlWallet}/${paramTag}`)
   .then((response) => response.json())
   .then((resp) => {
     const config = resp
