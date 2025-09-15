@@ -60,7 +60,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         />
         {error && <p className="text-xs text-text-error">{displayError}</p>}
         {(helpText || showCounter) && !error && (
-          <div className="flex items-center justify-between gap-xs">
+          <div className="flex justify-between gap-xs">
             {helpText && (
               <p className="text-xs text-text-secondary">{helpText}</p>
             )}
