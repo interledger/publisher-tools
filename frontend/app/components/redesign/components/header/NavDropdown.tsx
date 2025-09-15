@@ -115,7 +115,7 @@ export const NavDropdown = ({
             'md:items-start md:justify-start md:bg-interface-bg-container',
             'md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)]',
             'md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container',
-            'focus-visible:outline focus-visible:outline-current'
+            'focus-visible:outline-offset-0'
           )}
         >
           <ul className="flex w-full flex-grow list-none flex-col gap-xs">
