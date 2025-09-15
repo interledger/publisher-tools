@@ -43,7 +43,7 @@ export function TextareaField({
         maxLength={maxLength}
         {...props}
       />
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between gap-xs">
         {(helpText || error) && (
           <span
             className={cx(
