@@ -79,7 +79,7 @@ app.onError((error, c) => {
 })
 
 app.get(
-  '/tools/config/:wa/:version?',
+  '/config/:wa/:version?',
   zValidator('param', WalletAddressParamSchema),
   async ({ req, json, env }) => {
     const { wa, version } = req.valid('param')
@@ -95,7 +95,7 @@ app.get(
 )
 
 app.post(
-  '/tools/payment/quote',
+  '/payment/quote',
   zValidator('json', PaymentQuoteSchema),
   async ({ req, json, env }) => {
     try {
@@ -118,7 +118,7 @@ app.post(
 )
 
 app.post(
-  '/tools/payment/grant',
+  '/payment/grant',
   zValidator('json', PaymentGrantSchema),
   async ({ req, json, env }) => {
     try {
@@ -144,7 +144,7 @@ app.post(
 )
 
 app.post(
-  '/tools/payment/finalize',
+  '/payment/finalize',
   zValidator('json', PaymentFinalizeSchema),
   async ({ req, json, env }) => {
     try {
@@ -175,7 +175,7 @@ app.post(
 )
 
 app.get(
-  '/tools/revshare/:payload',
+  '/revshare/:payload',
   zValidator('param', probabilisticRevShare.paramSchema),
   async ({ req, json }) => {
     const encodedPayload = req.param('payload')
