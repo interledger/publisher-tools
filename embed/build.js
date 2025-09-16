@@ -44,9 +44,7 @@ await build({
   ]
 })
 
-/**
- * @param {import('directory-tree').DirectoryTree} directoryTree
- */
+/** @param {import('directory-tree').DirectoryTree} directoryTree */
 function generateDirectoryTreeHTML(directoryTree) {
   const html = String.raw // for syntax highlighting
 
@@ -59,6 +57,7 @@ function generateDirectoryTreeHTML(directoryTree) {
       .join('/')
   }
 
+  /** @param {import('directory-tree').DirectoryTree} node */
   function buildTree(node) {
     let htmlStr = `<ul>\n`
     if (node.children) {
