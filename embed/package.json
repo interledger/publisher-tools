@@ -4,9 +4,9 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "vite build --mode development",
-    "build": "vite build",
-    "prepare": "vite build --mode prepare"
+    "dev": "node --watch --watch-path=./src --watch-path=build.js --watch-path=../components build.js",
+    "build": "node build.js",
+    "prepare": "node build.js"
   },
   "dependencies": {
     "@tools/components": "workspace:*"
@@ -14,8 +14,8 @@
   "devDependencies": {
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
-    "typescript": "^5.9.2",
-    "vite": "^6.3.5"
+    "esbuild": "0.23.1",
+    "typescript": "^5.9.2"
   },
   "files": [
     "dist/*"
