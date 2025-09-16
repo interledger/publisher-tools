@@ -3,6 +3,7 @@ compatibility_date = "2025-04-03"
 
 [assets]
 directory = "./node_modules/publisher-tools-embed/dist"
+not_found_handling = "404-page"
 
 [dev]
 port = 5173
