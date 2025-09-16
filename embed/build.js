@@ -1,8 +1,9 @@
-import { buildSync } from 'esbuild'
+import { build } from 'esbuild'
+import { copy } from 'esbuild-plugin-copy'
 
 const isDev = process.env.npm_lifecycle_script?.includes('--watch')
 
-buildSync({
+await build({
   entryPoints: ['src/*.ts'],
   bundle: true,
   format: 'iife',
@@ -20,5 +21,10 @@ buildSync({
   loader: {
     '.css': 'text',
     '.svg': 'dataurl'
-  }
+  },
+  plugins: [
+    copy({
+      assets: [{ from: 'public/**', to: '.' }]
+    })
+  ]
 })
