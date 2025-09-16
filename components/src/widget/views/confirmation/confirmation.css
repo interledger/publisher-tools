@@ -60,6 +60,10 @@
   transition: opacity 0.2s ease;
 }
 
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 .confirmation-buttons-header {
   color: var(--primary-color, #7469a8);
   font-family: var(--Font-Family-Inter, Inter);
@@ -100,8 +104,8 @@
 
 .preset-btn {
   display: flex;
-  width: 56px;
-  height: 56px;
+  width: calc(var(--Font-Size-text-base) + 2.75rem);
+  height: calc(var(--Font-Size-text-base) + 2.75rem);
   cursor: pointer;
   padding: 16px 12px;
   justify-content: center;
@@ -160,12 +164,14 @@
   display: flex;
   padding: var(--Spacings-md, 12px);
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
   align-self: stretch;
   border-radius: 8px;
   border: 1px solid var(--Colors-green-200, #abe4df);
   background: var(--Colors-mint-50, #f2fbf9);
+  min-height: 80px;
 }
 
 .failed {
@@ -234,7 +240,7 @@
 }
 
 .detail-note {
-  margin-top: 16px;
+  margin-top: var(--Spacings-sm);
 }
 
 .primary-button {
@@ -274,22 +280,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  gap: var(--Spacings-sm, 8px);
   color: var(--Text-paragraph-standard, #363636);
   opacity: 0.6;
 }
 
-.spinner {
+.loader {
+  border: 3px solid #d4d5d6;
+  border-radius: 50%;
+  border-bottom: 3px solid var(--primary-color);
+  border-top: 3px solid var(--primary-color);
   width: 20px;
   height: 20px;
-  border: 2px solid #e5e7eb;
-  border-top: 2px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 12px;
-  box-sizing: border-box;
-  flex-shrink: 0;
-  display: inline-block;
+  animation: spin 1.5s ease-in-out infinite;
 }
 
 @keyframes spin {
@@ -378,7 +381,7 @@
 }
 
 .form-input.with-currency {
-  padding-left: calc(var(--Spacings-md, 12px) + 1.5em);
+  padding-left: calc(var(--Font-Size-text-base) + 2rem);
 }
 
 .form-input,
@@ -420,10 +423,6 @@
 .form-input:read-only {
   background-color: #f9fafb;
   color: var(--Colors-silver-700, #7b7b7b);
-}
-
-.form-input.with-currency {
-  padding-left: calc(var(--Spacings-md, 12px) + 1.5em);
 }
 
 @media (max-width: 480px) {
