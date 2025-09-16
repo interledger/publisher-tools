@@ -42,6 +42,7 @@ function drawBanner(config: BannerConfig) {
   const bannerConfig = {
     bannerTitleText: config.bannerTitleText,
     bannerDescriptionText: config.bannerDescriptionText,
+    isBannerDescriptionVisible: config.bannerDescriptionVisible,
     bannerBorderRadius: config.bannerBorder,
     bannerPosition: config.bannerPosition,
     bannerSlideAnimation: config.bannerSlideAnimation,

@@ -38,6 +38,7 @@ const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
     },
     widgetTitleText: config.widgetTitleText,
     widgetDescriptionText: config.widgetDescriptionText,
+    isWidgetDescriptionVisible: config.widgetDescriptionVisible,
     widgetPosition: config.widgetPosition
   }
 
