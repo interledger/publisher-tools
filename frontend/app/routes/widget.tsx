@@ -119,8 +119,7 @@ const WidgetPreview: React.FC = () => {
         action: snap.currentConfig.widgetButtonText,
         widgetTitleText: snap.currentConfig.widgetTitleText,
         widgetDescriptionText: snap.currentConfig.widgetDescriptionText,
-        isWidgetDescriptionVisible:
-          snap.currentConfig.isWidgetDescriptionVisible,
+        isWidgetDescriptionVisible: snap.currentConfig.widgetDescriptionVisible,
         widgetTriggerIcon: snap.currentConfig.widgetTriggerIcon,
         widgetPosition: snap.currentConfig.widgetPosition,
         theme: {
@@ -192,8 +191,7 @@ export default function Widget() {
     messageMaxLength: 300,
     currentTitle: snap.currentConfig?.widgetTitleText,
     currentMessage: snap.currentConfig?.widgetDescriptionText,
-    isDescriptionVisible:
-      snap.currentConfig?.isWidgetDescriptionVisible ?? true,
+    isDescriptionVisible: snap.currentConfig?.widgetDescriptionVisible ?? true,
     onTitleChange: (title: string) =>
       toolActions.setToolConfig({ widgetTitleText: title }),
     onMessageChange: (message: string) =>
@@ -202,7 +200,7 @@ export default function Widget() {
       toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
     onDescriptionVisibilityChange: (visible: boolean) =>
       toolActions.setToolConfig({
-        isWidgetDescriptionVisible: visible
+        widgetDescriptionVisible: visible
       })
   }
 

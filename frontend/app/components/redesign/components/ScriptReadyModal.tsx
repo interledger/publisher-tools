@@ -7,14 +7,14 @@ import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 interface ScriptReadyModalProps {
   isOpen?: boolean
   onClose?: () => void
-  scriptContent?: string
+  scriptContent: string
   className?: string
 }
 
 export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
   isOpen = true,
   onClose,
-  scriptContent = `<script id="wmt-init-script" type="module" src="https://cdn.webmonetization.org/init.js?wa=https://ilp.interledger-test.dev/e2bddaeb&tag=default&types=banner"></script>`,
+  scriptContent,
   className = ''
 }) => {
   const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)

@@ -6,7 +6,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
     <div className="md:hidden fixed inset-0 bg-white flex flex-col items-center justify-center z-[60]">
       <GhostButton
         onClick={onClose}
-        className="absolute top-0 right-0 size-12 m-sm"
+        className="absolute top-0 right-0 size-12 m-sm focusable-nav-item"
       >
         <SVGCloseIcon className="w-5 h-5" />
       </GhostButton>

@@ -244,7 +244,10 @@ export function RedesignDemo() {
       <div className="mt-8 mb-8">
         <h2 className="text-xl font-bold mb-4">Script Ready Modal Component</h2>
         <div className="flex flex-col items-center max-w-md mx-auto">
-          <ScriptReadyModal onClose={() => console.log('Modal closed')} />
+          <ScriptReadyModal
+            scriptContent='<script id="wmt-banner-init-script" type="module" src="http://localhost:5173/banner.js" data-wallet-address="https://ilp.interledger-test.dev/sid" data-tag="version1" ></script>'
+            onClose={() => console.log('Modal closed')}
+          />
         </div>
       </div>
       <div className="mt-8 mb-8">

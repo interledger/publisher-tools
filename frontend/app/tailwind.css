@@ -9,6 +9,11 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --focus-outline-color: theme('colors.nav-link-hover');
+    --focus-outline-width: 2px;
+    --focus-outline-offset: 2px;
+  }
   html,
   body {
     font-family:
@@ -27,6 +32,25 @@
       'Segoe UI Emoji',
       'Segoe UI Symbol',
       'Noto Color Emoji';
+  }
+  a,
+  button,
+  summary,
+  [role='tab'],
+  [role='menu'] {
+    @apply rounded-lg;
+    @apply focus:outline-none;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
+  }
+}
+
+@layer components {
+  a.focusable-nav-item,
+  button.focusable-nav-item {
+    @apply transition-colors duration-200 ease-in;
+    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover;
+    @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
+    @apply focus-visible:outline-offset-0;
   }
 }
 

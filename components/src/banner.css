@@ -251,6 +251,7 @@
   justify-content: center;
   border-radius: 4px;
   transition: all 0.2s ease;
+  outline: none;
 }
 
 /* Tablet styles */
@@ -282,6 +283,13 @@
 .close-button svg {
   width: 16px;
   height: 16px;
+}
+
+.close-button:focus-visible {
+  outline-style: solid;
+  outline-color: var(--focus-outline-color);
+  outline-width: var(--focus-outline-width, 2px);
+  outline-offset: var(--focus-outline-offset, 2px);
 }
 
 /* Mobile styles */

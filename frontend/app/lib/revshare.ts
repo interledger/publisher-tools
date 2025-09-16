@@ -182,7 +182,7 @@ function isRevsharePointer(str: string): boolean {
     return false
   }
 
-  if (url.pathname.startsWith('/tools/revshare/')) {
+  if (url.pathname.startsWith('/revshare/')) {
     return true
   }
   // older version

@@ -166,7 +166,7 @@ export class PaymentConfirmation extends LitElement {
     amount: number
   }): Promise<void> {
     const { apiUrl } = this.configController.config
-    const url = new URL(`/tools/payment/quote`, apiUrl)
+    const url = new URL(`/payment/quote`, apiUrl)
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -268,7 +268,7 @@ export class PaymentConfirmation extends LitElement {
     receiveAmount: Amount
   }): Promise<PendingGrant> {
     const { apiUrl, frontendUrl } = this.configController.config
-    const url = new URL('/tools/payment/grant', apiUrl).href
+    const url = new URL('/payment/grant', apiUrl).href
     const redirectUrl = new URL('payment-confirmation', frontendUrl).href
 
     const response = await fetch(url, {
