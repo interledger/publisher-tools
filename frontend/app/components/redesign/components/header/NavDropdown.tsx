@@ -17,7 +17,7 @@ const ToolsMenuItem = ({ to, imgSrc, text }: ToolsMenuItemProps) => {
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs rounded-lg p-sm transition-colors duration-200 ease-in hover:bg-secondary-hover-surface focus:outline-none focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover focus-visible:outline-nav-link-hover focus-visible:outline-offset-1"
+        className="flex w-full items-center gap-xs p-sm focusable-nav-item"
       >
         <img
           className="size-10 md:size-5xl"
@@ -81,12 +81,10 @@ export const NavDropdown = ({
         onClick={toggleDropdown}
         className={cx(
           'flex w-full items-center justify-between gap-xs',
-          'rounded-lg px-md py-sm',
+          'px-md py-sm',
           'font-sans text-sm font-normal leading-sm',
-          'transition-colors',
-          'hover:bg-secondary-hover-surface hover:text-nav-link-hover',
-          'focus:outline-none focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover focus-visible:outline-nav-link-hover focus-visible:outline-offset-1',
           'md:w-auto md:justify-normal',
+          'focusable-nav-item',
           isOpen ? 'text-nav-link-hover' : 'text-nav-link-default'
         )}
         aria-label={`Toggle submenu for ${title}`}
@@ -117,7 +115,7 @@ export const NavDropdown = ({
             'md:items-start md:justify-start md:bg-interface-bg-container',
             'md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)]',
             'md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container',
-            'focus-visible:outline focus-visible:outline-current'
+            'focus-visible:outline-offset-0'
           )}
         >
           <ul className="flex w-full flex-grow list-none flex-col gap-xs">
