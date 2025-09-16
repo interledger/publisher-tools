@@ -429,7 +429,9 @@
   .content.preview-mode {
     width: 100%;
   }
+}
 
+@media (max-width: 480px), (max-height: 500px) and (orientation: landscape) {
   .content.open {
     position: fixed;
     top: 0;
