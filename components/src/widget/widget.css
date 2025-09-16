@@ -411,7 +411,6 @@ a:focus-visible {
   align-items: center;
   flex: 0 0 auto;
   gap: var(--Spacings-lg);
-  /* margin-top: auto; */
 }
 
 .widget-footer a {
