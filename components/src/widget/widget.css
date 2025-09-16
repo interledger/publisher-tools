@@ -430,3 +430,13 @@
     width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .content.open {
+    width: 100vw;
+    height: 100vh;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+}
