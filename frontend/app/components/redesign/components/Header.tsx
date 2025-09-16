@@ -48,7 +48,7 @@ export const Header = () => {
         >
           <RemixNavLink
             to="/"
-            className="flex items-center focus:outline-none focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-2 rounded-sm"
+            className="flex items-center focus:outline-none focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-0 rounded-sm"
           >
             <img
               src={wmLogo}
@@ -66,7 +66,7 @@ export const Header = () => {
           <GhostButton
             onClick={toggleMobileMenu}
             tabIndex={0}
-            className="md:hidden size-12"
+            className="md:hidden size-12 focusable-nav-item"
           >
             <SVGHamburgerIcon className="w-5 h-5" />
           </GhostButton>
