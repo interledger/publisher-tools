@@ -4,18 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "npm run build && vite preview",
-    "deploy": "wrangler deploy",
-    "typecheck": "tsc --noEmit",
-    "prepare": "wrangler types"
+    "dev": "wrangler dev",
+    "build": "echo 'nothing to build' && exit 0",
+    "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.1.1",
     "publisher-tools-embed": "workspace:^",
-    "vite": "^6.3.5",
-    "vite-plugin-restart": "^0.4.2",
     "wrangler": "^4.32.0"
   }
 }
