@@ -5,7 +5,7 @@ import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
-import { groupBy } from '@shared/utils'
+import { groupBy, toWalletAddressUrl } from '@shared/utils'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -317,16 +317,25 @@ export const toolActions = {
   setBuildCompleteStep: (step: StepStatus) => {
     toolState.buildStep = step
   },
-  getScriptToDisplay: (): string | undefined => {
-    if (!toolState.currentConfig.walletAddress) {
-      return undefined
-    }
+  getScriptToDisplay: (): string => {
+    const {
+      currentConfig: { walletAddress },
+      currentToolType: toolType,
+      activeVersion: preset,
+      cdnUrl
+    } = toolState
 
-    const wa = toolState.currentConfig.walletAddress
-      .replace('$', '')
-      .replace('https://', '')
+    const wa = toWalletAddressUrl(walletAddress)
+    const src = new URL(`/${toolType}.js`, cdnUrl).href
 
-    return `<script id="wmt-init-script" type="module" src="${toolState.cdnUrl}/init.js?wa=${wa}&tag=${toolState.activeVersion}&types=${toolState.currentToolType}"></script>`
+    const html = String.raw // for syntax highlighting
+    return html`<script
+      id="wmt-${toolType}-init-script"
+      type="module"
+      src="${src}"
+      data-wallet-address="${wa}"
+      data-tag="${preset}"
+    ></script>`
   },
   updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
     if (!toolState.configurations[stableKey]) {
