@@ -431,7 +431,7 @@
   }
 }
 
-@media (max-width: 480px), (max-height: 500px) and (orientation: landscape) {
+@media (max-width: 480px), (max-height: 678px) and (orientation: landscape) {
   .content.open {
     position: fixed;
     top: 0;
