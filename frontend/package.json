@@ -61,7 +61,7 @@
     "eslint": "^9.34.0",
     "postcss": "^8.4.49",
     "typescript": "5.9.2",
-    "vite": "^5.4.11",
+    "vite": "^7.0.0",
     "vite-tsconfig-paths": "^4.3.2",
     "wrangler": "^4.32.0"
   },
