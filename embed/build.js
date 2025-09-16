@@ -79,7 +79,7 @@ function generateDirectoryTreeHTML(directoryTree) {
     return htmlStr
   }
 
-  const htmlString = html`
+  return html`
     <!DOCTYPE html>
     <html lang="en">
       <head>
@@ -93,6 +93,4 @@ function generateDirectoryTreeHTML(directoryTree) {
       </body>
     </html>
   `
-
-  return htmlString
 }
