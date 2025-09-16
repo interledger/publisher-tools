@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { writeFileSync } from 'node:fs'
 import { build } from 'esbuild'
+import { copy } from 'esbuild-plugin-copy'
 import directoryTree from 'directory-tree'
 
 const isDev = process.env.npm_lifecycle_script?.includes('--watch')
@@ -41,6 +42,9 @@ await build({
         })
       }
     }
+    copy({
+      assets: [{ from: 'public/**', to: '.' }]
+    })
   ]
 })
 
