@@ -41,7 +41,7 @@ await build({
           writeFileSync(file, content, 'utf-8')
         })
       }
-    }
+    },
     copy({
       assets: [{ from: 'public/**', to: '.' }]
     })
