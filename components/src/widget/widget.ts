@@ -38,21 +38,26 @@ export class PaymentWidget extends LitElement {
 
   @state() private currentView: string = 'home'
   @state() private walletAddressError: string = ''
+  @state() private isSubmitting: boolean = false
 
   static styles = unsafeCSS(widgetStyles)
 
   private async handleSubmit(e: Event) {
     e.preventDefault()
+    this.isSubmitting = true
+
     const formData = new FormData(e.target as HTMLFormElement)
     const walletAddress = String(formData.get('walletAddress') ?? '')
 
     if (this.isPreview && !walletAddress) {
       this.previewWalletAddress()
+      this.isSubmitting = false
       return
     }
 
     if (!walletAddress) {
       this.walletAddressError = 'Please fill out your wallet address.'
+      this.isSubmitting = false
       return
     }
 
@@ -78,6 +83,8 @@ export class PaymentWidget extends LitElement {
       } else {
         this.walletAddressError = 'Network error. Please try again.'
       }
+    } finally {
+      this.isSubmitting = false
     }
   }
 
@@ -95,6 +102,12 @@ export class PaymentWidget extends LitElement {
 
   private handleInteractionCancelled() {
     this.currentView = 'confirmation'
+  }
+
+  private handleInputChange() {
+    if (this.walletAddressError) {
+      this.walletAddressError = ''
+    }
   }
 
   private renderCurrentView() {
@@ -170,6 +183,7 @@ export class PaymentWidget extends LitElement {
             type="text"
             name="walletAddress"
             placeholder="Enter your wallet address"
+            @input=${this.handleInputChange}
           />
 
           ${this.walletAddressError
@@ -177,8 +191,14 @@ export class PaymentWidget extends LitElement {
             : ''}
         </div>
 
-        <button class="primary-button" type="submit">
-          ${this.config.action || 'Support me'}
+        <button
+          class="primary-button"
+          type="submit"
+          ?disabled=${this.isSubmitting}
+        >
+          ${this.isSubmitting
+            ? html`<div class="spinner"></div>`
+            : this.config.action || 'Support me'}
         </button>
       </form>
     `
