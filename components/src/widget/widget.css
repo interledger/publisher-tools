@@ -240,7 +240,6 @@ a:focus-visible {
   flex: 1 1 auto;
   gap: var(--Spacings-lg);
   justify-content: center;
-  overflow-y: auto;
 }
 
 .widget-body p {
