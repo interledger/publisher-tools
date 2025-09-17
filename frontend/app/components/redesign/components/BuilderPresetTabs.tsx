@@ -108,11 +108,11 @@ export const BuilderPresetTabs = <T extends string>({
               onKeyDown={onKeyDown}
               className={cx(
                 'flex-grow flex items-center text-left relative',
-                'px-4 py-sm rounded-b-none rounded-t-sm',
+                'px-4 py-4 rounded-b-none rounded-t-sm',
                 'cursor-pointer !-outline-offset-2',
                 !editingId && 'mb-2',
                 option.id === activeTabId
-                  ? 'bg-white text-purple-300'
+                  ? 'bg-white text-text-buttons-default'
                   : 'text-silver-600 hover:bg-purple-50'
               )}
             >
@@ -121,7 +121,7 @@ export const BuilderPresetTabs = <T extends string>({
                 className={cx(
                   'truncate inline-block w-[180px]',
                   option.id === activeTabId
-                    ? 'text-purple-300'
+                    ? 'text-text-buttons-default'
                     : 'text-silver-600'
                 )}
               >
@@ -139,7 +139,7 @@ export const BuilderPresetTabs = <T extends string>({
         </div>
 
         <div
-          className={cx('-mt-12 z-0', editingId ? 'w-full' : 'w-min ml-auto')}
+          className={cx('-mt-14 z-0', editingId ? 'w-full' : 'w-min ml-auto')}
           style={{ gridColumn: `${activeTabIdx + 1} / span 1` }}
         >
           {editingId === activeTabId && (
@@ -253,9 +253,9 @@ function TabNameEditor<T extends string>({
         type="text"
         id={inputId}
         className={cx(
-          'flex-shrink-0 w-auto px-4 py-sm text-left',
-          'text-base leading-md font-normal w-full',
-          'text-purple-600 bg-white rounded-t-sm',
+          'flex-shrink-0 w-auto px-4 py-4 text-left',
+          'text-style-body-standard leading-md font-normal w-full',
+          'text-text-buttons-default bg-white rounded-t-sm',
           'invalid:text-text-error invalid:underline decoration-dashed',
           'focus:outline-none'
         )}
@@ -274,7 +274,7 @@ function TabNameEditor<T extends string>({
       />
       {!!errorMessage && (
         <span
-          className="text-xs text-text-error absolute -bottom-1.5 right-1.5 bg-white"
+          className="text-style-caption-standard !text-text-error absolute -bottom-1.5 right-1.5 bg-white"
           id={`${inputId}-error`}
         >
           {errorMessage}
@@ -290,7 +290,7 @@ function TabNameEditor<T extends string>({
         {errorMessage ? (
           <SVGExclamationCircle className="w-4 h-4 text-text-error" />
         ) : (
-          <SVGEdit className="w-5 h-5 text-purple-600" />
+          <SVGEdit className="w-5 h-5 text-text-buttons-default" />
         )}
       </button>
     </form>
