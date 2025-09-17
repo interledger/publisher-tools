@@ -1,7 +1,6 @@
 import { cx } from 'class-variance-authority'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { SVGEdit } from '~/assets/svg'
-import { ExclamationTriangle } from '~/components/icons'
+import { SVGEdit, SVGExclamationCircle } from '~/assets/svg'
 
 type TabOption<T extends string> = { id: T; label: string; isDirty: boolean }
 interface Props<T extends string> {
@@ -111,6 +110,7 @@ export const BuilderPresetTabs = <T extends string>({
                 'flex-grow flex items-center text-left relative',
                 'px-4 py-sm rounded-b-none rounded-t-sm',
                 'cursor-pointer !-outline-offset-2',
+                !editingId && 'mb-2',
                 option.id === activeTabId
                   ? 'bg-white text-purple-300'
                   : 'text-silver-600 hover:bg-purple-50'
@@ -165,7 +165,7 @@ export const BuilderPresetTabs = <T extends string>({
         <div
           role="tabpanel"
           className={cx(
-            'bg-interface-bg-container rounded-b-sm p-md flex-col gap-md w-full',
+            'bg-interface-bg-container rounded-b-sm p-md flex-col gap-md w-full -mt-2',
             option.id === activeTabId ? 'flex' : 'hidden'
           )}
           aria-labelledby={`${idPrefix}-tab-${option.id}`}
@@ -193,7 +193,7 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
-      className="cursor-pointer px-4 h-full rounded-none rounded-tr-sm mt-1 text-field-helpertext-default hover:text-text-buttons-default focus:text-text-buttons-default"
+      className="grid items-center cursor-pointer px-4 rounded-none rounded-tr-sm h-full -mt-1 text-field-helpertext-default hover:text-text-buttons-default focus:text-text-buttons-default"
       onClick={onClick}
       title="Edit configuration name"
       style={{ height: `calc(100% - 0.25rem * 2)` }}
@@ -204,6 +204,15 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
   )
 }
 
+interface TabNameEditorProps<T extends string> {
+  options: TabOption<T>[]
+  tabId: T
+  tabIdx: number
+  onSubmit: (tabId: T, label: string) => void
+  setHasError: (hasError: boolean) => void
+  inputId: string
+}
+
 function TabNameEditor<T extends string>({
   options,
   tabId,
@@ -211,14 +220,7 @@ function TabNameEditor<T extends string>({
   onSubmit,
   setHasError,
   inputId
-}: {
-  options: TabOption<T>[]
-  tabId: T
-  tabIdx: number
-  onSubmit: (tabId: T, label: string) => void
-  setHasError: (hasError: boolean) => void
-  inputId: string
-}) {
+}: TabNameEditorProps<T>) {
   const [errorMessage, setErrorMessage] = useState('')
 
   const validateTabName = useCallback(
@@ -242,9 +244,9 @@ function TabNameEditor<T extends string>({
         }
       }}
       className={cx(
-        'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm pr-2',
+        'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm pr-2 relative mb-2',
         // 'focus-within:outline outline-2 outline-primary-focus',
-        !!errorMessage && 'outline outline-2 outline-red-500 bg-red-50'
+        !!errorMessage && 'outline outline-2 outline-field-border-error'
       )}
     >
       <input
@@ -254,7 +256,7 @@ function TabNameEditor<T extends string>({
           'flex-shrink-0 w-auto px-4 py-sm text-left',
           'text-base leading-md font-normal w-full',
           'text-purple-600 bg-white rounded-t-sm',
-          'invalid:text-red-500 invalid:bg-red-50',
+          'invalid:text-text-error invalid:underline decoration-dashed',
           'focus:outline-none'
         )}
         placeholder="Preset name"
@@ -266,8 +268,18 @@ function TabNameEditor<T extends string>({
             onSubmit(tabId, e.target.value.trim())
           }
         }}
+        aria-invalid={!!errorMessage}
+        aria-describedby={errorMessage ? `${inputId}-error` : undefined}
         maxLength={40}
       />
+      {!!errorMessage && (
+        <span
+          className="text-xs text-text-error absolute -bottom-1.5 right-1.5 bg-white"
+          id={`${inputId}-error`}
+        >
+          {errorMessage}
+        </span>
+      )}
 
       <button
         type="submit"
@@ -276,7 +288,7 @@ function TabNameEditor<T extends string>({
       >
         <span className="sr-only">Save configuration name</span>
         {errorMessage ? (
-          <ExclamationTriangle className="w-5 h-5 text-red-500" />
+          <SVGExclamationCircle className="w-4 h-4 text-text-error" />
         ) : (
           <SVGEdit className="w-5 h-5 text-purple-600" />
         )}
@@ -300,7 +312,7 @@ const validateInput = <T extends string>(
       opt.id !== currentTabId && opt.label.toLowerCase() === val.toLowerCase()
   )
   if (isDuplicate) {
-    return 'This name is already taken'
+    return 'This name is already used'
   }
 
   return ''
