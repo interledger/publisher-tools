@@ -240,6 +240,7 @@ a:focus-visible {
   flex: 1 1 auto;
   gap: var(--Spacings-lg);
   justify-content: center;
+  overflow-y: auto;
 }
 
 .widget-body p {
@@ -446,8 +447,8 @@ a:focus-visible {
   }
 }
 
-@media (max-width: 480px), (max-height: 678px) {
-  .content.open {
+@media (max-width: 480px), (max-height: 480px) {
+  .content.open:not(.preview-mode) {
     position: fixed;
     top: 0;
     left: 0;
