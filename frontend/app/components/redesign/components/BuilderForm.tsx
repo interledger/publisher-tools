@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react'
-import { ContentBuilder, AppearanceBuilder, TabSelector } from '@/components'
+import {
+  ContentBuilder,
+  AppearanceBuilder,
+  BuilderPresetTabs
+} from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useUI } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
@@ -39,23 +43,27 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
     toolActions.selectVersion(stableKey)
   }
 
+  const getLatestTabOptions = () => {
+    return toolActions.versionOptions.map(({ stableKey: id }) => ({
+      id,
+      label: toolState.configurations[id].versionName,
+      isDirty: toolState.modifiedVersions.includes(id)
+    }))
+  }
+  const [tabOptions, setTabOptions] = React.useState(getLatestTabOptions)
   const handleTabLabelChange = (stableKey: StableKey, newLabel: string) => {
     toolActions.updateVersionLabel(stableKey, newLabel)
+    setTabOptions(() => getLatestTabOptions())
   }
 
   return (
-    <div className="flex flex-col">
-      <TabSelector
-        options={toolActions.versionOptions.map((option) => ({
-          id: option.stableKey
-        }))}
+    <div className="flex flex-col mt-4">
+      <BuilderPresetTabs
+        idPrefix="presets"
+        options={tabOptions}
         selectedId={snap.activeVersion}
-        onSelectTab={handleTabSelect}
-        onTabLabelChange={handleTabLabelChange}
-      />
-      <div
-        className="bg-interface-bg-container rounded-b-sm p-md flex flex-col gap-md w-full"
-        key={snap.activeVersion}
+        onChange={handleTabSelect}
+        onRename={handleTabLabelChange}
       >
         <ContentBuilder
           onRefresh={() => onRefresh('content')}
@@ -68,7 +76,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
           colorsSelector={colorsSelector}
           toolName={toolName}
         />
-      </div>
+      </BuilderPresetTabs>
     </div>
   )
 }
