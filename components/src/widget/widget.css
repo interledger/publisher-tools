@@ -77,8 +77,8 @@ a:focus-visible {
 .content {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   background: var(--background-color);
-  width: 340px;
   overflow: hidden;
   align-items: stretch;
   border-radius: var(--widget-border-radius, 8px);
@@ -110,6 +110,7 @@ a:focus-visible {
   visibility: visible;
   height: auto;
   max-height: calc(100vh - 8rem);
+  width: 340px;
   transition:
     opacity 0.25s ease-out,
     transform 0.25s ease-out,
@@ -228,6 +229,26 @@ a:focus-visible {
   .primary-button:hover:not(:disabled) {
     background: color-mix(in srgb, var(--primary-color) 85%, black 15%);
     filter: none;
+  }
+}
+
+.primary-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
