@@ -1,7 +1,7 @@
 import { cx } from 'class-variance-authority'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { SVGEdit } from '~/assets/svg'
-import { Check, ExclamationTriangle } from '~/components/icons'
+import { ExclamationTriangle } from '~/components/icons'
 
 type TabOption<T extends string> = { id: T; label: string; isDirty: boolean }
 interface Props<T extends string> {
@@ -83,7 +83,7 @@ export const BuilderPresetTabs = <T extends string>({
   return (
     <div className="relative">
       <div
-        className="grid overflow-x-auto"
+        className="grid w-full overflow-x-auto"
         style={{
           gridTemplateColumns: `repeat(${options.length}, minmax(calc(180px + 1rem), 1fr))` // not same as grid-cols-3
         }}
@@ -108,8 +108,8 @@ export const BuilderPresetTabs = <T extends string>({
               onDoubleClick={() => setEditingId(option.id)}
               onKeyDown={onKeyDown}
               className={cx(
-                'flex-grow flex items-center justify-center relative',
-                'px-xs py-sm rounded-b-none rounded-t-sm',
+                'flex-grow flex items-center text-left relative',
+                'px-4 py-sm rounded-b-none rounded-t-sm',
                 'cursor-pointer !-outline-offset-2',
                 option.id === activeTabId
                   ? 'bg-white text-purple-300'
@@ -131,7 +131,7 @@ export const BuilderPresetTabs = <T extends string>({
               {option.isDirty && (
                 <>
                   <span className="sr-only"> (modified)</span>
-                  {editingId !== option.id && <DirtyMarker />}
+                  <DirtyMarker />
                 </>
               )}
             </button>
@@ -183,7 +183,7 @@ function DirtyMarker() {
   return (
     <div
       aria-hidden="true"
-      className="absolute right-xs top-sm translate-y-full w-2 h-2 bg-blue-500 rounded-full"
+      className="absolute right-2 top-2 w-1.5 h-1.5 bg-blue-500 rounded-full"
       title="This configuration has unsaved changes"
     />
   )
@@ -193,7 +193,7 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
-      className="cursor-pointer px-xs h-full rounded-none rounded-tr-sm mt-1 text-field-helpertext-default hover:text-text-buttons-default focus:text-text-buttons-default"
+      className="cursor-pointer px-4 h-full rounded-none rounded-tr-sm mt-1 text-field-helpertext-default hover:text-text-buttons-default focus:text-text-buttons-default"
       onClick={onClick}
       title="Edit configuration name"
       style={{ height: `calc(100% - 0.25rem * 2)` }}
@@ -242,7 +242,7 @@ function TabNameEditor<T extends string>({
         }
       }}
       className={cx(
-        'grid grid-flow-col items-center px-xs -outline-offset-2 rounded-t-sm',
+        'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm pr-2',
         // 'focus-within:outline outline-2 outline-primary-focus',
         !!errorMessage && 'outline outline-2 outline-red-500 bg-red-50'
       )}
@@ -251,9 +251,9 @@ function TabNameEditor<T extends string>({
         type="text"
         id={inputId}
         className={cx(
-          'flex-shrink-0 w-auto px-xs py-sm text-left',
+          'flex-shrink-0 w-auto px-4 py-sm text-left',
           'text-base leading-md font-normal w-full',
-          'text-purple-600 bg-white',
+          'text-purple-600 bg-white rounded-t-sm',
           'invalid:text-red-500 invalid:bg-red-50',
           'focus:outline-none'
         )}
@@ -271,14 +271,14 @@ function TabNameEditor<T extends string>({
 
       <button
         type="submit"
-        className="cursor-pointer rounded-none p-xs -outline-offset-2 h-full focus:scale-120 focus:outline-none ml-auto -mr-2"
+        className="cursor-pointer rounded-none p-xs -outline-offset-2 h-full focus:scale-120 focus:outline-none ml-auto"
         title="Save configuration name"
       >
         <span className="sr-only">Save configuration name</span>
         {errorMessage ? (
           <ExclamationTriangle className="w-5 h-5 text-red-500" />
         ) : (
-          <Check className="w-5 h-5 text-text-success" />
+          <SVGEdit className="w-5 h-5 text-purple-600" />
         )}
       </button>
     </form>
