@@ -114,6 +114,7 @@ a:focus-visible {
     opacity 0.25s ease-out,
     transform 0.25s ease-out,
     visibility 0s linear 0s;
+  overflow: auto;
 }
 
 .content.closed {
