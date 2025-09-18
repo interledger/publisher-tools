@@ -4,7 +4,7 @@ import { zValidator } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
-import { APP_URL } from '@shared/defines'
+import { APP_URL, AWS_PREFIX } from '@shared/defines'
 import type { ConfigVersions } from '@shared/types'
 import * as probabilisticRevShare from './routes/probabilistic-revshare.js'
 import { OpenPaymentsService } from './utils/open-payments.js'
@@ -21,7 +21,6 @@ export type Env = {
   AWS_SECRET_ACCESS_KEY: string
   AWS_REGION: string
   AWS_BUCKET_NAME: string
-  AWS_PREFIX: string
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
@@ -85,7 +84,7 @@ app.get(
     const { wa, version } = req.valid('param')
 
     try {
-      const storageService = new ConfigStorageService(env)
+      const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
       const config = await storageService.getJson<ConfigVersions>(wa)
       return json(config[version])
     } catch (error) {
