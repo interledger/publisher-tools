@@ -462,7 +462,7 @@ a:focus-visible {
   }
 }
 
-@media (max-width: 480px), (max-height: 480px) {
+@media (max-width: 480px), (max-height: 768px) {
   .content.open:not(.preview-mode) {
     position: fixed;
     top: 0;
