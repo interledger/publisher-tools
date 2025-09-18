@@ -37,6 +37,9 @@ inputs:
   BUILD_CDN_URL:
     description: 'CDN_URL from deploying cdn'
     required: false
+  BUILD_AWS_PREFIX:
+    description: 'AWS_PREFIX used for config storage'
+    required: true
 
 outputs:
   url:
@@ -60,6 +63,7 @@ runs:
         NODE_ENV: production
         BUILD_API_URL: ${{ inputs.BUILD_API_URL }}
         BUILD_CDN_URL: ${{ inputs.BUILD_CDN_URL }}
+        BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
 
     - name: Get worker deploy command
       if: inputs.changed == 'true'

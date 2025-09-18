@@ -81,6 +81,7 @@ jobs:
           name: 'api'
           changed: ${{ steps.changes.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           stagingUrl: ${{ vars.API_STAGING_URL }}
           productionUrl: ${{ vars.API_PRODUCTION_URL }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -95,6 +96,7 @@ jobs:
           mode: ${{ steps.deploy-mode.outputs.mode }}
           build: 'pnpm -C embed run build && pnpm -C cdn run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           stagingUrl: ${{ vars.CDN_STAGING_URL }}
           productionUrl: ${{ vars.CDN_PRODUCTION_URL }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -110,6 +112,7 @@ jobs:
           build: 'pnpm -C frontend run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           stagingUrl: ${{ vars.APP_STAGING_URL }}
           productionUrl: ${{ vars.APP_PRODUCTION_URL }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
