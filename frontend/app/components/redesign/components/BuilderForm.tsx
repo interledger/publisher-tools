@@ -58,7 +58,11 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
 
   useEffect(() => {
     setTabOptions(() => getLatestTabOptions())
-  }, [toolState.isSubmitting, toolState.currentConfig.walletAddress])
+  }, [
+    toolState.isSubmitting,
+    toolState.currentConfig.walletAddress,
+    toolState.currentConfig.versionName
+  ])
 
   return (
     <div className="flex flex-col mt-4">
