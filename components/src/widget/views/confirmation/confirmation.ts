@@ -23,7 +23,6 @@ export class PaymentConfirmation extends LitElement {
   @property({ type: Boolean }) isPreview?: boolean = false
 
   @state() private inputAmount = ''
-  @state() private inputWidth = ''
   @state() private isLoadingPreview = false
   @state() private debounceTimer: ReturnType<typeof setTimeout> | null = null
   @state() private formattedDebitAmount?: string
@@ -94,7 +93,6 @@ export class PaymentConfirmation extends LitElement {
 
     const formatted = this.formatAmount(input.value)
     this.inputAmount = formatted
-    this.inputWidth = this.calculateInputWidth(formatted)
     this.debouncedProcessPayment(this.inputAmount)
     this.requestUpdate()
   }
@@ -149,15 +147,6 @@ export class PaymentConfirmation extends LitElement {
     if ((e.keyCode === 190 || e.keyCode === 110) && input.value.includes('.')) {
       e.preventDefault()
     }
-  }
-
-  /** Measures the width of the input field using a temporary canvas */
-  calculateInputWidth(input: string) {
-    const canvas = document.createElement('canvas')
-    const context = canvas.getContext('2d')
-    context!.font = '2.5rem Arial' // match the input font size
-    const width = context!.measureText(input || '$0.00').width
-    return input ? width + 20 + 'px' : '50px'
   }
 
   private async getPaymentQuote(paymentData: {
@@ -410,8 +399,8 @@ export class PaymentConfirmation extends LitElement {
       return html`
         <div class="payment-details">
           <div class="loading-state">
-            <div class="spinner"></div>
-            Loading payment details...
+            <span class="loader"></span>
+            <span>Loading payment details...</span>
           </div>
         </div>
       `
