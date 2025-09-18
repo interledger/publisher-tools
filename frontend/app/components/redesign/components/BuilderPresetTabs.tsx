@@ -84,7 +84,7 @@ export const BuilderPresetTabs = <T extends string>({
       <div
         className="grid w-full overflow-x-auto"
         style={{
-          gridTemplateColumns: `repeat(${options.length}, minmax(calc(180px + 1rem), 1fr))` // not same as grid-cols-3
+          gridTemplateColumns: `repeat(${options.length}, minmax(12rem, 1fr))` // not same as grid-cols-3
         }}
       >
         <div
@@ -119,7 +119,7 @@ export const BuilderPresetTabs = <T extends string>({
               <span
                 title={option.label}
                 className={cx(
-                  'truncate inline-block w-[180px]',
+                  'truncate inline-block w-48 pr-4',
                   option.id === activeTabId
                     ? 'text-text-buttons-default'
                     : 'text-silver-600'
@@ -244,7 +244,7 @@ function TabNameEditor<T extends string>({
         }
       }}
       className={cx(
-        'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm pr-2 relative mb-2',
+        'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm bg-white pr-2 relative mb-2',
         // 'focus-within:outline outline-2 outline-primary-focus',
         !!errorMessage && 'outline outline-2 outline-field-border-error'
       )}
@@ -256,7 +256,7 @@ function TabNameEditor<T extends string>({
           'flex-shrink-0 w-auto px-4 py-4 text-left',
           'text-style-body-standard leading-md font-normal w-full',
           'text-text-buttons-default bg-white rounded-t-sm',
-          'invalid:text-text-error invalid:underline decoration-dashed',
+          'invalid:text-text-error invalid:underline invalid:empty:no-underline decoration-dashed',
           'focus:outline-none'
         )}
         placeholder="Preset name"
