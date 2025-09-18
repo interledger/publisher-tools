@@ -108,9 +108,8 @@ a:focus-visible {
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   pointer-events: auto;
   visibility: visible;
-  height: auto;
-  max-height: calc(100vh - 8rem);
   width: 340px;
+  height: 606px;
   transition:
     opacity 0.25s ease-out,
     transform 0.25s ease-out,
@@ -464,7 +463,8 @@ a:focus-visible {
 }
 
 @media (max-width: 480px), (max-height: 480px) {
-  .content.open {
+  .content.open:not(.preview-mode) {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -472,14 +472,17 @@ a:focus-visible {
     max-height: 100%;
     z-index: 9999;
   }
+}
 
+@container (max-width: 320px) {
   .content.open.preview-mode {
     position: absolute;
+    top: -16px;
+    left: -16px;
+    width: calc(100% + 32px);
+    height: calc(100% + 32px);
+    max-height: calc(100% + 32px);
     z-index: 10;
-  }
-
-  .content.open:not(.preview-mode) {
-    position: fixed;
-    border-radius: 0;
+    border-radius: var(--widget-border-radius, 8px);
   }
 }
