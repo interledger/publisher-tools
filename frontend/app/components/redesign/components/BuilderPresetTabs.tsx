@@ -222,6 +222,7 @@ function TabNameEditor<T extends string>({
   inputId
 }: TabNameEditorProps<T>) {
   const [errorMessage, setErrorMessage] = useState('')
+  const ALLOWED_CHARS = /[a-zA-Z0-9-_\s#@&]/
 
   const validateTabName = useCallback(
     (input: HTMLInputElement, currentTabId: T): boolean => {
@@ -232,6 +233,24 @@ function TabNameEditor<T extends string>({
       return !errMsg
     },
     [options, setErrorMessage]
+  )
+
+  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (ALLOWED_CHARS.test(e.key)) return // ok
+    if (!e.ctrlKey && !e.metaKey) e.preventDefault()
+  }, [])
+
+  const onPaste = useCallback(
+    (e: React.ClipboardEvent<HTMLInputElement>) => {
+      const input = e.currentTarget
+      // let paste be completed, then update input to remove illegal chars
+      setTimeout(() => {
+        const re = new RegExp(ALLOWED_CHARS.source.replace(/^\[/, '[^'), 'g')
+        input.value = input.value.replace(re, '').trim()
+        validateTabName(input, tabId)
+      }, 0)
+    },
+    [tabId]
   )
 
   return (
@@ -263,6 +282,8 @@ function TabNameEditor<T extends string>({
         autoFocus={true}
         defaultValue={options[tabIdx].label}
         onChange={(e) => validateTabName(e.target, tabId)}
+        onKeyDown={onKeyDown}
+        onPaste={onPaste}
         onBlur={(e) => {
           if (validateTabName(e.target, tabId)) {
             onSubmit(tabId, e.target.value.trim())
