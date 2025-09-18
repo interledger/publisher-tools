@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { writeFileSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import { build } from 'esbuild'
 import { copy } from 'esbuild-plugin-copy'
 import directoryTree from 'directory-tree'
@@ -7,9 +8,9 @@ import directoryTree from 'directory-tree'
 const isDev = process.env.npm_lifecycle_script?.includes('--watch')
 
 await build({
-  entryPoints: ['src/*.ts'],
+  entryPoints: ['src/*.ts', 'src/assets/fonts/*.css'],
   bundle: true,
-  format: 'iife',
+  format: 'esm',
   outdir: 'dist',
   platform: 'browser',
   target: 'es2018',
@@ -21,11 +22,14 @@ await build({
   define: {
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL ?? '')
   },
+  assetNames: 'assets/[ext]/[name]-[hash]',
   loader: {
-    '.css': 'text',
-    '.svg': 'dataurl'
+    '.svg': 'dataurl',
+    '.woff': 'file',
+    '.woff2': 'file'
   },
   plugins: [
+    rawPlugin(),
     {
       name: 'directory-tree',
       setup(build) {
@@ -47,6 +51,31 @@ await build({
     })
   ]
 })
+
+/** @returns {import('esbuild').Plugin} */
+function rawPlugin() {
+  return {
+    name: 'raw',
+    setup(build) {
+      build.onResolve({ filter: /\?raw$/ }, (args) => {
+        const resolvedPath = path.join(args.resolveDir, args.path)
+        return {
+          path: resolvedPath,
+          namespace: 'raw-loader'
+        }
+      })
+      build.onLoad(
+        { filter: /\?raw$/, namespace: 'raw-loader' },
+        async (args) => {
+          return {
+            contents: await readFile(args.path.replace(/\?raw$/, '')),
+            loader: 'text'
+          }
+        }
+      )
+    }
+  }
+}
 
 /** @param {import('directory-tree').DirectoryTree} directoryTree */
 function generateDirectoryTreeHTML(directoryTree) {

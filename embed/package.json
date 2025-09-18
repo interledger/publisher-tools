@@ -9,6 +9,10 @@
     "prepare": "node build.js"
   },
   "dependencies": {
+    "@fontsource-variable/open-sans": "^5.2.7",
+    "@fontsource-variable/roboto": "^5.2.8",
+    "@fontsource/cookie": "^5.2.7",
+    "@fontsource/titillium-web": "^5.2.8",
     "@tools/components": "workspace:*"
   },
   "devDependencies": {
