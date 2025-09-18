@@ -147,9 +147,9 @@ export const BuilderPresetTabs = <T extends string>({
               tabId={activeTabId}
               tabIdx={activeTabIdx}
               options={options}
-              onSubmit={(tabId, label) => {
+              onSubmit={(label) => {
                 setEditingId(null)
-                onRename(tabId, label)
+                onRename(activeTabId, label)
               }}
               setHasError={setHasEditingError}
               inputId={`${idPrefix}-tab-label-${activeTabId}`}
@@ -208,7 +208,7 @@ interface TabNameEditorProps<T extends string> {
   options: TabOption<T>[]
   tabId: T
   tabIdx: number
-  onSubmit: (tabId: T, label: string) => void
+  onSubmit: (label: string) => void
   setHasError: (hasError: boolean) => void
   inputId: string
 }
@@ -225,29 +225,29 @@ function TabNameEditor<T extends string>({
   const ALLOWED_CHARS = /[a-zA-Z0-9-_\s#@&]/
 
   const validateTabName = useCallback(
-    (input: HTMLInputElement, currentTabId: T): boolean => {
-      const errMsg = validateInput(input.value, options, currentTabId)
+    (input: HTMLInputElement): boolean => {
+      const errMsg = validateInput(input.value, options, tabId)
       input.setCustomValidity(errMsg)
       setErrorMessage(errMsg)
       setHasError(!!errMsg)
       return !errMsg
     },
-    [options, setErrorMessage]
+    [tabId, options, setErrorMessage]
   )
 
-  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (ALLOWED_CHARS.test(e.key)) return // ok
-    if (!e.ctrlKey && !e.metaKey) e.preventDefault()
+  const onKeyDown = useCallback((ev: React.KeyboardEvent<HTMLInputElement>) => {
+    if (ALLOWED_CHARS.test(ev.key)) return // ok
+    if (!ev.ctrlKey && !ev.metaKey) ev.preventDefault()
   }, [])
 
   const onPaste = useCallback(
-    (e: React.ClipboardEvent<HTMLInputElement>) => {
-      const input = e.currentTarget
+    (ev: React.ClipboardEvent<HTMLInputElement>) => {
+      const input = ev.currentTarget
       // let paste be completed, then update input to remove illegal chars
       setTimeout(() => {
         const re = new RegExp(ALLOWED_CHARS.source.replace(/^\[/, '[^'), 'g')
         input.value = input.value.replace(re, '').trim()
-        validateTabName(input, tabId)
+        validateTabName(input)
       }, 0)
     },
     [tabId]
@@ -258,8 +258,8 @@ function TabNameEditor<T extends string>({
       onSubmit={(ev) => {
         ev.preventDefault()
         const input = ev.currentTarget.querySelector('input')!
-        if (validateTabName(input, tabId)) {
-          onSubmit(tabId, input.value.trim())
+        if (validateTabName(input)) {
+          onSubmit(input.value.trim())
         }
       }}
       className={cx(
@@ -281,12 +281,12 @@ function TabNameEditor<T extends string>({
         placeholder="Preset name"
         autoFocus={true}
         defaultValue={options[tabIdx].label}
-        onChange={(e) => validateTabName(e.target, tabId)}
+        onChange={(e) => validateTabName(e.target)}
         onKeyDown={onKeyDown}
         onPaste={onPaste}
         onBlur={(e) => {
-          if (validateTabName(e.target, tabId)) {
-            onSubmit(tabId, e.target.value.trim())
+          if (validateTabName(e.target)) {
+            onSubmit(e.target.value.trim())
           }
         }}
         aria-invalid={!!errorMessage}
