@@ -16,6 +16,7 @@ import {
   getValidWalletAddress
 } from '~/utils/open-payments.server.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import { AWS_PREFIX } from '@shared/defines'
 import { normalizeWalletAddress } from '@shared/utils'
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
@@ -45,7 +46,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       await getValidWalletAddress(env, payload.walletAddress as string)
     )
     try {
-      const storageService = new ConfigStorageService(env)
+      const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
       const fileContentString =
         await storageService.getJson<ConfigVersions>(ownerWalletAddress)
 
@@ -140,7 +141,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   }
 
   ownerWalletAddress = normalizeWalletAddress(walletAddress)
-  const storageService = new ConfigStorageService(env)
+  const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
   switch (request.method) {
     case 'POST':
       return handleCreate(storageService, formData, ownerWalletAddress)
