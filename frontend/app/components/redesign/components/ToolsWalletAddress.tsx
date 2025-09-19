@@ -107,8 +107,8 @@ export const ToolsWalletAddress = () => {
     if (!snap.isWalletConnected) {
       return (
         <p className="w-full text-style-small-standard">
-          If you&apos;re connecting your wallet address to Web Monetization for
-          the first time, you&apos;ll start with the default configuration.
+          If you&apos;re connecting your wallet address for the first time,
+          you&apos;ll start with the default configuration.
           <br />
           You can then customize and save your config as needed.
         </p>
