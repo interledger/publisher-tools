@@ -2,20 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build embed script",
-      "type": "shell",
-      "command": "pnpm -C embed dev",
-      "hide": true,
-      "runOptions": {
-        "instanceLimit": 1,
-        "instancePolicy": "terminateOldest"
-      },
-      "presentation": {
-        "revealProblems": "onProblem",
-        "group": "script"
-      }
-    },
-    {
       "label": "Run CDN",
       "type": "shell",
       "command": "pnpm -C cdn dev",
@@ -26,7 +12,7 @@
       },
       "presentation": {
         "revealProblems": "onProblem",
-        "group": "script"
+        "group": "cdn"
       }
     },
     {
@@ -78,7 +64,7 @@
         "reveal": "always",
         "showReuseMessage": true
       },
-      "dependsOn": ["Build embed script", "Run CDN", "Run API", "Run Editor UI"]
+      "dependsOn": ["Run CDN", "Run API", "Run Editor UI"]
     }
   ]
 }

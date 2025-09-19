@@ -4,7 +4,7 @@ import type { MetaFunction } from '@remix-run/cloudflare'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Link Tag Generator - Web Monetization Tools' },
+    { title: 'Link Tag Generator - Publisher Tools' },
     {
       name: 'description',
       content:

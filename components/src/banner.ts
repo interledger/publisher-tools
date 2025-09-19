@@ -77,8 +77,7 @@ export class Banner extends LitElement {
   }
 
   private handleLinkClick() {
-    const href = getWebMonetizationLinkHref(navigator.userAgent)
-    window.open(href, '_blank')
+    // TODO: do anything other than open the link in a new tab, like analytics, showing some thank you message etc.
   }
 
   /**
@@ -136,6 +135,8 @@ export class Banner extends LitElement {
       ? html`<p class="banner-description">${description}</p>`
       : null
 
+    const extensionLink = getWebMonetizationLinkHref(navigator.userAgent)
+
     return html`
       <div class="banner ${this.animationClass}">
         ${thumbnail}
@@ -143,9 +144,15 @@ export class Banner extends LitElement {
         <div class="banner-content">
           <h3 class="banner-title">${title}</h3>
           ${descriptionElement}
-          <p class="banner-link" @click=${this.handleLinkClick}>
+          <a
+            class="banner-link"
+            href="${extensionLink}"
+            target="_blank"
+            rel="noopener noreferrer"
+            @click=${this.handleLinkClick}
+          >
             ${DEFAULT_BANNER_LINK_TEXT}
-          </p>
+          </a>
         </div>
 
         <button

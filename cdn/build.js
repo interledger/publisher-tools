@@ -37,7 +37,7 @@ await build({
           const dir = build.initialOptions.outdir
           const tree = directoryTree(dir, {
             attributes: ['type'],
-            exclude: [/\b404\.html$/m, /\b_headers$/]
+            exclude: [/\b404\.html$/m, /\b_headers$/, /\.gitkeep$/]
           })
 
           const content = generateDirectoryTreeHTML(tree)

@@ -43,7 +43,6 @@ jobs:
               - *workflow
               - *api
               - 'components/**'
-              - 'embed/**'
               - 'cdn/**'
             frontend:
               - *workflow
@@ -65,13 +64,13 @@ jobs:
 
       #region Deploy
 
-      # cdn (embed) needs: API_URL, APP_URL (infer from API_URL to prevent cycle)
+      # cdn needs: API_URL, APP_URL (infer from API_URL to prevent cycle)
       # frontend (app) needs: CDN_URL, ?API_URL
-      # api needs: nothing (APP_URL is passed from embed)
+      # api needs: nothing (APP_URL is passed from components)
       #
       # build/deploy sequence:
       # 1. api
-      # 2. cdn (embed)
+      # 2. cdn
       # 3. frontend
 
       - name: Deploy API
@@ -94,7 +93,7 @@ jobs:
           name: 'cdn'
           changed: ${{ steps.changes.outputs.cdn }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
-          build: 'pnpm -C embed run build && pnpm -C cdn run build'
+          build: 'pnpm -C cdn run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           stagingUrl: ${{ vars.CDN_STAGING_URL }}
