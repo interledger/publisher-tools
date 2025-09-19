@@ -27,7 +27,7 @@ import { API_URL } from '@shared/defines'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Probabilistic Revshare - Web Monetization Tools' },
+    { title: 'Probabilistic Revshare - Publisher Tools' },
     {
       name: 'description',
       content:

@@ -54,7 +54,7 @@ body:
     id: component
     attributes:
       label: Affected component
-      description: Which component of the Web Monetization Tools are you having issues with?
+      description: Which component of the Publisher Tools are you having issues with?
       multiple: true
       options:
         - Banner

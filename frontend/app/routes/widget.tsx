@@ -51,7 +51,7 @@ import type {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Widget - Web Monetization Tools' },
+    { title: 'Widget - Publisher Tools' },
     {
       name: 'description',
       content:
