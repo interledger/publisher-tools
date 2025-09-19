@@ -7,7 +7,12 @@ import { NotFoundConfig } from '../index.js'
 import eyeSvg from '~/assets/images/eye.svg'
 import type { PaymentWidget, WidgetConfig } from '@tools/components'
 
-const ButtonConfig = ({ config }: { config: ElementConfigType }) => {
+const ButtonConfig = ({
+  config
+}: {
+  config: ElementConfigType
+  serviceUrls: Pick<ServiceUrls, 'cdn'>
+}) => {
   return (
     <button className="wm_button" onClick={(e) => console.log(e)}>
       {config.buttonText || '?'}
@@ -15,7 +20,12 @@ const ButtonConfig = ({ config }: { config: ElementConfigType }) => {
   )
 }
 
-const BannerConfig = ({ config }: { config: ElementConfigType }) => {
+const BannerConfig = ({
+  config
+}: {
+  config: ElementConfigType
+  serviceUrls: Pick<ServiceUrls, 'cdn'>
+}) => {
   const [animated, setAnimated] = useState(
     config.bannerSlideAnimation != SLIDE_ANIMATION.None
   )
@@ -78,13 +88,11 @@ const BannerConfig = ({ config }: { config: ElementConfigType }) => {
 
 const Widget = ({
   config,
-  apiUrl,
-  frontendUrl,
+  serviceUrls,
   opWallet
 }: {
   config: ElementConfigType
-  apiUrl: string
-  frontendUrl: string
+  serviceUrls: ServiceUrls
   opWallet: string
 }) => {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -113,8 +121,9 @@ const Widget = ({
   const widgetConfig = useMemo(
     () =>
       ({
-        apiUrl,
-        frontendUrl,
+        apiUrl: serviceUrls.api,
+        cdnUrl: serviceUrls.cdn,
+        frontendUrl: serviceUrls.app,
         receiverAddress: opWallet,
         action: config.widgetButtonText || 'Pay',
         note: '',
@@ -147,29 +156,28 @@ const Widget = ({
   return <wm-payment-widget ref={widgetRef} />
 }
 
+type ServiceUrls = { api: string; cdn: string; app: string }
+
 const RenderElementConfig = ({
   type,
-  apiUrl,
-  frontendUrl,
+  serviceUrls,
   opWallet,
   toolConfig
 }: {
   type: string
-  apiUrl: string
-  frontendUrl: string
+  serviceUrls: ServiceUrls
   opWallet: string
   toolConfig: ElementConfigType
 }) => {
   switch (type) {
     case 'button':
-      return <ButtonConfig config={toolConfig} />
+      return <ButtonConfig serviceUrls={serviceUrls} config={toolConfig} />
     case 'banner':
-      return <BannerConfig config={toolConfig} />
+      return <BannerConfig serviceUrls={serviceUrls} config={toolConfig} />
     case 'widget':
       return (
         <Widget
-          apiUrl={apiUrl}
-          frontendUrl={frontendUrl}
+          serviceUrls={serviceUrls}
           opWallet={opWallet}
           config={toolConfig}
         />
@@ -181,16 +189,14 @@ const RenderElementConfig = ({
 
 type ToolPreviewProps = {
   type?: string
-  apiUrl: string
-  frontendUrl: string
+  serviceUrls: ServiceUrls
   opWallet: string
   toolConfig: ElementConfigType
 }
 
 export const ToolPreview = ({
   type,
-  apiUrl,
-  frontendUrl,
+  serviceUrls,
   opWallet,
   toolConfig
 }: ToolPreviewProps) => {
@@ -207,8 +213,7 @@ export const ToolPreview = ({
       <RenderElementConfig
         type={type ?? ''}
         toolConfig={toolConfig}
-        apiUrl={apiUrl}
-        frontendUrl={frontendUrl}
+        serviceUrls={serviceUrls}
         opWallet={opWallet}
       />
     </div>

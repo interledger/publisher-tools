@@ -12,6 +12,10 @@
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
+    "@fontsource-variable/open-sans": "^5.2.7",
+    "@fontsource-variable/roboto": "^5.2.8",
+    "@fontsource/cookie": "^5.2.7",
+    "@fontsource/titillium-web": "^5.2.8",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "@tools/components": "workspace:*",

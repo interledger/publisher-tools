@@ -1,5 +1,5 @@
-import { FONT_FAMILY_URLS } from '@shared/types'
 import type { FontFamilyKey } from '@shared/types'
+import { FONT_MAP } from './constants'
 
 /**
  * Applies the specified font family to an element, removing any existing font link, loading the font if necessary
@@ -10,7 +10,8 @@ import type { FontFamilyKey } from '@shared/types'
 export const applyFontFamily = (
   element: HTMLElement,
   fontName: FontFamilyKey,
-  componentType: 'banner' | 'widget' = 'banner'
+  componentType: 'banner' | 'widget',
+  fontBaseUrl: string
 ): void => {
   const fontLinkId = `wmt-font-family-${componentType}`
   const existingFont = document.getElementById(fontLinkId) as HTMLLinkElement
@@ -29,8 +30,8 @@ export const applyFontFamily = (
     return
   }
 
-  const fontFamilyUrl = FONT_FAMILY_URLS[fontName]
-  if (!fontFamilyUrl) {
+  const customFontData = getCustomFontData(fontName, fontBaseUrl)
+  if (!customFontData) {
     element.style.setProperty('--wm-font-family', 'inherit')
     return
   }
@@ -39,10 +40,20 @@ export const applyFontFamily = (
   fontLink.id = fontLinkId
   fontLink.rel = 'stylesheet'
   fontLink.type = 'text/css'
-  fontLink.href = fontFamilyUrl
+  fontLink.href = customFontData.url
   document.head.appendChild(fontLink)
 
-  element.style.setProperty('--wm-font-family', fontName)
+  element.style.setProperty('--wm-font-family', customFontData.family)
+}
+
+function getCustomFontData(fontName: FontFamilyKey, baseUrl: string) {
+  const fontData = FONT_MAP.get(fontName)
+  if (fontData) {
+    return {
+      url: baseUrl + fontData.fileName,
+      family: [`'${fontName}'`, ...fontData.fallback].join(', ')
+    }
+  }
 }
 
 /**

@@ -123,6 +123,7 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const bannerConfig = useMemo(
     () =>
       ({
+        cdnUrl: snap.cdnUrl,
         bannerTitleText: snap.currentConfig?.bannerTitleText,
         bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
         isBannerDescriptionVisible:

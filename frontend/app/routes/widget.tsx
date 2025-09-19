@@ -115,6 +115,7 @@ const WidgetPreview: React.FC = () => {
     () =>
       ({
         apiUrl: snap.apiUrl,
+        cdnUrl: snap.cdnUrl,
         receiverAddress: snap.opWallet,
         action: snap.currentConfig.widgetButtonText,
         widgetTitleText: snap.currentConfig.widgetTitleText,

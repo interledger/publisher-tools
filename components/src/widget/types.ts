@@ -26,6 +26,7 @@ export interface WidgetConfig {
     widgetButtonBackgroundColor?: string
   }
   frontendUrl: string
+  cdnUrl: string
   apiUrl: string
 }
 
