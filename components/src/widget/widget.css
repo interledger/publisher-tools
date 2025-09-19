@@ -114,6 +114,7 @@ a:focus-visible {
     opacity 0.25s ease-out,
     transform 0.25s ease-out,
     visibility 0s linear 0s;
+  overflow: auto;
 }
 
 .content.closed {
@@ -460,8 +461,26 @@ a:focus-visible {
     width: 1.5rem;
     height: 1.5rem;
   }
+}
 
-  .content.preview-mode {
+@media (max-width: 480px), (max-height: 768px) {
+  .content.open:not(.preview-mode) {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    max-height: 100%;
+    z-index: 9999;
+  }
+}
+
+@container (max-width: 320px) {
+  .content.open.preview-mode {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
   }
 }
