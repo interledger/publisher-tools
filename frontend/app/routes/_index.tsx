@@ -8,7 +8,7 @@ import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
 
-const DEFAULT_TITLE = 'Web Monetization Tools'
+const DEFAULT_TITLE = 'Publisher Tools'
 const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
 const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
 const DEFAULT_URL = 'https://webmonetization.org/tools'
@@ -106,7 +106,7 @@ export default function Index() {
       <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-[1280px]">
         <div className="flex flex-col gap-xs items-center justify-start p-0 w-full">
           <Heading1 className="!leading-normal !text-[42px] max-xl:!text-style-h2-semibold text-center">
-            Web Monetization Tools
+            {DEFAULT_TITLE}
           </Heading1>
           <img
             alt=""
