@@ -57,22 +57,16 @@ function rawPlugin() {
   return {
     name: 'raw',
     setup(build) {
-      build.onResolve({ filter: /\?raw$/ }, (args) => {
+      const namespace = 'raw-loader'
+      const filter = /\?raw$/
+      build.onResolve({ filter }, (args) => {
         const resolvedPath = path.join(args.resolveDir, args.path)
-        return {
-          path: resolvedPath,
-          namespace: 'raw-loader'
-        }
+        return { path: resolvedPath, namespace }
       })
-      build.onLoad(
-        { filter: /\?raw$/, namespace: 'raw-loader' },
-        async (args) => {
-          return {
-            contents: await readFile(args.path.replace(/\?raw$/, '')),
-            loader: 'text'
-          }
-        }
-      )
+      build.onLoad({ filter, namespace }, async (args) => {
+        const contents = await readFile(args.path.replace(filter, ''))
+        return { contents, loader: 'text' }
+      })
     }
   }
 }
