@@ -4,12 +4,21 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "echo 'nothing to build' && exit 0",
+    "dev": "pnpm run -F publisher-tools-cdn --parallel '/^dev\\:.*/'",
+    "dev:build": "pnpm build:clean && node --watch --watch-path=./src --watch-path=build.js --watch-path=../components build.js",
+    "dev:server": "wrangler dev",
+    "build": "node build.js",
+    "build:clean": "del 'dist/**' '!dist/.gitkeep'",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "publisher-tools-embed": "workspace:^",
+    "@shared/defines": "workspace:^",
+    "@shared/types": "workspace:^",
+    "@tools/components": "workspace:*",
+    "directory-tree": "^3.5.2",
+    "esbuild": "0.23.1",
+    "esbuild-plugin-copy": "^2.1.1",
+    "typescript": "^5.9.2",
     "wrangler": "^4.32.0"
   }
 }
