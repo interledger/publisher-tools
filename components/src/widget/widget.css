@@ -475,7 +475,7 @@ a:focus-visible {
   }
 }
 
-@container (max-width: 480px) {
+@container (max-width: 320px) {
   .content.open.preview-mode {
     position: absolute;
     inset: 0;
