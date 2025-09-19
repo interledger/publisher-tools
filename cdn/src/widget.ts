@@ -51,7 +51,7 @@ const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
   return element
 }
 
-// We've a cyclic dependency between embed and frontend URLs, so we infer it
+// We've a cyclic dependency between CDN and frontend URLs, so we infer it
 // from the API instead to avoid this conflict during deployment.
 function getFrontendUrlOrigin() {
   if (API_URL.includes('api.webmonetization.org')) {

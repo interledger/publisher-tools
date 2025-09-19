@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "del-cli": "^7.0.0",
     "eslint": "^9.34.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",

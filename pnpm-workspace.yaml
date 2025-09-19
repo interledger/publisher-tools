@@ -1,7 +1,6 @@
 packages:
   - 'api'
   - 'frontend'
-  - 'embed'
   - 'cdn'
   - 'components'
   - 'shared/*'
