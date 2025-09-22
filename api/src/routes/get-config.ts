@@ -41,6 +41,15 @@ app.get(
       return json(config)
     } catch (error) {
       if (error instanceof HTTPException) throw error
+      if (error instanceof Error) {
+        if (error.message.includes('404')) {
+          const msg = 'No saved config found for given wallet address'
+          throw createHTTPException(404, msg, {
+            message: 'Not found', // can include the S3 key here perhaps
+            code: '404'
+          })
+        }
+      }
       throw createHTTPException(500, 'Config fetch error: ', error)
     }
   }
