@@ -51,6 +51,18 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
+export type Tool = 'banner' | 'widget'
+export type PresetId = 'version1' | 'version2' | 'version3'
+
+type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
+export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
+export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
+
+export type ToolConfig<T extends Tool> = {
+  banner: BannerConfig
+  widget: WidgetConfig
+}[T]
+
 export const BANNER_FONT_SIZES = {
   min: 16,
   max: 24,

@@ -1,15 +1,4 @@
-import type { ElementConfigType } from '@shared/types'
-
-type Tool = 'banner' | 'widget'
-
-type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
-export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
-export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
-
-type Config<T extends Tool> = {
-  banner: BannerConfig
-  widget: WidgetConfig
-}[T]
+import type { Tool, PresetId, ToolConfig } from '@shared/types'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
@@ -36,18 +25,17 @@ export function getScriptParams(tool: Tool) {
     throw new Error(`Missing data-tag for ${tool}.js script`)
   }
 
-  return { walletAddress, presetId: tag }
+  return { walletAddress, presetId: tag as PresetId }
 }
 
 export async function fetchConfig<T extends Tool>(
   apiUrl: string,
   tool: T,
   params: ReturnType<typeof getScriptParams>
-): Promise<Config<T>> {
-  const urlWallet = encodeURIComponent(
-    params.walletAddress.replace('https://', '')
-  )
-  const url = new URL(`config/${urlWallet}/${params.presetId}`, apiUrl)
+): Promise<ToolConfig<T>> {
+  const url = new URL(`config/${tool}`, apiUrl)
+  url.searchParams.set('wa', params.walletAddress)
+  url.searchParams.set('preset', params.presetId)
 
   const res = await fetch(url)
   if (!res.ok) {
@@ -57,7 +45,7 @@ export async function fetchConfig<T extends Tool>(
   }
 
   const json = await res.json()
-  return json as Config<T>
+  return json as ToolConfig<T>
 }
 
 export function appendPaymentPointer(walletAddressUrl: string) {

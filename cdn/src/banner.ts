@@ -1,11 +1,7 @@
 import { Banner } from '@tools/components/banner'
 import { API_URL } from '@shared/defines'
-import {
-  appendPaymentPointer,
-  fetchConfig,
-  getScriptParams,
-  type BannerConfig
-} from './utils'
+import type { BannerConfig } from '@shared/types'
+import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
