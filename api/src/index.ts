@@ -1,4 +1,3 @@
-
 import { app } from './app.js'
 
 import './routes/get-config.js'
