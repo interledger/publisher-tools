@@ -56,9 +56,15 @@ function getToolConfig(config: ConfigVersions, tool: Tool, presetId: PresetId) {
 
   switch (tool) {
     case 'widget':
-      return extract<WidgetConfig>(conf, (key) => key.startsWith('widget'))
+      return extract<WidgetConfig>(
+        conf,
+        (key) => key.startsWith('widget') || key.includes('Widget')
+      )
     case 'banner':
-      return extract<BannerConfig>(conf, (key) => key.startsWith('banner'))
+      return extract<BannerConfig>(
+        conf,
+        (key) => key.startsWith('banner') || key.includes('Banner')
+      )
   }
 }
 
