@@ -16,7 +16,7 @@ import {
   urlWithParams
 } from './utils.js'
 import { createId } from '@paralleldrive/cuid2'
-import type { Env } from '../index.js'
+import type { Env } from '../app.js'
 
 export interface Amount {
   value: string
