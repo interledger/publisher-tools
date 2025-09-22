@@ -54,8 +54,15 @@ export function isWalletAddress(obj: unknown): obj is WalletAddress {
   )
 }
 
+// https://github.com/interledger/web-monetization-extension/blob/305b47c9f67ca604c79cfbfb083e5fcd1a579161/src/shared/helpers/wallet.ts#L13-L21
 export function toWalletAddressUrl(s: string): string {
-  return s.startsWith('$') ? s.replace('$', 'https://') : s
+  if (s.startsWith('https://')) return s
+
+  const addr = s.replace(/^\$/, 'https://').replace(/\/$/, '')
+  if (/^https:\/\/.*\/[^/].*$/.test(addr)) {
+    return addr
+  }
+  return `${addr}/.well-known/pay`
 }
 
 export function normalizeWalletAddress(walletAddress: WalletAddress): string {

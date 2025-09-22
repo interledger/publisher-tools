@@ -554,11 +554,7 @@ export const toolActions = {
    * @returns Object containing fetchedConfigs, conflict flags, and state information
    * @throws Error if wallet address is invalid or API call fails
    */
-  fetchAndCheckConfigurations: async (walletAddress: string) => {
-    if (!walletAddress?.trim()) {
-      throw new Error('Wallet address is required')
-    }
-
+  fetchRemoteConfigs: async (walletAddress: string) => {
     const baseUrl = location.origin + APP_BASEPATH
     const tool = toolState.currentToolType
     const response = await fetch(
@@ -623,20 +619,6 @@ export const toolActions = {
     if (toolState.modal?.type === 'override-preset') {
       toolState.modal = undefined
     }
-  },
-
-  validateWalletAddress: (walletAddress: string): boolean => {
-    if (!walletAddress?.trim()) {
-      return false
-    }
-
-    const trimmed = walletAddress.trim()
-    return (
-      trimmed.length > 0 &&
-      (trimmed.startsWith('https://') ||
-        trimmed.startsWith('$') ||
-        trimmed.includes('.'))
-    )
   }
 }
 
