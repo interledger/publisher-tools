@@ -67,6 +67,7 @@ export const ToolsWalletAddress = () => {
         toolActions.setConfigs(result.fetchedConfigs, true)
       }
 
+      toolActions.setWalletAddressId(walletAddressInfo.id)
       toolActions.setWalletConnected(true)
       setError(undefined)
     } catch (error) {

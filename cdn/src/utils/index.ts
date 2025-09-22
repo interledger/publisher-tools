@@ -8,7 +8,7 @@ export function getScriptParams(tool: Tool) {
     throw new Error(`Could not find ${tool}.js script element.`)
   }
 
-  const { walletAddress, tag } = script.dataset
+  const { walletAddress, walletAddressId, tag } = script.dataset
 
   if (!walletAddress) {
     throw new Error(`Missing data-wallet-address for ${tool}.js script`)
@@ -20,12 +20,21 @@ export function getScriptParams(tool: Tool) {
       `Invalid data-wallet-address for ${tool}.js script: ${walletAddress}`
     )
   }
+  if (walletAddressId) {
+    try {
+      void new URL(walletAddressId)
+    } catch {
+      throw new Error(
+        `Invalid data-wallet-address-id for ${tool}.js script: ${walletAddressId}`
+      )
+    }
+  }
 
   if (!tag) {
     throw new Error(`Missing data-tag for ${tool}.js script`)
   }
 
-  return { walletAddress, presetId: tag as PresetId }
+  return { walletAddress, walletAddressId, presetId: tag as PresetId }
 }
 
 export async function fetchConfig<T extends Tool>(
@@ -34,7 +43,7 @@ export async function fetchConfig<T extends Tool>(
   params: ReturnType<typeof getScriptParams>
 ): Promise<ToolConfig<T>> {
   const url = new URL(`config/${tool}`, apiUrl)
-  url.searchParams.set('wa', params.walletAddress)
+  url.searchParams.set('wa', params.walletAddressId || params.walletAddress)
   url.searchParams.set('preset', params.presetId)
 
   const res = await fetch(url)
