@@ -1,15 +1,35 @@
+import { HTTPException } from 'hono/http-exception'
+import { zValidator } from '@hono/zod-validator'
+import { z } from 'zod'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import type { WalletAddress } from '@interledger/open-payments'
 import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
-import { z } from 'zod'
 import { createHTTPException } from '../utils/utils'
-import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
-export const paramSchema = z.object({
-  payload: z.string().base64url().max(50_000).min(20)
-})
+import { app } from '../app.js'
 
-export async function handler(encodedPayload: string): Promise<WalletAddress> {
+app.get(
+  '/revshare/:payload',
+  zValidator(
+    'param',
+    z.object({
+      payload: z.string().base64url().max(50_000).min(20)
+    })
+  ),
+  async ({ req, json }) => {
+    const encodedPayload = req.param('payload')
+    try {
+      const result = await handler(encodedPayload)
+      return json(result)
+    } catch (error) {
+      if (error instanceof HTTPException) throw error
+      throw createHTTPException(500, 'Revenue share error', error)
+    }
+  }
+)
+
+async function handler(encodedPayload: string): Promise<WalletAddress> {
   let pointerMap
   try {
     pointerMap = decode(encodedPayload)
