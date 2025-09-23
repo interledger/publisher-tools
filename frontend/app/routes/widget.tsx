@@ -86,12 +86,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 const WidgetPreview: React.FC = () => {
-  const toolSnap = useSnapshot(toolState)
-  const config = toolSnap.getWidgetStore(toolSnap.activeVersion).configuration
+  const snap = useSnapshot(toolState)
+  const config = snap.getWidgetStore(snap.activeVersion).configuration
   const [isLoaded, setIsLoaded] = useState(false)
   const widgetRef = useRef<WidgetComponent>(null)
-
-  console.log('!!! 22 WidgetPreview render', config)
 
   useEffect(() => {
     const loadWidgetComponent = async () => {
@@ -116,8 +114,8 @@ const WidgetPreview: React.FC = () => {
   const widgetConfig = useMemo(
     () =>
       ({
-        apiUrl: toolSnap.apiUrl,
-        receiverAddress: toolSnap.opWallet,
+        apiUrl: snap.apiUrl,
+        receiverAddress: snap.opWallet,
         action: config.widgetButtonText,
         widgetTitleText: config.widgetTitleText,
         widgetDescriptionText: config.widgetDescriptionText,
@@ -134,7 +132,7 @@ const WidgetPreview: React.FC = () => {
           widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
         }
       }) as WidgetConfig,
-    [config, toolSnap.apiUrl, toolSnap.opWallet]
+    [config, snap.apiUrl, snap.opWallet]
   )
 
   useEffect(() => {
@@ -166,8 +164,8 @@ const WidgetPreview: React.FC = () => {
 }
 
 export default function Widget() {
-  const toolSnap = useSnapshot(toolState)
-  const { configuration } = toolSnap.getWidgetStore(toolSnap.activeVersion)
+  const snap = useSnapshot(toolState)
+  const { configuration } = snap.getWidgetStore(snap.activeVersion)
 
   const widgetActions = toolActions
 
@@ -243,7 +241,6 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    toolActions.setCurrentToolType('widget')
     loadState(env)
     persistState()
 
@@ -251,7 +248,7 @@ export default function Widget() {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
       toolActions.handleGrantResponse()
     }
-  }, [grantResponse, isGrantAccepted, isGrantResponse, env])
+  }, [grantResponse, isGrantAccepted, isGrantResponse])
 
   const scrollToWalletAddress = () => {
     if (!walletAddressRef.current) {
@@ -274,7 +271,7 @@ export default function Widget() {
   }
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!toolSnap.isWalletConnected) {
+    if (!snap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
@@ -302,8 +299,8 @@ export default function Widget() {
   }
 
   const handleConfirmWalletOwnership = () => {
-    if (toolSnap.modal?.grantRedirectURI) {
-      toolActions.confirmWalletOwnership(toolSnap.modal.grantRedirectURI)
+    if (snap.modal?.grantRedirectURI) {
+      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
     }
   }
 
@@ -341,12 +338,12 @@ export default function Widget() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: toolSnap.walletConnectStep
+                      status: snap.walletConnectStep
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: toolSnap.buildStep
+                      status: snap.buildStep
                     }
                   ]}
                 />
@@ -357,7 +354,7 @@ export default function Widget() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={toolSnap.walletConnectStep}
+                    status={snap.walletConnectStep}
                   />
                   <ToolsWalletAddress />
                 </div>
@@ -370,7 +367,7 @@ export default function Widget() {
                     <MobileStepsIndicator
                       number={2}
                       label="Build"
-                      status={toolSnap.buildStep}
+                      status={snap.buildStep}
                     />
                     <BuilderForm
                       toolName="widget"
@@ -470,7 +467,7 @@ export default function Widget() {
         </div>
       </div>
 
-      {toolSnap.modal?.type === 'script' && (
+      {snap.modal?.type === 'script' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -484,7 +481,7 @@ export default function Widget() {
         </div>
       )}
 
-      {toolSnap.modal?.type === 'save-success' && (
+      {snap.modal?.type === 'save-success' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -500,7 +497,7 @@ export default function Widget() {
         </div>
       )}
 
-      {toolSnap.modal?.type === 'save-error' && (
+      {snap.modal?.type === 'save-error' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -508,21 +505,21 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onDone={handleCloseModal}
-                fieldErrors={toolSnap.modal?.error?.fieldErrors}
+                fieldErrors={snap.modal?.error?.fieldErrors}
                 message={
-                  toolSnap.modal?.error?.message ||
-                  (!toolSnap.isGrantAccepted
-                    ? String(toolSnap.grantResponse)
+                  snap.modal?.error?.message ||
+                  (!snap.isGrantAccepted
+                    ? String(snap.grantResponse)
                     : 'Error saving your edits')
                 }
-                isSuccess={!toolSnap.modal.error && toolSnap.isGrantAccepted}
+                isSuccess={!snap.modal.error && snap.isGrantAccepted}
               />
             </div>
           </div>
         </div>
       )}
 
-      {toolSnap.modal?.type === 'wallet-ownership' && (
+      {snap.modal?.type === 'wallet-ownership' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -530,14 +527,14 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmWalletOwnership}
-                walletAddress={toolSnap.walletAddress}
+                walletAddress={snap.walletAddress}
               />
             </div>
           </div>
         </div>
       )}
 
-      {toolSnap.modal?.type === 'override-preset' && (
+      {snap.modal?.type === 'override-preset' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -553,9 +550,9 @@ export default function Widget() {
                   toolActions.resetWalletConnection()
                   uiActions.focusWalletInput()
                 }}
-                fetchedConfigs={toolSnap.modal?.fetchedConfigs}
-                currentLocalConfigs={toolSnap.modal?.currentLocalConfigs}
-                modifiedVersions={toolSnap.modal?.modifiedConfigs || []}
+                fetchedConfigs={snap.modal?.fetchedConfigs}
+                currentLocalConfigs={snap.modal?.currentLocalConfigs}
+                modifiedVersions={snap.modal?.modifiedConfigs || []}
               />
             </div>
           </div>
