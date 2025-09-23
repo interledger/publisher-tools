@@ -1,7 +1,6 @@
 import { createDataStoreBanner, type BannerStoreType } from './bannerStore'
 import { createDataStoreWidget, type WidgetStoreType } from './widgetStore'
-
-export type StableKey = 'version1' | 'version2' | 'version3'
+import type { StableKey } from './toolStore'
 
 export class StoreManager {
   private bannerStores: Record<StableKey, BannerStoreType> = {

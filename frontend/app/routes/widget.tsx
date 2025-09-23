@@ -132,7 +132,7 @@ const WidgetPreview: React.FC = () => {
           widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
         }
       }) as WidgetConfig,
-    [config, snap.apiUrl, snap.opWallet]
+    [config]
   )
 
   useEffect(() => {
@@ -166,8 +166,6 @@ const WidgetPreview: React.FC = () => {
 export default function Widget() {
   const snap = useSnapshot(toolState)
   const { configuration } = snap.getWidgetStore(snap.activeVersion)
-
-  const widgetActions = toolActions
 
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
@@ -313,7 +311,7 @@ export default function Widget() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    widgetActions.setToolConfig(section === 'content' ? content : appearance)
+    toolActions.setToolConfig(section === 'content' ? content : appearance)
   }
   return (
     <div className="bg-interface-bg-main w-full">
@@ -373,7 +371,6 @@ export default function Widget() {
                       toolName="widget"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
-                      actions={widgetActions}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'

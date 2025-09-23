@@ -94,6 +94,7 @@ interface BannerHandle {
 
 const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const snap = useSnapshot(toolState)
+  const config = snap.getBannerStore(snap.activeVersion).configuration
   const [isLoaded, setIsLoaded] = useState(false)
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerComponent | null>(null)
@@ -122,22 +123,21 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const bannerConfig = useMemo(
     () =>
       ({
-        bannerTitleText: snap.currentConfig?.bannerTitleText,
-        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
-        isBannerDescriptionVisible:
-          snap.currentConfig?.bannerDescriptionVisible,
-        bannerPosition: snap.currentConfig?.bannerPosition,
-        bannerBorderRadius: snap.currentConfig?.bannerBorder,
-        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
-        bannerThumbnail: snap.currentConfig?.bannerThumbnail,
+        bannerTitleText: config.bannerTitleText,
+        bannerDescriptionText: config.bannerDescriptionText,
+        isBannerDescriptionVisible: config.bannerDescriptionVisible,
+        bannerPosition: config.bannerPosition,
+        bannerBorderRadius: config.bannerBorder,
+        bannerSlideAnimation: config.bannerSlideAnimation,
+        bannerThumbnail: config.bannerThumbnail,
         theme: {
-          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
-          textColor: snap.currentConfig?.bannerTextColor,
-          fontSize: snap.currentConfig?.bannerFontSize,
-          fontFamily: snap.currentConfig?.bannerFontName
+          backgroundColor: config.bannerBackgroundColor,
+          textColor: config.bannerTextColor,
+          fontSize: config.bannerFontSize,
+          fontFamily: config.bannerFontName
         }
       }) as BannerConfig,
-    [snap.currentConfig]
+    [config]
   )
 
   useEffect(() => {
@@ -178,7 +178,6 @@ BannerPreview.displayName = 'BannerPreview'
 export default function Banner() {
   const snap = useSnapshot(toolState)
   const { configuration } = snap.getBannerStore(snap.activeVersion)
-  const bannerActions = toolActions
 
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
@@ -205,9 +204,9 @@ export default function Banner() {
     messageHelpText:
       'Strong message to help people engage with Web Monetization',
     messageMaxLength: 300,
-    currentTitle: configuration?.bannerTitleText,
-    currentMessage: configuration?.bannerDescriptionText,
-    isDescriptionVisible: configuration?.bannerDescriptionVisible ?? true,
+    currentTitle: configuration.bannerTitleText,
+    currentMessage: configuration.bannerDescriptionText,
+    isDescriptionVisible: configuration.bannerDescriptionVisible ?? true,
     onTitleChange: (title: string) => {
       configuration.bannerTitleText = title
     },
@@ -333,7 +332,7 @@ export default function Banner() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    bannerActions.setToolConfig(section === 'content' ? content : appearance)
+    toolActions.setToolConfig(section === 'content' ? content : appearance)
   }
   return (
     <div className="bg-interface-bg-main w-full">
@@ -393,7 +392,6 @@ export default function Banner() {
                       toolName="banner"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
-                      actions={bannerActions}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
@@ -555,10 +553,8 @@ export default function Banner() {
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <OverridePresetModal
                 onClose={handleCloseModal}
-                onOverride={async (_selectedLocalConfigs) => {
-                  await toolActions.overrideWithFetchedConfigs(
-                    _selectedLocalConfigs
-                  )
+                onOverride={async (selectedLocalConfigs) => {
+                  toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
                   await toolActions.saveConfig('save-success')
                 }}
                 onAddWalletAddress={() => {

@@ -7,15 +7,7 @@ import {
 import { useUI } from '~/stores/uiStore'
 import type { ToolContent } from './ContentBuilder'
 import type { ToolAppearance } from './AppearanceBuilder'
-import { toolState } from '~/stores/toolStore'
-
-export type StableKey = 'version1' | 'version2' | 'version3'
-
-interface GenericToolActions {
-  selectVersion: (stableKey: StableKey) => void
-  updateVersionLabel: (stableKey: StableKey, newLabel: string) => void
-  get versionOptions(): Array<{ stableKey: StableKey; versionName: string }>
-}
+import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 
 interface BuilderFormProps {
   content: ToolContent
@@ -25,7 +17,6 @@ interface BuilderFormProps {
   onBuildStepComplete?: (isComplete: boolean) => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
-  actions: GenericToolActions
 }
 
 export const BuilderForm: React.FC<BuilderFormProps> = ({
@@ -35,8 +26,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   appearance,
   toolName,
   positionSelector,
-  colorsSelector,
-  actions
+  colorsSelector
 }) => {
   const { state: uiState } = useUI()
   const { modifiedVersions, activeVersion } = toolState
@@ -49,11 +39,11 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   }, [uiState.contentComplete, uiState.appearanceComplete, onBuildStepComplete])
 
   const handleTabSelect = (stableKey: StableKey) => {
-    actions.selectVersion(stableKey)
+    toolActions.selectVersion(stableKey)
   }
 
   const getLatestTabOptions = () => {
-    return actions.versionOptions.map((option) => ({
+    return toolActions.versionOptions.map((option) => ({
       id: option.stableKey,
       label: option.versionName,
       isDirty: modifiedVersions.includes(option.stableKey)
@@ -61,7 +51,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   }
   const [tabOptions, setTabOptions] = React.useState(getLatestTabOptions)
   const handleTabLabelChange = (stableKey: StableKey, newLabel: string) => {
-    actions.updateVersionLabel(stableKey, newLabel)
+    toolActions.updateVersionLabel(stableKey, newLabel)
     setTabOptions(() => getLatestTabOptions())
   }
 
