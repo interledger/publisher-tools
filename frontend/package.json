@@ -42,7 +42,7 @@
     "tailwindcss": "^3.4.14",
     "tippy.js": "^6.3.7",
     "valtio": "^2.1.5",
-    "zod": "^3.23.8"
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@lit/react": "^1.0.7",
