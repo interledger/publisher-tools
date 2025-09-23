@@ -30,13 +30,6 @@ import {
   BannerPositionSelector,
   BannerColorsSelector
 } from '@/components'
-import {
-  toolState,
-  toolActions,
-  persistState,
-  loadState,
-  splitConfigProperties
-} from '~/stores/toolStore'
 
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
@@ -45,12 +38,13 @@ import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import { BANNER_FONT_SIZES } from '@shared/types'
-import type {
-  BannerPositionKey,
-  CornerType,
-  FontFamilyKey,
-  SlideAnimationType
-} from '@shared/types'
+import {
+  toolActions,
+  toolState,
+  loadState,
+  persistState,
+  splitConfigProperties
+} from '~/stores/toolStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -94,7 +88,7 @@ interface BannerHandle {
 }
 
 const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
-  const snap = useSnapshot(toolState)
+  const toolSnap = useSnapshot(toolState)
   const [isLoaded, setIsLoaded] = useState(false)
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerComponent | null>(null)
@@ -123,22 +117,22 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const bannerConfig = useMemo(
     () =>
       ({
-        bannerTitleText: snap.currentConfig?.bannerTitleText,
-        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
+        bannerTitleText: toolSnap.currentConfig?.bannerTitleText,
+        bannerDescriptionText: toolSnap.currentConfig?.bannerDescriptionText,
         isBannerDescriptionVisible:
-          snap.currentConfig?.bannerDescriptionVisible,
-        bannerPosition: snap.currentConfig?.bannerPosition,
-        bannerBorderRadius: snap.currentConfig?.bannerBorder,
-        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
-        bannerThumbnail: snap.currentConfig?.bannerThumbnail,
+          toolSnap.currentConfig?.bannerDescriptionVisible,
+        bannerPosition: toolSnap.currentConfig?.bannerPosition,
+        bannerBorderRadius: toolSnap.currentConfig?.bannerBorder,
+        bannerSlideAnimation: toolSnap.currentConfig?.bannerSlideAnimation,
+        bannerThumbnail: toolSnap.currentConfig?.bannerThumbnail,
         theme: {
-          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
-          textColor: snap.currentConfig?.bannerTextColor,
-          fontSize: snap.currentConfig?.bannerFontSize,
-          fontFamily: snap.currentConfig?.bannerFontName
+          backgroundColor: toolSnap.currentConfig?.bannerBackgroundColor,
+          textColor: toolSnap.currentConfig?.bannerTextColor,
+          fontSize: toolSnap.currentConfig?.bannerFontSize,
+          fontFamily: toolSnap.currentConfig?.bannerFontName
         }
       }) as BannerConfig,
-    [snap.currentConfig]
+    [toolSnap.currentConfig]
   )
 
   useEffect(() => {
@@ -177,7 +171,11 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
 BannerPreview.displayName = 'BannerPreview'
 
 export default function Banner() {
-  const snap = useSnapshot(toolState)
+  const toolSnap = useSnapshot(toolState)
+  const bannerStore = toolSnap.getBannerStore(toolSnap.activeVersion)
+
+  const bannerActions = toolActions
+
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -203,49 +201,37 @@ export default function Banner() {
     messageHelpText:
       'Strong message to help people engage with Web Monetization',
     messageMaxLength: 300,
-    currentTitle: snap.currentConfig?.bannerTitleText,
-    currentMessage: snap.currentConfig?.bannerDescriptionText,
-    isDescriptionVisible: snap.currentConfig?.bannerDescriptionVisible ?? true,
-    onTitleChange: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title }),
-    onMessageChange: (message: string) =>
-      toolActions.setToolConfig({ bannerDescriptionText: message }),
+    currentTitle: bannerStore.configuration?.bannerTitleText,
+    currentMessage: bannerStore.configuration?.bannerDescriptionText,
+    isDescriptionVisible:
+      bannerStore.configuration?.bannerDescriptionVisible ?? true,
+    onTitleChange: bannerStore.onTitleChange,
+    onMessageChange: bannerStore.onDescriptionChange,
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
-    onDescriptionVisibilityChange: (visible: boolean) =>
-      toolActions.setToolConfig({
-        bannerDescriptionVisible: visible
-      })
+      bannerStore.onTitleChange(title.replace(/"/g, '')),
+    onDescriptionVisibilityChange: bannerStore.onDescriptionVisibilityChange
   }
 
   const appearanceConfiguration: BannerToolAppearance = {
-    fontName: snap.currentConfig?.bannerFontName,
-    fontSize: snap.currentConfig?.bannerFontSize ?? BANNER_FONT_SIZES.default,
+    fontName: bannerStore.configuration?.bannerFontName,
+    fontSize:
+      bannerStore.configuration?.bannerFontSize ?? BANNER_FONT_SIZES.default,
     fontSizeRange: BANNER_FONT_SIZES,
-    backgroundColor: snap.currentConfig?.bannerBackgroundColor,
-    textColor: snap.currentConfig?.bannerTextColor,
-    borderRadius: snap.currentConfig?.bannerBorder,
-    position: snap.currentConfig?.bannerPosition,
-    slideAnimation: snap.currentConfig?.bannerSlideAnimation,
-    thumbnail: snap.currentConfig?.bannerThumbnail ?? 'default',
+    backgroundColor: bannerStore.configuration?.bannerBackgroundColor,
+    textColor: bannerStore.configuration?.bannerTextColor,
+    borderRadius: bannerStore.configuration?.bannerBorder,
+    position: bannerStore.configuration?.bannerPosition,
+    slideAnimation: bannerStore.configuration?.bannerSlideAnimation,
+    thumbnail: bannerStore.configuration?.bannerThumbnail ?? 'default',
 
-    onFontNameChange: (fontName: FontFamilyKey) =>
-      toolActions.setToolConfig({ bannerFontName: fontName }),
-    onFontSizeChange: (fontSize: number) =>
-      toolActions.setToolConfig({ bannerFontSize: fontSize }),
-    onBackgroundColorChange: (color: string) =>
-      toolActions.setToolConfig({ bannerBackgroundColor: color }),
-    onTextColorChange: (color: string) =>
-      toolActions.setToolConfig({ bannerTextColor: color }),
-    onBorderChange: (border: CornerType) =>
-      toolActions.setToolConfig({ bannerBorder: border }),
-    onPositionChange: (position: BannerPositionKey) =>
-      toolActions.setToolConfig({ bannerPosition: position }),
-    onSlideAnimationChange: (animation: SlideAnimationType) =>
-      toolActions.setToolConfig({ bannerSlideAnimation: animation }),
-    onThumbnailVisibilityChange: (visible: boolean) => {
-      toolActions.setToolConfig({ bannerThumbnail: visible ? 'default' : '' })
-    },
+    onFontNameChange: bannerStore.onFontNameChange,
+    onFontSizeChange: bannerStore.onFontSizeChange,
+    onBackgroundColorChange: bannerStore.onBackgroundColorChange,
+    onTextColorChange: bannerStore.onTextColorChange,
+    onBorderChange: bannerStore.onBorderChange,
+    onPositionChange: bannerStore.onPositionChange,
+    onSlideAnimationChange: bannerStore.onSlideAnimationChange,
+    onThumbnailVisibilityChange: bannerStore.onThumbnailVisibilityChange,
 
     showAnimation: true
   }
@@ -253,6 +239,7 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    toolActions.setCurrentToolType('banner')
     loadState(env)
     persistState()
 
@@ -260,7 +247,7 @@ export default function Banner() {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
       toolActions.handleGrantResponse()
     }
-  }, [grantResponse, isGrantAccepted, isGrantResponse])
+  }, [grantResponse, isGrantAccepted, isGrantResponse, env])
 
   const scrollToWalletAddress = () => {
     if (!walletAddressRef.current) {
@@ -283,7 +270,7 @@ export default function Banner() {
   }
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
+    if (!toolSnap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
@@ -317,8 +304,8 @@ export default function Banner() {
   }
 
   const handleConfirmWalletOwnership = () => {
-    if (snap.modal?.grantRedirectURI) {
-      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
+    if (toolSnap.modal?.grantRedirectURI) {
+      toolActions.confirmWalletOwnership(toolSnap.modal.grantRedirectURI)
     }
   }
 
@@ -331,7 +318,7 @@ export default function Banner() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    toolActions.setToolConfig(section === 'content' ? content : appearance)
+    bannerActions.setToolConfig(section === 'content' ? content : appearance)
   }
   return (
     <div className="bg-interface-bg-main w-full">
@@ -355,12 +342,12 @@ export default function Banner() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep
+                      status: toolSnap.walletConnectStep
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: snap.buildStep
+                      status: toolSnap.buildStep
                     }
                   ]}
                 />
@@ -371,7 +358,7 @@ export default function Banner() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={toolSnap.walletConnectStep}
                   />
                   <ToolsWalletAddress />
                 </div>
@@ -384,13 +371,14 @@ export default function Banner() {
                     <MobileStepsIndicator
                       number={2}
                       label="Build"
-                      status={snap.buildStep}
+                      status={toolSnap.buildStep}
                     />
 
                     <BuilderForm
                       toolName="banner"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
+                      actions={bannerActions}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
@@ -399,27 +387,25 @@ export default function Banner() {
                       onRefresh={handleRefresh}
                       positionSelector={
                         <BannerPositionSelector
-                          defaultValue={snap.currentConfig?.bannerPosition}
+                          defaultValue={
+                            bannerStore.configuration?.bannerPosition
+                          }
                           onChange={(value) =>
-                            toolActions.setToolConfig({ bannerPosition: value })
+                            bannerStore.onPositionChange(value)
                           }
                         />
                       }
                       colorsSelector={
                         <BannerColorsSelector
                           backgroundColor={
-                            snap.currentConfig?.bannerBackgroundColor
+                            bannerStore.configuration?.bannerBackgroundColor
                           }
-                          textColor={snap.currentConfig?.bannerTextColor}
+                          textColor={bannerStore.configuration?.bannerTextColor}
                           onBackgroundColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              bannerBackgroundColor: color
-                            })
+                            bannerStore.onBackgroundColorChange(color)
                           }
                           onTextColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              bannerTextColor: color
-                            })
+                            bannerStore.onTextColorChange(color)
                           }
                         />
                       }
@@ -485,7 +471,7 @@ export default function Banner() {
         </div>
       </div>
 
-      {snap.modal?.type === 'script' && (
+      {toolSnap.modal?.type === 'script' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -499,7 +485,7 @@ export default function Banner() {
         </div>
       )}
 
-      {snap.modal?.type === 'save-success' && (
+      {toolSnap.modal?.type === 'save-success' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -515,7 +501,7 @@ export default function Banner() {
         </div>
       )}
 
-      {snap.modal?.type === 'save-error' && (
+      {toolSnap.modal?.type === 'save-error' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -523,21 +509,21 @@ export default function Banner() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onDone={handleCloseModal}
-                fieldErrors={snap.modal?.error?.fieldErrors}
+                fieldErrors={toolSnap.modal?.error?.fieldErrors}
                 message={
-                  snap.modal?.error?.message ||
-                  (!snap.isGrantAccepted
-                    ? String(snap.grantResponse)
+                  toolSnap.modal?.error?.message ||
+                  (!toolSnap.isGrantAccepted
+                    ? String(toolSnap.grantResponse)
                     : 'Error saving your edits')
                 }
-                isSuccess={!snap.modal.error && snap.isGrantAccepted}
+                isSuccess={!toolSnap.modal.error && toolSnap.isGrantAccepted}
               />
             </div>
           </div>
         </div>
       )}
 
-      {snap.modal?.type === 'wallet-ownership' && (
+      {toolSnap.modal?.type === 'wallet-ownership' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -545,30 +531,32 @@ export default function Banner() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmWalletOwnership}
-                walletAddress={snap.walletAddress}
+                walletAddress={toolSnap.walletAddress}
               />
             </div>
           </div>
         </div>
       )}
 
-      {snap.modal?.type === 'override-preset' && (
+      {toolSnap.modal?.type === 'override-preset' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <OverridePresetModal
                 onClose={handleCloseModal}
-                onOverride={async (selectedLocalConfigs) => {
-                  toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
+                onOverride={async (_selectedLocalConfigs) => {
+                  await toolActions.overrideWithFetchedConfigs(
+                    _selectedLocalConfigs
+                  )
                   await toolActions.saveConfig('save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
                   uiActions.focusWalletInput()
                 }}
-                fetchedConfigs={snap.modal?.fetchedConfigs}
-                currentLocalConfigs={snap.modal?.currentLocalConfigs}
-                modifiedVersions={snap.modal?.modifiedConfigs || []}
+                fetchedConfigs={toolSnap.modal?.fetchedConfigs}
+                currentLocalConfigs={toolSnap.modal?.currentLocalConfigs}
+                modifiedVersions={toolSnap.modal?.modifiedConfigs || []}
               />
             </div>
           </div>

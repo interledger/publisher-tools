@@ -6,6 +6,9 @@ import type { StepStatus } from '~/components/redesign/components/StepsIndicator
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
+import { StoreManager } from './toolStoreManager'
+import type { BannerStoreType } from './bannerStore'
+import type { WidgetStoreType } from './widgetStore'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -176,6 +179,7 @@ function updateModificationTrackingWithVersionNames(stableKey: StableKey) {
   updateModificationTracking(stableKey, isModified)
 }
 
+const manager = new StoreManager()
 export const toolState = proxy({
   currentConfig: getDefaultData() as ElementConfigType,
   configurations: createDefaultConfigs(),
@@ -215,7 +219,14 @@ export const toolState = proxy({
   isWalletConnected: false,
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
-  buildStep: 'unfilled' as StepStatus
+  buildStep: 'unfilled' as StepStatus,
+  bannerStores: manager['bannerStores'] as Record<StableKey, BannerStoreType>,
+  widgetStores: manager['widgetStores'] as Record<StableKey, WidgetStoreType>,
+  getBannerStore: (key: StableKey) => manager.getBannerStore(key),
+  getWidgetStore: (key: StableKey) => manager.getWidgetStore(key),
+  get activePreset() {
+    return manager.activeTab
+  }
 })
 
 export const toolActions = {

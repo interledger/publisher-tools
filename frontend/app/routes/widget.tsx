@@ -24,13 +24,7 @@ import {
   WidgetPositionSelector,
   WidgetColorsSelector
 } from '@/components'
-import {
-  toolState,
-  toolActions,
-  persistState,
-  loadState,
-  splitConfigProperties
-} from '~/stores/toolStore'
+import type { SlideAnimationType } from '@shared/types'
 
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
@@ -42,12 +36,13 @@ import type {
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { WidgetToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
 import { WIDGET_FONT_SIZES } from '@shared/types'
-import type {
-  CornerType,
-  FontFamilyKey,
-  SlideAnimationType,
-  WidgetPositionKey
-} from '@shared/types'
+import {
+  toolActions,
+  toolState,
+  loadState,
+  persistState,
+  splitConfigProperties
+} from '~/stores/toolStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -87,9 +82,12 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 const WidgetPreview: React.FC = () => {
-  const snap = useSnapshot(toolState)
+  const toolSnap = useSnapshot(toolState)
+  const config = toolSnap.getWidgetStore(toolSnap.activeVersion).configuration
   const [isLoaded, setIsLoaded] = useState(false)
   const widgetRef = useRef<WidgetComponent>(null)
+
+  console.log('!!! 22 WidgetPreview render', config)
 
   useEffect(() => {
     const loadWidgetComponent = async () => {
@@ -114,26 +112,25 @@ const WidgetPreview: React.FC = () => {
   const widgetConfig = useMemo(
     () =>
       ({
-        apiUrl: snap.apiUrl,
-        receiverAddress: snap.opWallet,
-        action: snap.currentConfig.widgetButtonText,
-        widgetTitleText: snap.currentConfig.widgetTitleText,
-        widgetDescriptionText: snap.currentConfig.widgetDescriptionText,
-        isWidgetDescriptionVisible: snap.currentConfig.widgetDescriptionVisible,
-        widgetTriggerIcon: snap.currentConfig.widgetTriggerIcon,
-        widgetPosition: snap.currentConfig.widgetPosition,
+        apiUrl: toolSnap.apiUrl,
+        receiverAddress: toolSnap.opWallet,
+        action: config.widgetButtonText,
+        widgetTitleText: config.widgetTitleText,
+        widgetDescriptionText: config.widgetDescriptionText,
+        isWidgetDescriptionVisible: config.widgetDescriptionVisible,
+        widgetTriggerIcon: config.widgetTriggerIcon,
+        widgetPosition: config.widgetPosition,
         theme: {
-          primaryColor: snap.currentConfig.widgetButtonBackgroundColor,
-          backgroundColor: snap.currentConfig.widgetBackgroundColor,
-          textColor: snap.currentConfig.widgetTextColor,
-          fontSize: snap.currentConfig.widgetFontSize,
-          fontFamily: snap.currentConfig.widgetFontName,
-          widgetBorderRadius: snap.currentConfig.widgetButtonBorder,
-          widgetButtonBackgroundColor:
-            snap.currentConfig.widgetTriggerBackgroundColor
+          primaryColor: config.widgetButtonBackgroundColor,
+          backgroundColor: config.widgetBackgroundColor,
+          textColor: config.widgetTextColor,
+          fontSize: config.widgetFontSize,
+          fontFamily: config.widgetFontName,
+          widgetBorderRadius: config.widgetButtonBorder,
+          widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
         }
       }) as WidgetConfig,
-    [snap.currentConfig]
+    [config, toolSnap.apiUrl, toolSnap.opWallet]
   )
 
   useEffect(() => {
@@ -165,7 +162,11 @@ const WidgetPreview: React.FC = () => {
 }
 
 export default function Widget() {
-  const snap = useSnapshot(toolState)
+  const toolSnap = useSnapshot(toolState)
+  const widgetStore = toolSnap.getWidgetStore(toolSnap.activeVersion)
+
+  const widgetActions = toolActions
+
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -189,51 +190,39 @@ export default function Widget() {
     messagePlaceholder: 'Enter your widget message...',
     messageHelpText: 'Describe how payments support your work',
     messageMaxLength: 300,
-    currentTitle: snap.currentConfig?.widgetTitleText,
-    currentMessage: snap.currentConfig?.widgetDescriptionText,
-    isDescriptionVisible: snap.currentConfig?.widgetDescriptionVisible ?? true,
-    onTitleChange: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title }),
-    onMessageChange: (message: string) =>
-      toolActions.setToolConfig({ widgetDescriptionText: message }),
+    currentTitle: widgetStore.configuration?.widgetTitleText,
+    currentMessage: widgetStore.configuration?.widgetDescriptionText,
+    isDescriptionVisible:
+      widgetStore.configuration?.widgetDescriptionVisible ?? true,
+    onTitleChange: widgetStore.onTitleChange,
+    onMessageChange: widgetStore.onDescriptionChange,
     onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
-    onDescriptionVisibilityChange: (visible: boolean) =>
-      toolActions.setToolConfig({
-        widgetDescriptionVisible: visible
-      })
+      widgetStore.onTitleChange(title.replace(/"/g, '')),
+    onDescriptionVisibilityChange: widgetStore.onDescriptionVisibilityChange
   }
 
   const appearanceConfiguration: WidgetToolAppearance = {
-    fontName: snap.currentConfig?.widgetFontName,
-    fontSize: snap.currentConfig?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
+    fontName: widgetStore.configuration?.widgetFontName,
+    fontSize:
+      widgetStore.configuration?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
     fontSizeRange: WIDGET_FONT_SIZES,
-    backgroundColor: snap.currentConfig?.widgetBackgroundColor,
-    textColor: snap.currentConfig?.widgetTextColor,
-    buttonColor: snap.currentConfig?.widgetButtonBackgroundColor,
-    borderRadius: snap.currentConfig?.widgetButtonBorder,
-    position: snap.currentConfig?.widgetPosition,
+    backgroundColor: widgetStore.configuration?.widgetBackgroundColor,
+    textColor: widgetStore.configuration?.widgetTextColor,
+    buttonColor: widgetStore.configuration?.widgetButtonBackgroundColor,
+    borderRadius: widgetStore.configuration?.widgetButtonBorder,
+    position: widgetStore.configuration?.widgetPosition,
     slideAnimation: undefined,
-    thumbnail: snap.currentConfig?.widgetTriggerIcon,
+    thumbnail: widgetStore.configuration?.widgetTriggerIcon,
 
-    onFontNameChange: (fontName: FontFamilyKey) =>
-      toolActions.setToolConfig({ widgetFontName: fontName }),
-    onFontSizeChange: (fontSize: number) =>
-      toolActions.setToolConfig({ widgetFontSize: fontSize }),
-    onBackgroundColorChange: (color: string) =>
-      toolActions.setToolConfig({ widgetBackgroundColor: color }),
-    onTextColorChange: (color: string) =>
-      toolActions.setToolConfig({ widgetTextColor: color }),
-    onButtonColorChange: (color: string) =>
-      toolActions.setToolConfig({ widgetButtonBackgroundColor: color }),
-    onBorderChange: (border: CornerType) =>
-      toolActions.setToolConfig({ widgetButtonBorder: border }),
-    onPositionChange: (position: WidgetPositionKey) =>
-      toolActions.setToolConfig({ widgetPosition: position }),
+    onFontNameChange: widgetStore.onFontNameChange,
+    onFontSizeChange: widgetStore.onFontSizeChange,
+    onBackgroundColorChange: widgetStore.onBackgroundColorChange,
+    onTextColorChange: widgetStore.onTextColorChange,
+    onButtonColorChange: widgetStore.onButtonColorChange,
+    onBorderChange: widgetStore.onBorderChange,
+    onPositionChange: widgetStore.onPositionChange,
     onSlideAnimationChange: (_animation: SlideAnimationType) => {},
-    onThumbnailVisibilityChange: (visible: boolean) => {
-      toolActions.setToolConfig({ widgetTriggerIcon: visible ? 'default' : '' })
-    },
+    onThumbnailVisibilityChange: widgetStore.onThumbnailVisibilityChange,
 
     showAnimation: false
   }
@@ -241,6 +230,7 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    toolActions.setCurrentToolType('widget')
     loadState(env)
     persistState()
 
@@ -248,7 +238,7 @@ export default function Widget() {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
       toolActions.handleGrantResponse()
     }
-  }, [grantResponse, isGrantAccepted, isGrantResponse])
+  }, [grantResponse, isGrantAccepted, isGrantResponse, env])
 
   const scrollToWalletAddress = () => {
     if (!walletAddressRef.current) {
@@ -271,7 +261,7 @@ export default function Widget() {
   }
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
+    if (!toolSnap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
@@ -299,8 +289,8 @@ export default function Widget() {
   }
 
   const handleConfirmWalletOwnership = () => {
-    if (snap.modal?.grantRedirectURI) {
-      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
+    if (toolSnap.modal?.grantRedirectURI) {
+      toolActions.confirmWalletOwnership(toolSnap.modal.grantRedirectURI)
     }
   }
 
@@ -313,7 +303,7 @@ export default function Widget() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    toolActions.setToolConfig(section === 'content' ? content : appearance)
+    widgetActions.setToolConfig(section === 'content' ? content : appearance)
   }
   return (
     <div className="bg-interface-bg-main w-full">
@@ -338,12 +328,12 @@ export default function Widget() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep
+                      status: toolSnap.walletConnectStep
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: snap.buildStep
+                      status: toolSnap.buildStep
                     }
                   ]}
                 />
@@ -354,7 +344,7 @@ export default function Widget() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={toolSnap.walletConnectStep}
                   />
                   <ToolsWalletAddress />
                 </div>
@@ -367,13 +357,13 @@ export default function Widget() {
                     <MobileStepsIndicator
                       number={2}
                       label="Build"
-                      status={snap.buildStep}
+                      status={toolSnap.buildStep}
                     />
-
                     <BuilderForm
                       toolName="widget"
                       content={contentConfiguration}
                       appearance={appearanceConfiguration}
+                      actions={widgetActions}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
@@ -382,40 +372,36 @@ export default function Widget() {
                       onRefresh={handleRefresh}
                       positionSelector={
                         <WidgetPositionSelector
-                          defaultValue={snap.currentConfig?.widgetPosition}
+                          defaultValue={
+                            widgetStore.configuration?.widgetPosition
+                          }
                           onChange={(value) =>
-                            toolActions.setToolConfig({ widgetPosition: value })
+                            widgetStore.onPositionChange(value)
                           }
                         />
                       }
                       colorsSelector={
                         <WidgetColorsSelector
                           backgroundColor={
-                            snap.currentConfig?.widgetBackgroundColor
+                            widgetStore.configuration?.widgetBackgroundColor
                           }
-                          textColor={snap.currentConfig?.widgetTextColor}
+                          textColor={widgetStore.configuration?.widgetTextColor}
                           buttonColor={
-                            snap.currentConfig?.widgetButtonBackgroundColor
+                            widgetStore.configuration
+                              ?.widgetButtonBackgroundColor
                           }
                           onBackgroundColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              widgetBackgroundColor: color
-                            })
+                            widgetStore.onBackgroundColorChange(color)
                           }
                           onTextColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              widgetTextColor: color
-                            })
+                            widgetStore.onTextColorChange(color)
                           }
                           onButtonColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              widgetButtonBackgroundColor: color
-                            })
+                            widgetStore.onButtonColorChange(color)
                           }
                         />
                       }
                     />
-
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
@@ -476,7 +462,7 @@ export default function Widget() {
         </div>
       </div>
 
-      {snap.modal?.type === 'script' && (
+      {toolSnap.modal?.type === 'script' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -490,7 +476,7 @@ export default function Widget() {
         </div>
       )}
 
-      {snap.modal?.type === 'save-success' && (
+      {toolSnap.modal?.type === 'save-success' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -506,7 +492,7 @@ export default function Widget() {
         </div>
       )}
 
-      {snap.modal?.type === 'save-error' && (
+      {toolSnap.modal?.type === 'save-error' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -514,21 +500,21 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onDone={handleCloseModal}
-                fieldErrors={snap.modal?.error?.fieldErrors}
+                fieldErrors={toolSnap.modal?.error?.fieldErrors}
                 message={
-                  snap.modal?.error?.message ||
-                  (!snap.isGrantAccepted
-                    ? String(snap.grantResponse)
+                  toolSnap.modal?.error?.message ||
+                  (!toolSnap.isGrantAccepted
+                    ? String(toolSnap.grantResponse)
                     : 'Error saving your edits')
                 }
-                isSuccess={!snap.modal.error && snap.isGrantAccepted}
+                isSuccess={!toolSnap.modal.error && toolSnap.isGrantAccepted}
               />
             </div>
           </div>
         </div>
       )}
 
-      {snap.modal?.type === 'wallet-ownership' && (
+      {toolSnap.modal?.type === 'wallet-ownership' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -536,30 +522,32 @@ export default function Widget() {
                 isOpen={true}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmWalletOwnership}
-                walletAddress={snap.walletAddress}
+                walletAddress={toolSnap.walletAddress}
               />
             </div>
           </div>
         </div>
       )}
 
-      {snap.modal?.type === 'override-preset' && (
+      {toolSnap.modal?.type === 'override-preset' && (
         <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <OverridePresetModal
                 onClose={handleCloseModal}
-                onOverride={async (selectedLocalConfigs) => {
-                  toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
+                onOverride={async (_selectedLocalConfigs) => {
+                  await toolActions.overrideWithFetchedConfigs(
+                    _selectedLocalConfigs
+                  )
                   await toolActions.saveConfig('save-success')
                 }}
                 onAddWalletAddress={() => {
                   toolActions.resetWalletConnection()
                   uiActions.focusWalletInput()
                 }}
-                fetchedConfigs={snap.modal?.fetchedConfigs}
-                currentLocalConfigs={snap.modal?.currentLocalConfigs}
-                modifiedVersions={snap.modal?.modifiedConfigs || []}
+                fetchedConfigs={toolSnap.modal?.fetchedConfigs}
+                currentLocalConfigs={toolSnap.modal?.currentLocalConfigs}
+                modifiedVersions={toolSnap.modal?.modifiedConfigs || []}
               />
             </div>
           </div>
