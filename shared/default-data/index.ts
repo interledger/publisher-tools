@@ -96,5 +96,6 @@ export const createDefaultWidgetConfig = (
     text: 'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
     visible: true
   },
+  trigger: { background: '#ffffff' },
   payButton: { text: 'Support me' }
 })

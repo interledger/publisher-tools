@@ -89,13 +89,14 @@ export interface WidgetConfig extends BaseToolConfig {
   border: CornerType
   position: WidgetPositionKey
   icon: string
-  iconBackground?: string
+  trigger: { background: string; icon?: string }
 }
 
 export type PresetIds = 'a' | 'b' | 'c'
 
 export type Config = {
   $walletAddress: string
+  $walletAddressId?: string
   $modifiedAt?: string
   banner: {
     [presetId in PresetIds]?: BannerConfig
