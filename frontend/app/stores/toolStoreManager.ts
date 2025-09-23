@@ -1,27 +1,27 @@
 import { createDataStoreBanner, type BannerStoreType } from './bannerStore'
 import { createDataStoreWidget, type WidgetStoreType } from './widgetStore'
-import type { StableKey } from './toolStore'
+import type { PresetIds } from '@shared/types'
 
 export class StoreManager {
-  private bannerStores: Record<StableKey, BannerStoreType> = {
-    version1: createDataStoreBanner(),
-    version2: createDataStoreBanner(),
-    version3: createDataStoreBanner()
+  private bannerStores: Record<PresetIds, BannerStoreType> = {
+    a: createDataStoreBanner('Banner preset 1'),
+    b: createDataStoreBanner('Banner preset 2'),
+    c: createDataStoreBanner('Banner preset 3')
   }
 
-  private widgetStores: Record<StableKey, WidgetStoreType> = {
-    version1: createDataStoreWidget(),
-    version2: createDataStoreWidget(),
-    version3: createDataStoreWidget()
+  private widgetStores: Record<PresetIds, WidgetStoreType> = {
+    a: createDataStoreWidget('Widget preset 1'),
+    b: createDataStoreWidget('Widget preset 2'),
+    c: createDataStoreWidget('Widget preset 3')
   }
 
-  activeTab: StableKey = 'version1'
+  activeTab: PresetIds = 'a'
 
-  getBannerStore(key: StableKey): BannerStoreType {
+  getBannerStore(key: PresetIds): BannerStoreType {
     return this.bannerStores[key]
   }
 
-  getWidgetStore(key: StableKey): WidgetStoreType {
+  getWidgetStore(key: PresetIds): WidgetStoreType {
     return this.widgetStores[key]
   }
 }

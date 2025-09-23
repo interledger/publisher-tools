@@ -30,6 +30,13 @@ import {
   BannerPositionSelector,
   BannerColorsSelector
 } from '@/components'
+import {
+  toolState,
+  toolActions,
+  persistState,
+  loadState,
+  splitConfigProperties
+} from '~/stores/toolStore'
 
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
@@ -37,19 +44,13 @@ import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
-import {
-  BANNER_FONT_SIZES,
-  type FontFamilyKey,
-  type CornerType,
-  type SlideAnimationType
+import { BANNER_FONT_SIZES } from '@shared/types'
+import type {
+  BannerPositionKey,
+  CornerType,
+  FontFamilyKey,
+  SlideAnimationType
 } from '@shared/types'
-import {
-  toolActions,
-  toolState,
-  loadState,
-  persistState,
-  splitConfigProperties
-} from '~/stores/toolStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -94,7 +95,6 @@ interface BannerHandle {
 
 const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const snap = useSnapshot(toolState)
-  const config = snap.getBannerStore(snap.activeVersion).configuration
   const [isLoaded, setIsLoaded] = useState(false)
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerComponent | null>(null)
@@ -123,21 +123,22 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
   const bannerConfig = useMemo(
     () =>
       ({
-        bannerTitleText: config.bannerTitleText,
-        bannerDescriptionText: config.bannerDescriptionText,
-        isBannerDescriptionVisible: config.bannerDescriptionVisible,
-        bannerPosition: config.bannerPosition,
-        bannerBorderRadius: config.bannerBorder,
-        bannerSlideAnimation: config.bannerSlideAnimation,
-        bannerThumbnail: config.bannerThumbnail,
+        bannerTitleText: snap.currentConfig?.bannerTitleText,
+        bannerDescriptionText: snap.currentConfig?.bannerDescriptionText,
+        isBannerDescriptionVisible:
+          snap.currentConfig?.bannerDescriptionVisible,
+        bannerPosition: snap.currentConfig?.bannerPosition,
+        bannerBorderRadius: snap.currentConfig?.bannerBorder,
+        bannerSlideAnimation: snap.currentConfig?.bannerSlideAnimation,
+        bannerThumbnail: snap.currentConfig?.bannerThumbnail,
         theme: {
-          backgroundColor: config.bannerBackgroundColor,
-          textColor: config.bannerTextColor,
-          fontSize: config.bannerFontSize,
-          fontFamily: config.bannerFontName
+          backgroundColor: snap.currentConfig?.bannerBackgroundColor,
+          textColor: snap.currentConfig?.bannerTextColor,
+          fontSize: snap.currentConfig?.bannerFontSize,
+          fontFamily: snap.currentConfig?.bannerFontName
         }
       }) as BannerConfig,
-    [config]
+    [snap.currentConfig]
   )
 
   useEffect(() => {
@@ -177,8 +178,6 @@ BannerPreview.displayName = 'BannerPreview'
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
-  const { configuration } = snap.getBannerStore(snap.activeVersion)
-
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -204,48 +203,48 @@ export default function Banner() {
     messageHelpText:
       'Strong message to help people engage with Web Monetization',
     messageMaxLength: 300,
-    currentTitle: configuration.bannerTitleText,
-    currentMessage: configuration.bannerDescriptionText,
-    isDescriptionVisible: configuration.bannerDescriptionVisible ?? true,
-    onTitleChange: (title: string) => {
-      configuration.bannerTitleText = title
-    },
-    onMessageChange: (description: string) => {
-      configuration.bannerDescriptionText = description
-    },
-    onSuggestedTitleClick: (title: string) => {
-      configuration.bannerTitleText = title.replace(/"/g, '')
-    },
-    onDescriptionVisibilityChange: (visible: boolean) => {
-      configuration.bannerDescriptionVisible = visible
-    }
+    currentTitle: snap.currentConfig?.bannerTitleText,
+    currentMessage: snap.currentConfig?.bannerDescriptionText,
+    isDescriptionVisible: snap.currentConfig?.bannerDescriptionVisible ?? true,
+    onTitleChange: (title: string) =>
+      toolActions.setToolConfig({ bannerTitleText: title }),
+    onMessageChange: (message: string) =>
+      toolActions.setToolConfig({ bannerDescriptionText: message }),
+    onSuggestedTitleClick: (title: string) =>
+      toolActions.setToolConfig({ bannerTitleText: title.replace(/"/g, '') }),
+    onDescriptionVisibilityChange: (visible: boolean) =>
+      toolActions.setToolConfig({
+        bannerDescriptionVisible: visible
+      })
   }
 
   const appearanceConfiguration: BannerToolAppearance = {
-    fontName: configuration.bannerFontName,
-    fontSize: configuration.bannerFontSize ?? BANNER_FONT_SIZES.default,
+    fontName: snap.currentConfig?.bannerFontName,
+    fontSize: snap.currentConfig?.bannerFontSize ?? BANNER_FONT_SIZES.default,
     fontSizeRange: BANNER_FONT_SIZES,
-    backgroundColor: configuration.bannerBackgroundColor,
-    textColor: configuration.bannerTextColor,
-    borderRadius: configuration.bannerBorder,
-    position: configuration.bannerPosition,
-    slideAnimation: configuration.bannerSlideAnimation,
-    thumbnail: configuration.bannerThumbnail ?? 'default',
+    backgroundColor: snap.currentConfig?.bannerBackgroundColor,
+    textColor: snap.currentConfig?.bannerTextColor,
+    borderRadius: snap.currentConfig?.bannerBorder,
+    position: snap.currentConfig?.bannerPosition,
+    slideAnimation: snap.currentConfig?.bannerSlideAnimation,
+    thumbnail: snap.currentConfig?.bannerThumbnail ?? 'default',
 
-    onFontNameChange: (fontName: FontFamilyKey) => {
-      configuration.bannerFontName = fontName
-    },
-    onFontSizeChange: (fontSize: number) => {
-      configuration.bannerFontSize = fontSize
-    },
-    onBorderChange: (border: CornerType) => {
-      configuration.bannerBorder = border
-    },
-    onSlideAnimationChange: (animation: SlideAnimationType) => {
-      configuration.bannerSlideAnimation = animation
-    },
+    onFontNameChange: (fontName: FontFamilyKey) =>
+      toolActions.setToolConfig({ bannerFontName: fontName }),
+    onFontSizeChange: (fontSize: number) =>
+      toolActions.setToolConfig({ bannerFontSize: fontSize }),
+    onBackgroundColorChange: (color: string) =>
+      toolActions.setToolConfig({ bannerBackgroundColor: color }),
+    onTextColorChange: (color: string) =>
+      toolActions.setToolConfig({ bannerTextColor: color }),
+    onBorderChange: (border: CornerType) =>
+      toolActions.setToolConfig({ bannerBorder: border }),
+    onPositionChange: (position: BannerPositionKey) =>
+      toolActions.setToolConfig({ bannerPosition: position }),
+    onSlideAnimationChange: (animation: SlideAnimationType) =>
+      toolActions.setToolConfig({ bannerSlideAnimation: animation }),
     onThumbnailVisibilityChange: (visible: boolean) => {
-      configuration.bannerThumbnail = visible ? 'default' : ''
+      toolActions.setToolConfig({ bannerThumbnail: visible ? 'default' : '' })
     },
 
     showAnimation: true
@@ -400,21 +399,27 @@ export default function Banner() {
                       onRefresh={handleRefresh}
                       positionSelector={
                         <BannerPositionSelector
-                          defaultValue={configuration.bannerPosition}
+                          defaultValue={snap.currentConfig?.bannerPosition}
                           onChange={(value) =>
-                            (configuration.bannerPosition = value)
+                            toolActions.setToolConfig({ bannerPosition: value })
                           }
                         />
                       }
                       colorsSelector={
                         <BannerColorsSelector
-                          backgroundColor={configuration.bannerBackgroundColor}
-                          textColor={configuration.bannerTextColor}
+                          backgroundColor={
+                            snap.currentConfig?.bannerBackgroundColor
+                          }
+                          textColor={snap.currentConfig?.bannerTextColor}
                           onBackgroundColorChange={(color: string) =>
-                            (configuration.bannerBackgroundColor = color)
+                            toolActions.setToolConfig({
+                              bannerBackgroundColor: color
+                            })
                           }
                           onTextColorChange={(color: string) =>
-                            (configuration.bannerTextColor = color)
+                            toolActions.setToolConfig({
+                              bannerTextColor: color
+                            })
                           }
                         />
                       }

@@ -3,7 +3,7 @@ import { APP_BASEPATH } from '~/lib/constants'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
-import type { ElementConfigType } from '@shared/types'
+import type { ElementConfigType, PresetIds } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import { StoreManager } from './toolStoreManager'
@@ -220,10 +220,10 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus,
-  bannerStores: manager['bannerStores'] as Record<StableKey, BannerStoreType>,
-  widgetStores: manager['widgetStores'] as Record<StableKey, WidgetStoreType>,
-  getBannerStore: (key: StableKey) => manager.getBannerStore(key),
-  getWidgetStore: (key: StableKey) => manager.getWidgetStore(key),
+  bannerStores: manager['bannerStores'] as Record<PresetIds, BannerStoreType>,
+  widgetStores: manager['widgetStores'] as Record<PresetIds, WidgetStoreType>,
+  getBannerStore: (key: PresetIds) => manager.getBannerStore(key),
+  getWidgetStore: (key: PresetIds) => manager.getWidgetStore(key),
   get activePreset() {
     return manager.activeTab
   }

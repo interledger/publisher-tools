@@ -4,10 +4,11 @@ import {
   AppearanceBuilder,
   BuilderPresetTabs
 } from '@/components'
+import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useUI } from '~/stores/uiStore'
+import { useSnapshot } from 'valtio'
 import type { ToolContent } from './ContentBuilder'
 import type { ToolAppearance } from './AppearanceBuilder'
-import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 
 interface BuilderFormProps {
   content: ToolContent
@@ -28,8 +29,8 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   positionSelector,
   colorsSelector
 }) => {
+  const snap = useSnapshot(toolState)
   const { state: uiState } = useUI()
-  const { modifiedVersions, activeVersion } = toolState
 
   useEffect(() => {
     const bothComplete = uiState.contentComplete && uiState.appearanceComplete
@@ -43,10 +44,10 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   }
 
   const getLatestTabOptions = () => {
-    return toolActions.versionOptions.map((option) => ({
-      id: option.stableKey,
-      label: option.versionName,
-      isDirty: modifiedVersions.includes(option.stableKey)
+    return toolActions.versionOptions.map(({ stableKey: id }) => ({
+      id,
+      label: toolState.configurations[id].versionName,
+      isDirty: toolState.modifiedVersions.includes(id)
     }))
   }
   const [tabOptions, setTabOptions] = React.useState(getLatestTabOptions)
@@ -68,7 +69,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
       <BuilderPresetTabs
         idPrefix="presets"
         options={tabOptions}
-        selectedId={activeVersion}
+        selectedId={snap.activeVersion}
         onChange={handleTabSelect}
         onRename={handleTabLabelChange}
       >

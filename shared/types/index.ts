@@ -1,7 +1,9 @@
+/** @deprecated Use Config, BannerConfig, WidgetConfig instead */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
 }
 
+/** @deprecated Use Config, BannerConfig, WidgetConfig instead */
 export interface ElementConfigType {
   // general config
   /** the display name for this configuration version */
@@ -49,6 +51,58 @@ export interface ElementConfigType {
   widgetButtonBackgroundColor: string
   widgetTriggerBackgroundColor: string
   widgetTriggerIcon: string
+}
+
+export interface BaseToolConfig {
+  $version: string
+  $name: string
+  $modifiedAt?: string
+}
+
+export interface BannerConfig extends BaseToolConfig {
+  // content
+  title: { text: string }
+  description: { text: string; visible: boolean }
+
+  // appearance
+  fontName: FontFamilyKey
+  fontSize: number
+  textColor: string
+  background: string
+  border: CornerType
+  animation: SlideAnimationType
+  thumbnail: string
+  position: BannerPositionKey
+}
+
+export interface WidgetConfig extends BaseToolConfig {
+  // content
+  title: { text: string }
+  description: { text: string; visible: boolean }
+  payButton: { text: string }
+
+  // appearance
+  fontName: FontFamilyKey
+  fontSize: number
+  textColor: string
+  background: string
+  border: CornerType
+  position: WidgetPositionKey
+  icon: string
+  iconBackground?: string
+}
+
+export type PresetIds = 'a' | 'b' | 'c'
+
+export type Config = {
+  $walletAddress: string
+  $modifiedAt?: string
+  banner: {
+    [presetId in PresetIds]?: BannerConfig
+  }
+  widget: {
+    [presetId in PresetIds]?: WidgetConfig
+  }
 }
 
 export const BANNER_FONT_SIZES = {
