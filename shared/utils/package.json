@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
-    "@interledger/open-payments": "^7.0.0"
+    "@interledger/open-payments": "^7.1.3"
   }
 }
