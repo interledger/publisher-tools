@@ -36,11 +36,11 @@
     }
   },
   "engines": {
-    "pnpm": "^9.12.1",
+    "pnpm": "^10.17.1",
     "npm": "pnpm",
     "yarn": "pnpm",
     "node": "^20.12.1"
   },
   "private": true,
-  "packageManager": "pnpm@9.12.1"
+  "packageManager": "pnpm@10.17.1"
 }
