@@ -32,20 +32,17 @@ import {
 
 interface BaseToolAppearance {
   fontSizeRange: { min: number; max: number }
-  fontName?: FontFamilyKey
-  fontSize?: number
-  backgroundColor?: string
-  textColor?: string
+  fontName: FontFamilyKey
+  fontSize: number
+  backgroundColor: string
+  textColor: string
+  borderRadius: CornerType
   buttonColor?: string
-  borderRadius?: CornerType
   slideAnimation?: SlideAnimationType
   thumbnail?: string
 
   onFontNameChange: (fontName: FontFamilyKey) => void
   onFontSizeChange: (fontSize: number) => void
-  onBackgroundColorChange: (color: string) => void
-  onTextColorChange: (color: string) => void
-  onButtonColorChange?: (color: string) => void
   onBorderChange: (border: CornerType) => void
   onSlideAnimationChange: (animation: SlideAnimationType) => void
   onThumbnailVisibilityChange: (visible: boolean) => void
@@ -54,13 +51,11 @@ interface BaseToolAppearance {
 }
 
 export interface BannerToolAppearance extends BaseToolAppearance {
-  position?: BannerPositionKey
-  onPositionChange: (position: BannerPositionKey) => void
+  position: BannerPositionKey
 }
 
 export interface WidgetToolAppearance extends BaseToolAppearance {
-  position?: WidgetPositionKey
-  onPositionChange: (position: WidgetPositionKey) => void
+  position: WidgetPositionKey
 }
 
 export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance

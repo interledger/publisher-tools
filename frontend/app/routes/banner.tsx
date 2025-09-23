@@ -37,7 +37,12 @@ import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
 import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
 import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
-import { BANNER_FONT_SIZES } from '@shared/types'
+import {
+  BANNER_FONT_SIZES,
+  type FontFamilyKey,
+  type CornerType,
+  type SlideAnimationType
+} from '@shared/types'
 import {
   toolActions,
   toolState,
@@ -172,8 +177,7 @@ BannerPreview.displayName = 'BannerPreview'
 
 export default function Banner() {
   const toolSnap = useSnapshot(toolState)
-  const bannerStore = toolSnap.getBannerStore(toolSnap.activeVersion)
-
+  const { configuration } = toolSnap.getBannerStore(toolSnap.activeVersion)
   const bannerActions = toolActions
 
   const { actions: uiActions } = useUI()
@@ -201,37 +205,49 @@ export default function Banner() {
     messageHelpText:
       'Strong message to help people engage with Web Monetization',
     messageMaxLength: 300,
-    currentTitle: bannerStore.configuration?.bannerTitleText,
-    currentMessage: bannerStore.configuration?.bannerDescriptionText,
-    isDescriptionVisible:
-      bannerStore.configuration?.bannerDescriptionVisible ?? true,
-    onTitleChange: bannerStore.onTitleChange,
-    onMessageChange: bannerStore.onDescriptionChange,
-    onSuggestedTitleClick: (title: string) =>
-      bannerStore.onTitleChange(title.replace(/"/g, '')),
-    onDescriptionVisibilityChange: bannerStore.onDescriptionVisibilityChange
+    currentTitle: configuration?.bannerTitleText,
+    currentMessage: configuration?.bannerDescriptionText,
+    isDescriptionVisible: configuration?.bannerDescriptionVisible ?? true,
+    onTitleChange: (title: string) => {
+      configuration.bannerTitleText = title
+    },
+    onMessageChange: (description: string) => {
+      configuration.bannerDescriptionText = description
+    },
+    onSuggestedTitleClick: (title: string) => {
+      configuration.bannerTitleText = title.replace(/"/g, '')
+    },
+    onDescriptionVisibilityChange: (visible: boolean) => {
+      configuration.bannerDescriptionVisible = visible
+    }
   }
 
   const appearanceConfiguration: BannerToolAppearance = {
-    fontName: bannerStore.configuration?.bannerFontName,
-    fontSize:
-      bannerStore.configuration?.bannerFontSize ?? BANNER_FONT_SIZES.default,
+    fontName: configuration.bannerFontName,
+    fontSize: configuration.bannerFontSize ?? BANNER_FONT_SIZES.default,
     fontSizeRange: BANNER_FONT_SIZES,
-    backgroundColor: bannerStore.configuration?.bannerBackgroundColor,
-    textColor: bannerStore.configuration?.bannerTextColor,
-    borderRadius: bannerStore.configuration?.bannerBorder,
-    position: bannerStore.configuration?.bannerPosition,
-    slideAnimation: bannerStore.configuration?.bannerSlideAnimation,
-    thumbnail: bannerStore.configuration?.bannerThumbnail ?? 'default',
+    backgroundColor: configuration.bannerBackgroundColor,
+    textColor: configuration.bannerTextColor,
+    borderRadius: configuration.bannerBorder,
+    position: configuration.bannerPosition,
+    slideAnimation: configuration.bannerSlideAnimation,
+    thumbnail: configuration.bannerThumbnail ?? 'default',
 
-    onFontNameChange: bannerStore.onFontNameChange,
-    onFontSizeChange: bannerStore.onFontSizeChange,
-    onBackgroundColorChange: bannerStore.onBackgroundColorChange,
-    onTextColorChange: bannerStore.onTextColorChange,
-    onBorderChange: bannerStore.onBorderChange,
-    onPositionChange: bannerStore.onPositionChange,
-    onSlideAnimationChange: bannerStore.onSlideAnimationChange,
-    onThumbnailVisibilityChange: bannerStore.onThumbnailVisibilityChange,
+    onFontNameChange: (fontName: FontFamilyKey) => {
+      configuration.bannerFontName = fontName
+    },
+    onFontSizeChange: (fontSize: number) => {
+      configuration.bannerFontSize = fontSize
+    },
+    onBorderChange: (border: CornerType) => {
+      configuration.bannerBorder = border
+    },
+    onSlideAnimationChange: (animation: SlideAnimationType) => {
+      configuration.bannerSlideAnimation = animation
+    },
+    onThumbnailVisibilityChange: (visible: boolean) => {
+      configuration.bannerThumbnail = visible ? 'default' : ''
+    },
 
     showAnimation: true
   }
@@ -387,25 +403,21 @@ export default function Banner() {
                       onRefresh={handleRefresh}
                       positionSelector={
                         <BannerPositionSelector
-                          defaultValue={
-                            bannerStore.configuration?.bannerPosition
-                          }
+                          defaultValue={configuration.bannerPosition}
                           onChange={(value) =>
-                            bannerStore.onPositionChange(value)
+                            (configuration.bannerPosition = value)
                           }
                         />
                       }
                       colorsSelector={
                         <BannerColorsSelector
-                          backgroundColor={
-                            bannerStore.configuration?.bannerBackgroundColor
-                          }
-                          textColor={bannerStore.configuration?.bannerTextColor}
+                          backgroundColor={configuration.bannerBackgroundColor}
+                          textColor={configuration.bannerTextColor}
                           onBackgroundColorChange={(color: string) =>
-                            bannerStore.onBackgroundColorChange(color)
+                            (configuration.bannerBackgroundColor = color)
                           }
                           onTextColorChange={(color: string) =>
-                            bannerStore.onTextColorChange(color)
+                            (configuration.bannerTextColor = color)
                           }
                         />
                       }

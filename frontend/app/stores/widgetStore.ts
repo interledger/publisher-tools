@@ -31,19 +31,6 @@ export interface WidgetConfigType {
 
 export interface WidgetStoreType {
   configuration: WidgetConfigType
-
-  // handlers
-  onTitleChange: (title: string) => void
-  onDescriptionChange: (description: string) => void
-  onDescriptionVisibilityChange: (visible: boolean) => void
-  onFontNameChange: (fontName: FontFamilyKey) => void
-  onFontSizeChange: (fontSize: number) => void
-  onBackgroundColorChange: (color: string) => void
-  onTextColorChange: (color: string) => void
-  onButtonColorChange: (color: string) => void
-  onBorderChange: (border: CornerType) => void
-  onPositionChange: (position: WidgetPositionKey) => void
-  onThumbnailVisibilityChange: (visible: boolean) => void
 }
 
 function createDefaultWidgetConfig(): WidgetConfigType {
@@ -69,56 +56,5 @@ function createDefaultWidgetConfig(): WidgetConfigType {
   }
 }
 
-export function createDataStoreWidget(): WidgetStoreType {
-  const initialConfig = createDefaultWidgetConfig()
-
-  const store = proxy<WidgetStoreType>({
-    configuration: initialConfig,
-
-    onTitleChange(title: string) {
-      store.configuration.widgetTitleText = title
-    },
-
-    onDescriptionChange(description: string) {
-      store.configuration.widgetDescriptionText = description
-    },
-
-    onDescriptionVisibilityChange(visible: boolean) {
-      store.configuration.widgetDescriptionVisible = visible
-    },
-
-    onFontNameChange(fontName: FontFamilyKey) {
-      store.configuration.widgetFontName = fontName
-    },
-
-    onFontSizeChange(fontSize: number) {
-      store.configuration.widgetFontSize = fontSize
-    },
-
-    onBackgroundColorChange(color: string) {
-      store.configuration.widgetBackgroundColor = color
-    },
-
-    onTextColorChange(color: string) {
-      store.configuration.widgetTextColor = color
-    },
-
-    onButtonColorChange(color: string) {
-      store.configuration.widgetButtonBackgroundColor = color
-    },
-
-    onBorderChange(border: CornerType) {
-      store.configuration.widgetButtonBorder = border
-    },
-
-    onPositionChange(position: WidgetPositionKey) {
-      store.configuration.widgetPosition = position
-    },
-
-    onThumbnailVisibilityChange(visible: boolean) {
-      store.configuration.widgetTriggerIcon = visible ? 'default' : ''
-    }
-  })
-
-  return store
-}
+export const createDataStoreWidget = (): WidgetStoreType =>
+  proxy({ configuration: createDefaultWidgetConfig() })

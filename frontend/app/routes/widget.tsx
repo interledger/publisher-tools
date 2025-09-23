@@ -24,7 +24,11 @@ import {
   WidgetPositionSelector,
   WidgetColorsSelector
 } from '@/components'
-import type { SlideAnimationType } from '@shared/types'
+import type {
+  SlideAnimationType,
+  FontFamilyKey,
+  CornerType
+} from '@shared/types'
 
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
@@ -163,7 +167,7 @@ const WidgetPreview: React.FC = () => {
 
 export default function Widget() {
   const toolSnap = useSnapshot(toolState)
-  const widgetStore = toolSnap.getWidgetStore(toolSnap.activeVersion)
+  const { configuration } = toolSnap.getWidgetStore(toolSnap.activeVersion)
 
   const widgetActions = toolActions
 
@@ -190,39 +194,48 @@ export default function Widget() {
     messagePlaceholder: 'Enter your widget message...',
     messageHelpText: 'Describe how payments support your work',
     messageMaxLength: 300,
-    currentTitle: widgetStore.configuration?.widgetTitleText,
-    currentMessage: widgetStore.configuration?.widgetDescriptionText,
-    isDescriptionVisible:
-      widgetStore.configuration?.widgetDescriptionVisible ?? true,
-    onTitleChange: widgetStore.onTitleChange,
-    onMessageChange: widgetStore.onDescriptionChange,
-    onSuggestedTitleClick: (title: string) =>
-      widgetStore.onTitleChange(title.replace(/"/g, '')),
-    onDescriptionVisibilityChange: widgetStore.onDescriptionVisibilityChange
+    currentTitle: configuration.widgetTitleText,
+    currentMessage: configuration.widgetDescriptionText,
+    isDescriptionVisible: configuration.widgetDescriptionVisible ?? true,
+    onTitleChange: (title: string) => {
+      configuration.widgetTitleText = title
+    },
+    onMessageChange: (description: string) => {
+      configuration.widgetDescriptionText = description
+    },
+    onSuggestedTitleClick: (title: string) => {
+      configuration.widgetTitleText = title.replace(/"/g, '')
+    },
+    onDescriptionVisibilityChange: (visible: boolean) => {
+      configuration.widgetDescriptionVisible = visible
+    }
   }
 
   const appearanceConfiguration: WidgetToolAppearance = {
-    fontName: widgetStore.configuration?.widgetFontName,
-    fontSize:
-      widgetStore.configuration?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
+    fontName: configuration.widgetFontName,
+    fontSize: configuration.widgetFontSize ?? WIDGET_FONT_SIZES.default,
     fontSizeRange: WIDGET_FONT_SIZES,
-    backgroundColor: widgetStore.configuration?.widgetBackgroundColor,
-    textColor: widgetStore.configuration?.widgetTextColor,
-    buttonColor: widgetStore.configuration?.widgetButtonBackgroundColor,
-    borderRadius: widgetStore.configuration?.widgetButtonBorder,
-    position: widgetStore.configuration?.widgetPosition,
+    backgroundColor: configuration.widgetBackgroundColor,
+    textColor: configuration.widgetTextColor,
+    buttonColor: configuration.widgetButtonBackgroundColor,
+    borderRadius: configuration.widgetButtonBorder,
+    position: configuration.widgetPosition,
     slideAnimation: undefined,
-    thumbnail: widgetStore.configuration?.widgetTriggerIcon,
+    thumbnail: configuration.widgetTriggerIcon,
 
-    onFontNameChange: widgetStore.onFontNameChange,
-    onFontSizeChange: widgetStore.onFontSizeChange,
-    onBackgroundColorChange: widgetStore.onBackgroundColorChange,
-    onTextColorChange: widgetStore.onTextColorChange,
-    onButtonColorChange: widgetStore.onButtonColorChange,
-    onBorderChange: widgetStore.onBorderChange,
-    onPositionChange: widgetStore.onPositionChange,
+    onFontNameChange: (fontName: FontFamilyKey) => {
+      configuration.widgetFontName = fontName
+    },
+    onFontSizeChange: (fontSize: number) => {
+      configuration.widgetFontSize = fontSize
+    },
+    onBorderChange: (border: CornerType) => {
+      configuration.widgetButtonBorder = border
+    },
     onSlideAnimationChange: (_animation: SlideAnimationType) => {},
-    onThumbnailVisibilityChange: widgetStore.onThumbnailVisibilityChange,
+    onThumbnailVisibilityChange: (visible: boolean) => {
+      configuration.widgetTriggerIcon = visible ? 'default' : ''
+    },
 
     showAnimation: false
   }
@@ -372,32 +385,27 @@ export default function Widget() {
                       onRefresh={handleRefresh}
                       positionSelector={
                         <WidgetPositionSelector
-                          defaultValue={
-                            widgetStore.configuration?.widgetPosition
-                          }
+                          defaultValue={configuration.widgetPosition}
                           onChange={(value) =>
-                            widgetStore.onPositionChange(value)
+                            (configuration.widgetPosition = value)
                           }
                         />
                       }
                       colorsSelector={
                         <WidgetColorsSelector
-                          backgroundColor={
-                            widgetStore.configuration?.widgetBackgroundColor
-                          }
-                          textColor={widgetStore.configuration?.widgetTextColor}
+                          backgroundColor={configuration.widgetBackgroundColor}
+                          textColor={configuration.widgetTextColor}
                           buttonColor={
-                            widgetStore.configuration
-                              ?.widgetButtonBackgroundColor
+                            configuration.widgetButtonBackgroundColor
                           }
                           onBackgroundColorChange={(color: string) =>
-                            widgetStore.onBackgroundColorChange(color)
+                            (configuration.widgetBackgroundColor = color)
                           }
                           onTextColorChange={(color: string) =>
-                            widgetStore.onTextColorChange(color)
+                            (configuration.widgetTextColor = color)
                           }
                           onButtonColorChange={(color: string) =>
-                            widgetStore.onButtonColorChange(color)
+                            (configuration.widgetButtonBackgroundColor = color)
                           }
                         />
                       }
