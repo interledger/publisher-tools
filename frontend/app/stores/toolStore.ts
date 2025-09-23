@@ -642,10 +642,10 @@ export const toolActions = {
 }
 
 /** Load from localStorage on init, remove storage if invalid */
-export function loadState(env: Pick<Env, 'OP_WALLET_ADDRESS'>) {
+export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
   toolState.cdnUrl = CDN_URL
   toolState.apiUrl = API_URL
-  toolState.opWallet = env.OP_WALLET_ADDRESS
+  toolState.opWallet = OP_WALLET_ADDRESS
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {

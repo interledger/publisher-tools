@@ -78,7 +78,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       grantResponse,
       isGrantAccepted,
       isGrantResponse,
-      env
+      OP_WALLET_ADDRESS: env.OP_WALLET_ADDRESS
     },
     {
       headers: {
@@ -186,7 +186,7 @@ export default function Banner() {
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
   const bannerRef = useRef<BannerHandle>(null)
-  const { grantResponse, isGrantAccepted, isGrantResponse, env } =
+  const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
 
@@ -255,7 +255,7 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    loadState(env)
+    loadState(OP_WALLET_ADDRESS)
     persistState()
 
     if (isGrantResponse) {
