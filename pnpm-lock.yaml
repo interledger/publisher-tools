@@ -268,8 +268,8 @@ importers:
         specifier: ^2.15.0
         version: 2.16.0
       '@types/uuid':
-        specifier: ^9.0.8
-        version: 9.0.8
+        specifier: ^11.0.0
+        version: 11.0.0
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -1340,8 +1340,9 @@ packages:
   '@types/unist@2.0.11':
     resolution: {integrity: sha512-CmBKiL6NNo/OqgmMn95Fk9Whlp2mtvIv+KNpQKN2F4SjvrEesubTRWGYSg+BnWZOnlCaSTU1sMpsBOzgbYhnsA==}
 
-  '@types/uuid@9.0.8':
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
+  '@types/uuid@11.0.0':
+    resolution: {integrity: sha512-HVyk8nj2m+jcFRNazzqyVKiZezyhDKrGUA3jlEcg/nZ6Ms+qHwocba1Y/AaVaznJTAM9xpdFSh+ptbNrhOGvZA==}
+    deprecated: This is a stub types definition. uuid provides its own type definitions, so you do not need this installed.
 
   '@typescript-eslint/eslint-plugin@8.41.0':
     resolution: {integrity: sha512-8fz6oa6wEKZrhXWro/S3n2eRJqlRcIa6SlDh59FXJ5Wp5XRZ8B9ixpJDcjadHq47hMx0u+HW6SNa6LjJQ6NLtw==}
@@ -5824,7 +5825,9 @@ snapshots:
 
   '@types/unist@2.0.11': {}
 
-  '@types/uuid@9.0.8': {}
+  '@types/uuid@11.0.0':
+    dependencies:
+      uuid: 9.0.1
 
   '@typescript-eslint/eslint-plugin@8.41.0(@typescript-eslint/parser@8.41.0(eslint@9.34.0(jiti@2.4.2))(typescript@5.9.2))(eslint@9.34.0(jiti@2.4.2))(typescript@5.9.2)':
     dependencies:
