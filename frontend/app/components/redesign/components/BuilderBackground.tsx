@@ -76,7 +76,10 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
           </div>
         </div>
 
-        <div id="browser-content" className="flex-1 p-md bg-transparent">
+        <div
+          id="browser-content"
+          className="flex-1 p-md bg-transparent [container-type:inline-size]"
+        >
           {children}
         </div>
       </div>

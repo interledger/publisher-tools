@@ -55,7 +55,7 @@ export class PaymentWidget extends LitElement {
       return
     }
 
-    if (!walletAddress) {
+    if (!walletAddress.trim()) {
       this.walletAddressError = 'Please fill out your wallet address.'
       this.isSubmitting = false
       return

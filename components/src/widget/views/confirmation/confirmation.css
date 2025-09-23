@@ -429,4 +429,24 @@
   .widget-header-container {
     padding: var(--Spacings-xs) var(--Spacings-md);
   }
+
+  .widget-body {
+    padding: 0px var(--Spacings-md);
+  }
+
+  .widget-footer {
+    padding: var(--Spacings-md);
+    padding-top: 0;
+  }
+
+  .trigger {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .trigger img,
+  .trigger .svg-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }

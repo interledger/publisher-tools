@@ -118,6 +118,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       #endregion
 
+      #region Summary
       - name: Create Job summary
         if: always()
         uses: actions/github-script@v7
@@ -174,3 +175,4 @@ jobs:
             <!-- worker-deploy-summary -->
             ${{ steps.summary.outputs.summary }}
           edit-mode: replace
+    #endregion

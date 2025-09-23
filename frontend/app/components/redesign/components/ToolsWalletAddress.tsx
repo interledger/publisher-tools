@@ -9,6 +9,11 @@ import { toolState, toolActions } from '~/stores/toolStore'
 import type { ElementErrors } from '~/lib/types'
 import { Heading5 } from '../Typography'
 import { useUI } from '~/stores/uiStore'
+import {
+  checkHrefFormat,
+  getWalletAddress,
+  toWalletAddressUrl
+} from '@shared/utils'
 
 export const ToolsWalletAddress = () => {
   const snap = useSnapshot(toolState)
@@ -33,9 +38,9 @@ export const ToolsWalletAddress = () => {
   }, [])
 
   const handleContinue = async () => {
-    if (!toolActions.validateWalletAddress(snap.walletAddress)) {
+    if (!snap.walletAddress.trim()) {
       setError({
-        fieldErrors: { walletAddress: ['Please enter a valid wallet address'] },
+        fieldErrors: { walletAddress: ['This field is required'] },
         message: []
       })
       return
@@ -43,11 +48,13 @@ export const ToolsWalletAddress = () => {
 
     setIsLoading(true)
     setError(undefined)
-
     try {
-      const result = await toolActions.fetchAndCheckConfigurations(
-        snap.walletAddress
+      const walletAddressUrl = checkHrefFormat(
+        toWalletAddressUrl(snap.walletAddress)
       )
+
+      const walletAddressInfo = await getWalletAddress(walletAddressUrl)
+      const result = await toolActions.fetchRemoteConfigs(walletAddressInfo.id)
 
       if (result.hasConflict) {
         toolActions.handleConfigurationConflict(result.fetchedConfigs)
@@ -60,6 +67,7 @@ export const ToolsWalletAddress = () => {
         toolActions.setConfigs(result.fetchedConfigs, true)
       }
 
+      toolActions.setWalletAddressId(walletAddressInfo.id)
       toolActions.setWalletConnected(true)
       setError(undefined)
     } catch (error) {

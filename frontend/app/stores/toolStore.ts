@@ -209,6 +209,7 @@ export const toolState = proxy({
 
   // wallet and connection state
   walletAddress: '',
+  walletAddressId: '',
   grantResponse: '',
   isGrantAccepted: false,
   isWalletConnected: false,
@@ -319,7 +320,8 @@ export const toolActions = {
   },
   getScriptToDisplay: (): string => {
     const {
-      currentConfig: { walletAddress },
+      walletAddress,
+      walletAddressId,
       currentToolType: toolType,
       activeVersion: preset,
       cdnUrl
@@ -328,14 +330,16 @@ export const toolActions = {
     const wa = toWalletAddressUrl(walletAddress)
     const src = new URL(`/${toolType}.js`, cdnUrl).href
 
-    const html = String.raw // for syntax highlighting
-    return html`<script
-      id="wmt-${toolType}-init-script"
-      type="module"
-      src="${src}"
-      data-wallet-address="${wa}"
-      data-tag="${preset}"
-    ></script>`
+    const script = document.createElement('script')
+    script.id = `wmt-${toolType}-init-script`
+    script.type = 'module'
+    script.src = src
+    script.dataset.walletAddress = wa
+    if (walletAddressId && wa !== walletAddressId) {
+      script.dataset.walletAddressId = walletAddressId
+    }
+    script.dataset.tag = preset
+    return script.outerHTML
   },
   updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
     if (!toolState.configurations[stableKey]) {
@@ -359,6 +363,9 @@ export const toolActions = {
   },
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
+  },
+  setWalletAddressId: (walletAddressId: string) => {
+    toolState.walletAddressId = walletAddressId
   },
   setHasRemoteConfigs: (hasRemoteConfigs: boolean) => {
     toolState.hasRemoteConfigs = hasRemoteConfigs
@@ -554,11 +561,7 @@ export const toolActions = {
    * @returns Object containing fetchedConfigs, conflict flags, and state information
    * @throws Error if wallet address is invalid or API call fails
    */
-  fetchAndCheckConfigurations: async (walletAddress: string) => {
-    if (!walletAddress?.trim()) {
-      throw new Error('Wallet address is required')
-    }
-
+  fetchRemoteConfigs: async (walletAddress: string) => {
     const baseUrl = location.origin + APP_BASEPATH
     const tool = toolState.currentToolType
     const response = await fetch(
@@ -583,6 +586,7 @@ export const toolActions = {
     const hasLocalModifications = toolState.modifiedVersions.length > 0
 
     return {
+      walletAddressId: walletAddress,
       fetchedConfigs,
       hasCustomEdits,
       hasLocalModifications,
@@ -623,28 +627,14 @@ export const toolActions = {
     if (toolState.modal?.type === 'override-preset') {
       toolState.modal = undefined
     }
-  },
-
-  validateWalletAddress: (walletAddress: string): boolean => {
-    if (!walletAddress?.trim()) {
-      return false
-    }
-
-    const trimmed = walletAddress.trim()
-    return (
-      trimmed.length > 0 &&
-      (trimmed.startsWith('https://') ||
-        trimmed.startsWith('$') ||
-        trimmed.includes('.'))
-    )
   }
 }
 
 /** Load from localStorage on init, remove storage if invalid */
-export function loadState(env: Pick<Env, 'OP_WALLET_ADDRESS'>) {
+export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
   toolState.cdnUrl = CDN_URL
   toolState.apiUrl = API_URL
-  toolState.opWallet = env.OP_WALLET_ADDRESS
+  toolState.opWallet = OP_WALLET_ADDRESS
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
