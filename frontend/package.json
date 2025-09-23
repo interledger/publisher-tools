@@ -62,7 +62,7 @@
     "postcss": "^8.4.49",
     "typescript": "5.9.2",
     "vite": "^5.4.11",
-    "vite-tsconfig-paths": "^4.3.2",
+    "vite-tsconfig-paths": "^5.1.4",
     "wrangler": "^4.32.0"
   },
   "engines": {
