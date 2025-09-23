@@ -11,13 +11,10 @@ import type { ElementErrors } from '~/lib/types.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { validateForm } from '~/utils/validate.server.js'
-import {
-  createInteractiveGrant,
-  getValidWalletAddress
-} from '~/utils/open-payments.server.js'
+import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { AWS_PREFIX } from '@shared/defines'
-import { normalizeWalletAddress } from '@shared/utils'
+import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   try {
@@ -43,7 +40,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
     }
 
     const ownerWalletAddress = normalizeWalletAddress(
-      await getValidWalletAddress(env, payload.walletAddress as string)
+      await getWalletAddress(payload.walletAddress as string)
     )
     try {
       const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
@@ -102,7 +99,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   }
 
   let ownerWalletAddress: string = payload.walletAddress
-  const walletAddress = await getValidWalletAddress(env, ownerWalletAddress)
+  const walletAddress = await getWalletAddress(ownerWalletAddress)
 
   const session = await getSession(request.headers.get('Cookie'))
   const validForWallet = session.get('validForWallet')
