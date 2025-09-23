@@ -1,13 +1,8 @@
 import React, { useRef, useEffect } from 'react'
 import { useUI } from '~/stores/uiStore'
 import { BuilderAccordion } from './BuilderAccordion'
-import {
-  InputField,
-  TextareaField,
-  Divider,
-  Checkbox,
-  PillRadioListItem
-} from '@/components'
+import { TextareaField, Divider, Checkbox } from '@/components'
+import { TitleInput } from './builder/TitleInput'
 
 export interface ToolContent {
   suggestedTitles: string[]
@@ -77,56 +72,13 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
       initialIsOpen={uiState.activeSection === 'content'}
     >
       <div className="flex flex-col gap-lg">
-        <div
-          role="group"
-          aria-labelledby="label-suggested-title"
-          className="flex flex-col gap-xs"
-        >
-          <div
-            id="label-suggested-title"
-            className="text-base leading-md font-bold text-text-primary"
-          >
-            Suggested title
-          </div>
-          <div
-            className="flex flex-wrap gap-xs group"
-            onChange={(ev) => {
-              const input = ev.target as HTMLInputElement
-              content.onSuggestedTitleClick(input.value)
-            }}
-          >
-            {content.suggestedTitles.map((title) => (
-              <PillRadioListItem
-                key={title}
-                value={title}
-                selected={content.currentTitle === title}
-                radioGroup="suggested-title"
-              >
-                {title}
-              </PillRadioListItem>
-            ))}
-          </div>
-        </div>
-        <Divider />
-
-        <div className="flex flex-col gap-xs">
-          <h4 className="text-base leading-md font-bold text-text-primary">
-            Custom title
-          </h4>
-          <InputField
-            ref={titleInputRef}
-            defaultValue={content.currentTitle}
-            placeholder={content.suggestedTitles[0] || 'Enter a custom title'}
-            onChange={(e) => {
-              content.onTitleChange(e.target.value.trim())
-            }}
-            showCounter={true}
-            currentLength={content.currentTitle.length}
-            maxLength={content.titleMaxLength}
-            helpText={content.titleHelpText}
-            className="h-12 text-base leading-md"
-          />
-        </div>
+        <TitleInput
+          value={content.currentTitle}
+          onChange={content.onTitleChange}
+          suggestions={content.suggestedTitles}
+          maxLength={content.titleMaxLength}
+          helpText={content.titleHelpText}
+        />
 
         <Divider />
 
