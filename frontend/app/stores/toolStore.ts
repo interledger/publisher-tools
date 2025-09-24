@@ -5,13 +5,13 @@ import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type {
   Configuration,
+  WidgetPreset,
+  BannerPreset,
   ElementConfigType,
   PresetId,
-  Tool,
-  BannerPreset,
-  WidgetPreset
+  Tool
 } from '@shared/types'
-import type { ModalType } from '~/lib/presets.js'
+import type { ModalType } from '~/lib/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import { StoreManager } from './toolStoreManager'
 
