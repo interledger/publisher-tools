@@ -4,6 +4,6 @@
     "moduleResolution": "bundler",
     "module": "es2015",
     "target": "es2020",
-    "types": ["vite/client", "./@types/index.d.ts"]
+    "types": ["./@types/index.d.ts"]
   }
 }

@@ -124,7 +124,8 @@ export class WidgetController implements ReactiveController {
   }
 
   private applyFontFamily(fontName: FontFamilyKey) {
-    applyFontFamily(this.host, fontName, 'widget')
+    const fontBaseUrl = new URL('/assets/fonts/', this.config.cdnUrl).href
+    applyFontFamily(this.host, fontName, 'widget', fontBaseUrl)
   }
 
   applyTheme(element: HTMLElement) {

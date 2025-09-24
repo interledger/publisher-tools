@@ -39,6 +39,7 @@ export interface BannerConfig {
     fontSize?: number
   }
   logo?: string
+  cdnUrl: string
 }
 
 export class Banner extends LitElement {
@@ -258,8 +259,10 @@ export class BannerController implements ReactiveController {
    * @param fontName The name of the font family to apply.
    */
   private applyFontFamily(fontName: FontFamilyKey) {
-    applyFontFamily(this.host, fontName, 'banner')
+    const fontBaseUrl = new URL('/assets/fonts/', this.config.cdnUrl).href
+    applyFontFamily(this.host, fontName, 'banner', fontBaseUrl)
   }
+
   applyTheme(element: HTMLElement) {
     const theme = this.config.theme
     if (!theme) return
