@@ -51,8 +51,11 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
-export type Tool = 'banner' | 'widget'
-export type PresetId = 'version1' | 'version2' | 'version3'
+export const TOOLS = ['banner', 'widget'] as const
+export type Tool = (typeof TOOLS)[number]
+
+export const PRESET_IDS = ['version1', 'version2', 'version3'] as const
+export type PresetId = (typeof PRESET_IDS)[number]
 
 type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
 export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>

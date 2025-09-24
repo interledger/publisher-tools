@@ -3,6 +3,7 @@ import { HTTPException } from 'hono/http-exception'
 import { z } from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
+import { PRESET_IDS, TOOLS } from '@shared/types'
 import type {
   BannerConfig,
   ConfigVersions,
@@ -19,14 +20,14 @@ app.get(
   zValidator(
     'param',
     z.object({
-      tool: z.enum(['widget', 'banner'])
+      tool: z.enum(TOOLS)
     })
   ),
   zValidator(
     'query',
     z.object({
       wa: z.string().url(),
-      preset: z.enum(['version1', 'version2', 'version3'])
+      preset: z.enum(PRESET_IDS)
     })
   ),
   async ({ req, json, env }) => {
