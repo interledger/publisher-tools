@@ -24,17 +24,13 @@ export enum SlideAnimationType {
 
 export const validConfigTypes = ['button', 'widget']
 export const modalTypes = [
-  'confirm',
-  'import',
-  'info',
-  'new-version',
   'script',
   'wallet-ownership',
   'grant-response',
   'save-error',
   'save-success',
   'override-preset'
-]
+] as const
 export type ModalType = {
   type: (typeof modalTypes)[number]
   // set when type is "save-error"
