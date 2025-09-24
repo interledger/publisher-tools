@@ -35,7 +35,6 @@ export function getScriptParams(tool: Tool) {
     throw new Error(`Missing data-tag for ${tool}.js script`)
   }
 
-  return { walletAddress, walletAddressId, presetId: tag as PresetId }
   return { walletAddress, walletAddressId, presetId: tag as PresetId, cdnUrl }
 }
 
