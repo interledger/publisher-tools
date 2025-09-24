@@ -46,6 +46,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
   const defaultConfig = getDefaultData()
   const scriptInitUrl = CDN_URL
   const apiUrl = API_URL
+  const cdnUrl = CDN_URL
   const frontendUrl = new URL(
     '/tools/',
     request.headers.get('origin') || request.url
@@ -58,6 +59,7 @@ export async function loader({ params, request, context }: LoaderFunctionArgs) {
       defaultConfig,
       scriptInitUrl,
       apiUrl,
+      cdnUrl,
       frontendUrl,
       opWallet,
       walletAddress,
@@ -81,6 +83,7 @@ export default function Create() {
     scriptInitUrl,
     apiUrl,
     frontendUrl,
+    cdnUrl,
     opWallet,
     walletAddress,
     isGrantAccepted,
@@ -321,8 +324,7 @@ export default function Create() {
             <fieldset disabled={isSubmitting || saveFetcher.state !== 'idle'}>
               <ToolPreview
                 type={elementType}
-                apiUrl={apiUrl}
-                frontendUrl={frontendUrl}
+                serviceUrls={{ api: apiUrl, app: frontendUrl, cdn: cdnUrl }}
                 opWallet={opWallet}
                 toolConfig={toolConfig}
               />

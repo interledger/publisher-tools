@@ -40,6 +40,7 @@ function drawBanner(config: BannerConfig) {
   const bannerElement = document.createElement('wm-banner')
 
   const bannerConfig = {
+    cdnUrl: params.cdnUrl,
     bannerTitleText: config.bannerTitleText,
     bannerDescriptionText: config.bannerDescriptionText,
     isBannerDescriptionVisible: config.bannerDescriptionVisible,
