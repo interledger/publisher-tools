@@ -6,17 +6,14 @@ import type {
 } from '../utils/validate.server.js'
 import type { ElementConfigType } from '@shared/types'
 
-export const modalTypes = [
-  'script',
-  'wallet-ownership',
-  'grant-response',
-  'save-error',
-  'save-success',
-  'override-preset'
-] as const
-
 export type ModalType = {
-  type: (typeof modalTypes)[number]
+  type:
+    | 'script'
+    | 'wallet-ownership'
+    | 'grant-response'
+    | 'save-error'
+    | 'save-success'
+    | 'override-preset'
   // set when type is "save-error"
   error?: { message?: string; fieldErrors?: Record<string, string> }
   grantRedirectIntent?: string
