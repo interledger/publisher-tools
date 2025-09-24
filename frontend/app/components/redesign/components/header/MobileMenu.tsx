@@ -1,3 +1,5 @@
+import { cx } from 'class-variance-authority'
+import { useLocation } from '@remix-run/react'
 import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
@@ -24,13 +26,24 @@ interface MobileMenuSectionProps {
 }
 
 const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
+  const isActive = useLocation().pathname === to
   return (
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default"
+        className={cx(
+          'flex w-full items-center gap-sm rounded-lg p-md text-nav-link-default',
+          'transition-colors',
+          'active:bg-secondary-surface',
+          { 'bg-secondary-hover-surface': isActive }
+        )}
       >
-        {text}
+        <div
+          className={cx('h-6 w-0.5 transition-colors', {
+            'bg-secondary-edge': isActive
+          })}
+        />
+        <span className="text-base font-normal leading-md">{text}</span>
       </a>
     </li>
   )
