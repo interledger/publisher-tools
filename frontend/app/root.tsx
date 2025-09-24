@@ -13,7 +13,8 @@ import stylesheet from '~/tailwind.css?url'
 import { Button } from './components/index.js'
 import { Header, Footer } from '@/components'
 import { XCircle } from './components/icons.js'
-import faviconPng from '~/assets/images/favicon.png?url'
+import appleTouchPng from '~/assets/images/apple-touch-favicon.png'
+import faviconPng from '~/assets/images/favicon-96x96.png'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { UIProvider } from '~/stores/uiStore'
 
@@ -117,7 +118,7 @@ export const links: LinksFunction = () => [
   {
     rel: 'apple-touch-icon',
     sizes: '180x180',
-    href: faviconPng
+    href: appleTouchPng
   },
   {
     rel: 'icon',
