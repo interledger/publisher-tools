@@ -6,17 +6,24 @@ import type {
 } from '../utils/validate.server.js'
 import type { ElementConfigType } from '@shared/types'
 
-export interface CreateConfigRequest {
-  walletAddress: string
-  tag: string
-  version?: string
-}
+export const modalTypes = [
+  'script',
+  'wallet-ownership',
+  'grant-response',
+  'save-error',
+  'save-success',
+  'override-preset'
+] as const
 
-export interface SaveUserConfigRequest {
-  walletAddress: string
-  fullconfig: string // JSON stringified object containing all versions
-  version: string
-  // ... other fields
+export type ModalType = {
+  type: (typeof modalTypes)[number]
+  // set when type is "save-error"
+  error?: { message?: string; fieldErrors?: Record<string, string> }
+  grantRedirectIntent?: string
+  grantRedirectURI?: string
+  fetchedConfigs?: Record<string, ElementConfigType>
+  currentLocalConfigs?: Record<string, ElementConfigType>
+  modifiedConfigs?: readonly string[]
 }
 
 export type SanitizedFields = Pick<
