@@ -1,8 +1,8 @@
 import { cx } from 'class-variance-authority'
-import { useLocation } from '@remix-run/react'
+import { NavLink, useLocation } from '@remix-run/react'
 import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
-import wmLogo from '~/assets/images/wm_logo.svg?url'
+import mobileLogo from '~/assets/images/mobile_header.svg'
 
 const toolItems: MobileMenuItemData[] = [
   { to: '/publishers', text: 'Publisher tools' },
@@ -69,12 +69,9 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white md:hidden">
       <div className="flex-shrink-0 flex items-center justify-between pt-[22px] pr-[20px] pb-[6px] pl-[28px]">
-        <div className="flex items-center gap-2xs">
-          <img src={wmLogo} alt="Web Monetization Logo" className="w-8 h-8" />
-          <span className="text-slate-900 font-['Titillium_Web'] text-sm font-normal leading-normal ">
-            Web Monetization
-          </span>
-        </div>
+        <NavLink to="/">
+          <img src={mobileLogo} alt="Web Monetization Logo" />
+        </NavLink>
         <GhostButton
           onClick={onClose}
           className="size-12 flex items-center justify-center focusable-nav-item"
