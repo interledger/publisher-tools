@@ -123,11 +123,6 @@ export const links: LinksFunction = () => [
     href: faviconSvg,
     type: 'image/svg+xml'
   },
-  {
-    rel: 'icon',
-    href: faviconSvg,
-    type: 'image/png'
-  },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
     rel: 'preconnect',
