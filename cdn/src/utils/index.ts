@@ -7,6 +7,7 @@ export function getScriptParams(tool: Tool) {
   if (!script) {
     throw new Error(`Could not find ${tool}.js script element.`)
   }
+  const cdnUrl = new URL(script.src).origin
 
   const { walletAddress, walletAddressId, tag } = script.dataset
 
@@ -35,6 +36,7 @@ export function getScriptParams(tool: Tool) {
   }
 
   return { walletAddress, walletAddressId, presetId: tag as PresetId }
+  return { walletAddress, walletAddressId, presetId: tag as PresetId, cdnUrl }
 }
 
 export async function fetchConfig<T extends Tool>(

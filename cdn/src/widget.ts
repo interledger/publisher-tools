@@ -20,6 +20,7 @@ const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
 
   element.config = {
     apiUrl: API_URL,
+    cdnUrl: params.cdnUrl,
     frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
     receiverAddress: walletAddressUrl,
     action: config.widgetButtonText || 'Pay',

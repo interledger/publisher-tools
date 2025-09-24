@@ -120,16 +120,3 @@ export const FONT_FAMILY_OPTIONS = [
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]
-
-export const FONT_FAMILY_URLS: Record<
-  Exclude<FontFamilyKey, 'Arial' | 'Inherit'>,
-  string
-> = {
-  'Open Sans':
-    'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap',
-  'Cookie': 'https://fonts.googleapis.com/css2?family=Cookie&display=swap',
-  'Roboto':
-    'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap',
-  'Titillium Web':
-    'https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap'
-}
