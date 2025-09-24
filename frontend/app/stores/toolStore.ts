@@ -4,8 +4,6 @@ import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type {
-  BannerConfig,
-  WidgetConfig,
   Configuration,
   ElementConfigType,
   PresetId,
