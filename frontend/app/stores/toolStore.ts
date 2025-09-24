@@ -4,7 +4,7 @@ import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type { ElementConfigType } from '@shared/types'
-import type { ModalType } from '~/lib/presets.js'
+import type { ModalType } from '~/lib/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
 
 const STORAGE_KEY = 'valtio-store'
