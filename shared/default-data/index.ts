@@ -63,19 +63,18 @@ export const createDefaultBannerConfig = (
   $version: '1.0.0',
   $name: presetName,
   $modifiedAt: new Date().toISOString(),
-  fontName: FONT_FAMILY_OPTIONS[0],
-  fontSize: BANNER_FONT_SIZES.default,
-  position: BANNER_POSITION.Bottom,
-  animation: SLIDE_ANIMATION.Slide,
-  border: CORNER_OPTION.Light,
-  textColor: '#ffffff',
-  background: '#7f76b2',
-  thumbnail: 'default',
-  title: { text: 'How to support?' },
-  description: {
-    text: 'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization..',
-    visible: true
-  }
+  bannerFontName: FONT_FAMILY_OPTIONS[0],
+  bannerFontSize: BANNER_FONT_SIZES.default,
+  bannerPosition: BANNER_POSITION.Bottom,
+  bannerSlideAnimation: SLIDE_ANIMATION.Slide,
+  bannerBorder: CORNER_OPTION.Light,
+  bannerTextColor: '#ffffff',
+  bannerBackgroundColor: '#7f76b2',
+  bannerThumbnail: 'default',
+  bannerTitleText: 'How to support?',
+  bannerDescriptionText:
+    'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
+  bannerDescriptionVisible: true
 })
 
 export const createDefaultWidgetConfig = (
@@ -84,18 +83,20 @@ export const createDefaultWidgetConfig = (
   $version: '1.0.0',
   $name: presetName,
   $modifiedAt: new Date().toISOString(),
-  fontName: FONT_FAMILY_OPTIONS[0],
-  fontSize: WIDGET_FONT_SIZES.default,
-  position: WIDGET_POSITION.Right,
-  border: CORNER_OPTION.Light,
-  textColor: '#ffffff',
-  background: '#7f76b2',
-  icon: 'default',
-  title: { text: 'Future of support' },
-  description: {
-    text: 'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
-    visible: true
-  },
-  trigger: { background: '#ffffff' },
-  payButton: { text: 'Support me' }
+  widgetFontName: FONT_FAMILY_OPTIONS[0],
+  widgetFontSize: WIDGET_FONT_SIZES.default,
+  widgetPosition: WIDGET_POSITION.Right,
+  widgetButtonBorder: CORNER_OPTION.Light,
+  widgetTextColor: '#ffffff',
+  widgetBackgroundColor: '#7f76b2',
+  widgetTriggerIcon: 'default',
+  widgetTriggerBackgroundColor: '#ffffff',
+  widgetTitleText: 'Future of support',
+  widgetDescriptionText:
+    'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
+  widgetDescriptionVisible: true,
+  widgetButtonBackgroundColor: '#4ec6c0',
+  widgetButtonTextColor: '#000000',
+  widgetDonateAmount: 1,
+  widgetButtonText: 'Support me'
 })

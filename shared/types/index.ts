@@ -61,46 +61,44 @@ export interface BaseToolConfig {
 
 export interface BannerConfig extends BaseToolConfig {
   // content
-  title: { text: string }
-  description: { text: string; visible: boolean }
+  bannerTitleText: string
+  bannerDescriptionText: string
+  bannerDescriptionVisible: boolean
 
   // appearance
-  fontName: FontFamilyKey
-  fontSize: number
-  textColor: string
-  background: string
-  border: CornerType
-  animation: SlideAnimationType
-  thumbnail: string
-  position: BannerPositionKey
+  bannerFontName: FontFamilyKey
+  bannerFontSize: number
+  bannerSlideAnimation: SlideAnimationType
+  bannerPosition: BannerPositionKey
+  bannerBorder: CornerType
+  bannerTextColor: string
+  bannerBackgroundColor: string
+  /** empty: not visible; default: visible */
+  bannerThumbnail: string
 }
 
 export interface WidgetConfig extends BaseToolConfig {
   // content
-  title: { text: string }
-  description: { text: string; visible: boolean }
-  payButton: { text: string }
+  widgetTitleText: string
+  widgetDescriptionText: string
+  widgetDescriptionVisible: boolean
 
   // appearance
-  fontName: FontFamilyKey
-  fontSize: number
-  textColor: string
-  background: string
-  border: CornerType
-  position: WidgetPositionKey
-  icon: string
-  trigger: { background: string; icon?: string }
+  widgetFontName: FontFamilyKey
+  widgetFontSize: number
+  widgetPosition: WidgetPositionKey
+  widgetDonateAmount: number // not posibble currently
+  widgetButtonText: string
+  widgetButtonBorder: CornerType
+  widgetTextColor: string
+  widgetBackgroundColor: string
+  widgetButtonTextColor: string
+  widgetButtonBackgroundColor: string
+  widgetTriggerBackgroundColor: string
+  widgetTriggerIcon: string
 }
 
 export type Tool = 'banner' | 'widget'
-
-// export type ConfigResponse<T extends ToolKeys> = Pick<
-//   Config,
-//   '$modifiedAt' | '$walletAddress'
-// > & {
-//   [K in ToolKeys]: K extends T ? Config[K] : never
-// }
-
 export type PresetIds = 'a' | 'b' | 'c'
 
 export type Config<T extends Tool> = {
