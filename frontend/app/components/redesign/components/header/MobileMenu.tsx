@@ -31,11 +31,12 @@ const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
     <li>
       <a
         href={to}
+        aria-current={isActive ? 'page' : undefined}
         className={cx(
           'flex w-full items-center gap-sm rounded-lg p-md text-nav-link-default',
           'transition-colors',
           'active:bg-secondary-surface',
-          { 'bg-secondary-hover-surface': isActive }
+          'aria-[current=page]:bg-secondary-hover-surface'
         )}
       >
         <div
@@ -67,13 +68,19 @@ const MobileMenuSection = ({ title, items }: MobileMenuSectionProps) => {
 
 export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white md:hidden">
+    <div
+      className="fixed inset-0 z-50 flex flex-col bg-white md:hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile menu"
+    >
       <div className="flex-shrink-0 flex items-center justify-between pt-[22px] pr-[20px] pb-[6px] pl-[28px]">
         <NavLink to="/">
           <img src={mobileLogo} alt="Web Monetization Logo" />
         </NavLink>
         <GhostButton
           onClick={onClose}
+          autoFocus
           className="size-12 flex items-center justify-center focusable-nav-item"
           aria-label="Close menu"
         >
