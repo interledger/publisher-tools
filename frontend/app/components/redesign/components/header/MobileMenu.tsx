@@ -2,7 +2,7 @@ import { cx } from 'class-variance-authority'
 import { NavLink, useLocation } from '@remix-run/react'
 import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
-import mobileLogo from '~/assets/images/mobile_header.svg'
+import mobileLogo from '~/assets/images/mobile_logo.svg'
 
 const toolItems: MobileMenuItemData[] = [
   { to: '/publishers', text: 'Publisher tools' },
