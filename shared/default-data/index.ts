@@ -62,7 +62,6 @@ export const createDefaultBannerConfig = (
 ): BannerConfig => ({
   $version: '1.0.0',
   $name: presetName,
-  $modifiedAt: new Date().toISOString(),
   bannerFontName: FONT_FAMILY_OPTIONS[0],
   bannerFontSize: BANNER_FONT_SIZES.default,
   bannerPosition: BANNER_POSITION.Bottom,
@@ -82,7 +81,6 @@ export const createDefaultWidgetConfig = (
 ): WidgetConfig => ({
   $version: '1.0.0',
   $name: presetName,
-  $modifiedAt: new Date().toISOString(),
   widgetFontName: FONT_FAMILY_OPTIONS[0],
   widgetFontSize: WIDGET_FONT_SIZES.default,
   widgetPosition: WIDGET_POSITION.Right,
