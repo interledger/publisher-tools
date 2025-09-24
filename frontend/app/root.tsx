@@ -1,49 +1,23 @@
-import {
-  type LinksFunction,
-  type MetaFunction,
-  json
-} from '@remix-run/cloudflare'
+import type { LinksFunction, MetaFunction } from '@remix-run/cloudflare'
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   useRouteError,
   isRouteErrorResponse
 } from '@remix-run/react'
 import type { ReactNode } from 'react'
-import { useEffect, useState } from 'react'
 import stylesheet from '~/tailwind.css?url'
-import { Button, Snackbar } from './components/index.js'
+import { Button } from './components/index.js'
 import { Header, Footer } from '@/components'
 import { XCircle } from './components/icons.js'
 import faviconPng from '~/assets/images/favicon.png?url'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { UIProvider } from '~/stores/uiStore'
 
-export const loader = async () => {
-  let message
-
-  if (!message) {
-    return json({ message: null })
-  }
-
-  return json({ message })
-}
-
 export default function App() {
-  const { message } = useLoaderData<typeof loader>()
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-
-  useEffect(() => {
-    if (!message) {
-      return
-    }
-    setSnackbarOpen(true)
-  }, [message])
-
   return (
     <html lang="en">
       <head>
@@ -60,13 +34,6 @@ export default function App() {
           </main>
           <Footer />
         </UIProvider>
-        <Snackbar
-          id="snackbar"
-          onClose={() => setSnackbarOpen(false)}
-          show={snackbarOpen}
-          message={message}
-          dismissAfter={2000}
-        />
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>
