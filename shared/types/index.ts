@@ -92,9 +92,18 @@ export interface WidgetConfig extends BaseToolConfig {
   trigger: { background: string; icon?: string }
 }
 
+export type Tool = 'banner' | 'widget'
+
+// export type ConfigResponse<T extends ToolKeys> = Pick<
+//   Config,
+//   '$modifiedAt' | '$walletAddress'
+// > & {
+//   [K in ToolKeys]: K extends T ? Config[K] : never
+// }
+
 export type PresetIds = 'a' | 'b' | 'c'
 
-export type Config = {
+export type Config<T extends Tool> = {
   $walletAddress: string
   $walletAddressId?: string
   $modifiedAt?: string
@@ -104,7 +113,7 @@ export type Config = {
   widget: {
     [presetId in PresetIds]?: WidgetConfig
   }
-}
+}[T]
 
 export const BANNER_FONT_SIZES = {
   min: 16,
