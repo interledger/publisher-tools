@@ -654,7 +654,7 @@ export const toolActions = {
 /** Load from localStorage on init, remove storage if invalid */
 export function loadState(
   OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS'],
-  tool: 'banner' | 'widget'
+  tool: Tool
 ) {
   toolState.cdnUrl = CDN_URL
   toolState.apiUrl = API_URL
@@ -680,7 +680,7 @@ export function loadState(
   }
 }
 
-export function persistState(tool: 'banner' | 'widget') {
+export function persistState(tool: Tool) {
   subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
