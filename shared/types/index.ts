@@ -99,7 +99,7 @@ export interface WidgetConfig extends BaseToolConfig {
 }
 
 export type Tool = 'banner' | 'widget'
-export type PresetIds = 'a' | 'b' | 'c'
+export type PresetIds = 'version1' | 'version2' | 'version3'
 
 export type Config<T extends Tool> = {
   $walletAddress: string

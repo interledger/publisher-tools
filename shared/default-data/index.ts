@@ -60,7 +60,7 @@ export function getDefaultData(): ElementConfigType {
 export const createDefaultBannerConfig = (
   presetName: string
 ): BannerConfig => ({
-  $version: '1.0.0',
+  $version: '0.0.1',
   $name: presetName,
   bannerFontName: FONT_FAMILY_OPTIONS[0],
   bannerFontSize: BANNER_FONT_SIZES.default,
@@ -79,7 +79,7 @@ export const createDefaultBannerConfig = (
 export const createDefaultWidgetConfig = (
   presetName: string
 ): WidgetConfig => ({
-  $version: '1.0.0',
+  $version: '0.0.1',
   $name: presetName,
   widgetFontName: FONT_FAMILY_OPTIONS[0],
   widgetFontSize: WIDGET_FONT_SIZES.default,
