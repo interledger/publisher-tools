@@ -6,10 +6,12 @@ import type { StepStatus } from '~/components/redesign/components/StepsIndicator
 import type {
   BannerConfig,
   WidgetConfig,
-  Config,
+  Configuration,
   ElementConfigType,
-  PresetIds,
-  Tool
+  PresetId,
+  Tool,
+  BannerPreset,
+  WidgetPreset
 } from '@shared/types'
 import type { ModalType } from '~/lib/presets.js'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
@@ -228,10 +230,10 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus,
-  bannerStores: manager['bannerStores'] as Record<PresetIds, BannerConfig>,
-  widgetStores: manager['widgetStores'] as Record<PresetIds, WidgetConfig>,
-  getBannerStore: (key: PresetIds) => manager.getBannerStore(key),
-  getWidgetStore: (key: PresetIds) => manager.getWidgetStore(key),
+  bannerStores: manager['bannerStores'] as Record<PresetId, BannerPreset>,
+  widgetStores: manager['widgetStores'] as Record<PresetId, WidgetPreset>,
+  getBannerStore: (key: PresetId) => manager.getBannerStore(key),
+  getWidgetStore: (key: PresetId) => manager.getWidgetStore(key),
   get activePreset() {
     return manager.activeTab
   }
@@ -724,12 +726,17 @@ export function splitConfigProperties<T extends ElementConfigType>(config: T) {
   }
 }
 
-function saveToolConfigToStorage<T extends Tool>(config: Config<T>, tool: T) {
+function saveToolConfigToStorage<T extends Tool>(
+  config: Configuration<T>,
+  tool: T
+) {
   const storageKey = getWmtStorageKey(tool)
   localStorage.setItem(storageKey, JSON.stringify(config))
 }
 
-function loadToolConfigFromStorage<T extends Tool>(tool: T): Config<T> | null {
+function loadToolConfigFromStorage<T extends Tool>(
+  tool: T
+): Configuration<T> | null {
   const storageKey = getWmtStorageKey(tool)
   try {
     const saved = localStorage.getItem(storageKey)

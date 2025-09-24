@@ -8,9 +8,9 @@ import {
   FONT_FAMILY_OPTIONS
 } from '@shared/types'
 import type {
-  BannerConfig,
+  BannerPreset,
   ElementConfigType,
-  WidgetConfig
+  WidgetPreset
 } from '@shared/types'
 
 export function getDefaultData(): ElementConfigType {
@@ -59,7 +59,7 @@ export function getDefaultData(): ElementConfigType {
 
 export const createDefaultBannerConfig = (
   presetName: string
-): BannerConfig => ({
+): BannerPreset => ({
   $version: '0.0.1',
   $name: presetName,
   bannerFontName: FONT_FAMILY_OPTIONS[0],
@@ -78,7 +78,7 @@ export const createDefaultBannerConfig = (
 
 export const createDefaultWidgetConfig = (
   presetName: string
-): WidgetConfig => ({
+): WidgetPreset => ({
   $version: '0.0.1',
   $name: presetName,
   widgetFontName: FONT_FAMILY_OPTIONS[0],
