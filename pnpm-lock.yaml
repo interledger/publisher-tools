@@ -292,6 +292,15 @@ importers:
         specifier: 4.40.0
         version: 4.40.0(@cloudflare/workers-types@4.20250507.0)
 
+  localenv/s3:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      wrangler:
+        specifier: 4.40.0
+        version: 4.40.0(@cloudflare/workers-types@4.20250507.0)
+
   shared/config-storage-service:
     dependencies:
       '@shared/utils':

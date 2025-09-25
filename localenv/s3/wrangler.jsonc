@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "localenv-s3",
+  "main": "worker.ts",
+  "compatibility_date": "2025-09-24",
+  "dev": {
+    "port": 8081
+  },
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "wm-tool-configs"
+    }
+  ]
+}
