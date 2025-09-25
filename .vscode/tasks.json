@@ -2,6 +2,20 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Run Local S3",
+      "type": "shell",
+      "command": "pnpm -C localenv/s3 dev",
+      "hide": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "revealProblems": "onProblem",
+        "group": "localenv"
+      }
+    },
+    {
       "label": "Run CDN",
       "type": "shell",
       "command": "pnpm -C cdn dev",
@@ -64,7 +78,7 @@
         "reveal": "always",
         "showReuseMessage": true
       },
-      "dependsOn": ["Run CDN", "Run API", "Run Editor UI"]
+      "dependsOn": ["Run Local S3", "Run CDN", "Run API", "Run Editor UI"]
     }
   ]
 }

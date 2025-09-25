@@ -17,7 +17,7 @@
     "@interledger/open-payments": "^7.1.3",
     "publisher-tools-api": "workspace:^",
     "typescript": "^5.9.2",
-    "vite": "^5.4.11"
+    "vite": "^5.4.20"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

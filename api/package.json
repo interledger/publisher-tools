@@ -2,6 +2,7 @@
   "name": "publisher-tools-api",
   "version": "1.0.0",
   "scripts": {
+    "predev": "cp ../.dev.vars .",
     "dev": "wrangler dev",
     "build": "wrangler deploy --dry-run --outdir dist",
     "preview": "wrangler dev",
@@ -30,7 +31,7 @@
     "@shared/types": "workspace:^",
     "@shared/defines": "workspace:^",
     "typescript": "5.9.2",
-    "wrangler": "^4.38.0"
+    "wrangler": "^4.40.0"
   },
   "engines": {
     "node": ">=20.0.0"
