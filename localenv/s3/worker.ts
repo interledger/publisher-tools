@@ -1,5 +1,5 @@
 export default {
-  async fetch(request, env, ctx): Promise<Response> {
+  async fetch(request, env): Promise<Response> {
     if (request.method === 'PUT') {
       return handlePut(request, env)
     }
@@ -21,7 +21,14 @@ export default {
     if (!res) {
       return new Response('Not Found', { status: 404 })
     }
-    return new Response(res.body)
+    return new Response(res.body, {
+      headers: Object.fromEntries(
+        Object.entries(res.httpMetadata || {}).map(([k, v]) => [
+          k.replace(/([A-Z])/g, '-$1').toLowerCase(),
+          v
+        ])
+      )
+    })
   }
 } satisfies ExportedHandler<Env>
 
