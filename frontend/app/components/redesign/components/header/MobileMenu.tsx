@@ -1,5 +1,4 @@
-import { cx } from 'class-variance-authority'
-import { NavLink, useLocation } from '@remix-run/react'
+import { NavLink } from '@remix-run/react'
 import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
@@ -26,25 +25,13 @@ interface MobileMenuSectionProps {
 }
 
 const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
-  const isActive = useLocation().pathname === to
   return (
     <li>
       <a
         href={to}
-        aria-current={isActive ? 'page' : undefined}
-        className={cx(
-          'flex w-full items-center gap-sm rounded-lg p-md text-nav-link-default',
-          'transition-colors',
-          'active:bg-secondary-surface',
-          'aria-[current=page]:bg-secondary-hover-surface'
-        )}
+        className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default active:bg-secondary-surface"
       >
-        <div
-          className={cx('h-6 w-0.5 transition-colors', {
-            'bg-secondary-edge': isActive
-          })}
-        />
-        <span className="text-base font-normal leading-md">{text}</span>
+        {text}
       </a>
     </li>
   )
