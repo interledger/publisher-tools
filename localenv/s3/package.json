@@ -1,0 +1,14 @@
+{
+  "name": "localenv-s3",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "predev": "wrangler types",
+    "dev": "wrangler dev",
+    "prepare": "wrangler types"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.2",
+    "wrangler": "4.40.0"
+  }
+}
