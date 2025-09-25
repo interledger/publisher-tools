@@ -17,6 +17,13 @@ export const Header = () => {
   }
 
   useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
+  useEffect(() => {
     const controlNavbar = () => {
       if (isMobileMenuOpen) return
 
