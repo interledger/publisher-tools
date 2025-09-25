@@ -29,7 +29,7 @@ const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default active:bg-secondary-surface"
+        className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default focusable-nav-item"
       >
         {text}
       </a>
