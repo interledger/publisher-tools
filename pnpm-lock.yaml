@@ -295,7 +295,7 @@ importers:
   localenv/s3:
     devDependencies:
       typescript:
-        specifier: ^5.5.2
+        specifier: ^5.9.2
         version: 5.9.2
       wrangler:
         specifier: 4.40.0
