@@ -2,7 +2,7 @@
   "name": "publisher-tools-api",
   "version": "1.0.0",
   "scripts": {
-    "predev": "cp ../.dev.vars .",
+    "predev": "node ../copy-env.js",
     "dev": "wrangler dev",
     "build": "wrangler deploy --dry-run --outdir dist",
     "preview": "wrangler dev",
