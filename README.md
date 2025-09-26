@@ -128,8 +128,8 @@ pnpm -C localenv/s3 dev
 
 ## Technology Stack
 
-- **Runtime**: Cloudflare workers.
-- **Runtime**: Node.js
+- **Runtime**: Cloudflare workers
+- **Development**: Node.js
 - **Package Manager**: pnpm 9.15.9
 - **Frontend**: React 19 with Remix framework
 - **API**: Hono framework on Cloudflare Workers
