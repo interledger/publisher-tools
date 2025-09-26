@@ -63,7 +63,7 @@ Replace `currentKey` with your copied private key, then use the output as your `
 
 #### `OP_WALLET_ADDRESS`
 
-- **Description**: Your wallet's payment pointer URL
+- **Description**: Your wallet address URL
 - **How to get it**:
   1. In your Web Monetization wallet dashboard
   2. Find your wallet address
