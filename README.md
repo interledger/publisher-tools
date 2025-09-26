@@ -27,7 +27,7 @@ This is a monorepo containing several packages:
 
 - **`api/`** - Hono-based API server running on Cloudflare Workers. Used by tools embedded on websites to fetch their config, handle payments, and manage probabilistic revenue sharing.
 - **`frontend/`** - Remix-based React frontend application. Provides the configuration interface where publishers customize their Web Monetization tools (banners, widgets, link tags).
-- **`components/`** - Lit-based web components for publishers. Contains reusable banner and widget components that get embedded into publisher websites.
+- **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
 - **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
 - **`shared/`** - Shared utilities and types
   - `config-storage-service/` - AWS S3 storage utilities. Manages saving and retrieving publisher configurations from cloud storage.
