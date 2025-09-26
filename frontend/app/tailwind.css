@@ -44,7 +44,7 @@
   a.focusable-nav-item,
   button.focusable-nav-item {
     @apply transition-colors duration-200 ease-in;
-    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover;
+    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover active:bg-secondary-hover-surface active:text-nav-link-hover;
     @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
     @apply focus-visible:outline-offset-0;
   }
