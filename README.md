@@ -30,9 +30,9 @@ This is a monorepo containing several packages:
 - **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
 - **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
 - **`shared/`** - Shared utilities and types
-  - `config-storage-service/` - AWS S3 storage utilities. Manages saving and retrieving publisher configurations from cloud storage.
-  - `probabilistic-revenue-share/` - Revenue sharing logic. Handles distributing payments between multiple wallet addresses based on defined percentages.
-  - `default-data/` - Provides default preset configurations for different tool types and styles.
+  - `config-storage-service/`
+  - `probabilistic-revenue-share/`
+  - `default-data/`
   - `defines/`
   - `types/`
   - `utils/`
