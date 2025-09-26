@@ -42,13 +42,9 @@ This is a monorepo containing several packages:
 1. **Install Node.js**:
 
    ```sh
-   # For Linux/macOS
-   nvm install
-   nvm use
-
-   # For Windows
-   nvm install 20
-   nvm use 20
+   # Use nvm
+   nvm install 24
+   nvm use 24
    ```
 
 2. **Enable pnpm**:
