@@ -1,8 +1,6 @@
-<div align="center">
-
-# Publisher Tools
-
-</div>
+<h1 align="center">
+Publisher Tools
+</h1>
 
 The Publisher Tools are a suite of tools designed to help content owners and publishers set up and promote Web Monetization as a model for users to support their websites.
 
@@ -27,18 +25,18 @@ Please read the [contribution guidelines](.github/contributing.md) before submit
 
 This is a monorepo containing several packages:
 
-- **`api/`** - Hono-based API server running on Cloudflare Workers
-- **`frontend/`** - Remix-based React frontend application
-- **`components/`** - Lit-based web components for publishers
-- **`cdn/`** - Content delivery network package
+- **`api/`** - Hono-based API server running on Cloudflare Workers. Used by tools embedded on websites to fetch their config, handle payments, and manage probabilistic revenue sharing.
+- **`frontend/`** - Remix-based React frontend application. Provides the configuration interface where publishers customize their Web Monetization tools (banners, widgets, link tags).
+- **`components/`** - Lit-based web components for publishers. Contains reusable banner and widget components that get embedded into publisher websites.
+- **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
 - **`shared/`** - Shared utilities and types
-  - `config-storage-service/` - Configuration and storage utilities
-  - `default-data/` - Default configuration data
-  - `probabilistic-revenue-share/` - Revenue sharing logic
-  - `types/` - TypeScript type definitions
-  - `utils/` - Common utilities
-  - `defines/` - Shared constants and definitions
-- **`localenv/`** - Local development environment setup
+  - `config-storage-service/` - AWS S3 storage utilities. Manages saving and retrieving publisher configurations from cloud storage.
+  - `probabilistic-revenue-share/` - Revenue sharing logic. Handles distributing payments between multiple wallet addresses based on defined percentages.
+  - `default-data/` - Provides default preset configurations for different tool types and styles.
+  - `defines/`
+  - `types/`
+  - `utils/`
+- **`localenv/`** - Local development environment setup. Provides local S3 simulation for testing configuration storage during development.
 
 ## Prerequisites
 
@@ -86,17 +84,7 @@ This is a monorepo containing several packages:
    cp .env.sample .dev.vars
    ```
 
-2. **Configure your environment variables** in `.dev.vars`:
-
-   ```env
-   OP_KEY_ID="your-uuid-v4-key-here"
-   OP_PRIVATE_KEY="your-base64-encoded-private-key"
-   OP_WALLET_ADDRESS="https://ilp.interledger-test.dev/your-wallet"
-
-   AWS_ACCESS_KEY_ID="your-aws-key-id"
-   AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
-   AWS_S3_ENDPOINT="http://localhost:8081"
-   ```
+2. **Configure your environment variables** in `.dev.vars`
 
 ### Running the Development Environment
 
@@ -106,48 +94,54 @@ If you're using VS Code, you can start the entire development environment with o
 2. Run "Tasks: Run Task"
 3. Select "Dev" to start all development servers simultaneously
 
-This will start the Local S3 service, CDN, API, and Frontend in parallel.
+This will start the Local S3 service, CDN, API, and Frontend in parallel.</br>
+You can also run the "default build task" with a keyboard shortcut.
 
 #### Manual Setup
+
+Alternatively, you can start each service manually.</br>
+_Run each of the following commands in a separate terminal tab/window:_
 
 **Frontend**:
 
 ```sh
-cd frontend
-pnpm dev
+pnpm -C frontend dev
 ```
 
 **API**:
 
 ```sh
-cd api
-pnpm dev
+pnpm -C api dev
+```
+
+**CDN**:
+
+```sh
+pnpm -C cdn dev
 ```
 
 **Local S3 Service**:
 
 ```sh
-cd localenv/s3
-pnpm dev
+pnpm -C localenv/s3 dev
 ```
 
 ## Technology Stack
 
-- **Runtime**: Node.js 20+
+- **Runtime**: Cloudflare workers.
+- **Runtime**: Node.js
 - **Package Manager**: pnpm 9.15.9
 - **Frontend**: React 19 with Remix framework
 - **API**: Hono framework on Cloudflare Workers
 - **Components**: Lit web components
 - **Styling**: TailwindCSS
-- **Language**: TypeScript 5.9.2
+- **Language**: TypeScript
 - **Payments**: Interledger Open Payments protocol
 
-## Available Scripts
+## Helpful Scripts
 
 From the root directory:
 
 - `pnpm format` - Format code with Prettier
-- `pnpm format:check` - Check code formatting
 - `pnpm lint` - Lint and fix code with ESLint
-- `pnpm lint:check` - Check linting without fixing
 - `pnpm typecheck` - Run TypeScript type checking across all packages
