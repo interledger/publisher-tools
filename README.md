@@ -30,12 +30,6 @@ This is a monorepo containing several packages:
 - **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
 - **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
 - **`shared/`** - Shared utilities and types
-  - `config-storage-service/`
-  - `probabilistic-revenue-share/`
-  - `default-data/`
-  - `defines/`
-  - `types/`
-  - `utils/`
 - **`localenv/`** - Local development environment setup. Provides local S3 simulation for testing configuration storage during development.
 
 ## Prerequisites
@@ -100,29 +94,18 @@ You can also run the "default build task" with a keyboard shortcut.
 #### Manual Setup
 
 Alternatively, you can start each service manually.</br>
-_Run each of the following commands in a separate terminal tab/window:_
 
-**Frontend**:
+```sh
+pnpm -r --parallel dev
+```
+
+This will run all development servers in parallel in a single terminal.</br>
+_For separate terminal output_, run each command in a separate terminal tab/window:
 
 ```sh
 pnpm -C frontend dev
-```
-
-**API**:
-
-```sh
 pnpm -C api dev
-```
-
-**CDN**:
-
-```sh
 pnpm -C cdn dev
-```
-
-**Local S3 Service**:
-
-```sh
 pnpm -C localenv/s3 dev
 ```
 
