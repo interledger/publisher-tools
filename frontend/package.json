@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "predev": "cp ../.dev.vars .",
+    "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "remix vite:dev --port 3000",
     "preview": "pnpm run build && wrangler dev",
     "deploy": "wrangler deploy",
