@@ -1,7 +1,9 @@
+/** @deprecated Use Configuration */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
 }
 
+/** @deprecated Use Configuration */
 export interface ElementConfigType {
   // general config
   /** the display name for this configuration version */
@@ -51,6 +53,63 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
+export type Configuration<T extends Tool> = {
+  $walletAddress: string
+  $walletAddressId?: string
+  $modifiedAt?: string
+  banner: {
+    [presetId in PresetId]?: BannerPreset
+  }
+  widget: {
+    [presetId in PresetId]?: WidgetPreset
+  }
+}[T]
+
+export interface BaseToolPreset {
+  $version: string
+  $name: string
+  $modifiedAt?: string
+}
+
+export interface BannerPreset extends BaseToolPreset {
+  // content
+  bannerTitleText: string
+  bannerDescriptionText: string
+  bannerDescriptionVisible: boolean
+
+  // appearance
+  bannerFontName: FontFamilyKey
+  bannerFontSize: number
+  bannerSlideAnimation: SlideAnimationType
+  bannerPosition: BannerPositionKey
+  bannerBorder: CornerType
+  bannerTextColor: string
+  bannerBackgroundColor: string
+  /** empty: not visible; default: visible */
+  bannerThumbnail: string
+}
+
+export interface WidgetPreset extends BaseToolPreset {
+  // content
+  widgetTitleText: string
+  widgetDescriptionText: string
+  widgetDescriptionVisible: boolean
+
+  // appearance
+  widgetFontName: FontFamilyKey
+  widgetFontSize: number
+  widgetPosition: WidgetPositionKey
+  widgetDonateAmount: number // not posibble currently
+  widgetButtonText: string
+  widgetButtonBorder: CornerType
+  widgetTextColor: string
+  widgetBackgroundColor: string
+  widgetButtonTextColor: string
+  widgetButtonBackgroundColor: string
+  widgetTriggerBackgroundColor: string
+  widgetTriggerIcon: string
+}
+
 export const TOOLS = ['banner', 'widget'] as const
 export type Tool = (typeof TOOLS)[number]
 
@@ -58,7 +117,9 @@ export const PRESET_IDS = ['version1', 'version2', 'version3'] as const
 export type PresetId = (typeof PRESET_IDS)[number]
 
 type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
+/** @deprecated Use BannerPreset instead */
 export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
+/** @deprecated Use WidgetPreset instead */
 export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
 
 export type ToolConfig<T extends Tool> = {

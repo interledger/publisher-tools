@@ -242,8 +242,8 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    loadState(OP_WALLET_ADDRESS)
-    persistState()
+    loadState(OP_WALLET_ADDRESS, 'widget')
+    persistState('widget')
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)

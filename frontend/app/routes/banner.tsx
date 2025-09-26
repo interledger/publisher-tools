@@ -254,8 +254,8 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    loadState(OP_WALLET_ADDRESS)
-    persistState()
+    loadState(OP_WALLET_ADDRESS, 'banner')
+    persistState('banner')
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
