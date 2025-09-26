@@ -66,7 +66,7 @@ Replace `currentKey` with your copied private key, then use the output as your `
 - **Description**: Your wallet's payment pointer URL
 - **How to get it**:
   1. In your Web Monetization wallet dashboard
-  2. Find your wallet address or payment pointer
+  2. Find your wallet address
   3. Copy the full URL
 
 ### AWS Configuration
