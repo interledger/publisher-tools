@@ -76,6 +76,8 @@ This is a monorepo containing several packages:
 
 2. **Configure your environment variables** in `.dev.vars`
 
+   📖 For detailed setup instructions for each variable, see [DEV_VARS_SETUP.md](./DEV_VARS_SETUP.md)
+
 ### Running the Development Environment
 
 If you're using VS Code, you can start the entire development environment with one command:
