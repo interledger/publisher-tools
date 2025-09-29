@@ -7,13 +7,15 @@ Follow the sections below to configure each variable.
 
 ### Open Payments Configuration
 
-These variables are required to enable Web Monetization functionality:
+These variables are required to enable Open Payments functionality:
+
+Following are instructions for development setup. For production, you need to follow instructions specific to your chosen wallet.
 
 #### `OP_KEY_ID`
 
 - UUID v4 identifier for your Open Payments key
 
-1. Sign up for an [Interledger Testnet wallet](https://wallet.interledger-test.dev)
+1. Sign up for [Interledger Testnet wallet](https://wallet.interledger-test.dev)
 2. Navigate to the developers/API keys section
 3. Generate a new key pair
 4. Copy the Key ID (UUID format)
@@ -28,9 +30,11 @@ These variables are required to enable Web Monetization functionality:
 
 - **Security Note**: Never commit this value to version control
 
-#### Private Key Conversion Script
+<details>
+<summary><b>Private Key Conversion Script</b></summary>
 
-After copying your private key, run this script to convert it to the correct format:
+After copying your private key, run this script to convert it to the correct format.\
+Replace `currentKey` value string with your copied private key, then use the output as your `OP_PRIVATE_KEY` value:
 
 ```javascript
 // Extract base64-encoded part and decode to get DER bytes
@@ -58,7 +62,7 @@ console.log('New key format for direct use:')
 console.log(keyBase64)
 ```
 
-Replace `currentKey` value string with your copied private key, then use the output as your `OP_PRIVATE_KEY` value.
+</details>
 
 #### `OP_WALLET_ADDRESS`
 
@@ -66,30 +70,11 @@ Replace `currentKey` value string with your copied private key, then use the out
 
 1. In your Interledger testnet wallet dashboard
 2. Find your wallet address
-3. Copy the full URL
+3. Copy the payment pointer and convert it to `https://` format.
 
 ### AWS Configuration
 
 These variables configure S3 storage for configuration data:
-
-<details>
-<summary><b>How to get real AWS keys (for production use)</b></summary>
-
-1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
-2. Navigate to IAM (Identity and Access Management)
-3. In the left sidebar, select "Users"
-4. Click on your user or create a new user with S3 permissions
-5. Go to the "Security credentials" tab
-6. Scroll down to "Access keys" and click "Create access key"
-7. Choose "Application running outside AWS"
-8. Copy the Access key ID
-
-Make sure to save both the Access Key ID and Secret Access Key when they are displayed, as AWS will not show the secret key again.
-
-**Required Permissions**: S3 read/write access\
-**Security Note**: Never commit this value to version control
-
-</details>
 
 #### `AWS_ACCESS_KEY_ID`
 
@@ -111,6 +96,25 @@ Make sure to save both the Access Key ID and Secret Access Key when they are dis
   ```
   AWS_S3_ENDPOINT="https://your-bucket-name.s3.your-region.amazonaws.com"
   ```
+
+<details>
+<summary><b>How to get real AWS keys (for production use)</b></summary>
+
+1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
+2. Navigate to IAM (Identity and Access Management)
+3. In the left sidebar, select "Users"
+4. Click on your user or create a new user with S3 permissions
+5. Go to the "Security credentials" tab
+6. Scroll down to "Access keys" and click "Create access key"
+7. Choose "Application running outside AWS"
+8. Copy the Access key ID
+
+Make sure to save both the Access Key ID and Secret Access Key when they are displayed, as AWS will not show the secret key again.
+
+**Required Permissions**: S3 read/write access\
+**Security Note**: Never commit this value to version control
+
+</details>
 
 ## Development vs Production
 
