@@ -29,6 +29,11 @@
       'Segoe UI Symbol',
       'Noto Color Emoji';
   }
+
+  body:has([aria-label='Mobile menu']) {
+    @apply overflow-hidden;
+  }
+
   a,
   button,
   summary,
