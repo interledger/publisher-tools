@@ -76,7 +76,7 @@ This is a monorepo containing several packages:
 
 2. **Configure your environment variables** in `.dev.vars`
 
-   📖 For detailed setup instructions for each variable, see [DEV_VARS_SETUP.md](./DEV_VARS_SETUP.md)
+   📖 For detailed setup instructions for each variable, see [DEV_VARS_SETUP.md](./docs/env-vars.md)
 
 ### Running the Development Environment
 
@@ -86,18 +86,18 @@ If you're using VS Code, you can start the entire development environment with o
 2. Run "Tasks: Run Task"
 3. Select "Dev" to start all development servers simultaneously
 
-This will start the Local S3 service, CDN, API, and Frontend in parallel.</br>
+This will start the Local S3 service, CDN, API, and Frontend in parallel.\
 You can also run the "default build task" with a keyboard shortcut.
 
 #### Manual Setup
 
-Alternatively, you can start each service manually.</br>
+Alternatively, you can start each service manually.
 
 ```sh
 pnpm -r --parallel dev
 ```
 
-This will run all development servers in parallel in a single terminal.</br>
+This will run all development servers in parallel in a single terminal.\
 _For separate terminal output_, run each command in a separate terminal tab/window:
 
 ```sh
