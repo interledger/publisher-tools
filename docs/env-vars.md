@@ -34,9 +34,9 @@ After copying your private key, run this script to convert it to the correct for
 
 ```javascript
 // Extract base64-encoded part and decode to get DER bytes
-const pemString = atob(currentKey)
+const currentKey = ''
 const derBytes = atob(
-  pemString
+  currentKey
     .replace('-----BEGIN PRIVATE KEY-----', '')
     .replace('-----END PRIVATE KEY-----', '')
     .replace(/\s/g, '')
@@ -58,7 +58,7 @@ console.log('New key format for direct use:')
 console.log(keyBase64)
 ```
 
-Replace `currentKey` with your copied private key, then use the output as your `OP_PRIVATE_KEY` value.
+Replace `currentKey` value string with your copied private key, then use the output as your `OP_PRIVATE_KEY` value.
 
 #### `OP_WALLET_ADDRESS`
 
