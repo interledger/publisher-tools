@@ -13,7 +13,7 @@ Following are instructions for development setup. For production, you need to fo
 
 #### `OP_KEY_ID`
 
-- UUID v4 identifier for your Open Payments key
+UUID v4 identifier for your Open Payments key
 
 1. Sign up for [Interledger Testnet wallet](https://wallet.interledger-test.dev)
 2. Navigate to the developers/API keys section
@@ -22,13 +22,13 @@ Following are instructions for development setup. For production, you need to fo
 
 #### `OP_PRIVATE_KEY`
 
-- Base64-encoded private key for signing Open Payments requests
+Base64-encoded private key for signing Open Payments requests
 
 1. When generating your key pair in your wallet's developer section
 2. Download or copy the private key
 3. **Important**: The private key must be converted to the format expected by the tools using the script below
 
-- **Security Note**: Never commit this value to version control
+**Security Note**: Never commit this value to version control
 
 <details>
 <summary><b>Private Key Conversion Script</b></summary>
@@ -66,7 +66,7 @@ console.log(keyBase64)
 
 #### `OP_WALLET_ADDRESS`
 
-- Your wallet address URL
+Your wallet address URL
 
 1. In your Interledger testnet wallet dashboard
 2. Find your wallet address
@@ -78,24 +78,27 @@ These variables configure S3 storage for configuration data:
 
 #### `AWS_ACCESS_KEY_ID`
 
-- AWS access key for S3 operations
-- **Development Note**: This key is ignored when using the local S3 simulator, so it's not required for development
+AWS access key for S3 operations\
+**Development Note**: This key is ignored when using the local S3 simulator, so it's not required for development
 
 #### `AWS_SECRET_ACCESS_KEY`
 
-- AWS secret key corresponding to the access key ID
-- **Development Note**: This key is ignored when using the local S3 simulator, so it's not required for development
+AWS secret key corresponding to the access key ID\
+**Development Note**: This key is ignored when using the local S3 simulator, so it's not required for development
 
 #### `AWS_S3_ENDPOINT`
 
-- **For Development**: Use the local S3 simulator
-  ```
-  AWS_S3_ENDPOINT="http://localhost:8081"
-  ```
-- **For Production**: Use your actual S3 bucket endpoint
-  ```
-  AWS_S3_ENDPOINT="https://your-bucket-name.s3.your-region.amazonaws.com"
-  ```
+**For Development**: Use the local S3 simulator
+
+```
+AWS_S3_ENDPOINT="http://localhost:8081"
+```
+
+**For Production**: Use your actual S3 bucket endpoint
+
+```
+AWS_S3_ENDPOINT="https://your-bucket-name.s3.your-region.amazonaws.com"
+```
 
 <details>
 <summary><b>How to get real AWS keys (for production use)</b></summary>
