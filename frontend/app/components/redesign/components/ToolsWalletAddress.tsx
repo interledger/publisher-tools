@@ -14,7 +14,6 @@ import {
   getWalletAddress,
   toWalletAddressUrl
 } from '@shared/utils'
-import GhostButton from './GhostButton'
 
 export const ToolsWalletAddress = () => {
   const snap = useSnapshot(toolState)
@@ -191,8 +190,7 @@ export const ToolsWalletAddress = () => {
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >
-              {/* <SVGRefresh className="w-5 h-5 text-purple-500" /> */}
-              <GhostButton>Reset</GhostButton>
+              <SVGRefresh className="w-5 h-5 text-purple-500" />
             </button>
           )}
         </div>

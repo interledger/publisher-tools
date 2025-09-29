@@ -9,7 +9,7 @@ Follow the sections below to configure each variable.
 
 These variables are required to enable Open Payments functionality:
 
-The following are instructions for development setup. For production use, please follow the setup instructions provided by your chosen wallet.
+Following are instructions for development setup. For production, you need to follow instructions specific to your chosen wallet.
 
 #### `OP_KEY_ID`
 
