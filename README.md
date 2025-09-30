@@ -6,7 +6,8 @@ The Publisher Tools are a suite of tools designed to help content owners and pub
 
 ## What are Publisher Tools?
 
-Inspired by platforms like BuyMeACoffee and Patreon, these tools prioritize accessibility, ease of use, and low technical barriers to adoption. They allow publishers with a Web Monetization-enabled wallet to easily customize and generate embeddable components by inserting a simple script into their website's HTML.
+Inspired by platforms like BuyMeACoffee and Patreon, these tools prioritize accessibility, ease of use, and low technical barriers to adoption. They allow publishers with a Web Monetization-enabled wallet to easily customize and generate embeddable components by inserting a simple script into their website's HTML.\
+For detailed information about each tool and how to use them, visit the [Publisher Tools documentation](https://webmonetization.org/developers/tools/).
 
 ### New to Interledger?
 
@@ -42,10 +43,15 @@ This is a monorepo containing several packages:
 1. **Install Node.js**:
 
    ```sh
-   # Use nvm
-   nvm install 24
-   nvm use 24
+   # Install Node version required by the project
+   # For Linux/macOS
+   nvm use
+
+   # For Windows
+   nvm use 20
    ```
+
+   **Don't have nvm?** See this [complete setup guide](https://gist.github.com/sidvishnoi/f795887659f5bec32f01a7ec9e788fc1) for installing Node.js and nvm on any platform.
 
 2. **Enable pnpm**:
 
