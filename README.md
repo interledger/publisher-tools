@@ -1,16 +1,13 @@
-# Publisher Tools
+<h1 align="center">
+Publisher Tools
+</h1>
 
-<a href="#what-are-publisher-tools">
-  <img src="https://github.com/user-attachments/assets/f3776c29-e64d-439d-8321-6b9a03773a9d" alt="publisher tools preview image">
-</a>
+The Publisher Tools are a suite of tools designed to help content owners and publishers set up and promote Web Monetization as a model for users to support their websites.
 
-## What are publisher tools?
+## What are Publisher Tools?
 
-The publisher tools are a suite of tools designed to help content owners and publishers set up and promote Web Monetization as a model for users to support their websites.
-
-Inspired by platforms like BuyMeACoffee and Patreon, these tools prioritize accessibility, ease of use, and low technical barriers to adoption. They allow publishers with a Web Monetization-enabled wallet to easily customize and generate embeddable components by inserting a simple script into their website’s HTML.
-
-For additional information, check out the [publisher tools architecture diagram](https://github.com/interledger/web-publisher/blob/25fff6ab48b052ac1190cf3734cb96aba99ed9a2/docs/flow.png?raw=true).
+Inspired by platforms like BuyMeACoffee and Patreon, these tools prioritize accessibility, ease of use, and low technical barriers to adoption. They allow publishers with a Web Monetization-enabled wallet to easily customize and generate embeddable components by inserting a simple script into their website's HTML.\
+For detailed information about each tool and how to use them, visit the [Publisher Tools documentation](https://webmonetization.org/developers/tools/).
 
 ### New to Interledger?
 
@@ -25,93 +22,113 @@ Never heard of Interledger before, or you would like to learn more? Here are som
 
 Please read the [contribution guidelines](.github/contributing.md) before submitting contributions. All contributions must adhere to our [code of conduct](.github/CODE_OF_CONDUCT.md).
 
-## Local Development Environment
+## Project Structure
 
-### Prerequisites
+This is a monorepo containing several packages:
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [NVM](https://github.com/nvm-sh/nvm)
+- **`api/`** - Hono-based API server running on Cloudflare Workers. Used by tools embedded on websites to fetch their config, handle payments, and manage probabilistic revenue sharing.
+- **`frontend/`** - Remix-based React frontend application. Provides the configuration interface where publishers customize their Web Monetization tools (banners, widgets, link tags).
+- **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
+- **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
+- **`shared/`** - Shared utilities and types
+- **`localenv/`** - Local development environment setup. Provides local S3 simulation for testing configuration storage during development.
 
-### Environment Setup
+## Prerequisites
 
-```sh
-# Install Node 20
-nvm install lts/iron
-nvm use lts/iron
+- [Node.js](https://nodejs.org/) 20+ (LTS recommended)
+- [pnpm](https://pnpm.io/) 9.15.9+
 
-# Install pnpm using Corepack
-corepack enable
-```
+## Installation
 
-If you do not have `corepack` installed locally you can use `npm` or `yarn` to install `pnpm`:
+1. **Install Node.js**:
 
-```sh
-npm install pnpm -g
-# or
-yarn install pnpm -g
-```
+   ```sh
+   # Install Node version required by the project
+   # For Linux/macOS
+   nvm use
 
-For alternative methods of installing `pnpm`, you can refer to the [official `pnpm` documentation](https://pnpm.io/installation).
+   # For Windows
+   nvm use 20
+   ```
 
-To install dependencies, execute:
+   **Don't have nvm?** See this [complete setup guide](https://gist.github.com/sidvishnoi/f795887659f5bec32f01a7ec9e788fc1) for installing Node.js and nvm on any platform.
 
-```sh
-pnpm i
-```
+2. **Enable pnpm**:
 
-### HTTPS (required)
+   ```sh
+   corepack enable
+   ```
 
-The app needs to run with HTTPS, for this you need to generate a self-signed certificate and key.
-You can use OpenSSL for this.
+   Or install manually:
 
-Install OpenSSL (if you don't already have it):
+   ```sh
+   npm install -g pnpm
+   ```
 
-- Windows: Download and install OpenSSL from [here](https://slproweb.com/products/Win32OpenSSL.html 'here').
-- Mac: Use brew install openssl.
-- Linux: Install it via your package manager (e.g: sudo apt install openssl ).
+3. **Install dependencies**:
+   ```sh
+   pnpm i
+   ```
 
-Generate the Certificate:
-From the project root, run the following command in your terminal:
+## Development
 
-```sh
-openssl req -x509 -newkey rsa:2048 -keyout ./certs/key.pem -out ./certs/cert.pem -days 365 -nodes
-```
+### Environment Configuration
 
-> **Note**
-> The script will prompt for Country, address, organization, etc. As a minimum requirement specify Country (2 letter code) and Organization
-> for the rest you can add . (dot) to set them as empty value
+1. **Copy the environment file**:
 
-### Environment Variables
+   ```sh
+   cp .env.sample .dev.vars
+   ```
 
-For the Publisher tools to function locally, it is also necessary to configure the environment variables appropriately. You must duplicate the example environment file, `.env.example`, into your local environment file, `.env`.
+2. **Configure your environment variables** in `.dev.vars`
 
-> **Note**
-> The local environment file (`.env`) is **NOT** tracked in the version control system, and should **NOT** be included in any commits.
+   📖 For detailed setup instructions for each variable, see [env-vars.md](./docs/env-vars.md)
 
-Navigate to the project's root directory and enter the following command:
+### Running the Development Environment
 
-```sh
-cp ./docker/dev/.env.example ./docker/dev/.env
-```
+If you're using VS Code, you can start the entire development environment with one command:
 
-Using your preferred text editor, open the `./docker/dev/.env` file and configure the necessary environment variables.
+1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+2. Run "Tasks: Run Task"
+3. Select "Dev" to start all development servers simultaneously
 
-The set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` you need to:
+This will start the Local S3 service, CDN, API, and Frontend in parallel.\
+You can also run the "default build task" with a keyboard shortcut.
 
-- Sign in to the AWS Management Console.
-- Navigate to IAM (Identity and Access Management).
-- In the left sidebar, select Users, then click the desired user.
-- Go to the Security credentials tab.
-- Scroll down to Access keys and click Create access key.
+#### Manual Setup
 
-To start the containers (in docker)
+Alternatively, you can start each service manually.
 
 ```sh
-pnpm localenv:start
+pnpm -r --parallel dev
 ```
 
-to stop them:
+This will run all development servers in parallel in a single terminal.\
+_For separate terminal output_, run each command in a separate terminal tab/window:
 
 ```sh
-pnpm localenv:stop
+pnpm -C frontend dev
+pnpm -C api dev
+pnpm -C cdn dev
+pnpm -C localenv/s3 dev
 ```
+
+## Technology Stack
+
+- **Runtime**: Cloudflare workers
+- **Development**: Node.js
+- **Package Manager**: pnpm 9.15.9
+- **Frontend**: React 19 with Remix framework
+- **API**: Hono framework on Cloudflare Workers
+- **Components**: Lit web components
+- **Styling**: TailwindCSS
+- **Language**: TypeScript
+- **Payments**: Interledger Open Payments protocol
+
+## Helpful Scripts
+
+From the root directory:
+
+- `pnpm format` - Format code with Prettier
+- `pnpm lint` - Lint and fix code with ESLint
+- `pnpm typecheck` - Run TypeScript type checking across all packages
