@@ -82,7 +82,7 @@ This is a monorepo containing several packages:
 
 2. **Configure your environment variables** in `.dev.vars`
 
-   📖 For detailed setup instructions for each variable, see [DEV_VARS_SETUP.md](./docs/env-vars.md)
+   📖 For detailed setup instructions for each variable, see [env-vars.md](./docs/env-vars.md)
 
 ### Running the Development Environment
 
