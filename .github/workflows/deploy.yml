@@ -121,7 +121,7 @@ jobs:
       #region Summary
       - name: Create Job summary
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: summary
         with:
           script: |
