@@ -232,14 +232,14 @@ importers:
         version: 3.4.17(ts-node@10.9.2(@types/node@22.18.6)(typescript@5.9.2))
       valtio:
         specifier: ^2.1.7
-        version: 2.1.7(@types/react@19.1.13)(react@19.1.1)
+        version: 2.1.7(@types/react@19.1.15)(react@19.1.1)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
     devDependencies:
       '@lit/react':
         specifier: ^1.0.8
-        version: 1.0.8(@types/react@19.1.13)
+        version: 1.0.8(@types/react@19.1.15)
       '@remix-run/dev':
         specifier: ^2.17.1
         version: 2.17.1(@remix-run/react@2.17.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2))(@types/node@22.18.6)(lightningcss@1.30.1)(ts-node@10.9.2(@types/node@22.18.6)(typescript@5.9.2))(typescript@5.9.2)(vite@5.4.20(@types/node@22.18.6)(lightningcss@1.30.1))(wrangler@4.40.0(@cloudflare/workers-types@4.20250507.0))
@@ -262,11 +262,11 @@ importers:
         specifier: ^22.18.6
         version: 22.18.6
       '@types/react':
-        specifier: ^19.1.13
-        version: 19.1.13
+        specifier: ^19.1.15
+        version: 19.1.15
       '@types/react-dom':
         specifier: ^19.1.9
-        version: 19.1.9(@types/react@19.1.13)
+        version: 19.1.9(@types/react@19.1.15)
       '@types/sanitize-html':
         specifier: ^2.16.0
         version: 2.16.0
@@ -1331,8 +1331,8 @@ packages:
     peerDependencies:
       '@types/react': ^19.0.0
 
-  '@types/react@19.1.13':
-    resolution: {integrity: sha512-hHkbU/eoO3EG5/MZkuFSKmYqPbSVk5byPFa3e7y/8TybHiLMACgI8seVYlicwk7H5K/rI2px9xrQp/C+AUDTiQ==}
+  '@types/react@19.1.15':
+    resolution: {integrity: sha512-+kLxJpaJzXybyDyFXYADyP1cznTO8HSuBpenGlnKOAkH4hyNINiywvXS/tGJhsrGGP/gM185RA3xpjY0Yg4erA==}
 
   '@types/sanitize-html@2.16.0':
     resolution: {integrity: sha512-l6rX1MUXje5ztPT0cAFtUayXF06DqPhRyfVXareEN5gGCFaP/iwsxIyKODr9XDhfxPpN6vXUFNfo5kZMXCxBtw==}
@@ -5170,9 +5170,9 @@ snapshots:
 
   '@lit-labs/ssr-dom-shim@1.3.0': {}
 
-  '@lit/react@1.0.8(@types/react@19.1.13)':
+  '@lit/react@1.0.8(@types/react@19.1.15)':
     dependencies:
-      '@types/react': 19.1.13
+      '@types/react': 19.1.15
 
   '@lit/reactive-element@2.1.0':
     dependencies:
@@ -5618,11 +5618,11 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/react-dom@19.1.9(@types/react@19.1.13)':
+  '@types/react-dom@19.1.9(@types/react@19.1.15)':
     dependencies:
-      '@types/react': 19.1.13
+      '@types/react': 19.1.15
 
-  '@types/react@19.1.13':
+  '@types/react@19.1.15':
     dependencies:
       csstype: 3.1.3
 
@@ -9379,11 +9379,11 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  valtio@2.1.7(@types/react@19.1.13)(react@19.1.1):
+  valtio@2.1.7(@types/react@19.1.15)(react@19.1.1):
     dependencies:
       proxy-compare: 3.0.1
     optionalDependencies:
-      '@types/react': 19.1.13
+      '@types/react': 19.1.15
       react: 19.1.1
 
   vary@1.1.2: {}
