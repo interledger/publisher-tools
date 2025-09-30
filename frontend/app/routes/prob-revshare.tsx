@@ -166,6 +166,14 @@ function Revshare() {
               })}
             </div>
           </ShareInputTable>
+          <ToolsPrimaryButton
+            icon="share"
+            iconPosition="right"
+            className="flex w-full items-center justify-center mx-auto md:max-w-44"
+            onClick={addShare}
+          >
+            Add recipient
+          </ToolsPrimaryButton>
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {hasValidShares && <CodeBlockLink link={revShareUrl} />}
@@ -176,14 +184,6 @@ function Revshare() {
               >
                 Import
               </ToolsSecondaryButton>
-              <ToolsPrimaryButton
-                icon="share"
-                iconPosition="right"
-                className="flex w-full items-center justify-center md:w-auto"
-                onClick={addShare}
-              >
-                Add recipient
-              </ToolsPrimaryButton>
             </div>
           </div>
         </Card>
