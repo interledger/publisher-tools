@@ -19,12 +19,7 @@ const ToolsMenuItem = ({ to, imgSrc, text }: ToolsMenuItemProps) => {
         href={to}
         className="flex w-full items-center gap-xs p-sm focusable-nav-item"
       >
-        <img
-          className="size-10 md:size-5xl"
-          src={imgSrc}
-          aria-hidden="true"
-          alt=""
-        />
+        <img className="w-20 h-20" src={imgSrc} aria-hidden="true" alt="" />
         <div className="flex-grow whitespace-nowrap font-sans text-sm font-normal leading-normal text-text-primary md:text-base md:font-bold">
           {text}
         </div>
@@ -111,7 +106,7 @@ export const NavDropdown = ({
           className={cx(
             'relative z-50 flex flex-col gap-xs overflow-hidden rounded-lg p-sm',
             !isOpen && '!sr-only',
-            'md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[472px] md:w-[299px]',
+            'md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[352px] md:w-[259px]',
             'md:items-start md:justify-start md:bg-interface-bg-container',
             'md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)]',
             'md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container',
