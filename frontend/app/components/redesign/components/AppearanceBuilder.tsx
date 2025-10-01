@@ -30,8 +30,12 @@ import {
   SLIDE_ANIMATION
 } from '@shared/types'
 
+export interface AppearanceConfig {
+  showThumbnail: boolean
+  fontSizeRange: { min: number; max: number; default: number }
+}
+
 interface BaseToolAppearance {
-  fontSizeRange: { min: number; max: number }
   fontName?: FontFamilyKey
   fontSize?: number
   backgroundColor?: string
@@ -66,8 +70,8 @@ export interface WidgetToolAppearance extends BaseToolAppearance {
 export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 
 interface AppearanceBuilderProps {
-  toolName: 'widget' | 'banner'
   profile: ToolAppearance
+  config: AppearanceConfig
   onRefresh: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
@@ -80,13 +84,13 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 }
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
-  toolName,
   profile,
+  config,
   onRefresh,
   positionSelector,
   colorsSelector
 }) => {
-  const { min: minFontSize, max: maxFontSize } = profile.fontSizeRange
+  const { min: minFontSize, max: maxFontSize } = config.fontSizeRange
 
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const { actions: uiActions, state: uiState } = useUI()
@@ -257,9 +261,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
       )}
 
       <div
-        className={cx(
-          toolName === 'widget' ? 'hidden' : 'flex flex-col gap-xs'
-        )}
+        className={cx(config.showThumbnail ? 'flex flex-col gap-xs' : 'hidden')}
       >
         <Divider />
         <SectionHeader
