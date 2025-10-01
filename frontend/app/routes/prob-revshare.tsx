@@ -177,14 +177,12 @@ function Revshare() {
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {hasValidShares && <CodeBlockLink link={revShareUrl} />}
-            <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
-              <ToolsSecondaryButton
-                className="w-full md:w-auto"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Import
-              </ToolsSecondaryButton>
-            </div>
+            <ToolsSecondaryButton
+              className="self-end w-full md:w-fit"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Import
+            </ToolsSecondaryButton>
           </div>
         </Card>
         <div className="my-lg md:my-md">
