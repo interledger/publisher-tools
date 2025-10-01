@@ -20,7 +20,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      
+      - name: Check deployment permissions
+        id: deploy-check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const script = require('./.github/scripts/check-deploy-permissions.js');
+            await script({ core, context });
+      
       - uses: ./.github/workflows/setup
+      
+      # Build and test steps (always run for validation)
+      - name: Build API (validation)
+        if: steps.deploy-check.outputs.should-deploy == 'false'
+        run: pnpm -C api run build
+        
+      - name: Build CDN (validation)
+        if: steps.deploy-check.outputs.should-deploy == 'false'
+        run: pnpm -C cdn run build
+        
+      - name: Build Frontend (validation)
+        if: steps.deploy-check.outputs.should-deploy == 'false'
+        run: pnpm -C frontend run build
       - name: Install wrangler globally
         # The wrangler Action expects a global installation, so we better reuse
         # what we've in our project.
@@ -74,6 +96,7 @@ jobs:
       # 3. frontend
 
       - name: Deploy API
+        if: steps.deploy-check.outputs.should-deploy == 'true'
         uses: ./.github/workflows/deploy-worker
         id: api
         with:
@@ -87,6 +110,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy CDN
+        if: steps.deploy-check.outputs.should-deploy == 'true'
         uses: ./.github/workflows/deploy-worker
         id: cdn
         with:
@@ -102,6 +126,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy Frontend
+        if: steps.deploy-check.outputs.should-deploy == 'true'
         uses: ./.github/workflows/deploy-worker
         id: frontend
         with:
