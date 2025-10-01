@@ -24,34 +24,34 @@ export interface ToolContent {
 }
 
 interface ContentBuilderProps {
-  content: ToolContent
+  profile: ToolContent
   onRefresh: () => void
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
-  content,
+  profile,
   onRefresh
 }) => {
   const titleInputRef = useRef<HTMLInputElement>(null)
   const messageTextareaRef = useRef<HTMLTextAreaElement>(null)
   const { actions: uiActions, state: uiState } = useUI()
-  const isMessageVisible = content.isDescriptionVisible
+  const isMessageVisible = profile.isDescriptionVisible
 
   useEffect(() => {
     if (
       titleInputRef.current &&
-      titleInputRef.current.value !== content.currentTitle
+      titleInputRef.current.value !== profile.currentTitle
     ) {
-      titleInputRef.current.value = content.currentTitle
+      titleInputRef.current.value = profile.currentTitle
     }
 
     if (
       messageTextareaRef.current &&
-      messageTextareaRef.current.value !== content.currentMessage
+      messageTextareaRef.current.value !== profile.currentMessage
     ) {
-      messageTextareaRef.current.value = content.currentMessage
+      messageTextareaRef.current.value = profile.currentMessage
     }
-  }, [content.currentTitle, content.currentMessage])
+  }, [profile.currentTitle, profile.currentMessage])
 
   const handleToggle = (isOpen: boolean) => {
     uiActions.setActiveSection(isOpen ? 'content' : null)
@@ -73,25 +73,25 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
     >
       <div className="flex flex-col gap-lg">
         <TitleInput
-          value={content.currentTitle}
-          onChange={content.onTitleChange}
-          suggestions={content.suggestedTitles}
-          maxLength={content.titleMaxLength}
-          helpText={content.titleHelpText}
+          value={profile.currentTitle}
+          onChange={profile.onTitleChange}
+          suggestions={profile.suggestedTitles}
+          maxLength={profile.titleMaxLength}
+          helpText={profile.titleHelpText}
         />
 
         <Divider />
 
         <div className="flex flex-col gap-xs">
           <h4 className="text-base leading-md font-bold text-text-primary">
-            {content.messageLabel}
+            {profile.messageLabel}
           </h4>
           <div className="flex gap-lg items-start xl:flex-row flex-col">
             <div className="flex items-center gap-xs shrink-0">
               <Checkbox
                 checked={isMessageVisible}
                 onChange={(visible) => {
-                  content.onDescriptionVisibilityChange(visible)
+                  profile.onDescriptionVisibilityChange(visible)
                 }}
                 label="Active"
               />
@@ -100,16 +100,16 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
             <div className="flex-grow w-full">
               <TextareaField
                 ref={messageTextareaRef}
-                defaultValue={content.currentMessage}
+                defaultValue={profile.currentMessage}
                 onChange={(e) => {
-                  content.onMessageChange(e.target.value)
+                  profile.onMessageChange(e.target.value)
                 }}
-                currentLength={content.currentMessage.length || 0}
-                maxLength={content.messageMaxLength}
+                currentLength={profile.currentMessage.length || 0}
+                maxLength={profile.messageMaxLength}
                 showCounter={true}
-                helpText={content.messageHelpText}
+                helpText={profile.messageHelpText}
                 className="h-[84px]"
-                placeholder={content.messagePlaceholder}
+                placeholder={profile.messagePlaceholder}
                 disabled={!isMessageVisible}
               />
             </div>
