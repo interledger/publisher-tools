@@ -35,7 +35,7 @@ This is a monorepo containing several packages:
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 24+ (LTS recommended)
+- [Node.js](https://nodejs.org/) 24+
 - [pnpm](https://pnpm.io/) 9.15.9+
 
 ## Installation
