@@ -355,7 +355,7 @@ export const SVGShareScript: SvgIcon = ({ className }) => (
 )
 export const SVGDeleteScript: SvgIcon = ({ className }) => (
   <svg {...defaultProps} className={className} viewBox="0 0 20 20">
-     <path
+    <path
       fill="#7469A8"
       d="M5 5 L15 15 M15 5 L5 15"
       stroke="#7469A8"
