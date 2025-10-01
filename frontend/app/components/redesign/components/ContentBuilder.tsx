@@ -93,7 +93,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
                 onChange={(visible) => {
                   content.onDescriptionVisibilityChange(visible)
                 }}
-                label="Active"
+                label="Visible"
               />
             </div>
 
