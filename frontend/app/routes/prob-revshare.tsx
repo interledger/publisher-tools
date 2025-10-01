@@ -169,7 +169,7 @@ function Revshare() {
           <ToolsPrimaryButton
             icon="share"
             iconPosition="right"
-            className="flex w-full items-center justify-center mx-auto md:max-w-44"
+            className="self-center w-full md:w-fit"
             onClick={addShare}
           >
            + Add recipient
