@@ -35,7 +35,7 @@ This is a monorepo containing several packages:
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 20+ (LTS recommended)
+- [Node.js](https://nodejs.org/) 24+
 - [pnpm](https://pnpm.io/) 9.15.9+
 
 ## Installation
@@ -48,7 +48,7 @@ This is a monorepo containing several packages:
    nvm use
 
    # For Windows
-   nvm use 20
+   nvm use 24
    ```
 
    **Don't have nvm?** See this [complete setup guide](https://gist.github.com/sidvishnoi/f795887659f5bec32f01a7ec9e788fc1) for installing Node.js and nvm on any platform.
