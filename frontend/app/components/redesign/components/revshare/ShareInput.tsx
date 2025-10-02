@@ -223,7 +223,7 @@ export const ShareInput = React.memo(
           {hasError && (
             <div
               id={`pointer-error-${index}`}
-              className="absolute left-0 text-xs mt-2xs text-text-error"
+              className="absolute right-3 bottom-0 translate-y-1/2 px-1 text-xs text-text-error bg-white"
               role="alert"
               aria-live="polite"
               aria-atomic="true"
