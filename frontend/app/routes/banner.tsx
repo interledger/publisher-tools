@@ -189,7 +189,7 @@ export default function Banner() {
     useLoaderData<typeof loader>()
   usePathTracker()
 
-  const contentConfiguration: ToolContent = {
+  const profile: ToolContent | BannerToolAppearance = {
     suggestedTitles: [
       'How to support?',
       'Fund me',
@@ -216,10 +216,8 @@ export default function Banner() {
     onDescriptionVisibilityChange: (visible: boolean) =>
       toolActions.setToolConfig({
         bannerDescriptionVisible: visible
-      })
-  }
+      }),
 
-  const appearanceConfiguration: BannerToolAppearance = {
     fontName: snap.currentConfig?.bannerFontName,
     fontSize: snap.currentConfig?.bannerFontSize ?? BANNER_FONT_SIZES.default,
     fontSizeRange: BANNER_FONT_SIZES,
@@ -390,8 +388,7 @@ export default function Banner() {
 
                     <BuilderForm
                       toolName="banner"
-                      content={contentConfiguration}
-                      appearance={appearanceConfiguration}
+                      profile={profile}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
