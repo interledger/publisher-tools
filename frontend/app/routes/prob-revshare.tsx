@@ -172,7 +172,7 @@ function Revshare() {
             className="self-center w-full md:w-fit"
             onClick={addShare}
           >
-           + Add recipient
+            + Add recipient
           </ToolsPrimaryButton>
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
