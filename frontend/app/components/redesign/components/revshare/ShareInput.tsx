@@ -87,7 +87,7 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
             id="col-delete"
             aria-label="Delete recipient from table"
           >
-            Delete
+            Remove
           </div>
         )}
       </div>
@@ -159,7 +159,7 @@ export const ShareInput = React.memo(
           {showDelete && (
             <ToolsSecondaryButton
               onClick={onRemove}
-              className="border-none py-sm px-xs shrink-0"
+              className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
               aria-describedby={pointerInputId}
             >
