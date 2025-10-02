@@ -151,7 +151,6 @@ export const ShareInput = React.memo(
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
           GRID_COLS,
           GRID_GAP,
-          hasError ? 'md:mb-2xs' : ''
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
@@ -200,6 +199,7 @@ export const ShareInput = React.memo(
               onChangePointer(e.target.value)
             }
             required
+            error={error}
             aria-required="true"
             aria-invalid={hasError}
             aria-describedby={cx(
@@ -220,24 +220,9 @@ export const ShareInput = React.memo(
           <div id={`pointer-description-${index}`} className="sr-only">
             Required wallet address for this recipient.
           </div>
-          {hasError && (
-            <div
-              id={`pointer-error-${index}`}
-              className="absolute right-3 bottom-0 translate-y-1/2 px-1 text-xs text-text-error bg-white"
-              role="alert"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {error}
-              <span className="sr-only">
-                &nbsp;Please check the format and try again.
-              </span>
-            </div>
-          )}
         </div>
         <div
           role="cell"
-          className={hasError ? 'mt-xs' : 'md:mt-0'}
           aria-labelledby="col-weight"
         >
           <label htmlFor={weightInputId} className="sr-only">

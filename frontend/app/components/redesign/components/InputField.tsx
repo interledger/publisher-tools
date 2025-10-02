@@ -4,7 +4,7 @@ import { cx } from 'class-variance-authority'
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   id?: string
-  error?: string | string[]
+  error?: string | string[] | null
   helpText?: string
   showCounter?: boolean
   currentLength?: number
