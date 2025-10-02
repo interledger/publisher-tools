@@ -11,8 +11,7 @@ import type { ToolContent } from './ContentBuilder'
 import type { ToolAppearance } from './AppearanceBuilder'
 
 interface BuilderFormProps {
-  content: ToolContent
-  appearance: ToolAppearance
+  profile: ToolContent | ToolAppearance
   toolName: 'widget' | 'banner'
   onRefresh: (section: 'appearance' | 'content') => void
   onBuildStepComplete?: (isComplete: boolean) => void
@@ -23,8 +22,7 @@ interface BuilderFormProps {
 export const BuilderForm: React.FC<BuilderFormProps> = ({
   onBuildStepComplete,
   onRefresh,
-  content,
-  appearance,
+  profile,
   toolName,
   positionSelector,
   colorsSelector
@@ -75,11 +73,11 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
       >
         <ContentBuilder
           onRefresh={() => onRefresh('content')}
-          content={content}
+          profile={profile as ToolContent}
         />
         <AppearanceBuilder
           onRefresh={() => onRefresh('appearance')}
-          appearance={appearance}
+          profile={profile as ToolAppearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
           toolName={toolName}
