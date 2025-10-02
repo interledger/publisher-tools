@@ -87,7 +87,7 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
             id="col-delete"
             aria-label="Delete recipient from table"
           >
-            Delete
+            Remove
           </div>
         )}
       </div>
