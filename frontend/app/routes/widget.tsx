@@ -176,7 +176,7 @@ export default function Widget() {
     useLoaderData<typeof loader>()
   usePathTracker()
 
-  const contentConfiguration: ToolContent = {
+  const profile: ToolContent | WidgetToolAppearance = {
     suggestedTitles: [
       'Support this content',
       'Make a payment',
@@ -202,10 +202,8 @@ export default function Widget() {
     onDescriptionVisibilityChange: (visible: boolean) =>
       toolActions.setToolConfig({
         widgetDescriptionVisible: visible
-      })
-  }
+      }),
 
-  const appearanceConfiguration: WidgetToolAppearance = {
     fontName: snap.currentConfig?.widgetFontName,
     fontSize: snap.currentConfig?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
     fontSizeRange: WIDGET_FONT_SIZES,
@@ -373,8 +371,7 @@ export default function Widget() {
 
                     <BuilderForm
                       toolName="widget"
-                      content={contentConfiguration}
-                      appearance={appearanceConfiguration}
+                      profile={profile}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
