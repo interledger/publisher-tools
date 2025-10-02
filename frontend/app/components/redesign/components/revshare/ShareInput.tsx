@@ -217,6 +217,9 @@ export const ShareInput = React.memo(
               {showSuccess && <SVGCheckIcon className="w-4 h-4" />}
             </div>
           )}
+          <div id={`pointer-description-${index}`} className="sr-only">
+            Required wallet address for this recipient.
+          </div>
           {hasError && (
             <div
               id={`pointer-error-${index}`}
@@ -226,6 +229,9 @@ export const ShareInput = React.memo(
               aria-atomic="true"
             >
               {error}
+              <span className="sr-only">
+                &nbsp;Please check the format and try again.
+              </span>
             </div>
           )}
         </div>
