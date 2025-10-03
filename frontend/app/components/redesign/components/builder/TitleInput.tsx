@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
@@ -83,12 +84,17 @@ function CustomTitle({
   maxLength,
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
+  const fieldId = useId()
   return (
     <div className="flex flex-col gap-xs">
-      <h4 className="text-base leading-md font-bold text-text-primary">
+      <label
+        htmlFor={fieldId}
+        className="text-base font-bold leading-md text-text-primary"
+      >
         Custom title
-      </h4>
+      </label>
       <InputField
+        id={fieldId}
         value={value}
         placeholder={placeholder}
         onChange={(e) => {
