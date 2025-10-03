@@ -42,7 +42,6 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {required && <span className="text-text-error ml-1">*</span>}
           </label>
         )}
-
         <div className="relative">
           <input
             ref={ref}
@@ -65,12 +64,12 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             <span
               className="absolute right-3 top-full
               -translate-y-1/2
-              px-1 text-xs text-text-error bg-white">
+              px-1 text-xs text-text-error bg-white"
+            >
               {displayError}
             </span>
           )}
         </div>
-
         {(helpText || showCounter) && !error && (
           <div className="flex justify-between gap-xs text-xs text-text-secondary">
             {helpText && <p>{helpText}</p>}
