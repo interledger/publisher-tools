@@ -273,7 +273,7 @@ export const ShareInput = React.memo(
           <div
             role="cell"
             className="hidden md:block"
-            aria-labelledby="col-delete"
+            aria-labelledby="col-remove"
           >
             <ToolsSecondaryButton
               onClick={onRemove}
