@@ -67,7 +67,7 @@ export type ToolAppearance = BannerToolAppearance | WidgetToolAppearance
 
 interface AppearanceBuilderProps {
   toolName: 'widget' | 'banner'
-  appearance: ToolAppearance
+  profile: ToolAppearance
   onRefresh: () => void
   positionSelector?: React.ReactNode
   colorsSelector?: React.ReactNode
@@ -81,26 +81,26 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 
 export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
   toolName,
-  appearance,
+  profile,
   onRefresh,
   positionSelector,
   colorsSelector
 }) => {
-  const { min: minFontSize, max: maxFontSize } = appearance.fontSizeRange
+  const { min: minFontSize, max: maxFontSize } = profile.fontSizeRange
 
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
   const { actions: uiActions, state: uiState } = useUI()
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
-      const validated = getValidSlideAnimation(appearance.slideAnimation)
+      const validated = getValidSlideAnimation(profile.slideAnimation)
       return validated === SLIDE_ANIMATION.None
         ? SLIDE_ANIMATION.Slide
         : validated
     })
-  const isAnimated = appearance.slideAnimation !== SLIDE_ANIMATION.None
+  const isAnimated = profile.slideAnimation !== SLIDE_ANIMATION.None
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === appearance.fontName
+    (option) => option === profile.fontName
   )
   const thumbnails = [wmLogo]
 
@@ -129,7 +129,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
             const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
-            appearance.onFontNameChange(fontName)
+            profile.onFontNameChange(fontName)
           }}
           options={FONT_FAMILY_OPTIONS.map((font, index) => ({
             label: font,
@@ -144,9 +144,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               onClick={() => {
                 const newSize = Math.max(
                   minFontSize,
-                  (appearance.fontSize ?? minFontSize) - 1
+                  (profile.fontSize ?? minFontSize) - 1
                 )
-                appearance.onFontSizeChange(newSize)
+                profile.onFontSizeChange(newSize)
               }}
               aria-label="Decrease font size"
             >
@@ -154,12 +154,12 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
             </button>
 
             <Slider
-              value={appearance.fontSize ?? minFontSize}
+              value={profile.fontSize ?? minFontSize}
               min={minFontSize}
               max={maxFontSize}
               onChange={(value) => {
                 console.log('Font size changed to:', value)
-                appearance.onFontSizeChange(value)
+                profile.onFontSizeChange(value)
               }}
             />
 
@@ -168,9 +168,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               onClick={() => {
                 const newSize = Math.min(
                   maxFontSize,
-                  (appearance.fontSize ?? minFontSize) + 1
+                  (profile.fontSize ?? minFontSize) + 1
                 )
-                appearance.onFontSizeChange(newSize)
+                profile.onFontSizeChange(newSize)
               }}
             >
               <span className="text-3xl leading-3xl text-text-primary">A</span>
@@ -195,8 +195,8 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
-          defaultValue={appearance.borderRadius}
-          onChange={(value) => appearance.onBorderChange(value)}
+          defaultValue={profile.borderRadius}
+          onChange={(value) => profile.onBorderChange(value)}
         />
       </div>
 
@@ -213,7 +213,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         </>
       )}
 
-      {appearance.showAnimation && (
+      {profile.showAnimation && (
         <>
           <Divider />
           <div className="flex flex-col gap-xs">
@@ -225,7 +225,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
               <Checkbox
                 checked={isAnimated}
                 onChange={() => {
-                  appearance.onSlideAnimationChange(
+                  profile.onSlideAnimationChange(
                     isAnimated ? SLIDE_ANIMATION.None : lastSelectedAnimation
                   )
                 }}
@@ -237,7 +237,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                   disabled={!isAnimated}
                   defaultValue={
                     isAnimated
-                      ? getValidSlideAnimation(appearance.slideAnimation)
+                      ? getValidSlideAnimation(profile.slideAnimation)
                       : lastSelectedAnimation
                   }
                   options={[
@@ -247,7 +247,7 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
                   onChange={(value) => {
                     const selectedAnimation = value as SlideAnimationType
                     setLastSelectedAnimation(selectedAnimation)
-                    appearance.onSlideAnimationChange(selectedAnimation)
+                    profile.onSlideAnimationChange(selectedAnimation)
                   }}
                 />
               </div>
@@ -269,10 +269,9 @@ export const AppearanceBuilder: React.FC<AppearanceBuilderProps> = ({
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
             checked={
-              typeof appearance.thumbnail === 'undefined' ||
-              !!appearance.thumbnail
+              typeof profile.thumbnail === 'undefined' || !!profile.thumbnail
             }
-            onChange={appearance.onThumbnailVisibilityChange}
+            onChange={profile.onThumbnailVisibilityChange}
             label="Visible"
           />
           <div className="flex gap-md">
