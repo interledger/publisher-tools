@@ -84,10 +84,10 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
         {showDelete && (
           <div
             role="columnheader"
-            id="col-delete"
-            aria-label="Delete recipient from table"
+            id="col-remove"
+            aria-label="Remove recipient from table"
           >
-            Delete
+            Remove
           </div>
         )}
       </div>
@@ -158,7 +158,7 @@ export const ShareInput = React.memo(
           {showDelete && (
             <ToolsSecondaryButton
               onClick={onRemove}
-              className="border-none py-sm px-xs shrink-0"
+              className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
               aria-describedby={pointerInputId}
             >
@@ -258,11 +258,11 @@ export const ShareInput = React.memo(
           <div
             role="cell"
             className="hidden md:block"
-            aria-labelledby="col-delete"
+            aria-labelledby="col-remove"
           >
             <ToolsSecondaryButton
               onClick={onRemove}
-              className="border-none py-sm px-xs shrink-0"
+              className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
               aria-describedby={pointerInputId}
             >
