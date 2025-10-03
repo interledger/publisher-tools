@@ -7,12 +7,12 @@ import {
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useUI } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
-import type { ToolContent } from './ContentBuilder'
-import type { ToolAppearance } from './AppearanceBuilder'
+import type { ContentConfig, ToolContent } from './ContentBuilder'
+import type { AppearanceConfig, ToolAppearance } from './AppearanceBuilder'
 
 interface BuilderFormProps {
   profile: ToolContent | ToolAppearance
-  toolName: 'widget' | 'banner'
+  config: ContentConfig | AppearanceConfig
   onRefresh: (section: 'appearance' | 'content') => void
   onBuildStepComplete?: (isComplete: boolean) => void
   positionSelector?: React.ReactNode
@@ -23,7 +23,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
   onBuildStepComplete,
   onRefresh,
   profile,
-  toolName,
+  config,
   positionSelector,
   colorsSelector
 }) => {
@@ -74,13 +74,14 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         <ContentBuilder
           onRefresh={() => onRefresh('content')}
           profile={profile as ToolContent}
+          config={config as ContentConfig}
         />
         <AppearanceBuilder
           onRefresh={() => onRefresh('appearance')}
           profile={profile as ToolAppearance}
           positionSelector={positionSelector}
           colorsSelector={colorsSelector}
-          toolName={toolName}
+          config={config as AppearanceConfig}
         />
       </BuilderPresetTabs>
     </div>

@@ -39,8 +39,14 @@ import type {
   WidgetConfig,
   PaymentWidget as WidgetComponent
 } from '@tools/components'
-import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
-import type { WidgetToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import type {
+  ContentConfig,
+  ToolContent
+} from '~/components/redesign/components/ContentBuilder'
+import type {
+  AppearanceConfig,
+  WidgetToolAppearance
+} from '~/components/redesign/components/AppearanceBuilder'
 import { WIDGET_FONT_SIZES } from '@shared/types'
 import type {
   CornerType,
@@ -165,6 +171,25 @@ const WidgetPreview: React.FC = () => {
   )
 }
 
+const config: ContentConfig | AppearanceConfig = {
+  suggestedTitles: [
+    'Support this content',
+    'Make a payment',
+    'Contribute now',
+    'Help support',
+    'One-time donation'
+  ],
+  titleHelpText: 'Message to encourage one-time payments',
+  titleMaxLength: 30,
+  messageLabel: 'Widget message',
+  messagePlaceholder: 'Enter your widget message...',
+  messageHelpText: 'Describe how payments support your work',
+  messageMaxLength: 300,
+
+  showThumbnail: false,
+  fontSizeRange: WIDGET_FONT_SIZES
+}
+
 export default function Widget() {
   const snap = useSnapshot(toolState)
   const { actions: uiActions } = useUI()
@@ -177,19 +202,6 @@ export default function Widget() {
   usePathTracker()
 
   const profile: ToolContent | WidgetToolAppearance = {
-    suggestedTitles: [
-      'Support this content',
-      'Make a payment',
-      'Contribute now',
-      'Help support',
-      'One-time donation'
-    ],
-    titleHelpText: 'Message to encourage one-time payments',
-    titleMaxLength: 30,
-    messageLabel: 'Widget message',
-    messagePlaceholder: 'Enter your widget message...',
-    messageHelpText: 'Describe how payments support your work',
-    messageMaxLength: 300,
     currentTitle: snap.currentConfig?.widgetTitleText,
     currentMessage: snap.currentConfig?.widgetDescriptionText,
     isDescriptionVisible: snap.currentConfig?.widgetDescriptionVisible ?? true,
@@ -206,7 +218,6 @@ export default function Widget() {
 
     fontName: snap.currentConfig?.widgetFontName,
     fontSize: snap.currentConfig?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
-    fontSizeRange: WIDGET_FONT_SIZES,
     backgroundColor: snap.currentConfig?.widgetBackgroundColor,
     textColor: snap.currentConfig?.widgetTextColor,
     buttonColor: snap.currentConfig?.widgetButtonBackgroundColor,
@@ -370,8 +381,8 @@ export default function Widget() {
                     />
 
                     <BuilderForm
-                      toolName="widget"
                       profile={profile}
+                      config={config}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'

@@ -42,8 +42,14 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
 import type { BannerConfig, Banner as BannerComponent } from '@tools/components'
-import type { ToolContent } from '~/components/redesign/components/ContentBuilder'
-import type { BannerToolAppearance } from '~/components/redesign/components/AppearanceBuilder'
+import type {
+  ContentConfig,
+  ToolContent
+} from '~/components/redesign/components/ContentBuilder'
+import type {
+  AppearanceConfig,
+  BannerToolAppearance
+} from '~/components/redesign/components/AppearanceBuilder'
 import { BANNER_FONT_SIZES } from '@shared/types'
 import type {
   BannerPositionKey,
@@ -177,6 +183,25 @@ const BannerPreview = React.forwardRef<BannerHandle>((props, ref) => {
 
 BannerPreview.displayName = 'BannerPreview'
 
+const config: ContentConfig | AppearanceConfig = {
+  suggestedTitles: [
+    'How to support?',
+    'Fund me',
+    'Pay as you browse',
+    'Easy donate',
+    'Support my work'
+  ],
+  titleHelpText: 'Strong message to help people engage with Web Monetization',
+  titleMaxLength: 60,
+  messageLabel: 'Banner message',
+  messagePlaceholder: 'Enter your banner message...',
+  messageHelpText: 'Strong message to help people engage with Web Monetization',
+  messageMaxLength: 300,
+
+  showThumbnail: true,
+  fontSizeRange: BANNER_FONT_SIZES
+}
+
 export default function Banner() {
   const snap = useSnapshot(toolState)
   const { actions: uiActions } = useUI()
@@ -190,20 +215,6 @@ export default function Banner() {
   usePathTracker()
 
   const profile: ToolContent | BannerToolAppearance = {
-    suggestedTitles: [
-      'How to support?',
-      'Fund me',
-      'Pay as you browse',
-      'Easy donate',
-      'Support my work'
-    ],
-    titleHelpText: 'Strong message to help people engage with Web Monetization',
-    titleMaxLength: 60,
-    messageLabel: 'Banner message',
-    messagePlaceholder: 'Enter your banner message...',
-    messageHelpText:
-      'Strong message to help people engage with Web Monetization',
-    messageMaxLength: 300,
     currentTitle: snap.currentConfig?.bannerTitleText,
     currentMessage: snap.currentConfig?.bannerDescriptionText,
     isDescriptionVisible: snap.currentConfig?.bannerDescriptionVisible ?? true,
@@ -220,7 +231,6 @@ export default function Banner() {
 
     fontName: snap.currentConfig?.bannerFontName,
     fontSize: snap.currentConfig?.bannerFontSize ?? BANNER_FONT_SIZES.default,
-    fontSizeRange: BANNER_FONT_SIZES,
     backgroundColor: snap.currentConfig?.bannerBackgroundColor,
     textColor: snap.currentConfig?.bannerTextColor,
     borderRadius: snap.currentConfig?.bannerBorder,
@@ -387,8 +397,8 @@ export default function Banner() {
                     />
 
                     <BuilderForm
-                      toolName="banner"
                       profile={profile}
+                      config={config}
                       onBuildStepComplete={(isComplete) =>
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
