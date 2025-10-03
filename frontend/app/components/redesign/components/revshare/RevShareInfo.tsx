@@ -34,9 +34,7 @@ export const RevShareInfo = () => {
         <p className="text-sm leading-sm text-field-helpertext-default">
           Enter each payment pointer and wallet address that will receive a
           split of the revenue into the table. Names are optional. Click Add
-          Share to add more rows. Assign a weight to each recipient. If
-          you&apos;d rather assign sharing by percentage, enter at least two
-          recipients into the table. The Percent field will open for edits. When
+          recipient to add more rows. Assign a weight to each recipient. When
           you&apos;re finished, add the generated monetization link tag to your
           site. The link contains a unique URL hosted on
           https://webmonetization.org/api/revshare/pay/.
