@@ -359,7 +359,7 @@ export const SVGDeleteScript: SvgIcon = ({ className }) => (
       fill="#7469A8"
       d="M5 5 L15 15 M15 5 L5 15"
       stroke="#7469A8"
-      strokeWidth="2"
+      strokeWidth="1"
       strokeLinecap="round"
     />
   </svg>
