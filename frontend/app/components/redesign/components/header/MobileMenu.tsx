@@ -1,4 +1,3 @@
-import { NavLink } from '@remix-run/react'
 import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
