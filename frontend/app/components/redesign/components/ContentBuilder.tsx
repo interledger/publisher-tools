@@ -4,15 +4,19 @@ import { BuilderAccordion } from './BuilderAccordion'
 import { TextareaField, Divider, Checkbox } from '@/components'
 import { TitleInput } from './builder/TitleInput'
 
-export interface ToolContent {
+export interface ContentConfig {
   suggestedTitles: string[]
+
   titleHelpText: string
   titleMaxLength: number
+
   messageLabel: string
   messagePlaceholder: string
   messageHelpText: string
   messageMaxLength: number
+}
 
+export interface ToolContent {
   currentTitle: string
   currentMessage: string
   isDescriptionVisible: boolean
@@ -25,10 +29,12 @@ export interface ToolContent {
 
 interface ContentBuilderProps {
   profile: ToolContent
+  config: ContentConfig
   onRefresh: () => void
 }
 
 export const ContentBuilder: React.FC<ContentBuilderProps> = ({
+  config,
   profile,
   onRefresh
 }) => {
@@ -75,16 +81,16 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
         <TitleInput
           value={profile.currentTitle}
           onChange={profile.onTitleChange}
-          suggestions={profile.suggestedTitles}
-          maxLength={profile.titleMaxLength}
-          helpText={profile.titleHelpText}
+          suggestions={config.suggestedTitles}
+          maxLength={config.titleMaxLength}
+          helpText={config.titleHelpText}
         />
 
         <Divider />
 
         <div className="flex flex-col gap-xs">
           <h4 className="text-base leading-md font-bold text-text-primary">
-            {profile.messageLabel}
+            {config.messageLabel}
           </h4>
           <div className="flex gap-lg items-start xl:flex-row flex-col">
             <div className="flex items-center gap-xs shrink-0">
@@ -105,11 +111,11 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
                   profile.onMessageChange(e.target.value)
                 }}
                 currentLength={profile.currentMessage.length || 0}
-                maxLength={profile.messageMaxLength}
+                maxLength={config.messageMaxLength}
                 showCounter={true}
-                helpText={profile.messageHelpText}
+                helpText={config.messageHelpText}
                 className="h-[84px]"
-                placeholder={profile.messagePlaceholder}
+                placeholder={config.messagePlaceholder}
                 disabled={!isMessageVisible}
               />
             </div>
