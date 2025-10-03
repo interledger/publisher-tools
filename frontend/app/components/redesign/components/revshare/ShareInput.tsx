@@ -150,7 +150,7 @@ export const ShareInput = React.memo(
           'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
           GRID_COLS,
-          GRID_GAP,
+          GRID_GAP
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
@@ -221,10 +221,7 @@ export const ShareInput = React.memo(
             Required wallet address for this recipient.
           </div>
         </div>
-        <div
-          role="cell"
-          aria-labelledby="col-weight"
-        >
+        <div role="cell" aria-labelledby="col-weight">
           <label htmlFor={weightInputId} className="sr-only">
             Weight
           </label>
