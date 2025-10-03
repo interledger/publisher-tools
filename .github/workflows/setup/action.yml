@@ -8,8 +8,7 @@ runs:
   steps:
     - name: Setup NodeJS
       uses: actions/setup-node@v4
-      with:
-        node-version: 'lts/iron'
+      with: { node-version-file: .nvmrc }
 
     - name: Install PNPM
       uses: pnpm/action-setup@v2
