@@ -1,4 +1,3 @@
-import { NavLink } from '@remix-run/react'
 import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
@@ -62,9 +61,9 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
       aria-label="Mobile menu"
     >
       <div className="flex-shrink-0 flex items-center justify-between pt-[22px] pr-[20px] pb-[6px] pl-[28px]">
-        <NavLink to="/">
+        <a href="https://webmonetization.org/">
           <img src={mobileLogo} alt="Web Monetization Logo" />
-        </NavLink>
+        </a>
         <GhostButton
           onClick={onClose}
           autoFocus
