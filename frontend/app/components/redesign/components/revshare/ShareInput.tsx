@@ -84,10 +84,10 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
         {showDelete && (
           <div
             role="columnheader"
-            id="col-delete"
-            aria-label="Delete recipient from table"
+            id="col-remove"
+            aria-label="Remove recipient from table"
           >
-            Delete
+            Remove
           </div>
         )}
       </div>
@@ -150,8 +150,7 @@ export const ShareInput = React.memo(
           'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
           GRID_COLS,
-          GRID_GAP,
-          hasError ? 'md:mb-2xs' : ''
+          GRID_GAP
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
@@ -159,7 +158,7 @@ export const ShareInput = React.memo(
           {showDelete && (
             <ToolsSecondaryButton
               onClick={onRemove}
-              className="border-none py-sm px-xs shrink-0"
+              className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
               aria-describedby={pointerInputId}
             >
@@ -200,6 +199,7 @@ export const ShareInput = React.memo(
               onChangePointer(e.target.value)
             }
             required
+            error={error}
             aria-required="true"
             aria-invalid={hasError}
             aria-describedby={cx(
@@ -220,26 +220,8 @@ export const ShareInput = React.memo(
           <div id={`pointer-description-${index}`} className="sr-only">
             Required wallet address for this recipient.
           </div>
-          {hasError && (
-            <div
-              id={`pointer-error-${index}`}
-              className="absolute left-0 text-xs mt-2xs text-text-error"
-              role="alert"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {error}
-              <span className="sr-only">
-                &nbsp;Please check the format and try again.
-              </span>
-            </div>
-          )}
         </div>
-        <div
-          role="cell"
-          className={hasError ? 'mt-xs' : 'md:mt-0'}
-          aria-labelledby="col-weight"
-        >
+        <div role="cell" aria-labelledby="col-weight">
           <label htmlFor={weightInputId} className="sr-only">
             Weight
           </label>
@@ -273,11 +255,11 @@ export const ShareInput = React.memo(
           <div
             role="cell"
             className="hidden md:block"
-            aria-labelledby="col-delete"
+            aria-labelledby="col-remove"
           >
             <ToolsSecondaryButton
               onClick={onRemove}
-              className="border-none py-sm px-xs shrink-0"
+              className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
               aria-describedby={pointerInputId}
             >
