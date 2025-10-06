@@ -3,8 +3,7 @@ import { AwsClient } from 'aws4fetch'
 interface Secrets {
   AWS_ACCESS_KEY_ID: string
   AWS_SECRET_ACCESS_KEY: string
-  AWS_REGION: string
-  AWS_BUCKET_NAME: string
+  AWS_S3_ENDPOINT: string
   AWS_PREFIX: string
 }
 
@@ -17,13 +16,12 @@ export class ConfigStorageService {
   constructor(env: Secrets) {
     ConfigStorageService.instance ??= new AwsClient({
       accessKeyId: env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-      region: env.AWS_REGION
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY
     })
+    this.endpoint = env.AWS_S3_ENDPOINT
 
     this.prefix = env.AWS_PREFIX
     this.client = ConfigStorageService.instance
-    this.endpoint = `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com`
   }
 
   async getJson<T>(walletAddress: string): Promise<T> {

@@ -32,14 +32,14 @@
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "4.38.0"
+      "wrangler": "4.40.0"
     }
   },
   "engines": {
-    "pnpm": "^9.12.1",
+    "pnpm": "^9.15.9",
     "npm": "pnpm",
     "yarn": "pnpm",
-    "node": "^20.12.1"
+    "node": ">=24.0.0"
   },
   "private": true,
   "packageManager": "pnpm@9.15.9"
