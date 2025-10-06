@@ -47,7 +47,11 @@ import type {
   AppearanceConfig,
   WidgetToolAppearance
 } from '~/components/redesign/components/AppearanceBuilder'
-import { WIDGET_FONT_SIZES } from '@shared/types'
+import {
+  WIDGET_DESCRIPTION_MAX_LENGTH,
+  WIDGET_FONT_SIZES,
+  WIDGET_TITLE_MAX_LENGTH
+} from '@shared/types'
 import type {
   CornerType,
   FontFamilyKey,
@@ -180,11 +184,11 @@ const config: ContentConfig | AppearanceConfig = {
     'One-time donation'
   ],
   titleHelpText: 'Message to encourage one-time payments',
-  titleMaxLength: 30,
+  titleMaxLength: WIDGET_TITLE_MAX_LENGTH,
   messageLabel: 'Widget message',
   messagePlaceholder: 'Enter your widget message...',
   messageHelpText: 'Describe how payments support your work',
-  messageMaxLength: 300,
+  messageMaxLength: WIDGET_DESCRIPTION_MAX_LENGTH,
 
   showThumbnail: false,
   fontSizeRange: WIDGET_FONT_SIZES

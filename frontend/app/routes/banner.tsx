@@ -50,7 +50,11 @@ import type {
   AppearanceConfig,
   BannerToolAppearance
 } from '~/components/redesign/components/AppearanceBuilder'
-import { BANNER_FONT_SIZES } from '@shared/types'
+import {
+  BANNER_DESCRIPTION_MAX_LENGTH,
+  BANNER_FONT_SIZES,
+  BANNER_TITLE_MAX_LENGTH
+} from '@shared/types'
 import type {
   BannerPositionKey,
   CornerType,
@@ -192,11 +196,11 @@ const config: ContentConfig | AppearanceConfig = {
     'Support my work'
   ],
   titleHelpText: 'Strong message to help people engage with Web Monetization',
-  titleMaxLength: 60,
+  titleMaxLength: BANNER_TITLE_MAX_LENGTH,
   messageLabel: 'Banner message',
   messagePlaceholder: 'Enter your banner message...',
   messageHelpText: 'Strong message to help people engage with Web Monetization',
-  messageMaxLength: 300,
+  messageMaxLength: BANNER_DESCRIPTION_MAX_LENGTH,
 
   showThumbnail: true,
   fontSizeRange: BANNER_FONT_SIZES

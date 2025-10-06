@@ -4,7 +4,7 @@ import { cx } from 'class-variance-authority'
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   id?: string
-  error?: string | string[] | null
+  error?: string | string[]
   helpText?: string
   showCounter?: boolean
   currentLength?: number
@@ -28,9 +28,16 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ) => {
     const generatedId = useId()
     const fieldId = id || generatedId
-    const displayError =
-      required && !props.value ? 'This field is required' : error
 
+    const getDisplayError = (): string | string[] | undefined => {
+      if (required && !props.value) {
+        return 'This field is required'
+      }
+
+      return error
+    }
+
+    const displayError = getDisplayError()
     return (
       <div className="space-y-2xs">
         {label && (
@@ -45,14 +52,16 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         <div className="relative">
           <input
             ref={ref}
+            maxLength={maxLength}
             className={cx(
               'w-full px-sm py-xs rounded-sm',
               'text-text-primary placeholder:text-text-placeholder',
               'border hover:border-field-border-hover',
-              'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
               'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
               'placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
-              error ? 'border-field-border-error' : 'border-field-border',
+              displayError
+                ? 'border-field-border-error focus:border-field-border-error focus:outline-none focus:ring-1 focus:ring-red-500'
+                : 'border-field-border focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
               className
             )}
             id={fieldId}
@@ -60,7 +69,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {...props}
           />
 
-          {error && (
+          {displayError && (
             <span
               className="absolute right-3 top-full
               -translate-y-1/2
@@ -70,7 +79,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             </span>
           )}
         </div>
-        {(helpText || showCounter) && !error && (
+        {(helpText || showCounter) && !displayError && (
           <div className="flex justify-between gap-xs text-xs text-text-secondary">
             {helpText && <p>{helpText}</p>}
             {showCounter && maxLength && (
