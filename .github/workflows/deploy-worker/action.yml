@@ -1,0 +1,119 @@
+name: 'Deploy a Cloudflare worker'
+description: 'Conditionally deploys a Cloudflare worker, outputs deploy URL'
+
+inputs:
+  name:
+    required: true
+    description: Name of the folder containing the worker code
+  build:
+    required: false
+    description: 'Build script'
+    default: ''
+  changed:
+    required: true
+    description: 'Whether the worker code has changed' # check with == 'true'
+  mode:
+    required: true
+    description: 'Deployment mode: `staging` (push to main), `production` (push to release) or `preview` (pull_request to main)'
+  stagingUrl:
+    required: true
+    description: 'Staging URL Origin'
+  productionUrl:
+    required: true
+    description: 'Production URL Origin'
+
+  # Authentication
+  apiToken:
+    required: true
+    description: 'https://developers.cloudflare.com/fundamentals/api/get-started/create-token/'
+  accountId:
+    required: true
+    description: 'Cloudflare account ID'
+
+  # build time constants
+  BUILD_API_URL:
+    description: 'API_URL from deploying api'
+    required: false
+  BUILD_CDN_URL:
+    description: 'CDN_URL from deploying cdn'
+    required: false
+  BUILD_AWS_PREFIX:
+    description: 'AWS_PREFIX used for config storage'
+    required: true
+
+outputs:
+  url:
+    description: 'The aliased deploy or the versioned deploy URL if no alias is set'
+    value: ${{ steps.get-url.outputs.url }}
+  versioned-url:
+    description: 'The versioned deploy URL'
+    value: ${{ steps.get-url.outputs.versioned-url }}
+  did-deploy:
+    description: 'Whether the worker was deployed'
+    value: ${{ steps.get-url.outputs.did-deploy }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build worker
+      if: ${{ inputs.build && inputs.changed == 'true' }}
+      shell: bash
+      run: ${{ inputs.build }}
+      env:
+        NODE_ENV: production
+        BUILD_API_URL: ${{ inputs.BUILD_API_URL }}
+        BUILD_CDN_URL: ${{ inputs.BUILD_CDN_URL }}
+        BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
+
+    - name: Get worker deploy command
+      if: inputs.changed == 'true'
+      id: command
+      shell: bash
+      run: |
+        DEPLOY_MODE='${{ inputs.mode }}'
+        case "$DEPLOY_MODE" in
+          preview)    DEPLOY_COMMAND="versions upload --preview-alias pr${{ github.event.pull_request.number }}" ;;
+          staging)    DEPLOY_COMMAND="versions upload --preview-alias staging" ;;
+          production) DEPLOY_COMMAND="deploy" ;;
+        esac
+        echo "command=$DEPLOY_COMMAND" >> $GITHUB_OUTPUT
+
+    - name: Deploy Worker
+      if: inputs.changed == 'true'
+      id: deploy
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ inputs.apiToken }}
+        accountId: ${{ inputs.accountId }}
+        command: ${{ steps.command.outputs.command }}
+        workingDirectory: ${{ inputs.name }}
+
+    - name: Get deploy URL
+      id: get-url
+      shell: bash
+      # if `deploy` was run: set output versioned-url=deployment-url, and url=deployment-alias-url, and did-deploy='true'
+      # if not, set did-deploy='false', url=versioned-url=staging-url if mode=preview|staging; url=versioned-url=production-url if mode=production
+      run: |
+        DEPLOY_MODE='${{ inputs.mode }}'
+        STAGING_URL='${{ inputs.stagingUrl }}'
+        PRODUCTION_URL='${{ inputs.productionUrl }}'
+        DID_DEPLOY='${{ inputs.changed }}'
+        DEPLOY_URL='${{ steps.deploy.outputs.deployment-url }}'
+        DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url }}'
+
+        echo "did-deploy=$DID_DEPLOY" >> $GITHUB_OUTPUT
+
+        if [[ "$DID_DEPLOY" = 'true' ]]; then
+          echo "versioned-url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+          url="$DEPLOY_URL_ALIAS"; [ -z "${url}" ] && url="$DEPLOY_URL"
+          echo "url=$url" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        case "$DEPLOY_MODE" in
+          preview)    VERSIONED_URL="$STAGING_URL" ;;
+          staging)    VERSIONED_URL="$STAGING_URL" ;;
+          production) VERSIONED_URL="$PRODUCTION_URL" ;;
+        esac
+        echo "versioned-url=$VERSIONED_URL" >> $GITHUB_OUTPUT
+        echo "url=$VERSIONED_URL" >> $GITHUB_OUTPUT

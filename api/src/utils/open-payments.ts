@@ -8,15 +8,15 @@ import {
   isPendingGrant,
   createAuthenticatedClient
 } from '@interledger/open-payments'
+import { getWalletAddress } from '@shared/utils'
 import {
   createHeaders,
-  toWalletAddressUrl,
   timeout,
   createHTTPException,
   urlWithParams
 } from './utils.js'
 import { createId } from '@paralleldrive/cuid2'
-import type { Env } from '../index.js'
+import type { Env } from '../app.js'
 
 export interface Amount {
   value: string
@@ -54,14 +54,10 @@ type CreateOutgoingPaymentParams = {
 export class OpenPaymentsService {
   private client: AuthenticatedClient | null = null
   private static _instance: OpenPaymentsService
-  private readonly frontendUrl: string
-  private constructor(env: Env) {
-    this.frontendUrl = env.FRONTEND_URL
-  }
 
   public static async getInstance(env: Env): Promise<OpenPaymentsService> {
     if (!OpenPaymentsService._instance) {
-      OpenPaymentsService._instance = new OpenPaymentsService(env)
+      OpenPaymentsService._instance = new OpenPaymentsService()
       OpenPaymentsService._instance.client =
         await OpenPaymentsService._instance.initClient(env)
     }
@@ -122,9 +118,7 @@ export class OpenPaymentsService {
     amount: number
     note?: string
   }) {
-    const receiverWallet = await this.getWalletAddress(
-      args.receiverWalletAddress
-    )
+    const receiverWallet = await getWalletAddress(args.receiverWalletAddress)
     const { quote, incomingPaymentGrant } = await this.fetchQuote(
       {
         walletAddress: args.senderWalletAddress,
@@ -152,7 +146,7 @@ export class OpenPaymentsService {
     },
     receiverWallet: WalletAddress
   ): Promise<CreatePayment> {
-    const walletAddress = await this.getWalletAddress(args.walletAddress)
+    const walletAddress = await getWalletAddress(args.walletAddress)
 
     const amountObj = {
       value: BigInt(
@@ -198,6 +192,7 @@ export class OpenPaymentsService {
     walletAddress: WalletAddress
     debitAmount: Amount
     receiveAmount: Amount
+    redirectUrl: string
   }): Promise<PendingGrant> {
     const clientNonce = crypto.randomUUID()
     const paymentId = createId()
@@ -208,7 +203,7 @@ export class OpenPaymentsService {
       receiveAmount: args.receiveAmount,
       nonce: clientNonce,
       paymentId: paymentId,
-      redirectUrl: this.frontendUrl + 'payment-confirmation'
+      redirectUrl: args.redirectUrl
     })
 
     return outgoingPaymentGrant
@@ -473,15 +468,5 @@ export class OpenPaymentsService {
     )
 
     return { success: true }
-  }
-
-  private async getWalletAddress(url: string): Promise<WalletAddress> {
-    const walletAddress = await this.client!.walletAddress.get({
-      url: toWalletAddressUrl(url)
-    }).catch(() => {
-      throw new Error('Invalid wallet address.')
-    })
-
-    return walletAddress
   }
 }

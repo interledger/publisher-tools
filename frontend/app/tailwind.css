@@ -1,14 +1,97 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html {
-    font-family: 'Titillium Web', system-ui, sans-serif;
+  :root {
+    --focus-outline-color: theme('colors.nav-link-hover');
+    --focus-outline-width: 2px;
+    --focus-outline-offset: 2px;
+  }
+  html,
+  body {
+    font-family:
+      'Inter',
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      'Noto Sans',
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji';
+  }
+
+  body:has([aria-label='Mobile menu']) {
+    @apply overflow-hidden;
+  }
+
+  a,
+  button,
+  summary,
+  [role='tab'],
+  [role='menu'] {
+    @apply rounded-lg;
+    @apply focus:outline-none;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
+  }
+}
+
+@layer components {
+  a.focusable-nav-item,
+  button.focusable-nav-item {
+    @apply transition-colors duration-200 ease-in;
+    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover active:bg-secondary-hover-surface active:text-nav-link-hover;
+    @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
+    @apply focus-visible:outline-offset-0;
+  }
+}
+
+@layer utilities {
+  /* Placeholder text with ellipsis */
+  .placeholder-ellipsis[placeholder] {
+    text-overflow: ellipsis;
+  }
+
+  .has-fixed-action-bar footer {
+    padding-bottom: var(--action-bar-height) !important;
+  }
+
+  .has-fixed-action-bar {
+    --action-bar-height: 169px;
+  }
+
+  @media (min-width: 1280px) {
+    .has-fixed-action-bar {
+      --action-bar-height: 32px;
+    }
+  }
+
+  details[name='builder-accordion']:not([open]) > div {
+    display: none;
+  }
+
+  details[name='builder-accordion'][open] > div {
+    display: flex;
+    animation: accordion-open 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes accordion-open {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

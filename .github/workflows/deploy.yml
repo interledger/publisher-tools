@@ -1,0 +1,178 @@
+name: Deploy
+on:
+  push:
+    branches: [main, release]
+    paths-ignore: ['**.md']
+  pull_request:
+    branches: [main]
+    paths-ignore: ['**.md']
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  pull-requests: write
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/workflows/setup
+      - name: Install wrangler globally
+        # The wrangler Action expects a global installation, so we better reuse
+        # what we've in our project.
+        run: |
+          wrangler_version=$(cat package.json | jq -r '.pnpm.overrides.wrangler')
+          pnpm install -g "wrangler@${wrangler_version}"
+
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            workflow: &workflow
+              - '.github/workflows/deploy.yml'
+              - '.github/workflows/deploy-worker/**'
+            api: &api
+              - *workflow
+              - 'api/**'
+              - 'shared/**'
+            cdn: &cdn
+              - *workflow
+              - *api
+              - 'components/**'
+              - 'cdn/**'
+            frontend:
+              - *workflow
+              - *api
+              - *cdn
+              - 'frontend/**'
+
+      - name: Get deploy mode
+        id: deploy-mode
+        run: |
+          GH_EVENT_NAME='${{ github.event_name }}'
+          GH_REF='${{ github.ref }}'
+          mode="preview"
+          if [[ "$GH_EVENT_NAME" == 'push' ]]; then
+            [[ "$GH_REF" == 'refs/heads/main' ]] && mode="staging"
+            [[ "$GH_REF" == 'refs/heads/release' ]] && mode="production"
+          fi
+          echo "mode=${mode}" >> $GITHUB_OUTPUT
+
+      #region Deploy
+
+      # cdn needs: API_URL, APP_URL (infer from API_URL to prevent cycle)
+      # frontend (app) needs: CDN_URL, ?API_URL
+      # api needs: nothing (APP_URL is passed from components)
+      #
+      # build/deploy sequence:
+      # 1. api
+      # 2. cdn
+      # 3. frontend
+
+      - name: Deploy API
+        uses: ./.github/workflows/deploy-worker
+        id: api
+        with:
+          name: 'api'
+          changed: ${{ steps.changes.outputs.api }}
+          mode: ${{ steps.deploy-mode.outputs.mode }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          stagingUrl: ${{ vars.API_STAGING_URL }}
+          productionUrl: ${{ vars.API_PRODUCTION_URL }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy CDN
+        uses: ./.github/workflows/deploy-worker
+        id: cdn
+        with:
+          name: 'cdn'
+          changed: ${{ steps.changes.outputs.cdn }}
+          mode: ${{ steps.deploy-mode.outputs.mode }}
+          build: 'pnpm -C cdn run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          stagingUrl: ${{ vars.CDN_STAGING_URL }}
+          productionUrl: ${{ vars.CDN_PRODUCTION_URL }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy Frontend
+        uses: ./.github/workflows/deploy-worker
+        id: frontend
+        with:
+          name: 'frontend'
+          changed: ${{ steps.changes.outputs.frontend }}
+          mode: ${{ steps.deploy-mode.outputs.mode }}
+          build: 'pnpm -C frontend run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          stagingUrl: ${{ vars.APP_STAGING_URL }}
+          productionUrl: ${{ vars.APP_PRODUCTION_URL }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #endregion
+
+      #region Summary
+      - name: Create Job summary
+        if: always()
+        uses: actions/github-script@v7
+        id: summary
+        with:
+          script: |
+            core.summary.addHeading('Deployment results', 'h2');
+
+            core.summary.addRaw(`
+            | Worker | Alias | URL  | Outcome |
+            | ------ | --- | --- | --- |
+            | API    | ${getTableText('${{ steps.api.outputs.url }}', '${{ steps.api.outputs.versioned-url }}', '${{ steps.api.outcome }}')} |
+            | CDN    | ${getTableText('${{ steps.cdn.outputs.url }}', '${{ steps.cdn.outputs.versioned-url }}', '${{ steps.cdn.outcome }}')} |
+            | App    | ${getTableText('${{ steps.frontend.outputs.url }}', '${{ steps.frontend.outputs.versioned-url }}', '${{ steps.frontend.outcome }}')} |
+            `, true);
+
+            const repoUrl = '${{ github.server_url }}/${{ github.repository }}';
+            const runId = '${{ github.run_id }}';
+            core.summary.addSeparator();
+            core.summary.addLink(`Logs #${runId}`, `${repoUrl}/actions/runs/${runId}`);
+
+            await core.setOutput('summary', core.summary.stringify());
+            await core.summary.write();
+
+            function getTableText(url, versionedUrl, outcome) {
+              if (outcome !== 'success') {
+                return ['-', '-', outcome].join(' | ');
+              }
+              return [
+                url !== versionedUrl ? getUrlText(url, outcome) : '-',
+                getUrlText(versionedUrl, outcome),
+                outcome,
+              ].join(' | ');
+            }
+
+            function getUrlText(url, outcome) {
+              if (url) {
+                const RE = /^https?:\/\/([a-z0-9]+)-/i;
+                const text = url.match(RE)?.[1] ?? url;
+                return `[${text}](${url})`;
+              }
+              return outcome;
+            }
+
+      - name: Create deploy comment
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: edumserrano/find-create-or-update-comment@v2
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: '<!-- worker-deploy-summary -->'
+          comment-author: 'github-actions[bot]'
+          body: |
+            <!-- worker-deploy-summary -->
+            ${{ steps.summary.outputs.summary }}
+          edit-mode: replace
+    #endregion

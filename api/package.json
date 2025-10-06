@@ -2,9 +2,11 @@
   "name": "publisher-tools-api",
   "version": "1.0.0",
   "scripts": {
+    "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "wrangler dev",
-    "build": "tsc --project tsconfig.json",
+    "build": "wrangler deploy --dry-run --outdir dist",
     "preview": "wrangler dev",
+    "typecheck": "tsc --noEmit",
     "deploy": "wrangler deploy"
   },
   "keywords": [],
@@ -12,23 +14,23 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@hono/zod-validator": "^0.7.0",
-    "@interledger/open-payments": "^7.0.0",
-    "@noble/ed25519": "^2.2.3",
+    "@hono/zod-validator": "^0.7.3",
+    "@interledger/open-payments": "^7.1.3",
+    "@noble/ed25519": "^2.3.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "aws4fetch": "^1.0.20",
-    "hono": "^4.7.8",
+    "@shared/config-storage-service": "workspace:^",
+    "@shared/probabilistic-revenue-share": "workspace:^",
+    "@shared/utils": "workspace:^",
+    "hono": "^4.9.8",
     "http-message-signatures": "^1.0.4",
     "httpbis-digest-headers": "^1.0.0",
-    "zod": "^3.25.67"
+    "zod": "^3.25.76"
   },
   "types": "./src/types.ts",
   "devDependencies": {
-    "typescript": "5.1.6",
-    "wrangler": "^4.16.1"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  },
-  "packageManager": "pnpm@9.12.1"
+    "@shared/types": "workspace:^",
+    "@shared/defines": "workspace:^",
+    "typescript": "5.9.2",
+    "wrangler": "^4.40.0"
+  }
 }

@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022"],
-    "types": ["./worker-configuration.d.ts", "vite/client"]
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "module": "es2015",
+    "target": "es2020",
+    "types": ["./@types/index.d.ts"]
   }
 }

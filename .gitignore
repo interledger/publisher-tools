@@ -43,5 +43,6 @@ worker-configuration.d.ts
 
 # Build outputs
 dist
+!cdn/dist/.gitkeep
 build
 .cache

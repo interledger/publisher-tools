@@ -28,16 +28,8 @@ interface SignOptions {
   keyId: string
 }
 
-export function walletAddressToKey(walletAddress: string): string {
-  return `${decodeURIComponent(walletAddress).replace('$', '').replace('https://', '')}.json`
-}
-
 export function timeout(delay: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, delay))
-}
-
-export function toWalletAddressUrl(s: string): string {
-  return s.startsWith('$') ? s.replace('$', 'https://') : s
 }
 
 export async function createHeaders({
@@ -127,11 +119,9 @@ export function createHTTPException(
   error: unknown
 ) {
   const serializedError = serializeError(error)
-  console.error(message, serializedError)
   return new HTTPException(statusCode, {
-    message: JSON.stringify({
-      error: { ...serializedError }
-    })
+    message,
+    cause: serializedError
   })
 }
 

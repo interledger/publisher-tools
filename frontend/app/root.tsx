@@ -1,48 +1,22 @@
-import {
-  type LinksFunction,
-  type MetaFunction,
-  json
-} from '@remix-run/cloudflare'
+import type { LinksFunction, MetaFunction } from '@remix-run/cloudflare'
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   useRouteError,
   isRouteErrorResponse
 } from '@remix-run/react'
 import type { ReactNode } from 'react'
-import { useEffect, useState } from 'react'
 import stylesheet from '~/tailwind.css?url'
-import { Button, Footer, Header, Snackbar } from './components/index.js'
+import { Button } from './components/index.js'
+import { Header, Footer } from '@/components'
 import { XCircle } from './components/icons.js'
-import bgTileSvg from '~/assets/images/bg-tile.svg?url'
-import faviconPng from '~/assets/images/favicon.png?url'
-import faviconIco from '~/assets/images/favicon.ico?url'
-
-export const loader = async () => {
-  let message
-
-  if (!message) {
-    return json({ message: null })
-  }
-
-  return json({ message })
-}
+import faviconSvg from '~/assets/images/favicon.svg?url'
+import { UIProvider } from '~/stores/uiStore'
 
 export default function App() {
-  const { message } = useLoaderData<typeof loader>()
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-
-  useEffect(() => {
-    if (!message) {
-      return
-    }
-    setSnackbarOpen(true)
-  }, [message])
-
   return (
     <html lang="en">
       <head>
@@ -51,26 +25,14 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-screen">
-        <main className="h-auto min-h-full flex flex-col justify-between">
-          <div
-            style={{
-              backgroundImage: `url(${bgTileSvg})`
-            }}
-            className={'h-full flex flex-col bg-[auto_25em]'}
-          >
-            <Header />
+      <body className="h-screen bg-interface-bg-main flex flex-col">
+        <UIProvider>
+          <Header />
+          <main className="flex-grow flex flex-col">
             <Outlet />
-          </div>
+          </main>
           <Footer />
-        </main>
-        <Snackbar
-          id="snackbar"
-          onClose={() => setSnackbarOpen(false)}
-          show={snackbarOpen}
-          message={message}
-          dismissAfter={2000}
-        />
+        </UIProvider>
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>
@@ -81,32 +43,10 @@ export default function App() {
 export function ErrorBoundary() {
   const error = useRouteError()
 
-  const ErrorPage = ({ children }: { children: ReactNode }) => {
-    return (
-      <html lang="en" className="h-full">
-        <head>
-          <Meta />
-          <Links />
-        </head>
-        <body className="h-full text-tealish">
-          <div className="min-h-full">
-            <div className="flex pt-20 md:pt-0 flex-1 flex-col">
-              <main className="grid min-h-screen place-items-center">
-                {children}
-              </main>
-            </div>
-          </div>
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    )
-  }
-
   if (isRouteErrorResponse(error)) {
     return (
       <ErrorPage>
-        <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md shadow-md space-y-2">
+        <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md-old shadow-md space-y-2">
           <h4 className="font-semibold text-xl -tracking-widest text-[#F37F64]">
             {error.status}
           </h4>
@@ -126,7 +66,7 @@ export function ErrorBoundary() {
 
   return (
     <ErrorPage>
-      <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md shadow-md space-y-5">
+      <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md-old shadow-md space-y-5">
         <div className="grid place-items-center">
           <XCircle className="w-10 h-10 text-red-500" />
           <p className="text-lg font-semibold">
@@ -144,6 +84,28 @@ export function ErrorBoundary() {
   )
 }
 
+const ErrorPage = ({ children }: { children: ReactNode }) => {
+  return (
+    <html lang="en" className="h-full">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full text-tealish">
+        <div className="min-h-full">
+          <div className="flex pt-20 md:pt-0 flex-1 flex-col">
+            <main className="grid min-h-screen place-items-center">
+              {children}
+            </main>
+          </div>
+        </div>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+
 export const meta: MetaFunction = () => [
   { title: 'Publisher Tools' },
   { charset: 'utf-8' },
@@ -154,24 +116,12 @@ export const links: LinksFunction = () => [
   {
     rel: 'apple-touch-icon',
     sizes: '180x180',
-    href: faviconPng
+    href: faviconSvg
   },
   {
     rel: 'icon',
-    type: 'image/png',
-    sizes: '32x32',
-    href: faviconPng
-  },
-  {
-    rel: 'icon',
-    type: 'image/png',
-    sizes: '16x16',
-    href: faviconPng
-  },
-  {
-    rel: 'icon',
-    href: faviconIco,
-    type: 'image/x-icon'
+    href: faviconSvg,
+    type: 'image/svg+xml'
   },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {

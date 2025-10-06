@@ -5,6 +5,7 @@ import {
 import { defineConfig, type Plugin } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { APP_BASEPATH } from './app/lib/constants.js'
+import path from 'path'
 
 /**
  * Custom plugin to handle root redirects to basepath in dev
@@ -24,6 +25,10 @@ const devRedirectPlugin = (): Plugin => ({
 })
 
 export default defineConfig({
+  define: {
+    BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
+    BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL) // unused but declared
+  },
   plugins: [
     remixCloudflareDevProxy(),
     remix({
@@ -46,7 +51,16 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      crypto: 'crypto-browserify'
+      'crypto': 'crypto-browserify',
+      '@/components': path.resolve(
+        __dirname,
+        './app/components/redesign/components'
+      ),
+      '@/typography': path.resolve(
+        __dirname,
+        './app/components/redesign/Typography.tsx'
+      ),
+      '@/assets': path.resolve(__dirname, './app/assets/svg.tsx')
     }
   },
   build: {

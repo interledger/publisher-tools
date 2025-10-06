@@ -1,3 +1,2 @@
-export * from './widget.js'
-export * from './confirmation.js'
-export * from './interaction.js'
+export * from './widget'
+export * from './banner.js'

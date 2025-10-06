@@ -4,80 +4,23 @@ import type {
   createButtonSchema,
   createWidgetSchema
 } from '../utils/validate.server.js'
+import type { ElementConfigType } from '@shared/types'
 
-export enum CornerType {
-  None = 'None',
-  Light = 'Light',
-  Pill = 'Pill'
-}
-
-export enum SlideAnimationType {
-  None = 'None',
-  Down = 'Down'
-}
-
-export enum PositionType {
-  Top = 'Top',
-  Bottom = 'Bottom'
-}
-
-export interface CreateConfigRequest {
-  walletAddress: string
-  tag: string
-  version?: string
-}
-
-export interface SaveUserConfigRequest {
-  walletAddress: string
-  fullconfig: string // JSON stringified object containing all versions
-  version: string
-  // ... other fields
-}
-
-export interface ConfigVersions {
-  [key: string]: ElementConfigType
-}
-
-export interface ElementConfigType {
-  // general config
-  css: string
-  version?: string
-  tag?: string // when creating a new config
-  walletAddress?: string
-
-  // button specific
-  buttonFontName: string
-  buttonText: string
-  buttonBorder: CornerType
-  buttonTextColor: string
-  buttonBackgroundColor: string
-  buttonDescriptionText?: string
-
-  // banner specific
-  bannerFontName: string
-  bannerFontSize: number
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: PositionType
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-
-  // widget specific
-  widgetFontName: string
-  widgetFontSize: number
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
+export type ModalType = {
+  type:
+    | 'script'
+    | 'wallet-ownership'
+    | 'grant-response'
+    | 'save-error'
+    | 'save-success'
+    | 'override-preset'
+  // set when type is "save-error"
+  error?: { message?: string; fieldErrors?: Record<string, string> }
+  grantRedirectIntent?: string
+  grantRedirectURI?: string
+  fetchedConfigs?: Record<string, ElementConfigType>
+  currentLocalConfigs?: Record<string, ElementConfigType>
+  modifiedConfigs?: readonly string[]
 }
 
 export type SanitizedFields = Pick<
@@ -90,7 +33,6 @@ export type SanitizedFields = Pick<
   | 'buttonText'
   | 'buttonDescriptionText'
   | 'walletAddress'
-  | 'version'
   | 'tag'
 >
 
@@ -114,20 +56,14 @@ export type ElementErrors = {
   message: string[]
 }
 
-export class WalletAddressFormatError extends Error {}
-
 declare global {
   interface Env {
-    SCRIPT_EMBED_URL: string
-    API_URL: string
-
     OP_KEY_ID: string
     OP_PRIVATE_KEY: string
     OP_WALLET_ADDRESS: string
 
     AWS_ACCESS_KEY_ID: string
     AWS_SECRET_ACCESS_KEY: string
-    AWS_REGION: string
-    AWS_BUCKET_NAME: string
+    AWS_S3_ENDPOINT: string
   }
 }

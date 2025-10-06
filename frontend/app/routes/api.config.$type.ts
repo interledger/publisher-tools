@@ -3,25 +3,18 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs
 } from '@remix-run/cloudflare'
-import {
-  filterDeepProperties,
-  getDefaultData,
-  normalizeWalletAddress
-} from '~/utils/utils.server.js'
+import { getDefaultData } from '@shared/default-data'
+import { filterDeepProperties } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
-import type {
-  ConfigVersions,
-  ElementConfigType,
-  ElementErrors
-} from '~/lib/types.js'
+import type { ConfigVersions } from '@shared/types'
+import type { ElementErrors } from '~/lib/types.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { validateForm } from '~/utils/validate.server.js'
-import {
-  createInteractiveGrant,
-  getValidWalletAddress
-} from '~/utils/open-payments.server.js'
+import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import { AWS_PREFIX } from '@shared/defines'
+import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   try {
@@ -46,26 +39,23 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       return json({ errors, success: false }, { status: 400 })
     }
 
-    const ownerWalletAddress = payload.walletAddress as string
-    const defaultData = { default: getDefaultData() }
-    defaultData.default.walletAddress = ownerWalletAddress
-
+    const ownerWalletAddress = normalizeWalletAddress(
+      await getWalletAddress(payload.walletAddress as string)
+    )
     try {
-      const storageService = new ConfigStorageService(env)
+      const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
       const fileContentString =
         await storageService.getJson<ConfigVersions>(ownerWalletAddress)
 
-      let fileContent = Object.assign(defaultData, fileContentString)
-      fileContent = filterDeepProperties(fileContent) as {
-        default: ElementConfigType
-      } & ConfigVersions
+      let fileContent = Object.assign({}, fileContentString)
+      fileContent = filterDeepProperties(fileContent) as ConfigVersions
 
       return json(fileContent)
     } catch (error) {
       // @ts-expect-error TODO
-      if (error.name === 'NoSuchKey') {
-        // if no user config exists, return default
-        return json(defaultData)
+      if (error.name === 'NoSuchKey' || error.message.includes('404')) {
+        // no user config exists for this wallet address - return empty response
+        return json({})
       }
       throw error
     }
@@ -101,14 +91,15 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 
   const { result, payload } = await validateForm(entries, elementType)
   if (!result.success || !payload) {
+    const message = result.error?.message
     errors.fieldErrors = result.error?.flatten().fieldErrors || {
       walletAddress: undefined
     }
-    return json({ errors, success: false, intent }, { status: 400 })
+    return json({ message, errors, success: false, intent }, { status: 400 })
   }
 
   let ownerWalletAddress: string = payload.walletAddress
-  const walletAddress = await getValidWalletAddress(env, ownerWalletAddress)
+  const walletAddress = await getWalletAddress(ownerWalletAddress)
 
   const session = await getSession(request.headers.get('Cookie'))
   const validForWallet = session.get('validForWallet')
@@ -147,7 +138,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   }
 
   ownerWalletAddress = normalizeWalletAddress(walletAddress)
-  const storageService = new ConfigStorageService(env)
+  const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
   switch (request.method) {
     case 'POST':
       return handleCreate(storageService, formData, ownerWalletAddress)
@@ -235,26 +226,19 @@ async function handleUpdate(
       throw new Error('Configuration data is required')
     }
 
-    let existingConfig: ConfigVersions = {}
-    try {
-      existingConfig = await configStorage.getJson(walletAddress)
-    } catch (error) {
-      // treats new wallets entries with no existing Default config
-      // @ts-expect-error TODO: add type for error
-      if (error.name !== 'NoSuchKey') throw error
-    }
-
     const newConfigData: ConfigVersions = JSON.parse(fullConfigStr)
+
+    const sanitizedConfig: ConfigVersions = {}
     Object.keys(newConfigData).forEach((key) => {
       if (typeof newConfigData[key] === 'object') {
-        existingConfig[key] = sanitizeConfigFields(newConfigData[key])
+        sanitizedConfig[key] = sanitizeConfigFields(newConfigData[key])
       }
     })
 
-    const filteredData = filterDeepProperties(existingConfig)
+    const filteredData = filterDeepProperties(sanitizedConfig)
     await configStorage.putJson(walletAddress, filteredData)
 
-    return json(existingConfig)
+    return json(filteredData)
   } catch (error) {
     return json({ error: (error as Error).message }, { status: 500 })
   }
