@@ -56,7 +56,7 @@ runs:
   using: 'composite'
   steps:
     - name: Build worker
-      if: ${{ inputs.build && inputs.changed == 'true' }}
+      if: ${{ (inputs.build && inputs.changed == 'true') || inputs.mode == 'production' }}
       shell: bash
       run: ${{ inputs.build }}
       env:
@@ -66,7 +66,7 @@ runs:
         BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
 
     - name: Get worker deploy command
-      if: inputs.changed == 'true'
+      if: inputs.changed == 'true' || inputs.mode == 'production'
       id: command
       shell: bash
       run: |
@@ -79,7 +79,7 @@ runs:
         echo "command=$DEPLOY_COMMAND" >> $GITHUB_OUTPUT
 
     - name: Deploy Worker
-      if: inputs.changed == 'true'
+      if: inputs.changed == 'true' || inputs.mode == 'production'
       id: deploy
       uses: cloudflare/wrangler-action@v3
       with:
