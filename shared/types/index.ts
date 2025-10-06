@@ -58,20 +58,20 @@ export type Configuration<T extends Tool> = {
   $walletAddressId?: string
   $modifiedAt?: string
   banner: {
-    [presetId in PresetId]?: BannerPreset
+    [presetId in ProfileId]?: BannerProfile
   }
   widget: {
-    [presetId in PresetId]?: WidgetPreset
+    [presetId in ProfileId]?: WidgetProfile
   }
 }[T]
 
-export interface BaseToolPreset {
+export interface BaseToolProfile {
   $version: string
   $name: string
   $modifiedAt?: string
 }
 
-export interface BannerPreset extends BaseToolPreset {
+export interface BannerProfile extends BaseToolProfile {
   // content
   bannerTitleText: string
   bannerDescriptionText: string
@@ -89,7 +89,7 @@ export interface BannerPreset extends BaseToolPreset {
   bannerThumbnail: string
 }
 
-export interface WidgetPreset extends BaseToolPreset {
+export interface WidgetProfile extends BaseToolProfile {
   // content
   widgetTitleText: string
   widgetDescriptionText: string
@@ -113,13 +113,13 @@ export interface WidgetPreset extends BaseToolPreset {
 export const TOOLS = ['banner', 'widget'] as const
 export type Tool = (typeof TOOLS)[number]
 
-export const PRESET_IDS = ['version1', 'version2', 'version3'] as const
-export type PresetId = (typeof PRESET_IDS)[number]
+export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
+export type ProfileId = (typeof PROFILE_IDS)[number]
 
 type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
-/** @deprecated Use BannerPreset instead */
+/** @deprecated Use BannerProfile instead */
 export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
-/** @deprecated Use WidgetPreset instead */
+/** @deprecated Use WidgetProfile instead */
 export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
 
 export type ToolConfig<T extends Tool> = {

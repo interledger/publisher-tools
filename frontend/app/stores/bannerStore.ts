@@ -1,5 +1,5 @@
 import { proxy } from 'valtio'
-import { createDefaultBannerConfig } from '@shared/default-data'
+import { createDefaultBannerProfile } from '@shared/default-data'
 
-export const createDataStoreBanner = (presetName: string) =>
-  proxy(createDefaultBannerConfig(presetName))
+export const createDataStoreBanner = (profileName: string) =>
+  proxy(createDefaultBannerProfile(profileName))

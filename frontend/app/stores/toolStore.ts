@@ -5,10 +5,10 @@ import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type {
   Configuration,
-  WidgetPreset,
-  BannerPreset,
+  WidgetProfile,
+  BannerProfile,
   ElementConfigType,
-  PresetId,
+  ProfileId,
   Tool
 } from '@shared/types'
 import type { ModalType } from '~/lib/types'
@@ -228,11 +228,11 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus,
-  bannerStores: manager['bannerStores'] as Record<PresetId, BannerPreset>,
-  widgetStores: manager['widgetStores'] as Record<PresetId, WidgetPreset>,
-  getBannerStore: (key: PresetId) => manager.getBannerStore(key),
-  getWidgetStore: (key: PresetId) => manager.getWidgetStore(key),
-  get activePreset() {
+  bannerStores: manager['bannerStores'] as Record<ProfileId, BannerProfile>,
+  widgetStores: manager['widgetStores'] as Record<ProfileId, WidgetProfile>,
+  getBannerStore: (key: ProfileId) => manager.getBannerStore(key),
+  getWidgetStore: (key: ProfileId) => manager.getWidgetStore(key),
+  get activeProfile() {
     return manager.activeTab
   }
 })

@@ -1,14 +1,14 @@
 import { Banner } from '@tools/components/banner'
 import { API_URL } from '@shared/defines'
 import type { BannerConfig } from '@shared/types'
-import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
+import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
-fetchConfig(API_URL, 'banner', params)
+fetchProfile(API_URL, 'banner', params)
   .then((config) => {
     const el = drawBanner(config)
     if (el) {
