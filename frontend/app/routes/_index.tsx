@@ -144,7 +144,7 @@ export default function Index() {
           <ul
             className="grid items-stretch gap-lg w-full justify-items-center xl:justify-items-start"
             style={{
-              gridTemplateColumns: 'repeat(2, minmax(19rem, 1fr))'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
             }}
           >
             {setupTools.map((tool, index) => (
@@ -160,7 +160,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-lg:hidden" />
+            <div className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -183,9 +183,9 @@ export default function Index() {
           </p>
 
           <ul
-            className="grid items-stretch gap-lg w-full justify-items-center xl:justify-items-start"
+            className="grid gap-lg w-full justify-items-center"            
             style={{
-              gridTemplateColumns: 'repeat(2, minmax(19rem, 1fr))'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
             }}
           >
             {interactionTools.map((tool, index) => (
