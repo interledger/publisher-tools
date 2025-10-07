@@ -37,12 +37,12 @@ export const bannerFieldsSchema = z.object({
     .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
   bannerTitleText: z
     .string()
-    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Banner title is too long' })
+    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' })
     .optional(),
   bannerDescriptionText: z
     .string()
     .max(BANNER_DESCRIPTION_MAX_LENGTH, {
-      message: 'Banner description is too long'
+      message: 'Description is too long'
     })
     .optional(),
   bannerDescriptionVisible: z.coerce.boolean().optional(),
@@ -62,12 +62,12 @@ export const widgetFieldsSchema = z.object({
     .max(WIDGET_FONT_SIZES.max, widgetFontSizeError),
   widgetTitleText: z
     .string()
-    .min(1, { message: 'Widget title cannot be empty' })
-    .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Widget title is too long' }),
+    .min(1, { message: 'Title cannot be empty' })
+    .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
   widgetDescriptionText: z
     .string()
     .max(WIDGET_DESCRIPTION_MAX_LENGTH, {
-      message: 'Widget description is too long'
+      message: 'Description is too long'
     })
     .optional(),
   widgetDescriptionVisible: z.coerce.boolean().optional(),
