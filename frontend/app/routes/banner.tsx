@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { useSnapshot } from 'valtio'
+import { proxy, useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
 import { useUI } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -21,6 +21,7 @@ import {
   StepsIndicator,
   MobileStepsIndicator
 } from '@/components'
+import { BuilderForm } from '~/components/builder/BuilderForm'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
@@ -37,6 +38,7 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
+import type { BannerConfig } from '@shared/types'
 
 export const meta: MetaFunction = () => {
   return [
@@ -77,6 +79,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
+  const [profile, setProfile] = useState<BannerConfig>(
+    proxy(snap.currentConfig)
+  )
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -225,15 +230,26 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BannerBuilder
-                      profile={snap.currentConfig}
-                      onRefresh={handleRefresh}
-                      onComplete={(isComplete) => {
+                    <BuilderForm
+                      onBuildStepComplete={(isComplete) => {
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }}
-                    />
+                      onProfileChange={(profileId) => {
+                        const profile = Object.fromEntries(
+                          Object.entries(
+                            toolState.configurations[profileId]
+                          ).filter(([key]) => key.startsWith('banner'))
+                        ) as BannerConfig
+                        setProfile(proxy(profile))
+                      }}
+                    >
+                      <BannerBuilder
+                        profile={profile}
+                        onRefresh={handleRefresh}
+                      />
+                    </BuilderForm>
 
                     <div
                       id="builder-actions"
@@ -287,7 +303,7 @@ export default function Banner() {
                     <BuilderBackground onPreviewClick={handlePreviewClick}>
                       <BannerPreview
                         ref={bannerRef}
-                        profile={snap.currentConfig}
+                        profile={profile}
                         cdnUrl={snap.cdnUrl}
                       />
                     </BuilderBackground>
