@@ -233,10 +233,7 @@ export default function Banner() {
                         )
                       }}
                     >
-                      <BannerBuilder
-                        profile={snap.currentConfig}
-                        onRefresh={handleRefresh}
-                      />
+                      <BannerBuilder onRefresh={handleRefresh} />
                     </BuilderTabs>
 
                     <div

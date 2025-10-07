@@ -32,9 +32,9 @@ import {
 } from '~/assets/svg'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 import { useState } from 'react'
+import { toolState } from '~/stores/toolStore'
 
 interface Props {
-  profile: BannerConfig
   onRefresh: (section: 'content' | 'appearance') => void
 }
 
@@ -57,17 +57,18 @@ const config: ContentConfig & AppearanceConfig = {
   fontSizeRange: BANNER_FONT_SIZES
 }
 
-export function BannerBuilder({ profile, onRefresh }: Props) {
+export function BannerBuilder({ onRefresh }: Props) {
   return (
     <>
-      <ContentBuilder profile={profile} onRefresh={onRefresh} />
-      <AppearanceBuilder profile={profile} onRefresh={onRefresh} />
+      <ContentBuilder onRefresh={onRefresh} />
+      <AppearanceBuilder onRefresh={onRefresh} />
     </>
   )
 }
 
-function ContentBuilder({ profile, onRefresh }: Props) {
+function ContentBuilder({ onRefresh }: Props) {
   const { actions: uiActions, state: uiState } = useUI()
+  const profile = toolState.currentConfig as BannerConfig
 
   return (
     <BuilderAccordion
@@ -134,8 +135,9 @@ function ContentBuilder({ profile, onRefresh }: Props) {
   )
 }
 
-function AppearanceBuilder({ profile, onRefresh }: Props) {
+function AppearanceBuilder({ onRefresh }: Props) {
   const { actions: uiActions, state: uiState } = useUI()
+  const profile = toolState.currentConfig as BannerConfig
 
   const { min: minFontSize, max: maxFontSize } = config.fontSizeRange
   const thumbnails = [wmLogo]
