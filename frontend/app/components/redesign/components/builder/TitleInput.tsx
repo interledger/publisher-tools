@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
@@ -84,13 +84,17 @@ function CustomTitle({
   maxLength,
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [inputValue, setInputValue] = useState(value)
 
   useEffect(() => {
-    if (inputRef.current && inputRef.current.value !== value) {
-      inputRef.current.value = value
-    }
+    setInputValue(value)
   }, [value])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setInputValue(value)
+    onChange(value.trim())
+  }
 
   return (
     <div className="flex flex-col gap-xs">
@@ -98,14 +102,11 @@ function CustomTitle({
         Custom title
       </h4>
       <InputField
-        ref={inputRef}
-        defaultValue={value}
+        value={inputValue}
         placeholder={placeholder}
-        onChange={(e) => {
-          onChange(e.target.value.trim())
-        }}
+        onChange={handleChange}
         showCounter={true}
-        currentLength={value.length}
+        currentLength={inputValue.length}
         maxLength={maxLength}
         helpText={helpText}
         className="h-12 text-base leading-md"
