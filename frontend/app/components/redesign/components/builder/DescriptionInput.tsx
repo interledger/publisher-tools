@@ -23,10 +23,10 @@ export function DescriptionInput({
   placeholder
 }: Props) {
   return (
-    <div className="flex flex-col gap-xs">
-      <h4 className="text-base leading-md font-bold text-text-primary">
+    <fieldset className="space-y-xs">
+      <legend className="text-base leading-md font-bold text-text-primary">
         {label}
-      </h4>
+      </legend>
       <div className="flex gap-lg items-start xl:flex-row flex-col">
         <div className="flex items-center gap-xs shrink-0">
           <Checkbox
@@ -50,6 +50,6 @@ export function DescriptionInput({
           />
         </div>
       </div>
-    </div>
+    </fieldset>
   )
 }
