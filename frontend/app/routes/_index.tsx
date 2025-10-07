@@ -142,7 +142,7 @@ export default function Index() {
           </p>
 
           <ul
-            className="grid items-stretch gap-lg w-full justify-items-center xl:justify-items-start"
+            className="grid gap-lg w-full justify-items-center"
             style={{
               gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
             }}
@@ -183,7 +183,7 @@ export default function Index() {
           </p>
 
           <ul
-            className="grid gap-lg w-full justify-items-center"            
+            className="grid gap-lg w-full justify-items-center"
             style={{
               gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
             }}
@@ -200,6 +200,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
+            <div className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
       </div>
