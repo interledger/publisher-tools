@@ -4,6 +4,10 @@ compatibility_date = "2025-05-05"
 main = "worker.ts"
 upload_source_maps = true
 
+kv_namespaces = [
+  { binding = "INTERACTION_KV", id = "interaction_kv", preview_id = "preview_interaction_kv" }
+]
+
 [assets]
 directory = "./build/client"
 

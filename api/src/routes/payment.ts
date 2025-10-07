@@ -91,6 +91,73 @@ app.post(
   }
 )
 
+app.get('/payment/status/:paymentId', async ({ req, json, env }) => {
+  const { paymentId } = req.param()
+  if (!paymentId) {
+    throw createHTTPException(400, 'Payment ID required', {})
+  }
+
+  const POLLING_MAX_DURATION = 30000
+  const POLLING_INTERVAL = 1500
+  const signal = AbortSignal.timeout(POLLING_MAX_DURATION)
+
+  try {
+    while (!signal.aborted) {
+      const data = await env.INTERACTION_KV.get(paymentId)
+
+      if (data) {
+        const parsedData = JSON.parse(data)
+        const params_obj: { [key: string]: string } = {}
+        new URLSearchParams(parsedData).forEach((value, key) => {
+          params_obj[key] = value
+        })
+
+        if (params_obj.result === 'grant_rejected') {
+          throw createHTTPException(403, 'Payment grant was rejected', {
+            paymentId,
+            result: 'grant_rejected'
+          })
+        }
+
+        return json({
+          success: true,
+          data: { type: 'GRANT_INTERACTION', ...params_obj }
+        })
+      }
+
+      await waitWithAbort(POLLING_INTERVAL, signal)
+    }
+
+    throw new Error('AbortError')
+  } catch (error) {
+    if (error instanceof Error && error.message === 'TimeoutError') {
+      throw createHTTPException(504, 'Payment status polling timeout', {})
+    }
+
+    throw createHTTPException(500, 'Failed to retrieve data', error)
+  }
+})
+
+function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(new Error('TimeoutError'))
+      return
+    }
+
+    const timer = setTimeout(() => {
+      resolve()
+    }, ms)
+
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new Error('TimeoutError'))
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+}
+
 function isAllowedRedirectUrl(redirectUrl: string) {
   const redirectUrlOrigin = new URL(redirectUrl).origin
   const ALLOWED_ORIGINS = Object.values(APP_URL)

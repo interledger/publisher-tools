@@ -4,6 +4,16 @@ import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
 import { serializeError } from './utils/utils.js'
 
+interface KVNamespace {
+  get(key: string): Promise<string | null>
+  put(
+    key: string,
+    value: string,
+    options?: { expirationTtl?: number }
+  ): Promise<void>
+  delete(key: string): Promise<void>
+}
+
 export type Env = {
   AWS_ACCESS_KEY_ID: string
   AWS_SECRET_ACCESS_KEY: string
@@ -11,6 +21,7 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
+  INTERACTION_KV: KVNamespace
 }
 
 export const app = new Hono<{ Bindings: Env }>()
