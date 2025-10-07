@@ -21,7 +21,7 @@ import {
   StepsIndicator,
   MobileStepsIndicator
 } from '@/components'
-import { BuilderForm } from '~/components/builder/BuilderForm'
+import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
@@ -230,7 +230,7 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderForm
+                    <BuilderTabs
                       onBuildStepComplete={(isComplete) => {
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
@@ -249,7 +249,7 @@ export default function Banner() {
                         profile={profile}
                         onRefresh={handleRefresh}
                       />
-                    </BuilderForm>
+                    </BuilderTabs>
 
                     <div
                       id="builder-actions"

@@ -9,7 +9,7 @@ interface Props {
   onBuildStepComplete: (isComplete: boolean) => void
 }
 
-export function BuilderForm({
+export function BuilderTabs({
   onProfileChange,
   onBuildStepComplete,
   children
