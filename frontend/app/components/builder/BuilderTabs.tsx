@@ -5,12 +5,10 @@ import { useUI } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
 
 interface Props {
-  onProfileChange: (profile: StableKey) => void
   onBuildStepComplete: (isComplete: boolean) => void
 }
 
 export function BuilderTabs({
-  onProfileChange,
   onBuildStepComplete,
   children
 }: React.PropsWithChildren<Props>) {
@@ -26,7 +24,6 @@ export function BuilderTabs({
 
   const handleTabSelect = (stableKey: StableKey) => {
     toolActions.selectVersion(stableKey)
-    onProfileChange(stableKey)
   }
 
   const getLatestTabOptions = () => {

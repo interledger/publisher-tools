@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { proxy, useSnapshot } from 'valtio'
+import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
 import { useUI } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -38,7 +38,6 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
-import type { BannerConfig } from '@shared/types'
 
 export const meta: MetaFunction = () => {
   return [
@@ -79,9 +78,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
-  const [profile, setProfile] = useState<BannerConfig>(
-    proxy(snap.currentConfig)
-  )
   const { actions: uiActions } = useUI()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -236,17 +232,9 @@ export default function Banner() {
                           isComplete ? 'filled' : 'unfilled'
                         )
                       }}
-                      onProfileChange={(profileId) => {
-                        const profile = Object.fromEntries(
-                          Object.entries(
-                            toolState.configurations[profileId]
-                          ).filter(([key]) => key.startsWith('banner'))
-                        ) as BannerConfig
-                        setProfile(proxy(profile))
-                      }}
                     >
                       <BannerBuilder
-                        profile={profile}
+                        profile={snap.currentConfig}
                         onRefresh={handleRefresh}
                       />
                     </BuilderTabs>
@@ -303,7 +291,7 @@ export default function Banner() {
                     <BuilderBackground onPreviewClick={handlePreviewClick}>
                       <BannerPreview
                         ref={bannerRef}
-                        profile={profile}
+                        profile={snap.currentConfig}
                         cdnUrl={snap.cdnUrl}
                       />
                     </BuilderBackground>

@@ -60,7 +60,6 @@ const config: ContentConfig & AppearanceConfig = {
 export function BannerBuilder({ profile, onRefresh }: Props) {
   return (
     <>
-      <pre className="overflow-auto">{JSON.stringify(profile, null, 2)}</pre>
       <ContentBuilder profile={profile} onRefresh={onRefresh} />
       <AppearanceBuilder profile={profile} onRefresh={onRefresh} />
     </>
