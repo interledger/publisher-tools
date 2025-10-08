@@ -108,7 +108,7 @@ export const NavDropdown = ({
         className={cx(
           'flex w-full items-center justify-between gap-xs',
           'px-md py-sm',
-          'font-sans text-base font-normal leading-sm',
+          'font-sans text-sm font-normal leading-sm',
           'md:w-auto md:justify-normal',
           'focusable-nav-item',
           isOpen ? 'text-nav-link-hover' : 'text-nav-link-default'
