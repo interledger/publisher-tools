@@ -39,12 +39,16 @@ const ToolsMenuItem = ({
             src={imgSrcInactive ?? imgSrc}
             aria-hidden="true"
             alt=""
+            loading="lazy"
+            fetchPriority="low"
           />
           <img
             className={cx(imgClasses, 'opacity-0 group-hover:opacity-100')}
             src={imgSrc}
             aria-hidden="true"
             alt=""
+            loading="lazy"
+            fetchPriority="low"
           />
         </div>
         <div className="flex-grow whitespace-nowrap font-sans text-sm font-normal leading-normal text-text-primary md:text-base md:font-bold">
