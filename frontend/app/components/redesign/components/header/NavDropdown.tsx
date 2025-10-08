@@ -2,17 +2,17 @@ import { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import publisherHoverImage from '~/assets/images/dropdown-publisher-active.png'
 import supporterHoverImage from '~/assets/images/dropdown-supporter-active.png'
-import developerImage from '~/assets/images/dropdown-developer.png?inline'
-import publisherDefaultImage from '~/assets/images/dropdown-publisher-inactive.png?inline'
-import supporterDefaultImage from '~/assets/images/dropdown-supporter-inactive.png?inline'
+import developerImage from '~/assets/images/dropdown-developer.png'
+import publisherDefaultImage from '~/assets/images/dropdown-publisher-inactive.png'
+import supporterDefaultImage from '~/assets/images/dropdown-supporter-inactive.png'
 import ClickAwayListener from 'react-click-away-listener'
 import { SVGDownArrow } from '@/assets'
 
 type ToolsMenuItemProps = {
   to: string
   text: string
-  hoverImage: string
-  defaultImage?: string
+  defaultImage: string
+  hoverImage?: string
 }
 
 const ToolsMenuItem = ({
@@ -30,13 +30,13 @@ const ToolsMenuItem = ({
         href={to}
         className={cx(
           'flex w-full items-center gap-xs p-sm focusable-nav-item',
-          defaultImage && 'group'
+          hoverImage && 'group'
         )}
       >
         <div className="relative w-20 h-20">
           <img
             className={cx(imgClasses, 'opacity-100 group-hover:opacity-0')}
-            src={defaultImage ?? hoverImage}
+            src={defaultImage}
             aria-hidden="true"
             alt=""
             loading="lazy"
@@ -44,7 +44,7 @@ const ToolsMenuItem = ({
           />
           <img
             className={cx(imgClasses, 'opacity-0 group-hover:opacity-100')}
-            src={hoverImage}
+            src={hoverImage ?? defaultImage}
             aria-hidden="true"
             alt=""
             loading="lazy"
@@ -159,7 +159,7 @@ export const NavDropdown = ({
             />
             <ToolsMenuItem
               to="/developers"
-              hoverImage={developerImage}
+              defaultImage={developerImage}
               text="Developer tools"
             />
           </ul>
