@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 import { useUI } from '~/stores/uiStore'
+import { Divider } from '@/components'
 import { BuilderAccordion } from './BuilderAccordion'
-import { TextareaField, Divider, Checkbox } from '@/components'
 import { TitleInput } from './builder/TitleInput'
+import { DescriptionInput } from './builder/DescriptionInput'
 
 export interface ContentConfig {
   suggestedTitles: string[]
@@ -38,26 +39,7 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
   profile,
   onRefresh
 }) => {
-  const titleInputRef = useRef<HTMLInputElement>(null)
-  const messageTextareaRef = useRef<HTMLTextAreaElement>(null)
   const { actions: uiActions, state: uiState } = useUI()
-  const isMessageVisible = profile.isDescriptionVisible
-
-  useEffect(() => {
-    if (
-      titleInputRef.current &&
-      titleInputRef.current.value !== profile.currentTitle
-    ) {
-      titleInputRef.current.value = profile.currentTitle
-    }
-
-    if (
-      messageTextareaRef.current &&
-      messageTextareaRef.current.value !== profile.currentMessage
-    ) {
-      messageTextareaRef.current.value = profile.currentMessage
-    }
-  }, [profile.currentTitle, profile.currentMessage])
 
   const handleToggle = (isOpen: boolean) => {
     uiActions.setActiveSection(isOpen ? 'content' : null)
@@ -88,39 +70,18 @@ export const ContentBuilder: React.FC<ContentBuilderProps> = ({
 
         <Divider />
 
-        <div className="flex flex-col gap-xs">
-          <h4 className="text-base leading-md font-bold text-text-primary">
-            {config.messageLabel}
-          </h4>
-          <div className="flex gap-lg items-start xl:flex-row flex-col">
-            <div className="flex items-center gap-xs shrink-0">
-              <Checkbox
-                checked={isMessageVisible}
-                onChange={(visible) => {
-                  profile.onDescriptionVisibilityChange(visible)
-                }}
-                label="Visible"
-              />
-            </div>
-
-            <div className="flex-grow w-full">
-              <TextareaField
-                ref={messageTextareaRef}
-                defaultValue={profile.currentMessage}
-                onChange={(e) => {
-                  profile.onMessageChange(e.target.value)
-                }}
-                currentLength={profile.currentMessage.length || 0}
-                maxLength={config.messageMaxLength}
-                showCounter={true}
-                helpText={config.messageHelpText}
-                className="h-[84px]"
-                placeholder={config.messagePlaceholder}
-                disabled={!isMessageVisible}
-              />
-            </div>
-          </div>
-        </div>
+        <DescriptionInput
+          label={config.messageLabel}
+          value={profile.currentMessage}
+          onChange={profile.onMessageChange}
+          isVisible={profile.isDescriptionVisible}
+          onVisibilityChange={(visible) => {
+            profile.onDescriptionVisibilityChange(visible)
+          }}
+          maxLength={config.messageMaxLength}
+          helpText={config.messageHelpText}
+          placeholder={config.messagePlaceholder}
+        />
       </div>
     </BuilderAccordion>
   )
