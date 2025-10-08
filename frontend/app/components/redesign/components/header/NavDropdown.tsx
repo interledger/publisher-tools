@@ -39,16 +39,12 @@ const ToolsMenuItem = ({
             src={defaultImage}
             aria-hidden="true"
             alt=""
-            loading="lazy"
-            fetchPriority="high"
           />
           <img
             className={cx(imgClasses, 'opacity-0 group-hover:opacity-100')}
             src={hoverImage ?? defaultImage}
             aria-hidden="true"
             alt=""
-            loading="lazy"
-            fetchPriority="low"
           />
         </div>
         <div className="flex-grow whitespace-nowrap font-sans text-sm font-normal leading-normal text-text-primary md:text-base md:font-bold">
@@ -70,6 +66,23 @@ export const NavDropdown = ({
 }: NavDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const imageUrls = [
+      publisherHoverImage,
+      supporterHoverImage,
+      developerImage,
+      publisherDefaultImage,
+      supporterDefaultImage
+    ]
+
+    imageUrls.forEach((image) => {
+      if (image) {
+        const img = new Image()
+        img.src = image
+      }
+    })
+  }, [])
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
