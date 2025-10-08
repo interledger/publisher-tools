@@ -1,24 +1,24 @@
 import { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import devImage from '~/assets/images/dropdown-developer.png'
-import pubImage from '~/assets/images/dropdown-publisher-active.png'
-import supImage from '~/assets/images/dropdown-supporter-active.png'
-import pubInactiveImage from '~/assets/images/dropdown-publisher-inactive.png'
-import supInactiveImage from '~/assets/images/dropdown-supporter-inactive.png'
+import publisherHoverImage from '~/assets/images/dropdown-publisher-active.png'
+import supporterHoverImage from '~/assets/images/dropdown-supporter-active.png'
+import developerImage from '~/assets/images/dropdown-developer.png?inline'
+import publisherDefaultImage from '~/assets/images/dropdown-publisher-inactive.png?inline'
+import supporterDefaultImage from '~/assets/images/dropdown-supporter-inactive.png?inline'
 import ClickAwayListener from 'react-click-away-listener'
 import { SVGDownArrow } from '@/assets'
 
 type ToolsMenuItemProps = {
   to: string
-  imgSrc: string
   text: string
-  imgSrcInactive?: string
+  hoverImage: string
+  defaultImage?: string
 }
 
 const ToolsMenuItem = ({
   to,
-  imgSrc,
-  imgSrcInactive,
+  defaultImage,
+  hoverImage,
   text
 }: ToolsMenuItemProps) => {
   const imgClasses =
@@ -30,21 +30,21 @@ const ToolsMenuItem = ({
         href={to}
         className={cx(
           'flex w-full items-center gap-xs p-sm focusable-nav-item',
-          imgSrcInactive && 'group'
+          defaultImage && 'group'
         )}
       >
         <div className="relative w-20 h-20">
           <img
             className={cx(imgClasses, 'opacity-100 group-hover:opacity-0')}
-            src={imgSrcInactive ?? imgSrc}
+            src={defaultImage ?? hoverImage}
             aria-hidden="true"
             alt=""
             loading="lazy"
-            fetchPriority="low"
+            fetchPriority="high"
           />
           <img
             className={cx(imgClasses, 'opacity-0 group-hover:opacity-100')}
-            src={imgSrc}
+            src={hoverImage}
             aria-hidden="true"
             alt=""
             loading="lazy"
@@ -147,19 +147,19 @@ export const NavDropdown = ({
           <ul className="flex w-full flex-grow list-none flex-col gap-xs">
             <ToolsMenuItem
               to="/publishers"
-              imgSrc={pubImage}
-              imgSrcInactive={pubInactiveImage}
+              hoverImage={publisherHoverImage}
+              defaultImage={publisherDefaultImage}
               text="Publisher tools"
             />
             <ToolsMenuItem
               to="/supporters"
-              imgSrc={supImage}
-              imgSrcInactive={supInactiveImage}
+              hoverImage={supporterHoverImage}
+              defaultImage={supporterDefaultImage}
               text="Supporter tools"
             />
             <ToolsMenuItem
               to="/developers"
-              imgSrc={devImage}
+              hoverImage={developerImage}
               text="Developer tools"
             />
           </ul>
