@@ -21,6 +21,7 @@ import type { AppearanceConfig } from '~/components/redesign/components/Appearan
 import BuilderAccordion from '~/components/redesign/components/BuilderAccordion'
 import { useUI } from '~/stores/uiStore'
 import { TitleInput } from '~/components/redesign/components/builder/TitleInput'
+import { DescriptionInput } from '~/components/redesign/components/builder/DescriptionInput'
 import { SectionHeader } from '~/components/redesign/components/SectionHeader'
 import {
   SVGAnimation,
@@ -97,39 +98,18 @@ function ContentBuilder({ onRefresh }: Props) {
 
         <Divider />
 
-        <div className="flex flex-col gap-xs">
-          <h4 className="text-base leading-md font-bold text-text-primary">
-            {config.messageLabel}
-          </h4>
-          <div className="flex gap-lg items-start xl:flex-row flex-col">
-            <div className="flex items-center gap-xs shrink-0">
-              <Checkbox
-                checked={profile.bannerDescriptionVisible}
-                onChange={(visible) => {
-                  profile.bannerDescriptionVisible = visible
-                }}
-                label="Visible"
-              />
-            </div>
-
-            <div className="flex-grow w-full">
-              <TextareaField
-                // ref={messageTextareaRef}
-                defaultValue={profile.bannerDescriptionText}
-                onChange={(e) => {
-                  profile.bannerDescriptionText = e.target.value
-                }}
-                currentLength={profile.bannerDescriptionText.length || 0}
-                maxLength={config.messageMaxLength}
-                showCounter={true}
-                helpText={config.messageHelpText}
-                className="h-[84px]"
-                placeholder={config.messagePlaceholder}
-                disabled={!profile.bannerDescriptionVisible}
-              />
-            </div>
-          </div>
-        </div>
+        <DescriptionInput
+          label={config.messageLabel}
+          value={profile.bannerDescriptionText}
+          onChange={(text) => (profile.bannerDescriptionText = text)}
+          isVisible={profile.bannerDescriptionVisible}
+          onVisibilityChange={(visible) =>
+            (profile.bannerDescriptionVisible = visible)
+          }
+          placeholder={config.messagePlaceholder}
+          helpText={config.messageHelpText}
+          maxLength={config.messageMaxLength}
+        />
       </div>
     </BuilderAccordion>
   )
