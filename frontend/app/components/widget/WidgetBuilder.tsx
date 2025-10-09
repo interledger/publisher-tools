@@ -11,8 +11,6 @@ import {
   WidgetPositionSelector,
   WidgetColorsSelector
 } from '@/components'
-import type { ContentConfig } from '~/components/redesign/components/ContentBuilder'
-import type { AppearanceConfig } from '~/components/redesign/components/AppearanceBuilder'
 import BuilderAccordion from '~/components/redesign/components/BuilderAccordion'
 import { useUI } from '~/stores/uiStore'
 import { TitleInput } from '~/components/redesign/components/builder/TitleInput'
@@ -30,7 +28,7 @@ interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
 }
 
-const config: ContentConfig & AppearanceConfig = {
+const config = {
   suggestedTitles: [
     'Support this content',
     'Make a payment',
