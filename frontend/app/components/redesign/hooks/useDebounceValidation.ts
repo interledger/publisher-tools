@@ -7,7 +7,7 @@ import {
 interface ValidationState {
   isValidating: boolean
   isValid: boolean
-  error?: string
+  error: string
 }
 
 export function useDebounceValidation(
@@ -17,7 +17,7 @@ export function useDebounceValidation(
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
     isValid: false,
-    error: undefined
+    error: ''
   })
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function useDebounceValidation(
       setValidationState({
         isValidating: false,
         isValid: false,
-        error: undefined
+        error: ''
       })
       return
     }
@@ -35,7 +35,7 @@ export function useDebounceValidation(
     setValidationState((prevState) => ({
       ...prevState,
       isValid: false,
-      error: undefined
+      error: ''
     }))
 
     const validatePointer = async (pointer: string) => {
@@ -43,7 +43,7 @@ export function useDebounceValidation(
 
       try {
         await validateAndConfirmPointer(pointer)
-        finalState = { isValid: true, error: undefined }
+        finalState = { isValid: true, error: '' }
       } catch (error) {
         finalState = {
           isValid: false,
