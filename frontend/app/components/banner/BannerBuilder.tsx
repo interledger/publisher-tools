@@ -10,7 +10,6 @@ import {
   BannerColorsSelector,
   Divider,
   Checkbox,
-  TextareaField,
   ToolsDropdown,
   Slider,
   CornerRadiusSelector,
@@ -87,30 +86,28 @@ function ContentBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'content'}
     >
-      <div className="flex flex-col gap-lg">
-        <TitleInput
-          value={profile.bannerTitleText}
-          onChange={(value) => (profile.bannerTitleText = value)}
-          suggestions={config.suggestedTitles}
-          maxLength={config.titleMaxLength}
-          helpText={config.titleHelpText}
-        />
+      <TitleInput
+        value={profile.bannerTitleText}
+        onChange={(value) => (profile.bannerTitleText = value)}
+        suggestions={config.suggestedTitles}
+        maxLength={config.titleMaxLength}
+        helpText={config.titleHelpText}
+      />
 
-        <Divider />
+      <Divider />
 
-        <DescriptionInput
-          label={config.messageLabel}
-          value={profile.bannerDescriptionText}
-          onChange={(text) => (profile.bannerDescriptionText = text)}
-          isVisible={profile.bannerDescriptionVisible}
-          onVisibilityChange={(visible) =>
-            (profile.bannerDescriptionVisible = visible)
-          }
-          placeholder={config.messagePlaceholder}
-          helpText={config.messageHelpText}
-          maxLength={config.messageMaxLength}
-        />
-      </div>
+      <DescriptionInput
+        label={config.messageLabel}
+        value={profile.bannerDescriptionText}
+        onChange={(text) => (profile.bannerDescriptionText = text)}
+        isVisible={profile.bannerDescriptionVisible}
+        onVisibilityChange={(visible) =>
+          (profile.bannerDescriptionVisible = visible)
+        }
+        placeholder={config.messagePlaceholder}
+        helpText={config.messageHelpText}
+        maxLength={config.messageMaxLength}
+      />
     </BuilderAccordion>
   )
 }
@@ -292,8 +289,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
         </div>
       </div>
 
+      <Divider />
       <div className="flex flex-col gap-xs">
-        <Divider />
         <SectionHeader
           icon={<SVGThumbnail className="w-5 h-5" />}
           label="Thumbnail"
