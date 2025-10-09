@@ -6,7 +6,6 @@ import {
   type BannerConfig
 } from '@shared/types'
 import {
-  BannerPositionSelector,
   BannerColorsSelector,
   Divider,
   Checkbox,
@@ -20,6 +19,7 @@ import { SectionHeader } from '@/components/SectionHeader'
 import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
+import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -206,7 +206,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Position"
         />
         <BannerPositionSelector
-          defaultValue={profile.bannerPosition}
+          value={profile.bannerPosition}
           onChange={(value) => (profile.bannerPosition = value)}
         />
       </div>
