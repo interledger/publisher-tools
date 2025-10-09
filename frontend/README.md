@@ -11,7 +11,7 @@ The dashboard allows users to customize and generate code for the following tool
 *   **Widget (`/widget`):** Configuration page for the monetization widget.
 *   **Link Tag (`/link-tag`):** Page for generating a monetized link tag.
 *   **Probabilistic Revshare (`/prob-revshare`):** UI for setting up probabilistic revenue sharing.
-*   **Payment Confirmation (`/payment-confirmation`):** A page to confirm payment status.
+*   **Payment Confirmation (`/payment-confirmation`):** A page to show payment status. Embeds from site may redirect users to this page after a payment.
 
 The application also includes API routes (e.g., `api.config.$type.ts`) that are handled by the Remix server.
 
