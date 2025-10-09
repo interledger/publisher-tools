@@ -194,7 +194,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
-          defaultValue={profile.bannerBorder}
+          value={profile.bannerBorder}
           onChange={(value) => (profile.bannerBorder = value)}
         />
       </div>

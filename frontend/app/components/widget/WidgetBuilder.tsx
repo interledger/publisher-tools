@@ -180,7 +180,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Container Corner Radius"
         />
         <CornerRadiusSelector
-          defaultValue={profile.widgetButtonBorder}
+          value={profile.widgetButtonBorder}
           onChange={(value) => (profile.widgetButtonBorder = value)}
         />
       </div>
