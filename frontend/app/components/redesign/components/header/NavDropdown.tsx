@@ -68,23 +68,6 @@ export const NavDropdown = ({
   const triggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const imageUrls = [
-      publisherHoverImage,
-      supporterHoverImage,
-      developerImage,
-      publisherDefaultImage,
-      supporterDefaultImage
-    ]
-
-    imageUrls.forEach((image) => {
-      if (image) {
-        const img = new Image()
-        img.src = image
-      }
-    })
-  }, [])
-
-  useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
         setIsOpen(false)
@@ -162,18 +145,18 @@ export const NavDropdown = ({
               to="/publishers"
               hoverImage={publisherHoverImage}
               defaultImage={publisherDefaultImage}
-              text="Publisher tools"
+              text="For publishers"
             />
             <ToolsMenuItem
               to="/supporters"
               hoverImage={supporterHoverImage}
               defaultImage={supporterDefaultImage}
-              text="Supporter tools"
+              text="For supporters"
             />
             <ToolsMenuItem
               to="/developers"
               defaultImage={developerImage}
-              text="Developer tools"
+              text="For developers"
             />
           </ul>
         </div>
