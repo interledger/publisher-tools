@@ -57,11 +57,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               'w-full px-sm py-xs rounded-sm',
               'text-text-primary placeholder:text-text-placeholder',
               'border hover:border-field-border-hover',
+              'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
               'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
               'placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
-              displayError
-                ? 'border-field-border-error focus:border-field-border-error focus:outline-none focus:ring-1 focus:ring-red-500'
-                : 'border-field-border focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+              error ? 'border-field-border-error' : 'border-field-border',
               className
             )}
             id={fieldId}
