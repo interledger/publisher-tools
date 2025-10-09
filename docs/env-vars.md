@@ -1,124 +1,106 @@
 # Environment Variables Setup
 
-This guide provides detailed instructions for setting up your `.dev.vars` file for local development.\
-Follow the sections below to configure each variable.
+This guide provides detailed instructions for setting up your `.dev.vars` file for local development.
 
-## Environment Variables
+First, copy the sample environment file:
+
+```sh
+cp .env.sample .dev.vars
+```
+
+Then, edit the `.dev.vars` file to set the required values as described below.
+
+## Variables Summary
+
+| Variable                | Description                                             | Required for Dev? | Example Value                               |
+| ----------------------- | ------------------------------------------------------- | :---------------: | ------------------------------------------- |
+| `OP_KEY_ID`             | UUID v4 identifier for your Open Payments key.          |        Yes        | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`      |
+| `OP_PRIVATE_KEY`        | Base64-encoded private key for signing requests.        |        Yes        | (See conversion script below)               |
+| `OP_WALLET_ADDRESS`     | The URL of your Open Payments wallet address.           |        Yes        | `https://ilp.interledger-test.dev/my-wallet`  |
+| `AWS_ACCESS_KEY_ID`     | AWS access key for S3. Not used in local dev.           |        No         | `AWS_KEY_ID`                                |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3. Not used in local dev.           |        No         | `AWS_SECRET_KEY`                            |
+| `AWS_S3_ENDPOINT`       | The endpoint for the S3-compatible storage.             |        Yes        | `http://localhost:8081`                     |
+
+---
+
+## Detailed Configuration
 
 ### Open Payments Configuration
 
-These variables are required to enable Open Payments functionality:
-
-The following are instructions for development setup. For production use, please follow the setup instructions provided by your chosen wallet.
+These variables are required to connect to an Interledger wallet for handling payments. For development, you can use the Interledger Testnet.
 
 #### `OP_KEY_ID`
 
-UUID v4 identifier for your Open Payments key
+This is the unique identifier for your API key.
 
-1. Sign up for [Interledger Testnet wallet](https://wallet.interledger-test.dev)
-2. Navigate to the developers/API keys section
-3. Generate a new key pair
-4. Copy the Key ID (UUID format)
+1.  Sign up for an [Interledger Testnet wallet](https://wallet.interledger.test.dev).
+2.  In your wallet dashboard, navigate to the **Developers** section from the side menu.
+3.  Generate a new key pair.
+4.  Copy the **Key ID** (which is in UUID format) and paste it into your `.dev.vars` file.
 
 #### `OP_PRIVATE_KEY`
 
-Base64-encoded private key for signing Open Payments requests
+This is the secret key used to sign payment requests, proving you own the wallet.
 
-1. When generating your key pair in your wallet's developer section
-2. Download or copy the private key
-3. **Important**: The private key must be converted to the format expected by the tools using the script below
+1.  When you generate a key pair, your wallet will provide a private key.
+2.  This key needs to be converted to a specific format. Use the script below to do this.
 
-**Security Note**: Never commit this value to version control
+**Security Note**: Never commit this value to version control.
 
 <details>
-<summary><b>Private Key Conversion Script</b></summary>
+<summary><b>Click to see Private Key Conversion Script</b></summary>
 
-After copying your private key, run this script to convert it to the correct format.\
-Replace `currentKey` value string with your copied private key, then use the output as your `OP_PRIVATE_KEY` value:
+Copy your private key from the wallet, paste it into the `currentKey` variable in this script, and run it (for example, in your browser's developer console). Use the output as your `OP_PRIVATE_KEY` value.
 
 ```javascript
-// Extract base64-encoded part and decode to get DER bytes
-const currentKey = ''
+// Paste your private key from the wallet here
+const currentKey = '-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----';
+
+// This script converts the key to the required format
 const derBytes = atob(
   currentKey
     .replace('-----BEGIN PRIVATE KEY-----', '')
     .replace('-----END PRIVATE KEY-----', '')
     .replace(/\s/g, '')
-)
-
-// Convert to Uint8Array
-const bytes = new Uint8Array(derBytes.length)
+);
+const bytes = new Uint8Array(derBytes.length);
 for (let i = 0; i < derBytes.length; i++) {
-  bytes[i] = derBytes.charCodeAt(i)
+  bytes[i] = derBytes.charCodeAt(i);
 }
+const privateKey = bytes.slice(-32);
+const keyBase64 = btoa(String.fromCharCode(...privateKey));
 
-// Extract just the 32-byte key
-const privateKey = bytes.slice(-32)
-
-// Convert back to base64 for storage
-const keyBase64 = btoa(String.fromCharCode(...privateKey))
-
-console.log('New key format for direct use:')
-console.log(keyBase64)
+console.log('Your new OP_PRIVATE_KEY is:');
+console.log(keyBase64);
 ```
 
 </details>
 
 #### `OP_WALLET_ADDRESS`
 
-Your wallet address URL
+This is the public address of your wallet where you can receive payments.
 
-1. In your Interledger testnet wallet dashboard
-2. Find your wallet address
-3. Copy the payment pointer and convert it to `https://` format.
+1.  In your Interledger wallet dashboard, find your payment pointer. It will look something like `$ilp.interledger-test.dev/my-wallet`.
+2.  To get the wallet address, simply replace the `$` with `https://`.
+
+For example, if your payment pointer is `$ilp.interledger-test.dev/alice`, your `OP_WALLET_ADDRESS` would be `https://ilp.interledger-test.dev/alice`.
 
 ### AWS Configuration
 
-These variables configure S3 storage for configuration data:
+These variables are for connecting to an S3 bucket, which is used to store the configuration for the publisher tools. For local development, a simulated S3 service is used, so you don't need real AWS credentials.
 
-#### `AWS_ACCESS_KEY_ID`
+#### `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY`
 
-AWS access key for S3 operations\
-**Development Note**: This key is ignored when using the local S3 simulator, so it's not required for development
-
-#### `AWS_SECRET_ACCESS_KEY`
-
-AWS secret key corresponding to the access key ID\
-**Development Note**: This key is ignored when using the local S3 simulator, so it's not required for development
+For local development, these values are ignored by the local S3 simulator. You can leave the default values from `.env.sample` as they are.
 
 #### `AWS_S3_ENDPOINT`
 
-**For Development**: Use the local S3 simulator
+This tells the application where to find the S3 storage.
 
-```
-AWS_S3_ENDPOINT="http://localhost:8081"
-```
+*   **For Development**: Use the local S3 simulator, which runs on `http://localhost:8081`. This should be the default value in your `.dev.vars`.
+*   **For Production**: When deploying the application, this would be the URL of your actual S3 bucket endpoint.
 
-**For Production**: Use your actual S3 bucket endpoint
-
-```
-AWS_S3_ENDPOINT="https://your-bucket-name.s3.your-region.amazonaws.com"
-```
-
-<details>
-<summary><b>How to get real AWS keys (for production use)</b></summary>
-
-1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
-2. Navigate to IAM (Identity and Access Management)
-3. In the left sidebar, select "Users"
-4. Click on your user or create a new user with S3 permissions
-5. Go to the "Security credentials" tab
-6. Scroll down to "Access keys" and click "Create access key"
-7. Choose "Application running outside AWS"
-8. Copy the Access key ID
-
-Make sure to save both the Access Key ID and Secret Access Key when they are displayed, as AWS will not show the secret key again.
-
-**Required Permissions**: S3 read/write access\
-**Security Note**: Never commit this value to version control
-
-</details>
-
+---
 ## Development vs Production
 
 ### Development Setup
@@ -158,3 +140,4 @@ Open the application on [localhost:3000](http://localhost:3000/tools/) try to us
 - Review the [contribution guidelines](.github/contributing.md)
 - For Web Monetization questions, visit [webmonetization.org](https://webmonetization.org/)
 - For Interledger information, see [interledger.org](https://interledger.org)
+---
