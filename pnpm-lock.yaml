@@ -231,8 +231,8 @@ importers:
         specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@types/node@24.6.0)(typescript@5.9.2))
       valtio:
-        specifier: ^2.1.7
-        version: 2.1.7(@types/react@19.1.13)(react@19.1.1)
+        specifier: ^2.1.8
+        version: 2.1.8(@types/react@19.1.13)(react@19.1.1)
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -4520,8 +4520,8 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  valtio@2.1.7:
-    resolution: {integrity: sha512-DwJhCDpujuQuKdJ2H84VbTjEJJteaSmqsuUltsfbfdbotVfNeTE4K/qc/Wi57I9x8/2ed4JNdjEna7O6PfavRg==}
+  valtio@2.1.8:
+    resolution: {integrity: sha512-fjTPbJyKEmfVBZUOh3V0OtMHoFUGr4+4XpejjxhNJE/IS2l8rDbyJuzi3w/fZWBDyk7BJOpG+lmvTK5iiVhXuQ==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -9610,7 +9610,7 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  valtio@2.1.7(@types/react@19.1.13)(react@19.1.1):
+  valtio@2.1.8(@types/react@19.1.13)(react@19.1.1):
     dependencies:
       proxy-compare: 3.0.1
     optionalDependencies:
