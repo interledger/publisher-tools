@@ -55,6 +55,7 @@
     "@types/react-dom": "^19.1.9",
     "@types/sanitize-html": "^2.16.0",
     "@types/uuid": "^9.0.8",
+    "react-scan": "^0.4.3",
     "eslint": "^9.36.0",
     "postcss": "^8.5.6",
     "typescript": "5.9.2",

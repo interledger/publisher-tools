@@ -6,6 +6,7 @@ export interface SliderProps {
   min: number
   max: number
   onChange: (value: number) => void
+  id?: string
   className?: string
   step?: number
 }
@@ -15,6 +16,7 @@ export const Slider: React.FC<SliderProps> = ({
   min,
   max,
   onChange,
+  id,
   className = '',
   step = 1
 }) => {
@@ -56,6 +58,8 @@ export const Slider: React.FC<SliderProps> = ({
         'relative h-6 w-full flex items-center cursor-pointer',
         className
       )}
+      // TODO: use `input[type=range]` instead
+      id={id}
       onMouseDown={handleMouseDown}
     >
       <div className="absolute h-1.5 w-full bg-purple-100 rounded-full"></div>
