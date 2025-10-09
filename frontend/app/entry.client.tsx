@@ -7,13 +7,13 @@
 import { RemixBrowser } from '@remix-run/react'
 import { startTransition, StrictMode } from 'react'
 import { hydrateRoot } from 'react-dom/client'
-import { initReactScan } from './utils/react-scan'
+import { scan } from 'react-scan'
 
 if (process.env.NODE_ENV === 'development') {
-  initReactScan({
+  scan({
     enabled: true,
-    log: false,
-    includeChildren: true
+    trackUnnecessaryRenders: true,
+    log: true
   })
 }
 
