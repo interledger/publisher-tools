@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
@@ -55,19 +55,14 @@ function SuggestedTitles({
       >
         Suggested title
       </div>
-      <div
-        className="flex flex-wrap gap-xs group"
-        onChange={(ev) => {
-          const input = ev.target as HTMLInputElement
-          onChange(input.value)
-        }}
-      >
+      <div className="flex flex-wrap gap-xs group">
         {suggestions.map((title) => (
           <PillRadioListItem
             key={title}
             value={title}
             selected={value === title}
             radioGroup="suggested-title"
+            onSelect={() => onChange(title)}
           >
             {title}
           </PillRadioListItem>
@@ -84,17 +79,12 @@ function CustomTitle({
   maxLength,
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
-  const [inputValue, setInputValue] = useState(value)
-
+  const ref = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    setInputValue(value)
+    if (ref.current) {
+      ref.current.value = value
+    }
   }, [value])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setInputValue(value)
-    onChange(value.trim())
-  }
 
   return (
     <div className="flex flex-col gap-xs">
@@ -102,11 +92,12 @@ function CustomTitle({
         Custom title
       </h4>
       <InputField
-        value={inputValue}
+        defaultValue={value}
+        onChange={(e) => onChange(e.target.value.trim())}
+        ref={ref}
         placeholder={placeholder}
-        onChange={handleChange}
         showCounter={true}
-        currentLength={inputValue.length}
+        currentLength={value.length}
         maxLength={maxLength}
         helpText={helpText}
         className="h-12 text-base leading-md"

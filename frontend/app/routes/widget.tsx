@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
 import { useUI } from '~/stores/uiStore'
@@ -11,7 +11,6 @@ import {
 import {
   HeadingCore,
   ToolsWalletAddress,
-  BuilderForm,
   BuilderBackground,
   ToolsSecondaryButton,
   ToolsPrimaryButton,
@@ -20,10 +19,11 @@ import {
   WalletOwnershipModal,
   OverridePresetModal,
   StepsIndicator,
-  MobileStepsIndicator,
-  WidgetPositionSelector,
-  WidgetColorsSelector
+  MobileStepsIndicator
 } from '@/components'
+import { BuilderTabs } from '~/components/builder/BuilderTabs'
+import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
+import { WidgetPreview } from '~/components/widget/WidgetPreview'
 import {
   toolState,
   toolActions,
@@ -35,29 +35,6 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
-import type {
-  WidgetConfig,
-  PaymentWidget as WidgetComponent
-} from '@tools/components'
-import type {
-  ContentConfig,
-  ToolContent
-} from '~/components/redesign/components/ContentBuilder'
-import type {
-  AppearanceConfig,
-  WidgetToolAppearance
-} from '~/components/redesign/components/AppearanceBuilder'
-import {
-  WIDGET_DESCRIPTION_MAX_LENGTH,
-  WIDGET_FONT_SIZES,
-  WIDGET_TITLE_MAX_LENGTH
-} from '@shared/types'
-import type {
-  CornerType,
-  FontFamilyKey,
-  SlideAnimationType,
-  WidgetPositionKey
-} from '@shared/types'
 
 export const meta: MetaFunction = () => {
   return [
@@ -96,104 +73,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-const WidgetPreview: React.FC = () => {
-  const snap = useSnapshot(toolState)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const widgetRef = useRef<WidgetComponent>(null)
-
-  useEffect(() => {
-    const loadWidgetComponent = async () => {
-      try {
-        if (customElements.get('wm-payment-widget')) {
-          setIsLoaded(true)
-          return
-        }
-
-        // dynamic import - ensure component only runs on the client side and not on SSR
-        const { PaymentWidget } = await import('@tools/components')
-        customElements.define('wm-payment-widget', PaymentWidget)
-        setIsLoaded(true)
-      } catch (error) {
-        console.error('Failed to load widget component:', error)
-      }
-    }
-
-    loadWidgetComponent()
-  }, [])
-
-  const widgetConfig = useMemo(
-    () =>
-      ({
-        apiUrl: snap.apiUrl,
-        cdnUrl: snap.cdnUrl,
-        receiverAddress: snap.opWallet,
-        action: snap.currentConfig.widgetButtonText,
-        widgetTitleText: snap.currentConfig.widgetTitleText,
-        widgetDescriptionText: snap.currentConfig.widgetDescriptionText,
-        isWidgetDescriptionVisible: snap.currentConfig.widgetDescriptionVisible,
-        widgetTriggerIcon: snap.currentConfig.widgetTriggerIcon,
-        widgetPosition: snap.currentConfig.widgetPosition,
-        theme: {
-          primaryColor: snap.currentConfig.widgetButtonBackgroundColor,
-          backgroundColor: snap.currentConfig.widgetBackgroundColor,
-          textColor: snap.currentConfig.widgetTextColor,
-          fontSize: snap.currentConfig.widgetFontSize,
-          fontFamily: snap.currentConfig.widgetFontName,
-          widgetBorderRadius: snap.currentConfig.widgetButtonBorder,
-          widgetButtonBackgroundColor:
-            snap.currentConfig.widgetTriggerBackgroundColor
-        }
-      }) as WidgetConfig,
-    [snap.currentConfig]
-  )
-
-  useEffect(() => {
-    if (widgetRef.current && isLoaded) {
-      const widget = widgetRef.current
-      widget.config = widgetConfig
-      widget.isPreview = true
-    }
-  }, [widgetConfig, isLoaded])
-
-  if (!isLoaded) {
-    return <div>Loading widget...</div>
-  }
-
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end'
-      }}
-    >
-      <wm-payment-widget ref={widgetRef} />
-    </div>
-  )
-}
-
-const config: ContentConfig | AppearanceConfig = {
-  suggestedTitles: [
-    'Support this content',
-    'Make a payment',
-    'Contribute now',
-    'Help support',
-    'One-time donation'
-  ],
-  titleHelpText: 'Message to encourage one-time payments',
-  titleMaxLength: WIDGET_TITLE_MAX_LENGTH,
-  messageLabel: 'Widget message',
-  messagePlaceholder: 'Enter your widget message...',
-  messageHelpText: 'Describe how payments support your work',
-  messageMaxLength: WIDGET_DESCRIPTION_MAX_LENGTH,
-
-  showThumbnail: false,
-  fontSizeRange: WIDGET_FONT_SIZES
-}
-
 export default function Widget() {
   const snap = useSnapshot(toolState)
   const { actions: uiActions } = useUI()
@@ -204,53 +83,6 @@ export default function Widget() {
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
-
-  const profile: ToolContent | WidgetToolAppearance = {
-    currentTitle: snap.currentConfig?.widgetTitleText,
-    currentMessage: snap.currentConfig?.widgetDescriptionText,
-    isDescriptionVisible: snap.currentConfig?.widgetDescriptionVisible ?? true,
-    onTitleChange: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title }),
-    onMessageChange: (message: string) =>
-      toolActions.setToolConfig({ widgetDescriptionText: message }),
-    onSuggestedTitleClick: (title: string) =>
-      toolActions.setToolConfig({ widgetTitleText: title.replace(/"/g, '') }),
-    onDescriptionVisibilityChange: (visible: boolean) =>
-      toolActions.setToolConfig({
-        widgetDescriptionVisible: visible
-      }),
-
-    fontName: snap.currentConfig?.widgetFontName,
-    fontSize: snap.currentConfig?.widgetFontSize ?? WIDGET_FONT_SIZES.default,
-    backgroundColor: snap.currentConfig?.widgetBackgroundColor,
-    textColor: snap.currentConfig?.widgetTextColor,
-    buttonColor: snap.currentConfig?.widgetButtonBackgroundColor,
-    borderRadius: snap.currentConfig?.widgetButtonBorder,
-    position: snap.currentConfig?.widgetPosition,
-    slideAnimation: undefined,
-    thumbnail: snap.currentConfig?.widgetTriggerIcon,
-
-    onFontNameChange: (fontName: FontFamilyKey) =>
-      toolActions.setToolConfig({ widgetFontName: fontName }),
-    onFontSizeChange: (fontSize: number) =>
-      toolActions.setToolConfig({ widgetFontSize: fontSize }),
-    onBackgroundColorChange: (color: string) =>
-      toolActions.setToolConfig({ widgetBackgroundColor: color }),
-    onTextColorChange: (color: string) =>
-      toolActions.setToolConfig({ widgetTextColor: color }),
-    onButtonColorChange: (color: string) =>
-      toolActions.setToolConfig({ widgetButtonBackgroundColor: color }),
-    onBorderChange: (border: CornerType) =>
-      toolActions.setToolConfig({ widgetButtonBorder: border }),
-    onPositionChange: (position: WidgetPositionKey) =>
-      toolActions.setToolConfig({ widgetPosition: position }),
-    onSlideAnimationChange: (_animation: SlideAnimationType) => {},
-    onThumbnailVisibilityChange: (visible: boolean) => {
-      toolActions.setToolConfig({ widgetTriggerIcon: visible ? 'default' : '' })
-    },
-
-    showAnimation: false
-  }
 
   useBodyClass('has-fixed-action-bar')
 
@@ -383,51 +215,15 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-
-                    <BuilderForm
-                      profile={profile}
-                      config={config}
-                      onBuildStepComplete={(isComplete) =>
+                    <BuilderTabs
+                      onBuildStepComplete={(isComplete) => {
                         toolActions.setBuildCompleteStep(
                           isComplete ? 'filled' : 'unfilled'
                         )
-                      }
-                      onRefresh={handleRefresh}
-                      positionSelector={
-                        <WidgetPositionSelector
-                          defaultValue={snap.currentConfig?.widgetPosition}
-                          onChange={(value) =>
-                            toolActions.setToolConfig({ widgetPosition: value })
-                          }
-                        />
-                      }
-                      colorsSelector={
-                        <WidgetColorsSelector
-                          backgroundColor={
-                            snap.currentConfig?.widgetBackgroundColor
-                          }
-                          textColor={snap.currentConfig?.widgetTextColor}
-                          buttonColor={
-                            snap.currentConfig?.widgetButtonBackgroundColor
-                          }
-                          onBackgroundColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              widgetBackgroundColor: color
-                            })
-                          }
-                          onTextColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              widgetTextColor: color
-                            })
-                          }
-                          onButtonColorChange={(color: string) =>
-                            toolActions.setToolConfig({
-                              widgetButtonBackgroundColor: color
-                            })
-                          }
-                        />
-                      }
-                    />
+                      }}
+                    >
+                      <WidgetBuilder onRefresh={handleRefresh} />
+                    </BuilderTabs>
 
                     <div
                       id="builder-actions"
@@ -479,7 +275,11 @@ export default function Widget() {
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
                     <BuilderBackground>
-                      <WidgetPreview />
+                      <WidgetPreview
+                        profile={snap.currentConfig}
+                        serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
+                        opWallet={snap.opWallet}
+                      />
                     </BuilderBackground>
                   </div>
                 </div>
