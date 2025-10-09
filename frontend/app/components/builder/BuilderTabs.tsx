@@ -1,32 +1,17 @@
 import React, { useEffect } from 'react'
-import {
-  ContentBuilder,
-  AppearanceBuilder,
-  BuilderPresetTabs
-} from '@/components'
+import { BuilderPresetTabs } from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useUI } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
-import type { ContentConfig, ToolContent } from './ContentBuilder'
-import type { AppearanceConfig, ToolAppearance } from './AppearanceBuilder'
 
-interface BuilderFormProps {
-  profile: ToolContent | ToolAppearance
-  config: ContentConfig | AppearanceConfig
-  onRefresh: (section: 'appearance' | 'content') => void
-  onBuildStepComplete?: (isComplete: boolean) => void
-  positionSelector?: React.ReactNode
-  colorsSelector?: React.ReactNode
+interface Props {
+  onBuildStepComplete: (isComplete: boolean) => void
 }
 
-export const BuilderForm: React.FC<BuilderFormProps> = ({
+export function BuilderTabs({
   onBuildStepComplete,
-  onRefresh,
-  profile,
-  config,
-  positionSelector,
-  colorsSelector
-}) => {
+  children
+}: React.PropsWithChildren<Props>) {
   const snap = useSnapshot(toolState)
   const { state: uiState } = useUI()
 
@@ -71,21 +56,8 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
         onChange={handleTabSelect}
         onRename={handleTabLabelChange}
       >
-        <ContentBuilder
-          onRefresh={() => onRefresh('content')}
-          profile={profile as ToolContent}
-          config={config as ContentConfig}
-        />
-        <AppearanceBuilder
-          onRefresh={() => onRefresh('appearance')}
-          profile={profile as ToolAppearance}
-          positionSelector={positionSelector}
-          colorsSelector={colorsSelector}
-          config={config as AppearanceConfig}
-        />
+        {children}
       </BuilderPresetTabs>
     </div>
   )
 }
-
-export default BuilderForm

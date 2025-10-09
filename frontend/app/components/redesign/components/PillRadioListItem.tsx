@@ -1,21 +1,23 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 
-interface PillRadioListItemProps {
+interface PillRadioListItemProps<T extends string> {
   radioGroup: string
   selected: boolean
-  value: string
+  value: T
+  onSelect: () => void
   children: React.ReactNode
   size?: 'sm' | 'md'
 }
 
-export const PillRadioListItem: React.FC<PillRadioListItemProps> = ({
+export const PillRadioListItem = <T extends string>({
   radioGroup,
   value,
+  onSelect,
   children,
   selected,
   size = 'md'
-}) => {
+}: PillRadioListItemProps<T>) => {
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs leading-xs',
     md: 'px-sm py-2xs text-sm leading-sm'
@@ -64,6 +66,7 @@ export const PillRadioListItem: React.FC<PillRadioListItemProps> = ({
         defaultChecked={selected}
         value={value}
         className="sr-only"
+        onClick={onSelect}
       />
     </label>
   )
