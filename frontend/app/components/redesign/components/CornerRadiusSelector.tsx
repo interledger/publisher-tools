@@ -17,9 +17,6 @@ export function CornerRadiusSelector({
   value,
   onChange
 }: CornerRadiusSelectorProps) {
-  const [selected, setSelected] = React.useState(value)
-  React.useEffect(() => setSelected(value), [value])
-
   return (
     <div className="flex max-xl:self-center items-start xl:flex-row flex-col gap-md">
       {options.map((option) => (
@@ -31,14 +28,11 @@ export function CornerRadiusSelector({
             type="radio"
             name="cornerRadius"
             value={option.value}
-            checked={selected === option.value}
-            onChange={() => {
-              onChange(option.value)
-              setSelected(option.value)
-            }}
+            checked={value === option.value}
+            onChange={() => onChange(option.value)}
             className="sr-only"
           />
-          <CustomRadioDot selected={selected === option.value} />
+          <CustomRadioDot selected={value === option.value} />
 
           <span className="text-style-body-standard">{option.label}</span>
         </label>
