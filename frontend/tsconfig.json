@@ -22,6 +22,7 @@
     "paths": {
       "~/*": ["./app/*"],
       "@/components": ["./app/components/redesign/components"],
+      "@/components/*": ["./app/components/redesign/components/*"],
       "@/typography": ["./app/components/redesign/Typography.tsx"],
       "@/assets": ["./app/assets/svg.tsx"]
     },

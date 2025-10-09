@@ -17,7 +17,7 @@ import BuilderAccordion from '~/components/redesign/components/BuilderAccordion'
 import { useUI } from '~/stores/uiStore'
 import { TitleInput } from '~/components/redesign/components/builder/TitleInput'
 import { DescriptionInput } from '~/components/redesign/components/builder/DescriptionInput'
-import { SectionHeader } from '~/components/redesign/components/SectionHeader'
+import { InputFieldset } from '@/components/builder/InputFieldset'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
@@ -130,8 +130,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'appearance'}
     >
-      <div className="flex flex-col gap-xs">
-        <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
+      <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
@@ -186,15 +185,14 @@ function AppearanceBuilder({ onRefresh }: Props) {
             </button>
           </div>
         </div>
-      </div>
+      </InputFieldset>
 
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGColorPicker className="w-5 h-5" />}
-          label="Colors"
-        />
+      <InputFieldset
+        label="Colors"
+        icon={<SVGColorPicker className="w-5 h-5" />}
+      >
         <WidgetColorsSelector
           backgroundColor={profile.widgetBackgroundColor}
           onBackgroundColorChange={(color: string) =>
@@ -209,33 +207,31 @@ function AppearanceBuilder({ onRefresh }: Props) {
             (profile.widgetButtonBackgroundColor = color)
           }
         />
-      </div>
+      </InputFieldset>
 
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGRoundedCorner className="w-5 h-5" />}
-          label="Container Corner Radius"
-        />
+      <InputFieldset
+        label="Container Corner Radius"
+        icon={<SVGRoundedCorner className="w-5 h-5" />}
+      >
         <CornerRadiusSelector
           defaultValue={profile.widgetButtonBorder}
           onChange={(value) => (profile.widgetButtonBorder = value)}
         />
-      </div>
+      </InputFieldset>
 
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGHeaderPosition className="w-5 h-5" />}
-          label="Position"
-        />
+      <InputFieldset
+        label="Position"
+        icon={<SVGHeaderPosition className="w-5 h-5" />}
+      >
         <WidgetPositionSelector
           defaultValue={profile.widgetPosition}
           onChange={(value) => (profile.widgetPosition = value)}
         />
-      </div>
+      </InputFieldset>
     </BuilderAccordion>
   )
 }
