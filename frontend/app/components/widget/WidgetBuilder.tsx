@@ -6,13 +6,10 @@ import {
 import {
   Divider,
   ToolsDropdown,
-  Slider,
   CornerRadiusSelector,
   WidgetPositionSelector,
   WidgetColorsSelector
 } from '@/components'
-import type { ContentConfig } from '~/components/redesign/components/ContentBuilder'
-import type { AppearanceConfig } from '~/components/redesign/components/AppearanceBuilder'
 import { useUI } from '~/stores/uiStore'
 import BuilderAccordion from '@/components/BuilderAccordion'
 import { SectionHeader } from '@/components/SectionHeader'
@@ -31,7 +28,7 @@ interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
 }
 
-const config: ContentConfig & AppearanceConfig = {
+const config = {
   suggestedTitles: [
     'Support this content',
     'Make a payment',
