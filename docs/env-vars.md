@@ -54,7 +54,7 @@ Copy your private key from the wallet, paste it into the `currentKey` variable i
 
 ```javascript
 // Paste your private key from the wallet here
-const currentKey = '-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----';
+const currentKey = '-----BEGIN PRIVATE KEY-----\nYOUR_KEY_HERE\n-----END PRIVATE KEY-----'
 
 // This script converts the key to the required format
 const derBytes = atob(
@@ -62,16 +62,16 @@ const derBytes = atob(
     .replace('-----BEGIN PRIVATE KEY-----', '')
     .replace('-----END PRIVATE KEY-----', '')
     .replace(/\s/g, '')
-);
-const bytes = new Uint8Array(derBytes.length);
+)
+const bytes = new Uint8Array(derBytes.length)
 for (let i = 0; i < derBytes.length; i++) {
-  bytes[i] = derBytes.charCodeAt(i);
+  bytes[i] = derBytes.charCodeAt(i)
 }
-const privateKey = bytes.slice(-32);
-const keyBase64 = btoa(String.fromCharCode(...privateKey));
+const privateKey = bytes.slice(-32)
+const keyBase64 = btoa(String.fromCharCode(...privateKey))
 
-console.log('Your new OP_PRIVATE_KEY is:');
-console.log(keyBase64);
+console.log('Your new OP_PRIVATE_KEY is:')
+console.log(keyBase64)
 ```
 
 </details>

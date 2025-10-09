@@ -17,23 +17,10 @@ The application also includes API routes (e.g., `api.config.$type.ts`) that are 
 
 ## Development
 
-To run the frontend application for local development, use the `dev` script.
+To run the frontend application for local development, use the `dev` script from the project root:
 
-**From the project root:**
 ```sh
 pnpm -C frontend dev
 ```
 
-**From this directory (`frontend/`):**
-```sh
-pnpm dev
-```
-
 This will start the Remix development server, typically available at `http://localhost:3000`.
-
-### Available Scripts
-
-*   `pnpm dev`: Starts the local development server.
-*   `pnpm build`: Builds the application for production.
-*   `pnpm typecheck`: Runs the TypeScript compiler to check for type errors.
-*   `pnpm deploy`: Deploys the application to Cloudflare Pages.

@@ -14,22 +14,14 @@ The main entry points for the build are:
 
 The output is placed in the `dist/` directory.
 
+## Assets
+
+This package also manages static assets required by the components, such as fonts. The build process ensures that these assets are correctly referenced and made available through the CDN. Fonts are located in the `src/assets/fonts` directory.
+
 ## Development
 
-To build the assets and run a local development server that simulates the CDN, use the `dev` script. This will watch for file changes in both the `cdn` and `components` packages and automatically rebuild.
+To build the assets and run a local development server that simulates the CDN, use the `dev` script from the project root. This will watch for file changes in both the `cdn` and `components` packages and automatically rebuild.
 
-**From the project root:**
 ```sh
 pnpm -C cdn dev
 ```
-
-**From this directory (`cdn/`):**
-```sh
-pnpm dev
-```
-
-### Available Scripts
-
-*   `pnpm dev`: Runs the development build and a local server.
-*   `pnpm build`: Runs a one-time production build of all assets.
-*   `pnpm deploy`: Deploys the assets to the Cloudflare CDN.

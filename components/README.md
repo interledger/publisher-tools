@@ -11,18 +11,14 @@ This package contains the core, embeddable web components for the Publisher Tool
 
 This package contains the raw source code for the web components but does not have its own build process.
 
-The components are imported and bundled by the **`cdn`** package, which is responsible for compiling them into a browser-ready format. Please see the `cdn` package for more details on the build and delivery process.
+The components are imported and bundled by the **`cdn`** package, which is responsible for compiling them into a browser-ready format. They are also used by the **`frontend`** package for demonstration purposes.
+
+Please see the `cdn` package for more details on the build and delivery process.
 
 ## Development
 
-The only available script is for type checking.
+The only available script is for type checking, which can be run from the project root:
 
-**From the project root:**
 ```sh
 pnpm -C components typecheck
-```
-
-**From this directory (`components/`):**
-```sh
-pnpm typecheck
 ```

@@ -12,23 +12,10 @@ The API exposes endpoints related to the following functionalities:
 
 ## Development
 
-To run the API server for local development, you can use the `dev` script.
+To run the API server for local development, you can use the `dev` script from the project root:
 
-**From the project root:**
 ```sh
 pnpm -C api dev
 ```
 
-**From this directory (`api/`):**
-```sh
-pnpm dev
-```
-
 This will start the Cloudflare Wrangler development server, which automatically reloads on file changes.
-
-### Available Scripts
-
-*   `pnpm dev`: Starts the local development server.
-*   `pnpm build`: Builds the worker for deployment without deploying it.
-*   `pnpm typecheck`: Runs the TypeScript compiler to check for type errors.
-*   `pnpm deploy`: Deploys the worker to your Cloudflare account.
