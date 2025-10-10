@@ -78,7 +78,7 @@ function CustomTitle({
   placeholder,
   maxLength,
   helpText
-}: Omit<Props, 'suggestions'> & { placeholder: string; value: string }) {
+}: Omit<Props, 'suggestions'> & { placeholder: string }) {
   const ref = useRef<HTMLInputElement>(null)
   return (
     <div className="flex flex-col gap-xs">
