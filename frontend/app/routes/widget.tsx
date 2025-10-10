@@ -29,7 +29,6 @@ import {
   toolActions,
   persistState,
   loadState,
-  subscribeToConfigChanges,
   splitConfigProperties
 } from '~/stores/toolStore'
 
@@ -90,7 +89,6 @@ export default function Widget() {
   useEffect(() => {
     loadState(OP_WALLET_ADDRESS)
     persistState()
-    subscribeToConfigChanges()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
@@ -161,10 +159,7 @@ export default function Widget() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    Object.assign(
-      toolState.currentConfig,
-      section === 'content' ? content : appearance
-    )
+    toolActions.setToolConfig(section === 'content' ? content : appearance)
   }
   return (
     <div className="bg-interface-bg-main w-full">
