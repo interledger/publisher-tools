@@ -226,25 +226,6 @@ export const toolActions = {
     }))
   },
 
-  setToolConfig: (config: Partial<ElementConfigType>) => {
-    toolState.currentConfig = {
-      ...toolState.currentConfig,
-      ...config
-    }
-
-    if (toolState.activeVersion) {
-      const existingVersionName =
-        toolState.configurations[toolState.activeVersion].versionName
-
-      toolState.configurations[toolState.activeVersion] = {
-        ...toolState.currentConfig,
-        versionName: existingVersionName
-      }
-
-      updateModificationTrackingWithVersionNames(toolState.activeVersion)
-    }
-  },
-
   /**
    * handles both loading new configs and restoring saved configs.
    *
@@ -663,6 +644,12 @@ export function persistState() {
   })
 }
 
+export function subscribeToConfigChanges() {
+  subscribe(toolState.configurations, () => {
+    updateModificationTrackingWithVersionNames(toolState.activeVersion)
+  })
+}
+
 function createStorageState(state: typeof toolState) {
   return omit(state, EXCLUDED_FROM_STORAGE)
 }
@@ -683,12 +670,14 @@ export function omit<T extends Record<string, unknown>>(
 }
 
 function isContentProperty(key: string): boolean {
-  return key.endsWith('Text')
+  return key.endsWith('Text') || key.endsWith('Visible')
 }
 
+// TODO: remove with versioning changes
 export function splitConfigProperties<T extends ElementConfigType>(config: T) {
+  const { versionName: _versionName, ...rest } = config
   const { content = [], appearance = [] } = groupBy(
-    Object.entries(config),
+    Object.entries(rest),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
   )
 
