@@ -75,7 +75,6 @@ function setupConfigs(
     STABLE_KEYS.forEach((stableKey) => {
       if (fullConfigObject[stableKey]) {
         newFullConfig[stableKey] = {
-          ...newFullConfig[stableKey],
           ...fullConfigObject[stableKey],
           versionName: fullConfigObject[stableKey].versionName
         }
@@ -83,19 +82,18 @@ function setupConfigs(
     })
   }
 
-  toolState.configurations = newFullConfig
+  STABLE_KEYS.forEach((stableKey) => {
+    toolState.configurations[stableKey] = { ...newFullConfig[stableKey] }
+  })
   toolState.activeVersion = STABLE_KEYS[0]
 
+  STABLE_KEYS.forEach((stableKey) => {
+    toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
+  })
+
   if (treatAsBaseline) {
-    STABLE_KEYS.forEach((stableKey) => {
-      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
-    })
     toolState.modifiedVersions = []
   } else {
-    STABLE_KEYS.forEach((stableKey) => {
-      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
-    })
-
     toolState.modifiedVersions = STABLE_KEYS.filter((key) =>
       isConfigModified(newFullConfig[key], toolState.savedConfigurations[key])
     )
