@@ -22,13 +22,12 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { toolState } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
-  onBuildStepComplete?: (isComplete: boolean) => void
 }
 
 const config = {
@@ -50,16 +49,7 @@ const config = {
   fontSizeRange: BANNER_FONT_SIZES
 }
 
-export function BannerBuilder({ onRefresh, onBuildStepComplete }: Props) {
-  const uiState = useUIState()
-
-  useEffect(() => {
-    const bothComplete = uiState.contentComplete && uiState.appearanceComplete
-    if (onBuildStepComplete) {
-      onBuildStepComplete(bothComplete)
-    }
-  }, [uiState.contentComplete, uiState.appearanceComplete, onBuildStepComplete])
-
+export function BannerBuilder({ onRefresh }: Props) {
   return (
     <>
       <ContentBuilder onRefresh={onRefresh} />
