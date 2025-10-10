@@ -66,6 +66,11 @@ export type ToolConfig<T extends Tool> = {
   widget: WidgetConfig
 }[T]
 
+export const BANNER_TITLE_MAX_LENGTH = 60
+export const BANNER_DESCRIPTION_MAX_LENGTH = 300
+export const WIDGET_TITLE_MAX_LENGTH = 30
+export const WIDGET_DESCRIPTION_MAX_LENGTH = 300
+
 export const BANNER_FONT_SIZES = {
   min: 16,
   max: 24,
