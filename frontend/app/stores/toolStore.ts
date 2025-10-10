@@ -55,66 +55,22 @@ function isConfigModified(
   return JSON.stringify(config) !== JSON.stringify(baselineConfig)
 }
 
-function updateModificationTracking(
-  versionKey: StableKey,
-  isModified: boolean
-) {
-  const currentIndex = toolState.modifiedVersions.indexOf(versionKey)
-
-  if (isModified && currentIndex === -1) {
-    toolState.modifiedVersions.push(versionKey)
-  } else if (!isModified && currentIndex > -1) {
-    toolState.modifiedVersions.splice(currentIndex, 1)
-  }
-}
-
-function getVersionNameByStableKey(stableKey: StableKey): string {
-  return toolState.configurations[stableKey].versionName
-}
-
-function resetBaselineAfterSave() {
-  toolState.savedConfigurations = { ...toolState.configurations }
-  toolState.modifiedVersions = []
-}
-
 /**
- * Sets up the configurations based on the provided fullConfigObject.
- * This is a core function that initializes or updates the entire configuration state
- * and manages the baseline tracking for modification detection.
- *
- * The function handles several scenarios:
- * 1. If fullConfigObject is provided: Merges provided configs with defaults
- * 2. If fullConfigObject is null: Initializes with default configurations only
- * 3. treatAsBaseline parameter controls modification tracking behavior
- *
- * Configuration Setup Process:
- * - Creates default configurations for all stable keys
- * - Overlays provided configurations while preserving version names
- * - Sets the active version to the first stable key
- * - Updates the current config to match the active version
  *
  * Baseline Management:
  * - treatAsBaseline=true: Treats configs as saved state (no modifications)
  * - treatAsBaseline=false: Compares against existing baseline to detect modifications
  *
- * This function is used in multiple scenarios:
- * - Initial app load: Setting up default configurations
- * - Loading saved configs: Restoring previously saved state
- * - Importing configs: Merging external configuration data
- * - Override operations: Applying database configurations
- *
- * @param fullConfigObject - Configuration object to merge with defaults, or null for defaults only
+ * @param fullConfigObject - Configuration object to merge with defaults
  * @param treatAsBaseline - Whether to treat these configs as the new baseline (default: false)
  */
 function setupConfigs(
   fullConfigObject: Record<string, ElementConfigType> | null,
   treatAsBaseline: boolean = false
 ) {
-  let newFullConfig: Record<StableKey, ElementConfigType>
-
+  const newFullConfig: Record<StableKey, ElementConfigType> =
+    createDefaultConfigs()
   if (fullConfigObject) {
-    newFullConfig = createDefaultConfigs()
-
     STABLE_KEYS.forEach((stableKey) => {
       if (fullConfigObject[stableKey]) {
         newFullConfig[stableKey] = {
@@ -124,60 +80,53 @@ function setupConfigs(
         }
       }
     })
-  } else {
-    newFullConfig = createDefaultConfigs()
   }
 
   toolState.configurations = newFullConfig
   toolState.activeVersion = STABLE_KEYS[0]
 
-  toolState.currentConfig = newFullConfig[toolState.activeVersion]
-
   if (treatAsBaseline) {
-    toolState.savedConfigurations = { ...newFullConfig }
+    STABLE_KEYS.forEach((stableKey) => {
+      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
+    })
     toolState.modifiedVersions = []
   } else {
-    toolState.savedConfigurations = { ...newFullConfig }
+    STABLE_KEYS.forEach((stableKey) => {
+      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
+    })
+
     toolState.modifiedVersions = STABLE_KEYS.filter((key) =>
       isConfigModified(newFullConfig[key], toolState.savedConfigurations[key])
     )
   }
 }
 
-/**
- * Updates modification tracking for a specific version configuration.
- * This function is called whenever a configuration or version name changes to determine
- * if the configuration should be marked as "modified" compared to the saved baseline.
- *
- * It checks two types of modifications:
- * 1. Content changes: Compares the current config with the saved baseline config
- * 2. Version name changes: Compares the current version name with the baseline version name
- *
- * If either type of change is detected, the configuration is added to the modifiedVersions array.
- * This tracking is crucial for conflict detection when connecting to a wallet address.
- *
- * @param stableKey - The stable key ('version1', 'version2', 'version3') to check
- */
-function updateModificationTrackingWithVersionNames(stableKey: StableKey) {
-  const configModified = isConfigModified(
-    toolState.configurations[stableKey],
-    toolState.savedConfigurations[stableKey]
-  )
+function updateModificationTracking(stableKey: StableKey) {
+  const currentConfig = toolState.configurations[stableKey]
+  const savedConfig = toolState.savedConfigurations[stableKey]
 
-  const versionName = getVersionNameByStableKey(stableKey)
-  const baselineVersionName =
-    toolState.savedConfigurations[stableKey]?.versionName
+  if (!currentConfig || !savedConfig) {
+    return
+  }
 
-  const versionNameChanged =
-    baselineVersionName && versionName !== baselineVersionName
+  const hasContentChanges =
+    JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
 
-  const isModified = configModified || Boolean(versionNameChanged)
+  const hasVersionNameChanges =
+    currentConfig.versionName !== savedConfig.versionName
 
-  updateModificationTracking(stableKey, isModified)
+  const isModified = hasContentChanges || hasVersionNameChanges
+
+  const currentIndex = toolState.modifiedVersions.indexOf(stableKey)
+
+  if (isModified && currentIndex === -1) {
+    toolState.modifiedVersions.push(stableKey)
+  } else if (!isModified && currentIndex > -1) {
+    toolState.modifiedVersions.splice(currentIndex, 1)
+  }
 }
 
 export const toolState = proxy({
-  currentConfig: getDefaultData() as ElementConfigType,
   configurations: createDefaultConfigs(),
   /*
    * savedConfigurations: baseline configs.
@@ -191,6 +140,11 @@ export const toolState = proxy({
   modifiedVersions: [] as StableKey[],
   activeVersion: 'version1' as StableKey,
   currentToolType: 'unknown' as ToolType,
+
+  /** always returns the active configuration */
+  get currentConfig() {
+    return this.configurations[this.activeVersion]
+  },
 
   // UI state
   modal: undefined as ModalType | undefined,
@@ -216,6 +170,10 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus
+})
+
+subscribe(toolState, () => {
+  updateModificationTracking(toolState.activeVersion)
 })
 
 export const toolActions = {
@@ -246,24 +204,6 @@ export const toolActions = {
       throw new Error(`Stable key '${selectedStableKey}' not found`)
     }
 
-    if (toolState.activeVersion && toolState.currentConfig) {
-      const existingVersionName =
-        toolState.configurations[toolState.activeVersion].versionName
-
-      toolState.configurations[toolState.activeVersion] = {
-        ...toolState.currentConfig,
-        versionName: existingVersionName
-      }
-    }
-
-    const newConfig = toolState.configurations[selectedStableKey]
-    if (!newConfig) {
-      throw new Error(
-        `Configuration for stable key '${selectedStableKey}' not found`
-      )
-    }
-
-    toolState.currentConfig = newConfig
     toolState.activeVersion = selectedStableKey
   },
 
@@ -321,26 +261,6 @@ export const toolActions = {
     }
     script.dataset.tag = preset
     return script.outerHTML
-  },
-  updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
-    if (!toolState.configurations[stableKey]) {
-      console.error(`Cannot find configuration for stable key: ${stableKey}`)
-      return
-    }
-
-    toolState.configurations[stableKey] = {
-      ...toolState.configurations[stableKey],
-      versionName: newVersionName
-    }
-
-    if (toolState.activeVersion === stableKey) {
-      toolState.currentConfig = {
-        ...toolState.currentConfig,
-        versionName: newVersionName
-      }
-    }
-
-    updateModificationTrackingWithVersionNames(stableKey)
   },
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
@@ -416,11 +336,21 @@ export const toolActions = {
         }
       }
 
-      toolState.configurations = data as Record<string, ElementConfigType>
-      toolState.currentConfig = configToSave
+      const updatedConfigs = data as Record<string, ElementConfigType>
+      STABLE_KEYS.forEach((stableKey) => {
+        if (updatedConfigs[stableKey]) {
+          toolState.configurations[stableKey] = { ...updatedConfigs[stableKey] }
+        }
+      })
       toolState.modal = { type: callToActionType }
 
-      resetBaselineAfterSave()
+      // update the baseline to current configurations after success save
+      STABLE_KEYS.forEach((stableKey) => {
+        toolState.savedConfigurations[stableKey] = {
+          ...toolState.configurations[stableKey]
+        }
+      })
+      toolState.modifiedVersions = []
 
       return { success: true, data }
     } catch (error) {
@@ -499,9 +429,6 @@ export const toolActions = {
         // keep the local version - no changes needed
       } else if (hasDatabaseVersion) {
         toolState.configurations[stableKey] = { ...hasDatabaseVersion }
-        if (toolState.activeVersion === stableKey) {
-          toolState.currentConfig = { ...hasDatabaseVersion }
-        }
 
         // remove from modified configs since we're using database version
         const wasModified = toolState.modifiedVersions.includes(stableKey)
@@ -641,12 +568,6 @@ export function persistState() {
       STORAGE_KEY,
       JSON.stringify(createStorageState(toolState))
     )
-  })
-}
-
-export function subscribeToConfigChanges() {
-  subscribe(toolState.configurations, () => {
-    updateModificationTrackingWithVersionNames(toolState.activeVersion)
   })
 }
 
