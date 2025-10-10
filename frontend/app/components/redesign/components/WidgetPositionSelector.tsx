@@ -1,11 +1,11 @@
-import React from 'react'
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
 import { WIDGET_POSITION, type WidgetPositionKey } from '@shared/types'
 import { SVGPositionLeft, SVGPositionRight } from '@/assets'
+import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio/react'
 
 export interface WidgetPositionSelectorProps {
-  defaultValue?: WidgetPositionKey
   onChange?: (value: WidgetPositionKey) => void
   className?: string
 }
@@ -32,14 +32,16 @@ const widgetPositionOptions: Option<WidgetPositionKey>[] = [
 ]
 
 export function WidgetPositionSelector({
-  defaultValue = WIDGET_POSITION.Right,
   onChange,
   className
 }: WidgetPositionSelectorProps) {
+  const {
+    currentConfig: { widgetPosition }
+  } = useSnapshot(toolState)
   return (
     <OptionSelector
       options={widgetPositionOptions}
-      defaultValue={defaultValue}
+      defaultValue={widgetPosition}
       onChange={onChange}
       className={cx('xl:flex-row flex-col gap-md', className)}
     />

@@ -3,19 +3,19 @@ import type {
   WidgetConfig,
   PaymentWidget as WidgetComponent
 } from '@tools/components'
-import type { WidgetConfig as WidgetStoredConfig } from '@shared/types'
+import { useSnapshot } from 'valtio'
+import { toolState } from '~/stores/toolStore'
 
 interface Props {
-  profile: WidgetStoredConfig
   serviceUrls: { cdn: string; api: string }
   opWallet: string
 }
 
 export const WidgetPreview = ({
-  profile,
   serviceUrls,
   opWallet
 }: React.PropsWithChildren<Props>) => {
+  const { currentConfig: profile } = useSnapshot(toolState)
   const [isLoaded, setIsLoaded] = useState(false)
   const widgetRef = useRef<WidgetComponent>(null)
 
