@@ -29,7 +29,6 @@ import {
   toolActions,
   persistState,
   loadState,
-  subscribeToConfigChanges,
   splitConfigProperties
 } from '~/stores/toolStore'
 
@@ -90,7 +89,6 @@ export default function Widget() {
   useEffect(() => {
     loadState(OP_WALLET_ADDRESS)
     persistState()
-    subscribeToConfigChanges()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
@@ -220,13 +218,7 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderTabs
-                      onBuildStepComplete={(isComplete) => {
-                        toolActions.setBuildCompleteStep(
-                          isComplete ? 'filled' : 'unfilled'
-                        )
-                      }}
-                    >
+                    <BuilderTabs>
                       <WidgetBuilder onRefresh={handleRefresh} />
                     </BuilderTabs>
 
