@@ -1,8 +1,6 @@
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
 import { BANNER_POSITION, type BannerPositionKey } from '@shared/types'
-import { toolState } from '~/stores/toolStore'
-import { useSnapshot } from 'valtio/react'
 
 export interface BannerPositionSelectorProps {
   bannerPosition: BannerPositionKey
