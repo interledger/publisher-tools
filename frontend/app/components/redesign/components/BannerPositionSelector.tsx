@@ -1,7 +1,8 @@
-import React from 'react'
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
 import { BANNER_POSITION, type BannerPositionKey } from '@shared/types'
+import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio/react'
 
 export interface BannerPositionSelectorProps {
   defaultValue?: BannerPositionKey
@@ -45,14 +46,16 @@ const bannerPositionOptions: Option<BannerPositionKey>[] = [
 ]
 
 export function BannerPositionSelector({
-  defaultValue = BANNER_POSITION.Bottom,
   onChange,
   className
 }: BannerPositionSelectorProps) {
+  const {
+    currentConfig: { bannerPosition }
+  } = useSnapshot(toolState)
   return (
     <OptionSelector
       options={bannerPositionOptions}
-      defaultValue={defaultValue}
+      defaultValue={bannerPosition}
       onChange={onChange}
       className={cx('xl:flex-row flex-col gap-md', className)}
     />

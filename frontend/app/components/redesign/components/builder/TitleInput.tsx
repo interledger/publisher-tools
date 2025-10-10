@@ -1,14 +1,55 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
+import { useSnapshot } from 'valtio'
+import { toolState } from '~/stores/toolStore'
 
 interface Props {
-  value: string
   onChange: (title: string) => void
   suggestions: string[]
   maxLength: number
   helpText?: string
+}
+
+export function BannerTitleInput({
+  suggestions,
+  onChange,
+  maxLength,
+  helpText
+}: Props) {
+  const {
+    currentConfig: { bannerTitleText }
+  } = useSnapshot(toolState, { sync: true })
+  return (
+    <TitleInput
+      value={bannerTitleText}
+      onChange={onChange}
+      suggestions={suggestions}
+      maxLength={maxLength}
+      helpText={helpText}
+    />
+  )
+}
+
+export function WidgetTitleInput({
+  suggestions,
+  onChange,
+  maxLength,
+  helpText
+}: Props) {
+  const {
+    currentConfig: { widgetTitleText }
+  } = useSnapshot(toolState, { sync: true })
+  return (
+    <TitleInput
+      value={widgetTitleText}
+      onChange={onChange}
+      suggestions={suggestions}
+      maxLength={maxLength}
+      helpText={helpText}
+    />
+  )
 }
 
 export function TitleInput({
@@ -17,7 +58,7 @@ export function TitleInput({
   onChange,
   maxLength,
   helpText
-}: Props) {
+}: Props & { value: string }) {
   return (
     <>
       <SuggestedTitles
@@ -42,7 +83,7 @@ function SuggestedTitles({
   value,
   suggestions,
   onChange
-}: Pick<Props, 'value' | 'suggestions' | 'onChange'>) {
+}: Pick<Props, 'suggestions' | 'onChange'> & { value: string }) {
   return (
     <div
       role="group"
@@ -78,21 +119,15 @@ function CustomTitle({
   placeholder,
   maxLength,
   helpText
-}: Omit<Props, 'suggestions'> & { placeholder: string }) {
+}: Omit<Props, 'suggestions'> & { placeholder: string; value: string }) {
   const ref = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.value = value
-    }
-  }, [value])
-
   return (
     <div className="flex flex-col gap-xs">
       <h4 className="text-base leading-md font-bold text-text-primary">
         Custom title
       </h4>
       <InputField
-        defaultValue={value}
+        value={value}
         onChange={(e) => onChange(e.target.value.trim())}
         ref={ref}
         placeholder={placeholder}

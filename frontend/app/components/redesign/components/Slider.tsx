@@ -1,5 +1,6 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
+import { toolState } from '~/stores/toolStore'
 
 export interface SliderProps {
   value: number
@@ -53,33 +54,53 @@ export const Slider: React.FC<SliderProps> = ({
   }
 
   return (
-    <div
-      className={cx(
-        'relative h-6 w-full flex items-center cursor-pointer',
-        className
-      )}
-      // TODO: use `input[type=range]` instead
-      id={id}
-      onMouseDown={handleMouseDown}
-    >
-      <div className="absolute h-1.5 w-full bg-purple-100 rounded-full"></div>
-
-      <div
-        className="absolute h-1.5 bg-purple-300 rounded-full"
-        style={{
-          width: `${((value - min) / (max - min)) * 100}%`,
-          left: 0
+    <>
+      <button
+        className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
+        onClick={() => {
+          const newSize = Math.max(min, (value ?? min) - 1)
+          toolState.currentConfig.widgetFontSize = newSize
         }}
-      ></div>
-
+        aria-label="Decrease font size"
+      >
+        <span className="text-sm leading-sm text-text-primary">A</span>
+      </button>
+      {/* // TODO: use `input[type=range]` instead */}
       <div
-        className="absolute h-6 w-6 rounded-full bg-white border-4 border-purple-300 cursor-grab active:cursor-grabbing"
-        style={{
-          left: `${((value - min) / (max - min)) * 100}%`,
-          transform: 'translateX(-50%)'
+        className={cx(
+          'relative h-6 w-full flex items-center cursor-pointer',
+          className
+        )}
+        onMouseDown={handleMouseDown}
+      >
+        <div className="absolute h-1.5 w-full bg-purple-100 rounded-full"></div>
+
+        <div
+          className="absolute h-1.5 bg-purple-300 rounded-full"
+          style={{
+            width: `${((value - min) / (max - min)) * 100}%`,
+            left: 0
+          }}
+        ></div>
+
+        <div
+          className="absolute h-6 w-6 rounded-full bg-white border-4 border-purple-300 cursor-grab active:cursor-grabbing"
+          style={{
+            left: `${((value - min) / (max - min)) * 100}%`,
+            transform: 'translateX(-50%)'
+          }}
+        ></div>
+      </div>
+      <button
+        className="flex items-center justify-center w-6 h-7 cursor-pointer hover:font-bold"
+        onClick={() => {
+          const newSize = Math.min(max, (value ?? min) + 1)
+          toolState.currentConfig.widgetFontSize = newSize
         }}
-      ></div>
-    </div>
+      >
+        <span className="text-3xl leading-3xl text-text-primary">A</span>
+      </button>
+    </>
   )
 }
 

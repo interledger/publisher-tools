@@ -4,7 +4,8 @@ import React, {
   useRef,
   useCallback,
   useState,
-  useEffect
+  useEffect,
+  useMemo
 } from 'react'
 import type { ReactNode } from 'react'
 
@@ -26,12 +27,8 @@ interface UIActions {
   setActiveSection: (section: UIState['activeSection']) => void
 }
 
-interface UIContextType {
-  state: UIState
-  actions: UIActions
-}
-
-const UIContext = createContext<UIContextType | undefined>(undefined)
+const UIStateContext = createContext<UIState | undefined>(undefined)
+const UIActionsContext = createContext<UIActions | undefined>(undefined)
 
 interface UIProviderProps {
   children: ReactNode
@@ -70,25 +67,44 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     appearanceComplete
   }
 
-  const actions: UIActions = {
-    focusWalletInput,
-    registerWalletInput,
-    setContentComplete,
-    setAppearanceComplete,
-    setActiveSection
-  }
+  const actions: UIActions = useMemo(
+    () => ({
+      focusWalletInput,
+      registerWalletInput,
+      setContentComplete,
+      setAppearanceComplete,
+      setActiveSection
+    }),
+    [
+      focusWalletInput,
+      registerWalletInput,
+      setContentComplete,
+      setAppearanceComplete,
+      setActiveSection
+    ]
+  )
 
   return (
-    <UIContext.Provider value={{ state, actions }}>
-      {children}
-    </UIContext.Provider>
+    <UIStateContext.Provider value={state}>
+      <UIActionsContext.Provider value={actions}>
+        {children}
+      </UIActionsContext.Provider>
+    </UIStateContext.Provider>
   )
 }
 
-export const useUI = (): UIContextType => {
-  const context = useContext(UIContext)
+export const useUIActions = (): UIActions => {
+  const context = useContext(UIActionsContext)
   if (!context) {
-    throw new Error('useUI must be used within a UIProvider')
+    throw new Error('useUIActions must be used within a UIProvider')
   }
   return context
+}
+
+export const useUIState = (): UIState => {
+  const state = useContext(UIStateContext)
+  if (!state) {
+    throw new Error('useUIState must be used within a UIProvider')
+  }
+  return state
 }

@@ -2,24 +2,23 @@ import {
   BANNER_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
   SLIDE_ANIMATION,
-  type SlideAnimationType,
-  type BannerConfig
+  type SlideAnimationType
 } from '@shared/types'
 import {
   BannerPositionSelector,
   BannerColorsSelector,
+  BuilderAccordion,
   Divider,
   Checkbox,
   ToolsDropdown,
+  SectionHeader,
   CornerRadiusSelector,
-  Thumbnail
+  Thumbnail,
+  Slider
 } from '@/components'
-import { useUI } from '~/stores/uiStore'
-import BuilderAccordion from '@/components/BuilderAccordion'
-import { SectionHeader } from '@/components/SectionHeader'
-import { TitleInput } from '@/components/builder/TitleInput'
-import { DescriptionInput } from '@/components/builder/DescriptionInput'
-import { FontSizeInput } from '@/components/builder/FontSizeInput'
+import { BannerTitleInput } from '@/components/builder/TitleInput'
+import { BannerDescriptionInput } from '@/components/builder/DescriptionInput'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -29,11 +28,13 @@ import {
   SVGThumbnail
 } from '~/assets/svg'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
+  onBuildStepComplete?: (isComplete: boolean) => void
 }
 
 const config = {
@@ -55,7 +56,16 @@ const config = {
   fontSizeRange: BANNER_FONT_SIZES
 }
 
-export function BannerBuilder({ onRefresh }: Props) {
+export function BannerBuilder({ onRefresh, onBuildStepComplete }: Props) {
+  const uiState = useUIState()
+
+  useEffect(() => {
+    const bothComplete = uiState.contentComplete && uiState.appearanceComplete
+    if (onBuildStepComplete) {
+      onBuildStepComplete(bothComplete)
+    }
+  }, [uiState.contentComplete, uiState.appearanceComplete, onBuildStepComplete])
+
   return (
     <>
       <ContentBuilder onRefresh={onRefresh} />
@@ -65,8 +75,8 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as BannerConfig
+  const uiState = useUIState()
+  const uiActions = useUIActions()
 
   return (
     <BuilderAccordion
@@ -84,9 +94,8 @@ function ContentBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'content'}
     >
-      <TitleInput
-        value={profile.bannerTitleText}
-        onChange={(value) => (profile.bannerTitleText = value)}
+      <BannerTitleInput
+        onChange={(value) => (toolState.currentConfig.bannerTitleText = value)}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
         helpText={config.titleHelpText}
@@ -94,13 +103,13 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <Divider />
 
-      <DescriptionInput
+      <BannerDescriptionInput
         label={config.messageLabel}
-        value={profile.bannerDescriptionText}
-        onChange={(text) => (profile.bannerDescriptionText = text)}
-        isVisible={profile.bannerDescriptionVisible}
+        onChange={(text) =>
+          (toolState.currentConfig.bannerDescriptionText = text)
+        }
         onVisibilityChange={(visible) =>
-          (profile.bannerDescriptionVisible = visible)
+          (toolState.currentConfig.bannerDescriptionVisible = visible)
         }
         placeholder={config.messagePlaceholder}
         helpText={config.messageHelpText}
@@ -111,25 +120,8 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as BannerConfig
-
-  const thumbnails = [wmLogo]
-
-  const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-
-  const [lastSelectedAnimation, setLastSelectedAnimation] =
-    useState<SlideAnimationType>(() => {
-      const validated = getValidSlideAnimation(profile.bannerSlideAnimation)
-      return validated === SLIDE_ANIMATION.None
-        ? SLIDE_ANIMATION.Slide
-        : validated
-    })
-  const isAnimated = profile.bannerSlideAnimation !== SLIDE_ANIMATION.None
-
-  const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === profile.bannerFontName
-  )
+  const uiState = useUIState()
+  const uiActions = useUIActions()
 
   return (
     <BuilderAccordion
@@ -149,24 +141,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
-        <ToolsDropdown
-          label="Font Family"
-          defaultValue={defaultFontIndex.toString()}
-          onChange={(value) => {
-            const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
-            profile.bannerFontName = fontName
-          }}
-          options={FONT_FAMILY_OPTIONS.map((font, index) => ({
-            label: font,
-            value: index.toString()
-          }))}
-        />
-        <FontSizeInput
-          value={profile.bannerFontSize}
-          onChange={(value) => (profile.bannerFontSize = value)}
-          min={config.fontSizeRange.min}
-          max={config.fontSizeRange.max}
-        />
+        <FontFamilySelector />
+        <FontSizeSelector />
       </div>
       <Divider />
 
@@ -176,13 +152,11 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Colors"
         />
         <BannerColorsSelector
-          backgroundColor={profile.bannerBackgroundColor}
-          textColor={profile.bannerTextColor}
           onBackgroundColorChange={(color: string) =>
-            (profile.bannerBackgroundColor = color)
+            (toolState.currentConfig.bannerBackgroundColor = color)
           }
           onTextColorChange={(color: string) =>
-            (profile.bannerTextColor = color)
+            (toolState.currentConfig.bannerTextColor = color)
           }
         />
       </div>
@@ -193,10 +167,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           icon={<SVGRoundedCorner className="w-5 h-5" />}
           label="Container Corner Radius"
         />
-        <CornerRadiusSelector
-          defaultValue={profile.bannerBorder}
-          onChange={(value) => (profile.bannerBorder = value)}
-        />
+        <BorderSelector />
       </div>
 
       <Divider />
@@ -206,8 +177,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Position"
         />
         <BannerPositionSelector
-          defaultValue={profile.bannerPosition}
-          onChange={(value) => (profile.bannerPosition = value)}
+          onChange={(value) => (toolState.currentConfig.bannerPosition = value)}
         />
       </div>
 
@@ -218,35 +188,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Animation"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={profile.bannerSlideAnimation !== SLIDE_ANIMATION.None}
-            onChange={() => {
-              profile.bannerSlideAnimation = isAnimated
-                ? SLIDE_ANIMATION.None
-                : lastSelectedAnimation
-            }}
-            label="Animated"
-          />
-          <div className="flex-1 w-full xl:w-auto">
-            <ToolsDropdown
-              label="Type"
-              disabled={!isAnimated}
-              defaultValue={
-                isAnimated
-                  ? getValidSlideAnimation(profile.bannerSlideAnimation)
-                  : lastSelectedAnimation
-              }
-              options={[
-                { label: 'Slide', value: SLIDE_ANIMATION.Slide },
-                { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
-              ]}
-              onChange={(value) => {
-                const selectedAnimation = value as SlideAnimationType
-                setLastSelectedAnimation(selectedAnimation)
-                profile.bannerSlideAnimation = selectedAnimation
-              }}
-            />
-          </div>
+          <AnimationSelector />
         </div>
       </div>
 
@@ -257,29 +199,161 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Thumbnail"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={
-              typeof profile.bannerThumbnail === 'undefined' ||
-              !!profile.bannerThumbnail
-            }
-            onChange={(visible) => {
-              profile.bannerThumbnail = visible ? 'default' : ''
-            }}
-            label="Visible"
-          />
-          <div className="flex gap-md">
-            {thumbnails.map((thumbnail, index) => (
-              <Thumbnail
-                key={index}
-                isSelected={selectedThumbnail === index}
-                imageUrl={thumbnail}
-                onClick={() => setSelectedThumbnail(index)}
-              />
-            ))}
-          </div>
+          <ThumbnailSelector />
         </div>
       </div>
     </BuilderAccordion>
+  )
+}
+
+function FontFamilySelector() {
+  const {
+    currentConfig: { bannerFontName }
+  } = useSnapshot(toolState)
+  const defaultFontIndex = useMemo(
+    () => FONT_FAMILY_OPTIONS.findIndex((option) => option === bannerFontName),
+    [bannerFontName]
+  )
+
+  return (
+    <ToolsDropdown
+      label="Font Family"
+      defaultValue={defaultFontIndex.toString()}
+      onChange={(value) => {
+        const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
+        toolState.currentConfig.bannerFontName = fontName
+      }}
+      options={FONT_FAMILY_OPTIONS.map((font, index) => ({
+        label: font,
+        value: index.toString()
+      }))}
+    />
+  )
+}
+
+function FontSizeSelector() {
+  const {
+    currentConfig: { bannerFontSize }
+  } = useSnapshot(toolState)
+  const { min: minFontSize, max: maxFontSize } = config.fontSizeRange
+
+  return (
+    <div className="flex flex-col gap-2xs">
+      <label className="text-xs leading-xs text-silver-700">Size</label>
+      <div className="flex items-center h-12 gap-md">
+        <Slider
+          value={bannerFontSize}
+          min={minFontSize}
+          max={maxFontSize}
+          onChange={(value) => (toolState.currentConfig.bannerFontSize = value)}
+        />
+      </div>
+    </div>
+  )
+}
+
+function BorderSelector() {
+  const {
+    currentConfig: { bannerBorder }
+  } = useSnapshot(toolState)
+
+  return (
+    <CornerRadiusSelector
+      defaultValue={bannerBorder}
+      onChange={(value) => (toolState.currentConfig.bannerBorder = value)}
+    />
+  )
+}
+
+function AnimationSelector() {
+  const snap = useSnapshot(toolState.currentConfig)
+  const [lastSelectedAnimation, setLastSelectedAnimation] =
+    useState<SlideAnimationType>(() => {
+      const validated = getValidSlideAnimation(snap.bannerSlideAnimation)
+      return validated === SLIDE_ANIMATION.None
+        ? SLIDE_ANIMATION.Slide
+        : validated
+    })
+
+  const [isAnimated, setIsAnimated] = useState(
+    () => snap.bannerSlideAnimation !== SLIDE_ANIMATION.None
+  )
+
+  useEffect(() => {
+    setIsAnimated(snap.bannerSlideAnimation !== SLIDE_ANIMATION.None)
+  }, [snap.bannerSlideAnimation])
+
+  return (
+    <>
+      <Checkbox
+        checked={isAnimated}
+        onChange={(visible) => {
+          setIsAnimated(visible)
+          toolState.currentConfig.bannerSlideAnimation = visible
+            ? lastSelectedAnimation
+            : SLIDE_ANIMATION.None
+        }}
+        label="Animated"
+      />
+      <div className="flex-1 w-full xl:w-auto">
+        <ToolsDropdown
+          label="Type"
+          disabled={!isAnimated}
+          defaultValue={
+            isAnimated
+              ? getValidSlideAnimation(
+                  toolState.currentConfig.bannerSlideAnimation
+                )
+              : lastSelectedAnimation
+          }
+          options={[
+            { label: 'Slide', value: SLIDE_ANIMATION.Slide },
+            { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
+          ]}
+          onChange={(value) => {
+            const selectedAnimation = value as SlideAnimationType
+            setLastSelectedAnimation(selectedAnimation)
+            toolState.currentConfig.bannerSlideAnimation = selectedAnimation
+          }}
+        />
+      </div>
+    </>
+  )
+}
+
+function ThumbnailSelector() {
+  const snap = useSnapshot(toolState.currentConfig)
+  const [isThumbnailVisible, setIsThumbnailVisible] = useState(() =>
+    Boolean(snap.bannerThumbnail)
+  )
+
+  useEffect(() => {
+    setIsThumbnailVisible(Boolean(snap.bannerThumbnail))
+  }, [snap.bannerThumbnail])
+
+  const thumbnails = [wmLogo]
+
+  return (
+    <>
+      <Checkbox
+        checked={isThumbnailVisible}
+        onChange={(visible) => {
+          setIsThumbnailVisible(visible)
+          toolState.currentConfig.bannerThumbnail = visible ? 'default' : ''
+        }}
+        label="Visible"
+      />
+      <div className="flex gap-md">
+        {thumbnails.map((thumbnail, index) => (
+          <Thumbnail
+            key={index}
+            isSelected={true}
+            imageUrl={thumbnail}
+            onClick={() => {}}
+          />
+        ))}
+      </div>
+    </>
   )
 }
 

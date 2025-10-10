@@ -6,24 +6,24 @@ import React, {
   useState
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
-import type { BannerConfig as BannerStoredConfig } from '@shared/types'
+import { useSnapshot } from 'valtio'
+import { toolState } from '~/stores/toolStore'
 
 export interface BannerHandle {
   triggerPreview: () => void
 }
 
 interface Props {
-  profile: BannerStoredConfig
   cdnUrl: string
   ref?: React.Ref<BannerHandle>
 }
 
 export const BannerPreview = ({
-  profile,
   cdnUrl,
   ref
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
+  const { currentConfig: profile } = useSnapshot(toolState)
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerElement | null>(null)
 

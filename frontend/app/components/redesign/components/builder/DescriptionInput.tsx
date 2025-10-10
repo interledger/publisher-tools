@@ -1,16 +1,66 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import Checkbox from '../Checkbox'
 import { TextareaField } from '../TextareaField'
+import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
 
 interface Props {
   label: string
-  value: string
   onChange: (text: string) => void
-  isVisible: boolean
   onVisibilityChange: (visible: boolean) => void
   maxLength: number
   helpText: string
   placeholder: string
+}
+
+export function BannerDescriptionInput({
+  label,
+  onChange,
+  onVisibilityChange,
+  maxLength,
+  helpText,
+  placeholder
+}: Props) {
+  const {
+    currentConfig: { bannerDescriptionText, bannerDescriptionVisible }
+  } = useSnapshot(toolState, { sync: true })
+  return (
+    <DescriptionInput
+      label={label}
+      value={bannerDescriptionText}
+      onChange={onChange}
+      isVisible={bannerDescriptionVisible}
+      onVisibilityChange={onVisibilityChange}
+      maxLength={maxLength}
+      helpText={helpText}
+      placeholder={placeholder}
+    />
+  )
+}
+
+export function WidgetDescriptionInput({
+  label,
+  onChange,
+  onVisibilityChange,
+  maxLength,
+  helpText,
+  placeholder
+}: Props) {
+  const {
+    currentConfig: { widgetDescriptionText, widgetDescriptionVisible }
+  } = useSnapshot(toolState, { sync: true })
+  return (
+    <DescriptionInput
+      label={label}
+      value={widgetDescriptionText}
+      onChange={onChange}
+      isVisible={widgetDescriptionVisible}
+      onVisibilityChange={onVisibilityChange}
+      maxLength={maxLength}
+      helpText={helpText}
+      placeholder={placeholder}
+    />
+  )
 }
 
 export function DescriptionInput({
@@ -22,14 +72,8 @@ export function DescriptionInput({
   maxLength,
   helpText,
   placeholder
-}: Props) {
+}: Props & { value: string; isVisible: boolean }) {
   const ref = useRef<HTMLTextAreaElement>(null)
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.value = value
-    }
-  }, [value])
-
   return (
     <fieldset className="space-y-xs">
       <legend className="text-base leading-md font-bold text-text-primary">
@@ -46,7 +90,7 @@ export function DescriptionInput({
 
         <div className="flex-grow w-full">
           <TextareaField
-            defaultValue={value}
+            value={value}
             onChange={(e) => onChange(e.target.value)}
             ref={ref}
             currentLength={value.length || 0}
