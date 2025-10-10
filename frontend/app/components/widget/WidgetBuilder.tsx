@@ -1,31 +1,30 @@
-import {
-  FONT_FAMILY_OPTIONS,
-  WIDGET_FONT_SIZES,
-  type WidgetConfig
-} from '@shared/types'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
   Divider,
   ToolsDropdown,
   CornerRadiusSelector,
   WidgetPositionSelector,
-  WidgetColorsSelector
+  WidgetColorsSelector,
+  BuilderAccordion,
+  SectionHeader,
+  Slider
 } from '@/components'
-import { useUI } from '~/stores/uiStore'
-import BuilderAccordion from '@/components/BuilderAccordion'
-import { SectionHeader } from '@/components/SectionHeader'
-import { TitleInput } from '@/components/builder/TitleInput'
-import { DescriptionInput } from '@/components/builder/DescriptionInput'
-import { FontSizeInput } from '@/components/builder/FontSizeInput'
+import { WidgetTitleInput } from '@/components/builder/TitleInput'
+import { WidgetDescriptionInput } from '@/components/builder/DescriptionInput'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
   SVGRoundedCorner,
   SVGText
 } from '~/assets/svg'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
+import { useMemo, useEffect } from 'react'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
+  onBuildStepComplete?: (isComplete: boolean) => void
 }
 
 const config = {
@@ -47,7 +46,16 @@ const config = {
   fontSizeRange: WIDGET_FONT_SIZES
 }
 
-export function WidgetBuilder({ onRefresh }: Props) {
+export function WidgetBuilder({ onRefresh, onBuildStepComplete }: Props) {
+  const uiState = useUIState()
+
+  useEffect(() => {
+    const bothComplete = uiState.contentComplete && uiState.appearanceComplete
+    if (onBuildStepComplete) {
+      onBuildStepComplete(bothComplete)
+    }
+  }, [uiState.contentComplete, uiState.appearanceComplete, onBuildStepComplete])
+
   return (
     <>
       <ContentBuilder onRefresh={onRefresh} />
@@ -57,8 +65,8 @@ export function WidgetBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as WidgetConfig
+  const uiActions = useUIActions()
+  const uiState = useUIState()
 
   return (
     <BuilderAccordion
@@ -76,9 +84,8 @@ function ContentBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'content'}
     >
-      <TitleInput
-        value={profile.widgetTitleText}
-        onChange={(value) => (profile.widgetTitleText = value)}
+      <WidgetTitleInput
+        onChange={(value) => (toolState.currentConfig.widgetTitleText = value)}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
         helpText={config.titleHelpText}
@@ -86,29 +93,25 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <Divider />
 
-      <DescriptionInput
+      <WidgetDescriptionInput
         label={config.messageLabel}
-        value={profile.widgetDescriptionText}
-        onChange={(text) => (profile.widgetDescriptionText = text)}
-        isVisible={profile.widgetDescriptionVisible}
-        onVisibilityChange={(visible) =>
-          (profile.widgetDescriptionVisible = visible)
+        onChange={(text) =>
+          (toolState.currentConfig.widgetDescriptionText = text)
         }
-        placeholder={config.messagePlaceholder}
-        helpText={config.messageHelpText}
+        onVisibilityChange={(visible) =>
+          (toolState.currentConfig.widgetDescriptionVisible = visible)
+        }
         maxLength={config.messageMaxLength}
+        helpText={config.messageHelpText}
+        placeholder={config.messagePlaceholder}
       />
     </BuilderAccordion>
   )
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as WidgetConfig
-
-  const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === profile.widgetFontName
-  )
+  const uiActions = useUIActions()
+  const uiState = useUIState()
 
   return (
     <BuilderAccordion
@@ -128,25 +131,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
     >
       <div className="flex flex-col gap-xs">
         <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
-        <ToolsDropdown
-          label="Font Family"
-          defaultValue={defaultFontIndex.toString()}
-          onChange={(value) => {
-            const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
-            profile.widgetFontName = fontName
-          }}
-          options={FONT_FAMILY_OPTIONS.map((font, index) => ({
-            label: font,
-            value: index.toString()
-          }))}
-        />
-
-        <FontSizeInput
-          value={profile.widgetFontSize}
-          onChange={(value) => (profile.widgetFontSize = value)}
-          min={config.fontSizeRange.min}
-          max={config.fontSizeRange.max}
-        />
+        <FontFamilySelector />
+        <FontSizeSelector />
       </div>
 
       <Divider />
@@ -157,17 +143,14 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Colors"
         />
         <WidgetColorsSelector
-          backgroundColor={profile.widgetBackgroundColor}
           onBackgroundColorChange={(color: string) =>
-            (profile.widgetBackgroundColor = color)
+            (toolState.currentConfig.widgetBackgroundColor = color)
           }
-          textColor={profile.widgetTextColor}
           onTextColorChange={(color: string) =>
-            (profile.widgetTextColor = color)
+            (toolState.currentConfig.widgetTextColor = color)
           }
-          buttonColor={profile.widgetButtonBackgroundColor}
           onButtonColorChange={(color: string) =>
-            (profile.widgetButtonBackgroundColor = color)
+            (toolState.currentConfig.widgetButtonBackgroundColor = color)
           }
         />
       </div>
@@ -179,10 +162,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           icon={<SVGRoundedCorner className="w-5 h-5" />}
           label="Container Corner Radius"
         />
-        <CornerRadiusSelector
-          defaultValue={profile.widgetButtonBorder}
-          onChange={(value) => (profile.widgetButtonBorder = value)}
-        />
+        <BorderSelector />
       </div>
 
       <Divider />
@@ -193,10 +173,70 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Position"
         />
         <WidgetPositionSelector
-          defaultValue={profile.widgetPosition}
-          onChange={(value) => (profile.widgetPosition = value)}
+          onChange={(value) => (toolState.currentConfig.widgetPosition = value)}
         />
       </div>
     </BuilderAccordion>
+  )
+}
+
+function FontFamilySelector() {
+  const {
+    currentConfig: { widgetFontName }
+  } = useSnapshot(toolState)
+  const defaultFontIndex = useMemo(
+    () => FONT_FAMILY_OPTIONS.findIndex((option) => option === widgetFontName),
+    [widgetFontName]
+  )
+
+  return (
+    <ToolsDropdown
+      label="Font Family"
+      defaultValue={defaultFontIndex.toString()}
+      onChange={(value) => {
+        const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
+        toolState.currentConfig.widgetFontName = fontName
+      }}
+      options={FONT_FAMILY_OPTIONS.map((font, index) => ({
+        label: font,
+        value: index.toString()
+      }))}
+    />
+  )
+}
+
+function FontSizeSelector() {
+  // const widgetFontSize = useSnapshot(toolState.currentConfig).widgetFontSize
+  const { widgetFontSize } = useSnapshot(toolState).currentConfig
+  const { min: minFontSize, max: maxFontSize } = config.fontSizeRange
+
+  return (
+    <div className="flex flex-col gap-2xs">
+      <label className="text-xs leading-xs text-silver-700">Size</label>
+      <div className="flex items-center h-12 gap-md">
+        <Slider
+          min={minFontSize}
+          max={maxFontSize}
+          value={widgetFontSize}
+          onChange={(value) => {
+            toolState.currentConfig.widgetFontSize = value
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function BorderSelector() {
+  // const widgetButtonBorder = useSnapshot(
+  //   toolState.currentConfig
+  // ).widgetButtonBorder
+  const { widgetButtonBorder } = useSnapshot(toolState).currentConfig
+
+  return (
+    <CornerRadiusSelector
+      defaultValue={widgetButtonBorder}
+      onChange={(value) => (toolState.currentConfig.widgetButtonBorder = value)}
+    />
   )
 }

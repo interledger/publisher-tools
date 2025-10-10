@@ -1,38 +1,40 @@
-import React from 'react'
 import { ColorSelector } from '@/components'
+import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio/react'
 
 export interface WidgetColorsSelectorProps {
-  backgroundColor?: string
-  textColor?: string
-  buttonColor?: string
   onBackgroundColorChange: (color: string) => void
   onTextColorChange: (color: string) => void
   onButtonColorChange: (color: string) => void
 }
 
 export function WidgetColorsSelector({
-  backgroundColor,
-  textColor,
-  buttonColor,
   onBackgroundColorChange,
   onTextColorChange,
   onButtonColorChange
 }: WidgetColorsSelectorProps) {
+  const {
+    currentConfig: {
+      widgetBackgroundColor,
+      widgetTextColor,
+      widgetButtonBackgroundColor
+    }
+  } = useSnapshot(toolState)
   return (
     <div className="flex justify-between sm:flex-row flex-col gap-md">
       <ColorSelector
         label="Background"
-        value={backgroundColor}
+        value={widgetBackgroundColor}
         onChange={onBackgroundColorChange}
       />
       <ColorSelector
         label="Text"
-        value={textColor}
+        value={widgetTextColor}
         onChange={onTextColorChange}
       />
       <ColorSelector
         label="Button"
-        value={buttonColor}
+        value={widgetButtonBackgroundColor}
         onChange={onButtonColorChange}
       />
     </div>

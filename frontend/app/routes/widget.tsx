@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
-import { useUI } from '~/stores/uiStore'
+// import { useUI } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
@@ -29,13 +29,13 @@ import {
   toolActions,
   persistState,
   loadState,
-  subscribeToConfigChanges,
   splitConfigProperties
 } from '~/stores/toolStore'
 
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
+import { useUIActions } from '~/stores/uiStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -76,7 +76,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
-  const { actions: uiActions } = useUI()
+  const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -90,7 +90,6 @@ export default function Widget() {
   useEffect(() => {
     loadState(OP_WALLET_ADDRESS)
     persistState()
-    subscribeToConfigChanges()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
@@ -220,14 +219,15 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderTabs
-                      onBuildStepComplete={(isComplete) => {
-                        toolActions.setBuildCompleteStep(
-                          isComplete ? 'filled' : 'unfilled'
-                        )
-                      }}
-                    >
-                      <WidgetBuilder onRefresh={handleRefresh} />
+                    <BuilderTabs>
+                      <WidgetBuilder
+                        onRefresh={handleRefresh}
+                        onBuildStepComplete={(isComplete) => {
+                          toolActions.setBuildCompleteStep(
+                            isComplete ? 'filled' : 'unfilled'
+                          )
+                        }}
+                      />
                     </BuilderTabs>
 
                     <div
@@ -281,7 +281,6 @@ export default function Widget() {
                   >
                     <BuilderBackground>
                       <WidgetPreview
-                        profile={snap.currentConfig}
                         serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
                         opWallet={snap.opWallet}
                       />
