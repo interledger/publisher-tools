@@ -2,54 +2,13 @@ import { useRef } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
-import { useSnapshot } from 'valtio'
-import { toolState } from '~/stores/toolStore'
 
 interface Props {
+  value: string
   onChange: (title: string) => void
   suggestions: string[]
   maxLength: number
   helpText?: string
-}
-
-export function BannerTitleInput({
-  suggestions,
-  onChange,
-  maxLength,
-  helpText
-}: Props) {
-  const {
-    currentConfig: { bannerTitleText }
-  } = useSnapshot(toolState, { sync: true })
-  return (
-    <TitleInput
-      value={bannerTitleText}
-      onChange={onChange}
-      suggestions={suggestions}
-      maxLength={maxLength}
-      helpText={helpText}
-    />
-  )
-}
-
-export function WidgetTitleInput({
-  suggestions,
-  onChange,
-  maxLength,
-  helpText
-}: Props) {
-  const {
-    currentConfig: { widgetTitleText }
-  } = useSnapshot(toolState, { sync: true })
-  return (
-    <TitleInput
-      value={widgetTitleText}
-      onChange={onChange}
-      suggestions={suggestions}
-      maxLength={maxLength}
-      helpText={helpText}
-    />
-  )
 }
 
 export function TitleInput({
@@ -58,7 +17,7 @@ export function TitleInput({
   onChange,
   maxLength,
   helpText
-}: Props & { value: string }) {
+}: Props) {
   return (
     <>
       <SuggestedTitles
@@ -83,7 +42,7 @@ function SuggestedTitles({
   value,
   suggestions,
   onChange
-}: Pick<Props, 'suggestions' | 'onChange'> & { value: string }) {
+}: Pick<Props, 'value' | 'suggestions' | 'onChange'>) {
   return (
     <div
       role="group"

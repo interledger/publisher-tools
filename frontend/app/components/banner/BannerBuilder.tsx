@@ -10,8 +10,8 @@ import {
   AnimationSelector,
   ThumbnailSelector
 } from '@/components'
-import { BannerTitleInput } from '@/components/builder/TitleInput'
-import { BannerDescriptionInput } from '@/components/builder/DescriptionInput'
+import { TitleInput } from '@/components/builder/TitleInput'
+import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 import {
@@ -71,6 +71,8 @@ export function BannerBuilder({ onRefresh, onBuildStepComplete }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
+  // https://github.com/pmndrs/valtio/issues/132
+  const profile = useSnapshot(toolState.currentConfig, { sync: true })
 
   return (
     <BuilderAccordion
@@ -88,7 +90,8 @@ function ContentBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'content'}
     >
-      <BannerTitleInput
+      <TitleInput
+        value={profile.bannerTitleText}
         onChange={(value) => (toolState.currentConfig.bannerTitleText = value)}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
@@ -97,11 +100,13 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <Divider />
 
-      <BannerDescriptionInput
+      <DescriptionInput
+        value={profile.bannerDescriptionText}
         label={config.messageLabel}
         onChange={(text) =>
           (toolState.currentConfig.bannerDescriptionText = text)
         }
+        isVisible={profile.bannerDescriptionVisible}
         onVisibilityChange={(visible) =>
           (toolState.currentConfig.bannerDescriptionVisible = visible)
         }
