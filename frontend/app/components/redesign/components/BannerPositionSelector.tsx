@@ -5,8 +5,8 @@ import { toolState } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio/react'
 
 export interface BannerPositionSelectorProps {
-  defaultValue?: BannerPositionKey
-  onChange?: (value: BannerPositionKey) => void
+  bannerPosition: BannerPositionKey
+  onChange: (value: BannerPositionKey) => void
   className?: string
 }
 
@@ -46,12 +46,10 @@ const bannerPositionOptions: Option<BannerPositionKey>[] = [
 ]
 
 export function BannerPositionSelector({
+  bannerPosition,
   onChange,
   className
 }: BannerPositionSelectorProps) {
-  const {
-    currentConfig: { bannerPosition }
-  } = useSnapshot(toolState)
   return (
     <OptionSelector
       options={bannerPositionOptions}
