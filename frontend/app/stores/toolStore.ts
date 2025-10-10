@@ -11,6 +11,7 @@ const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
+  'buildStep',
   'opWallet',
   'cdnUrl'
 ])
