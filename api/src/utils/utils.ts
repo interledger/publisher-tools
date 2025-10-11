@@ -28,8 +28,8 @@ interface SignOptions {
   keyId: string
 }
 
-export function timeout(delay: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, delay))
+export function sleep(delay: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, delay))
 }
 
 export async function createHeaders({

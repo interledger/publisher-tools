@@ -9,6 +9,16 @@ import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
 import successIcon from '../../../assets/interaction/authorization_success.svg'
 import failedIcon from '../../../assets/interaction/authorization_failed.svg'
 
+type PaymentStatusResponse = {
+  data: {
+    type: string
+    paymentId: string
+    interact_ref: string
+    hash: string
+    result: string
+  }
+}
+
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   @property({ type: Object }) configController!: WidgetController
@@ -35,6 +45,8 @@ export class PaymentInteraction extends LitElement {
     window.open(redirect, '_blank')
     this._boundHandleMessage = this.handleMessage.bind(this)
     window.addEventListener('message', this._boundHandleMessage)
+
+    this.startLongPolling()
   }
 
   disconnectedCallback() {
@@ -127,6 +139,32 @@ export class PaymentInteraction extends LitElement {
     } catch {
       this.currentView = 'failed'
       this.errorMessage = 'There was an issues with your request.'
+      this.requestUpdate()
+    }
+  }
+
+  private async startLongPolling(): Promise<void> {
+    try {
+      const { paymentId } = this.configController.state
+      const { apiUrl } = this.configController.config
+      const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
+      const res = await fetch(url)
+
+      if (res.ok) {
+        const data = (await res.json()) as PaymentStatusResponse
+        this.handleInteractionCompleted(data.data.interact_ref)
+      } else {
+        if (res.status === 504) {
+          this.errorMessage = 'Payment authorization timed out'
+        } else {
+          this.errorMessage = 'Failed to check payment status'
+        }
+        this.currentView = 'failed'
+        this.requestUpdate()
+      }
+    } catch {
+      this.currentView = 'failed'
+      this.errorMessage = 'Failed to check payment status'
       this.requestUpdate()
     }
   }

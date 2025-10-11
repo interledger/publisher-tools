@@ -1,4 +1,8 @@
-import type { MetaFunction } from '@remix-run/cloudflare'
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction
+} from '@remix-run/cloudflare'
 import { useEffect, useRef } from 'react'
 
 export const meta: MetaFunction = () => {
@@ -6,6 +10,31 @@ export const meta: MetaFunction = () => {
     { title: 'Grant Interaction' },
     { name: 'description', content: 'Interaction success' }
   ]
+}
+
+export async function action({ request, context }: ActionFunctionArgs) {
+  const { env } = context.cloudflare
+  const body = (await request.json()) as { data: object; paymentId: string }
+  const { data, paymentId } = body
+
+  try {
+    const existingData = await env.INTERACTION_KV.get(paymentId)
+
+    if (existingData) {
+      return json({ success: true, message: 'Already stored' })
+    }
+
+    await env.INTERACTION_KV.put(paymentId, JSON.stringify(data), {
+      expirationTtl: 300 // 5min,
+    })
+
+    return json({ success: true })
+  } catch {
+    return json(
+      { success: false, error: 'Failed to store data' },
+      { status: 500 }
+    )
+  }
 }
 
 export default function PaymentComplete() {
@@ -19,10 +48,22 @@ export default function PaymentComplete() {
       params[key] = value
     })
 
-    //TODO: handle the case where window.opener is null
-    if (window.opener && !hasPostedMessage.current) {
-      window.opener.postMessage({ type: 'GRANT_INTERACTION', ...params }, '*')
+    if (!hasPostedMessage.current) {
       hasPostedMessage.current = true
+      if (window.opener) {
+        window.opener.postMessage({ type: 'GRANT_INTERACTION', ...params }, '*')
+      } else {
+        fetch('/tools/payment-confirmation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            data: params,
+            paymentId: params.paymentId
+          })
+        })
+      }
     }
   }, [])
 
