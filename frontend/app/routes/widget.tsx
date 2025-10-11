@@ -159,7 +159,10 @@ export default function Widget() {
     if (!savedConfig) return
 
     const { content, appearance } = splitConfigProperties(savedConfig)
-    toolActions.setToolConfig(section === 'content' ? content : appearance)
+    Object.assign(
+      toolState.currentConfig,
+      section === 'content' ? content : appearance
+    )
   }
   return (
     <div className="bg-interface-bg-main w-full">
@@ -215,13 +218,7 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderTabs
-                      onBuildStepComplete={(isComplete) => {
-                        toolActions.setBuildCompleteStep(
-                          isComplete ? 'filled' : 'unfilled'
-                        )
-                      }}
-                    >
+                    <BuilderTabs>
                       <WidgetBuilder onRefresh={handleRefresh} />
                     </BuilderTabs>
 

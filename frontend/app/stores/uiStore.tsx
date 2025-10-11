@@ -12,6 +12,7 @@ type UIState = {
   contentComplete: boolean
   appearanceComplete: boolean
   activeSection: 'content' | 'appearance' | null
+  buildStepComplete: boolean
 }
 
 interface WalletInputRef {
@@ -44,6 +45,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [appearanceComplete, setAppearanceComplete] = useState(false)
   const [activeSection, setActiveSection] =
     useState<UIState['activeSection']>(null)
+  const buildStepComplete = contentComplete && appearanceComplete
 
   useEffect(() => {
     if (shouldFocusWallet && walletInputRef.current) {
@@ -67,7 +69,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const state: UIState = {
     contentComplete,
     activeSection,
-    appearanceComplete
+    appearanceComplete,
+    buildStepComplete
   }
 
   const actions: UIActions = {

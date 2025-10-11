@@ -165,11 +165,12 @@ export default function Banner() {
   }
 
   const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (!savedConfig) return
-
+    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
     const { content, appearance } = splitConfigProperties(savedConfig)
-    toolActions.setToolConfig(section === 'content' ? content : appearance)
+    Object.assign(
+      toolState.currentConfig,
+      section === 'content' ? content : appearance
+    )
   }
 
   return (
@@ -226,13 +227,7 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderTabs
-                      onBuildStepComplete={(isComplete) => {
-                        toolActions.setBuildCompleteStep(
-                          isComplete ? 'filled' : 'unfilled'
-                        )
-                      }}
-                    >
+                    <BuilderTabs>
                       <BannerBuilder onRefresh={handleRefresh} />
                     </BuilderTabs>
 
