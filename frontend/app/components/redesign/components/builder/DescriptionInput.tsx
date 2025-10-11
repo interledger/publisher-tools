@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import Checkbox from '../Checkbox'
 import { TextareaField } from '../TextareaField'
 
@@ -24,12 +24,6 @@ export function DescriptionInput({
   placeholder
 }: Props) {
   const ref = useRef<HTMLTextAreaElement>(null)
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.value = value
-    }
-  }, [value])
-
   return (
     <fieldset className="space-y-xs">
       <legend className="text-base leading-md font-bold text-text-primary">
@@ -46,7 +40,7 @@ export function DescriptionInput({
 
         <div className="flex-grow w-full">
           <TextareaField
-            defaultValue={value}
+            value={value}
             onChange={(e) => onChange(e.target.value)}
             ref={ref}
             currentLength={value.length || 0}

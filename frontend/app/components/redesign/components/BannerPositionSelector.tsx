@@ -1,11 +1,10 @@
-import React from 'react'
 import { cx } from 'class-variance-authority'
 import { OptionSelector, type Option } from './OptionSelector'
 import { BANNER_POSITION, type BannerPositionKey } from '@shared/types'
 
 export interface BannerPositionSelectorProps {
-  defaultValue?: BannerPositionKey
-  onChange?: (value: BannerPositionKey) => void
+  bannerPosition: BannerPositionKey
+  onChange: (value: BannerPositionKey) => void
   className?: string
 }
 
@@ -45,14 +44,14 @@ const bannerPositionOptions: Option<BannerPositionKey>[] = [
 ]
 
 export function BannerPositionSelector({
-  defaultValue = BANNER_POSITION.Bottom,
+  bannerPosition,
   onChange,
   className
 }: BannerPositionSelectorProps) {
   return (
     <OptionSelector
       options={bannerPositionOptions}
-      defaultValue={defaultValue}
+      defaultValue={bannerPosition}
       onChange={onChange}
       className={cx('xl:flex-row flex-col gap-md', className)}
     />

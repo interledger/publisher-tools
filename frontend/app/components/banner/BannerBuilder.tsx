@@ -1,25 +1,19 @@
-import {
-  BANNER_FONT_SIZES,
-  FONT_FAMILY_OPTIONS,
-  SLIDE_ANIMATION,
-  type SlideAnimationType,
-  type BannerConfig
-} from '@shared/types'
+import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   BannerPositionSelector,
   BannerColorsSelector,
+  BuilderAccordion,
   Divider,
-  Checkbox,
   ToolsDropdown,
+  SectionHeader,
   CornerRadiusSelector,
-  Thumbnail
+  AnimationSelector,
+  ThumbnailSelector
 } from '@/components'
-import { useUI } from '~/stores/uiStore'
-import BuilderAccordion from '@/components/BuilderAccordion'
-import { SectionHeader } from '@/components/SectionHeader'
 import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -28,9 +22,9 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
-import { useState } from 'react'
+import { useMemo } from 'react'
 import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -65,8 +59,10 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as BannerConfig
+  const uiState = useUIState()
+  const uiActions = useUIActions()
+  // https://github.com/pmndrs/valtio/issues/132
+  const profile = useSnapshot(toolState.currentConfig, { sync: true })
 
   return (
     <BuilderAccordion
@@ -86,7 +82,7 @@ function ContentBuilder({ onRefresh }: Props) {
     >
       <TitleInput
         value={profile.bannerTitleText}
-        onChange={(value) => (profile.bannerTitleText = value)}
+        onChange={(value) => (toolState.currentConfig.bannerTitleText = value)}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
         helpText={config.titleHelpText}
@@ -95,12 +91,14 @@ function ContentBuilder({ onRefresh }: Props) {
       <Divider />
 
       <DescriptionInput
-        label={config.messageLabel}
         value={profile.bannerDescriptionText}
-        onChange={(text) => (profile.bannerDescriptionText = text)}
+        label={config.messageLabel}
+        onChange={(text) =>
+          (toolState.currentConfig.bannerDescriptionText = text)
+        }
         isVisible={profile.bannerDescriptionVisible}
         onVisibilityChange={(visible) =>
-          (profile.bannerDescriptionVisible = visible)
+          (toolState.currentConfig.bannerDescriptionVisible = visible)
         }
         placeholder={config.messagePlaceholder}
         helpText={config.messageHelpText}
@@ -111,24 +109,15 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as BannerConfig
-
-  const thumbnails = [wmLogo]
-
-  const [selectedThumbnail, setSelectedThumbnail] = useState(0)
-
-  const [lastSelectedAnimation, setLastSelectedAnimation] =
-    useState<SlideAnimationType>(() => {
-      const validated = getValidSlideAnimation(profile.bannerSlideAnimation)
-      return validated === SLIDE_ANIMATION.None
-        ? SLIDE_ANIMATION.Slide
-        : validated
-    })
-  const isAnimated = profile.bannerSlideAnimation !== SLIDE_ANIMATION.None
-
-  const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === profile.bannerFontName
+  const uiState = useUIState()
+  const uiActions = useUIActions()
+  const profile = useSnapshot(toolState.currentConfig)
+  const defaultFontIndex = useMemo(
+    () =>
+      FONT_FAMILY_OPTIONS.findIndex(
+        (option) => option === profile.bannerFontName
+      ),
+    [profile.bannerFontName]
   )
 
   return (
@@ -154,7 +143,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
             const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
-            profile.bannerFontName = fontName
+            toolState.currentConfig.bannerFontName = fontName
           }}
           options={FONT_FAMILY_OPTIONS.map((font, index) => ({
             label: font,
@@ -163,7 +152,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         />
         <FontSizeInput
           value={profile.bannerFontSize}
-          onChange={(value) => (profile.bannerFontSize = value)}
+          onChange={(value) => (toolState.currentConfig.bannerFontSize = value)}
           min={config.fontSizeRange.min}
           max={config.fontSizeRange.max}
         />
@@ -179,10 +168,10 @@ function AppearanceBuilder({ onRefresh }: Props) {
           backgroundColor={profile.bannerBackgroundColor}
           textColor={profile.bannerTextColor}
           onBackgroundColorChange={(color: string) =>
-            (profile.bannerBackgroundColor = color)
+            (toolState.currentConfig.bannerBackgroundColor = color)
           }
           onTextColorChange={(color: string) =>
-            (profile.bannerTextColor = color)
+            (toolState.currentConfig.bannerTextColor = color)
           }
         />
       </div>
@@ -195,7 +184,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         />
         <CornerRadiusSelector
           defaultValue={profile.bannerBorder}
-          onChange={(value) => (profile.bannerBorder = value)}
+          onChange={(value) => (toolState.currentConfig.bannerBorder = value)}
         />
       </div>
 
@@ -206,8 +195,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Position"
         />
         <BannerPositionSelector
-          defaultValue={profile.bannerPosition}
-          onChange={(value) => (profile.bannerPosition = value)}
+          bannerPosition={profile.bannerPosition}
+          onChange={(value) => (toolState.currentConfig.bannerPosition = value)}
         />
       </div>
 
@@ -218,35 +207,12 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Animation"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={profile.bannerSlideAnimation !== SLIDE_ANIMATION.None}
-            onChange={() => {
-              profile.bannerSlideAnimation = isAnimated
-                ? SLIDE_ANIMATION.None
-                : lastSelectedAnimation
-            }}
-            label="Animated"
+          <AnimationSelector
+            value={profile.bannerSlideAnimation}
+            onChange={(value) =>
+              (toolState.currentConfig.bannerSlideAnimation = value)
+            }
           />
-          <div className="flex-1 w-full xl:w-auto">
-            <ToolsDropdown
-              label="Type"
-              disabled={!isAnimated}
-              defaultValue={
-                isAnimated
-                  ? getValidSlideAnimation(profile.bannerSlideAnimation)
-                  : lastSelectedAnimation
-              }
-              options={[
-                { label: 'Slide', value: SLIDE_ANIMATION.Slide },
-                { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
-              ]}
-              onChange={(value) => {
-                const selectedAnimation = value as SlideAnimationType
-                setLastSelectedAnimation(selectedAnimation)
-                profile.bannerSlideAnimation = selectedAnimation
-              }}
-            />
-          </div>
         </div>
       </div>
 
@@ -257,34 +223,14 @@ function AppearanceBuilder({ onRefresh }: Props) {
           label="Thumbnail"
         />
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={
-              typeof profile.bannerThumbnail === 'undefined' ||
-              !!profile.bannerThumbnail
+          <ThumbnailSelector
+            thumbnail={profile.bannerThumbnail}
+            onThumbnailChange={(thumbnail) =>
+              (toolState.currentConfig.bannerThumbnail = thumbnail)
             }
-            onChange={(visible) => {
-              profile.bannerThumbnail = visible ? 'default' : ''
-            }}
-            label="Visible"
           />
-          <div className="flex gap-md">
-            {thumbnails.map((thumbnail, index) => (
-              <Thumbnail
-                key={index}
-                isSelected={selectedThumbnail === index}
-                imageUrl={thumbnail}
-                onClick={() => setSelectedThumbnail(index)}
-              />
-            ))}
-          </div>
         </div>
       </div>
     </BuilderAccordion>
   )
-}
-
-function getValidSlideAnimation(value: unknown): SlideAnimationType {
-  return typeof value === 'string' && value in SLIDE_ANIMATION
-    ? (value as SlideAnimationType)
-    : SLIDE_ANIMATION.Slide
 }

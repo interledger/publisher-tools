@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import { BuilderPresetTabs } from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
-import { useUI } from '~/stores/uiStore'
+import { useUIState } from '~/stores/uiStore'
 
 export function BuilderTabs({ children }: React.PropsWithChildren) {
   const snap = useSnapshot(toolState)
-  const { buildStepComplete } = useUI().state
+  const { buildStepComplete } = useUIState()
 
   const handleTabSelect = (stableKey: StableKey) => {
     toolActions.selectVersion(stableKey)
