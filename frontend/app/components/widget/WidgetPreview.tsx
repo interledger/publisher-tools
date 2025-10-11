@@ -62,6 +62,7 @@ export const WidgetPreview = ({
       const widget = widgetRef.current
       widget.config = widgetConfig
       widget.isPreview = true
+      widget.isOpen = true
     }
   }, [widgetConfig, isLoaded])
 
