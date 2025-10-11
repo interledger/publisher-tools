@@ -16,7 +16,7 @@ import {
 } from '@/components'
 import { useUI } from '~/stores/uiStore'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import { SectionHeader } from '@/components/SectionHeader'
+import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
@@ -147,8 +147,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'appearance'}
     >
-      <div className="flex flex-col gap-xs">
-        <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
+      <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
@@ -161,20 +160,21 @@ function AppearanceBuilder({ onRefresh }: Props) {
             value: index.toString()
           }))}
         />
+
         <FontSizeInput
           value={profile.bannerFontSize}
           onChange={(value) => (profile.bannerFontSize = value)}
           min={config.fontSizeRange.min}
           max={config.fontSizeRange.max}
         />
-      </div>
+      </InputFieldset>
+
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGColorPicker className="w-5 h-5" />}
-          label="Colors"
-        />
+      <InputFieldset
+        label="Colors"
+        icon={<SVGColorPicker className="w-5 h-5" />}
+      >
         <BannerColorsSelector
           backgroundColor={profile.bannerBackgroundColor}
           textColor={profile.bannerTextColor}
@@ -185,38 +185,38 @@ function AppearanceBuilder({ onRefresh }: Props) {
             (profile.bannerTextColor = color)
           }
         />
-      </div>
+      </InputFieldset>
+
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGRoundedCorner className="w-5 h-5" />}
-          label="Container Corner Radius"
-        />
+      <InputFieldset
+        label="Container Corner Radius"
+        icon={<SVGRoundedCorner className="w-5 h-5" />}
+      >
         <CornerRadiusSelector
           value={profile.bannerBorder}
           onChange={(value) => (profile.bannerBorder = value)}
         />
-      </div>
+      </InputFieldset>
 
       <Divider />
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGHeaderPosition className="w-5 h-5" />}
-          label="Position"
-        />
+
+      <InputFieldset
+        label="Position"
+        icon={<SVGHeaderPosition className="w-5 h-5" />}
+      >
         <BannerPositionSelector
           defaultValue={profile.bannerPosition}
           onChange={(value) => (profile.bannerPosition = value)}
         />
-      </div>
+      </InputFieldset>
 
       <Divider />
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGAnimation className="w-5 h-5" />}
-          label="Animation"
-        />
+
+      <InputFieldset
+        label="Animation"
+        icon={<SVGAnimation className="w-5 h-5" />}
+      >
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
             checked={profile.bannerSlideAnimation !== SLIDE_ANIMATION.None}
@@ -248,14 +248,14 @@ function AppearanceBuilder({ onRefresh }: Props) {
             />
           </div>
         </div>
-      </div>
+      </InputFieldset>
 
       <Divider />
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGThumbnail className="w-5 h-5" />}
-          label="Thumbnail"
-        />
+
+      <InputFieldset
+        label="Thumbnail"
+        icon={<SVGThumbnail className="w-5 h-5" />}
+      >
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <Checkbox
             checked={
@@ -278,7 +278,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
             ))}
           </div>
         </div>
-      </div>
+      </InputFieldset>
     </BuilderAccordion>
   )
 }
