@@ -194,7 +194,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGRoundedCorner className="w-5 h-5" />}
       >
         <CornerRadiusSelector
-          defaultValue={profile.bannerBorder}
+          value={profile.bannerBorder}
           onChange={(value) => (profile.bannerBorder = value)}
         />
       </InputFieldset>
