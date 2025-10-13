@@ -46,3 +46,6 @@ dist
 !cdn/dist/.gitkeep
 build
 .cache
+
+# macOS
+.DS_Store
