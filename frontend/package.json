@@ -39,7 +39,7 @@
     "react-minimal-pie-chart": "^9.1.1",
     "sanitize-html": "^2.17.0",
     "tailwindcss": "^3.4.17",
-    "valtio": "^2.1.7",
+    "valtio": "^2.1.8",
     "zod": "^3.25.76"
   },
   "devDependencies": {
@@ -50,20 +50,17 @@
     "@shared/types": "workspace:^",
     "@tailwindcss/forms": "^0.5.10",
     "@types/he": "^1.2.3",
-    "@types/node": "^22.18.6",
+    "@types/node": "^24.6.0",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@types/sanitize-html": "^2.16.0",
     "@types/uuid": "^9.0.8",
+    "react-scan": "^0.4.3",
     "eslint": "^9.36.0",
     "postcss": "^8.5.6",
     "typescript": "5.9.2",
     "vite": "^5.4.20",
     "vite-tsconfig-paths": "^4.3.2",
     "wrangler": "^4.40.0"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  },
-  "packageManager": "pnpm@9.15.9"
+  }
 }

@@ -74,7 +74,7 @@ export const LinkTagGenerator = () => {
       <div>
         <InputField
           id="paymentPointer"
-          label="Your payment pointer"
+          label="Your payment pointer/wallet address"
           required
           placeholder="Fill in your payment pointer/wallet address"
           value={pointerInput}

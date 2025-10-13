@@ -6,7 +6,11 @@ import {
   SLIDE_ANIMATION,
   BANNER_FONT_SIZES,
   WIDGET_FONT_SIZES,
-  FONT_FAMILY_OPTIONS
+  FONT_FAMILY_OPTIONS,
+  BANNER_TITLE_MAX_LENGTH,
+  BANNER_DESCRIPTION_MAX_LENGTH,
+  WIDGET_TITLE_MAX_LENGTH,
+  WIDGET_DESCRIPTION_MAX_LENGTH
 } from '@shared/types'
 
 const bannerFontSizeError = {
@@ -31,8 +35,16 @@ export const bannerFieldsSchema = z.object({
     .number()
     .min(BANNER_FONT_SIZES.min, bannerFontSizeError)
     .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
-  bannerTitleText: z.string().optional(),
-  bannerDescriptionText: z.string().optional(),
+  bannerTitleText: z
+    .string()
+    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' })
+    .optional(),
+  bannerDescriptionText: z
+    .string()
+    .max(BANNER_DESCRIPTION_MAX_LENGTH, {
+      message: 'Description is too long'
+    })
+    .optional(),
   bannerDescriptionVisible: z.coerce.boolean().optional(),
   bannerTextColor: z.string().min(6),
   bannerBackgroundColor: z.string().min(6),
@@ -50,8 +62,14 @@ export const widgetFieldsSchema = z.object({
     .max(WIDGET_FONT_SIZES.max, widgetFontSizeError),
   widgetTitleText: z
     .string()
-    .min(1, { message: 'Widget title cannot be empty' }),
-  widgetDescriptionText: z.string().optional(),
+    .min(1, { message: 'Title cannot be empty' })
+    .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
+  widgetDescriptionText: z
+    .string()
+    .max(WIDGET_DESCRIPTION_MAX_LENGTH, {
+      message: 'Description is too long'
+    })
+    .optional(),
   widgetDescriptionVisible: z.coerce.boolean().optional(),
   widgetPosition: z.nativeEnum(WIDGET_POSITION),
   widgetDonateAmount: z.coerce

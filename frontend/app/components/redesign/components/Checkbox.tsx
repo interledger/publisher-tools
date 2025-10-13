@@ -41,7 +41,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
       onKeyDown={handleKeyDown}
       tabIndex={disabled ? -1 : 0}
     >
-      <div
+      <span
         className={cx(
           'w-4 h-4 rounded flex items-center justify-center',
           checked
@@ -51,7 +51,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         )}
       >
         {checked && <SVGCheck className="w-3 h-3" />}
-      </div>
+      </span>
       {label && (
         <span className="text-sm leading-sm text-text-primary">{label}</span>
       )}

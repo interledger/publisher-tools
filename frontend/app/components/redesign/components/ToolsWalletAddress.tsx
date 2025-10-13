@@ -64,7 +64,7 @@ export const ToolsWalletAddress = () => {
       toolActions.setHasRemoteConfigs(result.hasCustomEdits)
 
       if (result.hasCustomEdits) {
-        toolActions.setConfigs(result.fetchedConfigs, true)
+        toolActions.setConfigs(result.fetchedConfigs)
       }
 
       toolActions.setWalletAddressId(walletAddressInfo.id)

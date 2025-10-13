@@ -1,30 +1,52 @@
 import { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import devHeroSVG from '~/assets/images/developer-icon.png'
-import pubHeroSVG from '~/assets/images/publishers-icon.png'
-import supHeroSVG from '~/assets/images/supporters-icon.png'
+import publisherHoverImage from '~/assets/images/dropdown-publisher-active.png'
+import supporterHoverImage from '~/assets/images/dropdown-supporter-active.png'
+import developerImage from '~/assets/images/dropdown-developer.png'
+import publisherDefaultImage from '~/assets/images/dropdown-publisher-inactive.png'
+import supporterDefaultImage from '~/assets/images/dropdown-supporter-inactive.png'
 import ClickAwayListener from 'react-click-away-listener'
 import { SVGDownArrow } from '@/assets'
 
 type ToolsMenuItemProps = {
   to: string
-  imgSrc: string
   text: string
+  defaultImage: string
+  hoverImage?: string
 }
 
-const ToolsMenuItem = ({ to, imgSrc, text }: ToolsMenuItemProps) => {
+const ToolsMenuItem = ({
+  to,
+  defaultImage,
+  hoverImage,
+  text
+}: ToolsMenuItemProps) => {
+  const imgClasses =
+    'absolute h-full w-full transition-opacity duration-200 ease-in'
+
   return (
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs p-sm focusable-nav-item"
+        className={cx(
+          'flex w-full items-center gap-xs p-sm focusable-nav-item',
+          hoverImage && 'group'
+        )}
       >
-        <img
-          className="size-10 md:size-5xl"
-          src={imgSrc}
-          aria-hidden="true"
-          alt=""
-        />
+        <div className="relative w-20 h-20">
+          <img
+            className={cx(imgClasses, 'opacity-100 group-hover:opacity-0')}
+            src={defaultImage}
+            aria-hidden="true"
+            alt=""
+          />
+          <img
+            className={cx(imgClasses, 'opacity-0 group-hover:opacity-100')}
+            src={hoverImage ?? defaultImage}
+            aria-hidden="true"
+            alt=""
+          />
+        </div>
         <div className="flex-grow whitespace-nowrap font-sans text-sm font-normal leading-normal text-text-primary md:text-base md:font-bold">
           {text}
         </div>
@@ -73,7 +95,7 @@ export const NavDropdown = ({
   }
 
   return (
-    <li className="group relative inline-flex flex-col items-start justify-center">
+    <li className="relative inline-flex flex-col items-start justify-center">
       <button
         id="nav-dropdown-trigger"
         ref={triggerRef}
@@ -111,7 +133,7 @@ export const NavDropdown = ({
           className={cx(
             'relative z-50 flex flex-col gap-xs overflow-hidden rounded-lg p-sm',
             !isOpen && '!sr-only',
-            'md:absolute md:left-0 md:top-[calc(100%+1rem)] md:h-[472px] md:w-[299px]',
+            'md:absolute md:left-0 md:top-[calc(100%+1rem)] md:w-max',
             'md:items-start md:justify-start md:bg-interface-bg-container',
             'md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)]',
             'md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container',
@@ -121,18 +143,20 @@ export const NavDropdown = ({
           <ul className="flex w-full flex-grow list-none flex-col gap-xs">
             <ToolsMenuItem
               to="/publishers"
-              imgSrc={pubHeroSVG}
-              text="Publisher tools"
+              hoverImage={publisherHoverImage}
+              defaultImage={publisherDefaultImage}
+              text="For publishers"
             />
             <ToolsMenuItem
               to="/supporters"
-              imgSrc={supHeroSVG}
-              text="Supporter tools"
+              hoverImage={supporterHoverImage}
+              defaultImage={supporterDefaultImage}
+              text="For supporters"
             />
             <ToolsMenuItem
               to="/developers"
-              imgSrc={devHeroSVG}
-              text="Developer tools"
+              defaultImage={developerImage}
+              text="For developers"
             />
           </ul>
         </div>
