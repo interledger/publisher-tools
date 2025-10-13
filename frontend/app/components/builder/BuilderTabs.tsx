@@ -35,7 +35,7 @@ export function BuilderTabs({
   }
   const [tabOptions, setTabOptions] = React.useState(getLatestTabOptions)
   const handleTabLabelChange = (stableKey: StableKey, newLabel: string) => {
-    toolActions.updateVersionLabel(stableKey, newLabel)
+    toolState.configurations[stableKey].versionName = newLabel
     setTabOptions(() => getLatestTabOptions())
   }
 
