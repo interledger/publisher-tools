@@ -106,10 +106,26 @@ export const toolActions = {
     toolState.activeVersion = selectedStableKey
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setConfigs: (
-    fullConfigObject: Record<string, ElementConfigType> | null
-  ) => {},
+    fullConfigObject: Record<StableKey, ElementConfigType> | null
+  ) => {
+    const newFullConfig: Record<StableKey, ElementConfigType> =
+      createDefaultConfigs()
+
+    STABLE_KEYS.forEach((profileId) => {
+      if (fullConfigObject) {
+        newFullConfig[profileId] = {
+          ...fullConfigObject[profileId]
+        }
+      }
+
+      toolState.configurations[profileId] = { ...newFullConfig[profileId] }
+
+      toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
+    })
+
+    toolState.modifiedVersions = []
+  },
 
   setModal: (modal: ModalType | undefined) => {
     toolState.modal = modal
@@ -239,6 +255,13 @@ export const toolActions = {
           grantRedirectIntent: data.intent
         }
       }
+
+      STABLE_KEYS.forEach((profileId) => {
+        toolState.savedConfigurations[profileId] = {
+          ...toolState.configurations[profileId]
+        }
+      })
+      toolState.modifiedVersions = []
 
       toolState.modal = { type: callToActionType }
 
