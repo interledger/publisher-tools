@@ -66,6 +66,6 @@ declare global {
     AWS_SECRET_ACCESS_KEY: string
     AWS_S3_ENDPOINT: string
 
-    INTERACTION_KV: KVNamespace
+    PUBLISHER_TOOLS_KV: KVNamespace
   }
 }

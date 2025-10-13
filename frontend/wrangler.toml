@@ -5,7 +5,7 @@ main = "worker.ts"
 upload_source_maps = true
 
 kv_namespaces = [
-  { binding = "INTERACTION_KV", id = "interaction_kv", preview_id = "preview_interaction_kv" }
+  { binding = "PUBLISHER_TOOLS_KV", id = "publisher_tools_kv", preview_id = "preview_publisher_tools_kv" }
 ]
 
 [assets]

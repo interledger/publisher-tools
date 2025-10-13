@@ -103,7 +103,7 @@ app.get('/payment/status/:paymentId', async ({ req, json, env }) => {
 
   try {
     while (!signal.aborted) {
-      const data = await env.INTERACTION_KV.get(paymentId)
+      const data = await env.PUBLISHER_TOOLS_KV.get(paymentId)
 
       if (data) {
         const parsedData = JSON.parse(data)

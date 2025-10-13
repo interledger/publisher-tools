@@ -21,7 +21,7 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
-  INTERACTION_KV: KVNamespace
+  PUBLISHER_TOOLS_KV: KVNamespace
 }
 
 export const app = new Hono<{ Bindings: Env }>()

@@ -18,13 +18,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
   const { data, paymentId } = body
 
   try {
-    const existingData = await env.INTERACTION_KV.get(paymentId)
+    const existingData = await env.PUBLISHER_TOOLS_KV.get(paymentId)
 
     if (existingData) {
       return json({ success: true, message: 'Already stored' })
     }
 
-    await env.INTERACTION_KV.put(paymentId, JSON.stringify(data), {
+    await env.PUBLISHER_TOOLS_KV.put(paymentId, JSON.stringify(data), {
       expirationTtl: 300 // 5min,
     })
 
