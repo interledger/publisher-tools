@@ -268,13 +268,6 @@ export const toolActions = {
       })
 
       toolState.modal = { type: callToActionType }
-
-      // update the baseline to current configurations after success save
-      STABLE_KEYS.forEach((stableKey) => {
-        toolState.savedConfigurations[stableKey] = {
-          ...toolState.configurations[stableKey]
-        }
-      })
       toolState.modifiedVersions = []
 
       return { success: true, data }
