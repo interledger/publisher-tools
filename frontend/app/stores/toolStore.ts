@@ -96,7 +96,7 @@ export const toolState = proxy({
 })
 
 subscribe(toolState, () => {
-  updateModificationTracking(toolState.activeVersion)
+  updateChangesTracking(toolState.activeVersion)
 })
 
 export const toolActions = {
@@ -467,12 +467,12 @@ export const toolActions = {
   }
 }
 
-function updateModificationTracking(stableKey: StableKey) {
-  const currentConfig = toolState.configurations[stableKey]
-  const savedConfig = toolState.savedConfigurations[stableKey]
+function isConfigModified(profileId: StableKey): boolean {
+  const currentConfig = toolState.configurations[profileId]
+  const savedConfig = toolState.savedConfigurations[profileId]
 
   if (!currentConfig || !savedConfig) {
-    return
+    return false
   }
 
   const hasContentChanges =
@@ -481,12 +481,15 @@ function updateModificationTracking(stableKey: StableKey) {
   const hasVersionNameChanges =
     currentConfig.versionName !== savedConfig.versionName
 
-  const isModified = hasContentChanges || hasVersionNameChanges
+  return hasContentChanges || hasVersionNameChanges
+}
 
-  const currentIndex = toolState.modifiedVersions.indexOf(stableKey)
+function updateChangesTracking(profileId: StableKey) {
+  const isModified = isConfigModified(profileId)
+  const currentIndex = toolState.modifiedVersions.indexOf(profileId)
 
   if (isModified && currentIndex === -1) {
-    toolState.modifiedVersions.push(stableKey)
+    toolState.modifiedVersions.push(profileId)
   } else if (!isModified && currentIndex > -1) {
     toolState.modifiedVersions.splice(currentIndex, 1)
   }
