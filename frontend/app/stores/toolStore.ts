@@ -106,21 +106,23 @@ export const toolActions = {
     toolState.activeVersion = selectedStableKey
   },
 
-  setConfigs: (fullConfigObject: Record<string, ElementConfigType> | null) => {
+  setConfigs: (
+    fullConfigObject: Record<StableKey, ElementConfigType> | null
+  ) => {
     const newFullConfig: Record<StableKey, ElementConfigType> =
       createDefaultConfigs()
 
-    STABLE_KEYS.forEach((stableKey) => {
+    STABLE_KEYS.forEach((profileId) => {
       if (fullConfigObject) {
-        newFullConfig[stableKey] = {
-          ...fullConfigObject[stableKey],
-          versionName: fullConfigObject[stableKey].versionName
+        newFullConfig[profileId] = {
+          ...fullConfigObject[profileId],
+          versionName: fullConfigObject[profileId].versionName
         }
       }
 
-      toolState.configurations[stableKey] = { ...newFullConfig[stableKey] }
+      toolState.configurations[profileId] = { ...newFullConfig[profileId] }
 
-      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
+      toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
     })
 
     toolState.modifiedVersions = []
@@ -255,9 +257,9 @@ export const toolActions = {
         }
       }
 
-      STABLE_KEYS.forEach((stableKey) => {
-        toolState.savedConfigurations[stableKey] = {
-          ...toolState.configurations[stableKey]
+      STABLE_KEYS.forEach((profileId) => {
+        toolState.savedConfigurations[profileId] = {
+          ...toolState.configurations[profileId]
         }
       })
       toolState.modifiedVersions = []
