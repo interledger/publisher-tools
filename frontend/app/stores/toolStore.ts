@@ -58,7 +58,7 @@ export const toolState = proxy({
    */
   savedConfigurations: createDefaultConfigs(),
   /*
-   * modifiedVersions: tracks the configurations that are modified locally.
+   * dirtyProfiles: tracks the configurations that are modified locally.
    */
   dirtyProfiles: new Set<StableKey>(),
   activeVersion: 'version1' as StableKey,
