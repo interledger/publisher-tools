@@ -4,7 +4,7 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 kv_namespaces = [
-  { binding = "PUBLISHER_TOOLS_KV", id = "publisher_tools_kv", preview_id = "preview_publisher_tools_kv" }
+  { binding = "PUBLISHER_TOOLS_KV", id = "b00031e45d5945c78e1eb3df6336e54a", preview_id = "preview_publisher_tools_kv" }
 ]
 
 [dev]
