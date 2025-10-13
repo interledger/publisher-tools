@@ -168,9 +168,11 @@ export class PaymentInteraction extends LitElement {
       this._markCompleted()
 
       if (res.ok) {
-        const data = (await res.json()) as PaymentStatusResponse
+        const {
+          data: { interact_ref }
+        } = (await res.json()) as PaymentStatusResponse
 
-        this.handleInteractionCompleted(data.data.interact_ref)
+        this.handleInteractionCompleted(interact_ref)
       } else {
         if (res.status === 504) {
           this.errorMessage = 'Payment authorization timed out'
