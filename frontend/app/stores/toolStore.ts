@@ -49,31 +49,6 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
   )
 }
 
-function updateModificationTracking(stableKey: StableKey) {
-  const currentConfig = toolState.configurations[stableKey]
-  const savedConfig = toolState.savedConfigurations[stableKey]
-
-  if (!currentConfig || !savedConfig) {
-    return
-  }
-
-  const hasContentChanges =
-    JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
-
-  const hasVersionNameChanges =
-    currentConfig.versionName !== savedConfig.versionName
-
-  const isModified = hasContentChanges || hasVersionNameChanges
-
-  const currentIndex = toolState.modifiedVersions.indexOf(stableKey)
-
-  if (isModified && currentIndex === -1) {
-    toolState.modifiedVersions.push(stableKey)
-  } else if (!isModified && currentIndex > -1) {
-    toolState.modifiedVersions.splice(currentIndex, 1)
-  }
-}
-
 export const toolState = proxy({
   configurations: createDefaultConfigs(),
   /*
@@ -132,6 +107,14 @@ export const toolActions = {
     }))
   },
 
+  selectVersion: (selectedStableKey: StableKey) => {
+    if (!toolState.configurations[selectedStableKey]) {
+      throw new Error(`Stable key '${selectedStableKey}' not found`)
+    }
+
+    toolState.activeVersion = selectedStableKey
+  },
+
   setConfigs: (fullConfigObject: Record<string, ElementConfigType> | null) => {
     const newFullConfig: Record<StableKey, ElementConfigType> =
       createDefaultConfigs()
@@ -142,22 +125,14 @@ export const toolActions = {
           ...fullConfigObject[stableKey],
           versionName: fullConfigObject[stableKey].versionName
         }
-      } else {
-        toolState.modifiedVersions = []
       }
 
       toolState.configurations[stableKey] = { ...newFullConfig[stableKey] }
 
       toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
     })
-  },
 
-  selectVersion: (selectedStableKey: StableKey) => {
-    if (!toolState.configurations[selectedStableKey]) {
-      throw new Error(`Stable key '${selectedStableKey}' not found`)
-    }
-
-    toolState.activeVersion = selectedStableKey
+    toolState.modifiedVersions = []
   },
 
   setModal: (modal: ModalType | undefined) => {
@@ -488,6 +463,31 @@ export const toolActions = {
     if (toolState.modal?.type === 'override-preset') {
       toolState.modal = undefined
     }
+  }
+}
+
+function updateModificationTracking(stableKey: StableKey) {
+  const currentConfig = toolState.configurations[stableKey]
+  const savedConfig = toolState.savedConfigurations[stableKey]
+
+  if (!currentConfig || !savedConfig) {
+    return
+  }
+
+  const hasContentChanges =
+    JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
+
+  const hasVersionNameChanges =
+    currentConfig.versionName !== savedConfig.versionName
+
+  const isModified = hasContentChanges || hasVersionNameChanges
+
+  const currentIndex = toolState.modifiedVersions.indexOf(stableKey)
+
+  if (isModified && currentIndex === -1) {
+    toolState.modifiedVersions.push(stableKey)
+  } else if (!isModified && currentIndex > -1) {
+    toolState.modifiedVersions.splice(currentIndex, 1)
   }
 }
 

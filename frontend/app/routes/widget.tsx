@@ -155,9 +155,7 @@ export default function Widget() {
   }
 
   const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (!savedConfig) return
-
+    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
     const { content, appearance } = splitConfigProperties(savedConfig)
     Object.assign(
       toolState.currentConfig,
