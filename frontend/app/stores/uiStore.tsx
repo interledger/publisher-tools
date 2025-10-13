@@ -7,6 +7,7 @@ import React, {
   useEffect
 } from 'react'
 import type { ReactNode } from 'react'
+import { toolActions } from '~/stores/toolStore'
 
 type UIState = {
   contentComplete: boolean
@@ -53,6 +54,10 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       setShouldFocusWallet(false)
     }
   }, [shouldFocusWallet])
+
+  useEffect(() => {
+    toolActions.setBuildCompleteStep(buildStepComplete ? 'filled' : 'unfilled')
+  }, [buildStepComplete])
 
   const focusWalletInput = useCallback(() => {
     setShouldFocusWallet(true)

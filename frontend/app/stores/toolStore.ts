@@ -462,13 +462,7 @@ function isConfigModified(profileId: StableKey): boolean {
     return false
   }
 
-  const hasContentChanges =
-    JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
-
-  const hasVersionNameChanges =
-    currentConfig.versionName !== savedConfig.versionName
-
-  return hasContentChanges || hasVersionNameChanges
+  return JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
 }
 
 function updateChangesTracking(profileId: StableKey) {
