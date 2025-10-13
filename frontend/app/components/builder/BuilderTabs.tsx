@@ -20,7 +20,7 @@ export function BuilderTabs({ children }: React.PropsWithChildren) {
   const tabOptions = toolActions.versionOptions.map(({ stableKey: id }) => ({
     id,
     label: snap.configurations[id].versionName,
-    isDirty: snap.modifiedVersions.includes(id)
+    isDirty: snap.dirtyProfiles.has(id)
   }))
 
   useEffect(() => {

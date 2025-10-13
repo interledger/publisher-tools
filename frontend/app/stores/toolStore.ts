@@ -60,7 +60,7 @@ export const toolState = proxy({
   /*
    * modifiedVersions: tracks the configurations that are modified locally.
    */
-  modifiedVersions: [] as StableKey[],
+  dirtyProfiles: new Set<StableKey>(),
   activeVersion: 'version1' as StableKey,
   currentToolType: 'unknown' as ToolType,
 
@@ -129,7 +129,7 @@ export const toolActions = {
       toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
     })
 
-    toolState.modifiedVersions = []
+    toolState.dirtyProfiles.clear()
   },
 
   setModal: (modal: ModalType | undefined) => {
@@ -200,7 +200,7 @@ export const toolActions = {
   /**
    * Checks if any local changes have been made to the configurations.
    */
-  hasCustomEdits: (): boolean => toolState.modifiedVersions.length > 0,
+  hasCustomEdits: (): boolean => toolState.dirtyProfiles.size > 0,
   saveConfig: async (callToActionType: 'save-success' | 'script') => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
@@ -268,7 +268,7 @@ export const toolActions = {
       })
 
       toolState.modal = { type: callToActionType }
-      toolState.modifiedVersions = []
+      toolState.dirtyProfiles.clear()
 
       return { success: true, data }
     } catch (error) {
@@ -309,7 +309,7 @@ export const toolActions = {
    * 2. Retrieves fetched configurations from the modal state
    * 3. For each stable key: keeps local if selected, otherwise uses database version
    * 4. Updates currentConfig if the active version is being overridden
-   * 5. Removes overridden versions from modifiedVersions array
+   * 5. Removes overridden versions from modifiedVersions set
    *
    * State Management:
    * - configurations: Updated with database versions where they exist and aren't selected to keep
@@ -349,11 +349,9 @@ export const toolActions = {
         toolState.configurations[stableKey] = { ...hasDatabaseVersion }
 
         // remove from modified configs since we're using database version
-        const wasModified = toolState.modifiedVersions.includes(stableKey)
+        const wasModified = toolState.dirtyProfiles.has(stableKey)
         if (wasModified) {
-          toolState.modifiedVersions = toolState.modifiedVersions.filter(
-            (key) => key !== stableKey
-          )
+          toolState.dirtyProfiles.delete(stableKey)
         }
       }
     })
@@ -409,7 +407,7 @@ export const toolActions = {
       ElementConfigType
     >
     const hasCustomEdits = Object.keys(fetchedConfigs).length > 0
-    const hasLocalModifications = toolState.modifiedVersions.length > 0
+    const hasLocalModifications = toolState.dirtyProfiles.size > 0
 
     return {
       walletAddressId: walletAddress,
@@ -445,7 +443,7 @@ export const toolActions = {
       type: 'override-preset',
       fetchedConfigs,
       currentLocalConfigs: { ...toolState.configurations },
-      modifiedConfigs: [...toolState.modifiedVersions]
+      modifiedConfigs: [...toolState.dirtyProfiles]
     })
   },
 
@@ -475,12 +473,11 @@ function isConfigModified(profileId: StableKey): boolean {
 
 function updateChangesTracking(profileId: StableKey) {
   const isModified = isConfigModified(profileId)
-  const currentIndex = toolState.modifiedVersions.indexOf(profileId)
 
-  if (isModified && currentIndex === -1) {
-    toolState.modifiedVersions.push(profileId)
-  } else if (!isModified && currentIndex > -1) {
-    toolState.modifiedVersions.splice(currentIndex, 1)
+  if (isModified) {
+    toolState.dirtyProfiles.add(profileId)
+  } else {
+    toolState.dirtyProfiles.delete(profileId)
   }
 }
 
