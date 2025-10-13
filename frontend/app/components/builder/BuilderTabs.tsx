@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BuilderPresetTabs } from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
-import { useUI } from '~/stores/uiStore'
 
 export function BuilderTabs({ children }: React.PropsWithChildren) {
   const snap = useSnapshot(toolState)
-  const { buildStepComplete } = useUI().state
 
   const handleTabSelect = (stableKey: StableKey) => {
     toolActions.selectVersion(stableKey)
@@ -22,10 +20,6 @@ export function BuilderTabs({ children }: React.PropsWithChildren) {
     label: snap.configurations[id].versionName,
     isDirty: snap.modifiedVersions.includes(id)
   }))
-
-  useEffect(() => {
-    toolActions.setBuildCompleteStep(buildStepComplete ? 'filled' : 'unfilled')
-  }, [buildStepComplete])
 
   return (
     <div className="flex flex-col mt-4">
