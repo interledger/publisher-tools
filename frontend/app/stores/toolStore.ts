@@ -309,7 +309,7 @@ export const toolActions = {
    * 2. Retrieves fetched configurations from the modal state
    * 3. For each stable key: keeps local if selected, otherwise uses database version
    * 4. Updates currentConfig if the active version is being overridden
-   * 5. Removes overridden versions from modifiedVersions set
+   * 5. Removes overridden versions from dirtyProfiles set
    *
    * State Management:
    * - configurations: Updated with database versions where they exist and aren't selected to keep
@@ -349,10 +349,7 @@ export const toolActions = {
         toolState.configurations[stableKey] = { ...hasDatabaseVersion }
 
         // remove from modified configs since we're using database version
-        const wasModified = toolState.dirtyProfiles.has(stableKey)
-        if (wasModified) {
-          toolState.dirtyProfiles.delete(stableKey)
-        }
+        toolState.dirtyProfiles.delete(stableKey)
       }
     })
 
@@ -489,7 +486,14 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         Object.keys(parsed).every((key) => key in toolState)
 
       if (validKeys) {
-        Object.assign(toolState, parsedStorageData(parsed))
+        const loadedData = parsedStorageData(parsed)
+        Object.assign(toolState, loadedData)
+
+        // TODO: better handling of Set deserialization after
+        // https://github.com/interledger/publisher-tools/issues/318
+        if (!(toolState.dirtyProfiles instanceof Set)) {
+          toolState.dirtyProfiles = new Set()
+        }
       } else {
         throw new Error('saved configuration not valid')
       }
@@ -509,11 +513,23 @@ export function persistState() {
 }
 
 function createStorageState(state: typeof toolState) {
-  return omit(state, EXCLUDED_FROM_STORAGE)
+  const omitted = omit(state, EXCLUDED_FROM_STORAGE)
+
+  return {
+    ...omitted,
+    dirtyProfiles: Array.from(state.dirtyProfiles)
+  }
 }
 
 function parsedStorageData(parsed: Record<string, unknown>) {
-  return omit(parsed, EXCLUDED_FROM_STORAGE)
+  const omitted = omit(parsed, EXCLUDED_FROM_STORAGE)
+
+  return {
+    ...omitted,
+    dirtyProfiles: new Set(
+      Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
+    )
+  }
 }
 
 export function omit<T extends Record<string, unknown>>(
