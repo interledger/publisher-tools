@@ -115,8 +115,7 @@ export const toolActions = {
     STABLE_KEYS.forEach((profileId) => {
       if (fullConfigObject) {
         newFullConfig[profileId] = {
-          ...fullConfigObject[profileId],
-          versionName: fullConfigObject[profileId].versionName
+          ...fullConfigObject[profileId]
         }
       }
 
