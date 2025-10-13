@@ -115,21 +115,22 @@ export const toolActions = {
     toolState.activeVersion = selectedStableKey
   },
 
-  setConfigs: (fullConfigObject: Record<string, ElementConfigType> | null) => {
+  setConfigs: (
+    fullConfigObject: Record<StableKey, ElementConfigType> | null
+  ) => {
     const newFullConfig: Record<StableKey, ElementConfigType> =
       createDefaultConfigs()
 
-    STABLE_KEYS.forEach((stableKey) => {
+    STABLE_KEYS.forEach((profileId) => {
       if (fullConfigObject) {
-        newFullConfig[stableKey] = {
-          ...fullConfigObject[stableKey],
-          versionName: fullConfigObject[stableKey].versionName
+        newFullConfig[profileId] = {
+          ...fullConfigObject[profileId]
         }
       }
 
-      toolState.configurations[stableKey] = { ...newFullConfig[stableKey] }
+      toolState.configurations[profileId] = { ...newFullConfig[profileId] }
 
-      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
+      toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
     })
 
     toolState.modifiedVersions = []
@@ -264,12 +265,12 @@ export const toolActions = {
         }
       }
 
-      const updatedConfigs = data as Record<string, ElementConfigType>
-      STABLE_KEYS.forEach((stableKey) => {
-        if (updatedConfigs[stableKey]) {
-          toolState.configurations[stableKey] = { ...updatedConfigs[stableKey] }
+      STABLE_KEYS.forEach((profileId) => {
+        toolState.savedConfigurations[profileId] = {
+          ...toolState.configurations[profileId]
         }
       })
+
       toolState.modal = { type: callToActionType }
 
       // update the baseline to current configurations after success save
