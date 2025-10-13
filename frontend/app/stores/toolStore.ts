@@ -255,17 +255,11 @@ export const toolActions = {
         }
       }
 
-      const updatedConfigs = data as Record<string, ElementConfigType>
       STABLE_KEYS.forEach((stableKey) => {
-        if (updatedConfigs[stableKey]) {
-          toolState.configurations[stableKey] = { ...updatedConfigs[stableKey] }
-        }
-
         toolState.savedConfigurations[stableKey] = {
-          ...updatedConfigs[stableKey]
+          ...toolState.configurations[stableKey]
         }
       })
-
       toolState.modifiedVersions = []
 
       toolState.modal = { type: callToActionType }
