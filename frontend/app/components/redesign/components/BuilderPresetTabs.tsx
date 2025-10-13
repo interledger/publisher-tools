@@ -33,12 +33,6 @@ export const BuilderPresetTabs = <T extends string>({
     setActiveTab(options.findIndex((option) => option.id === selectedId))
   }, [options, selectedId])
 
-  const getTabElement = (id: T) => {
-    return tabListRef.current!.querySelector<HTMLElement>(
-      `#${idPrefix}-tab-${id}`
-    )
-  }
-
   const setActiveTab = useCallback(
     (tabIndex: number) => {
       if (tabIndex < 0) tabIndex += options.length
@@ -46,9 +40,8 @@ export const BuilderPresetTabs = <T extends string>({
       setActiveTabIdx(tabIndex)
       setActiveTabId(tabId)
       onChange(tabId)
-      getTabElement(tabId)?.focus()
     },
-    [options, onChange]
+    [onChange]
   )
 
   const onKeyDown = useCallback(

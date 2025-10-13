@@ -1,10 +1,10 @@
 import React from 'react'
 import { BuilderPresetTabs } from '@/components'
 import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
-import { useSnapshot } from 'valtio'
+import { snapshot } from 'valtio'
 
 export function BuilderTabs({ children }: React.PropsWithChildren) {
-  const snap = useSnapshot(toolState)
+  const snap = snapshot(toolState)
 
   const handleTabSelect = (stableKey: StableKey) => {
     toolActions.selectVersion(stableKey)
@@ -15,11 +15,13 @@ export function BuilderTabs({ children }: React.PropsWithChildren) {
   }
 
   // derive tab options directly from valtio state
-  const tabOptions = toolActions.versionOptions.map(({ stableKey: id }) => ({
-    id,
-    label: snap.configurations[id].versionName,
-    isDirty: snap.modifiedVersions.includes(id)
-  }))
+  const tabOptions = toolActions.versionOptions.map(
+    ({ stableKey: id, versionName }) => ({
+      id,
+      label: versionName,
+      isDirty: snap.modifiedVersions.includes(id)
+    })
+  )
 
   return (
     <div className="flex flex-col mt-4">
