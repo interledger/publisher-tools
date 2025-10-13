@@ -1,7 +1,7 @@
 import { signMessage } from 'http-message-signatures/lib/httpbis'
 import { createContentDigestHeader } from 'httpbis-digest-headers'
 import type { Request } from 'http-message-signatures'
-import * as ed from '@noble/ed25519'
+import { signAsync } from '@noble/ed25519'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import { HTTPException } from 'hono/http-exception'
 
@@ -104,7 +104,7 @@ function createSigner(key: Uint8Array, keyId: string) {
     id: keyId,
     alg: 'ed25519',
     async sign(data: Uint8Array) {
-      return Buffer.from(await ed.signAsync(data, key))
+      return Buffer.from(await signAsync(data, key))
     }
   }
 }
