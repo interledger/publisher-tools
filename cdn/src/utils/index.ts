@@ -1,4 +1,4 @@
-import type { Tool, PresetId, ToolConfig } from '@shared/types'
+import type { Tool, ProfileId, ToolConfig } from '@shared/types'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
@@ -35,17 +35,17 @@ export function getScriptParams(tool: Tool) {
     throw new Error(`Missing data-tag for ${tool}.js script`)
   }
 
-  return { walletAddress, walletAddressId, presetId: tag as PresetId, cdnUrl }
+  return { walletAddress, walletAddressId, profileId: tag as ProfileId, cdnUrl }
 }
 
-export async function fetchConfig<T extends Tool>(
+export async function fetchProfile<T extends Tool>(
   apiUrl: string,
   tool: T,
   params: ReturnType<typeof getScriptParams>
 ): Promise<ToolConfig<T>> {
   const url = new URL(`config/${tool}`, apiUrl)
   url.searchParams.set('wa', params.walletAddressId || params.walletAddress)
-  url.searchParams.set('preset', params.presetId)
+  url.searchParams.set('profile', params.profileId)
 
   const res = await fetch(url)
   if (!res.ok) {

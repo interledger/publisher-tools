@@ -3,12 +3,12 @@ import { HTTPException } from 'hono/http-exception'
 import { z } from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import { PRESET_IDS, TOOLS } from '@shared/types'
+import { PROFILE_IDS, TOOLS } from '@shared/types'
 import type {
   BannerConfig,
   ConfigVersions,
   ElementConfigType,
-  PresetId,
+  ProfileId,
   Tool,
   WidgetConfig
 } from '@shared/types'
@@ -27,18 +27,18 @@ app.get(
     'query',
     z.object({
       wa: z.string().url(),
-      preset: z.enum(PRESET_IDS)
+      profile: z.enum(PROFILE_IDS)
     })
   ),
   async ({ req, json, env }) => {
     const { tool } = req.valid('param')
-    const { wa: walletAddress, preset: presetId } = req.valid('query')
+    const { wa: walletAddress, profile: profileId } = req.valid('query')
 
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {
       const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const config = getToolConfig(fullConfig, tool, presetId)
+      const config = getToolConfig(fullConfig, tool, profileId)
       return json(config)
     } catch (error) {
       if (error instanceof HTTPException) throw error
@@ -56,10 +56,14 @@ app.get(
   }
 )
 
-function getToolConfig(config: ConfigVersions, tool: Tool, presetId: PresetId) {
-  const conf = config[presetId]
+function getToolConfig(
+  config: ConfigVersions,
+  tool: Tool,
+  profileId: ProfileId
+) {
+  const conf = config[profileId]
   if (!conf) {
-    throw createHTTPException(404, 'Saved config not found for given preset', {
+    throw createHTTPException(404, 'Saved config not found for given profile', {
       message: `Use one of ${JSON.stringify(Object.keys(config))}`
     })
   }
