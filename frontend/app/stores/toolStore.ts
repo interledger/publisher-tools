@@ -108,10 +108,6 @@ export const toolActions = {
   },
 
   selectVersion: (selectedStableKey: StableKey) => {
-    if (!toolState.configurations[selectedStableKey]) {
-      throw new Error(`Stable key '${selectedStableKey}' not found`)
-    }
-
     toolState.activeVersion = selectedStableKey
   },
 
