@@ -7,7 +7,6 @@ import {
   Divider,
   ToolsDropdown,
   CornerRadiusSelector,
-  WidgetPositionSelector,
   WidgetColorsSelector
 } from '@/components'
 import { useUI } from '~/stores/uiStore'
@@ -16,6 +15,7 @@ import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
+import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
@@ -189,7 +189,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGHeaderPosition className="w-5 h-5" />}
       >
         <WidgetPositionSelector
-          defaultValue={profile.widgetPosition}
+          value={profile.widgetPosition}
           onChange={(value) => (profile.widgetPosition = value)}
         />
       </InputFieldset>
