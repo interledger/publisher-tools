@@ -21,6 +21,8 @@ type PaymentStatusResponse = {
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
+  private _pollingAbortController: AbortController | null = null
+  private _interactionCompleted = false
   @property({ type: Object }) configController!: WidgetController
   @property({ type: Boolean }) isPreview?: boolean = false
   @state() private currentView: 'authorizing' | 'success' | 'failed' =
@@ -46,21 +48,25 @@ export class PaymentInteraction extends LitElement {
     this._boundHandleMessage = this.handleMessage.bind(this)
     window.addEventListener('message', this._boundHandleMessage)
 
-    this.startLongPolling()
+    this._startLongPolling()
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
     window.removeEventListener('message', this._boundHandleMessage)
+    this._cancelPolling()
   }
 
   private handleMessage(event: MessageEvent) {
     if (event.data?.type !== 'GRANT_INTERACTION') return
+    if (this._interactionCompleted) return
+
     const { paymentId, interact_ref, result } = event.data
+    this._markCompleted()
 
     if (result === 'grant_rejected') {
       this.currentView = 'failed'
-      this.errorMessage = 'Payment authorization was rejected'
+      this.errorMessage = 'Payment authorization rejected'
       this.requestUpdate()
       return
     }
@@ -76,6 +82,7 @@ export class PaymentInteraction extends LitElement {
   }
 
   private cancel() {
+    this._markCompleted()
     this.dispatchEvent(
       new CustomEvent('interaction-cancelled', {
         bubbles: true,
@@ -104,6 +111,7 @@ export class PaymentInteraction extends LitElement {
       } = this.configController.state
       const { apiUrl } = this.configController.config
       const url = new URL('/payment/finalize', apiUrl).href
+
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -127,9 +135,10 @@ export class PaymentInteraction extends LitElement {
       }
 
       const result = (await response.json()) as CheckPaymentResult
+
       if (result.success === false) {
         this.currentView = 'failed'
-        this.errorMessage = result.error.message
+        this.errorMessage = result.error?.message || 'Payment processing failed'
         this.requestUpdate()
         return
       }
@@ -138,20 +147,29 @@ export class PaymentInteraction extends LitElement {
       this.requestUpdate()
     } catch {
       this.currentView = 'failed'
-      this.errorMessage = 'There was an issues with your request.'
+      this.errorMessage = 'There was an issue with your request.'
       this.requestUpdate()
     }
   }
 
-  private async startLongPolling(): Promise<void> {
+  private async _startLongPolling(): Promise<void> {
+    if (this._interactionCompleted) return
+    this._pollingAbortController = new AbortController()
+
     try {
       const { paymentId } = this.configController.state
       const { apiUrl } = this.configController.config
       const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
-      const res = await fetch(url)
+      const res = await fetch(url, {
+        signal: this._pollingAbortController.signal
+      })
+
+      if (this._interactionCompleted) return
+      this._markCompleted()
 
       if (res.ok) {
         const data = (await res.json()) as PaymentStatusResponse
+
         this.handleInteractionCompleted(data.data.interact_ref)
       } else {
         if (res.status === 504) {
@@ -162,10 +180,32 @@ export class PaymentInteraction extends LitElement {
         this.currentView = 'failed'
         this.requestUpdate()
       }
-    } catch {
-      this.currentView = 'failed'
-      this.errorMessage = 'Failed to check payment status'
-      this.requestUpdate()
+    } catch (error) {
+      // don't handle errors if the request was aborted, another method succeeded
+      if (error instanceof Error && error.name === 'AbortError') {
+        return
+      }
+
+      if (!this._interactionCompleted) {
+        this._markCompleted()
+        this.currentView = 'failed'
+        this.errorMessage = 'Failed to check payment status'
+        this.requestUpdate()
+      }
+    }
+  }
+
+  private _markCompleted() {
+    if (this._interactionCompleted) return
+
+    this._interactionCompleted = true
+    this._cancelPolling()
+  }
+
+  private _cancelPolling() {
+    if (this._pollingAbortController) {
+      this._pollingAbortController.abort()
+      this._pollingAbortController = null
     }
   }
 
@@ -232,7 +272,7 @@ export class PaymentInteraction extends LitElement {
         <div class="empty-header"></div>
 
         <div class="interaction-body">
-          <div class="title failed">Payment authorization rejected</div>
+          <div class="title failed">${this.errorMessage}</div>
           <img
             src=${failedIcon}
             width="122px"

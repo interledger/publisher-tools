@@ -226,8 +226,6 @@ export class PaymentConfirmation extends LitElement {
         receiveAmount: quote.receiveAmount
       })
 
-      console.log('!!! Payment confirmed with grant:', { grant, paymentId })
-
       this.configController.updateState({
         outgoingPaymentGrant: grant,
         paymentId,

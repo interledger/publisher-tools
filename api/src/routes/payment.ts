@@ -1,7 +1,7 @@
 import { zValidator } from '@hono/zod-validator'
 
 import { APP_URL } from '@shared/defines'
-import { createHTTPException } from '../utils/utils'
+import { createHTTPException, sleep } from '../utils/utils'
 import { OpenPaymentsService } from '../utils/open-payments.js'
 import {
   PaymentQuoteSchema,
@@ -97,11 +97,14 @@ app.get('/payment/status/:paymentId', async ({ req, json, env }) => {
     throw createHTTPException(400, 'Payment ID required', {})
   }
 
-  const POLLING_MAX_DURATION = 30000
+  const POLLING_MAX_DURATION = 25000
+  const POLLING_INITIAL_DELAY = 1500
   const POLLING_INTERVAL = 1500
   const signal = AbortSignal.timeout(POLLING_MAX_DURATION)
 
   try {
+    await sleep(POLLING_INITIAL_DELAY)
+
     while (!signal.aborted) {
       const data = await env.PUBLISHER_TOOLS_KV.get(paymentId)
 
