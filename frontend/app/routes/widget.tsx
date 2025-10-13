@@ -156,10 +156,11 @@ export default function Widget() {
 
   const handleRefresh = (section: 'content' | 'appearance') => {
     const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
-    if (!savedConfig) return
-
     const { content, appearance } = splitConfigProperties(savedConfig)
-    toolActions.setToolConfig(section === 'content' ? content : appearance)
+    Object.assign(
+      toolState.currentConfig,
+      section === 'content' ? content : appearance
+    )
   }
   return (
     <div className="bg-interface-bg-main w-full">
