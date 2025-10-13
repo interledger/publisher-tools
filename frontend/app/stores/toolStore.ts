@@ -49,82 +49,6 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
   )
 }
 
-function isConfigModified(
-  config: ElementConfigType,
-  baselineConfig: ElementConfigType
-): boolean {
-  return JSON.stringify(config) !== JSON.stringify(baselineConfig)
-}
-
-/**
- *
- * Baseline Management:
- * - treatAsBaseline=true: Treats configs as saved state (no modifications)
- * - treatAsBaseline=false: Compares against existing baseline to detect modifications
- *
- * @param fullConfigObject - Configuration object to merge with defaults
- * @param treatAsBaseline - Whether to treat these configs as the new baseline (default: false)
- */
-function setupConfigs(
-  fullConfigObject: Record<string, ElementConfigType> | null,
-  treatAsBaseline: boolean = false
-) {
-  const newFullConfig: Record<StableKey, ElementConfigType> =
-    createDefaultConfigs()
-  if (fullConfigObject) {
-    STABLE_KEYS.forEach((stableKey) => {
-      if (fullConfigObject[stableKey]) {
-        newFullConfig[stableKey] = {
-          ...fullConfigObject[stableKey],
-          versionName: fullConfigObject[stableKey].versionName
-        }
-      }
-    })
-  }
-
-  STABLE_KEYS.forEach((stableKey) => {
-    toolState.configurations[stableKey] = { ...newFullConfig[stableKey] }
-  })
-  toolState.activeVersion = STABLE_KEYS[0]
-
-  STABLE_KEYS.forEach((stableKey) => {
-    toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
-  })
-
-  if (treatAsBaseline) {
-    toolState.modifiedVersions = []
-  } else {
-    toolState.modifiedVersions = STABLE_KEYS.filter((key) =>
-      isConfigModified(newFullConfig[key], toolState.savedConfigurations[key])
-    )
-  }
-}
-
-function updateModificationTracking(stableKey: StableKey) {
-  const currentConfig = toolState.configurations[stableKey]
-  const savedConfig = toolState.savedConfigurations[stableKey]
-
-  if (!currentConfig || !savedConfig) {
-    return
-  }
-
-  const hasContentChanges =
-    JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
-
-  const hasVersionNameChanges =
-    currentConfig.versionName !== savedConfig.versionName
-
-  const isModified = hasContentChanges || hasVersionNameChanges
-
-  const currentIndex = toolState.modifiedVersions.indexOf(stableKey)
-
-  if (isModified && currentIndex === -1) {
-    toolState.modifiedVersions.push(stableKey)
-  } else if (!isModified && currentIndex > -1) {
-    toolState.modifiedVersions.splice(currentIndex, 1)
-  }
-}
-
 export const toolState = proxy({
   configurations: createDefaultConfigs(),
   /*
@@ -183,27 +107,29 @@ export const toolActions = {
     }))
   },
 
-  /**
-   * handles both loading new configs and restoring saved configs.
-   *
-   * @param fullConfigObject - Configuration object to merge with defaults, or null for defaults only
-   * @param treatAsBaseline - Whether to treat these configs as the new baseline (default: false)
-   *   - false: Compares against existing baseline to detect modifications (for importing/loading)
-   *   - true: Treats configs as saved state with no modifications (for restoring saved state)
-   */
-  setConfigs: (
-    fullConfigObject: Record<string, ElementConfigType> | null,
-    treatAsBaseline: boolean = false
-  ) => {
-    setupConfigs(fullConfigObject, treatAsBaseline)
+  selectVersion: (selectedStableKey: StableKey) => {
+    toolState.activeVersion = selectedStableKey
   },
 
-  selectVersion: (selectedStableKey: StableKey) => {
-    if (!toolState.configurations[selectedStableKey]) {
-      throw new Error(`Stable key '${selectedStableKey}' not found`)
-    }
+  setConfigs: (
+    fullConfigObject: Record<StableKey, ElementConfigType> | null
+  ) => {
+    const newFullConfig: Record<StableKey, ElementConfigType> =
+      createDefaultConfigs()
 
-    toolState.activeVersion = selectedStableKey
+    STABLE_KEYS.forEach((profileId) => {
+      if (fullConfigObject) {
+        newFullConfig[profileId] = {
+          ...fullConfigObject[profileId]
+        }
+      }
+
+      toolState.configurations[profileId] = { ...newFullConfig[profileId] }
+
+      toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
+    })
+
+    toolState.modifiedVersions = []
   },
 
   setModal: (modal: ModalType | undefined) => {
@@ -335,21 +261,14 @@ export const toolActions = {
         }
       }
 
-      const updatedConfigs = data as Record<string, ElementConfigType>
-      STABLE_KEYS.forEach((stableKey) => {
-        if (updatedConfigs[stableKey]) {
-          toolState.configurations[stableKey] = { ...updatedConfigs[stableKey] }
-        }
-      })
-      toolState.modal = { type: callToActionType }
-
-      // update the baseline to current configurations after success save
-      STABLE_KEYS.forEach((stableKey) => {
-        toolState.savedConfigurations[stableKey] = {
-          ...toolState.configurations[stableKey]
+      STABLE_KEYS.forEach((profileId) => {
+        toolState.savedConfigurations[profileId] = {
+          ...toolState.configurations[profileId]
         }
       })
       toolState.modifiedVersions = []
+
+      toolState.modal = { type: callToActionType }
 
       return { success: true, data }
     } catch (error) {

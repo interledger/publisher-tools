@@ -1,19 +1,18 @@
 import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
-  BannerPositionSelector,
   BannerColorsSelector,
-  BuilderAccordion,
   Divider,
   ToolsDropdown,
-  SectionHeader,
   CornerRadiusSelector,
   AnimationSelector,
   ThumbnailSelector
 } from '@/components'
+import BuilderAccordion from '@/components/BuilderAccordion'
+import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
-import { useUIActions, useUIState } from '~/stores/uiStore'
+import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -22,8 +21,9 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import { useMemo } from 'react'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 import { toolState } from '~/stores/toolStore'
+import { useMemo } from 'react'
 import { useSnapshot } from 'valtio'
 
 interface Props {
@@ -136,8 +136,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       }}
       initialIsOpen={uiState.activeSection === 'appearance'}
     >
-      <div className="flex flex-col gap-xs">
-        <SectionHeader icon={<SVGText className="w-5 h-5" />} label="Text" />
+      <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
           label="Font Family"
           defaultValue={defaultFontIndex.toString()}
@@ -150,20 +149,21 @@ function AppearanceBuilder({ onRefresh }: Props) {
             value: index.toString()
           }))}
         />
+
         <FontSizeInput
           value={profile.bannerFontSize}
           onChange={(value) => (toolState.currentConfig.bannerFontSize = value)}
           min={config.fontSizeRange.min}
           max={config.fontSizeRange.max}
         />
-      </div>
+      </InputFieldset>
+
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGColorPicker className="w-5 h-5" />}
-          label="Colors"
-        />
+      <InputFieldset
+        label="Colors"
+        icon={<SVGColorPicker className="w-5 h-5" />}
+      >
         <BannerColorsSelector
           backgroundColor={profile.bannerBackgroundColor}
           textColor={profile.bannerTextColor}
@@ -174,38 +174,38 @@ function AppearanceBuilder({ onRefresh }: Props) {
             (toolState.currentConfig.bannerTextColor = color)
           }
         />
-      </div>
+      </InputFieldset>
+
       <Divider />
 
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGRoundedCorner className="w-5 h-5" />}
-          label="Container Corner Radius"
-        />
+      <InputFieldset
+        label="Container Corner Radius"
+        icon={<SVGRoundedCorner className="w-5 h-5" />}
+      >
         <CornerRadiusSelector
-          defaultValue={profile.bannerBorder}
+          value={profile.bannerBorder}
           onChange={(value) => (toolState.currentConfig.bannerBorder = value)}
         />
-      </div>
+      </InputFieldset>
 
       <Divider />
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGHeaderPosition className="w-5 h-5" />}
-          label="Position"
-        />
+
+      <InputFieldset
+        label="Position"
+        icon={<SVGHeaderPosition className="w-5 h-5" />}
+      >
         <BannerPositionSelector
-          bannerPosition={profile.bannerPosition}
+          value={profile.bannerPosition}
           onChange={(value) => (toolState.currentConfig.bannerPosition = value)}
         />
-      </div>
+      </InputFieldset>
 
       <Divider />
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGAnimation className="w-5 h-5" />}
-          label="Animation"
-        />
+
+      <InputFieldset
+        label="Animation"
+        icon={<SVGAnimation className="w-5 h-5" />}
+      >
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <AnimationSelector
             value={profile.bannerSlideAnimation}
@@ -214,14 +214,14 @@ function AppearanceBuilder({ onRefresh }: Props) {
             }
           />
         </div>
-      </div>
+      </InputFieldset>
 
       <Divider />
-      <div className="flex flex-col gap-xs">
-        <SectionHeader
-          icon={<SVGThumbnail className="w-5 h-5" />}
-          label="Thumbnail"
-        />
+
+      <InputFieldset
+        label="Thumbnail"
+        icon={<SVGThumbnail className="w-5 h-5" />}
+      >
         <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
           <ThumbnailSelector
             thumbnail={profile.bannerThumbnail}
@@ -230,7 +230,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
             }
           />
         </div>
-      </div>
+      </InputFieldset>
     </BuilderAccordion>
   )
 }
