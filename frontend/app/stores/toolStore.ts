@@ -106,25 +106,10 @@ export const toolActions = {
     toolState.activeVersion = selectedStableKey
   },
 
-  setConfigs: (fullConfigObject: Record<string, ElementConfigType> | null) => {
-    const newFullConfig: Record<StableKey, ElementConfigType> =
-      createDefaultConfigs()
-
-    STABLE_KEYS.forEach((stableKey) => {
-      if (fullConfigObject) {
-        newFullConfig[stableKey] = {
-          ...fullConfigObject[stableKey],
-          versionName: fullConfigObject[stableKey].versionName
-        }
-      }
-
-      toolState.configurations[stableKey] = { ...newFullConfig[stableKey] }
-
-      toolState.savedConfigurations[stableKey] = { ...newFullConfig[stableKey] }
-    })
-
-    toolState.modifiedVersions = []
-  },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setConfigs: (
+    fullConfigObject: Record<string, ElementConfigType> | null
+  ) => {},
 
   setModal: (modal: ModalType | undefined) => {
     toolState.modal = modal
@@ -255,21 +240,7 @@ export const toolActions = {
         }
       }
 
-      const updatedConfigs = data as Record<string, ElementConfigType>
-      STABLE_KEYS.forEach((stableKey) => {
-        if (updatedConfigs[stableKey]) {
-          toolState.configurations[stableKey] = { ...updatedConfigs[stableKey] }
-        }
-      })
       toolState.modal = { type: callToActionType }
-
-      // update the baseline to current configurations after success save
-      STABLE_KEYS.forEach((stableKey) => {
-        toolState.savedConfigurations[stableKey] = {
-          ...toolState.configurations[stableKey]
-        }
-      })
-      toolState.modifiedVersions = []
 
       return { success: true, data }
     } catch (error) {
