@@ -6,6 +6,7 @@ import type { StepStatus } from '~/components/redesign/components/StepsIndicator
 import type { ElementConfigType } from '@shared/types'
 import type { ModalType } from '~/lib/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
+import { proxySet } from 'valtio/utils'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -60,7 +61,7 @@ export const toolState = proxy({
   /*
    * dirtyProfiles: tracks the configurations that are modified locally.
    */
-  dirtyProfiles: new Set<StableKey>(),
+  dirtyProfiles: proxySet<StableKey>(),
   activeVersion: 'version1' as StableKey,
   currentToolType: 'unknown' as ToolType,
 
@@ -486,12 +487,6 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
       if (validKeys) {
         const loadedData = parsedStorageData(parsed)
         Object.assign(toolState, loadedData)
-
-        // TODO: better handling of Set deserialization after
-        // https://github.com/interledger/publisher-tools/issues/318
-        if (!(toolState.dirtyProfiles instanceof Set)) {
-          toolState.dirtyProfiles = new Set()
-        }
       } else {
         throw new Error('saved configuration not valid')
       }
@@ -524,7 +519,7 @@ function parsedStorageData(parsed: Record<string, unknown>) {
 
   return {
     ...omitted,
-    dirtyProfiles: new Set(
+    dirtyProfiles: proxySet<StableKey>(
       Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
     )
   }
