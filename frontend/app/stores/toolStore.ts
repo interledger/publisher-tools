@@ -269,7 +269,6 @@ export const toolActions = {
 
       toolState.modal = { type: callToActionType }
       toolState.dirtyProfiles.clear()
-
       return { success: true, data }
     } catch (error) {
       console.error('Save error:', error)
@@ -464,7 +463,6 @@ function isConfigModified(profileId: StableKey): boolean {
 
 function updateChangesTracking(profileId: StableKey) {
   const isModified = isConfigModified(profileId)
-
   if (isModified) {
     toolState.dirtyProfiles.add(profileId)
   } else {
