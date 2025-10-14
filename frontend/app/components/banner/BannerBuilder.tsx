@@ -1,11 +1,13 @@
-import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
+import {
+  BANNER_FONT_SIZES,
+  FONT_FAMILY_OPTIONS,
+  type BannerConfig
+} from '@shared/types'
 import {
   BannerColorsSelector,
   Divider,
   ToolsDropdown,
-  CornerRadiusSelector,
-  AnimationSelector,
-  ThumbnailSelector
+  CornerRadiusSelector
 } from '@/components'
 import BuilderAccordion from '@/components/BuilderAccordion'
 import { InputFieldset } from '@/components/builder/InputFieldset'
@@ -13,6 +15,8 @@ import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
+import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
+import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -21,10 +25,9 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import { useUIActions, useUIState } from '~/stores/uiStore'
 import { toolState } from '~/stores/toolStore'
-import { useMemo } from 'react'
 import { useSnapshot } from 'valtio'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -111,13 +114,10 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const profile = useSnapshot(toolState.currentConfig)
-  const defaultFontIndex = useMemo(
-    () =>
-      FONT_FAMILY_OPTIONS.findIndex(
-        (option) => option === profile.bannerFontName
-      ),
-    [profile.bannerFontName]
+  const profile = toolState.currentConfig as BannerConfig
+
+  const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
+    (option) => option === profile.bannerFontName
   )
 
   return (
@@ -206,14 +206,10 @@ function AppearanceBuilder({ onRefresh }: Props) {
         label="Animation"
         icon={<SVGAnimation className="w-5 h-5" />}
       >
-        <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <AnimationSelector
-            value={profile.bannerSlideAnimation}
-            onChange={(value) =>
-              (toolState.currentConfig.bannerSlideAnimation = value)
-            }
-          />
-        </div>
+        <BannerAnimationSelector
+          value={profile.bannerSlideAnimation}
+          onChange={(value) => (profile.bannerSlideAnimation = value)}
+        />
       </InputFieldset>
 
       <Divider />
@@ -222,14 +218,15 @@ function AppearanceBuilder({ onRefresh }: Props) {
         label="Thumbnail"
         icon={<SVGThumbnail className="w-5 h-5" />}
       >
-        <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <ThumbnailSelector
-            thumbnail={profile.bannerThumbnail}
-            onThumbnailChange={(thumbnail) =>
-              (toolState.currentConfig.bannerThumbnail = thumbnail)
-            }
-          />
-        </div>
+        <BannerThumbnailSelector
+          isVisible={
+            typeof profile.bannerThumbnail === 'undefined' ||
+            !!profile.bannerThumbnail
+          }
+          onVisibilityChange={(visible) => {
+            profile.bannerThumbnail = visible ? 'default' : ''
+          }}
+        />
       </InputFieldset>
     </BuilderAccordion>
   )
