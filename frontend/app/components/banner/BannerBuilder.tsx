@@ -1,8 +1,6 @@
 import {
   BANNER_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
-  SLIDE_ANIMATION,
-  type SlideAnimationType,
   type BannerConfig
 } from '@shared/types'
 import {
@@ -20,6 +18,7 @@ import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
+import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -118,15 +117,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
 
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
 
-  const [lastSelectedAnimation, setLastSelectedAnimation] =
-    useState<SlideAnimationType>(() => {
-      const validated = getValidSlideAnimation(profile.bannerSlideAnimation)
-      return validated === SLIDE_ANIMATION.None
-        ? SLIDE_ANIMATION.Slide
-        : validated
-    })
-  const isAnimated = profile.bannerSlideAnimation !== SLIDE_ANIMATION.None
-
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === profile.bannerFontName
   )
@@ -217,37 +207,10 @@ function AppearanceBuilder({ onRefresh }: Props) {
         label="Animation"
         icon={<SVGAnimation className="w-5 h-5" />}
       >
-        <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={profile.bannerSlideAnimation !== SLIDE_ANIMATION.None}
-            onChange={() => {
-              profile.bannerSlideAnimation = isAnimated
-                ? SLIDE_ANIMATION.None
-                : lastSelectedAnimation
-            }}
-            label="Animated"
-          />
-          <div className="flex-1 w-full xl:w-auto">
-            <ToolsDropdown
-              label="Type"
-              disabled={!isAnimated}
-              defaultValue={
-                isAnimated
-                  ? getValidSlideAnimation(profile.bannerSlideAnimation)
-                  : lastSelectedAnimation
-              }
-              options={[
-                { label: 'Slide', value: SLIDE_ANIMATION.Slide },
-                { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
-              ]}
-              onChange={(value) => {
-                const selectedAnimation = value as SlideAnimationType
-                setLastSelectedAnimation(selectedAnimation)
-                profile.bannerSlideAnimation = selectedAnimation
-              }}
-            />
-          </div>
-        </div>
+        <BannerAnimationSelector
+          value={profile.bannerSlideAnimation}
+          onChange={(value) => (profile.bannerSlideAnimation = value)}
+        />
       </InputFieldset>
 
       <Divider />
@@ -281,10 +244,4 @@ function AppearanceBuilder({ onRefresh }: Props) {
       </InputFieldset>
     </BuilderAccordion>
   )
-}
-
-function getValidSlideAnimation(value: unknown): SlideAnimationType {
-  return typeof value === 'string' && value in SLIDE_ANIMATION
-    ? (value as SlideAnimationType)
-    : SLIDE_ANIMATION.Slide
 }
