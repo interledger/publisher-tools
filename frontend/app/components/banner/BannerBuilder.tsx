@@ -6,10 +6,8 @@ import {
 import {
   BannerColorsSelector,
   Divider,
-  Checkbox,
   ToolsDropdown,
-  CornerRadiusSelector,
-  Thumbnail
+  CornerRadiusSelector
 } from '@/components'
 import { useUI } from '~/stores/uiStore'
 import BuilderAccordion from '@/components/BuilderAccordion'
@@ -19,6 +17,7 @@ import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
+import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -27,8 +26,6 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
-import { useState } from 'react'
 import { toolState } from '~/stores/toolStore'
 
 interface Props {
@@ -112,10 +109,6 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const { actions: uiActions, state: uiState } = useUI()
   const profile = toolState.currentConfig as BannerConfig
-
-  const thumbnails = [wmLogo]
-
-  const [selectedThumbnail, setSelectedThumbnail] = useState(0)
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === profile.bannerFontName
@@ -219,28 +212,15 @@ function AppearanceBuilder({ onRefresh }: Props) {
         label="Thumbnail"
         icon={<SVGThumbnail className="w-5 h-5" />}
       >
-        <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
-          <Checkbox
-            checked={
-              typeof profile.bannerThumbnail === 'undefined' ||
-              !!profile.bannerThumbnail
-            }
-            onChange={(visible) => {
-              profile.bannerThumbnail = visible ? 'default' : ''
-            }}
-            label="Visible"
-          />
-          <div className="flex gap-md">
-            {thumbnails.map((thumbnail, index) => (
-              <Thumbnail
-                key={index}
-                isSelected={selectedThumbnail === index}
-                imageUrl={thumbnail}
-                onClick={() => setSelectedThumbnail(index)}
-              />
-            ))}
-          </div>
-        </div>
+        <BannerThumbnailSelector
+          isVisible={
+            typeof profile.bannerThumbnail === 'undefined' ||
+            !!profile.bannerThumbnail
+          }
+          onVisibilityChange={(visible) => {
+            profile.bannerThumbnail = visible ? 'default' : ''
+          }}
+        />
       </InputFieldset>
     </BuilderAccordion>
   )
