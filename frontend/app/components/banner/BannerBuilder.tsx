@@ -1,8 +1,6 @@
 import {
   BANNER_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
-  SLIDE_ANIMATION,
-  type SlideAnimationType,
   type BannerConfig
 } from '@shared/types'
 import {
