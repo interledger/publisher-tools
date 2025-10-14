@@ -11,6 +11,7 @@ const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
+  'buildStep',
   'opWallet',
   'cdnUrl'
 ])
@@ -48,136 +49,7 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
   )
 }
 
-function isConfigModified(
-  config: ElementConfigType,
-  baselineConfig: ElementConfigType
-): boolean {
-  return JSON.stringify(config) !== JSON.stringify(baselineConfig)
-}
-
-function updateModificationTracking(
-  versionKey: StableKey,
-  isModified: boolean
-) {
-  const currentIndex = toolState.modifiedVersions.indexOf(versionKey)
-
-  if (isModified && currentIndex === -1) {
-    toolState.modifiedVersions.push(versionKey)
-  } else if (!isModified && currentIndex > -1) {
-    toolState.modifiedVersions.splice(currentIndex, 1)
-  }
-}
-
-function getVersionNameByStableKey(stableKey: StableKey): string {
-  return toolState.configurations[stableKey].versionName
-}
-
-function resetBaselineAfterSave() {
-  toolState.savedConfigurations = { ...toolState.configurations }
-  toolState.modifiedVersions = []
-}
-
-/**
- * Sets up the configurations based on the provided fullConfigObject.
- * This is a core function that initializes or updates the entire configuration state
- * and manages the baseline tracking for modification detection.
- *
- * The function handles several scenarios:
- * 1. If fullConfigObject is provided: Merges provided configs with defaults
- * 2. If fullConfigObject is null: Initializes with default configurations only
- * 3. treatAsBaseline parameter controls modification tracking behavior
- *
- * Configuration Setup Process:
- * - Creates default configurations for all stable keys
- * - Overlays provided configurations while preserving version names
- * - Sets the active version to the first stable key
- * - Updates the current config to match the active version
- *
- * Baseline Management:
- * - treatAsBaseline=true: Treats configs as saved state (no modifications)
- * - treatAsBaseline=false: Compares against existing baseline to detect modifications
- *
- * This function is used in multiple scenarios:
- * - Initial app load: Setting up default configurations
- * - Loading saved configs: Restoring previously saved state
- * - Importing configs: Merging external configuration data
- * - Override operations: Applying database configurations
- *
- * @param fullConfigObject - Configuration object to merge with defaults, or null for defaults only
- * @param treatAsBaseline - Whether to treat these configs as the new baseline (default: false)
- */
-function setupConfigs(
-  fullConfigObject: Record<string, ElementConfigType> | null,
-  treatAsBaseline: boolean = false
-) {
-  let newFullConfig: Record<StableKey, ElementConfigType>
-
-  if (fullConfigObject) {
-    newFullConfig = createDefaultConfigs()
-
-    STABLE_KEYS.forEach((stableKey) => {
-      if (fullConfigObject[stableKey]) {
-        newFullConfig[stableKey] = {
-          ...newFullConfig[stableKey],
-          ...fullConfigObject[stableKey],
-          versionName: fullConfigObject[stableKey].versionName
-        }
-      }
-    })
-  } else {
-    newFullConfig = createDefaultConfigs()
-  }
-
-  toolState.configurations = newFullConfig
-  toolState.activeVersion = STABLE_KEYS[0]
-
-  toolState.currentConfig = newFullConfig[toolState.activeVersion]
-
-  if (treatAsBaseline) {
-    toolState.savedConfigurations = { ...newFullConfig }
-    toolState.modifiedVersions = []
-  } else {
-    toolState.savedConfigurations = { ...newFullConfig }
-    toolState.modifiedVersions = STABLE_KEYS.filter((key) =>
-      isConfigModified(newFullConfig[key], toolState.savedConfigurations[key])
-    )
-  }
-}
-
-/**
- * Updates modification tracking for a specific version configuration.
- * This function is called whenever a configuration or version name changes to determine
- * if the configuration should be marked as "modified" compared to the saved baseline.
- *
- * It checks two types of modifications:
- * 1. Content changes: Compares the current config with the saved baseline config
- * 2. Version name changes: Compares the current version name with the baseline version name
- *
- * If either type of change is detected, the configuration is added to the modifiedVersions array.
- * This tracking is crucial for conflict detection when connecting to a wallet address.
- *
- * @param stableKey - The stable key ('version1', 'version2', 'version3') to check
- */
-function updateModificationTrackingWithVersionNames(stableKey: StableKey) {
-  const configModified = isConfigModified(
-    toolState.configurations[stableKey],
-    toolState.savedConfigurations[stableKey]
-  )
-
-  const versionName = getVersionNameByStableKey(stableKey)
-  const baselineVersionName =
-    toolState.savedConfigurations[stableKey]?.versionName
-
-  const versionNameChanged =
-    baselineVersionName && versionName !== baselineVersionName
-
-  const isModified = configModified || Boolean(versionNameChanged)
-
-  updateModificationTracking(stableKey, isModified)
-}
-
 export const toolState = proxy({
-  currentConfig: getDefaultData() as ElementConfigType,
   configurations: createDefaultConfigs(),
   /*
    * savedConfigurations: baseline configs.
@@ -186,11 +58,16 @@ export const toolState = proxy({
    */
   savedConfigurations: createDefaultConfigs(),
   /*
-   * modifiedVersions: tracks the configurations that are modified locally.
+   * dirtyProfiles: tracks the configurations that are modified locally.
    */
-  modifiedVersions: [] as StableKey[],
+  dirtyProfiles: new Set<StableKey>(),
   activeVersion: 'version1' as StableKey,
   currentToolType: 'unknown' as ToolType,
+
+  /** always returns the active configuration */
+  get currentConfig() {
+    return this.configurations[this.activeVersion]
+  },
 
   // UI state
   modal: undefined as ModalType | undefined,
@@ -218,6 +95,10 @@ export const toolState = proxy({
   buildStep: 'unfilled' as StepStatus
 })
 
+subscribe(toolState, () => {
+  updateChangesTracking(toolState.activeVersion)
+})
+
 export const toolActions = {
   get versionOptions() {
     return STABLE_KEYS.map((key) => ({
@@ -226,64 +107,29 @@ export const toolActions = {
     }))
   },
 
-  setToolConfig: (config: Partial<ElementConfigType>) => {
-    toolState.currentConfig = {
-      ...toolState.currentConfig,
-      ...config
-    }
-
-    if (toolState.activeVersion) {
-      const existingVersionName =
-        toolState.configurations[toolState.activeVersion].versionName
-
-      toolState.configurations[toolState.activeVersion] = {
-        ...toolState.currentConfig,
-        versionName: existingVersionName
-      }
-
-      updateModificationTrackingWithVersionNames(toolState.activeVersion)
-    }
-  },
-
-  /**
-   * handles both loading new configs and restoring saved configs.
-   *
-   * @param fullConfigObject - Configuration object to merge with defaults, or null for defaults only
-   * @param treatAsBaseline - Whether to treat these configs as the new baseline (default: false)
-   *   - false: Compares against existing baseline to detect modifications (for importing/loading)
-   *   - true: Treats configs as saved state with no modifications (for restoring saved state)
-   */
-  setConfigs: (
-    fullConfigObject: Record<string, ElementConfigType> | null,
-    treatAsBaseline: boolean = false
-  ) => {
-    setupConfigs(fullConfigObject, treatAsBaseline)
-  },
-
   selectVersion: (selectedStableKey: StableKey) => {
-    if (!toolState.configurations[selectedStableKey]) {
-      throw new Error(`Stable key '${selectedStableKey}' not found`)
-    }
-
-    if (toolState.activeVersion && toolState.currentConfig) {
-      const existingVersionName =
-        toolState.configurations[toolState.activeVersion].versionName
-
-      toolState.configurations[toolState.activeVersion] = {
-        ...toolState.currentConfig,
-        versionName: existingVersionName
-      }
-    }
-
-    const newConfig = toolState.configurations[selectedStableKey]
-    if (!newConfig) {
-      throw new Error(
-        `Configuration for stable key '${selectedStableKey}' not found`
-      )
-    }
-
-    toolState.currentConfig = newConfig
     toolState.activeVersion = selectedStableKey
+  },
+
+  setConfigs: (
+    fullConfigObject: Record<StableKey, ElementConfigType> | null
+  ) => {
+    const newFullConfig: Record<StableKey, ElementConfigType> =
+      createDefaultConfigs()
+
+    STABLE_KEYS.forEach((profileId) => {
+      if (fullConfigObject) {
+        newFullConfig[profileId] = {
+          ...fullConfigObject[profileId]
+        }
+      }
+
+      toolState.configurations[profileId] = { ...newFullConfig[profileId] }
+
+      toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
+    })
+
+    toolState.dirtyProfiles.clear()
   },
 
   setModal: (modal: ModalType | undefined) => {
@@ -341,26 +187,6 @@ export const toolActions = {
     script.dataset.tag = preset
     return script.outerHTML
   },
-  updateVersionLabel: (stableKey: StableKey, newVersionName: string) => {
-    if (!toolState.configurations[stableKey]) {
-      console.error(`Cannot find configuration for stable key: ${stableKey}`)
-      return
-    }
-
-    toolState.configurations[stableKey] = {
-      ...toolState.configurations[stableKey],
-      versionName: newVersionName
-    }
-
-    if (toolState.activeVersion === stableKey) {
-      toolState.currentConfig = {
-        ...toolState.currentConfig,
-        versionName: newVersionName
-      }
-    }
-
-    updateModificationTrackingWithVersionNames(stableKey)
-  },
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
   },
@@ -374,7 +200,7 @@ export const toolActions = {
   /**
    * Checks if any local changes have been made to the configurations.
    */
-  hasCustomEdits: (): boolean => toolState.modifiedVersions.length > 0,
+  hasCustomEdits: (): boolean => toolState.dirtyProfiles.size > 0,
   saveConfig: async (callToActionType: 'save-success' | 'script') => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
@@ -435,12 +261,14 @@ export const toolActions = {
         }
       }
 
-      toolState.configurations = data as Record<string, ElementConfigType>
-      toolState.currentConfig = configToSave
+      STABLE_KEYS.forEach((profileId) => {
+        toolState.savedConfigurations[profileId] = {
+          ...toolState.configurations[profileId]
+        }
+      })
+
       toolState.modal = { type: callToActionType }
-
-      resetBaselineAfterSave()
-
+      toolState.dirtyProfiles.clear()
       return { success: true, data }
     } catch (error) {
       console.error('Save error:', error)
@@ -480,7 +308,7 @@ export const toolActions = {
    * 2. Retrieves fetched configurations from the modal state
    * 3. For each stable key: keeps local if selected, otherwise uses database version
    * 4. Updates currentConfig if the active version is being overridden
-   * 5. Removes overridden versions from modifiedVersions array
+   * 5. Removes overridden versions from dirtyProfiles set
    *
    * State Management:
    * - configurations: Updated with database versions where they exist and aren't selected to keep
@@ -518,17 +346,9 @@ export const toolActions = {
         // keep the local version - no changes needed
       } else if (hasDatabaseVersion) {
         toolState.configurations[stableKey] = { ...hasDatabaseVersion }
-        if (toolState.activeVersion === stableKey) {
-          toolState.currentConfig = { ...hasDatabaseVersion }
-        }
 
         // remove from modified configs since we're using database version
-        const wasModified = toolState.modifiedVersions.includes(stableKey)
-        if (wasModified) {
-          toolState.modifiedVersions = toolState.modifiedVersions.filter(
-            (key) => key !== stableKey
-          )
-        }
+        toolState.dirtyProfiles.delete(stableKey)
       }
     })
 
@@ -583,7 +403,7 @@ export const toolActions = {
       ElementConfigType
     >
     const hasCustomEdits = Object.keys(fetchedConfigs).length > 0
-    const hasLocalModifications = toolState.modifiedVersions.length > 0
+    const hasLocalModifications = toolState.dirtyProfiles.size > 0
 
     return {
       walletAddressId: walletAddress,
@@ -619,7 +439,7 @@ export const toolActions = {
       type: 'override-preset',
       fetchedConfigs,
       currentLocalConfigs: { ...toolState.configurations },
-      modifiedConfigs: [...toolState.modifiedVersions]
+      modifiedConfigs: [...toolState.dirtyProfiles]
     })
   },
 
@@ -627,6 +447,26 @@ export const toolActions = {
     if (toolState.modal?.type === 'override-preset') {
       toolState.modal = undefined
     }
+  }
+}
+
+function isConfigModified(profileId: StableKey): boolean {
+  const currentConfig = toolState.configurations[profileId]
+  const savedConfig = toolState.savedConfigurations[profileId]
+
+  if (!currentConfig || !savedConfig) {
+    return false
+  }
+
+  return JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
+}
+
+function updateChangesTracking(profileId: StableKey) {
+  const isModified = isConfigModified(profileId)
+  if (isModified) {
+    toolState.dirtyProfiles.add(profileId)
+  } else {
+    toolState.dirtyProfiles.delete(profileId)
   }
 }
 
@@ -644,7 +484,14 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         Object.keys(parsed).every((key) => key in toolState)
 
       if (validKeys) {
-        Object.assign(toolState, parsedStorageData(parsed))
+        const loadedData = parsedStorageData(parsed)
+        Object.assign(toolState, loadedData)
+
+        // TODO: better handling of Set deserialization after
+        // https://github.com/interledger/publisher-tools/issues/318
+        if (!(toolState.dirtyProfiles instanceof Set)) {
+          toolState.dirtyProfiles = new Set()
+        }
       } else {
         throw new Error('saved configuration not valid')
       }
@@ -664,11 +511,23 @@ export function persistState() {
 }
 
 function createStorageState(state: typeof toolState) {
-  return omit(state, EXCLUDED_FROM_STORAGE)
+  const omitted = omit(state, EXCLUDED_FROM_STORAGE)
+
+  return {
+    ...omitted,
+    dirtyProfiles: Array.from(state.dirtyProfiles)
+  }
 }
 
 function parsedStorageData(parsed: Record<string, unknown>) {
-  return omit(parsed, EXCLUDED_FROM_STORAGE)
+  const omitted = omit(parsed, EXCLUDED_FROM_STORAGE)
+
+  return {
+    ...omitted,
+    dirtyProfiles: new Set(
+      Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
+    )
+  }
 }
 
 export function omit<T extends Record<string, unknown>>(
@@ -683,12 +542,14 @@ export function omit<T extends Record<string, unknown>>(
 }
 
 function isContentProperty(key: string): boolean {
-  return key.endsWith('Text')
+  return key.endsWith('Text') || key.endsWith('Visible')
 }
 
+// TODO: remove with versioning changes
 export function splitConfigProperties<T extends ElementConfigType>(config: T) {
+  const { versionName: _versionName, ...rest } = config
   const { content = [], appearance = [] } = groupBy(
-    Object.entries(config),
+    Object.entries(rest),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
   )
 

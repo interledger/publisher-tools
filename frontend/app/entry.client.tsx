@@ -7,6 +7,16 @@
 import { RemixBrowser } from '@remix-run/react'
 import { startTransition, StrictMode } from 'react'
 import { hydrateRoot } from 'react-dom/client'
+import { scan } from 'react-scan'
+
+if (process.env.NODE_ENV === 'development') {
+  scan({
+    enabled: false,
+    trackUnnecessaryRenders: true,
+    showToolbar: true,
+    log: true
+  })
+}
 
 startTransition(() => {
   hydrateRoot(
