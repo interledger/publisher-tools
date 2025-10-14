@@ -11,6 +11,7 @@ const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
+  'buildStep',
   'opWallet',
   'cdnUrl'
 ])
@@ -92,6 +93,10 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus
+})
+
+subscribe(toolState, () => {
+  updateChangesTracking(toolState.activeVersion)
 })
 
 export const toolActions = {
@@ -261,9 +266,9 @@ export const toolActions = {
           ...toolState.configurations[profileId]
         }
       })
-      toolState.modifiedVersions = []
 
       toolState.modal = { type: callToActionType }
+      toolState.modifiedVersions = []
 
       return { success: true, data }
     } catch (error) {
@@ -451,6 +456,28 @@ export const toolActions = {
   }
 }
 
+function isConfigModified(profileId: StableKey): boolean {
+  const currentConfig = toolState.configurations[profileId]
+  const savedConfig = toolState.savedConfigurations[profileId]
+
+  if (!currentConfig || !savedConfig) {
+    return false
+  }
+
+  return JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
+}
+
+function updateChangesTracking(profileId: StableKey) {
+  const isModified = isConfigModified(profileId)
+  const currentIndex = toolState.modifiedVersions.indexOf(profileId)
+
+  if (isModified && currentIndex === -1) {
+    toolState.modifiedVersions.push(profileId)
+  } else if (!isModified && currentIndex > -1) {
+    toolState.modifiedVersions.splice(currentIndex, 1)
+  }
+}
+
 /** Load from localStorage on init, remove storage if invalid */
 export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
   toolState.cdnUrl = CDN_URL
@@ -504,12 +531,14 @@ export function omit<T extends Record<string, unknown>>(
 }
 
 function isContentProperty(key: string): boolean {
-  return key.endsWith('Text')
+  return key.endsWith('Text') || key.endsWith('Visible')
 }
 
+// TODO: remove with versioning changes
 export function splitConfigProperties<T extends ElementConfigType>(config: T) {
+  const { versionName: _versionName, ...rest } = config
   const { content = [], appearance = [] } = groupBy(
-    Object.entries(config),
+    Object.entries(rest),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
   )
 

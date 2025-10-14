@@ -9,7 +9,7 @@ interface Props<T extends string> {
   selectedId: T
   idPrefix: string
   onChange: (id: T) => void
-  onRename: (id: T, label: string) => void
+  onRename: (label: string) => void
 }
 
 export const BuilderPresetTabs = <T extends string>({
@@ -31,7 +31,7 @@ export const BuilderPresetTabs = <T extends string>({
 
   useEffect(() => {
     setActiveTab(options.findIndex((option) => option.id === selectedId))
-  }, [options, selectedId])
+  }, [selectedId])
 
   const getTabElement = (id: T) => {
     return tabListRef.current!.querySelector<HTMLElement>(
@@ -149,7 +149,7 @@ export const BuilderPresetTabs = <T extends string>({
               options={options}
               onSubmit={(label) => {
                 setEditingId(null)
-                onRename(activeTabId, label)
+                onRename(label)
               }}
               setHasError={setHasEditingError}
               inputId={`${idPrefix}-tab-label-${activeTabId}`}
