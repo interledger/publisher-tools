@@ -1,8 +1,4 @@
-import {
-  BANNER_FONT_SIZES,
-  FONT_FAMILY_OPTIONS,
-  type BannerConfig
-} from '@shared/types'
+import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   BannerColorsSelector,
   Divider,
@@ -114,7 +110,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const profile = toolState.currentConfig as BannerConfig
+  const profile = useSnapshot(toolState.currentConfig)
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === profile.bannerFontName
@@ -208,7 +204,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
       >
         <BannerAnimationSelector
           value={profile.bannerSlideAnimation}
-          onChange={(value) => (profile.bannerSlideAnimation = value)}
+          onChange={(value) =>
+            (toolState.currentConfig.bannerSlideAnimation = value)
+          }
         />
       </InputFieldset>
 
@@ -219,12 +217,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGThumbnail className="w-5 h-5" />}
       >
         <BannerThumbnailSelector
-          isVisible={
-            typeof profile.bannerThumbnail === 'undefined' ||
-            !!profile.bannerThumbnail
-          }
+          thumbnail={profile.bannerThumbnail}
           onVisibilityChange={(visible) => {
-            profile.bannerThumbnail = visible ? 'default' : ''
+            toolState.currentConfig.bannerThumbnail = visible ? 'default' : ''
           }}
         />
       </InputFieldset>

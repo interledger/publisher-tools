@@ -3,16 +3,17 @@ import { Checkbox, Thumbnail } from '@/components'
 import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
 
 interface BannerThumbnailSelectorProps {
-  isVisible: boolean
+  thumbnail: string
   onVisibilityChange: (visible: boolean) => void
 }
 
 export function BannerThumbnailSelector({
-  isVisible,
+  thumbnail,
   onVisibilityChange
 }: BannerThumbnailSelectorProps) {
   const thumbnails = [wmLogo]
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)
+  const isVisible = Boolean(thumbnail)
 
   return (
     <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
