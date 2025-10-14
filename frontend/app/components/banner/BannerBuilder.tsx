@@ -247,9 +247,3 @@ function AppearanceBuilder({ onRefresh }: Props) {
     </BuilderAccordion>
   )
 }
-
-function getValidSlideAnimation(value: unknown): SlideAnimationType {
-  return typeof value === 'string' && value in SLIDE_ANIMATION
-    ? (value as SlideAnimationType)
-    : SLIDE_ANIMATION.Slide
-}
