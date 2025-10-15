@@ -1,5 +1,4 @@
 import React, { useState, useId, useRef, useEffect } from 'react'
-import { snapshot } from 'valtio'
 import { Tooltip } from './Tooltip'
 import { InputField } from './InputField'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
@@ -9,6 +8,7 @@ import { toolState, toolActions } from '~/stores/toolStore'
 import type { ElementErrors } from '~/lib/types'
 import { Heading5 } from '../Typography'
 import { useUIActions } from '~/stores/uiStore'
+import { useSnapshot } from 'valtio'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -16,7 +16,7 @@ import {
 } from '@shared/utils'
 
 export const ToolsWalletAddress = () => {
-  const snap = snapshot(toolState)
+  const snap = useSnapshot(toolState)
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)

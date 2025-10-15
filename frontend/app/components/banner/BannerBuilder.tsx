@@ -13,6 +13,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
+import { useCurrentConfigSnapshot } from '~/hooks/useCurrentConfigSnapshot'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -21,9 +22,9 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 import { toolState } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
-import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -60,8 +61,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  // https://github.com/pmndrs/valtio/issues/132
-  const profile = useSnapshot(toolState.currentConfig, { sync: true })
+  const profile = useCurrentConfigSnapshot()
 
   return (
     <BuilderAccordion
