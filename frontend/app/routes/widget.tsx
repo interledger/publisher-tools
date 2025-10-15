@@ -34,7 +34,7 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
-import { useUIActions, useUIState } from '~/stores/uiStore'
+import { useUIActions } from '~/stores/uiStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -75,7 +75,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
-  const uiState = useUIState()
   const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
