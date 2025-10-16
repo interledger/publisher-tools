@@ -1,4 +1,4 @@
-import type { MetaFunction } from '@remix-run/cloudflare'
+import type { MetaFunction } from 'react-router'
 import { useEffect, useRef } from 'react'
 
 export const meta: MetaFunction = () => {

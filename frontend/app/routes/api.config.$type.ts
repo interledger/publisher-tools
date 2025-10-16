@@ -1,8 +1,4 @@
-import {
-  json,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs
-} from '@remix-run/cloudflare'
+import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router'
 import { getDefaultData } from '@shared/default-data'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
@@ -36,7 +32,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       errors.fieldErrors = result.error?.flatten().fieldErrors || {
         walletAddress: undefined
       }
-      return json({ errors, success: false }, { status: 400 })
+      return Response.json({ errors, success: false }, { status: 400 })
     }
 
     const ownerWalletAddress = normalizeWalletAddress(
@@ -50,17 +46,17 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
       let fileContent = Object.assign({}, fileContentString)
       fileContent = filterDeepProperties(fileContent) as ConfigVersions
 
-      return json(fileContent)
+      return Response.json(fileContent)
     } catch (error) {
       // @ts-expect-error TODO
       if (error.name === 'NoSuchKey' || error.message.includes('404')) {
         // no user config exists for this wallet address - return empty response
-        return json({})
+        return Response.json({})
       }
       throw error
     }
   } catch (error) {
-    return json(
+    return Response.json(
       {
         error: `An error occurred while fetching data: ${(error as Error).message}`
       },
@@ -76,7 +72,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   const formData = await request.formData()
   const entries = Object.fromEntries(formData.entries())
   if (!entries.walletAddress) {
-    return json(
+    return Response.json(
       {
         errors: { fieldErrors: { walletAddress: 'Wallet address is required' } }
       },
@@ -95,7 +91,10 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
     errors.fieldErrors = result.error?.flatten().fieldErrors || {
       walletAddress: undefined
     }
-    return json({ message, errors, success: false, intent }, { status: 400 })
+    return Response.json(
+      { message, errors, success: false, intent },
+      { status: 400 }
+    )
   }
 
   let ownerWalletAddress: string = payload.walletAddress
@@ -115,7 +114,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       })
       session.set('payment-grant', grant)
 
-      return json(
+      return Response.json(
         {
           errors,
           grantRequired: grant.interact.redirect,
@@ -133,7 +132,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       errors.fieldErrors = {
         walletAddress: ['Could not verify ownership of wallet address']
       }
-      return json({ errors }, { status: 500 })
+      return Response.json({ errors }, { status: 500 })
     }
   }
 
@@ -150,7 +149,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       return handleDelete(storageService, formData, ownerWalletAddress)
 
     default:
-      return json({ error: 'Method not allowed' }, { status: 405 })
+      return Response.json({ error: 'Method not allowed' }, { status: 405 })
   }
 }
 
@@ -163,7 +162,7 @@ async function handleCreate(
     const version = formData.get('version') as string
 
     if (!version) {
-      return json(
+      return Response.json(
         { errors: { fieldErrors: { version: 'Version required' } } },
         { status: 400 }
       )
@@ -181,7 +180,7 @@ async function handleCreate(
       const err = error as Error
       if (err.name !== 'NoSuchKey') {
         // for NoSuchKey, continue with defaults
-        return json(
+        return Response.json(
           {
             error: `An error occurred while fetching data: ${(error as Error).message}`
           },
@@ -192,7 +191,7 @@ async function handleCreate(
 
     if (configs.default) {
       if (configs[version]) {
-        return json(
+        return Response.json(
           { errors: { fieldErrors: { version: 'Version already exists' } } },
           { status: 409 }
         )
@@ -208,9 +207,9 @@ async function handleCreate(
     }
 
     await storageService.putJson(walletAddress, configs)
-    return json(configs)
+    return Response.json(configs)
   } catch (error) {
-    return json({ error: (error as Error).message }, { status: 500 })
+    return Response.json({ error: (error as Error).message }, { status: 500 })
   }
 }
 
@@ -239,9 +238,9 @@ async function handleUpdate(
     await configStorage.putJson(walletAddress, filteredData)
 
     // TODO: reduce payload size, return only ok
-    return json(filteredData)
+    return Response.json(filteredData)
   } catch (error) {
-    return json({ error: (error as Error).message }, { status: 500 })
+    return Response.json({ error: (error as Error).message }, { status: 500 })
   }
 }
 
@@ -254,7 +253,7 @@ async function handleDelete(
     const version = formData.get('version') as string
 
     if (!version) {
-      return json(
+      return Response.json(
         { errors: { fieldErrors: { version: 'Version required' } } },
         { status: 400 }
       )
@@ -272,9 +271,9 @@ async function handleDelete(
       await configStorage.putJson(walletAddress, existingConfig)
     }
 
-    return json(existingConfig)
+    return Response.json(existingConfig)
   } catch (error) {
-    return json(
+    return Response.json(
       {
         error: `Error occurred while deleting version: ${(error as Error).message}`
       },

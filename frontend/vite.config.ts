@@ -1,7 +1,5 @@
-import {
-  vitePlugin as remix,
-  cloudflareDevProxyVitePlugin as remixCloudflareDevProxy
-} from '@remix-run/dev'
+import { reactRouter } from '@react-router/dev/vite'
+import { cloudflare } from '@cloudflare/vite-plugin'
 import { defineConfig, type Plugin } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { APP_BASEPATH } from './app/lib/constants.js'
@@ -29,26 +27,7 @@ export default defineConfig({
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL) // unused but declared
   },
-  plugins: [
-    remixCloudflareDevProxy(),
-    remix({
-      ssr: true,
-      basename: APP_BASEPATH,
-      ignoredRouteFiles: ['**/.*'],
-      appDirectory: 'app',
-      buildDirectory: 'build',
-      serverModuleFormat: 'esm',
-      future: {
-        v3_fetcherPersist: true,
-        v3_relativeSplatPath: true,
-        v3_throwAbortReason: true,
-        v3_singleFetch: true,
-        v3_lazyRouteDiscovery: true
-      }
-    }),
-    tsconfigPaths(),
-    devRedirectPlugin()
-  ],
+  plugins: [cloudflare(), reactRouter(), tsconfigPaths(), devRedirectPlugin()],
   resolve: {
     alias: {
       'crypto': 'crypto-browserify',
