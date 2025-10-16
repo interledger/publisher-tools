@@ -43,7 +43,7 @@ This is the unique identifier for your API key.
 This is the secret key used to sign payment requests, proving you own the wallet.
 
 1.  When you generate a key pair, your wallet will provide a private key.
-2.  This key needs to be converted to a specific format. Use the script below to do this.
+2.  **Important**: This key needs to be converted to a specific format. Use the script below to do this.
 
 **Security Note**: Never commit this value to version control.
 
