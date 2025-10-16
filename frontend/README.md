@@ -22,5 +22,3 @@ To run the frontend application for local development, use the `dev` script from
 ```sh
 pnpm -C frontend dev
 ```
-
-This will start the Remix development server, typically available at `http://localhost:3000`.
