@@ -6,7 +6,11 @@ import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
 import successIcon from '../../../assets/interaction/authorization_success.svg'
 import failedIcon from '../../../assets/interaction/authorization_failed.svg'
 import interactionStyles from './interaction.css?raw'
-import type { PaymentStatusData } from '@shared/types/payment'
+import {
+  isInteractionRejected,
+  isInteractionSuccess,
+  type PaymentStatus
+} from '@shared/types/payment'
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
@@ -50,24 +54,20 @@ export class PaymentInteraction extends LitElement {
   private handleMessage(event: MessageEvent) {
     if (event.data?.type !== 'GRANT_INTERACTION') return
 
-    const { paymentId, interact_ref, result } = event.data
+    window.removeEventListener('message', this._boundHandleMessage)
+    const { data } = event
     this._markPollingCompleted()
 
-    if (result === 'grant_rejected') {
-      this.currentView = 'failed'
-      this.errorMessage = 'Payment authorization rejected'
-      this.requestUpdate()
-      return
+    switch (true) {
+      case isInteractionSuccess(data):
+        this.handleInteractionSuccess(data.interact_ref)
+        break
+      case isInteractionRejected(data):
+        this.handleInteractionFail('Payment authorization rejected')
+        break
+      default:
+        this.handleInteractionFail('Invalid payment response received')
     }
-
-    if (!paymentId || !interact_ref) {
-      this.currentView = 'failed'
-      this.errorMessage = 'Invalid payment response received'
-      this.requestUpdate()
-      return
-    }
-
-    this.handleInteractionCompleted(interact_ref)
   }
 
   private cancel() {
@@ -89,7 +89,7 @@ export class PaymentInteraction extends LitElement {
     )
   }
 
-  private async handleInteractionCompleted(interactRef: string) {
+  private async handleInteractionSuccess(interactRef: string) {
     try {
       const {
         walletAddress,
@@ -117,28 +117,32 @@ export class PaymentInteraction extends LitElement {
       })
 
       if (!response.ok) {
-        this.currentView = 'failed'
-        this.errorMessage = 'Failed to process payment. Please try again.'
-        this.requestUpdate()
+        this.handleInteractionFail(
+          'Failed to process payment. Please try again'
+        )
         return
       }
 
       const result = (await response.json()) as CheckPaymentResult
 
       if (result.success === false) {
-        this.currentView = 'failed'
-        this.errorMessage = result.error?.message || 'Payment processing failed'
-        this.requestUpdate()
+        this.handleInteractionFail(
+          result.error?.message || 'Payment processing failed'
+        )
         return
       }
 
       this.currentView = 'success'
       this.requestUpdate()
     } catch {
-      this.currentView = 'failed'
-      this.errorMessage = 'There was an issue with your request.'
-      this.requestUpdate()
+      this.handleInteractionFail('There was an issue with your request')
     }
+  }
+
+  private handleInteractionFail(message: string) {
+    this.currentView = 'failed'
+    this.errorMessage = message
+    this.requestUpdate()
   }
 
   private async _startLongPolling({
@@ -162,13 +166,19 @@ export class PaymentInteraction extends LitElement {
         const res = await fetch(url, { signal })
 
         if (res.ok) {
-          const {
-            data: { interact_ref }
-          } = (await res.json()) as PaymentStatusData
+          const data = (await res.json()) as PaymentStatus
+          switch (true) {
+            case isInteractionSuccess(data):
+              void this.handleInteractionSuccess(data.interact_ref)
+              break
+            case isInteractionRejected(data):
+              this.handleInteractionFail('Payment authorization rejected')
+              break
+            default:
+              this.handleInteractionFail('Invalid payment response received')
+          }
 
-          this._markPollingCompleted()
-          this.handleInteractionCompleted(interact_ref)
-          return // success
+          return //success
         }
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {

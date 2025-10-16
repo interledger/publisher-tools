@@ -9,14 +9,16 @@ export type PaymentStatusRejected = {
   result: 'grant_rejected'
 }
 
-export type PaymentStatusData = {
-  data: {
-    type: string
-    paymentId: string
-    interact_ref: string
-    hash: string
-    result: string
-  }
+export function isInteractionSuccess(
+  params: PaymentStatus
+): params is PaymentStatusSuccess {
+  return 'interact_ref' in params
+}
+
+export function isInteractionRejected(
+  params: PaymentStatus
+): params is PaymentStatusRejected {
+  return 'result' in params && params.result === 'grant_rejected'
 }
 
 export type PaymentStatus = PaymentStatusSuccess | PaymentStatusRejected

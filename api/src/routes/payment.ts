@@ -113,16 +113,9 @@ app.get(
         )) as PaymentStatus
 
         if (status) {
-          if ('result' in status && status.result === 'grant_rejected') {
-            throw createHTTPException(403, 'Payment grant was rejected', {
-              paymentId,
-              result: 'grant_rejected'
-            })
-          }
-
           return json({
-            success: true,
-            data: { type: 'GRANT_INTERACTION', ...status }
+            type: 'GRANT_INTERACTION',
+            ...status
           })
         }
 

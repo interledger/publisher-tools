@@ -1,12 +1,12 @@
 import {
   json,
-  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   type MetaFunction
 } from '@remix-run/cloudflare'
 import { useEffect, useRef } from 'react'
-import { validatePaymentParams } from '~/utils/validate.client'
-import type { PaymentStatusData } from '@shared/types/payment.js'
+import { validatePaymentParams } from '~/utils/validate.server'
 import { KV_PAYMENTS_PREFIX } from '@shared/defines'
+import { useLoaderData } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,13 +15,21 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-export async function action({ request, context }: ActionFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
-  const body = (await request.json()) as PaymentStatusData
-  const {
-    data,
-    data: { paymentId }
-  } = body
+  const url = new URL(request.url)
+  const params: { [key: string]: string } = {}
+
+  url.searchParams.forEach((value, key) => {
+    params[key] = value
+  })
+
+  const validation = validatePaymentParams(params)
+  if (!validation.success) {
+    return json({ success: false, error: 'Invalid parameters', params })
+  }
+
+  const { paymentId } = validation.data
 
   try {
     const existingData = await env.PUBLISHER_TOOLS_KV.get(
@@ -29,52 +37,36 @@ export async function action({ request, context }: ActionFunctionArgs) {
     )
 
     if (existingData) {
-      return json({ success: true, message: 'Already stored' })
+      return json({ success: true, message: 'Already stored', params })
     }
 
     await env.PUBLISHER_TOOLS_KV.put(
       KV_PAYMENTS_PREFIX + paymentId,
-      JSON.stringify(data),
+      JSON.stringify(params),
       {
-        expirationTtl: 300 // 5min,
+        expirationTtl: 300 // 5min
       }
     )
 
-    return json({ success: true })
+    return json({ success: true, params })
   } catch {
     return json(
-      { success: false, error: 'Failed to store data' },
+      { success: false, error: 'Failed to store data', params },
       { status: 500 }
     )
   }
 }
 
 export default function PaymentComplete() {
+  const { params } = useLoaderData<typeof loader>()
   const hasPostedMessage = useRef(false)
 
   useEffect(() => {
     if (hasPostedMessage.current) return
 
-    const params: { [key: string]: string } = {}
-    new URLSearchParams(window.location.search).forEach((value, key) => {
-      params[key] = value
-    })
-
-    if (!hasPostedMessage.current && validatePaymentParams(params).success) {
-      hasPostedMessage.current = true
-      if (window.opener) {
-        window.opener.postMessage({ type: 'GRANT_INTERACTION', ...params }, '*')
-      } else {
-        fetch('/tools/payment-confirmation', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            data: params
-          })
-        })
-      }
+    hasPostedMessage.current = true
+    if (window.opener) {
+      window.opener.postMessage({ type: 'GRANT_INTERACTION', ...params }, '*')
     }
   }, [])
 
