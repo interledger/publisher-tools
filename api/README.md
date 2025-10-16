@@ -6,9 +6,9 @@ This package contains the Hono-based API server that powers the Publisher Tools.
 
 The API exposes endpoints related to the following functionalities:
 
-*   **Tool Configuration:** Handles fetching the configuration for the monetization tools (see `src/routes/get-config.ts`).
-*   **Payments:** Manages the Open Payments flow (see `src/routes/payment.ts`).
-*   **Probabilistic Revshare:** Handles logic related to probabilistic revenue sharing (see `src/routes/probabilistic-revshare.ts`).
+- **Tool Configuration:** Handles fetching the configuration for the monetization tools (see `src/routes/get-config.ts`).
+- **Payments:** Manages the Open Payments flow (see `src/routes/payment.ts`).
+- **Probabilistic Revshare:** Handles logic related to probabilistic revenue sharing (see `src/routes/probabilistic-revshare.ts`).
 
 ## Development
 

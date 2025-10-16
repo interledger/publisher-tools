@@ -12,14 +12,14 @@ Then, edit the `.dev.vars` file to set the required values as described below.
 
 ## Variables Summary
 
-| Variable                | Description                                             | Example Value                               |
-| ----------------------- | ------------------------------------------------------- | ------------------------------------------- |
-| `OP_KEY_ID`             | UUID v4 identifier for your Open Payments key.          | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`      |
-| `OP_PRIVATE_KEY`        | Base64-encoded private key for signing requests.        | (See conversion script below)               |
-| `OP_WALLET_ADDRESS`     | The URL of your Open Payments wallet address.           | `https://ilp.interledger-test.dev/my-wallet`  |
-| `AWS_ACCESS_KEY_ID`     | AWS access key for S3. Not used in local dev.           | `ABCDEFGHIJKLMN12OPQR`                      |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3. Not used in local dev.           | `ab1cD/2e/fGhIJ11kL13mN0pQrS45tu6V7w8X9yZ` |
-| `AWS_S3_ENDPOINT`       | The endpoint for the S3-compatible storage.             | `http://localhost:8081`                     |
+| Variable                | Description                                      | Example Value                                |
+| ----------------------- | ------------------------------------------------ | -------------------------------------------- |
+| `OP_KEY_ID`             | UUID v4 identifier for your Open Payments key.   | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`       |
+| `OP_PRIVATE_KEY`        | Base64-encoded private key for signing requests. | (See conversion script below)                |
+| `OP_WALLET_ADDRESS`     | The URL of your Open Payments wallet address.    | `https://ilp.interledger-test.dev/my-wallet` |
+| `AWS_ACCESS_KEY_ID`     | AWS access key for S3. Not used in local dev.    | `ABCDEFGHIJKLMN12OPQR`                       |
+| `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3. Not used in local dev.    | `ab1cD/2e/fGhIJ11kL13mN0pQrS45tu6V7w8X9yZ`   |
+| `AWS_S3_ENDPOINT`       | The endpoint for the S3-compatible storage.      | `http://localhost:8081`                      |
 
 ---
 
@@ -97,10 +97,11 @@ For local development, these values are ignored by the local S3 simulator. You c
 
 This tells the application where to find the S3 storage.
 
-*   **For Development**: Use the local S3 simulator, which runs on `http://localhost:8081`. This should be the default value in your `.dev.vars`.
-*   **For Production**: When deploying the application, this would be the URL of your actual S3 bucket endpoint.
+- **For Development**: Use the local S3 simulator, which runs on `http://localhost:8081`. This should be the default value in your `.dev.vars`.
+- **For Production**: When deploying the application, this would be the URL of your actual S3 bucket endpoint.
 
 ---
+
 ## Development vs Production
 
 ### Development Setup
@@ -140,4 +141,5 @@ Open the application on [localhost:3000](http://localhost:3000/tools/) try to us
 - Review the [contribution guidelines](.github/contributing.md)
 - For Web Monetization questions, visit [webmonetization.org](https://webmonetization.org/)
 - For Interledger information, see [interledger.org](https://interledger.org)
+
 ---

@@ -9,8 +9,9 @@ It takes the raw source code from the `@tools/components` package, bundles it us
 The core of this package is the custom build script located at `build.js`. This script uses `esbuild` to compile the TypeScript source from `src/` and the components from the `components` package into distributable files.
 
 The main entry points for the build are:
-*   `src/banner.ts`
-*   `src/widget.ts`
+
+- `src/banner.ts`
+- `src/widget.ts`
 
 The output is placed in the `dist/` directory.
 

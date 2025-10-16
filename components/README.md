@@ -4,8 +4,8 @@ This package contains the core, embeddable web components for the Publisher Tool
 
 ## Core Components
 
-*   **Banner:** A notification banner that can be displayed on a publisher's site. The source is located in `src/banner.ts`.
-*   **Widget:** The interactive monetization widget. Its source code is in the `src/widget/` directory.
+- **Banner:** A notification banner that can be displayed on a publisher's site. The source is located in `src/banner.ts`.
+- **Widget:** The interactive monetization widget. Its source code is in the `src/widget/` directory.
 
 ## Build Process
 
