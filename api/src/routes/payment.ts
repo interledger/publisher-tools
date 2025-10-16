@@ -1,14 +1,15 @@
 import { zValidator } from '@hono/zod-validator'
-
 import { APP_URL } from '@shared/defines'
-import { createHTTPException } from '../utils/utils'
+import { createHTTPException, sleep } from '../utils/utils'
 import { OpenPaymentsService } from '../utils/open-payments.js'
 import {
   PaymentQuoteSchema,
   PaymentGrantSchema,
-  PaymentFinalizeSchema
+  PaymentFinalizeSchema,
+  PaymentStatusParamSchema
 } from '../schemas/payment.js'
-
+import type { PaymentStatus } from '@shared/types/payment'
+import { KV_PAYMENTS_PREFIX } from '@shared/defines'
 import { app } from '../app.js'
 
 app.post(
@@ -90,6 +91,67 @@ app.post(
     }
   }
 )
+
+app.get(
+  '/payment/status/:paymentId',
+  zValidator('param', PaymentStatusParamSchema),
+  async ({ req, json, env }) => {
+    const { paymentId } = req.param()
+
+    const POLLING_MAX_DURATION = 25000
+    const POLLING_INITIAL_DELAY = 1500
+    const POLLING_INTERVAL = 1500
+    const signal = AbortSignal.timeout(POLLING_MAX_DURATION)
+
+    try {
+      await sleep(POLLING_INITIAL_DELAY)
+
+      while (!signal.aborted) {
+        const status = (await env.PUBLISHER_TOOLS_KV.get(
+          KV_PAYMENTS_PREFIX + paymentId,
+          'json'
+        )) as PaymentStatus
+
+        if (status) {
+          return json({
+            type: 'GRANT_INTERACTION',
+            ...status
+          })
+        }
+
+        await waitWithAbort(POLLING_INTERVAL, signal)
+      }
+
+      throw new Error('AbortError')
+    } catch (error) {
+      if (error instanceof Error && error.message === 'TimeoutError') {
+        throw createHTTPException(504, 'Payment status polling timeout', {})
+      }
+
+      throw createHTTPException(500, 'Failed to retrieve data', error)
+    }
+  }
+)
+
+function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(new Error('TimeoutError'))
+      return
+    }
+
+    const timer = setTimeout(() => {
+      resolve()
+    }, ms)
+
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new Error('TimeoutError'))
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+}
 
 function isAllowedRedirectUrl(redirectUrl: string) {
   const redirectUrlOrigin = new URL(redirectUrl).origin

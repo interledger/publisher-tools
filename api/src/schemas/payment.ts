@@ -81,6 +81,13 @@ export const PaymentFinalizeSchema = z.object({
   note: z.string().optional().default('Tools payment')
 })
 
+export const PaymentStatusParamSchema = z.object({
+  paymentId: z
+    .string()
+    .min(1, 'Payment ID is required')
+    .max(100, 'Payment ID invalid')
+})
+
 export const WalletAddressParamSchema = z.object({
   wa: z.string().min(1, 'Wallet address is required'),
   version: z.string().optional().default('default')

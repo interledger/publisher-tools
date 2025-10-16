@@ -30,7 +30,9 @@ export default defineConfig({
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL) // unused but declared
   },
   plugins: [
-    remixCloudflareDevProxy(),
+    remixCloudflareDevProxy({
+      persist: { path: '../.wrangler/v3' }
+    }),
     remix({
       ssr: true,
       basename: APP_BASEPATH,
