@@ -1,5 +1,10 @@
 {
-  "include": ["app/**/*.ts", "app/**/*.tsx", "worker.ts"],
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "worker.ts",
+    ".react-router/types/**/*"
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -28,8 +33,10 @@
     },
     "types": [
       "./worker-configuration.d.ts",
+      "@react-router/node",
       "vite/client",
       "./tools-components.d.ts"
-    ]
+    ],
+    "rootDirs": [".", "./.react-router/types"]
   }
 }

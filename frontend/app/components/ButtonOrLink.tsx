@@ -1,4 +1,4 @@
-import { Link, type LinkProps } from '@remix-run/react'
+import { Link, type LinkProps } from 'react-router';
 import { forwardRef, type ComponentProps } from 'react'
 
 type AnchorOrLinkProps = ComponentProps<'a'> & Partial<LinkProps>

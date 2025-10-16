@@ -1,8 +1,4 @@
-import {
-  json,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs
-} from '@remix-run/cloudflare'
+import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getDefaultData } from '@shared/default-data'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
