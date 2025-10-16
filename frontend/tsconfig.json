@@ -33,7 +33,6 @@
     },
     "types": [
       "./worker-configuration.d.ts",
-      "@react-router/node",
       "vite/client",
       "./tools-components.d.ts"
     ],
