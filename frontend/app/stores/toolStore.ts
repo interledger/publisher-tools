@@ -11,6 +11,7 @@ const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
+  'buildStep',
   'opWallet',
   'cdnUrl'
 ])
@@ -57,9 +58,9 @@ export const toolState = proxy({
    */
   savedConfigurations: createDefaultConfigs(),
   /*
-   * modifiedVersions: tracks the configurations that are modified locally.
+   * dirtyProfiles: tracks the configurations that are modified locally.
    */
-  modifiedVersions: [] as StableKey[],
+  dirtyProfiles: new Set<StableKey>(),
   activeVersion: 'version1' as StableKey,
   currentToolType: 'unknown' as ToolType,
 
@@ -94,6 +95,10 @@ export const toolState = proxy({
   buildStep: 'unfilled' as StepStatus
 })
 
+subscribe(toolState, () => {
+  updateChangesTracking(toolState.activeVersion)
+})
+
 export const toolActions = {
   get versionOptions() {
     return STABLE_KEYS.map((key) => ({
@@ -124,7 +129,7 @@ export const toolActions = {
       toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
     })
 
-    toolState.modifiedVersions = []
+    toolState.dirtyProfiles.clear()
   },
 
   setModal: (modal: ModalType | undefined) => {
@@ -195,7 +200,7 @@ export const toolActions = {
   /**
    * Checks if any local changes have been made to the configurations.
    */
-  hasCustomEdits: (): boolean => toolState.modifiedVersions.length > 0,
+  hasCustomEdits: (): boolean => toolState.dirtyProfiles.size > 0,
   saveConfig: async (callToActionType: 'save-success' | 'script') => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
@@ -261,10 +266,9 @@ export const toolActions = {
           ...toolState.configurations[profileId]
         }
       })
-      toolState.modifiedVersions = []
 
       toolState.modal = { type: callToActionType }
-
+      toolState.dirtyProfiles.clear()
       return { success: true, data }
     } catch (error) {
       console.error('Save error:', error)
@@ -304,7 +308,7 @@ export const toolActions = {
    * 2. Retrieves fetched configurations from the modal state
    * 3. For each stable key: keeps local if selected, otherwise uses database version
    * 4. Updates currentConfig if the active version is being overridden
-   * 5. Removes overridden versions from modifiedVersions array
+   * 5. Removes overridden versions from dirtyProfiles set
    *
    * State Management:
    * - configurations: Updated with database versions where they exist and aren't selected to keep
@@ -344,12 +348,7 @@ export const toolActions = {
         toolState.configurations[stableKey] = { ...hasDatabaseVersion }
 
         // remove from modified configs since we're using database version
-        const wasModified = toolState.modifiedVersions.includes(stableKey)
-        if (wasModified) {
-          toolState.modifiedVersions = toolState.modifiedVersions.filter(
-            (key) => key !== stableKey
-          )
-        }
+        toolState.dirtyProfiles.delete(stableKey)
       }
     })
 
@@ -404,7 +403,7 @@ export const toolActions = {
       ElementConfigType
     >
     const hasCustomEdits = Object.keys(fetchedConfigs).length > 0
-    const hasLocalModifications = toolState.modifiedVersions.length > 0
+    const hasLocalModifications = toolState.dirtyProfiles.size > 0
 
     return {
       walletAddressId: walletAddress,
@@ -440,7 +439,7 @@ export const toolActions = {
       type: 'override-preset',
       fetchedConfigs,
       currentLocalConfigs: { ...toolState.configurations },
-      modifiedConfigs: [...toolState.modifiedVersions]
+      modifiedConfigs: [...toolState.dirtyProfiles]
     })
   },
 
@@ -448,6 +447,26 @@ export const toolActions = {
     if (toolState.modal?.type === 'override-preset') {
       toolState.modal = undefined
     }
+  }
+}
+
+function isConfigModified(profileId: StableKey): boolean {
+  const currentConfig = toolState.configurations[profileId]
+  const savedConfig = toolState.savedConfigurations[profileId]
+
+  if (!currentConfig || !savedConfig) {
+    return false
+  }
+
+  return JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
+}
+
+function updateChangesTracking(profileId: StableKey) {
+  const isModified = isConfigModified(profileId)
+  if (isModified) {
+    toolState.dirtyProfiles.add(profileId)
+  } else {
+    toolState.dirtyProfiles.delete(profileId)
   }
 }
 
@@ -465,7 +484,14 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         Object.keys(parsed).every((key) => key in toolState)
 
       if (validKeys) {
-        Object.assign(toolState, parsedStorageData(parsed))
+        const loadedData = parsedStorageData(parsed)
+        Object.assign(toolState, loadedData)
+
+        // TODO: better handling of Set deserialization after
+        // https://github.com/interledger/publisher-tools/issues/318
+        if (!(toolState.dirtyProfiles instanceof Set)) {
+          toolState.dirtyProfiles = new Set()
+        }
       } else {
         throw new Error('saved configuration not valid')
       }
@@ -485,11 +511,23 @@ export function persistState() {
 }
 
 function createStorageState(state: typeof toolState) {
-  return omit(state, EXCLUDED_FROM_STORAGE)
+  const omitted = omit(state, EXCLUDED_FROM_STORAGE)
+
+  return {
+    ...omitted,
+    dirtyProfiles: Array.from(state.dirtyProfiles)
+  }
 }
 
 function parsedStorageData(parsed: Record<string, unknown>) {
-  return omit(parsed, EXCLUDED_FROM_STORAGE)
+  const omitted = omit(parsed, EXCLUDED_FROM_STORAGE)
+
+  return {
+    ...omitted,
+    dirtyProfiles: new Set(
+      Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
+    )
+  }
 }
 
 export function omit<T extends Record<string, unknown>>(
@@ -504,12 +542,14 @@ export function omit<T extends Record<string, unknown>>(
 }
 
 function isContentProperty(key: string): boolean {
-  return key.endsWith('Text')
+  return key.endsWith('Text') || key.endsWith('Visible')
 }
 
+// TODO: remove with versioning changes
 export function splitConfigProperties<T extends ElementConfigType>(config: T) {
+  const { versionName: _versionName, ...rest } = config
   const { content = [], appearance = [] } = groupBy(
-    Object.entries(config),
+    Object.entries(rest),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
   )
 

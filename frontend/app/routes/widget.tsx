@@ -155,7 +155,7 @@ export default function Widget() {
   }
 
   const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = toolState.savedConfigurations[toolState.activeVersion]
+    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
     const { content, appearance } = splitConfigProperties(savedConfig)
     Object.assign(
       toolState.currentConfig,
@@ -216,13 +216,7 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderTabs
-                      onBuildStepComplete={(isComplete) => {
-                        toolActions.setBuildCompleteStep(
-                          isComplete ? 'filled' : 'unfilled'
-                        )
-                      }}
-                    >
+                    <BuilderTabs>
                       <WidgetBuilder onRefresh={handleRefresh} />
                     </BuilderTabs>
 

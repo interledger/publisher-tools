@@ -7,11 +7,13 @@ import React, {
   useEffect
 } from 'react'
 import type { ReactNode } from 'react'
+import { toolActions } from '~/stores/toolStore'
 
 type UIState = {
   contentComplete: boolean
   appearanceComplete: boolean
   activeSection: 'content' | 'appearance' | null
+  buildStepComplete: boolean
 }
 
 interface WalletInputRef {
@@ -44,6 +46,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [appearanceComplete, setAppearanceComplete] = useState(false)
   const [activeSection, setActiveSection] =
     useState<UIState['activeSection']>(null)
+  const buildStepComplete = contentComplete && appearanceComplete
 
   useEffect(() => {
     if (shouldFocusWallet && walletInputRef.current) {
@@ -51,6 +54,10 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       setShouldFocusWallet(false)
     }
   }, [shouldFocusWallet])
+
+  useEffect(() => {
+    toolActions.setBuildCompleteStep(buildStepComplete ? 'filled' : 'unfilled')
+  }, [buildStepComplete])
 
   const focusWalletInput = useCallback(() => {
     setShouldFocusWallet(true)
@@ -67,7 +74,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const state: UIState = {
     contentComplete,
     activeSection,
-    appearanceComplete
+    appearanceComplete,
+    buildStepComplete
   }
 
   const actions: UIActions = {
