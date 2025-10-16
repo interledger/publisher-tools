@@ -33,7 +33,7 @@ These variables are required to connect to an Interledger wallet for handling pa
 
 This is the unique identifier for your API key.
 
-1.  Sign up for an [Interledger Testnet wallet](https://wallet.interledger.test.dev).
+1.  Sign up for an [Interledger Testnet wallet](https://wallet.interledger-test.dev).
 2.  In your wallet dashboard, navigate to the **Developers** section from the side menu.
 3.  Generate a new key pair.
 4.  Copy the **Key ID** (which is in UUID format) and paste it into your `.dev.vars` file.
