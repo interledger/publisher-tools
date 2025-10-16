@@ -1,4 +1,4 @@
-import { redirect, type LoaderFunctionArgs } from 'react-router';
+import { redirect, type LoaderFunctionArgs } from 'react-router'
 import { commitSession, getSession } from '~/utils/session.server'
 import { isGrantValidAndAccepted } from '~/utils/open-payments.server'
 

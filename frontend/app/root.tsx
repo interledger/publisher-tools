@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from 'react-router';
+import type { LinksFunction, MetaFunction } from 'react-router'
 import {
   Links,
   Meta,
@@ -6,8 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
-  isRouteErrorResponse,
-} from 'react-router';
+  isRouteErrorResponse
+} from 'react-router'
 import type { ReactNode } from 'react'
 import stylesheet from '~/tailwind.css?url'
 import { Button } from './components/index.js'

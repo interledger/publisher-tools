@@ -1,5 +1,5 @@
 import React, { useId } from 'react'
-import { Link } from 'react-router';
+import { Link } from 'react-router'
 import { PillTag } from '@/components'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 
