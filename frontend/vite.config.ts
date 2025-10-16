@@ -31,7 +31,7 @@ export default defineConfig({
   },
   plugins: [
     remixCloudflareDevProxy({
-      persist: { path: '../api/.wrangler/state/v3' }
+      persist: { path: '../.wrangler/v3' }
     }),
     remix({
       ssr: true,

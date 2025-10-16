@@ -4,6 +4,9 @@ import {
   type MetaFunction
 } from '@remix-run/cloudflare'
 import { useEffect, useRef } from 'react'
+import { validatePaymentParams } from '~/utils/validate.client'
+import type { PaymentStatusData } from '@shared/types/payment.js'
+import { KV_PAYMENTS_PREFIX } from '@shared/defines'
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,19 +17,28 @@ export const meta: MetaFunction = () => {
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const { env } = context.cloudflare
-  const body = (await request.json()) as { data: object; paymentId: string }
-  const { data, paymentId } = body
+  const body = (await request.json()) as PaymentStatusData
+  const {
+    data,
+    data: { paymentId }
+  } = body
 
   try {
-    const existingData = await env.PUBLISHER_TOOLS_KV.get(paymentId)
+    const existingData = await env.PUBLISHER_TOOLS_KV.get(
+      KV_PAYMENTS_PREFIX + paymentId
+    )
 
     if (existingData) {
       return json({ success: true, message: 'Already stored' })
     }
 
-    await env.PUBLISHER_TOOLS_KV.put(paymentId, JSON.stringify(data), {
-      expirationTtl: 300 // 5min,
-    })
+    await env.PUBLISHER_TOOLS_KV.put(
+      KV_PAYMENTS_PREFIX + paymentId,
+      JSON.stringify(data),
+      {
+        expirationTtl: 300 // 5min,
+      }
+    )
 
     return json({ success: true })
   } catch {
@@ -48,7 +60,7 @@ export default function PaymentComplete() {
       params[key] = value
     })
 
-    if (!hasPostedMessage.current) {
+    if (!hasPostedMessage.current && validatePaymentParams(params).success) {
       hasPostedMessage.current = true
       if (window.opener) {
         window.opener.postMessage({ type: 'GRANT_INTERACTION', ...params }, '*')
@@ -59,8 +71,7 @@ export default function PaymentComplete() {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            data: params,
-            paymentId: params.paymentId
+            data: params
           })
         })
       }

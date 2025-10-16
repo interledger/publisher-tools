@@ -3,16 +3,7 @@ import { cors } from 'hono/cors'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
 import { serializeError } from './utils/utils.js'
-
-interface KVNamespace {
-  get(key: string): Promise<string | null>
-  put(
-    key: string,
-    value: string,
-    options?: { expirationTtl?: number }
-  ): Promise<void>
-  delete(key: string): Promise<void>
-}
+import type { KVNamespace } from '@cloudflare/workers-types'
 
 export type Env = {
   AWS_ACCESS_KEY_ID: string

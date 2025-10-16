@@ -31,3 +31,5 @@ export const AWS_PREFIX =
   typeof BUILD_AWS_PREFIX === 'string' && BUILD_AWS_PREFIX
     ? BUILD_AWS_PREFIX
     : DEV_AWS_PREFIX
+
+export const KV_PAYMENTS_PREFIX = 'payments/'

@@ -2,22 +2,11 @@ import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
 import type { WidgetController } from '../../controller'
-
-import interactionStyles from './interaction.css?raw'
-
 import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
 import successIcon from '../../../assets/interaction/authorization_success.svg'
 import failedIcon from '../../../assets/interaction/authorization_failed.svg'
-
-type PaymentStatusResponse = {
-  data: {
-    type: string
-    paymentId: string
-    interact_ref: string
-    hash: string
-    result: string
-  }
-}
+import interactionStyles from './interaction.css?raw'
+import type { PaymentStatusData } from '@shared/types/payment'
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
@@ -48,6 +37,7 @@ export class PaymentInteraction extends LitElement {
     this._boundHandleMessage = this.handleMessage.bind(this)
     window.addEventListener('message', this._boundHandleMessage)
 
+    this._pollingAbortController = new AbortController()
     this._startLongPolling()
   }
 
@@ -59,10 +49,9 @@ export class PaymentInteraction extends LitElement {
 
   private handleMessage(event: MessageEvent) {
     if (event.data?.type !== 'GRANT_INTERACTION') return
-    if (this._interactionCompleted) return
 
     const { paymentId, interact_ref, result } = event.data
-    this._markCompleted()
+    this._markPollingCompleted()
 
     if (result === 'grant_rejected') {
       this.currentView = 'failed'
@@ -82,7 +71,7 @@ export class PaymentInteraction extends LitElement {
   }
 
   private cancel() {
-    this._markCompleted()
+    this._markPollingCompleted()
     this.dispatchEvent(
       new CustomEvent('interaction-cancelled', {
         bubbles: true,
@@ -152,56 +141,64 @@ export class PaymentInteraction extends LitElement {
     }
   }
 
-  private async _startLongPolling(): Promise<void> {
+  private async _startLongPolling({
+    maxAttempts = 3,
+    signal = this._pollingAbortController?.signal
+  }: Partial<{
+    maxAttempts?: number
+    signal?: AbortSignal
+  }> = {}): Promise<void> {
     if (this._interactionCompleted) return
-    this._pollingAbortController = new AbortController()
+    let attempt = 0
 
-    try {
-      const { paymentId } = this.configController.state
-      const { apiUrl } = this.configController.config
-      const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
-      const res = await fetch(url, {
-        signal: this._pollingAbortController.signal
-      })
+    while (++attempt <= maxAttempts) {
+      signal?.throwIfAborted()
 
-      if (this._interactionCompleted) return
-      this._markCompleted()
+      try {
+        const { paymentId } = this.configController.state
+        const { apiUrl } = this.configController.config
+        const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
 
-      if (res.ok) {
-        const {
-          data: { interact_ref }
-        } = (await res.json()) as PaymentStatusResponse
+        const res = await fetch(url, { signal })
 
-        this.handleInteractionCompleted(interact_ref)
-      } else {
-        if (res.status === 504) {
-          this.errorMessage = 'Payment authorization timed out'
-        } else {
-          this.errorMessage = 'Failed to check payment status'
+        if (res.ok) {
+          const {
+            data: { interact_ref }
+          } = (await res.json()) as PaymentStatusData
+
+          this._markPollingCompleted()
+          this.handleInteractionCompleted(interact_ref)
+          return // success
         }
-        this.currentView = 'failed'
-        this.requestUpdate()
-      }
-    } catch (error) {
-      // don't handle errors if the request was aborted, another method succeeded
-      if (error instanceof Error && error.name === 'AbortError') {
-        return
-      }
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          // don't handle errors if the request was aborted, another method succeeded
+          return
+        }
 
-      if (!this._interactionCompleted) {
-        this._markCompleted()
-        this.currentView = 'failed'
-        this.errorMessage = 'Failed to check payment status'
-        this.requestUpdate()
+        this._markPollingFailed('Failed to check payment status')
+        throw error
       }
     }
+
+    this._markPollingFailed('Payment authorization timed out')
   }
 
-  private _markCompleted() {
+  private _markPollingCompleted() {
     if (this._interactionCompleted) return
 
     this._interactionCompleted = true
     this._cancelPolling()
+  }
+
+  private _markPollingFailed(message: string) {
+    if (this._interactionCompleted) return
+    this._interactionCompleted = true
+
+    this._cancelPolling()
+    this.currentView = 'failed'
+    this.errorMessage = message
+    this.requestUpdate()
   }
 
   private _cancelPolling() {
