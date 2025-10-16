@@ -50,7 +50,8 @@ This is the secret key used to sign payment requests, proving you own the wallet
 <details>
 <summary><b>Click to see Private Key Conversion Script</b></summary>
 
-Copy your private key from the wallet, paste it into the `currentKey` variable in this script, and run it (for example, in your browser's developer console). Use the output as your `OP_PRIVATE_KEY` value.
+After copying your private key, run this script to convert it to the correct format.\
+Replace `currentKey` value string with your copied private key, then use the output as your `OP_PRIVATE_KEY` value:
 
 ```javascript
 // Paste your private key from the wallet here
