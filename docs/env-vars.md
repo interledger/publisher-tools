@@ -57,7 +57,6 @@ Replace `currentKey` value string with your copied private key, then use the out
 // Paste your private key from the wallet here
 const currentKey = ''
 
-// This script converts the key to the required format
 const derBytes = atob(
   currentKey
     .replace('-----BEGIN PRIVATE KEY-----', '')
