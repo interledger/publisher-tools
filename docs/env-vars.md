@@ -21,8 +21,6 @@ Then, edit the `.dev.vars` file to set the required values as described below.
 | `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3. Not used in local dev.    | `ab1cD/2e/fGhIJ11kL13mN0pQrS45tu6V7w8X9yZ`   |
 | `AWS_S3_ENDPOINT`       | The endpoint for the S3-compatible storage.      | `http://localhost:8081`                      |
 
----
-
 ## Detailed Configuration
 
 ### Open Payments Configuration
@@ -54,7 +52,7 @@ After copying your private key, run this script to convert it to the correct for
 Replace `currentKey` value string with your copied private key, then use the output as your `OP_PRIVATE_KEY` value:
 
 ```javascript
-// Paste your private key from the wallet here
+// paste your private key from the wallet here
 const currentKey = ''
 
 const derBytes = atob(
@@ -95,12 +93,35 @@ For local development, these values are ignored by the local S3 simulator. You c
 
 #### `AWS_S3_ENDPOINT`
 
-This tells the application where to find the S3 storage.
+**For Development**: Use the local S3 simulator, which runs on `http://localhost:8081`. This should be the default value in your `.dev.vars`.
 
-- **For Development**: Use the local S3 simulator, which runs on `http://localhost:8081`. This should be the default value in your `.dev.vars`.
-- **For Production**: When deploying the application, this would be the URL of your actual S3 bucket endpoint.
+```
+AWS_S3_ENDPOINT="http://localhost:8081"
+```
 
----
+**For Production**: Use your actual S3 bucket endpoint, this would be the URL of your actual S3 bucket endpoint.
+
+```
+AWS_S3_ENDPOINT="https://your-bucket-name.s3.your-region.amazonaws.com"
+```
+
+<details>
+<summary><b>How to get real AWS keys (for production use)</b></summary>
+
+1. Sign in to the [AWS Management Console](https://aws.amazon.com/console/)
+2. Navigate to IAM (Identity and Access Management)
+3. In the left sidebar, select "Users"
+4. Click on your user or create a new user with S3 permissions
+5. Go to the "Security credentials" tab
+6. Scroll down to "Access keys" and click "Create access key"
+7. Choose "Application running outside AWS"
+8. Copy the Access key ID
+   Make sure to save both the Access Key ID and Secret Access Key when they are displayed, as AWS will not show the secret key again.
+
+**Required Permissions**: S3 read/write access\
+**Security Note**: Never commit this value to version control
+
+</details>
 
 ## Development vs Production
 
@@ -141,5 +162,3 @@ Open the application on [localhost:3000](http://localhost:3000/tools/) try to us
 - Review the [contribution guidelines](.github/contributing.md)
 - For Web Monetization questions, visit [webmonetization.org](https://webmonetization.org/)
 - For Interledger information, see [interledger.org](https://interledger.org)
-
----
