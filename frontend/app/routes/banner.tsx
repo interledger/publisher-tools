@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
 import { useLoaderData, useNavigate } from '@remix-run/react'
-import { useUI } from '~/stores/uiStore'
+import { useUIActions } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   type LoaderFunctionArgs,
@@ -34,7 +34,6 @@ import {
   loadState,
   splitConfigProperties
 } from '~/stores/toolStore'
-
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
@@ -78,7 +77,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
-  const { actions: uiActions } = useUI()
+  const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -281,11 +280,7 @@ export default function Banner() {
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
                     <BuilderBackground onPreviewClick={handlePreviewClick}>
-                      <BannerPreview
-                        ref={bannerRef}
-                        profile={snap.currentConfig}
-                        cdnUrl={snap.cdnUrl}
-                      />
+                      <BannerPreview ref={bannerRef} cdnUrl={snap.cdnUrl} />
                     </BuilderBackground>
                   </div>
                 </div>

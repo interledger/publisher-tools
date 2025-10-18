@@ -9,7 +9,6 @@ import {
   CornerRadiusSelector,
   WidgetColorsSelector
 } from '@/components'
-import { useUI } from '~/stores/uiStore'
 import BuilderAccordion from '@/components/BuilderAccordion'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
@@ -23,6 +22,7 @@ import {
   SVGText
 } from '~/assets/svg'
 import { toolState } from '~/stores/toolStore'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -57,7 +57,8 @@ export function WidgetBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
+  const uiState = useUIState()
+  const uiActions = useUIActions()
   const profile = toolState.currentConfig as WidgetConfig
 
   return (
@@ -103,7 +104,8 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
+  const uiState = useUIState()
+  const uiActions = useUIActions()
   const profile = toolState.currentConfig as WidgetConfig
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
