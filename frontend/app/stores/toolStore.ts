@@ -446,6 +446,14 @@ export const toolActions = {
     }
   },
 
+  handleVersionNameChange: (newName: string) => {
+    toolState.currentConfig.versionName = newName
+  },
+
+  useCurrentConfigSnapshot: (): ElementConfigType => {
+    return useSnapshot(toolState).currentConfig
+  },
+
   /**
    * The { sync: true } option ensures synchronous updates to prevent stale closures
    * and inconsistent state. Without sync: true, there can be a brief delay where the
@@ -453,8 +461,9 @@ export const toolActions = {
    *
    * See: https://github.com/pmndrs/valtio/issues/132
    */
-  useCurrentConfigSnapshot: (): ElementConfigType =>
-    useSnapshot(toolState, { sync: true }).currentConfig
+  useCurrentConfigSnapshotSync: (): ElementConfigType => {
+    return useSnapshot(toolState, { sync: true }).currentConfig
+  }
 }
 
 function isConfigModified(profileId: StableKey): boolean {

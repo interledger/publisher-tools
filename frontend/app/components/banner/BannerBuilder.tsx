@@ -22,8 +22,7 @@ import {
   SVGThumbnail
 } from '~/assets/svg'
 import { useUIActions, useUIState } from '~/stores/uiStore'
-import { toolState, toolActions } from '~/stores/toolStore'
-import { useSnapshot } from 'valtio'
+import { toolActions, toolState } from '~/stores/toolStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -60,7 +59,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const snap = toolActions.useCurrentConfigSnapshot()
+  const snap = toolActions.useCurrentConfigSnapshotSync()
   const profile = toolState.currentConfig
 
   return (
@@ -108,7 +107,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const { currentConfig: snap } = useSnapshot(toolState)
+  const snap = toolActions.useCurrentConfigSnapshot()
   const profile = toolState.currentConfig
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(

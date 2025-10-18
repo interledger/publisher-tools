@@ -11,7 +11,7 @@ export function BuilderTabs({ children }: React.PropsWithChildren) {
   }
 
   const handleTabLabelChange = (newLabel: string) => {
-    toolState.currentConfig.versionName = newLabel
+    toolActions.handleVersionNameChange(newLabel)
   }
 
   // derive tab options consistently from snapshot

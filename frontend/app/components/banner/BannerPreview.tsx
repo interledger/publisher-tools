@@ -6,8 +6,7 @@ import React, {
   useState
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
-import { useSnapshot } from 'valtio'
-import { toolState } from '~/stores/toolStore'
+import { toolActions } from '~/stores/toolStore'
 
 export interface BannerHandle {
   triggerPreview: () => void
@@ -23,7 +22,7 @@ export const BannerPreview = ({
   ref
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const { currentConfig: profile } = useSnapshot(toolState)
+  const profile = toolActions.useCurrentConfigSnapshot()
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerElement | null>(null)
 
