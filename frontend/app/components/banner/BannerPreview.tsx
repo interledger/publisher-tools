@@ -6,7 +6,7 @@ import React, {
   useState
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
-import { toolActions } from '~/stores/toolStore'
+import { useCurrentConfigSync } from '~/stores/toolStore'
 
 export interface BannerHandle {
   triggerPreview: () => void
@@ -22,7 +22,7 @@ export const BannerPreview = ({
   ref
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const profile = toolActions.useCurrentConfigSnapshot()
+  const [snap] = useCurrentConfigSync()
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerElement | null>(null)
 
@@ -52,21 +52,21 @@ export const BannerPreview = ({
   const bannerConfig = useMemo(() => {
     return {
       cdnUrl,
-      bannerTitleText: profile.bannerTitleText,
-      bannerDescriptionText: profile.bannerDescriptionText,
-      isBannerDescriptionVisible: profile.bannerDescriptionVisible,
-      bannerPosition: profile.bannerPosition,
-      bannerBorderRadius: profile.bannerBorder,
-      bannerSlideAnimation: profile.bannerSlideAnimation,
-      bannerThumbnail: profile.bannerThumbnail,
+      bannerTitleText: snap.bannerTitleText,
+      bannerDescriptionText: snap.bannerDescriptionText,
+      isBannerDescriptionVisible: snap.bannerDescriptionVisible,
+      bannerPosition: snap.bannerPosition,
+      bannerBorderRadius: snap.bannerBorder,
+      bannerSlideAnimation: snap.bannerSlideAnimation,
+      bannerThumbnail: snap.bannerThumbnail,
       theme: {
-        backgroundColor: profile.bannerBackgroundColor,
-        textColor: profile.bannerTextColor,
-        fontSize: profile.bannerFontSize,
-        fontFamily: profile.bannerFontName
+        backgroundColor: snap.bannerBackgroundColor,
+        textColor: snap.bannerTextColor,
+        fontSize: snap.bannerFontSize,
+        fontFamily: snap.bannerFontName
       }
     } as BannerConfig
-  }, [profile, cdnUrl])
+  }, [snap, cdnUrl])
 
   useEffect(() => {
     if (bannerContainerRef.current && isLoaded) {

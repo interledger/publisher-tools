@@ -100,6 +100,16 @@ subscribe(toolState, () => {
   updateChangesTracking(toolState.activeVersion)
 })
 
+export function useCurrentConfig(): [ElementConfigType, ElementConfigType] {
+  const snapshot = useSnapshot(toolState).currentConfig
+  return [snapshot, toolState.currentConfig]
+}
+
+export function useCurrentConfigSync(): [ElementConfigType, ElementConfigType] {
+  const snapshot = useSnapshot(toolState, { sync: true }).currentConfig
+  return [snapshot, toolState.currentConfig]
+}
+
 export const toolActions = {
   get versionOptions() {
     return STABLE_KEYS.map((key) => ({
@@ -452,21 +462,6 @@ export const toolActions = {
 
   handleVersionNameChange: (newName: string) => {
     toolState.currentConfig.versionName = newName
-  },
-
-  useCurrentConfigSnapshot: (): ElementConfigType => {
-    return useSnapshot(toolState).currentConfig
-  },
-
-  /**
-   * The { sync: true } option ensures synchronous updates to prevent stale closures
-   * and inconsistent state. Without sync: true, there can be a brief delay where the
-   * snapshot doesn't reflect the latest changes, causing UI inconsistencies.
-   *
-   * See: https://github.com/pmndrs/valtio/issues/132
-   */
-  useCurrentConfigSnapshotSync: (): ElementConfigType => {
-    return useSnapshot(toolState, { sync: true }).currentConfig
   }
 }
 
