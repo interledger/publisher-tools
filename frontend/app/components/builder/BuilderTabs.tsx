@@ -7,7 +7,7 @@ export function BuilderTabs({ children }: React.PropsWithChildren) {
   const snap = useSnapshot(toolState)
 
   const handleTabSelect = (profileId: StableKey) => {
-    toolState.activeVersion = profileId
+    toolActions.handleTabSelect(profileId)
   }
 
   const handleTabLabelChange = (newLabel: string) => {

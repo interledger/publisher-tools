@@ -446,6 +446,10 @@ export const toolActions = {
     }
   },
 
+  handleTabSelect: (profileId: StableKey) => {
+    toolState.activeVersion = profileId
+  },
+
   handleVersionNameChange: (newName: string) => {
     toolState.currentConfig.versionName = newName
   },
