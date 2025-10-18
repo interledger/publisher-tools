@@ -11,5 +11,5 @@ import type { ElementConfigType } from '@shared/types'
  *
  */
 export function useCurrentConfigSnapshot(): ElementConfigType {
-  return useSnapshot(toolState.currentConfig, { sync: true })
+  return useSnapshot(toolState, { sync: true }).currentConfig
 }

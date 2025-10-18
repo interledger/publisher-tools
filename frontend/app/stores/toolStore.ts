@@ -108,10 +108,6 @@ export const toolActions = {
     }))
   },
 
-  selectVersion: (selectedStableKey: StableKey) => {
-    toolState.activeVersion = selectedStableKey
-  },
-
   setConfigs: (
     fullConfigObject: Record<StableKey, ElementConfigType> | null
   ) => {

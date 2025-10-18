@@ -6,8 +6,8 @@ import { useSnapshot } from 'valtio'
 export function BuilderTabs({ children }: React.PropsWithChildren) {
   const snap = useSnapshot(toolState)
 
-  const handleTabSelect = (stableKey: StableKey) => {
-    toolActions.selectVersion(stableKey)
+  const handleTabSelect = (profileId: StableKey) => {
+    toolState.activeVersion = profileId
   }
 
   const handleTabLabelChange = (newLabel: string) => {

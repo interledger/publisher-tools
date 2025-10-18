@@ -109,7 +109,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const snap = useSnapshot(toolState.currentConfig)
+  const { currentConfig: snap } = useSnapshot(toolState)
   const profile = toolState.currentConfig
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
