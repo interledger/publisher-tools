@@ -1,4 +1,4 @@
-import { proxy, subscribe } from 'valtio'
+import { proxy, subscribe, useSnapshot } from 'valtio'
 import { APP_BASEPATH } from '~/lib/constants'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
@@ -444,7 +444,17 @@ export const toolActions = {
     if (toolState.modal?.type === 'override-preset') {
       toolState.modal = undefined
     }
-  }
+  },
+
+  /**
+   * The { sync: true } option ensures synchronous updates to prevent stale closures
+   * and inconsistent state. Without sync: true, there can be a brief delay where the
+   * snapshot doesn't reflect the latest changes, causing UI inconsistencies.
+   *
+   * See: https://github.com/pmndrs/valtio/issues/132
+   */
+  useCurrentConfigSnapshot: (): ElementConfigType =>
+    useSnapshot(toolState, { sync: true }).currentConfig
 }
 
 function isConfigModified(profileId: StableKey): boolean {

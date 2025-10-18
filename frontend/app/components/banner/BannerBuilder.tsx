@@ -13,7 +13,6 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
-import { useCurrentConfigSnapshot } from '~/hooks/useCurrentConfigSnapshot'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -23,7 +22,7 @@ import {
   SVGThumbnail
 } from '~/assets/svg'
 import { useUIActions, useUIState } from '~/stores/uiStore'
-import { toolState } from '~/stores/toolStore'
+import { toolState, toolActions } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
 
 interface Props {
@@ -61,7 +60,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const snap = useCurrentConfigSnapshot()
+  const snap = toolActions.useCurrentConfigSnapshot()
   const profile = toolState.currentConfig
 
   return (
@@ -91,8 +90,8 @@ function ContentBuilder({ onRefresh }: Props) {
       <Divider />
 
       <DescriptionInput
-        value={snap.bannerDescriptionText}
         label={config.messageLabel}
+        value={snap.bannerDescriptionText}
         onChange={(text) => (profile.bannerDescriptionText = text)}
         isVisible={snap.bannerDescriptionVisible}
         onVisibilityChange={(visible) =>
@@ -215,10 +214,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGThumbnail className="w-5 h-5" />}
       >
         <BannerThumbnailSelector
-          thumbnail={snap.bannerThumbnail}
-          onVisibilityChange={(visible) => {
-            profile.bannerThumbnail = visible ? 'default' : ''
-          }}
+          value={snap.bannerThumbnail}
+          onChange={(value) => (profile.bannerThumbnail = value)}
         />
       </InputFieldset>
     </BuilderAccordion>

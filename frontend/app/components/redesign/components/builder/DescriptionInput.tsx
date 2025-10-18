@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import Checkbox from '../Checkbox'
 import { TextareaField } from '../TextareaField'
 
@@ -23,7 +22,6 @@ export function DescriptionInput({
   helpText,
   placeholder
 }: Props) {
-  const ref = useRef<HTMLTextAreaElement>(null)
   return (
     <fieldset className="space-y-xs">
       <legend className="text-base leading-md font-bold text-text-primary">
@@ -42,7 +40,6 @@ export function DescriptionInput({
           <TextareaField
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            ref={ref}
             currentLength={value.length || 0}
             maxLength={maxLength}
             showCounter={true}
