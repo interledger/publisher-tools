@@ -1,5 +1,5 @@
 import { APP_BASEPATH } from '~/lib/constants.js'
-import { createRequestHandler } from 'react-router'
+import { createRequestHandler, type ServerBuild } from 'react-router'
 
 declare module 'react-router' {
   export interface AppLoadContext {
@@ -10,11 +10,6 @@ declare module 'react-router' {
   }
 }
 
-const requestHandler = createRequestHandler(
-  () => import('virtual:react-router/server-build'),
-  import.meta.env.MODE
-)
-
 export default {
   async fetch(request, env, ctx) {
     try {
@@ -24,7 +19,10 @@ export default {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
 
-      return requestHandler(request, {
+      const build = await import('./build/server/index.js')
+      const requestHandler = createRequestHandler(build as ServerBuild)
+
+      return await requestHandler(request, {
         cloudflare: { env, ctx }
       })
     } catch (error) {
