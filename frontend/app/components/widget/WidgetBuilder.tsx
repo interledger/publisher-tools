@@ -1,8 +1,4 @@
-import {
-  FONT_FAMILY_OPTIONS,
-  WIDGET_FONT_SIZES,
-  type WidgetConfig
-} from '@shared/types'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
   Divider,
   ToolsDropdown,
@@ -21,7 +17,7 @@ import {
   SVGRoundedCorner,
   SVGText
 } from '~/assets/svg'
-import { toolState } from '~/stores/toolStore'
+import { useCurrentConfig } from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -59,7 +55,7 @@ export function WidgetBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const profile = toolState.currentConfig as WidgetConfig
+  const [snap, profile] = useCurrentConfig({ sync: true })
 
   return (
     <BuilderAccordion
@@ -78,7 +74,7 @@ function ContentBuilder({ onRefresh }: Props) {
       initialIsOpen={uiState.activeSection === 'content'}
     >
       <TitleInput
-        value={profile.widgetTitleText}
+        value={snap.widgetTitleText}
         onChange={(value) => (profile.widgetTitleText = value)}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
@@ -89,9 +85,9 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <DescriptionInput
         label={config.messageLabel}
-        value={profile.widgetDescriptionText}
+        value={snap.widgetDescriptionText}
         onChange={(text) => (profile.widgetDescriptionText = text)}
-        isVisible={profile.widgetDescriptionVisible}
+        isVisible={snap.widgetDescriptionVisible}
         onVisibilityChange={(visible) =>
           (profile.widgetDescriptionVisible = visible)
         }
@@ -106,10 +102,10 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const profile = toolState.currentConfig as WidgetConfig
+  const [snap, profile] = useCurrentConfig()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === profile.widgetFontName
+    (option) => option === snap.widgetFontName
   )
 
   return (
@@ -143,7 +139,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         />
 
         <FontSizeInput
-          value={profile.widgetFontSize}
+          value={snap.widgetFontSize}
           onChange={(value) => (profile.widgetFontSize = value)}
           min={config.fontSizeRange.min}
           max={config.fontSizeRange.max}
@@ -157,15 +153,15 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGColorPicker className="w-5 h-5" />}
       >
         <WidgetColorsSelector
-          backgroundColor={profile.widgetBackgroundColor}
+          backgroundColor={snap.widgetBackgroundColor}
           onBackgroundColorChange={(color: string) =>
             (profile.widgetBackgroundColor = color)
           }
-          textColor={profile.widgetTextColor}
+          textColor={snap.widgetTextColor}
           onTextColorChange={(color: string) =>
             (profile.widgetTextColor = color)
           }
-          buttonColor={profile.widgetButtonBackgroundColor}
+          buttonColor={snap.widgetButtonBackgroundColor}
           onButtonColorChange={(color: string) =>
             (profile.widgetButtonBackgroundColor = color)
           }
@@ -179,7 +175,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGRoundedCorner className="w-5 h-5" />}
       >
         <CornerRadiusSelector
-          value={profile.widgetButtonBorder}
+          value={snap.widgetButtonBorder}
           onChange={(value) => (profile.widgetButtonBorder = value)}
         />
       </InputFieldset>
@@ -191,7 +187,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGHeaderPosition className="w-5 h-5" />}
       >
         <WidgetPositionSelector
-          value={profile.widgetPosition}
+          value={snap.widgetPosition}
           onChange={(value) => (profile.widgetPosition = value)}
         />
       </InputFieldset>

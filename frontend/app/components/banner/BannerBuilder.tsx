@@ -22,7 +22,7 @@ import {
   SVGThumbnail
 } from '~/assets/svg'
 import { useUIActions, useUIState } from '~/stores/uiStore'
-import { useCurrentConfig, useCurrentConfigSync } from '~/stores/toolStore'
+import { useCurrentConfig } from '~/stores/toolStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -59,7 +59,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfigSync()
+  const [snap, profile] = useCurrentConfig({ sync: true })
 
   return (
     <BuilderAccordion

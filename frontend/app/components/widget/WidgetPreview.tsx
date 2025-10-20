@@ -3,20 +3,19 @@ import type {
   WidgetConfig,
   PaymentWidget as WidgetComponent
 } from '@tools/components'
-import type { WidgetConfig as WidgetStoredConfig } from '@shared/types'
+import { useCurrentConfig } from '~/stores/toolStore'
 
 interface Props {
-  profile: WidgetStoredConfig
   serviceUrls: { cdn: string; api: string }
   opWallet: string
 }
 
 export const WidgetPreview = ({
-  profile,
   serviceUrls,
   opWallet
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [profile] = useCurrentConfig({ sync: true })
   const widgetRef = useRef<WidgetComponent>(null)
 
   useEffect(() => {

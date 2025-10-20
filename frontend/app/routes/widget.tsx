@@ -271,7 +271,6 @@ export default function Widget() {
                   >
                     <BuilderBackground>
                       <WidgetPreview
-                        profile={snap.currentConfig}
                         serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
                         opWallet={snap.opWallet}
                       />

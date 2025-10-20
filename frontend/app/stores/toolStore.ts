@@ -100,13 +100,11 @@ subscribe(toolState, () => {
   updateChangesTracking(toolState.activeVersion)
 })
 
-export function useCurrentConfig(): [ElementConfigType, ElementConfigType] {
-  const snapshot = useSnapshot(toolState).currentConfig
-  return [snapshot, toolState.currentConfig]
-}
-
-export function useCurrentConfigSync(): [ElementConfigType, ElementConfigType] {
-  const snapshot = useSnapshot(toolState, { sync: true }).currentConfig
+export function useCurrentConfig(options?: {
+  sync: boolean
+}): [ElementConfigType, ElementConfigType] {
+  // https://github.com/pmndrs/valtio/issues/132
+  const snapshot = useSnapshot(toolState, options).currentConfig
   return [snapshot, toolState.currentConfig]
 }
 
