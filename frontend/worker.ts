@@ -10,6 +10,11 @@ declare module 'react-router' {
   }
 }
 
+const build =
+  process.env.NODE_ENV === 'development'
+    ? () => import('virtual:react-router/server-build')
+    : () => import('./build/server/index.js')
+
 export default {
   async fetch(request, env, ctx) {
     try {
@@ -19,8 +24,8 @@ export default {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
 
-      const build = await import('./build/server/index.js')
-      const requestHandler = createRequestHandler(build as ServerBuild)
+      const serverBuild = await build()
+      const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 
       return await requestHandler(request, {
         cloudflare: { env, ctx }
