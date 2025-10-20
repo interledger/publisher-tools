@@ -12,8 +12,10 @@ declare module 'react-router' {
 
 const build =
   process.env.NODE_ENV === 'development'
-    ? () => import('virtual:react-router/server-build')
-    : () => import('./build/server/index.js')
+    ? // @ts-ignore - virtual module only exists in dev
+      () => import('virtual:react-router/server-build')
+    : // @ts-expect-error - build artifact created during build process
+      () => import('./build/server/index.js')
 
 export default {
   async fetch(request, env, ctx) {
@@ -23,7 +25,6 @@ export default {
       if (url.pathname === '/') {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
-
       const serverBuild = await build()
       const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 
