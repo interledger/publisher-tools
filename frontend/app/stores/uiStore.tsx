@@ -68,15 +68,12 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     }
   }, [])
 
-  const state: UIState = useMemo(
-    () => ({
-      contentComplete,
-      activeSection,
-      appearanceComplete,
-      buildStepComplete
-    }),
-    [contentComplete, activeSection, appearanceComplete, buildStepComplete]
-  )
+  const state: UIState = {
+    contentComplete,
+    activeSection,
+    appearanceComplete,
+    buildStepComplete
+  }
 
   const actions: UIActions = useMemo(
     () => ({
@@ -86,7 +83,13 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       setAppearanceComplete,
       setActiveSection
     }),
-    [focusWalletInput, registerWalletInput]
+    [
+      focusWalletInput,
+      registerWalletInput,
+      setContentComplete,
+      setAppearanceComplete,
+      setActiveSection
+    ]
   )
 
   return (
