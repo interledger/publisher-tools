@@ -8,8 +8,6 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
-import { useUI } from '~/stores/uiStore'
-import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   HeadingCore,
   ToolsWalletAddress,
