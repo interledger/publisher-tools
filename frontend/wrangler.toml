@@ -14,8 +14,3 @@ head_sampling_rate = 1.00
 
 [dev]
 port = 3001
-
-[vars]
-SCRIPT_EMBED_URL = "https://cdn.webmonetization.org/"
-API_URL = "https://api.webmonetization.org/"
-AWS_PREFIX = "20250717"

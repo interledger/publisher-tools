@@ -238,6 +238,7 @@ async function handleUpdate(
     const filteredData = filterDeepProperties(sanitizedConfig)
     await configStorage.putJson(walletAddress, filteredData)
 
+    // TODO: reduce payload size, return only ok
     return json(filteredData)
   } catch (error) {
     return json({ error: (error as Error).message }, { status: 500 })
