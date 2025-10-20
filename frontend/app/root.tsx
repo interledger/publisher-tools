@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/cloudflare'
+import type { LinksFunction, MetaFunction } from 'react-router'
 import {
   Links,
   Meta,
@@ -7,7 +7,7 @@ import {
   ScrollRestoration,
   useRouteError,
   isRouteErrorResponse
-} from '@remix-run/react'
+} from 'react-router'
 import type { ReactNode } from 'react'
 import stylesheet from '~/tailwind.css?url'
 import { Button } from './components/index.js'
