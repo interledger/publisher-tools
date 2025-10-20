@@ -12,8 +12,7 @@ declare module 'react-router' {
 
 const build =
   process.env.NODE_ENV === 'development'
-    ? // @ts-ignore - virtual module only exists in dev
-      () => import('virtual:react-router/server-build')
+    ? () => import('virtual:react-router/server-build')
     : // @ts-expect-error - build artifact created during build process
       () => import('./build/server/index.js')
 
