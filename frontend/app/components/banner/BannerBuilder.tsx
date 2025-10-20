@@ -1,15 +1,10 @@
-import {
-  BANNER_FONT_SIZES,
-  FONT_FAMILY_OPTIONS,
-  type BannerConfig
-} from '@shared/types'
+import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   BannerColorsSelector,
   Divider,
   ToolsDropdown,
   CornerRadiusSelector
 } from '@/components'
-import { useUI } from '~/stores/uiStore'
 import BuilderAccordion from '@/components/BuilderAccordion'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
@@ -26,7 +21,8 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import { toolState } from '~/stores/toolStore'
+import { useUIActions, useUIState } from '~/stores/uiStore'
+import { useCurrentConfig } from '~/stores/toolStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -61,8 +57,9 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as BannerConfig
+  const uiState = useUIState()
+  const uiActions = useUIActions()
+  const [snap, profile] = useCurrentConfig({ sync: true })
 
   return (
     <BuilderAccordion
@@ -81,7 +78,7 @@ function ContentBuilder({ onRefresh }: Props) {
       initialIsOpen={uiState.activeSection === 'content'}
     >
       <TitleInput
-        value={profile.bannerTitleText}
+        value={snap.bannerTitleText}
         onChange={(value) => (profile.bannerTitleText = value)}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
@@ -92,9 +89,9 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <DescriptionInput
         label={config.messageLabel}
-        value={profile.bannerDescriptionText}
+        value={snap.bannerDescriptionText}
         onChange={(text) => (profile.bannerDescriptionText = text)}
-        isVisible={profile.bannerDescriptionVisible}
+        isVisible={snap.bannerDescriptionVisible}
         onVisibilityChange={(visible) =>
           (profile.bannerDescriptionVisible = visible)
         }
@@ -107,11 +104,12 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { actions: uiActions, state: uiState } = useUI()
-  const profile = toolState.currentConfig as BannerConfig
+  const uiState = useUIState()
+  const uiActions = useUIActions()
+  const [snap, profile] = useCurrentConfig()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === profile.bannerFontName
+    (option) => option === snap.bannerFontName
   )
 
   return (
@@ -145,7 +143,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         />
 
         <FontSizeInput
-          value={profile.bannerFontSize}
+          value={snap.bannerFontSize}
           onChange={(value) => (profile.bannerFontSize = value)}
           min={config.fontSizeRange.min}
           max={config.fontSizeRange.max}
@@ -159,8 +157,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGColorPicker className="w-5 h-5" />}
       >
         <BannerColorsSelector
-          backgroundColor={profile.bannerBackgroundColor}
-          textColor={profile.bannerTextColor}
+          backgroundColor={snap.bannerBackgroundColor}
+          textColor={snap.bannerTextColor}
           onBackgroundColorChange={(color: string) =>
             (profile.bannerBackgroundColor = color)
           }
@@ -177,7 +175,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGRoundedCorner className="w-5 h-5" />}
       >
         <CornerRadiusSelector
-          value={profile.bannerBorder}
+          value={snap.bannerBorder}
           onChange={(value) => (profile.bannerBorder = value)}
         />
       </InputFieldset>
@@ -189,7 +187,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGHeaderPosition className="w-5 h-5" />}
       >
         <BannerPositionSelector
-          value={profile.bannerPosition}
+          value={snap.bannerPosition}
           onChange={(value) => (profile.bannerPosition = value)}
         />
       </InputFieldset>
@@ -201,7 +199,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGAnimation className="w-5 h-5" />}
       >
         <BannerAnimationSelector
-          value={profile.bannerSlideAnimation}
+          value={snap.bannerSlideAnimation}
           onChange={(value) => (profile.bannerSlideAnimation = value)}
         />
       </InputFieldset>
@@ -213,13 +211,8 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGThumbnail className="w-5 h-5" />}
       >
         <BannerThumbnailSelector
-          isVisible={
-            typeof profile.bannerThumbnail === 'undefined' ||
-            !!profile.bannerThumbnail
-          }
-          onVisibilityChange={(visible) => {
-            profile.bannerThumbnail = visible ? 'default' : ''
-          }}
+          value={snap.bannerThumbnail}
+          onChange={(value) => (profile.bannerThumbnail = value)}
         />
       </InputFieldset>
     </BuilderAccordion>

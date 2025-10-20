@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { type SlideAnimationType, SLIDE_ANIMATION } from '@shared/types'
 import { Checkbox, ToolsDropdown } from '@/components'
 
@@ -24,21 +24,13 @@ export function BannerAnimationSelector({
         ? SLIDE_ANIMATION.Slide
         : validated
     })
-
-  const [isAnimated, setIsAnimated] = useState(
-    () => value !== SLIDE_ANIMATION.None
-  )
-
-  useEffect(() => {
-    setIsAnimated(value !== SLIDE_ANIMATION.None)
-  }, [value])
+  const isAnimated = value !== SLIDE_ANIMATION.None
 
   return (
     <div className="flex gap-md xl:flex-row flex-col xl:items-center items-start">
       <Checkbox
         checked={isAnimated}
         onChange={(visible) => {
-          setIsAnimated(visible)
           const animation = visible
             ? lastSelectedAnimation
             : SLIDE_ANIMATION.None
