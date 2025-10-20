@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator'
 import { APP_URL } from '@shared/defines'
-import { createHTTPException, sleep } from '../utils/utils'
+import { createHTTPException, waitWithAbort, sleep } from '../utils/utils'
 import { OpenPaymentsService } from '../utils/open-payments.js'
 import {
   PaymentQuoteSchema,
@@ -132,26 +132,6 @@ app.get(
     }
   }
 )
-
-function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (signal.aborted) {
-      reject(new Error('TimeoutError'))
-      return
-    }
-
-    const timer = setTimeout(() => {
-      resolve()
-    }, ms)
-
-    const onAbort = () => {
-      clearTimeout(timer)
-      reject(new Error('TimeoutError'))
-    }
-
-    signal.addEventListener('abort', onAbort, { once: true })
-  })
-}
 
 function isAllowedRedirectUrl(redirectUrl: string) {
   const redirectUrlOrigin = new URL(redirectUrl).origin

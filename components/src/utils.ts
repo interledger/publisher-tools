@@ -80,15 +80,3 @@ export const getWebMonetizationLinkHref = (userAgent: string): string => {
   }
   return 'https://webmonetization.org/'
 }
-
-export function isInteractionSuccess(
-  params: PaymentStatus
-): params is PaymentStatusSuccess {
-  return 'interact_ref' in params
-}
-
-export function isInteractionRejected(
-  params: PaymentStatus
-): params is PaymentStatusRejected {
-  return 'result' in params && params.result === 'grant_rejected'
-}
