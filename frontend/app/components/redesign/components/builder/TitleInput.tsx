@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
@@ -80,19 +80,13 @@ function CustomTitle({
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
   const ref = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.value = value
-    }
-  }, [value])
-
   return (
     <div className="flex flex-col gap-xs">
       <h4 className="text-base leading-md font-bold text-text-primary">
         Custom title
       </h4>
       <InputField
-        defaultValue={value}
+        value={value}
         onChange={(e) => onChange(e.target.value.trim())}
         ref={ref}
         placeholder={placeholder}

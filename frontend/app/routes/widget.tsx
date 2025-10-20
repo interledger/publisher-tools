@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
+import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   useLoaderData,
   useNavigate,
@@ -35,6 +36,7 @@ import {
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { SVGSpinner } from '@/assets'
+import { useUIActions } from '~/stores/uiStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -75,7 +77,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
-  const { actions: uiActions } = useUI()
+  const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -271,7 +273,6 @@ export default function Widget() {
                   >
                     <BuilderBackground>
                       <WidgetPreview
-                        profile={snap.currentConfig}
                         serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
                         opWallet={snap.opWallet}
                       />
