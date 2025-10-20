@@ -282,6 +282,9 @@ importers:
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
+      publisher-tools-api:
+        specifier: workspace:^
+        version: link:../api
       react-scan:
         specifier: ^0.4.3
         version: 0.4.3(@remix-run/react@2.17.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.9.2))(@types/react@19.1.13)(react-dom@19.1.1(react@19.1.1))(react-router-dom@6.30.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-router@6.30.0(react@19.1.1))(react@19.1.1)(rollup@4.52.1)

@@ -12,9 +12,9 @@ import {
 } from './validate.shared'
 import type {
   PaymentStatus,
-  PaymentStatusSuccess,
-  PaymentStatusRejected
-} from '@shared/types/payment.js'
+  PaymentStatusRejected,
+  PaymentStatusSuccess
+} from 'publisher-tools-api'
 
 export const walletSchema = z.object({
   walletAddress: z
