@@ -22,7 +22,7 @@ export const BannerPreview = ({
   ref
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [profile] = useCurrentConfig({ sync: true })
+  const [profile] = useCurrentConfig()
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerElement | null>(null)
 

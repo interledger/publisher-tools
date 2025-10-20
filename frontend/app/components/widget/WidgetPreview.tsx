@@ -15,7 +15,7 @@ export const WidgetPreview = ({
   opWallet
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [profile] = useCurrentConfig({ sync: true })
+  const [profile] = useCurrentConfig()
   const widgetRef = useRef<WidgetComponent>(null)
 
   useEffect(() => {
