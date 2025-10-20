@@ -107,6 +107,8 @@ app.get(
       await sleep(POLLING_INITIAL_DELAY)
 
       while (!signal.aborted) {
+        await waitWithAbort(POLLING_INTERVAL, signal)
+
         const status = await env.PUBLISHER_TOOLS_KV.get<PaymentStatus>(
           KV_PAYMENTS_PREFIX + paymentId,
           'json'
@@ -118,8 +120,6 @@ app.get(
             ...status
           })
         }
-
-        await waitWithAbort(POLLING_INTERVAL, signal)
       }
 
       throw new Error('AbortError')

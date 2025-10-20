@@ -25,9 +25,9 @@ function isInteractionRejected(
 }
 
 export class PaymentInteraction extends LitElement {
-  private _boundHandleMessage: (event: MessageEvent) => void = () => {}
-  private _pollingAbortController: AbortController | null = null
-  private _interactionCompleted = false
+  #boundHandleMessage: (event: MessageEvent) => void = () => {}
+  #pollingAbortController: AbortController | null = null
+  #interactionCompleted = false
   @property({ type: Object }) configController!: WidgetController
   @property({ type: Boolean }) isPreview?: boolean = false
   @state() private currentView: 'authorizing' | 'success' | 'failed' =
@@ -50,23 +50,23 @@ export class PaymentInteraction extends LitElement {
     if (!redirect) return
 
     window.open(redirect, '_blank')
-    this._boundHandleMessage = this.handleMessage.bind(this)
-    window.addEventListener('message', this._boundHandleMessage)
+    this.#boundHandleMessage = this.handleMessage.bind(this)
+    window.addEventListener('message', this.#boundHandleMessage)
 
-    this._pollingAbortController = new AbortController()
+    this.#pollingAbortController = new AbortController()
     this._startLongPolling()
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener('message', this._boundHandleMessage)
+    window.removeEventListener('message', this.#boundHandleMessage)
     this._cancelPolling()
   }
 
   private handleMessage(event: MessageEvent) {
     if (event.data?.type !== 'GRANT_INTERACTION') return
 
-    window.removeEventListener('message', this._boundHandleMessage)
+    window.removeEventListener('message', this.#boundHandleMessage)
     const { data } = event
     this._markPollingCompleted()
 
@@ -156,12 +156,12 @@ export class PaymentInteraction extends LitElement {
 
   private async _startLongPolling({
     maxAttempts = 3,
-    signal = this._pollingAbortController?.signal
+    signal = this.#pollingAbortController?.signal
   }: Partial<{
     maxAttempts?: number
     signal?: AbortSignal
   }> = {}): Promise<void> {
-    if (this._interactionCompleted) return
+    if (this.#interactionCompleted) return
     let attempt = 0
 
     while (++attempt <= maxAttempts) {
@@ -201,15 +201,15 @@ export class PaymentInteraction extends LitElement {
   }
 
   private _markPollingCompleted() {
-    if (this._interactionCompleted) return
+    if (this.#interactionCompleted) return
 
-    this._interactionCompleted = true
+    this.#interactionCompleted = true
     this._cancelPolling()
   }
 
   private _markPollingFailed(message: string) {
-    if (this._interactionCompleted) return
-    this._interactionCompleted = true
+    if (this.#interactionCompleted) return
+    this.#interactionCompleted = true
 
     this._cancelPolling()
     this.currentView = 'failed'
@@ -218,9 +218,9 @@ export class PaymentInteraction extends LitElement {
   }
 
   private _cancelPolling() {
-    if (this._pollingAbortController) {
-      this._pollingAbortController.abort()
-      this._pollingAbortController = null
+    if (this.#pollingAbortController) {
+      this.#pollingAbortController.abort()
+      this.#pollingAbortController = null
     }
   }
 

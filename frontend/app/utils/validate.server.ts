@@ -132,11 +132,11 @@ export const PaymentStatusRejectedSchema = z.object({
   result: z.literal('grant_rejected')
 }) satisfies z.ZodType<PaymentStatusRejected>
 
+const PaymentStatusSchema = z.union([
+  PaymentStatusSuccessSchema,
+  PaymentStatusRejectedSchema
+]) satisfies z.ZodType<PaymentStatus>
+
 export const validatePaymentParams = (params: Record<string, string>) => {
-  return (
-    z.union([
-      PaymentStatusSuccessSchema,
-      PaymentStatusRejectedSchema
-    ]) satisfies z.ZodType<PaymentStatus>
-  ).safeParse(params)
+  return PaymentStatusSchema.safeParse(params)
 }

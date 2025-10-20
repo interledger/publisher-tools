@@ -39,9 +39,7 @@ export function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
       return
     }
 
-    const timer = setTimeout(() => {
-      resolve()
-    }, ms)
+    const timer = setTimeout(resolve, ms)
 
     const onAbort = () => {
       clearTimeout(timer)
