@@ -1,5 +1,4 @@
 import React, { useState, useId, useRef, useEffect } from 'react'
-import { useSnapshot } from 'valtio'
 import { Tooltip } from './Tooltip'
 import { InputField } from './InputField'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
@@ -8,7 +7,8 @@ import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { toolState, toolActions } from '~/stores/toolStore'
 import type { ElementErrors } from '~/lib/types'
 import { Heading5 } from '../Typography'
-import { useUI } from '~/stores/uiStore'
+import { useUIActions } from '~/stores/uiStore'
+import { useSnapshot } from 'valtio'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -17,7 +17,7 @@ import {
 
 export const ToolsWalletAddress = () => {
   const snap = useSnapshot(toolState)
-  const { actions: uiActions } = useUI()
+  const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
   const generatedId = useId()
