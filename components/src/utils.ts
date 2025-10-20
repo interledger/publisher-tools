@@ -1,5 +1,10 @@
 import type { FontFamilyKey } from '@shared/types'
 import { FONT_MAP } from './constants'
+import type {
+  PaymentStatus,
+  PaymentStatusRejected,
+  PaymentStatusSuccess
+} from 'publisher-tools-api'
 
 /**
  * Applies the specified font family to an element, removing any existing font link, loading the font if necessary
@@ -74,4 +79,16 @@ export const getWebMonetizationLinkHref = (userAgent: string): string => {
     return 'https://microsoftedge.microsoft.com/addons/detail/web-monetization/imjgemgmeoioefpmfefmffbboogighjl'
   }
   return 'https://webmonetization.org/'
+}
+
+export function isInteractionSuccess(
+  params: PaymentStatus
+): params is PaymentStatusSuccess {
+  return 'interact_ref' in params
+}
+
+export function isInteractionRejected(
+  params: PaymentStatus
+): params is PaymentStatusRejected {
+  return 'result' in params && params.result === 'grant_rejected'
 }

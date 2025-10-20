@@ -1,16 +1,13 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import { type PaymentStatus } from 'publisher-tools-api'
 import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
 import type { WidgetController } from '../../controller'
 import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
 import successIcon from '../../../assets/interaction/authorization_success.svg'
 import failedIcon from '../../../assets/interaction/authorization_failed.svg'
+import { isInteractionRejected, isInteractionSuccess } from '../../../utils'
 import interactionStyles from './interaction.css?raw'
-import {
-  type PaymentStatus,
-  isInteractionRejected,
-  isInteractionSuccess
-} from 'publisher-tools-api'
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
