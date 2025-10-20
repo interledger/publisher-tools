@@ -5,7 +5,7 @@ import {
 } from '@remix-run/cloudflare'
 import { useEffect, useRef } from 'react'
 import { validatePaymentParams } from '~/utils/validate.server'
-import { KV_PAYMENTS_PREFIX } from '@shared/defines'
+import { KV_PAYMENTS_PREFIX } from '@shared/types'
 import { useLoaderData } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
@@ -18,11 +18,7 @@ export const meta: MetaFunction = () => {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
   const url = new URL(request.url)
-  const params: { [key: string]: string } = {}
-
-  url.searchParams.forEach((value, key) => {
-    params[key] = value
-  })
+  const params = Object.fromEntries([...url.searchParams])
 
   const validation = validatePaymentParams(params)
   if (!validation.success) {
@@ -37,6 +33,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     )
 
     if (existingData) {
+      // avoids spamming the KV store with redundant entries for the same payment
       return json({ success: true, message: 'Already stored', params })
     }
 

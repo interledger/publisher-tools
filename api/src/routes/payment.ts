@@ -8,8 +8,8 @@ import {
   PaymentFinalizeSchema,
   PaymentStatusParamSchema
 } from '../schemas/payment.js'
-import type { PaymentStatus } from '@shared/types/payment'
-import { KV_PAYMENTS_PREFIX } from '@shared/defines'
+import { KV_PAYMENTS_PREFIX } from '@shared/types'
+import type { PaymentStatus } from '../types'
 import { app } from '../app.js'
 
 app.post(
@@ -107,10 +107,10 @@ app.get(
       await sleep(POLLING_INITIAL_DELAY)
 
       while (!signal.aborted) {
-        const status = (await env.PUBLISHER_TOOLS_KV.get(
+        const status = await env.PUBLISHER_TOOLS_KV.get<PaymentStatus>(
           KV_PAYMENTS_PREFIX + paymentId,
           'json'
-        )) as PaymentStatus
+        )
 
         if (status) {
           return json({

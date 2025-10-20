@@ -7,10 +7,10 @@ import successIcon from '../../../assets/interaction/authorization_success.svg'
 import failedIcon from '../../../assets/interaction/authorization_failed.svg'
 import interactionStyles from './interaction.css?raw'
 import {
+  type PaymentStatus,
   isInteractionRejected,
-  isInteractionSuccess,
-  type PaymentStatus
-} from '@shared/types/payment'
+  isInteractionSuccess
+} from 'publisher-tools-api'
 
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
@@ -58,15 +58,12 @@ export class PaymentInteraction extends LitElement {
     const { data } = event
     this._markPollingCompleted()
 
-    switch (true) {
-      case isInteractionSuccess(data):
-        this.handleInteractionSuccess(data.interact_ref)
-        break
-      case isInteractionRejected(data):
-        this.handleInteractionFail('Payment authorization rejected')
-        break
-      default:
-        this.handleInteractionFail('Invalid payment response received')
+    if (isInteractionSuccess(data)) {
+      void this.handleInteractionSuccess(data.interact_ref)
+    } else if (isInteractionRejected(data)) {
+      this.handleInteractionFail('Payment authorization rejected')
+    } else {
+      this.handleInteractionFail('Invalid payment response received')
     }
   }
 
@@ -167,15 +164,12 @@ export class PaymentInteraction extends LitElement {
 
         if (res.ok) {
           const data = (await res.json()) as PaymentStatus
-          switch (true) {
-            case isInteractionSuccess(data):
-              void this.handleInteractionSuccess(data.interact_ref)
-              break
-            case isInteractionRejected(data):
-              this.handleInteractionFail('Payment authorization rejected')
-              break
-            default:
-              this.handleInteractionFail('Invalid payment response received')
+          if (isInteractionSuccess(data)) {
+            void this.handleInteractionSuccess(data.interact_ref)
+          } else if (isInteractionRejected(data)) {
+            this.handleInteractionFail('Payment authorization rejected')
+          } else {
+            this.handleInteractionFail('Invalid payment response received')
           }
 
           return //success
