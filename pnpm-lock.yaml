@@ -3440,9 +3440,9 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
-  source-map@0.7.4:
-    resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
-    engines: {node: '>= 8'}
+  source-map@0.7.6:
+    resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
+    engines: {node: '>= 12'}
 
   spdx-correct@3.2.0:
     resolution: {integrity: sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==}
@@ -4803,7 +4803,7 @@ snapshots:
       '@web3-storage/multipart-parser': 1.0.0
       cookie: 0.7.2
       set-cookie-parser: 2.7.1
-      source-map: 0.7.4
+      source-map: 0.7.6
       turbo-stream: 2.4.1
     optionalDependencies:
       typescript: 5.9.2
@@ -7332,7 +7332,7 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  source-map@0.7.4:
+  source-map@0.7.6:
     optional: true
 
   spdx-correct@3.2.0:
