@@ -1,5 +1,6 @@
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { createRequestHandler } from 'react-router'
+
 declare module 'react-router' {
   export interface AppLoadContext {
     cloudflare: {
@@ -23,7 +24,7 @@ export default {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
 
-      return await requestHandler(request, {
+      return requestHandler(request, {
         cloudflare: { env, ctx }
       })
     } catch (error) {

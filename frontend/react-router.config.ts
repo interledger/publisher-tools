@@ -5,6 +5,6 @@ export default {
   ssr: true,
   basename: APP_BASEPATH,
   appDirectory: 'app',
-  buildDirectory: 'build',
+  buildDirectory: 'dist',
   serverModuleFormat: 'esm'
 } satisfies Config

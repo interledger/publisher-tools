@@ -25,7 +25,7 @@ const devRedirectPlugin = (): Plugin => ({
 export default defineConfig({
   define: {
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
-    BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL) // unused but declared
+    BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL)
   },
   plugins: [cloudflare(), reactRouter(), tsconfigPaths(), devRedirectPlugin()],
   resolve: {
