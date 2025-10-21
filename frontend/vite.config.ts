@@ -1,33 +1,16 @@
 import { reactRouter } from '@react-router/dev/vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { APP_BASEPATH } from './app/lib/constants.js'
 import path from 'path'
-
-/**
- * Custom plugin to handle root redirects to basepath in dev
- */
-const devRedirectPlugin = (): Plugin => ({
-  name: 'dev-redirect',
-  configureServer(server) {
-    server.middlewares.use('/', (req, res, next) => {
-      if (req.url === '/') {
-        res.writeHead(302, { Location: APP_BASEPATH + '/' })
-        res.end()
-        return
-      }
-      next()
-    })
-  }
-})
 
 export default defineConfig({
   define: {
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL)
   },
-  plugins: [cloudflare(), reactRouter(), tsconfigPaths(), devRedirectPlugin()],
+  plugins: [cloudflare(), reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {
       'crypto': 'crypto-browserify',
