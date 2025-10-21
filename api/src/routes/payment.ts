@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator'
 import { APP_URL } from '@shared/defines'
-import { createHTTPException, waitWithAbort, sleep } from '../utils/utils'
+import { createHTTPException, waitWithAbort } from '../utils/utils'
 import { OpenPaymentsService } from '../utils/open-payments.js'
 import {
   PaymentQuoteSchema,
