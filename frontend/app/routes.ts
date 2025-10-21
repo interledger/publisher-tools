@@ -8,8 +8,8 @@ export default [
   route('link-tag/', 'routes/link-tag.tsx'),
   route('payment-confirmation/', 'routes/payment-confirmation.tsx'),
   route('prob-revshare/', 'routes/prob-revshare.tsx'),
-  route('widget/', 'routes/widget.tsx')
+  route('widget/', 'routes/widget.tsx'),
   // API routes
-  //   route('api/config/:type', 'routes/api.config.$type.ts'),
-  //   route('api/grant/:type', 'routes/api.grant.$type.tsx')
+  route('api/config/:type', 'routes/api.config.$type.ts'),
+  route('api/grant/:type', 'routes/api.grant.$type.tsx')
 ] satisfies RouteConfig
