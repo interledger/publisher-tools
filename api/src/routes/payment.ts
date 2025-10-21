@@ -122,10 +122,10 @@ app.get(
       throw new Error('AbortError')
     } catch (error) {
       if (error instanceof Error && error.message === 'TimeoutError') {
-        throw createHTTPException(504, 'Payment status polling timeout', {})
+        throw createHTTPException(408, 'Payment status polling timeout', {})
       }
 
-      throw createHTTPException(500, 'Failed to retrieve data', error)
+      throw createHTTPException(404, 'Failed to retrieve data', error)
     }
   }
 )
