@@ -20,7 +20,8 @@ export const Slider: React.FC<Props> = ({
   <div className="relative w-full group">
     <div className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-purple-100" />
     <div
-      className="absolute top-1/2 size-6 -translate-y-1/2 rounded-full bg-white border-4 border-purple-300 pointer-events-none group-focus-within:ring-2 group-focus-within:ring-purple-600 group-focus-within:ring-offset-1 transition-all"
+      className="absolute top-1/2 size-6 -translate-y-1/2 rounded-full bg-white border-4 border-purple-300 pointer-events-none
+        group-focus-within:ring-2 group-focus-within:border-purple-600 group-focus-within:ring-purple-600 group-focus-within:ring-offset-1 transition-all"
       style={{
         left: `calc(${((value - min) / (max - min)) * 100}% - 12px)`
       }}
