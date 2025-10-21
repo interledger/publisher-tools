@@ -25,7 +25,7 @@ function isInteractionRejected(
 }
 
 export class PaymentInteraction extends LitElement {
-  #boundHandleMessage: (event: MessageEvent) => void = () => {}
+  private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   #pollingAbortController: AbortController | null = null
   #interactionCompleted = false
   @property({ type: Object }) configController!: WidgetController
@@ -50,8 +50,8 @@ export class PaymentInteraction extends LitElement {
     if (!redirect) return
 
     window.open(redirect, '_blank')
-    this.#boundHandleMessage = this.handleMessage.bind(this)
-    window.addEventListener('message', this.#boundHandleMessage)
+    this._boundHandleMessage = this.handleMessage.bind(this)
+    window.addEventListener('message', this._boundHandleMessage)
 
     this.#pollingAbortController = new AbortController()
     this._startLongPolling()
@@ -59,14 +59,14 @@ export class PaymentInteraction extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener('message', this.#boundHandleMessage)
+    window.removeEventListener('message', this._boundHandleMessage)
     this._cancelPolling()
   }
 
   private handleMessage(event: MessageEvent) {
     if (event.data?.type !== 'GRANT_INTERACTION') return
 
-    window.removeEventListener('message', this.#boundHandleMessage)
+    window.removeEventListener('message', this._boundHandleMessage)
     const { data } = event
     this._markPollingCompleted()
 
