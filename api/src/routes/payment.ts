@@ -99,13 +99,10 @@ app.get(
     const { paymentId } = req.param()
 
     const POLLING_MAX_DURATION = 25000
-    const POLLING_INITIAL_DELAY = 1500
     const POLLING_INTERVAL = 1500
     const signal = AbortSignal.timeout(POLLING_MAX_DURATION)
 
     try {
-      await sleep(POLLING_INITIAL_DELAY)
-
       while (!signal.aborted) {
         await waitWithAbort(POLLING_INTERVAL, signal)
 
