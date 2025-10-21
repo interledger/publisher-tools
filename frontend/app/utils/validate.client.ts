@@ -1,10 +1,10 @@
-import { z } from 'zod'
 import {
   bannerFieldsSchema,
   buttonFieldsSchema,
   widgetFieldsSchema
 } from './validate.shared'
 import type { ElementConfigType } from '@shared/types'
+import { z } from 'zod/v4'
 
 export const elementConfigStorageSchema = z
   .object({
@@ -13,9 +13,9 @@ export const elementConfigStorageSchema = z
     // can be undefined initially
     walletAddress: z.string().optional()
   })
-  .merge(buttonFieldsSchema)
-  .merge(bannerFieldsSchema)
-  .merge(widgetFieldsSchema)
+  .extend(buttonFieldsSchema)
+  .extend(bannerFieldsSchema)
+  .extend(widgetFieldsSchema)
 
 /**
  * Validates configurations from localStorage.

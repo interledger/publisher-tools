@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -10,6 +9,7 @@ import {
   buttonFieldsSchema,
   widgetFieldsSchema
 } from './validate.shared'
+import { z } from 'zod/v4'
 
 export const walletSchema = z.object({
   walletAddress: z
@@ -24,7 +24,7 @@ export const walletSchema = z.object({
         await getWalletAddress(updatedUrl)
       } catch (e) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message:
             e instanceof WalletAddressFormatError
               ? e.message
@@ -47,25 +47,25 @@ export const createButtonSchema = z
   .object({
     elementType: z.literal('button')
   })
-  .merge(buttonFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+  .extend(buttonFieldsSchema)
+  .extend(walletSchema)
+  .extend(versionSchema)
 
 export const createBannerSchema = z
   .object({
     elementType: z.literal('banner')
   })
-  .merge(bannerFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+  .extend(bannerFieldsSchema)
+  .extend(walletSchema)
+  .extend(versionSchema)
 
 export const createWidgetSchema = z
   .object({
     elementType: z.literal('widget')
   })
-  .merge(widgetFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+  .extend(widgetFieldsSchema)
+  .extend(walletSchema)
+  .extend(versionSchema)
 
 export const getElementSchema = (type: string) => {
   switch (type) {
@@ -90,7 +90,7 @@ export const validateForm = async (
   if (intent === 'import' || intent === 'delete') {
     result = await walletSchema.safeParseAsync(formData)
   } else if (intent === 'newversion') {
-    const newVersionSchema = versionSchema.merge(walletSchema)
+    const newVersionSchema = versionSchema.extend(walletSchema)
     result = await newVersionSchema.safeParseAsync(formData)
   } else {
     let currentSchema
@@ -107,7 +107,7 @@ export const validateForm = async (
         currentSchema = createBannerSchema
     }
     result = await currentSchema
-      .merge(fullConfigSchema)
+      .extend(fullConfigSchema)
       .safeParseAsync(Object.assign(formData, { ...{ elementType } }))
   }
   /* eslint-disable  @typescript-eslint/no-explicit-any */

@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
@@ -12,6 +11,7 @@ import {
   WIDGET_TITLE_MAX_LENGTH,
   WIDGET_DESCRIPTION_MAX_LENGTH
 } from '@shared/types'
+import { z } from 'zod/v4'
 
 const bannerFontSizeError = {
   message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`
@@ -23,7 +23,7 @@ const widgetFontSizeError = {
 export const buttonFieldsSchema = z.object({
   buttonFontName: z.string().min(1, { message: 'Choose a font' }),
   buttonText: z.string().min(1, { message: 'Button label cannot be empty' }),
-  buttonBorder: z.nativeEnum(CORNER_OPTION),
+  buttonBorder: z.enum(CORNER_OPTION),
   buttonTextColor: z.string().min(6),
   buttonBackgroundColor: z.string().min(6),
   buttonDescriptionText: z.string().optional()
@@ -48,10 +48,10 @@ export const bannerFieldsSchema = z.object({
   bannerDescriptionVisible: z.coerce.boolean().optional(),
   bannerTextColor: z.string().min(6),
   bannerBackgroundColor: z.string().min(6),
-  bannerSlideAnimation: z.nativeEnum(SLIDE_ANIMATION),
+  bannerSlideAnimation: z.enum(SLIDE_ANIMATION),
   bannerThumbnail: z.string().optional(),
-  bannerPosition: z.nativeEnum(BANNER_POSITION),
-  bannerBorder: z.nativeEnum(CORNER_OPTION)
+  bannerPosition: z.enum(BANNER_POSITION),
+  bannerBorder: z.enum(CORNER_OPTION)
 })
 
 export const widgetFieldsSchema = z.object({
@@ -71,14 +71,14 @@ export const widgetFieldsSchema = z.object({
     })
     .optional(),
   widgetDescriptionVisible: z.coerce.boolean().optional(),
-  widgetPosition: z.nativeEnum(WIDGET_POSITION),
+  widgetPosition: z.enum(WIDGET_POSITION),
   widgetDonateAmount: z.coerce
     .number()
     .min(0, { message: 'Donate amount must be positive' }),
   widgetButtonText: z
     .string()
     .min(1, { message: 'Button text cannot be empty' }),
-  widgetButtonBorder: z.nativeEnum(CORNER_OPTION),
+  widgetButtonBorder: z.enum(CORNER_OPTION),
   widgetButtonBackgroundColor: z.string().min(1),
   widgetButtonTextColor: z.string().min(1),
   widgetTextColor: z.string().min(1),
