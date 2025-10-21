@@ -38,7 +38,7 @@
     "react-dom": "^19.1.1",
     "react-minimal-pie-chart": "^9.1.1",
     "sanitize-html": "^2.17.0",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.1.15",
     "valtio": "^2.1.8",
     "zod": "^3.25.76"
   },
