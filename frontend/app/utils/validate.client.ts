@@ -6,16 +6,15 @@ import {
 import type { ElementConfigType } from '@shared/types'
 import { z } from 'zod/v4'
 
-export const elementConfigStorageSchema = z
-  .object({
-    versionName: z.string(),
-    tag: z.string().optional(),
-    // can be undefined initially
-    walletAddress: z.string().optional()
-  })
-  .extend(buttonFieldsSchema)
-  .extend(bannerFieldsSchema)
-  .extend(widgetFieldsSchema)
+export const elementConfigStorageSchema = z.object({
+  versionName: z.string(),
+  tag: z.string().optional(),
+  // can be undefined initially
+  walletAddress: z.string().optional(),
+  ...buttonFieldsSchema.shape,
+  ...bannerFieldsSchema.shape,
+  ...widgetFieldsSchema.shape
+})
 
 /**
  * Validates configurations from localStorage.
