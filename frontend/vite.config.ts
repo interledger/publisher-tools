@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { APP_BASEPATH } from './app/lib/constants.js'
 import path from 'path'
 
+// Testing something on CF
 export default defineConfig({
   define: {
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
