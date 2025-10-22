@@ -70,7 +70,7 @@ export class PaymentInteraction extends LitElement {
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
       this.#pollingAbortController?.abort(ev)
     })
-    this._startLongPolling({ signal: this.#pollingAbortController.signal })
+    this._startLongPolling(this.#pollingAbortController.signal)
   }
 
   disconnectedCallback() {
