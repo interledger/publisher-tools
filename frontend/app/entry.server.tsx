@@ -4,8 +4,11 @@
  * For more information, see https://remix.run/file-conventions/entry.server
  */
 
-import type { AppLoadContext, EntryContext } from 'react-router'
-import { ServerRouter } from 'react-router'
+import {
+  ServerRouter,
+  type AppLoadContext,
+  type EntryContext
+} from 'react-router'
 import { isbot } from 'isbot'
 import { renderToReadableStream } from 'react-dom/server'
 

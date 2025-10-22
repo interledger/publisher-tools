@@ -1,4 +1,3 @@
-import type { LinksFunction, MetaFunction } from 'react-router'
 import {
   Links,
   Meta,
@@ -6,7 +5,9 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
-  isRouteErrorResponse
+  isRouteErrorResponse,
+  type LinksFunction,
+  type MetaFunction
 } from 'react-router'
 import type { ReactNode } from 'react'
 import stylesheet from '~/tailwind.css?url'
