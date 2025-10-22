@@ -24,6 +24,18 @@ function isInteractionRejected(
   return 'result' in params && params.result === 'grant_rejected'
 }
 
+function isAbortSignalTimeout(ev: unknown) {
+  return (
+    ev instanceof Event &&
+    ev.target instanceof AbortSignal &&
+    isTimeoutError(ev.target.reason)
+  )
+}
+
+function isTimeoutError(err: unknown) {
+  return err instanceof DOMException && err.name === 'TimeoutError'
+}
+
 export class PaymentInteraction extends LitElement {
   private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   #pollingAbortController: AbortController | null = null
@@ -53,8 +65,12 @@ export class PaymentInteraction extends LitElement {
     this._boundHandleMessage = this.handleMessage.bind(this)
     window.addEventListener('message', this._boundHandleMessage)
 
+    const POLLING_TIMEOUT = 25_000 * 5
     this.#pollingAbortController = new AbortController()
-    this._startLongPolling()
+    AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
+      this.#pollingAbortController?.abort(ev)
+    })
+    this._startLongPolling({ signal: this.#pollingAbortController.signal })
   }
 
   disconnectedCallback() {
@@ -155,49 +171,45 @@ export class PaymentInteraction extends LitElement {
   }
 
   private async _startLongPolling({
-    maxAttempts = 3,
-    signal = this.#pollingAbortController?.signal
+    signal
   }: Partial<{
-    maxAttempts?: number
     signal?: AbortSignal
   }> = {}): Promise<void> {
     if (this.#interactionCompleted) return
-    let attempt = 0
 
-    while (++attempt <= maxAttempts) {
-      signal?.throwIfAborted()
+    signal?.throwIfAborted()
+    try {
+      const { paymentId } = this.configController.state
+      const { apiUrl } = this.configController.config
+      const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
 
-      try {
-        const { paymentId } = this.configController.state
-        const { apiUrl } = this.configController.config
-        const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
+      const res = await fetch(url, { signal })
 
-        const res = await fetch(url, { signal })
-
-        if (res.ok) {
-          const data = (await res.json()) as PaymentStatus
-          if (isInteractionSuccess(data)) {
-            void this.handleInteractionSuccess(data.interact_ref)
-          } else if (isInteractionRejected(data)) {
-            this.handleInteractionFail('Payment authorization rejected')
-          } else {
-            this.handleInteractionFail('Invalid payment response received')
-          }
-
-          return //success
-        }
-      } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-          // don't handle errors if the request was aborted, another method succeeded
-          return
+      if (res.ok) {
+        const data = (await res.json()) as PaymentStatus
+        if (isInteractionSuccess(data)) {
+          void this.handleInteractionSuccess(data.interact_ref)
+        } else if (isInteractionRejected(data)) {
+          this.handleInteractionFail('Payment authorization rejected')
+        } else {
+          this.handleInteractionFail('Invalid payment response received')
         }
 
-        this._markPollingFailed('Failed to check payment status')
-        throw error
+        return //success
       }
-    }
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        // don't handle errors if the request was aborted, another method succeeded
+        return
+      }
+      if (isAbortSignalTimeout(error) || isTimeoutError(error)) {
+        this._markPollingFailed('Payment authorization timed out')
+        return
+      }
 
-    this._markPollingFailed('Payment authorization timed out')
+      this._markPollingFailed('Failed to check payment status')
+      throw error
+    }
   }
 
   private _markPollingCompleted() {
