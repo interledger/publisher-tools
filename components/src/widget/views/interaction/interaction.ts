@@ -170,21 +170,16 @@ export class PaymentInteraction extends LitElement {
     this.requestUpdate()
   }
 
-  private async _startLongPolling({
-    signal
-  }: Partial<{
-    signal?: AbortSignal
-  }> = {}): Promise<void> {
+  private async _startLongPolling(signal?: AbortSignal): Promise<void> {
     if (this.#interactionCompleted) return
+
+    const { paymentId } = this.configController.state
+    const { apiUrl } = this.configController.config
+    const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
 
     signal?.throwIfAborted()
     try {
-      const { paymentId } = this.configController.state
-      const { apiUrl } = this.configController.config
-      const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
-
       const res = await fetch(url, { signal })
-
       if (res.ok) {
         const data = (await res.json()) as PaymentStatus
         if (isInteractionSuccess(data)) {
@@ -194,7 +189,6 @@ export class PaymentInteraction extends LitElement {
         } else {
           this.handleInteractionFail('Invalid payment response received')
         }
-
         return //success
       }
     } catch (error) {
