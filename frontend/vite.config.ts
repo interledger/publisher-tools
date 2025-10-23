@@ -13,6 +13,7 @@ export default defineConfig({
   plugins: [cloudflare(), reactRouter(), tsconfigPaths()],
   resolve: {
     alias: {
+      'crypto': 'crypto-browserify',
       '@/components': path.resolve(
         __dirname,
         './app/components/redesign/components'
