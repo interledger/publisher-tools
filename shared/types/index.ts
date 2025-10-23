@@ -66,6 +66,8 @@ export type ToolConfig<T extends Tool> = {
   widget: WidgetConfig
 }[T]
 
+export const KV_PAYMENTS_PREFIX = 'payments/'
+
 export const BANNER_TITLE_MAX_LENGTH = 60
 export const BANNER_DESCRIPTION_MAX_LENGTH = 300
 export const WIDGET_TITLE_MAX_LENGTH = 30
