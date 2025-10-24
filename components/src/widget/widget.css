@@ -296,6 +296,12 @@ a:focus-visible {
   align-self: stretch;
 }
 
+.divider {
+  width: 100%;
+  height: 1px;
+  margin: var(--Spacings-lg, 24px) 0;
+}
+
 .form-label {
   display: flex;
   justify-content: flex-start;
