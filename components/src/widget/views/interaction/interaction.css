@@ -46,12 +46,9 @@
 }
 
 .interaction-body img {
-  max-height: 200px;
-  height: clamp(80px, 25vh, 200px);
-  width: auto;
-  max-width: 120px;
+  height: 200px;
+  width: 122px;
   margin-top: var(--Spacings-lg, 24px);
-  object-fit: contain;
 }
 
 .title {
