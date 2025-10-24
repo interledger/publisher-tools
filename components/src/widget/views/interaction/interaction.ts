@@ -247,12 +247,7 @@ export class PaymentInteraction extends LitElement {
           <div class="description">
             Please complete the authorization in the opened tab
           </div>
-          <img
-            src=${loadingIcon}
-            width="122px"
-            height="200px"
-            alt="Payment authorization in progress"
-          />
+          <img src=${loadingIcon} alt="Payment authorization in progress" />
         </div>
 
         <button class="button-container empty-button" @click=${this.cancel}>
@@ -272,12 +267,7 @@ export class PaymentInteraction extends LitElement {
           <div class="description">
             Your payment has been processed successfully
           </div>
-          <img
-            src=${successIcon}
-            width="122px"
-            height="200px"
-            alt="Payment successful"
-          />
+          <img src=${successIcon} alt="Payment successful" />
         </div>
 
         <button class="button-container primary-button" @click=${this.goBack}>
@@ -294,12 +284,7 @@ export class PaymentInteraction extends LitElement {
 
         <div class="interaction-body">
           <div class="title failed">${this.errorMessage}</div>
-          <img
-            src=${failedIcon}
-            width="122px"
-            height="200px"
-            alt="Payment failed"
-          />
+          <img src=${failedIcon} alt="Payment failed" />
         </div>
 
         <button class="button-container empty-button" @click=${this.cancel}>

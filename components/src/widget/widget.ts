@@ -151,7 +151,7 @@ export class PaymentWidget extends LitElement {
     const showDescription = this.config.isWidgetDescriptionVisible ?? true
     const descriptionElement = showDescription
       ? html`<p>${description}</p>`
-      : null
+      : html`<div class="divider" />`
 
     return html`
       <div class="widget-header-container">
