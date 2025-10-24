@@ -1,4 +1,4 @@
-import { z } from 'zod/v4'
+import z from 'zod'
 
 export const PaymentQuoteSchema = z.object({
   senderWalletAddress: z.url('Invalid sender wallet address'),
@@ -79,6 +79,13 @@ export const PaymentFinalizeSchema = z.object({
   }),
   interactRef: z.string().min(1, 'Interact reference is required'),
   note: z.string().optional().default('Tools payment')
+})
+
+export const PaymentStatusParamSchema = z.object({
+  paymentId: z
+    .string()
+    .min(1, 'Payment ID is required')
+    .max(100, 'Payment ID invalid')
 })
 
 export const WalletAddressParamSchema = z.object({

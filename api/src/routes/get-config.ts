@@ -13,7 +13,7 @@ import type {
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
 import { zValidator } from '@hono/zod-validator'
-import { z } from 'zod/v4'
+import z from 'zod'
 
 app.get(
   '/config/:tool',

@@ -4,7 +4,7 @@ import type {
   createWidgetSchema
 } from '../utils/validate.server.js'
 import type { ElementConfigType } from '@shared/types'
-import type { z } from 'zod/v4'
+import type z from 'zod'
 
 export type ModalType = {
   type:
@@ -65,5 +65,7 @@ declare global {
     AWS_ACCESS_KEY_ID: string
     AWS_SECRET_ACCESS_KEY: string
     AWS_S3_ENDPOINT: string
+
+    PUBLISHER_TOOLS_KV: KVNamespace
   }
 }

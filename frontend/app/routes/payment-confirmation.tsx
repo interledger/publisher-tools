@@ -1,5 +1,12 @@
-import type { MetaFunction } from '@remix-run/cloudflare'
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction
+} from '@remix-run/cloudflare'
 import { useEffect, useRef } from 'react'
+import { validatePaymentParams } from '~/utils/validate.server'
+import { KV_PAYMENTS_PREFIX } from '@shared/types'
+import { useLoaderData } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,21 +15,55 @@ export const meta: MetaFunction = () => {
   ]
 }
 
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const { env } = context.cloudflare
+  const url = new URL(request.url)
+  const params = Object.fromEntries([...url.searchParams])
+
+  const validation = validatePaymentParams(params)
+  if (!validation.success) {
+    return json({ success: false, error: 'Invalid parameters', params })
+  }
+
+  const { paymentId } = validation.data
+
+  try {
+    const existingData = await env.PUBLISHER_TOOLS_KV.get(
+      KV_PAYMENTS_PREFIX + paymentId
+    )
+
+    if (existingData) {
+      // avoids spamming the KV store with redundant entries for the same payment
+      return json({ success: true, message: 'Already stored', params })
+    }
+
+    await env.PUBLISHER_TOOLS_KV.put(
+      KV_PAYMENTS_PREFIX + paymentId,
+      JSON.stringify(params),
+      {
+        expirationTtl: 300 // 5min
+      }
+    )
+
+    return json({ success: true, params })
+  } catch {
+    return json(
+      { success: false, error: 'Failed to store data', params },
+      { status: 500 }
+    )
+  }
+}
+
 export default function PaymentComplete() {
+  const { params } = useLoaderData<typeof loader>()
   const hasPostedMessage = useRef(false)
 
   useEffect(() => {
     if (hasPostedMessage.current) return
 
-    const params: { [key: string]: string } = {}
-    new URLSearchParams(window.location.search).forEach((value, key) => {
-      params[key] = value
-    })
-
-    //TODO: handle the case where window.opener is null
-    if (window.opener && !hasPostedMessage.current) {
+    hasPostedMessage.current = true
+    if (window.opener) {
       window.opener.postMessage({ type: 'GRANT_INTERACTION', ...params }, '*')
-      hasPostedMessage.current = true
     }
   }, [])
 

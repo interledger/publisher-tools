@@ -5,7 +5,7 @@ import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
 import { createHTTPException } from '../utils/utils'
 import { zValidator } from '@hono/zod-validator'
-import { z } from 'zod/v4'
+import z from 'zod'
 
 import { app } from '../app.js'
 

@@ -9,7 +9,12 @@ import {
   buttonFieldsSchema,
   widgetFieldsSchema
 } from './validate.shared'
-import { z } from 'zod/v4'
+import type {
+  PaymentStatus,
+  PaymentStatusRejected,
+  PaymentStatusSuccess
+} from 'publisher-tools-api'
+import z from 'zod'
 
 export const walletSchema = z.object({
   walletAddress: z
@@ -118,4 +123,24 @@ export const validateForm = async (
   const payload = result.data as unknown as any
 
   return { result, payload }
+}
+
+export const PaymentStatusSuccessSchema = z.object({
+  paymentId: z.string().min(1, 'Payment ID is required'),
+  hash: z.string().min(1, 'Hash is required'),
+  interact_ref: z.string().min(1, 'Interact reference is required')
+}) satisfies z.ZodType<PaymentStatusSuccess>
+
+export const PaymentStatusRejectedSchema = z.object({
+  paymentId: z.string().min(1, 'Payment ID is required'),
+  result: z.literal('grant_rejected')
+}) satisfies z.ZodType<PaymentStatusRejected>
+
+const PaymentStatusSchema = z.union([
+  PaymentStatusSuccessSchema,
+  PaymentStatusRejectedSchema
+]) satisfies z.ZodType<PaymentStatus>
+
+export const validatePaymentParams = (params: Record<string, string>) => {
+  return PaymentStatusSchema.safeParse(params)
 }
