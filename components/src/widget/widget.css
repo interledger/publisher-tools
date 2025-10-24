@@ -438,24 +438,6 @@ a:focus-visible {
   line-height: var(--Font-Line-Height-sm);
 }
 
-/* Custom scrollbar for widget content */
-/* .content.open::-webkit-scrollbar {
-  width: 6px;
-}
-
-.content.open::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.content.open::-webkit-scrollbar-thumb {
-  background: var(--Colors-silver-300);
-  border-radius: 3px;
-}
-
-.content.open::-webkit-scrollbar-thumb:hover {
-  background: var(--Colors-silver-700);
-} */
-
 @media (max-width: 480px) {
   .widget-header-container {
     padding: var(--Spacings-xs) var(--Spacings-md);
