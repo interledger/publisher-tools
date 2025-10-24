@@ -1,5 +1,6 @@
 import {
   useLoaderData,
+  data,
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
@@ -21,11 +22,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const validation = validatePaymentParams(params)
   if (!validation.success) {
-    return Response.json({
+    return {
       success: false,
       error: 'Invalid parameters',
       params
-    })
+    }
   }
 
   const { paymentId } = validation.data
@@ -37,7 +38,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
     if (existingData) {
       // avoids spamming the KV store with redundant entries for the same payment
-      return Response.json({ success: true, message: 'Already stored', params })
+      return { success: true, message: 'Already stored', params }
     }
 
     await env.PUBLISHER_TOOLS_KV.put(
@@ -48,9 +49,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       }
     )
 
-    return Response.json({ success: true, params })
+    return { success: true, params }
   } catch {
-    return Response.json(
+    return data(
       { success: false, error: 'Failed to store data', params },
       { status: 500 }
     )
