@@ -1,8 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%;
-  min-height: 0;
+  flex: 1 1 auto;
   --wm-button-radius: 8px;
   font-family: var(--wm-font-family, system-ui, sans-serif);
 }
@@ -42,12 +41,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  margin-top: var(--Spacings-lg, 24px);
+  justify-content: center;
+  flex: 1;
 }
 
 .interaction-body img {
-  margin-top: var(--Spacings-2xl, 32px);
+  max-height: 200px;
+  height: clamp(80px, 25vh, 200px);
+  width: auto;
+  max-width: 120px;
+  margin-top: var(--Spacings-lg, 24px);
+  object-fit: contain;
 }
 
 .title {
@@ -89,7 +93,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: auto;
+  margin-top: var(--Spacings-lg, 24px);
   cursor: pointer;
 }
 
