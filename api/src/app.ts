@@ -3,6 +3,7 @@ import { cors } from 'hono/cors'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
 import { serializeError } from './utils/utils.js'
+import type { KVNamespace } from '@cloudflare/workers-types'
 
 export type Env = {
   AWS_ACCESS_KEY_ID: string
@@ -11,6 +12,7 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
+  PUBLISHER_TOOLS_KV: KVNamespace
 }
 
 export const app = new Hono<{ Bindings: Env }>()

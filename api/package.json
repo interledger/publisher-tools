@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --persist-to ../.wrangler",
     "build": "wrangler deploy --dry-run --outdir dist",
     "preview": "wrangler dev",
     "typecheck": "tsc --noEmit",
@@ -28,8 +28,9 @@
   },
   "types": "./src/types.ts",
   "devDependencies": {
-    "@shared/types": "workspace:^",
+    "@cloudflare/workers-types": "^4.20251011.0",
     "@shared/defines": "workspace:^",
+    "@shared/types": "workspace:^",
     "typescript": "5.9.2",
     "wrangler": "^4.40.0"
   }

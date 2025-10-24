@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.13.13",
+    "publisher-tools-api": "workspace:^",
     "@lit/react": "^1.0.8",
     "@react-router/dev": "^7.0.0",
     "@shared/default-data": "workspace:^",

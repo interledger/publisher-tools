@@ -28,8 +28,26 @@ interface SignOptions {
   keyId: string
 }
 
-export function timeout(delay: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, delay))
+export function sleep(delay: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, delay))
+}
+
+export function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(new Error('TimeoutError'))
+      return
+    }
+
+    const timer = setTimeout(resolve, ms)
+
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new Error('TimeoutError'))
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
 }
 
 export async function createHeaders({
