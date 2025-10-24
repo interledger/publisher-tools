@@ -5,6 +5,7 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   useLoaderData,
   useNavigate,
+  data,
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
@@ -60,7 +61,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   session.unset('is-grant-accepted')
   session.unset('is-grant-response')
 
-  return Response.json(
+  return data(
     {
       grantResponse,
       isGrantAccepted,
