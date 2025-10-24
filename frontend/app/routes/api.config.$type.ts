@@ -15,7 +15,6 @@ import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { AWS_PREFIX } from '@shared/defines'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
-import { d } from 'build/server/tools/assets/server-build-Dmz9mXEq'
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
   try {
