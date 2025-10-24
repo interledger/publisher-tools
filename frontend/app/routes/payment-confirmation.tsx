@@ -1,12 +1,12 @@
 import {
-  json,
+  useLoaderData,
+  data,
   type LoaderFunctionArgs,
   type MetaFunction
-} from '@remix-run/cloudflare'
+} from 'react-router'
 import { useEffect, useRef } from 'react'
 import { validatePaymentParams } from '~/utils/validate.server'
 import { KV_PAYMENTS_PREFIX } from '@shared/types'
-import { useLoaderData } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,7 +22,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const validation = validatePaymentParams(params)
   if (!validation.success) {
-    return json({ success: false, error: 'Invalid parameters', params })
+    return data({
+      success: false,
+      error: 'Invalid parameters',
+      params
+    })
   }
 
   const { paymentId } = validation.data
@@ -34,7 +38,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
     if (existingData) {
       // avoids spamming the KV store with redundant entries for the same payment
-      return json({ success: true, message: 'Already stored', params })
+      return data({ success: true, message: 'Already stored', params })
     }
 
     await env.PUBLISHER_TOOLS_KV.put(
@@ -45,9 +49,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       }
     )
 
-    return json({ success: true, params })
+    return data({ success: true, params })
   } catch {
-    return json(
+    return data(
       { success: false, error: 'Failed to store data', params },
       { status: 500 }
     )

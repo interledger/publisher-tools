@@ -1,5 +1,5 @@
 import React from 'react'
-import { GhostButton } from '@/components'
+import { GhostButton } from '@/components/GhostButton'
 import { Heading1, Heading2SemiBold } from '@/typography'
 import { SVGArrowLeft } from '@/assets'
 

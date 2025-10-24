@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import { useSnapshot } from 'valtio'
-import { useLoaderData, useNavigate } from '@remix-run/react'
 import { useUIActions } from '~/stores/uiStore'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
+  useLoaderData,
+  useNavigate,
+  data,
   type LoaderFunctionArgs,
-  json,
   type MetaFunction
-} from '@remix-run/cloudflare'
+} from 'react-router'
 import {
   HeadingCore,
   ToolsWalletAddress,
@@ -60,7 +61,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   session.unset('is-grant-accepted')
   session.unset('is-grant-response')
 
-  return json(
+  return data(
     {
       grantResponse,
       isGrantAccepted,
