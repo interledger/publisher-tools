@@ -22,11 +22,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const validation = validatePaymentParams(params)
   if (!validation.success) {
-    return {
+    return data({
       success: false,
       error: 'Invalid parameters',
       params
-    }
+    })
   }
 
   const { paymentId } = validation.data
@@ -38,7 +38,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
     if (existingData) {
       // avoids spamming the KV store with redundant entries for the same payment
-      return { success: true, message: 'Already stored', params }
+      return data({ success: true, message: 'Already stored', params })
     }
 
     await env.PUBLISHER_TOOLS_KV.put(
@@ -49,7 +49,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       }
     )
 
-    return { success: true, params }
+    return data({ success: true, params })
   } catch {
     return data(
       { success: false, error: 'Failed to store data', params },
