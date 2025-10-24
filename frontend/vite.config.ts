@@ -10,7 +10,15 @@ export default defineConfig({
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL)
   },
-  plugins: [cloudflare(), reactRouter(), tsconfigPaths()],
+  plugins: [
+    cloudflare({
+      persistState: {
+        path: '../.wrangler/v3'
+      }
+    }),
+    reactRouter(),
+    tsconfigPaths()
+  ],
   resolve: {
     alias: {
       'crypto': 'crypto-browserify',
