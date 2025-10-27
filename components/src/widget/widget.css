@@ -50,6 +50,10 @@
 
   --wm-widget-trigger-bg-color: #f3f4f6;
   --wm-button-text-color: var(--Colors-white);
+
+  --trigger-button-height: 3.5rem;
+  --trigger-button-width: 3.5rem;
+  --top-edge-margin: 6.25rem;
 }
 
 button,
@@ -110,7 +114,9 @@ a:focus-visible {
   visibility: visible;
   width: 340px;
   height: 606px;
-  max-height: calc(100vh - 8.75rem);
+  max-height: calc(
+    100vh - var(--trigger-button-height) - var(--top-edge-margin)
+  );
   overflow-y: auto;
   transition:
     opacity 0.25s ease-out,
@@ -132,8 +138,8 @@ a:focus-visible {
 .trigger {
   cursor: pointer;
   background: var(--wm-widget-trigger-bg-color);
-  width: 3.5rem;
-  height: 3.5rem;
+  width: var(--trigger-button-width);
+  height: var(--trigger-button-height);
   display: flex;
   align-items: center;
   justify-content: center;
