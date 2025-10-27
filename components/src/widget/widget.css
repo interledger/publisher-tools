@@ -110,7 +110,7 @@ a:focus-visible {
   visibility: visible;
   width: 340px;
   height: 606px;
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - 8.75rem);
   overflow-y: auto;
   transition:
     opacity 0.25s ease-out,
