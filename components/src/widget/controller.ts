@@ -15,6 +15,7 @@ export interface WidgetState {
   incomingPaymentGrant: Grant
   quote: Quote
   outgoingPaymentGrant: PendingGrant
+  paymentId: string
   debitAmount: string
   receiveAmount: string
   receiverPublicName?: string

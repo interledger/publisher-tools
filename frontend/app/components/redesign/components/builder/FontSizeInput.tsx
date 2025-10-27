@@ -20,7 +20,11 @@ export function FontSizeInput({
   const id = useId()
   return (
     <div className="space-y-2xs" role="group" aria-labelledby={`label-${id}`}>
-      <label className="text-xs leading-xs text-silver-700" id={`label-${id}`}>
+      <label
+        className="text-xs leading-xs text-silver-700"
+        htmlFor={id}
+        id={`label-${id}`}
+      >
         {label}
       </label>
 
