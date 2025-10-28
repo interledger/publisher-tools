@@ -49,8 +49,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       '@paralleldrive/cuid2':
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^3.0.4
+        version: 3.0.4
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
@@ -162,8 +162,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       '@paralleldrive/cuid2':
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^3.0.4
+        version: 3.0.4
       '@remix-run/cloudflare':
         specifier: ^2.17.1
         version: 2.17.1(@cloudflare/workers-types@4.20251011.0)(typescript@5.9.2)
@@ -952,9 +952,9 @@ packages:
   '@noble/ed25519@3.0.0':
     resolution: {integrity: sha512-QyteqMNm0GLqfa5SoYbSC3+Pvykwpn95Zgth4MFVSMKBB75ELl9tX1LAVsN4c3HXOrakHsF2gL4zWDAYCcsnzg==}
 
-  '@noble/hashes@1.6.1':
-    resolution: {integrity: sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w==}
-    engines: {node: ^14.21.3 || >=16}
+  '@noble/hashes@2.0.1':
+    resolution: {integrity: sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==}
+    engines: {node: '>= 20.19.0'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -984,8 +984,9 @@ packages:
     resolution: {integrity: sha512-gGq0NJkIGSwdbUt4yhdF8ZrmkGKVz9vAdVzpOfnom+V8PLSmSOVhZwbNvZZS1EYcJN5hzzKBxmmVVAInM6HQLg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  '@paralleldrive/cuid2@2.2.2':
-    resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
+  '@paralleldrive/cuid2@3.0.4':
+    resolution: {integrity: sha512-sM6M2PWrByOEpN2QYAdulhEbSZmChwj0e52u4hpwB7u4PznFiNAavtE6m7O8tWUlzX+jT2eKKtc5/ZgX+IHrtg==}
+    hasBin: true
 
   '@pivanov/utils@0.0.2':
     resolution: {integrity: sha512-q9CN0bFWxWgMY5hVVYyBgez1jGiLBa6I+LkG37ycylPhFvEGOOeaADGtUSu46CaZasPnlY8fCdVJZmrgKb1EPA==}
@@ -1639,6 +1640,9 @@ packages:
     resolution: {integrity: sha512-ir1UPr3dkwexU7FdV8qBBbNDRUhMmIekYMFZfi+C/sLNnRESKPl23nB9b2pltqfOQNnGzsDdId90AEtG5tCx4A==}
     engines: {node: '>=6.0.0'}
 
+  bignumber.js@9.3.1:
+    resolution: {integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==}
+
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
@@ -2138,6 +2142,9 @@ packages:
 
   err-code@2.0.3:
     resolution: {integrity: sha512-2bmlRpNKBxT/CRmPOlyISQpNj+qSeYvcym/uT0Jx2bMOlKLtSy1ZmLuVxSEKKyor/N5yhvp/ZiG1oE3DEYMSFA==}
+
+  error-causes@3.0.2:
+    resolution: {integrity: sha512-i0B8zq1dHL6mM85FGoxaJnVtx6LD5nL2v0hlpGdntg5FOSyzQ46c9lmz5qx0xRS2+PWHGOHcYxGIBC5Le2dRMw==}
 
   error-stack-parser-es@1.0.5:
     resolution: {integrity: sha512-5qucVt2XcuGMcEGgWI7i+yZpmpByQ8J1lHhcL7PwqCwu9FPP3VUXzT4ltHe5i2z9dePwEHcDVOAfSnHsOlCXRA==}
@@ -5333,7 +5340,7 @@ snapshots:
 
   '@noble/ed25519@3.0.0': {}
 
-  '@noble/hashes@1.6.1': {}
+  '@noble/hashes@2.0.1': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -5380,9 +5387,11 @@ snapshots:
     dependencies:
       which: 3.0.1
 
-  '@paralleldrive/cuid2@2.2.2':
+  '@paralleldrive/cuid2@3.0.4':
     dependencies:
-      '@noble/hashes': 1.6.1
+      '@noble/hashes': 2.0.1
+      bignumber.js: 9.3.1
+      error-causes: 3.0.2
 
   '@pivanov/utils@0.0.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
@@ -6119,6 +6128,8 @@ snapshots:
 
   base64url@3.0.1: {}
 
+  bignumber.js@9.3.1: {}
+
   binary-extensions@2.3.0: {}
 
   bippy@0.3.28(@types/react@19.1.13)(react@19.1.1):
@@ -6662,6 +6673,8 @@ snapshots:
   entities@4.5.0: {}
 
   err-code@2.0.3: {}
+
+  error-causes@3.0.2: {}
 
   error-stack-parser-es@1.0.5: {}
 
