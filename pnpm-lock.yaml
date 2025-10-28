@@ -225,8 +225,8 @@ importers:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
       react-minimal-pie-chart:
-        specifier: ^9.1.1
-        version: 9.1.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: ^9.1.2
+        version: 9.1.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       sanitize-html:
         specifier: ^2.17.0
         version: 2.17.0
@@ -3823,8 +3823,8 @@ packages:
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  react-minimal-pie-chart@9.1.1:
-    resolution: {integrity: sha512-zirxMg8ETFKmncvreel4ooMvHIrAXWQAyXHNnqxKTtJeM2m8ipNRhsCxGXszXgwz9zUliFhWceNp6q4lTxHlJQ==}
+  react-minimal-pie-chart@9.1.2:
+    resolution: {integrity: sha512-fX5kuhM1rrpPdgb6iWPpqfBB2K6AUk8p1Pz99MhA5OW5Gaj+Qvv5ulz20tsbI/dwh0UKYBnYYrKlZFqMor8igg==}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
       react-dom: ^16.8.0 || ^17 || ^18 || ^19
@@ -8717,7 +8717,7 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-minimal-pie-chart@9.1.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  react-minimal-pie-chart@9.1.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
