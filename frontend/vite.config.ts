@@ -16,11 +16,8 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       __dirname,
       './app/components/redesign/Typography.tsx'
     ),
-    '@/assets': path.resolve(__dirname, './app/assets/svg.tsx')
-  }
-
-  if (isProduction && !isSsrBuild) {
-    alias['crypto'] = 'crypto-browserify'
+    '@/assets': path.resolve(__dirname, './app/assets/svg.tsx'),
+    ...(isProduction && !isSsrBuild && { crypto: 'crypto-browserify' })
   }
 
   return {
@@ -28,7 +25,15 @@ export default defineConfig(({ mode, isSsrBuild }) => {
       BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
       BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL)
     },
-    plugins: [cloudflare(), reactRouter(), tsconfigPaths()],
+    plugins: [
+      cloudflare({
+        persistState: {
+          path: '../.wrangler/v3'
+        }
+      }),
+      reactRouter(),
+      tsconfigPaths()
+    ],
     resolve: {
       alias
     },
