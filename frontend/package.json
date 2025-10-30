@@ -9,8 +9,8 @@
     "dev": "react-router dev --port 3000",
     "preview": "pnpm run build && wrangler dev",
     "deploy": "wrangler deploy",
-    "prepare": "wrangler types",
-    "typecheck": "react-router typegen && tsc --noEmit"
+    "prepare": "wrangler types && react-router typegen",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@interledger/open-payments": "^7.1.3",
