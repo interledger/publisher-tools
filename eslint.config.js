@@ -16,6 +16,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['frontend/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
     ...pluginReact.configs.flat.recommended,
     settings: {
       react: {
