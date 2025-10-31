@@ -40,6 +40,13 @@ export default [
     }
   },
   {
-    ignores: ['**/node_modules/', '**/dist/', '**/build/', '**/public/init.js']
+    ignores: [
+      '**/node_modules/',
+      '**/dist/',
+      '**/build/',
+      '**/public/init.js',
+      '**/.react-router/',
+      '**/.wrangler/'
+    ]
   }
 ]
