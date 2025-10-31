@@ -16,6 +16,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['frontend/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
     ...pluginReact.configs.flat.recommended,
     settings: {
       react: {
@@ -40,6 +41,13 @@ export default [
     }
   },
   {
-    ignores: ['**/node_modules/', '**/dist/', '**/build/', '**/public/init.js']
+    ignores: [
+      '**/node_modules/',
+      '**/dist/',
+      '**/build/',
+      '**/public/init.js',
+      '**/.react-router/',
+      '**/.wrangler/'
+    ]
   }
 ]

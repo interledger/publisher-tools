@@ -1,8 +1,10 @@
-import { redirect, type LoaderFunctionArgs } from '@remix-run/cloudflare'
+import { redirect } from 'react-router'
 import { commitSession, getSession } from '~/utils/session.server'
 import { isGrantValidAndAccepted } from '~/utils/open-payments.server'
 
-export async function loader({ params, request, context }: LoaderFunctionArgs) {
+import type { Route } from './+types/api.grant.$type'
+
+export async function loader({ params, request, context }: Route.LoaderArgs) {
   const { env } = context.cloudflare
 
   const elementType = params.type
