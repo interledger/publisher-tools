@@ -13,7 +13,7 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
   plugins: [
     cloudflare({
       persistState: {
-        path: '../.wrangler/v3'
+        path: '../.wrangler'
       }
     }),
     reactRouter(),
