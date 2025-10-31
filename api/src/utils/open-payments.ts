@@ -232,11 +232,9 @@ export class OpenPaymentsService {
       throw new Error('Expected finalized grant.')
     }
 
-    const url = new URL(walletAddress.resourceServer).origin
-
     const outgoingPayment = await this.client!.outgoingPayment.create(
       {
-        url: url,
+        url: walletAddress.resourceServer,
         accessToken: continuation.access_token.value
       },
       {
