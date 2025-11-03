@@ -1,8 +1,5 @@
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  data
-} from 'react-router'
+import { data } from 'react-router'
+import type { Route } from './+types/api.config.$type'
 import { getDefaultData } from '@shared/default-data'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
@@ -16,7 +13,7 @@ import { APP_BASEPATH } from '~/lib/constants.js'
 import { AWS_PREFIX } from '@shared/defines'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 
-export async function loader({ request, params, context }: LoaderFunctionArgs) {
+export async function loader({ request, params, context }: Route.LoaderArgs) {
   try {
     const { env } = context.cloudflare
     const url = new URL(request.url)
@@ -69,7 +66,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
   }
 }
 
-export async function action({ request, params, context }: ActionFunctionArgs) {
+export async function action({ request, params, context }: Route.ActionArgs) {
   const { env } = context.cloudflare
   const elementType = params.type
 
