@@ -40,8 +40,8 @@ importers:
   api:
     dependencies:
       '@hono/zod-validator':
-        specifier: ^0.7.3
-        version: 0.7.3(hono@4.9.8)(zod@3.25.76)
+        specifier: ^0.7.4
+        version: 0.7.4(hono@4.9.8)(zod@3.25.76)
       '@interledger/open-payments':
         specifier: ^7.1.3
         version: 7.1.3
@@ -757,8 +757,8 @@ packages:
   '@fontsource/titillium-web@5.2.8':
     resolution: {integrity: sha512-DNhXS1ib/de+LwbJiEmKgB9WAGK6MZfG9qFbJbz1JoY1f4KCt9HDK7lSUtqJPxdK47D2o0vqdWcg5SD+yphWOw==}
 
-  '@hono/zod-validator@0.7.3':
-    resolution: {integrity: sha512-uYGdgVib3RlGD698WR5dVM0zB3UuPY5vHKXffGUbUh7r4xY+mFIhF3/v4AcQVLrU5CQdBso8BJr4wuVoCrjTuQ==}
+  '@hono/zod-validator@0.7.4':
+    resolution: {integrity: sha512-biKGn3BRJVaftZlIPMyK+HCe/UHAjJ6sH0UyXe3+v0OcgVr9xfImDROTJFLtn9e3XEEAHGZIM9U6evu85abm8Q==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.25.0 || ^4.0.0
@@ -2907,6 +2907,7 @@ packages:
   keygrip@1.1.0:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -5182,7 +5183,7 @@ snapshots:
 
   '@fontsource/titillium-web@5.2.8': {}
 
-  '@hono/zod-validator@0.7.3(hono@4.9.8)(zod@3.25.76)':
+  '@hono/zod-validator@0.7.4(hono@4.9.8)(zod@3.25.76)':
     dependencies:
       hono: 4.9.8
       zod: 3.25.76
