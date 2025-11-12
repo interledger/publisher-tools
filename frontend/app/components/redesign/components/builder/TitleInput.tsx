@@ -80,12 +80,17 @@ function CustomTitle({
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
   const ref = useRef<HTMLInputElement>(null)
+  const id = 'custom-title-input'
   return (
-    <fieldset className="flex flex-col gap-xs">
-      <legend className="text-base leading-md font-bold text-text-primary mb-xs">
+    <div className="flex flex-col gap-xs">
+      <label
+        htmlFor={id}
+        className="text-base leading-md font-bold text-text-primary"
+      >
         Custom title
-      </legend>
+      </label>
       <InputField
+        id={id}
         value={value}
         onChange={(e) => onChange(e.target.value.trim())}
         ref={ref}
@@ -96,6 +101,6 @@ function CustomTitle({
         helpText={helpText}
         className="h-12 text-base leading-md"
       />
-    </fieldset>
+    </div>
   )
 }
