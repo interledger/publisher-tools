@@ -52,7 +52,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
       // @ts-expect-error TODO
       if (error.name === 'NoSuchKey' || error.message.includes('404')) {
         // no user config exists for this wallet address - return empty response
-        return {}
+        return data({})
       }
       throw error
     }
