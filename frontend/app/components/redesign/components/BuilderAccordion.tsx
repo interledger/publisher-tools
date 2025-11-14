@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
+import { SVGArrowCollapse, SVGEdit, SVGRefresh } from '@/assets'
 import { GhostButton } from './GhostButton'
 import { Heading5 } from '@/typography'
 import { ToolsSecondaryButton, Divider } from '@/components'
@@ -55,7 +55,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
           isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
         )}
       >
-        {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
+        {isComplete && !isOpen && <SVGEdit className="w-6 h-[18px]" />}
         <Heading5>{title}</Heading5>
 
         <SVGArrowCollapse
