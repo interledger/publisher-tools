@@ -249,8 +249,8 @@ export class PaymentInteraction extends LitElement {
           </div>
           <img
             src=${loadingIcon}
-            width="122px"
-            height="200px"
+            width="122"
+            height="200"
             alt="Payment authorization in progress"
           />
         </div>
@@ -274,8 +274,8 @@ export class PaymentInteraction extends LitElement {
           </div>
           <img
             src=${successIcon}
-            width="122px"
-            height="200px"
+            width="122"
+            height="200"
             alt="Payment successful"
           />
         </div>
@@ -296,8 +296,8 @@ export class PaymentInteraction extends LitElement {
           <div class="title failed">${this.errorMessage}</div>
           <img
             src=${failedIcon}
-            width="122px"
-            height="200px"
+            width="122"
+            height="200"
             alt="Payment failed"
           />
         </div>
