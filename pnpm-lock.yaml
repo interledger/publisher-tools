@@ -41,7 +41,7 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.7.4
-        version: 0.7.4(hono@4.9.8)(zod@4.1.12)
+        version: 0.7.5(hono@4.9.8)(zod@4.1.13)
       '@interledger/open-payments':
         specifier: ^7.1.3
         version: 7.1.3
@@ -71,7 +71,7 @@ importers:
         version: 1.0.0
       zod:
         specifier: ^4.1.12
-        version: 4.1.12
+        version: 4.1.13
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20251011.0
@@ -238,7 +238,7 @@ importers:
         version: 2.1.8(@types/react@19.2.6)(react@19.2.0)
       zod:
         specifier: ^4.1.12
-        version: 4.1.12
+        version: 4.1.13
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.14.1
@@ -819,8 +819,8 @@ packages:
   '@fontsource/titillium-web@5.2.8':
     resolution: {integrity: sha512-DNhXS1ib/de+LwbJiEmKgB9WAGK6MZfG9qFbJbz1JoY1f4KCt9HDK7lSUtqJPxdK47D2o0vqdWcg5SD+yphWOw==}
 
-  '@hono/zod-validator@0.7.4':
-    resolution: {integrity: sha512-biKGn3BRJVaftZlIPMyK+HCe/UHAjJ6sH0UyXe3+v0OcgVr9xfImDROTJFLtn9e3XEEAHGZIM9U6evu85abm8Q==}
+  '@hono/zod-validator@0.7.5':
+    resolution: {integrity: sha512-n4l4hutkfYU07PzRUHBOVzUEn38VSfrh+UVE5d0w4lyfWDOEhzxIupqo5iakRiJL44c3vTuFJBvcmUl8b9agIA==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.25.0 || ^4.0.0
@@ -4075,8 +4075,8 @@ packages:
   zod@3.22.3:
     resolution: {integrity: sha512-EjIevzuJRiRPbVH4mGc8nApb/lVLKVpmUhAaR5R5doKGfAnGJ6Gr3CViAVjP+4FWSxCsybeWQdcgCtbX+7oZug==}
 
-  zod@4.1.12:
-    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
+  zod@4.1.13:
+    resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
 
 snapshots:
 
@@ -4543,10 +4543,10 @@ snapshots:
 
   '@fontsource/titillium-web@5.2.8': {}
 
-  '@hono/zod-validator@0.7.4(hono@4.9.8)(zod@4.1.12)':
+  '@hono/zod-validator@0.7.5(hono@4.9.8)(zod@4.1.13)':
     dependencies:
       hono: 4.9.8
-      zod: 4.1.12
+      zod: 4.1.13
 
   '@humanfs/core@0.19.1': {}
 
@@ -8086,6 +8086,4 @@ snapshots:
 
   zod@3.22.3: {}
 
-  zod@4.1.12: {}
-
-  zwitch@2.0.4: {}
+  zod@4.1.13: {}
