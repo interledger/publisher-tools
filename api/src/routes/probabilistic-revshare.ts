@@ -1,11 +1,11 @@
 import { HTTPException } from 'hono/http-exception'
+import { zValidator } from '@hono/zod-validator'
+import z from 'zod'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import type { WalletAddress } from '@interledger/open-payments'
 import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
 import { createHTTPException } from '../utils/utils'
-import { zValidator } from '@hono/zod-validator'
-import z from 'zod'
 
 import { app } from '../app.js'
 

@@ -1,3 +1,4 @@
+import z from 'zod'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
@@ -11,7 +12,6 @@ import {
   WIDGET_TITLE_MAX_LENGTH,
   WIDGET_DESCRIPTION_MAX_LENGTH
 } from '@shared/types'
-import z from 'zod'
 
 const bannerFontSizeError = {
   message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`

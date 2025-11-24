@@ -1,3 +1,4 @@
+import z from 'zod'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -14,7 +15,6 @@ import type {
   PaymentStatusRejected,
   PaymentStatusSuccess
 } from 'publisher-tools-api'
-import z from 'zod'
 
 export const walletSchema = z.object({
   walletAddress: z
