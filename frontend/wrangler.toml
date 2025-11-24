@@ -4,6 +4,10 @@ compatibility_date = "2025-05-05"
 main = "worker.ts"
 upload_source_maps = true
 
+kv_namespaces = [
+  { binding = "PUBLISHER_TOOLS_KV", id = "b00031e45d5945c78e1eb3df6336e54a", preview_id = "preview_publisher_tools_kv" }
+]
+
 [assets]
 directory = "./build/client"
 
@@ -14,8 +18,3 @@ head_sampling_rate = 1.00
 
 [dev]
 port = 3001
-
-[vars]
-SCRIPT_EMBED_URL = "https://cdn.webmonetization.org/"
-API_URL = "https://api.webmonetization.org/"
-AWS_PREFIX = "20250717"

@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type z from 'zod'
 import type {
   createBannerSchema,
   createButtonSchema,
@@ -37,7 +37,7 @@ export type SanitizedFields = Pick<
 >
 
 export type JSONError<T extends z.ZodTypeAny> = {
-  errors: z.typeToFlattenedError<z.infer<T>>
+  errors: z.ZodFlattenedError<z.infer<T>>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,5 +65,7 @@ declare global {
     AWS_ACCESS_KEY_ID: string
     AWS_SECRET_ACCESS_KEY: string
     AWS_S3_ENDPOINT: string
+
+    PUBLISHER_TOOLS_KV: KVNamespace
   }
 }

@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
-import { z } from 'zod'
+import z from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
 import { PROFILE_IDS, TOOLS } from '@shared/types'
@@ -26,7 +26,7 @@ app.get(
   zValidator(
     'query',
     z.object({
-      wa: z.string().url(),
+      wa: z.url(),
       profile: z.enum(PROFILE_IDS)
     })
   ),

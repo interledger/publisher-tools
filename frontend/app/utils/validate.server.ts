@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import z from 'zod'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -10,6 +10,11 @@ import {
   buttonFieldsSchema,
   widgetFieldsSchema
 } from './validate.shared'
+import type {
+  PaymentStatus,
+  PaymentStatusRejected,
+  PaymentStatusSuccess
+} from 'publisher-tools-api'
 
 export const walletSchema = z.object({
   walletAddress: z
@@ -24,7 +29,7 @@ export const walletSchema = z.object({
         await getWalletAddress(updatedUrl)
       } catch (e) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message:
             e instanceof WalletAddressFormatError
               ? e.message
@@ -43,29 +48,26 @@ export const fullConfigSchema = z.object({
   fullconfig: z.string().min(1, { message: 'Unknown error' })
 })
 
-export const createButtonSchema = z
-  .object({
-    elementType: z.literal('button')
-  })
-  .merge(buttonFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+export const createButtonSchema = z.object({
+  elementType: z.literal('button'),
+  ...buttonFieldsSchema.shape,
+  ...walletSchema.shape,
+  ...versionSchema.shape
+})
 
-export const createBannerSchema = z
-  .object({
-    elementType: z.literal('banner')
-  })
-  .merge(bannerFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+export const createBannerSchema = z.object({
+  elementType: z.literal('banner'),
+  ...bannerFieldsSchema.shape,
+  ...walletSchema.shape,
+  ...versionSchema.shape
+})
 
-export const createWidgetSchema = z
-  .object({
-    elementType: z.literal('widget')
-  })
-  .merge(widgetFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+export const createWidgetSchema = z.object({
+  elementType: z.literal('widget'),
+  ...widgetFieldsSchema.shape,
+  ...walletSchema.shape,
+  ...versionSchema.shape
+})
 
 export const getElementSchema = (type: string) => {
   switch (type) {
@@ -90,7 +92,10 @@ export const validateForm = async (
   if (intent === 'import' || intent === 'delete') {
     result = await walletSchema.safeParseAsync(formData)
   } else if (intent === 'newversion') {
-    const newVersionSchema = versionSchema.merge(walletSchema)
+    const newVersionSchema = z.object({
+      ...versionSchema.shape,
+      ...walletSchema.shape
+    })
     result = await newVersionSchema.safeParseAsync(formData)
   } else {
     let currentSchema
@@ -106,12 +111,36 @@ export const validateForm = async (
       default:
         currentSchema = createBannerSchema
     }
-    result = await currentSchema
-      .merge(fullConfigSchema)
-      .safeParseAsync(Object.assign(formData, { ...{ elementType } }))
+    const mergedSchema = z.object({
+      ...currentSchema.shape,
+      ...fullConfigSchema.shape
+    })
+    result = await mergedSchema.safeParseAsync(
+      Object.assign(formData, { ...{ elementType } })
+    )
   }
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   const payload = result.data as unknown as any
 
   return { result, payload }
+}
+
+export const PaymentStatusSuccessSchema = z.object({
+  paymentId: z.string().min(1, 'Payment ID is required'),
+  hash: z.string().min(1, 'Hash is required'),
+  interact_ref: z.string().min(1, 'Interact reference is required')
+}) satisfies z.ZodType<PaymentStatusSuccess>
+
+export const PaymentStatusRejectedSchema = z.object({
+  paymentId: z.string().min(1, 'Payment ID is required'),
+  result: z.literal('grant_rejected')
+}) satisfies z.ZodType<PaymentStatusRejected>
+
+const PaymentStatusSchema = z.union([
+  PaymentStatusSuccessSchema,
+  PaymentStatusRejectedSchema
+]) satisfies z.ZodType<PaymentStatus>
+
+export const validatePaymentParams = (params: Record<string, string>) => {
+  return PaymentStatusSchema.safeParse(params)
 }

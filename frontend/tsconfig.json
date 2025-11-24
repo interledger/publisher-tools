@@ -1,5 +1,10 @@
 {
-  "include": ["app/**/*.ts", "app/**/*.tsx", "worker.ts"],
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "worker.ts",
+    ".react-router/types/**/*"
+  ],
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
@@ -22,6 +27,7 @@
     "paths": {
       "~/*": ["./app/*"],
       "@/components": ["./app/components/redesign/components"],
+      "@/components/*": ["./app/components/redesign/components/*"],
       "@/typography": ["./app/components/redesign/Typography.tsx"],
       "@/assets": ["./app/assets/svg.tsx"]
     },
@@ -29,6 +35,7 @@
       "./worker-configuration.d.ts",
       "vite/client",
       "./tools-components.d.ts"
-    ]
+    ],
+    "rootDirs": [".", "./.react-router/types"]
   }
 }

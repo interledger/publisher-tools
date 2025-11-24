@@ -2,6 +2,7 @@ import {
   type PendingGrant,
   type WalletAddress,
   type AuthenticatedClient,
+  type OutgoingPayment,
   type Quote,
   type Grant,
   isFinalizedGrant,
@@ -11,7 +12,7 @@ import {
 import { getWalletAddress } from '@shared/utils'
 import {
   createHeaders,
-  timeout,
+  sleep,
   createHTTPException,
   urlWithParams
 } from './utils.js'
@@ -193,7 +194,7 @@ export class OpenPaymentsService {
     debitAmount: Amount
     receiveAmount: Amount
     redirectUrl: string
-  }): Promise<PendingGrant> {
+  }): Promise<{ grant: PendingGrant; paymentId: string }> {
     const clientNonce = crypto.randomUUID()
     const paymentId = createId()
 
@@ -206,7 +207,7 @@ export class OpenPaymentsService {
       redirectUrl: args.redirectUrl
     })
 
-    return outgoingPaymentGrant
+    return { grant: outgoingPaymentGrant, paymentId }
   }
 
   async finishPaymentProcess(
@@ -231,11 +232,9 @@ export class OpenPaymentsService {
       throw new Error('Expected finalized grant.')
     }
 
-    const url = new URL(walletAddress.resourceServer).origin
-
     const outgoingPayment = await this.client!.outgoingPayment.create(
       {
-        url: url,
+        url: walletAddress.resourceServer,
         accessToken: continuation.access_token.value
       },
       {
@@ -419,22 +418,20 @@ export class OpenPaymentsService {
   }
 
   private async checkOutgoingPayment(
-    finishPaymentUrl: string,
+    outgoingPaymentId: OutgoingPayment['id'],
     continuationAccessToken: string,
     incomingPaymentGrant: Grant,
     incomingPaymentId: string
   ): Promise<CheckPaymentResult> {
-    await timeout(3000)
+    await sleep(3000)
+
+    const outgoingPayment = await this.client!.outgoingPayment.get({
+      url: outgoingPaymentId,
+      accessToken: continuationAccessToken
+    })
 
     // get outgoing payment, to check if there was enough balance
-    const checkOutgoingPaymentResponse = await this.client!.outgoingPayment.get(
-      {
-        url: finishPaymentUrl,
-        accessToken: continuationAccessToken
-      }
-    )
-
-    if (!(Number(checkOutgoingPaymentResponse.sentAmount.value) > 0)) {
+    if (!(Number(outgoingPayment.sentAmount.value) > 0)) {
       return {
         success: false,
         error: {
