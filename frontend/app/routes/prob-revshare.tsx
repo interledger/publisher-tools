@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useNavigate } from '@remix-run/react'
-import type { MetaFunction } from '@remix-run/cloudflare'
+import { useNavigate, type MetaFunction } from 'react-router'
 import {
   Card,
   CodeBlockLink,

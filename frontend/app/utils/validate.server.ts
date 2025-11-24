@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import z from 'zod'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -29,7 +29,7 @@ export const walletSchema = z.object({
         await getWalletAddress(updatedUrl)
       } catch (e) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           message:
             e instanceof WalletAddressFormatError
               ? e.message
@@ -48,29 +48,26 @@ export const fullConfigSchema = z.object({
   fullconfig: z.string().min(1, { message: 'Unknown error' })
 })
 
-export const createButtonSchema = z
-  .object({
-    elementType: z.literal('button')
-  })
-  .merge(buttonFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+export const createButtonSchema = z.object({
+  elementType: z.literal('button'),
+  ...buttonFieldsSchema.shape,
+  ...walletSchema.shape,
+  ...versionSchema.shape
+})
 
-export const createBannerSchema = z
-  .object({
-    elementType: z.literal('banner')
-  })
-  .merge(bannerFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+export const createBannerSchema = z.object({
+  elementType: z.literal('banner'),
+  ...bannerFieldsSchema.shape,
+  ...walletSchema.shape,
+  ...versionSchema.shape
+})
 
-export const createWidgetSchema = z
-  .object({
-    elementType: z.literal('widget')
-  })
-  .merge(widgetFieldsSchema)
-  .merge(walletSchema)
-  .merge(versionSchema)
+export const createWidgetSchema = z.object({
+  elementType: z.literal('widget'),
+  ...widgetFieldsSchema.shape,
+  ...walletSchema.shape,
+  ...versionSchema.shape
+})
 
 export const getElementSchema = (type: string) => {
   switch (type) {
@@ -95,7 +92,10 @@ export const validateForm = async (
   if (intent === 'import' || intent === 'delete') {
     result = await walletSchema.safeParseAsync(formData)
   } else if (intent === 'newversion') {
-    const newVersionSchema = versionSchema.merge(walletSchema)
+    const newVersionSchema = z.object({
+      ...versionSchema.shape,
+      ...walletSchema.shape
+    })
     result = await newVersionSchema.safeParseAsync(formData)
   } else {
     let currentSchema
@@ -111,9 +111,13 @@ export const validateForm = async (
       default:
         currentSchema = createBannerSchema
     }
-    result = await currentSchema
-      .merge(fullConfigSchema)
-      .safeParseAsync(Object.assign(formData, { ...{ elementType } }))
+    const mergedSchema = z.object({
+      ...currentSchema.shape,
+      ...fullConfigSchema.shape
+    })
+    result = await mergedSchema.safeParseAsync(
+      Object.assign(formData, { ...{ elementType } })
+    )
   }
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   const payload = result.data as unknown as any

@@ -46,7 +46,7 @@ app.onError((error, c) => {
       message: 'Validation failed',
       code: 'VALIDATION_ERROR',
       details: {
-        issues: error.errors.map((err) => ({
+        issues: error.issues.map((err) => ({
           path: err.path.join('.'),
           message: err.message,
           code: err.code
