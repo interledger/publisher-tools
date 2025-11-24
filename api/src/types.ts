@@ -4,7 +4,7 @@ import type {
   PaymentQuoteSchema,
   WalletAddressParamSchema
 } from './schemas/payment.js'
-import type { z } from 'zod/v4'
+import type z from 'zod'
 
 export type PaymentStatusSuccess = {
   paymentId: string
