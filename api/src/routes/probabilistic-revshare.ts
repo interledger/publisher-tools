@@ -1,6 +1,6 @@
 import { HTTPException } from 'hono/http-exception'
 import { zValidator } from '@hono/zod-validator'
-import { z } from 'zod'
+import z from 'zod'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import type { WalletAddress } from '@interledger/open-payments'
 import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
@@ -14,7 +14,7 @@ app.get(
   zValidator(
     'param',
     z.object({
-      payload: z.string().base64url().max(50_000).min(20)
+      payload: z.base64url().max(50_000).min(20)
     })
   ),
   async ({ req, json }) => {
