@@ -56,13 +56,11 @@ const OUTGOING_PAYMENT_POLLING_INITIAL_DELAY = 3000
 const OUTGOING_PAYMENT_POLLING_INTERVAL = 1500
 const OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS = 3
 
-function isInsufficientFunds(outgoingPayment: OutgoingPayment): boolean {
+function hasCancellationReason(outgoingPayment: OutgoingPayment): boolean {
   return (
     outgoingPayment.failed &&
     typeof outgoingPayment.metadata === 'object' &&
-    'cancellationReason' in outgoingPayment.metadata &&
-    String(outgoingPayment.metadata.cancellationReason).toLowerCase() ===
-      'insufficient funds'
+    'cancellationReason' in outgoingPayment.metadata
   )
 }
 
@@ -445,12 +443,12 @@ export class OpenPaymentsService {
         accessToken: continuationAccessToken
       })
 
-      if (isInsufficientFunds(outgoingPayment)) {
+      if (hasCancellationReason(outgoingPayment)) {
         return {
           success: false,
           error: {
-            code: 'INSUFFICIENT_BALANCE',
-            message: 'Insufficient funds. Check your balance and try again.'
+            code: 'CANCELLATION_REASON',
+            message: `Payment aborted due to: ${outgoingPayment.metadata?.cancellationReason}`
           }
         }
       }
