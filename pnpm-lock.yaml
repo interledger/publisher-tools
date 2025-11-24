@@ -40,7 +40,7 @@ importers:
   api:
     dependencies:
       '@hono/zod-validator':
-        specifier: ^0.7.4
+        specifier: ^0.7.5
         version: 0.7.5(hono@4.9.8)(zod@4.1.13)
       '@interledger/open-payments':
         specifier: ^7.1.3
@@ -70,7 +70,7 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       zod:
-        specifier: ^4.1.12
+        specifier: ^4.1.13
         version: 4.1.13
     devDependencies:
       '@cloudflare/workers-types':
@@ -237,7 +237,7 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(@types/react@19.2.6)(react@19.2.0)
       zod:
-        specifier: ^4.1.12
+        specifier: ^4.1.13
         version: 4.1.13
     devDependencies:
       '@cloudflare/vite-plugin':
