@@ -8,7 +8,6 @@ import z from 'zod'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils'
 
-
 app.get(
   '/revshare/:payload',
   zValidator(

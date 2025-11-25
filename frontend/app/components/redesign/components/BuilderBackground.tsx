@@ -1,4 +1,3 @@
-
 import { SLIDE_ANIMATION } from '@shared/types'
 import { cx } from 'class-variance-authority'
 import React from 'react'

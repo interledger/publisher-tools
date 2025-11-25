@@ -1,4 +1,3 @@
-
 import { cx } from 'class-variance-authority'
 import React, { useEffect, useState } from 'react'
 import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'

@@ -45,13 +45,13 @@ export default [
       'import/order': [
         'error',
         {
-          groups: [
-            'builtin',   // node built-in modules
-            'external',  // npm packages
-            'internal',  // @/ and ~/ aliases
-            ['parent', 'sibling', 'index'], // relative imports
+          'groups': [
+            'builtin', // node built-in modules
+            'external', // npm packages
+            'internal', // @/ and ~/ aliases
+            ['parent', 'sibling', 'index'] // relative imports
           ],
-          pathGroups: [
+          'pathGroups': [
             {
               pattern: 'react',
               group: 'external',
@@ -81,8 +81,8 @@ export default [
               group: 'internal'
             }
           ],
-          "newlines-between": 'never',
-          alphabetize: {
+          'newlines-between': 'never',
+          'alphabetize': {
             order: 'asc',
             caseInsensitive: true
           }

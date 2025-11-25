@@ -13,7 +13,8 @@ declare module 'react-router' {
 const build =
   process.env.NODE_ENV === 'development'
     ? () => import('virtual:react-router/server-build')
-    : () => import('./build/server/index.js')
+    : // @ts-expect-error - build artifact created during build process
+      () => import('./build/server/index.js')
 
 export default {
   async fetch(request, env, ctx) {

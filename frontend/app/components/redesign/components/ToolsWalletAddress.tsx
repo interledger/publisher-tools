@@ -1,4 +1,3 @@
-
 import {
   checkHrefFormat,
   getWalletAddress,

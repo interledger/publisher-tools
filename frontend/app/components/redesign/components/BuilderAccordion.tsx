@@ -1,4 +1,3 @@
-
 import { cx } from 'class-variance-authority'
 import React, { useState } from 'react'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'

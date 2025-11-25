@@ -1,4 +1,3 @@
-
 import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
 import type { ConfigVersions } from '@shared/types'
