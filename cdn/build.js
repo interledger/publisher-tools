@@ -1,9 +1,9 @@
-import path from 'node:path'
 import { writeFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+import directoryTree from 'directory-tree'
 import { build } from 'esbuild'
 import { copy } from 'esbuild-plugin-copy'
-import directoryTree from 'directory-tree'
 
 const isDev = process.env.npm_lifecycle_script?.includes('--watch')
 

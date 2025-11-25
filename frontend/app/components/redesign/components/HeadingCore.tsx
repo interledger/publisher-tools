@@ -1,7 +1,7 @@
 import React from 'react'
-import { GhostButton } from '@/components/GhostButton'
-import { Heading1, Heading2SemiBold } from '@/typography'
 import { SVGArrowLeft } from '@/assets'
+import { Heading1, Heading2SemiBold } from '@/typography'
+import { GhostButton } from '@/components/GhostButton'
 
 interface HeadingCoreProps {
   children: React.ReactNode

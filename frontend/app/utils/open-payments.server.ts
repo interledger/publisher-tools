@@ -6,11 +6,11 @@ import {
   isPendingGrant,
   createAuthenticatedClient
 } from '@interledger/open-payments'
-import { createId } from '@paralleldrive/cuid2'
-import { createContentDigestHeader } from 'httpbis-digest-headers'
-import { signMessage } from 'http-message-signatures/lib/httpbis'
-import type { Request } from 'http-message-signatures'
 import { signAsync } from '@noble/ed25519'
+import { createId } from '@paralleldrive/cuid2'
+import type { Request } from 'http-message-signatures'
+import { signMessage } from 'http-message-signatures/lib/httpbis'
+import { createContentDigestHeader } from 'httpbis-digest-headers'
 
 interface RequestLike extends Request {
   body?: string

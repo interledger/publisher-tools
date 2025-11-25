@@ -1,6 +1,6 @@
+import { cx } from 'class-variance-authority'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { SVGDropdown, SVGArrowDropdown } from '@/assets'
-import { cx } from 'class-variance-authority'
 
 export type DropdownOption = {
   label: string

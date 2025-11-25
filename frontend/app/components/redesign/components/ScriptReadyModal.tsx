@@ -1,7 +1,7 @@
-import React from 'react'
 import { cx } from 'class-variance-authority'
-import { ToolsPrimaryButton } from './ToolsPrimaryButton'
+import React from 'react'
 import { SVGMarkSuccess, SVGClose } from '~/assets/svg'
+import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
 interface ScriptReadyModalProps {

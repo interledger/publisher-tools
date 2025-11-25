@@ -1,6 +1,6 @@
-import { Slider } from '@/components'
 import { cx } from 'class-variance-authority'
 import { useId } from 'react'
+import { Slider } from '@/components'
 
 interface Props {
   value: number

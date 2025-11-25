@@ -1,6 +1,7 @@
-import { GhostButton, PoweredByFooter } from '@/components'
+
 import { SVGCloseIcon } from '@/assets'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
+import { GhostButton, PoweredByFooter } from '@/components'
 
 const toolItems: MobileMenuItemData[] = [
   { to: '/publishers', text: 'Publisher tools' },

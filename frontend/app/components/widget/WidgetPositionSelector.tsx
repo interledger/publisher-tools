@@ -1,9 +1,9 @@
+import { WIDGET_POSITION, type WidgetPositionKey } from '@shared/types'
+import { SVGPositionLeft, SVGPositionRight } from '@/assets'
 import {
   PositionSelectorInput,
   type Option
 } from '@/components/builder/PositionSelectorInput'
-import { WIDGET_POSITION, type WidgetPositionKey } from '@shared/types'
-import { SVGPositionLeft, SVGPositionRight } from '@/assets'
 
 export interface WidgetPositionSelectorProps {
   value: WidgetPositionKey

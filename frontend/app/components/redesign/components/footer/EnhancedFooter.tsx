@@ -1,11 +1,11 @@
 import React from 'react'
-import wmLogo from '~/assets/images/wm_logo.svg?url'
+import { SVGFooterDivider } from '@/assets'
+import socialGitGubIcon from '~/assets/images/icons/social-github.svg?url'
+import socialInstagramIcon from '~/assets/images/icons/social-instagram.svg?url'
 import socialLinkedInIcon from '~/assets/images/icons/social-linkedin.svg?url'
 import socialSlackIcon from '~/assets/images/icons/social-slack.svg?url'
-import socialInstagramIcon from '~/assets/images/icons/social-instagram.svg?url'
-import socialGitGubIcon from '~/assets/images/icons/social-github.svg?url'
 import socialYoutubeIcon from '~/assets/images/icons/social-youtube.svg?url'
-import { SVGFooterDivider } from '@/assets'
+import wmLogo from '~/assets/images/wm_logo.svg?url'
 import { BodyStandardLink, Copyright } from '@/components'
 
 const socialLinks = [

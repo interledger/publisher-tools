@@ -1,3 +1,10 @@
+import { BORDER_RADIUS } from '@shared/types'
+import type {
+  FontFamilyKey,
+  BorderRadiusKey,
+  SlideAnimationType,
+  BannerPositionKey
+} from '@shared/types'
 import {
   html,
   unsafeCSS,
@@ -9,13 +16,6 @@ import { property, state } from 'lit/decorators.js'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
 import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
-import { BORDER_RADIUS } from '@shared/types'
-import type {
-  FontFamilyKey,
-  BorderRadiusKey,
-  SlideAnimationType,
-  BannerPositionKey
-} from '@shared/types'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =

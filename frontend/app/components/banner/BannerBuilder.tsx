@@ -1,19 +1,5 @@
 import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
-  BannerColorsSelector,
-  Divider,
-  ToolsDropdown,
-  CornerRadiusSelector
-} from '@/components'
-import BuilderAccordion from '@/components/BuilderAccordion'
-import { InputFieldset } from '@/components/builder/InputFieldset'
-import { TitleInput } from '@/components/builder/TitleInput'
-import { DescriptionInput } from '@/components/builder/DescriptionInput'
-import { FontSizeInput } from '@/components/builder/FontSizeInput'
-import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
-import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
-import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
-import {
   SVGAnimation,
   SVGColorPicker,
   SVGHeaderPosition,
@@ -21,8 +7,22 @@ import {
   SVGText,
   SVGThumbnail
 } from '~/assets/svg'
-import { useUIActions, useUIState } from '~/stores/uiStore'
+import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
+import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
+import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useCurrentConfig } from '~/stores/toolStore'
+import { useUIActions, useUIState } from '~/stores/uiStore'
+import {
+  BannerColorsSelector,
+  Divider,
+  ToolsDropdown,
+  CornerRadiusSelector
+} from '@/components'
+import { DescriptionInput } from '@/components/builder/DescriptionInput'
+import { FontSizeInput } from '@/components/builder/FontSizeInput'
+import { InputFieldset } from '@/components/builder/InputFieldset'
+import { TitleInput } from '@/components/builder/TitleInput'
+import BuilderAccordion from '@/components/BuilderAccordion'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void

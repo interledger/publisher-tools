@@ -1,6 +1,4 @@
 import { useEffect, useState, useRef } from 'react'
-import { useSnapshot } from 'valtio'
-import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   useLoaderData,
   useNavigate,
@@ -8,6 +6,22 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
+import { useSnapshot } from 'valtio'
+import { SVGSpinner } from '@/assets'
+import { BuilderTabs } from '~/components/builder/BuilderTabs'
+import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
+import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { useBodyClass } from '~/hooks/useBodyClass'
+import { usePathTracker } from '~/hooks/usePathTracker'
+import {
+  toolState,
+  toolActions,
+  persistState,
+  loadState,
+  splitConfigProperties
+} from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
+import { commitSession, getSession } from '~/utils/session.server.js'
 import {
   HeadingCore,
   ToolsWalletAddress,
@@ -21,21 +35,6 @@ import {
   StepsIndicator,
   MobileStepsIndicator
 } from '@/components'
-import { BuilderTabs } from '~/components/builder/BuilderTabs'
-import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
-import { WidgetPreview } from '~/components/widget/WidgetPreview'
-import {
-  toolState,
-  toolActions,
-  persistState,
-  loadState,
-  splitConfigProperties
-} from '~/stores/toolStore'
-
-import { commitSession, getSession } from '~/utils/session.server.js'
-import { useBodyClass } from '~/hooks/useBodyClass'
-import { SVGSpinner } from '@/assets'
-import { useUIActions } from '~/stores/uiStore'
 
 export const meta: MetaFunction = () => {
   return [

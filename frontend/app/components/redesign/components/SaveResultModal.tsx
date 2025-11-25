@@ -1,7 +1,7 @@
-import React from 'react'
 import { cx } from 'class-variance-authority'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import React from 'react'
 import { SVGMarkSuccess, SVGClose, SVGErrorVector } from '~/assets/svg'
+import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 
 interface SaveResultModalProps {
   isOpen?: boolean

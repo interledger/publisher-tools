@@ -1,7 +1,7 @@
 import React from 'react'
-import { BuilderPresetTabs } from '@/components'
-import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
 import { useSnapshot } from 'valtio'
+import { toolState, toolActions, type StableKey } from '~/stores/toolStore'
+import { BuilderPresetTabs } from '@/components'
 
 export function BuilderTabs({ children }: React.PropsWithChildren) {
   const snap = useSnapshot(toolState)

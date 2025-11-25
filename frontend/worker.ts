@@ -1,5 +1,5 @@
-import { APP_BASEPATH } from '~/lib/constants.js'
 import { createRequestHandler, type ServerBuild } from 'react-router'
+import { APP_BASEPATH } from '~/lib/constants.js'
 
 declare module 'react-router' {
   export interface AppLoadContext {
@@ -13,8 +13,7 @@ declare module 'react-router' {
 const build =
   process.env.NODE_ENV === 'development'
     ? () => import('virtual:react-router/server-build')
-    : // @ts-expect-error - build artifact created during build process
-      () => import('./build/server/index.js')
+    : () => import('./build/server/index.js')
 
 export default {
   async fetch(request, env, ctx) {

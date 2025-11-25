@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import { SVGHamburgerIcon } from '@/assets'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
+import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

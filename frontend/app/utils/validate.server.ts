@@ -1,20 +1,20 @@
-import z from 'zod'
 import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl,
   WalletAddressFormatError
 } from '@shared/utils'
-import {
-  bannerFieldsSchema,
-  buttonFieldsSchema,
-  widgetFieldsSchema
-} from './validate.shared'
 import type {
   PaymentStatus,
   PaymentStatusRejected,
   PaymentStatusSuccess
 } from 'publisher-tools-api'
+import z from 'zod'
+import {
+  bannerFieldsSchema,
+  buttonFieldsSchema,
+  widgetFieldsSchema
+} from './validate.shared'
 
 export const walletSchema = z.object({
   walletAddress: z

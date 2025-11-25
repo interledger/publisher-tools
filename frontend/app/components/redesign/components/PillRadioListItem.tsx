@@ -1,5 +1,5 @@
-import React from 'react'
 import { cx } from 'class-variance-authority'
+import React from 'react'
 
 interface PillRadioListItemProps<T extends string> {
   radioGroup: string

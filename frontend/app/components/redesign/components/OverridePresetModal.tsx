@@ -1,10 +1,10 @@
+import type { ElementConfigType } from '@shared/types'
 import React, { useState } from 'react'
-import { ToolsPrimaryButton } from './ToolsPrimaryButton'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { ConfigCondition } from './ConfigCondition'
 import { SVGClose } from '~/assets/svg'
 import { SVGSpinner } from '~/assets/svg'
-import type { ElementConfigType } from '@shared/types'
+import { ConfigCondition } from './ConfigCondition'
+import { ToolsPrimaryButton } from './ToolsPrimaryButton'
+import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 
 interface ConfigItem {
   id: string
