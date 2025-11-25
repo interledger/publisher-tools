@@ -32,7 +32,7 @@
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "4.40.0"
+      "wrangler": "4.50.0"
     }
   },
   "engines": {
