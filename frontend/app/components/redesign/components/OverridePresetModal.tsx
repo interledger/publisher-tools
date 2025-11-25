@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import type { ElementConfigType } from '@shared/types'
-import { SVGClose , SVGSpinner } from '~/assets/svg'
+import { SVGClose, SVGSpinner } from '~/assets/svg'
 import { ConfigCondition } from './ConfigCondition'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
