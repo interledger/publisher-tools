@@ -49,8 +49,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       '@paralleldrive/cuid2':
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^2.3.1
+        version: 2.3.1
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
@@ -162,8 +162,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       '@paralleldrive/cuid2':
-        specifier: ^2.2.2
-        version: 2.2.2
+        specifier: ^2.3.1
+        version: 2.3.1
       '@react-router/cloudflare':
         specifier: ^7.9.5
         version: 7.9.5(@cloudflare/workers-types@4.20251011.0)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
@@ -1041,8 +1041,8 @@ packages:
     resolution: {integrity: sha512-gGq0NJkIGSwdbUt4yhdF8ZrmkGKVz9vAdVzpOfnom+V8PLSmSOVhZwbNvZZS1EYcJN5hzzKBxmmVVAInM6HQLg==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  '@paralleldrive/cuid2@2.2.2':
-    resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
+  '@paralleldrive/cuid2@2.3.1':
+    resolution: {integrity: sha512-XO7cAxhnTZl0Yggq6jOgjiOHhbgcO4NqFqwSmQpjK3b6TEE6Uj/jfSk6wzYyemh3+I0sHirKSetjQwn5cZktFw==}
 
   '@pivanov/utils@0.0.2':
     resolution: {integrity: sha512-q9CN0bFWxWgMY5hVVYyBgez1jGiLBa6I+LkG37ycylPhFvEGOOeaADGtUSu46CaZasPnlY8fCdVJZmrgKb1EPA==}
@@ -4774,7 +4774,7 @@ snapshots:
     dependencies:
       which: 3.0.1
 
-  '@paralleldrive/cuid2@2.2.2':
+  '@paralleldrive/cuid2@2.3.1':
     dependencies:
       '@noble/hashes': 1.6.1
 
