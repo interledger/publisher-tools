@@ -1,6 +1,6 @@
-import { cx } from 'class-variance-authority'
 import React from 'react'
 import type { ButtonHTMLAttributes } from 'react'
+import { cx } from 'class-variance-authority'
 
 interface PillTagButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode

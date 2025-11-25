@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import { useState, useRef, useEffect, useMemo } from 'react'
+import { cx } from 'class-variance-authority'
 import { SVGDropdown, SVGArrowDropdown } from '@/assets'
 
 export type DropdownOption = {

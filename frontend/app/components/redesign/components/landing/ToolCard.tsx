@@ -1,7 +1,7 @@
 import React, { useId } from 'react'
 import { Link } from 'react-router'
-import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 import { PillTag } from '@/components'
+import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 
 export type ToolCardProps = {
   children?: React.ReactNode

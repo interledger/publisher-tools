@@ -8,6 +8,19 @@ import {
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { SVGSpinner } from '@/assets'
+import {
+  HeadingCore,
+  ToolsWalletAddress,
+  BuilderBackground,
+  ToolsSecondaryButton,
+  ToolsPrimaryButton,
+  SaveResultModal,
+  ScriptReadyModal,
+  WalletOwnershipModal,
+  OverridePresetModal,
+  StepsIndicator,
+  MobileStepsIndicator
+} from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
@@ -25,19 +38,6 @@ import {
 } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import {
-  HeadingCore,
-  ToolsWalletAddress,
-  BuilderBackground,
-  ToolsSecondaryButton,
-  ToolsPrimaryButton,
-  SaveResultModal,
-  ScriptReadyModal,
-  WalletOwnershipModal,
-  OverridePresetModal,
-  StepsIndicator,
-  MobileStepsIndicator
-} from '@/components'
 
 export const meta: MetaFunction = () => {
   return [

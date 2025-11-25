@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import { useId, type InputHTMLAttributes, forwardRef } from 'react'
+import { cx } from 'class-variance-authority'
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string

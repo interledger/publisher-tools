@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import React from 'react'
+import { cx } from 'class-variance-authority'
 import { SVGMarkSuccess, SVGClose, SVGErrorVector } from '~/assets/svg'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 

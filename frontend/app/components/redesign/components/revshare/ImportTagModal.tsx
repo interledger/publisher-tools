@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import React, { useEffect, useRef } from 'react'
+import { cx } from 'class-variance-authority'
 import { SVGClose } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
 

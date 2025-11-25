@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import { useState, useRef, useEffect } from 'react'
+import { cx } from 'class-variance-authority'
 import ClickAwayListener from 'react-click-away-listener'
 import { SVGDownArrow } from '@/assets'
 import developerImage from '~/assets/images/dropdown-developer.png'

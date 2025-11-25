@@ -1,4 +1,6 @@
 import { zValidator } from '@hono/zod-validator'
+import { HTTPException } from 'hono/http-exception'
+import z from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
 import { PRESET_IDS, TOOLS } from '@shared/types'
@@ -10,8 +12,6 @@ import type {
   Tool,
   WidgetConfig
 } from '@shared/types'
-import { HTTPException } from 'hono/http-exception'
-import z from 'zod'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
 

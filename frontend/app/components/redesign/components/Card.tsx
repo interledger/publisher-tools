@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import React from 'react'
+import { cx } from 'class-variance-authority'
 
 type CardProps = {
   children: React.ReactNode

@@ -1,8 +1,8 @@
+import { useEffect, useState } from 'react'
 import {
   validateAndConfirmPointer,
   WalletAddressFormatError
 } from '@shared/utils/index'
-import { useEffect, useState } from 'react'
 
 interface ValidationState {
   isValidating: boolean

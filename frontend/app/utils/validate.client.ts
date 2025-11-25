@@ -1,5 +1,5 @@
-import type { ElementConfigType } from '@shared/types'
 import z from 'zod'
+import type { ElementConfigType } from '@shared/types'
 import {
   bannerFieldsSchema,
   buttonFieldsSchema,

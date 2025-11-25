@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import { useState, useRef, useEffect, forwardRef } from 'react'
+import { cx } from 'class-variance-authority'
 import ClickAwayListener from 'react-click-away-listener'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { SVGColorPicker, SVGArrowDropdown } from '../../../assets/svg'

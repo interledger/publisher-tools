@@ -1,9 +1,9 @@
 import { signAsync } from '@noble/ed25519'
 import { HTTPException } from 'hono/http-exception'
-import type { ContentfulStatusCode } from 'hono/utils/http-status'
-import type { Request } from 'http-message-signatures'
 import { signMessage } from 'http-message-signatures/lib/httpbis'
 import { createContentDigestHeader } from 'httpbis-digest-headers'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
+import type { Request } from 'http-message-signatures'
 
 type Headers = SignatureHeaders & Partial<ContentHeaders>
 

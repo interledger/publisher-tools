@@ -1,21 +1,21 @@
 import './views/confirmation/confirmation.js'
 import './views/interaction/interaction.js'
-import type { WalletAddress } from '@interledger/open-payments'
+import { LitElement, html, unsafeCSS } from 'lit'
+import { property, state } from 'lit/decorators.js'
 import {
   checkHrefFormat,
   getWalletAddress,
   normalizeWalletAddress,
   toWalletAddressUrl
 } from '@shared/utils'
-import { LitElement, html, unsafeCSS } from 'lit'
-import { property, state } from 'lit/decorators.js'
 import { WidgetController } from './controller'
-import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
 import interledgerLogoIcon from '../assets/interledger_logo.svg'
 import closeButtonIcon from '../assets/wm_close_button.svg'
 import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
+import type { WidgetConfig } from './types'
+import type { WalletAddress } from '@interledger/open-payments'
 
 const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'

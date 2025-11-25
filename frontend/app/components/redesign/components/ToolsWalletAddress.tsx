@@ -1,11 +1,11 @@
+import React, { useState, useId, useRef, useEffect } from 'react'
+import { cx } from 'class-variance-authority'
+import { useSnapshot } from 'valtio'
 import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl
 } from '@shared/utils'
-import { cx } from 'class-variance-authority'
-import React, { useState, useId, useRef, useEffect } from 'react'
-import { useSnapshot } from 'valtio'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import type { ElementErrors } from '~/lib/types'
 import { toolState, toolActions } from '~/stores/toolStore'

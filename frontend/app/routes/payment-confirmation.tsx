@@ -1,4 +1,3 @@
-import { KV_PAYMENTS_PREFIX } from '@shared/types'
 import { useEffect, useRef } from 'react'
 import {
   useLoaderData,
@@ -6,6 +5,7 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
+import { KV_PAYMENTS_PREFIX } from '@shared/types'
 import { validatePaymentParams } from '~/utils/validate.server'
 
 export const meta: MetaFunction = () => {

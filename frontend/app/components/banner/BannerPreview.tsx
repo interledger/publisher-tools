@@ -1,4 +1,3 @@
-import type { BannerConfig, Banner as BannerElement } from '@tools/components'
 import React, {
   useEffect,
   useImperativeHandle,
@@ -6,6 +5,7 @@ import React, {
   useRef,
   useState
 } from 'react'
+import type { BannerConfig, Banner as BannerElement } from '@tools/components'
 import { useCurrentConfig } from '~/stores/toolStore'
 
 export interface BannerHandle {

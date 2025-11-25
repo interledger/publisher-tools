@@ -1,6 +1,6 @@
-import { API_URL } from '@shared/defines'
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, type MetaFunction } from 'react-router'
+import { API_URL } from '@shared/defines'
 import {
   Card,
   CodeBlockLink,

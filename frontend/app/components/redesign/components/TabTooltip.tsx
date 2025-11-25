@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import { useState, useRef, useEffect } from 'react'
+import { cx } from 'class-variance-authority'
 import { createPortal } from 'react-dom'
 
 export interface TabTooltipProps {

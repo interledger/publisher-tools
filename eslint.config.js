@@ -42,14 +42,17 @@ export default [
           caughtErrorsIgnorePattern: '^_'
         }
       ],
+      'import/export': 'error', // forbid invalid exports and re-exports of the same name
+      'import/no-duplicates': 'error', // forbid duplicate imports
       'import/order': [
         'error',
         {
           'groups': [
             'builtin', // node built-in modules
             'external', // npm packages
-            'internal', // @/ and ~/ aliases
-            ['parent', 'sibling', 'index'] // relative imports
+            'internal', // @shared/**, @tools/**, @/** and ~/** aliases
+            ['parent', 'sibling', 'index'], // relative imports
+            'type'
           ],
           'pathGroups': [
             {
@@ -63,24 +66,32 @@ export default [
               position: 'before'
             },
             {
-              pattern: '@interledger/**',
+              pattern: '@**',
               group: 'external',
               position: 'after'
             },
             {
-              pattern: '@/components{,/**}',
+              pattern: '@shared/**',
+              group: 'internal',
+              position: 'before'
+            },
+            {
+              pattern: '@tools/**',
+              group: 'internal',
+              position: 'before'
+            },
+            {
+              pattern: '@/**',
               group: 'internal',
               position: 'after'
             },
             {
-              pattern: '@/**',
-              group: 'internal'
-            },
-            {
               pattern: '~/**',
-              group: 'internal'
+              group: 'internal',
+              position: 'after'
             }
           ],
+          'pathGroupsExcludedImportTypes': ['builtin'],
           'newlines-between': 'never',
           'alphabetize': {
             order: 'asc',

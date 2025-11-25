@@ -8,9 +8,9 @@ import {
   PaymentFinalizeSchema,
   PaymentStatusParamSchema
 } from '../schemas/payment.js'
-import type { PaymentStatus } from '../types'
 import { OpenPaymentsService } from '../utils/open-payments.js'
 import { createHTTPException, waitWithAbort } from '../utils/utils'
+import type { PaymentStatus } from '../types'
 
 app.post(
   '/payment/quote',

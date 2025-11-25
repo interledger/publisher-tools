@@ -1,14 +1,5 @@
 import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
-  SVGColorPicker,
-  SVGHeaderPosition,
-  SVGRoundedCorner,
-  SVGText
-} from '~/assets/svg'
-import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
-import { useCurrentConfig } from '~/stores/toolStore'
-import { useUIActions, useUIState } from '~/stores/uiStore'
-import {
   Divider,
   ToolsDropdown,
   CornerRadiusSelector,
@@ -19,6 +10,15 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
+import {
+  SVGColorPicker,
+  SVGHeaderPosition,
+  SVGRoundedCorner,
+  SVGText
+} from '~/assets/svg'
+import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
+import { useCurrentConfig } from '~/stores/toolStore'
+import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
