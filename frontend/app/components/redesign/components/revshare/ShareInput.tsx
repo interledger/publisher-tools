@@ -176,7 +176,7 @@ export const ShareInput = React.memo(
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeName(e.target.value)
             }
-            ariaDescription="Optional name for this recipient."
+            ariaDescription="Enter an optional name for this recipient"
           />
         </div>
         <div
@@ -196,7 +196,7 @@ export const ShareInput = React.memo(
             }
             required
             error={error}
-            ariaDescription="Required wallet address for this recipient."
+            ariaDescription="Enter a valid wallet address or payment pointer for this recipient"
             className={cx(
               showIcon && 'pr-10',
               hasError && 'border-field-border-error'
@@ -224,7 +224,7 @@ export const ShareInput = React.memo(
             }
             disabled={weightDisabled || (!!pointer && isValid !== true)}
             required
-            ariaDescription="Weight value for calculating revenue share."
+            ariaDescription="Enter a numeric weight for this recipient. Higher weight values result in a larger percentage of revenue."
           />
         </div>
         <div role="cell" aria-labelledby="col-percentage">
