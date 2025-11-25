@@ -95,8 +95,8 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       '@fontsource-variable/roboto':
-        specifier: ^5.2.8
-        version: 5.2.8
+        specifier: ^5.2.9
+        version: 5.2.9
       '@fontsource/cookie':
         specifier: ^5.2.7
         version: 5.2.7
@@ -810,8 +810,8 @@ packages:
   '@fontsource-variable/open-sans@5.2.7':
     resolution: {integrity: sha512-wzCLm2STuekK9Fz58DiuBnk4GgJpvvVtAU85a4b06ACNG/UsVjQcCvkUd6R/ETlHfsaykCUZamLRvSXg4KtWuA==}
 
-  '@fontsource-variable/roboto@5.2.8':
-    resolution: {integrity: sha512-UBhCzUXpkZZqBhTnkIhkM3USlSuu2Da6k4mjiRaEnZtvMOMWcQVOV6oV2cY00plUuJZrsnTRtt3ZRRJF09gV5w==}
+  '@fontsource-variable/roboto@5.2.9':
+    resolution: {integrity: sha512-uH58g1An9Z4Efiviu0YuN8lvYf22TXidCx2++ZPpEegviaPaYQUwNbQZyr5lO2ae3pM07AolUabngLrlYtuzfA==}
 
   '@fontsource/cookie@5.2.7':
     resolution: {integrity: sha512-jI772JjcXz5zjraPzM819udIFhxyeZf6UZL2UuodOsg6Yh9DMQoeGZ1fkHqMXivYpC0qi3qpiln++c87S4mRyA==}
@@ -4537,7 +4537,7 @@ snapshots:
 
   '@fontsource-variable/open-sans@5.2.7': {}
 
-  '@fontsource-variable/roboto@5.2.8': {}
+  '@fontsource-variable/roboto@5.2.9': {}
 
   '@fontsource/cookie@5.2.7': {}
 
