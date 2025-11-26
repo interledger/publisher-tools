@@ -1,5 +1,3 @@
-import './views/confirmation/confirmation.js'
-import './views/interaction/interaction.js'
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import {
@@ -16,6 +14,8 @@ import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
 import type { WidgetConfig } from './types'
 import type { WalletAddress } from '@interledger/open-payments'
+import './views/confirmation/confirmation.js'
+import './views/interaction/interaction.js'
 
 const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'

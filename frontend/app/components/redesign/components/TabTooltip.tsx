@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { cx } from 'class-variance-authority'
 import { createPortal } from 'react-dom'
+import { cx } from 'class-variance-authority'
 
 export interface TabTooltipProps {
   children: React.ReactNode

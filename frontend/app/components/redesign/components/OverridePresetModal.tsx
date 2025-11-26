@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import type { ElementConfigType } from '@shared/types'
 import { SVGClose, SVGSpinner } from '~/assets/svg'
 import { ConfigCondition } from './ConfigCondition'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import type { ElementConfigType } from '@shared/types'
 
 interface ConfigItem {
   id: string

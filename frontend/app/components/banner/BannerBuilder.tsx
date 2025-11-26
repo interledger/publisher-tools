@@ -1,4 +1,3 @@
-import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   BannerColorsSelector,
   Divider,
@@ -10,6 +9,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
+import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   SVGAnimation,
   SVGColorPicker,

@@ -1,3 +1,5 @@
+import { signMessage } from 'http-message-signatures/lib/httpbis'
+import { createContentDigestHeader } from 'httpbis-digest-headers'
 import {
   type PendingGrant,
   type WalletAddress,
@@ -8,8 +10,6 @@ import {
 } from '@interledger/open-payments'
 import { signAsync } from '@noble/ed25519'
 import { createId } from '@paralleldrive/cuid2'
-import { signMessage } from 'http-message-signatures/lib/httpbis'
-import { createContentDigestHeader } from 'httpbis-digest-headers'
 import type { Request } from 'http-message-signatures'
 
 interface RequestLike extends Request {

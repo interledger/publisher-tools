@@ -1,5 +1,5 @@
-import type { PaymentWidget } from '@tools/components'
 import type { WebComponentProps } from '@lit/react'
+import type { PaymentWidget } from '@tools/components'
 
 declare global {
   interface HTMLElementTagNameMap {

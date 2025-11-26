@@ -1,8 +1,8 @@
-import pluginJs from '@eslint/js'
 import pluginImport from 'eslint-plugin-import'
 import pluginReact from 'eslint-plugin-react'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
+import pluginJs from '@eslint/js'
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -17,7 +17,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['frontend/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx,d.ts}'],
     ...pluginReact.configs.flat.recommended,
     settings: {
       react: {
@@ -56,17 +56,12 @@ export default [
           ],
           'pathGroups': [
             {
-              pattern: 'react',
+              pattern: 'react**',
               group: 'external',
               position: 'before'
             },
             {
-              pattern: 'react-router',
-              group: 'external',
-              position: 'before'
-            },
-            {
-              pattern: '@**',
+              pattern: '@!(shared|tools)/**', // exclude workspace packages from external @**
               group: 'external',
               position: 'after'
             },
@@ -91,7 +86,7 @@ export default [
               position: 'after'
             }
           ],
-          'pathGroupsExcludedImportTypes': ['builtin'],
+          'pathGroupsExcludedImportTypes': ['builtin', 'type'],
           'newlines-between': 'never',
           'alphabetize': {
             order: 'asc',

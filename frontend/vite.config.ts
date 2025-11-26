@@ -1,8 +1,8 @@
 import path from 'path'
-import { cloudflare } from '@cloudflare/vite-plugin'
-import { reactRouter } from '@react-router/dev/vite'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { cloudflare } from '@cloudflare/vite-plugin'
+import { reactRouter } from '@react-router/dev/vite'
 import { APP_BASEPATH } from './app/lib/constants.js'
 
 export default defineConfig(({ mode, isSsrBuild }) => ({

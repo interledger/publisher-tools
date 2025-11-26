@@ -1,5 +1,4 @@
 import { WIDGET_POSITION, BORDER_RADIUS } from '@shared/types'
-import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
 import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
 import type {
@@ -8,6 +7,7 @@ import type {
   PendingGrant,
   WalletAddress
 } from '@interledger/open-payments'
+import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
 export interface WidgetState {

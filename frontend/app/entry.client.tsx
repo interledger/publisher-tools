@@ -5,9 +5,9 @@
  */
 
 import { startTransition, StrictMode } from 'react'
+import { scan } from 'react-scan'
 import { hydrateRoot } from 'react-dom/client'
 import { HydratedRouter } from 'react-router/dom'
-import { scan } from 'react-scan'
 
 if (process.env.NODE_ENV === 'development') {
   scan({

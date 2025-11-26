@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { useCurrentConfig } from '~/stores/toolStore'
 import type {
   WidgetConfig,
   PaymentWidget as WidgetComponent
 } from '@tools/components'
-import { useCurrentConfig } from '~/stores/toolStore'
 
 interface Props {
   serviceUrls: { cdn: string; api: string }

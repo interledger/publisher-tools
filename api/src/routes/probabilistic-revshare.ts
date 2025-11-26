@@ -1,6 +1,6 @@
-import { zValidator } from '@hono/zod-validator'
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
+import { zValidator } from '@hono/zod-validator'
 import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
 import { app } from '../app.js'

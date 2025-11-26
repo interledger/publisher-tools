@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate, type MetaFunction } from 'react-router'
-import { API_URL } from '@shared/defines'
 import {
   Card,
   CodeBlockLink,
@@ -14,6 +13,7 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
+import { API_URL } from '@shared/defines'
 import { Heading5 } from '../components/redesign/Typography'
 import {
   changeList,

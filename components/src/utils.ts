@@ -1,5 +1,5 @@
-import type { FontFamilyKey } from '@shared/types'
 import { FONT_MAP } from './constants'
+import type { FontFamilyKey } from '@shared/types'
 
 /**
  * Applies the specified font family to an element, removing any existing font link, loading the font if necessary

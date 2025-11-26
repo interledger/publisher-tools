@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react'
+import { SVGSpinner } from '@/assets'
+import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
+import { Heading5 } from '@/typography'
 import {
   validateAndConfirmPointer,
   WalletAddressFormatError
 } from '@shared/utils/index'
-import { SVGSpinner } from '@/assets'
-import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
-import { Heading5 } from '@/typography'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer

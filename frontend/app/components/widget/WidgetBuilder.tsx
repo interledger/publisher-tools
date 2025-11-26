@@ -1,4 +1,3 @@
-import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
   Divider,
   ToolsDropdown,
@@ -10,6 +9,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
   SVGColorPicker,
   SVGHeaderPosition,

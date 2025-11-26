@@ -1,10 +1,8 @@
 import { data } from 'react-router'
 import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
-import type { ConfigVersions } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
-import type { ElementErrors } from '~/lib/types.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
@@ -12,6 +10,8 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { validateForm } from '~/utils/validate.server.js'
 import type { Route } from './+types/api.config.$type'
+import type { ConfigVersions } from '@shared/types'
+import type { ElementErrors } from '~/lib/types.js'
 
 export async function loader({ request, params, context }: Route.LoaderArgs) {
   try {
