@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import { useCallback, useRef, useState } from 'react'
+import { cx } from 'class-variance-authority'
 import { SVGEdit, SVGExclamationCircle } from '~/assets/svg'
 
 type TabOption<T extends string> = { id: T; label: string; isDirty: boolean }

@@ -1,9 +1,9 @@
 import React from 'react'
-import { useSnapshot } from 'valtio'
 import { cx } from 'class-variance-authority'
-import { toolState } from '~/stores/toolStore'
+import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
 import { SLIDE_ANIMATION } from '@shared/types'
+import { toolState } from '~/stores/toolStore'
 
 const DOT_PATTERN_SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
 

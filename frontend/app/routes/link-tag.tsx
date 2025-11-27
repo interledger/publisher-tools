@@ -1,5 +1,5 @@
-import { HeadingCore, LinkTagGenerator } from '@/components'
 import { useNavigate, type MetaFunction } from 'react-router'
+import { HeadingCore, LinkTagGenerator } from '@/components'
 
 export const meta: MetaFunction = () => {
   return [

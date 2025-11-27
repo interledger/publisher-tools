@@ -1,22 +1,22 @@
-import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
   Divider,
   ToolsDropdown,
   CornerRadiusSelector,
   WidgetColorsSelector
 } from '@/components'
-import BuilderAccordion from '@/components/BuilderAccordion'
-import { InputFieldset } from '@/components/builder/InputFieldset'
-import { TitleInput } from '@/components/builder/TitleInput'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
-import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
+import { InputFieldset } from '@/components/builder/InputFieldset'
+import { TitleInput } from '@/components/builder/TitleInput'
+import BuilderAccordion from '@/components/BuilderAccordion'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
   SVGRoundedCorner,
   SVGText
 } from '~/assets/svg'
+import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
 import { useCurrentConfig } from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 

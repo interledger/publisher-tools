@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
-import { GhostButton } from './GhostButton'
-import { Heading5 } from '@/typography'
 import { ToolsSecondaryButton, Divider } from '@/components'
+import { Heading5 } from '@/typography'
+import { GhostButton } from './GhostButton'
 
 interface BuilderAccordionProps {
   title: string

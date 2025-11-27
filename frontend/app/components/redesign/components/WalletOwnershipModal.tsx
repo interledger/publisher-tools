@@ -1,7 +1,7 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { SVGClose } from '~/assets/svg'
+import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Heading5, BodyEmphasis } from '../Typography'
 
 interface WalletOwnershipModalProps {

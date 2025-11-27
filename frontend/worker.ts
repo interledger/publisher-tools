@@ -1,5 +1,5 @@
-import { APP_BASEPATH } from '~/lib/constants.js'
 import { createRequestHandler, type ServerBuild } from 'react-router'
+import { APP_BASEPATH } from '~/lib/constants.js'
 
 declare module 'react-router' {
   export interface AppLoadContext {

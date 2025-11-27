@@ -1,7 +1,7 @@
 import React from 'react'
 import { PieChart } from 'react-minimal-pie-chart'
-import type { Share } from '~/lib/revshare'
 import { sharesToChartData } from '~/lib/revshare'
+import type { Share } from '~/lib/revshare'
 
 function genLabel({
   dataEntry

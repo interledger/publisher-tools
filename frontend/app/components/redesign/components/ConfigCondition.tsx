@@ -1,6 +1,6 @@
 import React from 'react'
-import { Checkbox } from './Checkbox'
 import { SVGArrow1 } from '~/assets/svg'
+import { Checkbox } from './Checkbox'
 
 interface ConfigConditionProps {
   id?: string

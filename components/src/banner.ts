@@ -6,9 +6,6 @@ import {
   type ReactiveControllerHost
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import defaultLogo from './assets/wm_logo_animated.svg?url'
-import bannerStyles from './banner.css?raw'
-import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
 import { BORDER_RADIUS } from '@shared/types'
 import type {
   FontFamilyKey,
@@ -16,6 +13,9 @@ import type {
   SlideAnimationType,
   BannerPositionKey
 } from '@shared/types'
+import defaultLogo from './assets/wm_logo_animated.svg?url'
+import bannerStyles from './banner.css?raw'
+import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =

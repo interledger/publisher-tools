@@ -1,5 +1,5 @@
-import { Link, type LinkProps } from 'react-router'
 import { forwardRef, type ComponentProps } from 'react'
+import { Link, type LinkProps } from 'react-router'
 
 type AnchorOrLinkProps = ComponentProps<'a'> & Partial<LinkProps>
 

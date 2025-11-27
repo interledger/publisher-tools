@@ -1,8 +1,8 @@
-import { BANNER_POSITION, type BannerPositionKey } from '@shared/types'
 import {
   PositionSelectorInput,
   type Option
 } from '@/components/builder/PositionSelectorInput'
+import { BANNER_POSITION, type BannerPositionKey } from '@shared/types'
 
 export interface BannerPositionSelectorProps {
   value: BannerPositionKey

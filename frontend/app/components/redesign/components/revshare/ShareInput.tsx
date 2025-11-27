@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { cx } from 'class-variance-authority'
+import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
-import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {

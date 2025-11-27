@@ -9,6 +9,7 @@ import {
   isPendingGrant,
   createAuthenticatedClient
 } from '@interledger/open-payments'
+import { createId } from '@paralleldrive/cuid2'
 import { getWalletAddress } from '@shared/utils'
 import {
   createHeaders,
@@ -16,7 +17,6 @@ import {
   createHTTPException,
   urlWithParams
 } from './utils.js'
-import { createId } from '@paralleldrive/cuid2'
 import type { Env } from '../app.js'
 
 export interface Amount {

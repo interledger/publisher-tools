@@ -2,8 +2,8 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
-import { serializeError } from './utils/utils.js'
 import type { KVNamespace } from '@cloudflare/workers-types'
+import { serializeError } from './utils/utils.js'
 
 export type Env = {
   AWS_ACCESS_KEY_ID: string
