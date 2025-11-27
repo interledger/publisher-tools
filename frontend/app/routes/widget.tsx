@@ -203,7 +203,7 @@ export default function Widget() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress />
+                  <ToolsWalletAddress toolName="payment widget" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

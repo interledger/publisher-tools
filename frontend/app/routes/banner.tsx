@@ -213,7 +213,7 @@ export default function Banner() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress />
+                  <ToolsWalletAddress toolName="drawer banner" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

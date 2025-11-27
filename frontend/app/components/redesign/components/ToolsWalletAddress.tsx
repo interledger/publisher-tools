@@ -15,7 +15,11 @@ import { Tooltip } from './Tooltip'
 import { Heading5 } from '../Typography'
 import type { ElementErrors } from '~/lib/types'
 
-export const ToolsWalletAddress = () => {
+interface ToolsWalletAddressProps {
+  toolName: 'drawer banner' | 'payment widget'
+}
+
+export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   const snap = useSnapshot(toolState)
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
@@ -126,8 +130,8 @@ export const ToolsWalletAddress = () => {
     if (!snap.hasRemoteConfigs) {
       return (
         <p className="w-full text-style-small-standard !text-text-success">
-          There are no custom edits for the drawer banner correlated to this
-          wallet address but you can start customizing when you want.
+          There are no custom edits for the {toolName} correlated to this wallet
+          address but you can start customizing when you want.
         </p>
       )
     }
@@ -136,7 +140,7 @@ export const ToolsWalletAddress = () => {
       <p className="w-full text-style-small-standard !text-text-success">
         We&apos;ve loaded your configuration.
         <br />
-        Feel free to keep customizing your banner to fit your style.
+        Feel free to keep customizing your {toolName} to fit your style.
       </p>
     )
   }
