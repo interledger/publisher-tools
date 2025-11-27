@@ -20,7 +20,7 @@ interface ToolsWalletAddressProps {
 }
 
 export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
-  const snap = useSnapshot(toolState)
+  const snap = useSnapshot(toolState, { sync: true })
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
@@ -98,6 +98,9 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     if (snap.walletConnectStep !== 'unfilled') {
       toolActions.setConnectWalletStep('unfilled')
     }
+    if (error) {
+      setError(undefined)
+    }
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -155,7 +158,9 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     >
       <div className="flex flex-col items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
-          <Heading5 id={generatedId}>Wallet address</Heading5>
+          <label htmlFor="wallet-address-url">
+            <Heading5 id={generatedId}>Wallet address</Heading5>
+          </label>
           <Tooltip>
             Your wallet is required in order for us to save this components
             configuration for you, link it to the original author, and verify
@@ -178,9 +183,10 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
                   ? undefined
                   : 'https://walletprovider.com/MyWallet'
               }
-              defaultValue={snap.walletAddress}
-              onBlur={handleWalletAddressChange}
+              value={snap.walletAddress}
+              onChange={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
+              readOnly={isLoading}
               error={error?.fieldErrors.walletAddress}
               aria-labelledby={generatedId}
             />
