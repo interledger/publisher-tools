@@ -1,5 +1,5 @@
-import { APP_BASEPATH } from './app/lib/constants.js'
 import type { Config } from '@react-router/dev/config'
+import { APP_BASEPATH } from './app/lib/constants.js'
 
 export default {
   ssr: true,

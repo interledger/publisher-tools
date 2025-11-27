@@ -86,7 +86,7 @@ export default [
               position: 'after'
             }
           ],
-          'pathGroupsExcludedImportTypes': ['builtin', 'type'],
+          'pathGroupsExcludedImportTypes': ['builtin'],
           'newlines-between': 'never',
           'alphabetize': {
             order: 'asc',

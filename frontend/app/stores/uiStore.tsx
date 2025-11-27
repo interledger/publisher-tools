@@ -7,8 +7,8 @@ import React, {
   useEffect,
   useMemo
 } from 'react'
-import { toolActions } from '~/stores/toolStore'
 import type { ReactNode } from 'react'
+import { toolActions } from '~/stores/toolStore'
 
 type UIState = {
   contentComplete: boolean

@@ -1,5 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import type { WalletAddress } from '@interledger/open-payments'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -13,7 +14,6 @@ import closeButtonIcon from '../assets/wm_close_button.svg'
 import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
 import type { WidgetConfig } from './types'
-import type { WalletAddress } from '@interledger/open-payments'
 import './views/confirmation/confirmation.js'
 import './views/interaction/interaction.js'
 

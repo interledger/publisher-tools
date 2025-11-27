@@ -7,13 +7,13 @@ import {
   toWalletAddressUrl
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
+import type { ElementErrors } from '~/lib/types'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { InputField } from './InputField'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Tooltip } from './Tooltip'
 import { Heading5 } from '../Typography'
-import type { ElementErrors } from '~/lib/types'
 
 interface ToolsWalletAddressProps {
   toolName: 'drawer banner' | 'payment widget'

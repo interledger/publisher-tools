@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import {
   Links,
   Meta,
@@ -15,7 +16,6 @@ import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
-import type { ReactNode } from 'react'
 
 export default function App() {
   return (

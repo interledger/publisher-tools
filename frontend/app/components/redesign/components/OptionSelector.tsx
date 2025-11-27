@@ -1,5 +1,5 @@
-import { cx } from 'class-variance-authority'
 import type { ReactNode } from 'react'
+import { cx } from 'class-variance-authority'
 
 export interface Option<T = string> {
   id: string

@@ -1,3 +1,4 @@
+import type { MetaFunction } from 'react-router'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
@@ -6,7 +7,6 @@ import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
 import { Heading1, Heading3 } from '~/components/redesign/Typography'
-import type { MetaFunction } from 'react-router'
 
 const DEFAULT_TITLE = 'Publisher Tools'
 const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'

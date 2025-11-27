@@ -1,14 +1,14 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import confirmationCss from './confirmation.css?raw'
-import type { WidgetController } from '../../controller'
-import type { Amount } from '../../types'
 import type {
   Quote,
   Grant,
   WalletAddress,
   PendingGrant
 } from '@interledger/open-payments'
+import confirmationCss from './confirmation.css?raw'
+import type { WidgetController } from '../../controller'
+import type { Amount } from '../../types'
 import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 
 export interface PaymentResponse {
