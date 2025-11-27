@@ -154,14 +154,11 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
         'flex flex-col xl:flex-row xl:items-start gap-2xl p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600'
       )}
-      aria-labelledby={generatedId}
     >
       <div className="flex flex-col items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
-          <label htmlFor="wallet-address-url">
-            <Heading5 as="span" id={generatedId}>
-              Wallet address
-            </Heading5>
+          <label htmlFor={generatedId}>
+            <Heading5 as="span">Wallet address</Heading5>
           </label>
           <Tooltip>
             Your wallet is required in order for us to save this components
@@ -179,7 +176,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
           <div className="flex-1 min-w-0 h-12">
             <InputField
               ref={inputRef}
-              id="wallet-address-url"
+              id={generatedId}
               placeholder={
                 snap.isWalletConnected
                   ? undefined
@@ -190,7 +187,6 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
               disabled={snap.isWalletConnected}
               readOnly={isLoading}
               error={error?.fieldErrors.walletAddress}
-              aria-labelledby={generatedId}
             />
           </div>
           {snap.isWalletConnected && (
