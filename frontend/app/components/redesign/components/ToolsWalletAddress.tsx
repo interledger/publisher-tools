@@ -159,7 +159,9 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       <div className="flex flex-col items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
           <label htmlFor="wallet-address-url">
-            <Heading5 id={generatedId}>Wallet address</Heading5>
+            <Heading5 as="span" id={generatedId}>
+              Wallet address
+            </Heading5>
           </label>
           <Tooltip>
             Your wallet is required in order for us to save this components
