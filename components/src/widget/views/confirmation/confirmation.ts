@@ -1,5 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 import type {
   Quote,
   Grant,
@@ -9,7 +10,6 @@ import type {
 import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
-import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 
 export interface PaymentResponse {
   quote: Quote

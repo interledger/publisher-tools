@@ -8,12 +8,12 @@ import {
   toWalletAddressUrl
 } from '@shared/utils'
 import { WidgetController } from './controller'
+import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
 import interledgerLogoIcon from '../assets/interledger_logo.svg'
 import closeButtonIcon from '../assets/wm_close_button.svg'
 import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
 import walletTotemIcon from '../assets/wm_wallet_totem.svg'
-import type { WidgetConfig } from './types'
 import './views/confirmation/confirmation.js'
 import './views/interaction/interaction.js'
 

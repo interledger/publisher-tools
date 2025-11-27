@@ -51,8 +51,7 @@ export default [
             'builtin', // node built-in modules
             'external', // npm packages
             'internal', // @shared/**, @tools/**, @/** and ~/** aliases
-            ['parent', 'sibling', 'index'], // relative imports
-            'type'
+            ['parent', 'sibling', 'index'] // relative imports
           ],
           'pathGroups': [
             {

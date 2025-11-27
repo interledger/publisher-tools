@@ -1,10 +1,10 @@
+import type z from 'zod'
 import type { ElementConfigType } from '@shared/types'
 import type {
   createBannerSchema,
   createButtonSchema,
   createWidgetSchema
 } from '../utils/validate.server.js'
-import type z from 'zod'
 
 export type ModalType = {
   type:

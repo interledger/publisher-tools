@@ -1,16 +1,16 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import interactionStyles from './interaction.css?raw'
-import failedIcon from '../../../assets/interaction/authorization_failed.svg'
-import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
-import successIcon from '../../../assets/interaction/authorization_success.svg'
-import type { WidgetController } from '../../controller'
 import type {
   PaymentStatusSuccess,
   PaymentStatus,
   PaymentStatusRejected
 } from 'publisher-tools-api'
 import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
+import interactionStyles from './interaction.css?raw'
+import failedIcon from '../../../assets/interaction/authorization_failed.svg'
+import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
+import successIcon from '../../../assets/interaction/authorization_success.svg'
+import type { WidgetController } from '../../controller'
 
 function isInteractionSuccess(
   params: PaymentStatus
