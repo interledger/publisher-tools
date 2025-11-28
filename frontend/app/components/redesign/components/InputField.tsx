@@ -30,9 +30,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ) => {
     const generatedId = useId()
     const fieldId = id || generatedId
-    const ariaDescriptionId = ariaDescription
-      ? `${fieldId}-aria-desc`
-      : undefined
+    const ariaDescriptionId =
+      ariaDescription && !error ? `${fieldId}-aria-desc` : undefined
 
     const getDisplayError = (): string | string[] | undefined => {
       if (required && !props.value) {
@@ -75,7 +74,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             aria-describedby={ariaDescriptionId}
             {...props}
           />
-          {ariaDescription && (
+          {ariaDescription && !displayError && (
             <p id={ariaDescriptionId} className="sr-only">
               {ariaDescription}
             </p>
