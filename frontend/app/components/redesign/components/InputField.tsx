@@ -65,11 +65,15 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             )}
             id={fieldId}
             name={fieldId}
+            aria-invalid={!!error}
+            aria-describedby={displayError ? 'input-error' : undefined}
             {...props}
           />
 
           {displayError && (
             <span
+              id="input-error"
+              role="alert"
               className="absolute right-3 top-full
               -translate-y-1/2
               px-1 text-xs text-text-error bg-white"
