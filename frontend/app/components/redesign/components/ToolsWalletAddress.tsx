@@ -176,7 +176,6 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
               disabled={snap.isWalletConnected}
               readOnly={isLoading}
               error={error?.fieldErrors.walletAddress}
-              required={!snap.isWalletConnected}
             />
           </div>
           {snap.isWalletConnected && (
