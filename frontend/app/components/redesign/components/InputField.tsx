@@ -69,9 +69,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             )}
             id={fieldId}
             name={fieldId}
-            required={required}
-            aria-invalid={!!displayError}
-            aria-describedby={ariaDescriptionId}
+            aria-invalid={!!error}
+            aria-describedby={displayError ? 'input-error' : ariaDescriptionId}
             {...props}
           />
           {ariaDescription && !displayError && (
@@ -82,6 +81,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {displayError && (
             <span
+              id="input-error"
+              role="alert"
               className="absolute right-3 top-full
               -translate-y-1/2
               px-1 text-xs text-text-error bg-white"

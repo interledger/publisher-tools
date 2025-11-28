@@ -20,6 +20,7 @@ type TypographyProps = {
   variant: TextStyleType
   as?: React.ElementType
   className?: string
+  htmlFor?: string
   children: React.ReactNode
 } & React.HTMLAttributes<HTMLElement>
 
