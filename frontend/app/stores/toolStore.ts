@@ -3,18 +3,29 @@ import { APP_BASEPATH } from '~/lib/constants'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
-import type { ElementConfigType } from '@shared/types'
+import type {
+  Configuration,
+  WidgetProfile,
+  BannerProfile,
+  ElementConfigType,
+  ProfileId,
+  Tool
+} from '@shared/types'
 import type { ModalType } from '~/lib/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
+import { StoreManager } from './toolStoreManager'
 import { proxySet } from 'valtio/utils'
 
 const STORAGE_KEY = 'valtio-store'
+const getWmtStorageKey = (tool: Tool) => `wmt-${tool}-config`
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
   'buildStep',
   'opWallet',
-  'cdnUrl'
+  'cdnUrl',
+  'bannerStores',
+  'widgetStores'
 ])
 
 export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
@@ -50,6 +61,7 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
   )
 }
 
+const manager = new StoreManager()
 export const toolState = proxy({
   configurations: createDefaultConfigs(),
   /*
@@ -93,7 +105,14 @@ export const toolState = proxy({
   isWalletConnected: false,
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
-  buildStep: 'unfilled' as StepStatus
+  buildStep: 'unfilled' as StepStatus,
+  bannerStores: manager['bannerStores'] as Record<ProfileId, BannerProfile>,
+  widgetStores: manager['widgetStores'] as Record<ProfileId, WidgetProfile>,
+  getBannerStore: (key: ProfileId) => manager.getBannerStore(key),
+  getWidgetStore: (key: ProfileId) => manager.getWidgetStore(key),
+  get activeProfile() {
+    return manager.activeTab
+  }
 })
 
 subscribe(toolState, () => {
@@ -484,7 +503,10 @@ function updateChangesTracking(profileId: StableKey) {
 }
 
 /** Load from localStorage on init, remove storage if invalid */
-export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
+export function loadState(
+  OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS'],
+  tool: Tool
+) {
   toolState.cdnUrl = CDN_URL
   toolState.apiUrl = API_URL
   toolState.opWallet = OP_WALLET_ADDRESS
@@ -503,17 +525,21 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         throw new Error('saved configuration not valid')
       }
     }
+
+    loadToolConfigFromStorage(tool)
   } catch {
     localStorage.removeItem(STORAGE_KEY)
   }
 }
 
-export function persistState() {
+export function persistState(tool: Tool) {
   subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(createStorageState(toolState))
     )
+
+    saveToolConfigToStorage(toolState[`${tool}Stores`], tool)
   })
 }
 
@@ -564,4 +590,29 @@ export function splitConfigProperties<T extends ElementConfigType>(config: T) {
     content: Object.fromEntries(content) as Partial<T>,
     appearance: Object.fromEntries(appearance) as Partial<T>
   }
+}
+
+function saveToolConfigToStorage<T extends Tool>(
+  config: Configuration<T>,
+  tool: T
+) {
+  const storageKey = getWmtStorageKey(tool)
+  localStorage.setItem(storageKey, JSON.stringify(config))
+}
+
+function loadToolConfigFromStorage<T extends Tool>(
+  tool: T
+): Configuration<T> | null {
+  const storageKey = getWmtStorageKey(tool)
+  try {
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      return JSON.parse(saved)
+    }
+  } catch (error) {
+    console.warn(`Failed to load ${tool} config from localStorage:`, error)
+    localStorage.removeItem(storageKey)
+  }
+
+  return null
 }
