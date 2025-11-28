@@ -6,6 +6,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   id?: string
   error?: string | string[]
   helpText?: string
+  ariaDescription?: string
   showCounter?: boolean
   currentLength?: number
 }
@@ -17,6 +18,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       error,
       id,
       helpText,
+      ariaDescription,
       showCounter = false,
       className = '',
       required,
@@ -28,6 +30,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ) => {
     const generatedId = useId()
     const fieldId = id || generatedId
+    const ariaDescriptionId =
+      ariaDescription && !error ? `${fieldId}-aria-desc` : undefined
 
     const getDisplayError = (): string | string[] | undefined => {
       if (required && !props.value) {
@@ -66,9 +70,14 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             id={fieldId}
             name={fieldId}
             aria-invalid={!!error}
-            aria-describedby={displayError ? 'input-error' : undefined}
+            aria-describedby={displayError ? 'input-error' : ariaDescriptionId}
             {...props}
           />
+          {ariaDescription && !displayError && (
+            <p id={ariaDescriptionId} className="sr-only">
+              {ariaDescription}
+            </p>
+          )}
 
           {displayError && (
             <span
