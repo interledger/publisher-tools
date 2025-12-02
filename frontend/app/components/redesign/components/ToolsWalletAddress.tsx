@@ -1,19 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Tooltip } from './Tooltip'
-import { InputField } from './InputField'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { cx } from 'class-variance-authority'
-import { SVGRefresh, SVGSpinner } from '~/assets/svg'
-import { toolState, toolActions } from '~/stores/toolStore'
-import type { ElementErrors } from '~/lib/types'
-import { Heading5 } from '../Typography'
-import { useUIActions } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
 import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl
 } from '@shared/utils'
+import { SVGRefresh, SVGSpinner } from '~/assets/svg'
+import type { ElementErrors } from '~/lib/types'
+import { toolState, toolActions } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
+import { InputField } from './InputField'
+import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import { Tooltip } from './Tooltip'
+import { Heading5 } from '../Typography'
 
 interface ToolsWalletAddressProps {
   toolName: 'drawer banner' | 'payment widget'

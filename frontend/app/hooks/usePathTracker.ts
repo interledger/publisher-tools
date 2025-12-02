@@ -1,5 +1,5 @@
-import { useLocation } from 'react-router'
 import { useEffect } from 'react'
+import { useLocation } from 'react-router'
 import { TOOL_TYPES, toolActions, type ToolType } from '~/stores/toolStore'
 
 export const usePathTracker = (): string => {

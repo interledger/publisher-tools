@@ -1,6 +1,6 @@
-import { PaymentWidget } from '@tools/components'
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetConfig } from '@shared/types'
+import { PaymentWidget } from '@tools/components'
 import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import { SVGHamburgerIcon } from '@/assets'
+import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
 
 export const Header = () => {

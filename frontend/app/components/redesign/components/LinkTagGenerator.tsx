@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
+import { SVGSpinner } from '@/assets'
 import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
-import { SVGSpinner } from '@/assets'
 import {
   validateAndConfirmPointer,
   WalletAddressFormatError

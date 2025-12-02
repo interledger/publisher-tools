@@ -1,6 +1,6 @@
 import { cx } from 'class-variance-authority'
-import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import { SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
+import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
 type CodeBlockProps = {
   link: string
