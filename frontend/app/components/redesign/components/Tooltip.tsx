@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   useFloating,
   offset,
   flip,
   shift,
   autoUpdate,
-  size
+  size,
+  arrow
 } from '@floating-ui/react-dom'
 import { SVGTooltip } from '../../../assets/svg'
 
@@ -14,13 +15,14 @@ export interface TooltipProps {
 }
 
 export function Tooltip({ children }: TooltipProps) {
+  const arrowRef = useRef<HTMLDivElement | null>(null)
   const [open, setOpen] = useState(false)
 
-  const { x, y, strategy, refs } = useFloating({
+  const { x, y, strategy, refs, middlewareData, placement } = useFloating({
     open,
     placement: 'right',
     middleware: [
-      offset(8),
+      offset(16),
       flip({
         fallbackPlacements: ['top', 'bottom'],
         padding: 8
@@ -35,10 +37,12 @@ export function Tooltip({ children }: TooltipProps) {
           })
         },
         padding: 8
-      })
+      }),
+      arrow({ element: arrowRef })
     ],
     whileElementsMounted: autoUpdate
   })
+  const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
 
   return (
     <>
@@ -66,9 +70,24 @@ export function Tooltip({ children }: TooltipProps) {
             top: y,
             left: x
           }}
-          className="z-50 p-md bg-interface-tooltip rounded-lg shadow-lg text-white text-xs sm:text-sm"
+          className="relative z-50 p-md bg-interface-tooltip rounded-lg shadow-lg text-white text-xs sm:text-sm"
         >
           {children}
+
+          <div
+            ref={arrowRef}
+            className="absolute w-4 h-4 bg-interface-tooltip rotate-45"
+            style={{
+              left: arrowX,
+              top: arrowY,
+              [{
+                top: 'bottom',
+                bottom: 'top',
+                right: 'left',
+                left: 'right'
+              }[placement.split('-')[0]]!]: '-8px'
+            }}
+          />
         </div>
       )}
     </>
