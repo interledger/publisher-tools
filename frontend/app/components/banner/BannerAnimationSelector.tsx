@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { type SlideAnimationType, SLIDE_ANIMATION } from '@shared/types'
 import { Checkbox, ToolsDropdown } from '@/components'
+import { type SlideAnimationType, SLIDE_ANIMATION } from '@shared/types'
 
 interface BannerAnimationSelectorProps {
   value: SlideAnimationType

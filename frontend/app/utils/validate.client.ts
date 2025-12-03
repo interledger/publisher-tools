@@ -1,10 +1,10 @@
 import z from 'zod'
+import type { ElementConfigType } from '@shared/types'
 import {
   bannerFieldsSchema,
   buttonFieldsSchema,
   widgetFieldsSchema
 } from './validate.shared'
-import type { ElementConfigType } from '@shared/types'
 
 export const elementConfigStorageSchema = z.object({
   versionName: z.string(),

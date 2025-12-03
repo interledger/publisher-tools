@@ -1,13 +1,12 @@
 import { HTTPException } from 'hono/http-exception'
-import { zValidator } from '@hono/zod-validator'
-import z from 'zod'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
+import z from 'zod'
+import { zValidator } from '@hono/zod-validator'
 import type { WalletAddress } from '@interledger/open-payments'
 import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
-import { createHTTPException } from '../utils/utils'
-
 import { app } from '../app.js'
+import { createHTTPException } from '../utils/utils'
 
 app.get(
   '/revshare/:payload',
