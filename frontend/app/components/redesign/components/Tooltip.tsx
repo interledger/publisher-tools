@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   useFloating,
   offset,
@@ -12,9 +12,12 @@ import { SVGTooltip } from '../../../assets/svg'
 
 export interface TooltipProps {
   children: React.ReactNode
+  label?: string
 }
+const VIEWPORT_PADDING = 8
+const ARROW_HEIGHT = 6
 
-export function Tooltip({ children }: TooltipProps) {
+export function Tooltip({ children, label }: TooltipProps) {
   const arrowRef = useRef<HTMLDivElement | null>(null)
   const [open, setOpen] = useState(false)
 
@@ -25,9 +28,9 @@ export function Tooltip({ children }: TooltipProps) {
       offset(16),
       flip({
         fallbackPlacements: ['top', 'bottom'],
-        padding: 8
+        padding: VIEWPORT_PADDING
       }),
-      shift({ padding: 8 }),
+      shift({ padding: VIEWPORT_PADDING }),
       size({
         apply({ availableWidth, elements }) {
           const maxWidth = Math.min(availableWidth, 450)
@@ -36,7 +39,7 @@ export function Tooltip({ children }: TooltipProps) {
             width: 'auto'
           })
         },
-        padding: 8
+        padding: VIEWPORT_PADDING
       }),
       arrow({ element: arrowRef })
     ],
@@ -44,12 +47,23 @@ export function Tooltip({ children }: TooltipProps) {
   })
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
 
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [open])
+
   return (
     <>
       <button
         ref={refs.setReference}
         type="button"
-        aria-label="More information"
+        aria-label={label || 'More information'}
         aria-describedby={open ? 'tooltip' : undefined}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -85,7 +99,7 @@ export function Tooltip({ children }: TooltipProps) {
                 bottom: 'top',
                 right: 'left',
                 left: 'right'
-              }[placement.split('-')[0]]!]: '-8px'
+              }[placement.split('-')[0]]!]: `-${ARROW_HEIGHT}px`
             }}
           />
         </div>
