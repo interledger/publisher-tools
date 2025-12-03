@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { cx } from 'class-variance-authority'
-import { ToolsPrimaryButton } from '@/components'
 import { SVGClose } from '@/assets'
+import { ToolsPrimaryButton } from '@/components'
 
 interface ImportTagModalProps {
   isOpen?: boolean
