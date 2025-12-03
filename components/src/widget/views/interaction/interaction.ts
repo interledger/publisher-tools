@@ -328,7 +328,7 @@ export class PaymentInteraction extends LitElement {
         </div>
 
         <button class="button-container empty-button" @click=${this.cancel}>
-          Try again
+          Cancel payment
         </button>
       </div>
     `
