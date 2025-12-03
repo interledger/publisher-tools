@@ -42,8 +42,11 @@ export class PaymentInteraction extends LitElement {
   #interactionCompleted = false
   @property({ type: Object }) configController!: WidgetController
   @property({ type: Boolean }) isPreview?: boolean = false
-  @state() private currentView: 'authorizing' | 'success' | 'failed' =
-    'authorizing'
+  @state() private currentView:
+    | 'authorizing'
+    | 'processing'
+    | 'success'
+    | 'failed' = 'authorizing'
   @state() private errorMessage = ''
 
   static styles = unsafeCSS(interactionStyles)
@@ -115,6 +118,9 @@ export class PaymentInteraction extends LitElement {
   }
 
   private async handleInteractionSuccess(interactRef: string) {
+    this.currentView = 'processing'
+    this.requestUpdate()
+
     try {
       const {
         walletAddress,
@@ -262,6 +268,25 @@ export class PaymentInteraction extends LitElement {
     `
   }
 
+  private renderProcessingView() {
+    return html`
+      <div class="interaction-container">
+        <div class="empty-header"></div>
+
+        <div class="interaction-body">
+          <div class="title authorizing">Verifying payment</div>
+          <div class="description">Checking payment status</div>
+          <img
+            src=${loadingIcon}
+            width="122"
+            height="200"
+            alt="Payment verification in progress"
+          />
+        </div>
+      </div>
+    `
+  }
+
   private renderSuccessView() {
     return html`
       <div class="interaction-container">
@@ -311,6 +336,8 @@ export class PaymentInteraction extends LitElement {
 
   render() {
     switch (this.currentView) {
+      case 'processing':
+        return this.renderProcessingView()
       case 'success':
         return this.renderSuccessView()
       case 'failed':
