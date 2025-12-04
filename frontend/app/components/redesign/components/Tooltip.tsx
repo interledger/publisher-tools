@@ -96,12 +96,18 @@ export function Tooltip({ children, label }: TooltipProps) {
             style={{
               left: arrowX,
               top: arrowY,
-              [{
-                top: 'bottom',
-                bottom: 'top',
-                right: 'left',
-                left: 'right'
-              }[placement.split('-')[0]]!]: `-${ARROW_HEIGHT}px`
+              ...(placement.startsWith('top') && {
+                bottom: `-${ARROW_HEIGHT}px`
+              }),
+              ...(placement.startsWith('bottom') && {
+                top: `-${ARROW_HEIGHT}px`
+              }),
+              ...(placement.startsWith('right') && {
+                left: `-${ARROW_HEIGHT}px`
+              }),
+              ...(placement.startsWith('left') && {
+                right: `-${ARROW_HEIGHT}px`
+              })
             }}
           />
         </div>
