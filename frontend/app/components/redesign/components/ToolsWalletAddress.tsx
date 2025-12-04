@@ -153,12 +153,12 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
           <Heading5 htmlFor="wallet-address-url" as="label">
             Wallet address
           </Heading5>
-          <Tooltip>
+          <Tooltip label="Why do I need to connect my wallet?">
             Your wallet is required in order for us to save this components
             configuration for you, link it to the original author, and verify
-            ownership for future updates. It also embeds the wallet address into
-            your web page automatically, enabling Web Monetization on your
-            behalf.
+            ownership for future updates.
+            <br /> It also embeds the wallet address into your web page
+            automatically, enabling Web Monetization on your behalf.
           </Tooltip>
         </div>
         <div className="flex items-start gap-3 w-full pt-md">
