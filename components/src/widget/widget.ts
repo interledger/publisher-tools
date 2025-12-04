@@ -43,8 +43,11 @@ export class PaymentWidget extends LitElement {
     )
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message || 'Failed to validate wallet address')
+      const error = await response.json().catch(() => ({}))
+      throw new Error(
+        (error as { message?: string }).message ||
+          'Failed to validate wallet address'
+      )
     }
 
     return response.json()
