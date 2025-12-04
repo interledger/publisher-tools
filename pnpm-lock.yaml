@@ -133,6 +133,9 @@ importers:
 
   components:
     dependencies:
+      '@shared/defines':
+        specifier: workspace:^
+        version: link:../shared/defines
       '@shared/utils':
         specifier: workspace:^
         version: link:../shared/utils

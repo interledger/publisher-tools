@@ -1,12 +1,7 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddress } from '@interledger/open-payments'
-import {
-  checkHrefFormat,
-  getWalletAddress,
-  normalizeWalletAddress,
-  toWalletAddressUrl
-} from '@shared/utils'
+import { API_URL } from '@shared/defines'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
@@ -40,6 +35,21 @@ export class PaymentWidget extends LitElement {
 
   static styles = unsafeCSS(widgetStyles)
 
+  private async validateWalletAddress(
+    walletAddress: string
+  ): Promise<WalletAddress> {
+    const response = await fetch(
+      `${API_URL}/wallet?walletAddress=${encodeURIComponent(walletAddress)}`
+    )
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Failed to validate wallet address')
+    }
+
+    return response.json()
+  }
+
   private async handleSubmit(e: Event) {
     e.preventDefault()
     this.isSubmitting = true
@@ -59,19 +69,11 @@ export class PaymentWidget extends LitElement {
       return
     }
 
-    let walletAddressInfo: WalletAddress
     try {
-      const walletAddressUrl = checkHrefFormat(
-        toWalletAddressUrl(walletAddress)
-      )
-
-      walletAddressInfo = await getWalletAddress(walletAddressUrl)
+      const walletAddressInfo = await this.validateWalletAddress(walletAddress)
 
       this.configController.updateState({
-        walletAddress: {
-          ...walletAddressInfo,
-          id: normalizeWalletAddress(walletAddressInfo)
-        }
+        walletAddress: walletAddressInfo
       })
       this.walletAddressError = ''
       this.currentView = 'confirmation'
