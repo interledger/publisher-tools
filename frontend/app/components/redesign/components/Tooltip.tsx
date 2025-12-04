@@ -14,6 +14,8 @@ export interface TooltipProps {
   children: React.ReactNode
   label?: string
 }
+const MAX_TOOLTIP_WIDTH = 450
+/** spacing between tooltip and viewport edges */
 const VIEWPORT_PADDING = 8
 const ARROW_HEIGHT = 6
 
@@ -25,7 +27,7 @@ export function Tooltip({ children, label }: TooltipProps) {
     open,
     placement: 'right',
     middleware: [
-      offset(16),
+      offset(VIEWPORT_PADDING * 2),
       flip({
         fallbackPlacements: ['top', 'bottom'],
         padding: VIEWPORT_PADDING
@@ -33,7 +35,7 @@ export function Tooltip({ children, label }: TooltipProps) {
       shift({ padding: VIEWPORT_PADDING }),
       size({
         apply({ availableWidth, elements }) {
-          const maxWidth = Math.min(availableWidth, 450)
+          const maxWidth = Math.min(availableWidth, MAX_TOOLTIP_WIDTH)
           Object.assign(elements.floating.style, {
             maxWidth: `${maxWidth}px`,
             width: 'auto'
@@ -49,14 +51,14 @@ export function Tooltip({ children, label }: TooltipProps) {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && open) {
+      if (e.key === 'Escape') {
         setOpen(false)
       }
     }
 
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [open])
+  }, [])
 
   return (
     <>
