@@ -1,8 +1,7 @@
 import { proxy, subscribe, useSnapshot } from 'valtio'
-import { APP_BASEPATH } from '~/lib/constants'
+import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import type {
   Configuration,
   WidgetProfile,
@@ -11,10 +10,11 @@ import type {
   ProfileId,
   Tool
 } from '@shared/types'
-import type { ModalType } from '~/lib/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
+import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
+import { APP_BASEPATH } from '~/lib/constants'
+import type { ModalType } from '~/lib/types'
 import { StoreManager } from './toolStoreManager'
-import { proxySet } from 'valtio/utils'
 
 const STORAGE_KEY = 'valtio-store'
 const getWmtStorageKey = (tool: Tool) => `wmt-${tool}-config`

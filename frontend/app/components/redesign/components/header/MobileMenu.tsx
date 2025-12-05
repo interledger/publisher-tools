@@ -1,5 +1,5 @@
-import { GhostButton, PoweredByFooter } from '@/components'
 import { SVGCloseIcon } from '@/assets'
+import { GhostButton, PoweredByFooter } from '@/components'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
 
 const toolItems: MobileMenuItemData[] = [

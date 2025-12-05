@@ -1,12 +1,12 @@
+import { useEffect, useRef } from 'react'
 import {
   useLoaderData,
   data,
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
-import { useEffect, useRef } from 'react'
-import { validatePaymentParams } from '~/utils/validate.server'
 import { KV_PAYMENTS_PREFIX } from '@shared/types'
+import { validatePaymentParams } from '~/utils/validate.server'
 
 export const meta: MetaFunction = () => {
   return [

@@ -1,6 +1,6 @@
+import type { ProfileId, BannerProfile, WidgetProfile } from '@shared/types'
 import { createDataStoreBanner } from './bannerStore'
 import { createDataStoreWidget } from './widgetStore'
-import type { ProfileId, BannerProfile, WidgetProfile } from '@shared/types'
 
 export class StoreManager {
   private bannerStores: Record<ProfileId, BannerProfile> = {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { cx } from 'class-variance-authority'
+import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
-import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {
@@ -160,7 +160,6 @@ export const ShareInput = React.memo(
               onClick={onRemove}
               className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
-              aria-describedby={pointerInputId}
             >
               <SVGDeleteScript className="w-6 h-6" />
             </ToolsSecondaryButton>
@@ -177,11 +176,8 @@ export const ShareInput = React.memo(
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeName(e.target.value)
             }
-            aria-describedby={`name-description-${index}`}
+            ariaDescription="Enter an optional name for this recipient"
           />
-          <div id={`name-description-${index}`} className="sr-only">
-            Optional name for this recipient.
-          </div>
         </div>
         <div
           role="cell"
@@ -200,12 +196,7 @@ export const ShareInput = React.memo(
             }
             required
             error={error}
-            aria-required="true"
-            aria-invalid={hasError}
-            aria-describedby={cx(
-              `pointer-description-${index}`,
-              hasError ? `pointer-error-${index}` : ''
-            )}
+            ariaDescription="Enter a valid wallet address or payment pointer for this recipient"
             className={cx(
               showIcon && 'pr-10',
               hasError && 'border-field-border-error'
@@ -217,9 +208,6 @@ export const ShareInput = React.memo(
               {showSuccess && <SVGCheckIcon className="w-4 h-4" />}
             </div>
           )}
-          <div id={`pointer-description-${index}`} className="sr-only">
-            Required wallet address for this recipient.
-          </div>
         </div>
         <div role="cell" aria-labelledby="col-weight">
           <label htmlFor={weightInputId} className="sr-only">
@@ -235,13 +223,9 @@ export const ShareInput = React.memo(
               onChangeWeight(Number(e.target.value))
             }
             disabled={weightDisabled || (!!pointer && isValid !== true)}
-            aria-disabled={weightDisabled || (!!pointer && isValid !== true)}
-            aria-describedby={`weight-description-${index}`}
-            aria-required="true"
+            required
+            ariaDescription="Enter a numeric weight for this recipient. Higher weight values result in a larger percentage of revenue."
           />
-          <div id={`weight-description-${index}`} className="sr-only">
-            Weight value for calculating revenue share.
-          </div>
         </div>
         <div role="cell" aria-labelledby="col-percentage">
           <div
@@ -261,7 +245,6 @@ export const ShareInput = React.memo(
               onClick={onRemove}
               className="border-none p-xs shrink-0"
               aria-label="Remove recipient"
-              aria-describedby={pointerInputId}
             >
               <SVGDeleteScript className="w-6 h-6" />
             </ToolsSecondaryButton>

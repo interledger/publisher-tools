@@ -1,26 +1,29 @@
-import React, { useState, useId, useRef, useEffect } from 'react'
-import { Tooltip } from './Tooltip'
-import { InputField } from './InputField'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGRefresh, SVGSpinner } from '~/assets/svg'
-import { toolState, toolActions } from '~/stores/toolStore'
-import type { ElementErrors } from '~/lib/types'
-import { Heading5 } from '../Typography'
-import { useUIActions } from '~/stores/uiStore'
 import { useSnapshot } from 'valtio'
 import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl
 } from '@shared/utils'
+import { SVGRefresh, SVGSpinner } from '~/assets/svg'
+import type { ElementErrors } from '~/lib/types'
+import { toolState, toolActions } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
+import { InputField } from './InputField'
+import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import { Tooltip } from './Tooltip'
+import { Heading5 } from '../Typography'
 
-export const ToolsWalletAddress = () => {
-  const snap = useSnapshot(toolState)
+interface ToolsWalletAddressProps {
+  toolName: 'drawer banner' | 'payment widget'
+}
+
+export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
+  const snap = useSnapshot(toolState, { sync: true })
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
-  const generatedId = useId()
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -94,6 +97,9 @@ export const ToolsWalletAddress = () => {
     if (snap.walletConnectStep !== 'unfilled') {
       toolActions.setConnectWalletStep('unfilled')
     }
+    if (error) {
+      setError(undefined)
+    }
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -103,43 +109,37 @@ export const ToolsWalletAddress = () => {
     }
   }
 
-  const renderStatusMessage = () => {
+  const getStatusMessage = (): {
+    message: string
+    type: 'error' | 'success' | 'info'
+  } => {
     if (snap.walletConnectStep === 'error') {
-      return (
-        <p className="w-full text-style-small-standard !text-red-600">
-          You have not connected your wallet address yet.
-        </p>
-      )
+      return {
+        message: 'You have not connected your wallet address yet.',
+        type: 'error'
+      }
     }
-
     if (!snap.isWalletConnected) {
-      return (
-        <p className="w-full text-style-small-standard">
-          If you&apos;re connecting your wallet address for the first time,
-          you&apos;ll start with the default configuration.
-          <br />
-          You can then customize and save your config as needed.
-        </p>
-      )
+      return {
+        message:
+          "If you're connecting your wallet address for the first time, you'll start with the default configuration. You can then customize and save your config as needed.",
+        type: 'info'
+      }
     }
-
     if (!snap.hasRemoteConfigs) {
-      return (
-        <p className="w-full text-style-small-standard !text-text-success">
-          There are no custom edits for the drawer banner correlated to this
-          wallet address but you can start customizing when you want.
-        </p>
-      )
+      return {
+        message: `There are no custom edits for the ${toolName} correlated to this wallet address but you can start customizing when you want.`,
+        type: 'success'
+      }
     }
 
-    return (
-      <p className="w-full text-style-small-standard !text-text-success">
-        We&apos;ve loaded your configuration.
-        <br />
-        Feel free to keep customizing your banner to fit your style.
-      </p>
-    )
+    return {
+      message: `We've loaded your configuration. Feel free to keep customizing your ${toolName} to fit your style.`,
+      type: 'success'
+    }
   }
+
+  const statusMessage = getStatusMessage()
   return (
     <form
       onSubmit={handleSubmit}
@@ -147,24 +147,21 @@ export const ToolsWalletAddress = () => {
         'flex flex-col xl:flex-row xl:items-start gap-2xl p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600'
       )}
-      aria-labelledby={generatedId}
     >
-      <div className="flex flex-col items-start gap-md w-full xl:flex-1 xl:grow">
+      <div className="items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
-          <Heading5 id={generatedId}>Wallet address</Heading5>
-          <Tooltip>
+          <Heading5 htmlFor="wallet-address-url" as="label">
+            Wallet address
+          </Heading5>
+          <Tooltip label="Why do I need to connect my wallet?">
             Your wallet is required in order for us to save this components
             configuration for you, link it to the original author, and verify
-            ownership for future updates. It also embeds the wallet address into
-            your web page automatically, enabling Web Monetization on your
-            behalf.
+            ownership for future updates.
+            <br /> It also embeds the wallet address into your web page
+            automatically, enabling Web Monetization on your behalf.
           </Tooltip>
         </div>
-
-        <div
-          id="wallet-address-input"
-          className="flex items-start gap-3 w-full"
-        >
+        <div className="flex items-start gap-3 w-full pt-md">
           <div className="flex-1 min-w-0 h-12">
             <InputField
               ref={inputRef}
@@ -174,11 +171,11 @@ export const ToolsWalletAddress = () => {
                   ? undefined
                   : 'https://walletprovider.com/MyWallet'
               }
-              defaultValue={snap.walletAddress}
-              onBlur={handleWalletAddressChange}
+              value={snap.walletAddress}
+              onChange={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
+              readOnly={isLoading}
               error={error?.fieldErrors.walletAddress}
-              aria-labelledby={generatedId}
             />
           </div>
           {snap.isWalletConnected && (
@@ -196,16 +193,25 @@ export const ToolsWalletAddress = () => {
         </div>
       </div>
 
-      <div
-        id="wallet-address-message"
-        className="flex flex-col w-full xl:max-w-[490px] items-start gap-xs xl:flex-1 xl:grow"
-      >
-        {renderStatusMessage()}
+      <div className="flex flex-col w-full xl:max-w-[490px] items-start gap-xs xl:flex-1 xl:grow">
+        <span
+          id="wallet-status"
+          role={statusMessage.type === 'error' ? 'alert' : 'status'}
+          className={cx(
+            'w-full text-style-small-standard',
+            statusMessage.type === 'error' && '!text-red-600',
+            statusMessage.type === 'success' && '!text-text-success'
+          )}
+        >
+          {statusMessage.message}
+        </span>
+
         {!snap.isWalletConnected && (
           <ToolsSecondaryButton
             type="submit"
             className="xl:w-[143px]"
             disabled={isLoading}
+            aria-busy={isLoading}
           >
             <div className="flex items-center justify-center gap-2">
               {isLoading && <SVGSpinner className="w-4 h-4" />}

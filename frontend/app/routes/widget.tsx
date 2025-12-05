@@ -1,6 +1,4 @@
 import { useEffect, useState, useRef } from 'react'
-import { useSnapshot } from 'valtio'
-import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   useLoaderData,
   useNavigate,
@@ -8,6 +6,8 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from 'react-router'
+import { useSnapshot } from 'valtio'
+import { SVGSpinner } from '@/assets'
 import {
   HeadingCore,
   ToolsWalletAddress,
@@ -24,6 +24,8 @@ import {
 import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { useBodyClass } from '~/hooks/useBodyClass'
+import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   toolState,
   toolActions,
@@ -31,11 +33,8 @@ import {
   loadState,
   splitConfigProperties
 } from '~/stores/toolStore'
-
-import { commitSession, getSession } from '~/utils/session.server.js'
-import { useBodyClass } from '~/hooks/useBodyClass'
-import { SVGSpinner } from '@/assets'
 import { useUIActions } from '~/stores/uiStore'
+import { commitSession, getSession } from '~/utils/session.server.js'
 
 export const meta: MetaFunction = () => {
   return [
@@ -204,7 +203,7 @@ export default function Widget() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress />
+                  <ToolsWalletAddress toolName="payment widget" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

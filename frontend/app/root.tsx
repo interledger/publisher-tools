@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import {
   Links,
   Meta,
@@ -9,13 +10,12 @@ import {
   type LinksFunction,
   type MetaFunction
 } from 'react-router'
-import type { ReactNode } from 'react'
-import stylesheet from '~/tailwind.css?url'
-import { Button } from './components/index.js'
 import { Header, Footer } from '@/components'
-import { XCircle } from './components/icons.js'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { UIProvider } from '~/stores/uiStore'
+import stylesheet from '~/tailwind.css?url'
+import { XCircle } from './components/icons.js'
+import { Button } from './components/index.js'
 
 export default function App() {
   return (

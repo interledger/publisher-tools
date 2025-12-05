@@ -13,6 +13,8 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
+import { API_URL } from '@shared/defines'
+import { Heading5 } from '../components/redesign/Typography'
 import {
   changeList,
   dropIndex,
@@ -21,8 +23,6 @@ import {
   validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
-import { Heading5 } from '../components/redesign/Typography'
-import { API_URL } from '@shared/defines'
 
 export const meta: MetaFunction = () => {
   return [

@@ -1,5 +1,5 @@
-import { CustomRadioDot } from './CustomRadioDot'
 import { CORNER_OPTION, type CornerType } from '@shared/types'
+import { CustomRadioDot } from './CustomRadioDot'
 
 export interface CornerRadiusSelectorProps {
   value: CornerType
