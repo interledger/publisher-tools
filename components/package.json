@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@shared/utils": "workspace:^",
-    "@shared/defines": "workspace:^",
     "lit": "^3.3.1"
   },
   "devDependencies": {

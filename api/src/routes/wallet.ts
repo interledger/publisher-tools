@@ -11,7 +11,7 @@ import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
 
 const walletAddressSchema = z.object({
-  walletAddress: z.string().min(1, 'Wallet address is required')
+  walletAddress: z.url('Wallet address must be a valid URL')
 })
 
 app.get(
