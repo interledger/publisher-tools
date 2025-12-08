@@ -1,5 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import type { WalletAddress } from '@interledger/open-payments'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
@@ -60,10 +61,12 @@ export class PaymentWidget extends LitElement {
 
       const response = await fetch(url)
 
-      const walletAddressInfo = await response.json()
       if (!response.ok) {
-        throw new Error(walletAddressInfo.error?.message)
+        const errorData = (await response.json()) as { message: string }
+        throw new Error(errorData.message)
       }
+
+      const walletAddressInfo: WalletAddress = await response.json()
 
       this.configController.updateState({
         walletAddress: walletAddressInfo
