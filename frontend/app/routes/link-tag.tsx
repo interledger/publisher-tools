@@ -1,6 +1,5 @@
+import { useNavigate, type MetaFunction } from 'react-router'
 import { HeadingCore, LinkTagGenerator } from '@/components'
-import { useNavigate } from '@remix-run/react'
-import type { MetaFunction } from '@remix-run/cloudflare'
 
 export const meta: MetaFunction = () => {
   return [

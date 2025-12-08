@@ -1,10 +1,10 @@
+import type z from 'zod'
 import type {
   PaymentFinalizeSchema,
   PaymentGrantSchema,
   PaymentQuoteSchema,
   WalletAddressParamSchema
 } from './schemas/payment.js'
-import type { z } from 'zod/v4'
 
 export type PaymentStatusSuccess = {
   paymentId: string

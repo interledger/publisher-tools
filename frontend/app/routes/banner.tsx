@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
-import { useSnapshot } from 'valtio'
-import { useLoaderData, useNavigate } from '@remix-run/react'
-import { useUIActions } from '~/stores/uiStore'
-import { usePathTracker } from '~/hooks/usePathTracker'
 import {
+  useLoaderData,
+  useNavigate,
+  data,
   type LoaderFunctionArgs,
-  json,
   type MetaFunction
-} from '@remix-run/cloudflare'
+} from 'react-router'
+import { useSnapshot } from 'valtio'
+import { SVGSpinner } from '@/assets'
 import {
   HeadingCore,
   ToolsWalletAddress,
@@ -21,12 +21,14 @@ import {
   StepsIndicator,
   MobileStepsIndicator
 } from '@/components'
-import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
   type BannerHandle
 } from '~/components/banner/BannerPreview'
+import { BuilderTabs } from '~/components/builder/BuilderTabs'
+import { useBodyClass } from '~/hooks/useBodyClass'
+import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   toolState,
   toolActions,
@@ -34,9 +36,8 @@ import {
   loadState,
   splitConfigProperties
 } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { useBodyClass } from '~/hooks/useBodyClass'
-import { SVGSpinner } from '@/assets'
 
 export const meta: MetaFunction = () => {
   return [
@@ -60,7 +61,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   session.unset('is-grant-accepted')
   session.unset('is-grant-response')
 
-  return json(
+  return data(
     {
       grantResponse,
       isGrantAccepted,
@@ -212,7 +213,7 @@ export default function Banner() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress />
+                  <ToolsWalletAddress toolName="drawer banner" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

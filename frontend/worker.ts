@@ -1,7 +1,7 @@
+import { createRequestHandler, type ServerBuild } from 'react-router'
 import { APP_BASEPATH } from '~/lib/constants.js'
-import { createRequestHandler, type ServerBuild } from '@remix-run/cloudflare'
 
-declare module '@remix-run/cloudflare' {
+declare module 'react-router' {
   export interface AppLoadContext {
     cloudflare: {
       env: Env
@@ -9,6 +9,12 @@ declare module '@remix-run/cloudflare' {
     }
   }
 }
+
+const build =
+  process.env.NODE_ENV === 'development'
+    ? () => import('virtual:react-router/server-build')
+    : // @ts-expect-error - build artifact created during build process
+      () => import('./build/server/index.js')
 
 export default {
   async fetch(request, env, ctx) {
@@ -18,22 +24,8 @@ export default {
       if (url.pathname === '/') {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
-
-      // handle single fetch data loading and streaming format requests
-      // part of v3_singleFetch feature flag
-      if (url.pathname === '/tools.data') {
-        return Response.redirect(
-          new URL(`${APP_BASEPATH}/tools.data`, request.url),
-          301
-        )
-      }
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore it may not be built during type checking stage
-      const build = await import('./build/server/index.js')
-      const requestHandler = createRequestHandler(
-        build as unknown as ServerBuild
-      )
+      const serverBuild = await build()
+      const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 
       return await requestHandler(request, {
         cloudflare: { env, ctx }
