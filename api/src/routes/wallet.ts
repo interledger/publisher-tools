@@ -1,10 +1,8 @@
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import {
-  checkHrefFormat,
   getWalletAddress,
   normalizeWalletAddress,
-  toWalletAddressUrl,
   WalletAddressFormatError
 } from '@shared/utils'
 import { app } from '../app.js'
@@ -21,11 +19,7 @@ app.get(
     const { walletAddress } = req.valid('query')
 
     try {
-      const walletAddressUrl = checkHrefFormat(
-        toWalletAddressUrl(walletAddress)
-      )
-
-      const walletAddressInfo = await getWalletAddress(walletAddressUrl)
+      const walletAddressInfo = await getWalletAddress(walletAddress)
 
       return json({
         ...walletAddressInfo,

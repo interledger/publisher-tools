@@ -1,6 +1,7 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddress } from '@interledger/open-payments'
+import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
@@ -55,9 +56,12 @@ export class PaymentWidget extends LitElement {
 
     try {
       const { apiUrl } = this.configController.config
+      const walletAddressUrl = checkHrefFormat(
+        toWalletAddressUrl(walletAddress)
+      )
 
       const url = new URL('/wallet', apiUrl)
-      url.searchParams.set('walletAddress', walletAddress)
+      url.searchParams.set('walletAddress', walletAddressUrl)
 
       const response = await fetch(url)
 
