@@ -77,8 +77,8 @@ importers:
         version: 4.1.13
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20251011.0
-        version: 4.20251011.0
+        specifier: ^4.20251209.0
+        version: 4.20251209.0
       '@shared/defines':
         specifier: workspace:^
         version: link:../shared/defines
@@ -90,7 +90,7 @@ importers:
         version: 5.9.3
       wrangler:
         specifier: 4.40.0
-        version: 4.40.0(@cloudflare/workers-types@4.20251011.0)
+        version: 4.40.0(@cloudflare/workers-types@4.20251209.0)
 
   cdn:
     devDependencies:
@@ -129,7 +129,7 @@ importers:
         version: 5.9.3
       wrangler:
         specifier: 4.40.0
-        version: 4.40.0(@cloudflare/workers-types@4.20251011.0)
+        version: 4.40.0(@cloudflare/workers-types@4.20251209.0)
 
   components:
     dependencies:
@@ -172,7 +172,7 @@ importers:
         version: 2.3.1
       '@react-router/cloudflare':
         specifier: ^7.10.0
-        version: 7.10.0(@cloudflare/workers-types@4.20251011.0)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)
+        version: 7.10.0(@cloudflare/workers-types@4.20251209.0)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
@@ -248,13 +248,13 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.14.1
-        version: 1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20251109.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))
+        version: 1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20251109.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251209.0))
       '@lit/react':
         specifier: ^1.0.8
         version: 1.0.8(@types/react@19.2.7)
       '@react-router/dev':
         specifier: ^7.10.0
-        version: 7.10.0(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(tsx@4.20.6)(typescript@5.9.3)(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))(yaml@2.7.1)
+        version: 7.10.0(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(tsx@4.20.6)(typescript@5.9.3)(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(wrangler@4.40.0(@cloudflare/workers-types@4.20251209.0))(yaml@2.7.1)
       '@shared/default-data':
         specifier: workspace:^
         version: link:../shared/default-data
@@ -308,7 +308,7 @@ importers:
         version: 5.1.4(typescript@5.9.3)(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))
       wrangler:
         specifier: 4.40.0
-        version: 4.40.0(@cloudflare/workers-types@4.20251011.0)
+        version: 4.40.0(@cloudflare/workers-types@4.20251209.0)
 
   localenv/s3:
     devDependencies:
@@ -317,7 +317,7 @@ importers:
         version: 5.9.3
       wrangler:
         specifier: 4.40.0
-        version: 4.40.0(@cloudflare/workers-types@4.20251011.0)
+        version: 4.40.0(@cloudflare/workers-types@4.20251209.0)
 
   shared/config-storage-service:
     dependencies:
@@ -609,8 +609,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@4.20251011.0':
-    resolution: {integrity: sha512-gQpih+pbq3sP4uXltUeCSbPgZxTNp2gQd8639SaIbQMwgA6oJNHLhIART1fWy6DQACngiRzDVULA2x0ohmkGTQ==}
+  '@cloudflare/workers-types@4.20251209.0':
+    resolution: {integrity: sha512-O+cbUVwgb4NgUB39R1cITbRshlAAPy1UQV0l8xEy2xcZ3wTh3fMl9f5oBwLsVmE9JRhIZx6llCLOBVf53eI5xA==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -4361,7 +4361,7 @@ snapshots:
     optionalDependencies:
       workerd: 1.20250924.0
 
-  '@cloudflare/vite-plugin@1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20251109.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))':
+  '@cloudflare/vite-plugin@1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20251109.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251209.0))':
     dependencies:
       '@cloudflare/unenv-preset': 2.7.10(unenv@2.0.0-rc.24)(workerd@1.20251109.0)
       '@remix-run/node-fetch-server': 0.8.1
@@ -4371,7 +4371,7 @@ snapshots:
       tinyglobby: 0.2.15
       unenv: 2.0.0-rc.24
       vite: 7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1)
-      wrangler: 4.40.0(@cloudflare/workers-types@4.20251011.0)
+      wrangler: 4.40.0(@cloudflare/workers-types@4.20251209.0)
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
@@ -4408,7 +4408,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20251109.0':
     optional: true
 
-  '@cloudflare/workers-types@4.20251011.0': {}
+  '@cloudflare/workers-types@4.20251209.0': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -4799,14 +4799,14 @@ snapshots:
       '@preact/signals-core': 1.12.1
       preact: 10.27.2
 
-  '@react-router/cloudflare@7.10.0(@cloudflare/workers-types@4.20251011.0)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)':
+  '@react-router/cloudflare@7.10.0(@cloudflare/workers-types@4.20251209.0)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)':
     dependencies:
-      '@cloudflare/workers-types': 4.20251011.0
+      '@cloudflare/workers-types': 4.20251209.0
       react-router: 7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
     optionalDependencies:
       typescript: 5.9.3
 
-  '@react-router/dev@7.10.0(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(tsx@4.20.6)(typescript@5.9.3)(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))(yaml@2.7.1)':
+  '@react-router/dev@7.10.0(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.10.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(tsx@4.20.6)(typescript@5.9.3)(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(wrangler@4.40.0(@cloudflare/workers-types@4.20251209.0))(yaml@2.7.1)':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/generator': 7.28.5
@@ -4840,7 +4840,7 @@ snapshots:
       vite-node: 3.2.4(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1)
     optionalDependencies:
       typescript: 5.9.3
-      wrangler: 4.40.0(@cloudflare/workers-types@4.20251011.0)
+      wrangler: 4.40.0(@cloudflare/workers-types@4.20251209.0)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -8106,7 +8106,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20251109.0
       '@cloudflare/workerd-windows-64': 1.20251109.0
 
-  wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0):
+  wrangler@4.40.0(@cloudflare/workers-types@4.20251209.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.7.4(unenv@2.0.0-rc.21)(workerd@1.20250924.0)
@@ -8117,7 +8117,7 @@ snapshots:
       unenv: 2.0.0-rc.21
       workerd: 1.20250924.0
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20251011.0
+      '@cloudflare/workers-types': 4.20251209.0
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil
