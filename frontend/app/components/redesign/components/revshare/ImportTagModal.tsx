@@ -14,7 +14,7 @@ interface ImportTagModalProps {
   className?: string
 }
 
-const PLACEHOLDER_LINK_TAG = `<link rel="monetization" href="https://webmonetization.org/api/revshare/pay/your-revshare-id">`
+const PLACEHOLDER_LINK_TAG = `<link rel="monetization" href="https://tools-api.webmonetization.org/revshare/{revshare-id}">`
 
 export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   isOpen,
