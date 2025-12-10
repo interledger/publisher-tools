@@ -9,14 +9,15 @@ const params = getScriptParams('widget')
 
 appendPaymentPointer(params.walletAddress)
 fetchProfile(API_URL, 'widget', params)
-  .then((config) => {
-    const el = drawWidget(params.walletAddress, config)
+  .then((profile) => {
+    const el = drawWidget(params.walletAddress, profile)
     document.body.appendChild(el)
   })
   .catch((error) => console.error(error))
 
-const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
+const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
+  const config = profile
 
   element.config = {
     apiUrl: API_URL,

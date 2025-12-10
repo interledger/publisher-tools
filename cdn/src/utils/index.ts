@@ -43,9 +43,9 @@ export async function fetchProfile<T extends Tool>(
   tool: T,
   params: ReturnType<typeof getScriptParams>
 ): Promise<ToolConfig<T>> {
-  const url = new URL(`config/${tool}`, apiUrl)
+  const url = new URL(`profile/${tool}`, apiUrl)
   url.searchParams.set('wa', params.walletAddressId || params.walletAddress)
-  url.searchParams.set('profile', params.profileId)
+  url.searchParams.set('id', params.profileId)
 
   const res = await fetch(url)
   if (!res.ok) {
