@@ -1,5 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import type { ApiErrorResponse } from 'publisher-tools-api'
 import type { WalletAddress } from '@interledger/open-payments'
 import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
@@ -67,7 +68,7 @@ export class PaymentWidget extends LitElement {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error((data as { message?: string }).message)
+        throw new Error((data as ApiErrorResponse).error?.message)
       }
 
       this.configController.updateState({
