@@ -79,7 +79,6 @@ function CustomTitle({
   maxLength,
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
-  const ref = useRef<HTMLInputElement>(null)
   const id = 'custom-title-input'
   return (
     <div className="flex flex-col gap-xs">
@@ -92,8 +91,13 @@ function CustomTitle({
       <InputField
         id={id}
         value={value}
-        onChange={(e) => onChange(e.target.value.trim())}
-        ref={ref}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={(e) => {
+          const trimmed = e.target.value.trim()
+          if (trimmed !== value) {
+            onChange(trimmed)
+          }
+        }}
         placeholder={placeholder}
         showCounter={true}
         currentLength={value.length}
