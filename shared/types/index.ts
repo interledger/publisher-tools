@@ -72,42 +72,73 @@ export interface BaseToolProfile {
 }
 
 export interface BannerProfile extends BaseToolProfile {
-  // content
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-
-  // appearance
-  bannerFontName: FontFamilyKey
-  bannerFontSize: number
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
+  content: {
+    title: {
+      text: string
+    }
+    description: {
+      text: string
+      visible: boolean
+    }
+  }
+  appearance: {
+    text: {
+      font: FontFamilyKey
+      color: string
+      size: number
+    }
+    animation: {
+      type: SlideAnimationType
+    }
+    position: {
+      type: BannerPositionKey
+    }
+    border: {
+      type: CornerType
+    }
+    background: {
+      color: string
+    }
+    thumbnail: {
+      /** empty: not visible; default: visible */
+      value: string
+    }
+  }
 }
 
 export interface WidgetProfile extends BaseToolProfile {
-  // content
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-
-  // appearance
-  widgetFontName: FontFamilyKey
-  widgetFontSize: number
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
+  content: {
+    title: {
+      text: string
+    }
+    description: {
+      text: string
+      visible: boolean
+    }
+  }
+  appearance: {
+    text: {
+      font: FontFamilyKey
+      color: string
+      size: number
+    }
+    position: {
+      type: WidgetPositionKey
+    }
+    border: {
+      type: CornerType
+    }
+    background: {
+      color: string
+    }
+    trigger: {
+      backgroundColor: string
+      icon: string
+    }
+    buttons: {
+      backgroundColor: string
+    }
+  }
 }
 
 export const TOOLS = ['banner', 'widget'] as const

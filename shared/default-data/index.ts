@@ -62,18 +62,37 @@ export const createDefaultBannerProfile = (
 ): BannerProfile => ({
   $version: '0.0.1',
   $name: profileName,
-  bannerFontName: FONT_FAMILY_OPTIONS[0],
-  bannerFontSize: BANNER_FONT_SIZES.default,
-  bannerPosition: BANNER_POSITION.Bottom,
-  bannerSlideAnimation: SLIDE_ANIMATION.Slide,
-  bannerBorder: CORNER_OPTION.Light,
-  bannerTextColor: '#ffffff',
-  bannerBackgroundColor: '#7f76b2',
-  bannerThumbnail: 'default',
-  bannerTitleText: 'How to support?',
-  bannerDescriptionText:
-    'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-  bannerDescriptionVisible: true
+  content: {
+    title: {
+      text: 'How to support?'
+    },
+    description: {
+      text: 'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
+      visible: true
+    }
+  },
+  appearance: {
+    text: {
+      font: FONT_FAMILY_OPTIONS[0],
+      color: '#ffffff',
+      size: BANNER_FONT_SIZES.default
+    },
+    animation: {
+      type: SLIDE_ANIMATION.Slide
+    },
+    position: {
+      type: BANNER_POSITION.Bottom
+    },
+    border: {
+      type: CORNER_OPTION.Light
+    },
+    background: {
+      color: '#7f76b2'
+    },
+    thumbnail: {
+      value: 'default'
+    }
+  }
 })
 
 export const createDefaultWidgetProfile = (
@@ -81,20 +100,36 @@ export const createDefaultWidgetProfile = (
 ): WidgetProfile => ({
   $version: '0.0.1',
   $name: profileName,
-  widgetFontName: FONT_FAMILY_OPTIONS[0],
-  widgetFontSize: WIDGET_FONT_SIZES.default,
-  widgetPosition: WIDGET_POSITION.Right,
-  widgetButtonBorder: CORNER_OPTION.Light,
-  widgetTextColor: '#ffffff',
-  widgetBackgroundColor: '#7f76b2',
-  widgetTriggerIcon: 'default',
-  widgetTriggerBackgroundColor: '#ffffff',
-  widgetTitleText: 'Future of support',
-  widgetDescriptionText:
-    'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
-  widgetDescriptionVisible: true,
-  widgetButtonBackgroundColor: '#4ec6c0',
-  widgetButtonTextColor: '#000000',
-  widgetDonateAmount: 1,
-  widgetButtonText: 'Support me'
+  content: {
+    title: {
+      text: 'Future of support'
+    },
+    description: {
+      text: 'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
+      visible: true
+    }
+  },
+  appearance: {
+    text: {
+      font: FONT_FAMILY_OPTIONS[0],
+      color: '#ffffff',
+      size: WIDGET_FONT_SIZES.default
+    },
+    position: {
+      type: WIDGET_POSITION.Right
+    },
+    border: {
+      type: CORNER_OPTION.Light
+    },
+    background: {
+      color: '#7f76b2'
+    },
+    trigger: {
+      backgroundColor: '#ffffff',
+      icon: 'default'
+    },
+    buttons: {
+      backgroundColor: '#4ec6c0'
+    }
+  }
 })
