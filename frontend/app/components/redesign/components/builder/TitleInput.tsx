@@ -91,12 +91,6 @@ function CustomTitle({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onBlur={(e) => {
-          const trimmed = e.target.value.trim()
-          if (trimmed !== value) {
-            onChange(trimmed)
-          }
-        }}
         placeholder={placeholder}
         showCounter={true}
         currentLength={value.length}
