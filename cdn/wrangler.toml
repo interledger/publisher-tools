@@ -1,6 +1,9 @@
 name = "publisher-tools-cdn"
 compatibility_date = "2025-04-03"
 
+workers_dev = true
+preview_urls = true
+
 [assets]
 directory = "dist"
 not_found_handling = "404-page"
