@@ -17,7 +17,7 @@ fetchProfile(API_URL, 'banner', params)
   })
   .catch((error) => console.error(error))
 
-function drawBanner(profile: BannerConfig) {
+function drawBanner(config: BannerConfig) {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
@@ -35,26 +35,26 @@ function drawBanner(profile: BannerConfig) {
 
   const bannerElement = document.createElement('wm-banner')
 
-  const bannerProfile = {
+  const bannerConfig = {
     cdnUrl: params.cdnUrl,
-    bannerTitleText: profile.bannerTitleText,
-    bannerDescriptionText: profile.bannerDescriptionText,
-    isBannerDescriptionVisible: profile.bannerDescriptionVisible,
-    bannerBorderRadius: profile.bannerBorder,
-    bannerPosition: profile.bannerPosition,
-    bannerSlideAnimation: profile.bannerSlideAnimation,
-    bannerThumbnail: profile.bannerThumbnail,
+    bannerTitleText: config.bannerTitleText,
+    bannerDescriptionText: config.bannerDescriptionText,
+    isBannerDescriptionVisible: config.bannerDescriptionVisible,
+    bannerBorderRadius: config.bannerBorder,
+    bannerPosition: config.bannerPosition,
+    bannerSlideAnimation: config.bannerSlideAnimation,
+    bannerThumbnail: config.bannerThumbnail,
     theme: {
-      backgroundColor: profile.bannerBackgroundColor,
-      textColor: profile.bannerTextColor,
-      fontFamily: profile.bannerFontName,
-      fontSize: profile.bannerFontSize
+      backgroundColor: config.bannerBackgroundColor,
+      textColor: config.bannerTextColor,
+      fontFamily: config.bannerFontName,
+      fontSize: config.bannerFontSize
     }
   }
-  bannerElement.config = bannerProfile
+  bannerElement.config = bannerConfig
 
-  const position = profile.bannerPosition
-    ? profile.bannerPosition.toLowerCase()
+  const position = config.bannerPosition
+    ? config.bannerPosition.toLowerCase()
     : 'bottom'
 
   bannerElement.style.position = 'fixed'

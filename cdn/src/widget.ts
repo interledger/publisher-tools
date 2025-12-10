@@ -15,7 +15,7 @@ fetchProfile(API_URL, 'widget', params)
   })
   .catch((error) => console.error(error))
 
-const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
+const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
 
   element.config = {
@@ -23,20 +23,20 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
     cdnUrl: params.cdnUrl,
     frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
     receiverAddress: walletAddressUrl,
-    action: profile.widgetButtonText || 'Pay',
+    action: config.widgetButtonText || 'Pay',
     theme: {
-      primaryColor: profile.widgetButtonBackgroundColor,
-      backgroundColor: profile.widgetBackgroundColor,
-      textColor: profile.widgetTextColor,
-      fontSize: profile.widgetFontSize,
-      fontFamily: profile.widgetFontName,
-      widgetBorderRadius: profile.widgetButtonBorder,
-      widgetButtonBackgroundColor: profile.widgetTriggerBackgroundColor
+      primaryColor: config.widgetButtonBackgroundColor,
+      backgroundColor: config.widgetBackgroundColor,
+      textColor: config.widgetTextColor,
+      fontSize: config.widgetFontSize,
+      fontFamily: config.widgetFontName,
+      widgetBorderRadius: config.widgetButtonBorder,
+      widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
     },
-    widgetTitleText: profile.widgetTitleText,
-    widgetDescriptionText: profile.widgetDescriptionText,
-    isWidgetDescriptionVisible: profile.widgetDescriptionVisible,
-    widgetPosition: profile.widgetPosition
+    widgetTitleText: config.widgetTitleText,
+    widgetDescriptionText: config.widgetDescriptionText,
+    isWidgetDescriptionVisible: config.widgetDescriptionVisible,
+    widgetPosition: config.widgetPosition
   }
 
   element.style.position = 'fixed'
