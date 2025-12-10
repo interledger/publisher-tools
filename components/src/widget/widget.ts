@@ -64,16 +64,14 @@ export class PaymentWidget extends LitElement {
       url.searchParams.set('walletAddress', walletAddressUrl)
 
       const response = await fetch(url)
+      const data = await response.json()
 
       if (!response.ok) {
-        const errorData = (await response.json()) as { message: string }
-        throw new Error(errorData.message)
+        throw new Error((data as { message?: string }).message)
       }
 
-      const walletAddressInfo: WalletAddress = await response.json()
-
       this.configController.updateState({
-        walletAddress: walletAddressInfo
+        walletAddress: data as WalletAddress
       })
 
       this.walletAddressError = ''
