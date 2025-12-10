@@ -14,7 +14,8 @@ import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
-import { StoreManager } from './toolStoreManager'
+import { BannerStore } from './bannerStore'
+import { WidgetStore } from './widgetStore'
 
 const STORAGE_KEY = 'valtio-store'
 const getWmtStorageKey = (tool: Tool) => `wmt-${tool}-config`
@@ -61,7 +62,8 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
   )
 }
 
-const manager = new StoreManager()
+const bannerStore = new BannerStore()
+const widgetStore = new WidgetStore()
 export const toolState = proxy({
   configurations: createDefaultConfigs(),
   /*
@@ -106,12 +108,15 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus,
-  bannerStores: manager['bannerStores'] as Record<ProfileId, BannerProfile>,
-  widgetStores: manager['widgetStores'] as Record<ProfileId, WidgetProfile>,
-  getBannerStore: (key: ProfileId) => manager.getBannerStore(key),
-  getWidgetStore: (key: ProfileId) => manager.getWidgetStore(key),
-  get activeProfile() {
-    return manager.activeTab
+  bannerStores: bannerStore['stores'] as Record<ProfileId, BannerProfile>,
+  widgetStores: widgetStore['stores'] as Record<ProfileId, WidgetProfile>,
+  getBannerStore: (key: ProfileId) => bannerStore.getStore(key),
+  get activeBannerProfile() {
+    return bannerStore.activeTab
+  },
+  getWidgetStore: (key: ProfileId) => widgetStore.getStore(key),
+  get activeWidgetProfile() {
+    return widgetStore.activeTab
   }
 })
 
