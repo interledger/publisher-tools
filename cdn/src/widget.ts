@@ -1,22 +1,23 @@
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetConfig } from '@shared/types'
 import { PaymentWidget } from '@tools/components'
-import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
+import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)
 
 const params = getScriptParams('widget')
 
 appendPaymentPointer(params.walletAddress)
-fetchConfig(API_URL, 'widget', params)
-  .then((config) => {
-    const el = drawWidget(params.walletAddress, config)
+fetchProfile(API_URL, 'widget', params)
+  .then((profile) => {
+    const el = drawWidget(params.walletAddress, profile)
     document.body.appendChild(el)
   })
   .catch((error) => console.error(error))
 
-const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
+const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
+  const config = profile
 
   element.config = {
     apiUrl: API_URL,

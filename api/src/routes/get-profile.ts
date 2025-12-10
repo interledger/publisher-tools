@@ -3,12 +3,12 @@ import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import { PRESET_IDS, TOOLS } from '@shared/types'
+import { PROFILE_IDS, TOOLS } from '@shared/types'
 import type {
   BannerConfig,
   ConfigVersions,
   ElementConfigType,
-  PresetId,
+  ProfileId,
   Tool,
   WidgetConfig
 } from '@shared/types'
@@ -16,7 +16,7 @@ import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
 
 app.get(
-  '/config/:tool',
+  '/profile/:tool',
   zValidator(
     'param',
     z.object({
@@ -27,24 +27,24 @@ app.get(
     'query',
     z.object({
       wa: z.url(),
-      preset: z.enum(PRESET_IDS)
+      id: z.enum(PROFILE_IDS)
     })
   ),
   async ({ req, json, env }) => {
     const { tool } = req.valid('param')
-    const { wa: walletAddress, preset: presetId } = req.valid('query')
+    const { wa: walletAddress, id: profileId } = req.valid('query')
 
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {
       const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const config = getToolConfig(fullConfig, tool, presetId)
-      return json(config)
+      const profile = getToolProfile(fullConfig, tool, profileId)
+      return json(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
         if (error.message.includes('404')) {
-          const msg = 'No saved config found for given wallet address'
+          const msg = 'No saved profile found for given wallet address'
           throw createHTTPException(404, msg, {
             message: 'Not found', // can include the S3 key here perhaps
             code: '404'
@@ -56,10 +56,14 @@ app.get(
   }
 )
 
-function getToolConfig(config: ConfigVersions, tool: Tool, presetId: PresetId) {
-  const conf = config[presetId]
-  if (!conf) {
-    throw createHTTPException(404, 'Saved config not found for given preset', {
+function getToolProfile(
+  config: ConfigVersions,
+  tool: Tool,
+  profileId: ProfileId
+) {
+  const profile = config[profileId]
+  if (!profile) {
+    throw createHTTPException(404, 'Profile not found for given id', {
       message: `Use one of ${JSON.stringify(Object.keys(config))}`
     })
   }
@@ -67,12 +71,12 @@ function getToolConfig(config: ConfigVersions, tool: Tool, presetId: PresetId) {
   switch (tool) {
     case 'widget':
       return extract<WidgetConfig>(
-        conf,
+        profile,
         (key) => key.startsWith('widget') || key.includes('Widget')
       )
     case 'banner':
       return extract<BannerConfig>(
-        conf,
+        profile,
         (key) => key.startsWith('banner') || key.includes('Banner')
       )
   }
@@ -86,7 +90,7 @@ function extract<R, T = ElementConfigType, K = keyof T>(
     ([key]) => filter(key as K)
   )
   if (!entries.length) {
-    throw new Error('No matching config found')
+    throw new Error('No matching profile found')
   }
   return Object.fromEntries(entries) as R
 }

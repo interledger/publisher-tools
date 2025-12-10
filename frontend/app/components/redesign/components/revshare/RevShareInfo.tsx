@@ -37,7 +37,7 @@ export const RevShareInfo = () => {
           recipient to add more rows. Assign a weight to each recipient. When
           you&apos;re finished, add the generated monetization link tag to your
           site. The link contains a unique URL hosted on
-          https://webmonetization.org/api/revshare/pay/.
+          https://tools-api.webmonetization.org/revshare/.
         </p>
       </div>
     </div>
