@@ -15,8 +15,9 @@ fetchProfile(API_URL, 'widget', params)
   })
   .catch((error) => console.error(error))
 
-const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
+const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
+  const config = profile
 
   element.config = {
     apiUrl: API_URL,

@@ -17,7 +17,7 @@ fetchProfile(API_URL, 'banner', params)
   })
   .catch((error) => console.error(error))
 
-function drawBanner(config: BannerConfig) {
+function drawBanner(profile: BannerConfig) {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
@@ -34,6 +34,7 @@ function drawBanner(config: BannerConfig) {
   }
 
   const bannerElement = document.createElement('wm-banner')
+  const config = profile
 
   const bannerConfig = {
     cdnUrl: params.cdnUrl,
