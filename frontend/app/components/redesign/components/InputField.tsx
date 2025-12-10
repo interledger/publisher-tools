@@ -43,9 +43,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     }
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      const trimmed = e.target.value.trim()
-      if (trimmed !== e.target.value) {
-        if (props.onChange) {
+      if (props.onChange) {
+        const trimmed = e.target.value.trim()
+        if (trimmed !== e.target.value) {
           props.onChange({
             ...e,
             target: { ...e.target, value: trimmed }
