@@ -1,23 +1,23 @@
 import { API_URL } from '@shared/defines'
 import type { BannerConfig } from '@shared/types'
 import { Banner } from '@tools/components/banner'
-import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
+import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
-fetchConfig(API_URL, 'banner', params)
-  .then((config) => {
-    const el = drawBanner(config)
+fetchProfile(API_URL, 'banner', params)
+  .then((profile) => {
+    const el = drawBanner(profile)
     if (el) {
       document.body.appendChild(el)
     }
   })
   .catch((error) => console.error(error))
 
-function drawBanner(config: BannerConfig) {
+function drawBanner(profile: BannerConfig) {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
@@ -35,26 +35,26 @@ function drawBanner(config: BannerConfig) {
 
   const bannerElement = document.createElement('wm-banner')
 
-  const bannerConfig = {
+  const bannerProfile = {
     cdnUrl: params.cdnUrl,
-    bannerTitleText: config.bannerTitleText,
-    bannerDescriptionText: config.bannerDescriptionText,
-    isBannerDescriptionVisible: config.bannerDescriptionVisible,
-    bannerBorderRadius: config.bannerBorder,
-    bannerPosition: config.bannerPosition,
-    bannerSlideAnimation: config.bannerSlideAnimation,
-    bannerThumbnail: config.bannerThumbnail,
+    bannerTitleText: profile.bannerTitleText,
+    bannerDescriptionText: profile.bannerDescriptionText,
+    isBannerDescriptionVisible: profile.bannerDescriptionVisible,
+    bannerBorderRadius: profile.bannerBorder,
+    bannerPosition: profile.bannerPosition,
+    bannerSlideAnimation: profile.bannerSlideAnimation,
+    bannerThumbnail: profile.bannerThumbnail,
     theme: {
-      backgroundColor: config.bannerBackgroundColor,
-      textColor: config.bannerTextColor,
-      fontFamily: config.bannerFontName,
-      fontSize: config.bannerFontSize
+      backgroundColor: profile.bannerBackgroundColor,
+      textColor: profile.bannerTextColor,
+      fontFamily: profile.bannerFontName,
+      fontSize: profile.bannerFontSize
     }
   }
-  bannerElement.config = bannerConfig
+  bannerElement.config = bannerProfile
 
-  const position = config.bannerPosition
-    ? config.bannerPosition.toLowerCase()
+  const position = profile.bannerPosition
+    ? profile.bannerPosition.toLowerCase()
     : 'bottom'
 
   bannerElement.style.position = 'fixed'

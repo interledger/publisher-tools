@@ -1,21 +1,21 @@
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetConfig } from '@shared/types'
 import { PaymentWidget } from '@tools/components'
-import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
+import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)
 
 const params = getScriptParams('widget')
 
 appendPaymentPointer(params.walletAddress)
-fetchConfig(API_URL, 'widget', params)
-  .then((config) => {
-    const el = drawWidget(params.walletAddress, config)
+fetchProfile(API_URL, 'widget', params)
+  .then((profile) => {
+    const el = drawWidget(params.walletAddress, profile)
     document.body.appendChild(el)
   })
   .catch((error) => console.error(error))
 
-const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
+const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
   const element = document.createElement('wm-payment-widget')
 
   element.config = {
@@ -23,20 +23,20 @@ const drawWidget = (walletAddressUrl: string, config: WidgetConfig) => {
     cdnUrl: params.cdnUrl,
     frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
     receiverAddress: walletAddressUrl,
-    action: config.widgetButtonText || 'Pay',
+    action: profile.widgetButtonText || 'Pay',
     theme: {
-      primaryColor: config.widgetButtonBackgroundColor,
-      backgroundColor: config.widgetBackgroundColor,
-      textColor: config.widgetTextColor,
-      fontSize: config.widgetFontSize,
-      fontFamily: config.widgetFontName,
-      widgetBorderRadius: config.widgetButtonBorder,
-      widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
+      primaryColor: profile.widgetButtonBackgroundColor,
+      backgroundColor: profile.widgetBackgroundColor,
+      textColor: profile.widgetTextColor,
+      fontSize: profile.widgetFontSize,
+      fontFamily: profile.widgetFontName,
+      widgetBorderRadius: profile.widgetButtonBorder,
+      widgetButtonBackgroundColor: profile.widgetTriggerBackgroundColor
     },
-    widgetTitleText: config.widgetTitleText,
-    widgetDescriptionText: config.widgetDescriptionText,
-    isWidgetDescriptionVisible: config.widgetDescriptionVisible,
-    widgetPosition: config.widgetPosition
+    widgetTitleText: profile.widgetTitleText,
+    widgetDescriptionText: profile.widgetDescriptionText,
+    isWidgetDescriptionVisible: profile.widgetDescriptionVisible,
+    widgetPosition: profile.widgetPosition
   }
 
   element.style.position = 'fixed'
