@@ -2,20 +2,13 @@ import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type {
-  Configuration,
-  WidgetProfile,
-  BannerProfile,
-  ElementConfigType,
-  ProfileId,
-  Tool
-} from '@shared/types'
+import type { ElementConfigType, Tool } from '@shared/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
-import { BannerStore } from './bannerStore'
-import { WidgetStore } from './widgetStore'
+import { type BannerStore, createBannerStore } from './bannerStore'
+import { type WidgetStore, createWidgetStore } from './widgetStore'
 
 const STORAGE_KEY = 'valtio-store'
 const getWmtStorageKey = (tool: Tool) => `wmt-${tool}-config`
@@ -24,12 +17,18 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
   'buildStep',
   'opWallet',
-  'cdnUrl',
-  'bannerStores',
-  'widgetStores'
+  'banner',
+  'widget',
+  'cdnUrl'
 ])
 
-export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
+export const TOOL_TYPES = [
+  'banner',
+  'widget',
+  'button',
+  'banner-two',
+  'unknown'
+] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -62,8 +61,6 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
   )
 }
 
-const bannerStore = new BannerStore()
-const widgetStore = new WidgetStore()
 export const toolState = proxy({
   configurations: createDefaultConfigs(),
   /*
@@ -108,16 +105,8 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus,
-  bannerStores: bannerStore['stores'] as Record<ProfileId, BannerProfile>,
-  widgetStores: widgetStore['stores'] as Record<ProfileId, WidgetProfile>,
-  getBannerStore: (key: ProfileId) => bannerStore.getStore(key),
-  get activeBannerProfile() {
-    return bannerStore.activeTab
-  },
-  getWidgetStore: (key: ProfileId) => widgetStore.getStore(key),
-  get activeWidgetProfile() {
-    return widgetStore.activeTab
-  }
+  banner: createBannerStore() as BannerStore,
+  widget: createWidgetStore() as WidgetStore
 })
 
 subscribe(toolState, () => {
@@ -484,6 +473,14 @@ export const toolActions = {
 
   handleVersionNameChange: (newName: string) => {
     toolState.currentConfig.versionName = newName
+  },
+
+  handleBannerTabChange: (profileId: StableKey) => {
+    toolState.banner.setActiveTab(profileId)
+  },
+
+  handleBannerProfileNameChange: (name: string) => {
+    toolState.banner.setProfileName(name)
   }
 }
 
@@ -519,6 +516,7 @@ export function loadState(
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       const parsed: typeof toolState = JSON.parse(saved)
+
       const validKeys =
         typeof parsed === 'object' &&
         Object.keys(parsed).every((key) => key in toolState)
@@ -544,7 +542,7 @@ export function persistState(tool: Tool) {
       JSON.stringify(createStorageState(toolState))
     )
 
-    saveToolConfigToStorage(toolState[`${tool}Stores`], tool)
+    saveToolConfigToStorage(toolState['banner'], tool)
   })
 }
 
@@ -597,22 +595,32 @@ export function splitConfigProperties<T extends ElementConfigType>(config: T) {
   }
 }
 
-function saveToolConfigToStorage<T extends Tool>(
-  config: Configuration<T>,
-  tool: T
-) {
+function saveToolConfigToStorage<T extends Tool>(store: BannerStore, tool: T) {
   const storageKey = getWmtStorageKey(tool)
-  localStorage.setItem(storageKey, JSON.stringify(config))
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify({ ...store, dirtyProfiles: Array.from(store.dirtyProfiles) })
+  )
 }
 
 function loadToolConfigFromStorage<T extends Tool>(
   tool: T
-): Configuration<T> | null {
+): BannerStore | null {
   const storageKey = getWmtStorageKey(tool)
   try {
     const saved = localStorage.getItem(storageKey)
     if (saved) {
-      return JSON.parse(saved)
+      const parsed: BannerStore = JSON.parse(saved)
+      const validKeys =
+        typeof parsed === 'object' &&
+        Object.keys(parsed).every((key) => key in toolState[tool])
+
+      if (validKeys) {
+        const loadedData = parsedStorageData(parsed)
+        Object.assign(toolState[tool], loadedData)
+      } else {
+        throw new Error('saved configuration not valid')
+      }
     }
   } catch (error) {
     console.warn(`Failed to load ${tool} config from localStorage:`, error)
