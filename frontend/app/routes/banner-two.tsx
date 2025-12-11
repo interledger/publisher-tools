@@ -31,6 +31,7 @@ import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   toolState,
+  banner,
   toolActions,
   persistState,
   loadState,
@@ -78,6 +79,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
+  const bannerSnap = useSnapshot(banner)
   const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
@@ -229,8 +231,8 @@ export default function Banner() {
 
                     <BuilderPresetTabs
                       idPrefix="profile"
-                      options={snap.banner.getProfileTabs()}
-                      selectedId={snap.banner.activeTab}
+                      options={bannerSnap.getProfileTabs()}
+                      selectedId={bannerSnap.activeTab}
                       onChange={toolActions.handleBannerTabChange}
                       onRename={toolActions.handleBannerProfileNameChange}
                     >

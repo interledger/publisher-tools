@@ -53,63 +53,6 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
-export type Configuration<T extends Tool> = {
-  $walletAddress: string
-  $walletAddressId?: string
-  $modifiedAt?: string
-  banner: {
-    [presetId in ProfileId]?: BannerProfile
-  }
-  widget: {
-    [presetId in ProfileId]?: WidgetProfile
-  }
-}[T]
-
-export interface BaseToolProfile {
-  $version: string
-  $name: string
-  $modifiedAt?: string
-}
-
-export interface BannerProfile extends BaseToolProfile {
-  // content
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-
-  // appearance
-  bannerFontName: FontFamilyKey
-  bannerFontSize: number
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
-}
-
-export interface WidgetProfile extends BaseToolProfile {
-  // content
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-
-  // appearance
-  widgetFontName: FontFamilyKey
-  widgetFontSize: number
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
-}
-
 export const TOOLS = ['banner', 'widget'] as const
 export type Tool = (typeof TOOLS)[number]
 

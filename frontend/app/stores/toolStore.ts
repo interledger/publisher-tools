@@ -17,7 +17,6 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
   'buildStep',
   'opWallet',
-  'banner',
   'widget',
   'cdnUrl'
 ])
@@ -105,7 +104,6 @@ export const toolState = proxy({
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus,
-  banner: createBannerStore() as BannerStore,
   widget: createWidgetStore() as WidgetStore
 })
 
@@ -478,11 +476,11 @@ export const toolActions = {
   },
 
   handleBannerTabChange: (profileId: StableKey) => {
-    toolState.banner.setActiveTab(profileId)
+    banner.setActiveTab(profileId)
   },
 
   handleBannerProfileNameChange: (name: string) => {
-    toolState.banner.setProfileName(name)
+    banner.setProfileName(name)
   }
 }
 
@@ -544,7 +542,7 @@ export function persistState(tool: Tool) {
       JSON.stringify(createStorageState(toolState))
     )
 
-    saveToolConfigToStorage(toolState['banner'], tool)
+    saveToolConfigToStorage(banner, tool)
   })
 }
 
@@ -615,11 +613,11 @@ function loadToolConfigFromStorage<T extends Tool>(
       const parsed: BannerStore = JSON.parse(saved)
       const validKeys =
         typeof parsed === 'object' &&
-        Object.keys(parsed).every((key) => key in toolState[tool])
+        Object.keys(parsed).every((key) => key in banner)
 
       if (validKeys) {
         const loadedData = parsedStorageData(parsed)
-        Object.assign(toolState[tool], loadedData)
+        Object.assign(banner, loadedData)
       } else {
         throw new Error('saved configuration not valid')
       }
