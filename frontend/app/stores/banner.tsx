@@ -2,7 +2,6 @@ import { proxy } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import { type ProfileId, type BannerProfile, PROFILE_IDS } from '@shared/types'
-import type { StableKey } from './toolStore'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 
@@ -17,9 +16,9 @@ export function createBannerStore() {
       version3: createDataStoreBanner('Default profile 3')
     } as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,
-    dirtyProfiles: proxySet<StableKey>(),
-    getStore(key: ProfileId): BannerProfile {
-      return this.profiles[key]
+    dirtyProfiles: proxySet<ProfileId>(),
+    getStore(profileId: ProfileId): BannerProfile {
+      return this.profiles[profileId]
     },
     getProfileTabs() {
       return PROFILE_IDS.map((id) => ({
@@ -28,8 +27,8 @@ export function createBannerStore() {
         isDirty: this.dirtyProfiles.has(id)
       }))
     },
-    setActiveTab(key: ProfileId) {
-      this.activeTab = key
+    setActiveTab(profileId: ProfileId) {
+      this.activeTab = profileId
     },
     setProfileName(name: string) {
       this.profiles[this.activeTab].$name = name
