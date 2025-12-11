@@ -17,23 +17,27 @@ function createBannerStore() {
     } as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,
     dirtyProfiles: proxySet<ProfileId>(),
-    getStore(profileId: ProfileId): BannerProfile {
-      return this.profiles[profileId]
+
+    get activeProfile(): BannerProfile {
+      return this.profiles[this.activeTab]
     },
-    getProfileTabs() {
+    get profileTabs() {
       return PROFILE_IDS.map((id) => ({
         id,
         label: this.profiles[id].$name,
         isDirty: this.dirtyProfiles.has(id)
       }))
-    },
-    setActiveTab(profileId: ProfileId) {
-      this.activeTab = profileId
-    },
-    setProfileName(name: string) {
-      this.profiles[this.activeTab].$name = name
     }
   })
 }
 
 export const banner = createBannerStore()
+
+export const actions = {
+  setActiveTab(profileId: ProfileId) {
+    banner.activeTab = profileId
+  },
+  setProfileName(name: string) {
+    banner.profiles[banner.activeTab].$name = name
+  }
+}

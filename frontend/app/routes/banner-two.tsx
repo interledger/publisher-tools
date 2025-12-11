@@ -29,7 +29,7 @@ import {
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { banner } from '~/stores/banner'
+import { actions, banner } from '~/stores/banner'
 import {
   toolState,
   toolActions,
@@ -231,10 +231,10 @@ export default function Banner() {
 
                     <BuilderPresetTabs
                       idPrefix="profile"
-                      options={bannerSnap.getProfileTabs()}
+                      options={bannerSnap.profileTabs}
                       selectedId={bannerSnap.activeTab}
-                      onChange={(profileId) => banner.setActiveTab(profileId)}
-                      onRename={(name) => banner.setProfileName(name)}
+                      onChange={(profileId) => actions.setActiveTab(profileId)}
+                      onRename={(name) => actions.setProfileName(name)}
                     >
                       <BannerBuilder onRefresh={handleRefresh} />
                     </BuilderPresetTabs>
