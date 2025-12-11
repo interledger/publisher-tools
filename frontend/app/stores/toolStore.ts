@@ -109,6 +109,8 @@ export const toolState = proxy({
   widget: createWidgetStore() as WidgetStore
 })
 
+export const banner = createBannerStore()
+
 subscribe(toolState, () => {
   updateChangesTracking(toolState.activeVersion)
 })
