@@ -7,6 +7,7 @@ import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
+import { createBannerStore } from './banner'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -95,6 +96,8 @@ export const toolState = proxy({
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus
 })
+
+export const banner = createBannerStore()
 
 subscribe(toolState, () => {
   updateChangesTracking(toolState.activeVersion)
