@@ -4,7 +4,7 @@ import { SVGEdit, SVGExclamationCircle } from '~/assets/svg'
 
 type TabOption<T extends string> = { id: T; label: string; isDirty: boolean }
 interface Props<T extends string> {
-  options: TabOption<T>[]
+  options: readonly TabOption<T>[]
   children: React.ReactNode
   selectedId: T
   idPrefix: string
@@ -197,7 +197,7 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
 }
 
 interface TabNameEditorProps<T extends string> {
-  options: TabOption<T>[]
+  options: readonly TabOption<T>[]
   tabId: T
   tabIdx: number
   onSubmit: (label: string) => void
@@ -312,7 +312,7 @@ function TabNameEditor<T extends string>({
 
 const validateInput = <T extends string>(
   value: string,
-  options: TabOption<T>[],
+  options: readonly TabOption<T>[],
   currentTabId: T
 ): string | '' => {
   const val = value.trim()
