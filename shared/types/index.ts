@@ -1,7 +1,9 @@
+/** @deprecated Use Configuration */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
 }
 
+/** @deprecated Use Configuration */
 export interface ElementConfigType {
   // general config
   /** the display name for this configuration version */

@@ -7,7 +7,11 @@ import {
   WIDGET_POSITION,
   FONT_FAMILY_OPTIONS
 } from '@shared/types'
-import type { BannerProfile, ElementConfigType } from '@shared/types'
+import type {
+  BannerProfile,
+  ElementConfigType,
+  WidgetProfile
+} from '@shared/types'
 
 export function getDefaultData(): ElementConfigType {
   return {
@@ -70,4 +74,27 @@ export const createDefaultBannerProfile = (
   bannerDescriptionText:
     'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
   bannerDescriptionVisible: true
+})
+
+export const createDefaultWidgetProfile = (
+  profileName: string
+): WidgetProfile => ({
+  $version: '0.0.1',
+  $name: profileName,
+  widgetFontName: FONT_FAMILY_OPTIONS[0],
+  widgetFontSize: WIDGET_FONT_SIZES.default,
+  widgetPosition: WIDGET_POSITION.Right,
+  widgetButtonBorder: CORNER_OPTION.Light,
+  widgetTextColor: '#ffffff',
+  widgetBackgroundColor: '#7f76b2',
+  widgetTriggerIcon: 'default',
+  widgetTriggerBackgroundColor: '#ffffff',
+  widgetTitleText: 'Future of support',
+  widgetDescriptionText:
+    'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
+  widgetDescriptionVisible: true,
+  widgetButtonBackgroundColor: '#4ec6c0',
+  widgetButtonTextColor: '#000000',
+  widgetDonateAmount: 1,
+  widgetButtonText: 'Support me'
 })

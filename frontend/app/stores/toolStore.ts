@@ -2,23 +2,32 @@ import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type { ElementConfigType } from '@shared/types'
+import type { ElementConfigType, Tool } from '@shared/types'
 import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
-import { createBannerStore } from './banner'
+import { type BannerStore, createBannerStore } from './bannerStore'
+import { type WidgetStore, createWidgetStore } from './widgetStore'
 
 const STORAGE_KEY = 'valtio-store'
+const getWmtStorageKey = (tool: Tool) => `wmt-${tool}-config`
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
   'buildStep',
   'opWallet',
+  'widget',
   'cdnUrl'
 ])
 
-export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
+export const TOOL_TYPES = [
+  'banner',
+  'widget',
+  'button',
+  'banner-two',
+  'unknown'
+] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -94,7 +103,8 @@ export const toolState = proxy({
   isWalletConnected: false,
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
-  buildStep: 'unfilled' as StepStatus
+  buildStep: 'unfilled' as StepStatus,
+  widget: createWidgetStore() as WidgetStore
 })
 
 export const banner = createBannerStore()
@@ -463,6 +473,14 @@ export const toolActions = {
 
   handleVersionNameChange: (newName: string) => {
     toolState.currentConfig.versionName = newName
+  },
+
+  handleBannerTabChange: (profileId: StableKey) => {
+    banner.setActiveTab(profileId)
+  },
+
+  handleBannerProfileNameChange: (name: string) => {
+    banner.setProfileName(name)
   }
 }
 
@@ -487,7 +505,10 @@ function updateChangesTracking(profileId: StableKey) {
 }
 
 /** Load from localStorage on init, remove storage if invalid */
-export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
+export function loadState(
+  OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS'],
+  tool: Tool
+) {
   toolState.cdnUrl = CDN_URL
   toolState.apiUrl = API_URL
   toolState.opWallet = OP_WALLET_ADDRESS
@@ -495,6 +516,7 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       const parsed: typeof toolState = JSON.parse(saved)
+
       const validKeys =
         typeof parsed === 'object' &&
         Object.keys(parsed).every((key) => key in toolState)
@@ -506,17 +528,21 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         throw new Error('saved configuration not valid')
       }
     }
+
+    loadToolConfigFromStorage(tool)
   } catch {
     localStorage.removeItem(STORAGE_KEY)
   }
 }
 
-export function persistState() {
+export function persistState(tool: Tool) {
   subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(createStorageState(toolState))
     )
+
+    saveToolConfigToStorage(banner, tool)
   })
 }
 
@@ -567,4 +593,39 @@ export function splitConfigProperties<T extends ElementConfigType>(config: T) {
     content: Object.fromEntries(content) as Partial<T>,
     appearance: Object.fromEntries(appearance) as Partial<T>
   }
+}
+
+function saveToolConfigToStorage<T extends Tool>(store: BannerStore, tool: T) {
+  const storageKey = getWmtStorageKey(tool)
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify({ ...store, dirtyProfiles: Array.from(store.dirtyProfiles) })
+  )
+}
+
+function loadToolConfigFromStorage<T extends Tool>(
+  tool: T
+): BannerStore | null {
+  const storageKey = getWmtStorageKey(tool)
+  try {
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      const parsed: BannerStore = JSON.parse(saved)
+      const validKeys =
+        typeof parsed === 'object' &&
+        Object.keys(parsed).every((key) => key in banner)
+
+      if (validKeys) {
+        const loadedData = parsedStorageData(parsed)
+        Object.assign(banner, loadedData)
+      } else {
+        throw new Error('saved configuration not valid')
+      }
+    }
+  } catch (error) {
+    console.warn(`Failed to load ${tool} config from localStorage:`, error)
+    localStorage.removeItem(storageKey)
+  }
+
+  return null
 }

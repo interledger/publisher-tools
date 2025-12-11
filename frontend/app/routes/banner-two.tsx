@@ -19,15 +19,19 @@ import {
   WalletOwnershipModal,
   OverridePresetModal,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
+  BuilderPresetTabs
 } from '@/components'
-import { BuilderTabs } from '~/components/builder/BuilderTabs'
-import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
-import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { BannerBuilder } from '~/components/banner/BannerBuilder'
+import {
+  BannerPreview,
+  type BannerHandle
+} from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   toolState,
+  banner,
   toolActions,
   persistState,
   loadState,
@@ -38,11 +42,11 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Widget - Publisher Tools' },
+    { title: 'Banner - Publisher Tools' },
     {
       name: 'description',
       content:
-        'Create and customize a Web Monetization payment widget for your website. The widget allows visitors to make one-time payments to support your content.'
+        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.'
     }
   ]
 }
@@ -73,13 +77,15 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-export default function Widget() {
+export default function Banner() {
   const snap = useSnapshot(toolState)
+  const bannerSnap = useSnapshot(banner)
   const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
+  const bannerRef = useRef<BannerHandle>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
@@ -87,8 +93,8 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    loadState(OP_WALLET_ADDRESS, 'widget')
-    persistState('widget')
+    loadState(OP_WALLET_ADDRESS, 'banner')
+    persistState('banner')
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
@@ -144,6 +150,12 @@ export default function Widget() {
     }
   }
 
+  const handlePreviewClick = () => {
+    if (bannerRef.current) {
+      bannerRef.current.triggerPreview()
+    }
+  }
+
   const handleConfirmWalletOwnership = () => {
     if (snap.modal?.grantRedirectURI) {
       toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
@@ -162,17 +174,17 @@ export default function Widget() {
       section === 'content' ? content : appearance
     )
   }
+
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore title="Widget" onBackClick={() => navigate('/')}>
-            The payment widget allows visitors to make one-time payments to
-            support your content directly. It provides a clean, customizable
-            interface for Web Monetization payments.
+          <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
+            The drawer banner informs visitors who don&apos;t have the Web
+            Monetization extension active, with a call-to-action linking to the
+            extension or providing details about the options available.
             <br />
-            Configure your wallet address to receive payments from your
-            supporters.
+            It also adds your wallet address for your site to be monetized.
           </HeadingCore>
           <div className="flex flex-col min-h-[756px]">
             <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
@@ -203,7 +215,7 @@ export default function Widget() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="payment widget" />
+                  <ToolsWalletAddress toolName="drawer banner" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
@@ -216,9 +228,16 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderTabs>
-                      <WidgetBuilder onRefresh={handleRefresh} />
-                    </BuilderTabs>
+
+                    <BuilderPresetTabs
+                      idPrefix="profile"
+                      options={bannerSnap.getProfileTabs()}
+                      selectedId={bannerSnap.activeTab}
+                      onChange={toolActions.handleBannerTabChange}
+                      onRename={toolActions.handleBannerProfileNameChange}
+                    >
+                      <BannerBuilder onRefresh={handleRefresh} />
+                    </BuilderPresetTabs>
 
                     <div
                       id="builder-actions"
@@ -269,11 +288,8 @@ export default function Widget() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground>
-                      <WidgetPreview
-                        serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
-                        opWallet={snap.opWallet}
-                      />
+                    <BuilderBackground onPreviewClick={handlePreviewClick}>
+                      <BannerPreview ref={bannerRef} cdnUrl={snap.cdnUrl} />
                     </BuilderBackground>
                   </div>
                 </div>
