@@ -8,8 +8,10 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import type { ElementErrors } from '~/lib/types'
+import { actions } from '~/stores/banner'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import { convertFrom } from '~/utils/profile-converter'
 import { InputField } from './InputField'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Tooltip } from './Tooltip'
@@ -68,6 +70,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
 
       if (result.hasCustomEdits) {
         toolActions.setConfigs(result.fetchedConfigs)
+        actions.setProfiles(convertFrom(result.fetchedConfigs, 'banner'))
       }
 
       toolActions.setWalletAddressId(walletAddressInfo.id)

@@ -1,7 +1,12 @@
 import { proxy, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
-import { type ProfileId, type BannerProfile, PROFILE_IDS } from '@shared/types'
+import {
+  type ProfileId,
+  type BannerProfile,
+  type Configuration,
+  PROFILE_IDS
+} from '@shared/types'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 
@@ -47,5 +52,10 @@ export const actions = {
   },
   setProfileName(name: string) {
     banner.profiles[banner.activeTab].$name = name
+  },
+  setProfiles(configuration: Configuration<'banner'>) {
+    Object.entries(configuration).forEach(([profileId, profile]) => {
+      banner.profiles[profileId as ProfileId] = profile
+    })
   }
 }
