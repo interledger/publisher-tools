@@ -25,6 +25,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       maxLength,
       currentLength,
       onBlur,
+      onChange,
       ...props
     },
     ref
@@ -43,14 +44,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     }
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      if (props.onChange) {
-        const trimmed = e.target.value.trim()
-        if (trimmed !== e.target.value) {
-          props.onChange({
-            ...e,
-            target: { ...e.target, value: trimmed }
-          } as React.ChangeEvent<HTMLInputElement>)
-        }
+      const trimmed = e.target.value.trim()
+      if (trimmed !== e.target.value) {
+        e.target.value = trimmed
+        onChange?.(e)
       }
 
       onBlur?.(e)
@@ -86,6 +83,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             name={fieldId}
             aria-invalid={!!error}
             aria-describedby={displayError ? 'input-error' : ariaDescriptionId}
+            onChange={onChange}
             onBlur={handleBlur}
             {...props}
           />
@@ -99,7 +97,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             <span
               id="input-error"
               role="alert"
-              aria-live="assertive"
+              aria-live="polite"
               className="absolute right-3 top-full
               -translate-y-1/2
               px-1 text-xs text-text-error bg-white"
