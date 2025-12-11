@@ -37,13 +37,3 @@ function createBannerStore() {
 }
 
 export const banner = createBannerStore()
-
-export const bannerActions = {
-  handleBannerTabChange: (profileId: ProfileId) => {
-    banner.setActiveTab(profileId)
-  },
-
-  handleBannerProfileNameChange: (name: string) => {
-    banner.setProfileName(name)
-  }
-}
