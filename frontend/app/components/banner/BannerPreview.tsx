@@ -6,7 +6,8 @@ import React, {
   useState
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
-import { useCurrentConfig } from '~/stores/toolStore'
+import { useBannerProfile } from '~/stores/banner'
+import { toolState, useCurrentConfig } from '~/stores/toolStore'
 
 export interface BannerHandle {
   triggerPreview: () => void
@@ -17,12 +18,20 @@ interface Props {
   ref?: React.Ref<BannerHandle>
 }
 
+function snapshot(options?: { sync: boolean }) {
+  if (toolState.currentToolType === 'banner-two') {
+    return useBannerProfile(options)
+  }
+
+  return useCurrentConfig(options)
+}
+
 export const BannerPreview = ({
   cdnUrl,
   ref
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [profile] = useCurrentConfig()
+  const [profile] = snapshot()
   const bannerContainerRef = useRef<HTMLDivElement>(null)
   const bannerElementRef = useRef<BannerElement | null>(null)
 

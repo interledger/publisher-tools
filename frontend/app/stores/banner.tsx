@@ -1,4 +1,4 @@
-import { proxy } from 'valtio'
+import { proxy, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import { type ProfileId, type BannerProfile, PROFILE_IDS } from '@shared/types'
@@ -18,7 +18,7 @@ function createBannerStore() {
     activeTab: 'version1' as ProfileId,
     dirtyProfiles: proxySet<ProfileId>(),
 
-    get activeProfile(): BannerProfile {
+    get profile(): BannerProfile {
       return this.profiles[this.activeTab]
     },
     get profileTabs() {
@@ -29,6 +29,14 @@ function createBannerStore() {
       }))
     }
   })
+}
+
+export function useBannerProfile(options?: {
+  sync: boolean
+}): [BannerProfile, BannerProfile] {
+  // https://github.com/pmndrs/valtio/issues/132
+  const snapshot = useSnapshot(banner, options).profile
+  return [snapshot, banner.profile]
 }
 
 export const banner = createBannerStore()
