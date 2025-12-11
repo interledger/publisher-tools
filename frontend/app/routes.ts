@@ -5,6 +5,7 @@ export default [
   index('routes/_index.tsx'),
   // Tool routes
   route('banner/', 'routes/banner.tsx'),
+  route('banner-two/', 'routes/banner-two.tsx'),
   route('link-tag/', 'routes/link-tag.tsx'),
   route('payment-confirmation/', 'routes/payment-confirmation.tsx'),
   route('prob-revshare/', 'routes/prob-revshare.tsx'),

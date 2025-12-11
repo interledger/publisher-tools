@@ -8,7 +8,7 @@ export type BannerStore = ReturnType<typeof createBannerStore>
 const createDataStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
 
-export function createBannerStore() {
+function createBannerStore() {
   return proxy({
     profiles: {
       version1: createDataStoreBanner('Default profile 1'),
@@ -34,4 +34,16 @@ export function createBannerStore() {
       this.profiles[this.activeTab].$name = name
     }
   })
+}
+
+export const banner = createBannerStore()
+
+export const bannerActions = {
+  handleBannerTabChange: (profileId: ProfileId) => {
+    banner.setActiveTab(profileId)
+  },
+
+  handleBannerProfileNameChange: (name: string) => {
+    banner.setProfileName(name)
+  }
 }

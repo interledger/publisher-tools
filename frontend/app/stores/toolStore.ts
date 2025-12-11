@@ -7,7 +7,6 @@ import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
-import { createBannerStore } from './banner'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -18,7 +17,13 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'cdnUrl'
 ])
 
-export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
+export const TOOL_TYPES = [
+  'banner',
+  'banner-two',
+  'widget',
+  'button',
+  'unknown'
+] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -96,8 +101,6 @@ export const toolState = proxy({
   walletConnectStep: 'unfilled' as StepStatus,
   buildStep: 'unfilled' as StepStatus
 })
-
-export const banner = createBannerStore()
 
 subscribe(toolState, () => {
   updateChangesTracking(toolState.activeVersion)
