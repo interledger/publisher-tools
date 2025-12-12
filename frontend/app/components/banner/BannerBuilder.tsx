@@ -22,7 +22,10 @@ import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSele
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useBannerProfile } from '~/stores/banner'
-import { toolState, useCurrentConfig } from '~/stores/toolStore'
+import {
+  toolState,
+  useCurrentConfig as useCurrentConfigLegacy
+} from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -48,12 +51,12 @@ const config = {
   fontSizeRange: BANNER_FONT_SIZES
 }
 
-function snapshot(options?: { sync: boolean }) {
+function useCurrentConfig(options?: { sync: boolean }) {
   if (toolState.currentToolType === 'banner-two') {
     return useBannerProfile(options)
   }
 
-  return useCurrentConfig(options)
+  return useCurrentConfigLegacy(options)
 }
 
 export function BannerBuilder({ onRefresh }: Props) {
@@ -68,7 +71,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = snapshot({ sync: true })
+  const [snap, profile] = useCurrentConfig({ sync: true })
 
   return (
     <BuilderAccordion
@@ -115,7 +118,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = snapshot()
+  const [snap, profile] = useCurrentConfig()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.bannerFontName

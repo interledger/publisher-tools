@@ -11,7 +11,7 @@ function toBannerProfile(config: ElementConfigType): BannerProfile {
   return {
     $version: '0.0.1',
     $name: config.versionName,
-    $modifiedAt: new Date().toISOString(),
+    $modifiedAt: '',
     bannerTitleText: config.bannerTitleText,
     bannerDescriptionText: config.bannerDescriptionText,
     bannerDescriptionVisible: config.bannerDescriptionVisible,

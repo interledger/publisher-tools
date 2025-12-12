@@ -53,8 +53,8 @@ export const actions = {
   setProfileName(name: string) {
     banner.profiles[banner.activeTab].$name = name
   },
-  setProfiles(configuration: Configuration<'banner'>) {
-    Object.entries(configuration).forEach(([profileId, profile]) => {
+  setProfiles(config: Configuration<'banner'>) {
+    Object.entries(config).forEach(([profileId, profile]) => {
       banner.profiles[profileId as ProfileId] = profile
     })
   }
