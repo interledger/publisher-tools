@@ -1,7 +1,12 @@
-import { proxy } from 'valtio'
+import { proxy, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
-import { type ProfileId, type BannerProfile, PROFILE_IDS } from '@shared/types'
+import {
+  type ProfileId,
+  type BannerProfile,
+  type Configuration,
+  PROFILE_IDS
+} from '@shared/types'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 
@@ -18,7 +23,7 @@ function createBannerStore() {
     activeTab: 'version1' as ProfileId,
     dirtyProfiles: proxySet<ProfileId>(),
 
-    get activeProfile(): BannerProfile {
+    get profile(): BannerProfile {
       return this.profiles[this.activeTab]
     },
     get profileTabs() {
@@ -31,6 +36,14 @@ function createBannerStore() {
   })
 }
 
+export function useBannerProfile(options?: {
+  sync: boolean
+}): [BannerProfile, BannerProfile] {
+  // https://github.com/pmndrs/valtio/issues/132
+  const snapshot = useSnapshot(banner, options).profile
+  return [snapshot, banner.profile]
+}
+
 export const banner = createBannerStore()
 
 export const actions = {
@@ -39,5 +52,10 @@ export const actions = {
   },
   setProfileName(name: string) {
     banner.profiles[banner.activeTab].$name = name
+  },
+  setProfiles(config: Configuration<'banner'>) {
+    Object.entries(config).forEach(([profileId, profile]) => {
+      banner.profiles[profileId as ProfileId] = profile
+    })
   }
 }

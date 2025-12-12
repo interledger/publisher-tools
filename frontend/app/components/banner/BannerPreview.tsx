@@ -6,7 +6,11 @@ import React, {
   useState
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
-import { useCurrentConfig } from '~/stores/toolStore'
+import { useBannerProfile } from '~/stores/banner'
+import {
+  toolState,
+  useCurrentConfig as useCurrentConfigLegacy
+} from '~/stores/toolStore'
 
 export interface BannerHandle {
   triggerPreview: () => void
@@ -15,6 +19,14 @@ export interface BannerHandle {
 interface Props {
   cdnUrl: string
   ref?: React.Ref<BannerHandle>
+}
+
+function useCurrentConfig(options?: { sync: boolean }) {
+  if (toolState.currentToolType === 'banner-two') {
+    return useBannerProfile(options)
+  }
+
+  return useCurrentConfigLegacy(options)
 }
 
 export const BannerPreview = ({
