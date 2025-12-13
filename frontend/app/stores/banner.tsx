@@ -1,4 +1,4 @@
-import { proxy, useSnapshot } from 'valtio'
+import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
@@ -9,6 +9,9 @@ import {
 } from '@shared/types'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
+const STORAGE_KEY_PREFIX = 'wmt-banner'
+const getStorageKey = (profileId: ProfileId) =>
+  `${STORAGE_KEY_PREFIX}-${profileId}`
 
 const createDataStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
@@ -58,4 +61,39 @@ export const actions = {
       banner.profiles[profileId as ProfileId] = profile
     })
   }
+}
+
+export function subscribeProfilesToStorage() {
+  subscribe(banner.profiles, () => {
+    PROFILE_IDS.forEach((profileId) => {
+      localStorage.setItem(
+        getStorageKey(profileId),
+        JSON.stringify(banner.profiles[profileId])
+      )
+    })
+  })
+}
+
+export function hydrateProfilesFromStorage() {
+  PROFILE_IDS.forEach((profileId) => {
+    const storageKey = getStorageKey(profileId)
+    try {
+      const storage = localStorage.getItem(storageKey)
+      if (storage) {
+        const profile: BannerProfile = JSON.parse(storage)
+        const validKeys =
+          typeof profile === 'object' &&
+          Object.keys(profile).every((key) => key in banner.profile)
+
+        if (validKeys) {
+          banner.profiles[profileId] = profile
+        } else {
+          throw new Error('Invalid profile')
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to load profile from localStorage:`, error)
+      localStorage.removeItem(storageKey)
+    }
+  })
 }

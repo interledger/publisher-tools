@@ -7,6 +7,7 @@ import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
+import { omit } from '~/utils/utils.storage'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -541,17 +542,6 @@ function parsedStorageData(parsed: Record<string, unknown>) {
       Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
     )
   }
-}
-
-export function omit<T extends Record<string, unknown>>(
-  obj: T,
-  keys: readonly (keyof T | string)[] | Set<keyof T | string>
-): Partial<T> {
-  const excludedKeys = keys instanceof Set ? keys : new Set(keys)
-
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
-  ) as Partial<T>
 }
 
 function isContentProperty(key: string): boolean {
