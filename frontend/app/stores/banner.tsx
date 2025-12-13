@@ -7,11 +7,11 @@ import {
   type Configuration,
   PROFILE_IDS
 } from '@shared/types'
-import { omit } from '~/utils/utils.storage'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
-const STORAGE_KEY = 'wmt-banner-store'
-const OMIT_FROM_STORAGE = new Set<keyof typeof banner>(['profile'])
+const STORAGE_KEY_PREFIX = 'wmt-banner'
+const getStorageKey = (profileId: ProfileId) =>
+  `${STORAGE_KEY_PREFIX}-${profileId}`
 
 const createDataStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
@@ -63,42 +63,37 @@ export const actions = {
   }
 }
 
-export function subscribeStoreToStorage() {
+export function subscribeProfilesToStorage() {
   subscribe(banner, () => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        ...omit(banner, OMIT_FROM_STORAGE),
-        dirtyProfiles: Array.from(banner.dirtyProfiles)
-      })
-    )
+    PROFILE_IDS.forEach((profileId) => {
+      localStorage.setItem(
+        getStorageKey(profileId),
+        JSON.stringify(banner.profiles[profileId])
+      )
+    })
   })
 }
 
-export function hydrateStoreFromStorage(): BannerStore | null {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      const store: BannerStore = JSON.parse(saved)
-      const validKeys =
-        typeof store === 'object' &&
-        Object.keys(store).every((key) => key in banner)
+export function hydrateProfilesFromStorage() {
+  PROFILE_IDS.forEach((profileId) => {
+    const storageKey = getStorageKey(profileId)
+    try {
+      const storage = localStorage.getItem(storageKey)
+      if (storage) {
+        const profile: BannerProfile = JSON.parse(storage)
+        const validKeys =
+          typeof profile === 'object' &&
+          Object.keys(profile).every((key) => key in banner.profile)
 
-      if (validKeys) {
-        Object.assign(banner, {
-          ...omit(store, OMIT_FROM_STORAGE),
-          dirtyProfiles: proxySet<ProfileId>(
-            Array.isArray(store.dirtyProfiles) ? store.dirtyProfiles : []
-          )
-        })
-      } else {
-        throw new Error('saved configuration not valid')
+        if (validKeys) {
+          banner.profiles[profileId] = profile
+        } else {
+          throw new Error('Invalid profile')
+        }
       }
+    } catch (error) {
+      console.warn(`Failed to load profile from localStorage:`, error)
+      localStorage.removeItem(storageKey)
     }
-  } catch (error) {
-    console.warn(`Failed to load store from localStorage:`, error)
-    localStorage.removeItem(STORAGE_KEY)
-  }
-
-  return null
+  })
 }

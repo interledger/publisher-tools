@@ -32,8 +32,8 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   actions,
   banner,
-  hydrateStoreFromStorage,
-  subscribeStoreToStorage
+  hydrateProfilesFromStorage,
+  subscribeProfilesToStorage
 } from '~/stores/banner'
 import {
   toolState,
@@ -101,8 +101,8 @@ export default function Banner() {
     loadState(OP_WALLET_ADDRESS)
     persistState()
 
-    hydrateStoreFromStorage()
-    subscribeStoreToStorage()
+    hydrateProfilesFromStorage()
+    subscribeProfilesToStorage()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
