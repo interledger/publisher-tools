@@ -83,13 +83,12 @@ export function hydrateStoreFromStorage(): BannerStore | null {
         Object.keys(store).every((key) => key in banner)
 
       if (validKeys) {
-        const loadedData = {
+        Object.assign(banner, {
           ...store,
           dirtyProfiles: proxySet<ProfileId>(
             Array.isArray(store.dirtyProfiles) ? store.dirtyProfiles : []
           )
-        }
-        Object.assign(banner, loadedData)
+        })
       } else {
         throw new Error('saved configuration not valid')
       }
