@@ -7,9 +7,11 @@ import {
   type Configuration,
   PROFILE_IDS
 } from '@shared/types'
+import { omit } from '~/utils/utils.storage'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 const STORAGE_KEY = 'wmt-banner-store'
+const OMIT_FROM_STORAGE = new Set<keyof typeof banner>(['profile'])
 
 const createDataStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
@@ -66,7 +68,7 @@ export function subscribeStoreToStorage() {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        ...banner,
+        ...omit(banner, OMIT_FROM_STORAGE),
         dirtyProfiles: Array.from(banner.dirtyProfiles)
       })
     )
@@ -84,7 +86,7 @@ export function hydrateStoreFromStorage(): BannerStore | null {
 
       if (validKeys) {
         Object.assign(banner, {
-          ...store,
+          ...omit(store, OMIT_FROM_STORAGE),
           dirtyProfiles: proxySet<ProfileId>(
             Array.isArray(store.dirtyProfiles) ? store.dirtyProfiles : []
           )
