@@ -29,7 +29,12 @@ import {
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { actions, banner } from '~/stores/banner'
+import {
+  actions,
+  banner,
+  hydrateStoreFromStorage,
+  subscribeStoreToStorage
+} from '~/stores/banner'
 import {
   toolState,
   toolActions,
@@ -95,6 +100,9 @@ export default function Banner() {
   useEffect(() => {
     loadState(OP_WALLET_ADDRESS)
     persistState()
+
+    hydrateStoreFromStorage()
+    subscribeStoreToStorage()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)

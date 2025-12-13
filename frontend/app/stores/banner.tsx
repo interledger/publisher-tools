@@ -1,4 +1,4 @@
-import { proxy, useSnapshot } from 'valtio'
+import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
@@ -9,6 +9,7 @@ import {
 } from '@shared/types'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
+const STORAGE_KEY = 'wmt-banner-store'
 
 const createDataStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
@@ -58,4 +59,45 @@ export const actions = {
       banner.profiles[profileId as ProfileId] = profile
     })
   }
+}
+
+export function subscribeStoreToStorage() {
+  subscribe(banner, () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...banner,
+        dirtyProfiles: Array.from(banner.dirtyProfiles)
+      })
+    )
+  })
+}
+
+export function hydrateStoreFromStorage(): BannerStore | null {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      const store: BannerStore = JSON.parse(saved)
+      const validKeys =
+        typeof store === 'object' &&
+        Object.keys(store).every((key) => key in banner)
+
+      if (validKeys) {
+        const loadedData = {
+          ...store,
+          dirtyProfiles: proxySet<ProfileId>(
+            Array.isArray(store.dirtyProfiles) ? store.dirtyProfiles : []
+          )
+        }
+        Object.assign(banner, loadedData)
+      } else {
+        throw new Error('saved configuration not valid')
+      }
+    }
+  } catch (error) {
+    console.warn(`Failed to load store from localStorage:`, error)
+    localStorage.removeItem(STORAGE_KEY)
+  }
+
+  return null
 }
