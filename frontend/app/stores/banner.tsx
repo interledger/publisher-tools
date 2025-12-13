@@ -64,7 +64,7 @@ export const actions = {
 }
 
 export function subscribeProfilesToStorage() {
-  subscribe(banner, () => {
+  subscribe(banner.profiles, () => {
     PROFILE_IDS.forEach((profileId) => {
       localStorage.setItem(
         getStorageKey(profileId),
