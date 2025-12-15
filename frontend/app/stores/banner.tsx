@@ -1,4 +1,4 @@
-import { proxy, subscribe, useSnapshot } from 'valtio'
+import { proxy, snapshot, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
@@ -13,15 +13,25 @@ const STORAGE_KEY_PREFIX = 'wmt-banner'
 const getStorageKey = (profileId: ProfileId) =>
   `${STORAGE_KEY_PREFIX}-${profileId}`
 
-const createDataStoreBanner = (profileName: string) =>
-  proxy(createDefaultBannerProfile(profileName))
+const createProfileStoreBanner = (
+  profileName: string,
+  profileId: ProfileId
+) => {
+  const profile = proxy(createDefaultBannerProfile(profileName))
+  subscribe(profile, () => {
+    const snap = snapshot(profile)
+    localStorage.setItem(getStorageKey(profileId), JSON.stringify(snap))
+  })
+
+  return profile
+}
 
 function createBannerStore() {
   return proxy({
     profiles: {
-      version1: createDataStoreBanner('Default profile 1'),
-      version2: createDataStoreBanner('Default profile 2'),
-      version3: createDataStoreBanner('Default profile 3')
+      version1: createProfileStoreBanner('Default profile 1', PROFILE_IDS[0]),
+      version2: createProfileStoreBanner('Default profile 2', PROFILE_IDS[1]),
+      version3: createProfileStoreBanner('Default profile 3', PROFILE_IDS[2])
     } as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,
     dirtyProfiles: proxySet<ProfileId>(),
@@ -58,20 +68,9 @@ export const actions = {
   },
   setProfiles(config: Configuration<'banner'>) {
     Object.entries(config).forEach(([profileId, profile]) => {
-      banner.profiles[profileId as ProfileId] = profile
+      Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   }
-}
-
-export function subscribeProfilesToStorage() {
-  subscribe(banner.profiles, () => {
-    PROFILE_IDS.forEach((profileId) => {
-      localStorage.setItem(
-        getStorageKey(profileId),
-        JSON.stringify(banner.profiles[profileId])
-      )
-    })
-  })
 }
 
 export function hydrateProfilesFromStorage() {
@@ -86,7 +85,7 @@ export function hydrateProfilesFromStorage() {
           Object.keys(profile).every((key) => key in banner.profile)
 
         if (validKeys) {
-          banner.profiles[profileId] = profile
+          Object.assign(banner.profiles[profileId], profile)
         } else {
           throw new Error('Invalid profile')
         }
