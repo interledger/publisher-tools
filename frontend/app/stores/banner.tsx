@@ -13,25 +13,15 @@ const STORAGE_KEY_PREFIX = 'wmt-banner'
 const getStorageKey = (profileId: ProfileId) =>
   `${STORAGE_KEY_PREFIX}-${profileId}`
 
-const createProfileStoreBanner = (
-  profileName: string,
-  profileId: ProfileId
-) => {
-  const profile = proxy(createDefaultBannerProfile(profileName))
-  subscribe(profile, () => {
-    const snap = snapshot(profile)
-    localStorage.setItem(getStorageKey(profileId), JSON.stringify(snap))
-  })
-
-  return profile
-}
+const createProfileStoreBanner = (profileName: string) =>
+  proxy(createDefaultBannerProfile(profileName))
 
 function createBannerStore() {
   return proxy({
     profiles: {
-      version1: createProfileStoreBanner('Default profile 1', PROFILE_IDS[0]),
-      version2: createProfileStoreBanner('Default profile 2', PROFILE_IDS[1]),
-      version3: createProfileStoreBanner('Default profile 3', PROFILE_IDS[2])
+      version1: createProfileStoreBanner('Default profile 1'),
+      version2: createProfileStoreBanner('Default profile 2'),
+      version3: createProfileStoreBanner('Default profile 3')
     } as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,
     dirtyProfiles: proxySet<ProfileId>(),
@@ -58,6 +48,7 @@ export function useBannerProfile(options?: {
 }
 
 export const banner = createBannerStore()
+PROFILE_IDS.forEach((id) => subscribeProfileToStorage(id))
 
 export const actions = {
   setActiveTab(profileId: ProfileId) {
@@ -75,24 +66,38 @@ export const actions = {
 
 export function hydrateProfilesFromStorage() {
   PROFILE_IDS.forEach((profileId) => {
-    const storageKey = getStorageKey(profileId)
-    try {
-      const storage = localStorage.getItem(storageKey)
-      if (storage) {
-        const profile: BannerProfile = JSON.parse(storage)
-        const validKeys =
-          typeof profile === 'object' &&
-          Object.keys(profile).every((key) => key in banner.profile)
-
-        if (validKeys) {
-          Object.assign(banner.profiles[profileId], profile)
-        } else {
-          throw new Error('Invalid profile')
-        }
-      }
-    } catch (error) {
-      console.warn(`Failed to load profile from localStorage:`, error)
-      localStorage.removeItem(storageKey)
-    }
+    const parsed = parseProfileFromStorage(profileId)
+    if (parsed) Object.assign(banner.profiles[profileId], parsed)
   })
+}
+
+function subscribeProfileToStorage(profileId: ProfileId) {
+  const profile = banner.profiles[profileId]
+  subscribe(profile, () => {
+    const snap = snapshot(profile)
+    localStorage.setItem(getStorageKey(profileId), JSON.stringify(snap))
+  })
+}
+
+function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
+  const storageKey = getStorageKey(profileId)
+  const storage = localStorage.getItem(storageKey)
+  if (!storage) return null
+
+  try {
+    const profile: BannerProfile = JSON.parse(storage)
+    const isValid =
+      typeof profile === 'object' &&
+      Object.keys(profile).every((key) => key in banner.profile)
+
+    if (!isValid) throw new Error('Invalid profile shape')
+    return profile
+  } catch (error) {
+    console.warn(
+      `Failed to load profile ${profileId} from localStorage:`,
+      error
+    )
+    localStorage.removeItem(storageKey)
+    return null
+  }
 }
