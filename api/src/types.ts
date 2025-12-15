@@ -6,6 +6,17 @@ import type {
   WalletAddressParamSchema
 } from './schemas/payment.js'
 
+export type ApiErrorResponse = {
+  error: {
+    status: number
+    statusText?: string
+    message: string
+    details?: {
+      message?: string
+    }
+  }
+}
+
 export type PaymentStatusSuccess = {
   paymentId: string
   hash: string

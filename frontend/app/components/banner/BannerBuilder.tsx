@@ -21,7 +21,11 @@ import {
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
-import { useCurrentConfig } from '~/stores/toolStore'
+import { useBannerProfile } from '~/stores/banner'
+import {
+  toolState,
+  useCurrentConfig as useCurrentConfigLegacy
+} from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -45,6 +49,14 @@ const config = {
 
   showThumbnail: true,
   fontSizeRange: BANNER_FONT_SIZES
+}
+
+function useCurrentConfig(options?: { sync: boolean }) {
+  if (toolState.currentToolType === 'banner-two') {
+    return useBannerProfile(options)
+  }
+
+  return useCurrentConfigLegacy(options)
 }
 
 export function BannerBuilder({ onRefresh }: Props) {

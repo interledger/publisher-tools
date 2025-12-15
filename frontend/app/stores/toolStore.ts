@@ -7,6 +7,7 @@ import { groupBy, toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
+import { omit } from '~/utils/utils.storage'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -17,7 +18,13 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'cdnUrl'
 ])
 
-export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
+export const TOOL_TYPES = [
+  'banner',
+  'banner-two',
+  'widget',
+  'button',
+  'unknown'
+] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -535,17 +542,6 @@ function parsedStorageData(parsed: Record<string, unknown>) {
       Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
     )
   }
-}
-
-export function omit<T extends Record<string, unknown>>(
-  obj: T,
-  keys: readonly (keyof T | string)[] | Set<keyof T | string>
-): Partial<T> {
-  const excludedKeys = keys instanceof Set ? keys : new Set(keys)
-
-  return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
-  ) as Partial<T>
 }
 
 function isContentProperty(key: string): boolean {
