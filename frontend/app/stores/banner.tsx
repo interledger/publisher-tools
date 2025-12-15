@@ -1,4 +1,4 @@
-import { proxy, useSnapshot } from 'valtio'
+import { proxy, snapshot, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
@@ -9,16 +9,19 @@ import {
 } from '@shared/types'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
+const STORAGE_KEY_PREFIX = 'wmt-banner'
+const getStorageKey = (profileId: ProfileId) =>
+  `${STORAGE_KEY_PREFIX}-${profileId}`
 
-const createDataStoreBanner = (profileName: string) =>
+const createProfileStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
 
 function createBannerStore() {
   return proxy({
     profiles: {
-      version1: createDataStoreBanner('Default profile 1'),
-      version2: createDataStoreBanner('Default profile 2'),
-      version3: createDataStoreBanner('Default profile 3')
+      version1: createProfileStoreBanner('Default profile 1'),
+      version2: createProfileStoreBanner('Default profile 2'),
+      version3: createProfileStoreBanner('Default profile 3')
     } as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,
     dirtyProfiles: proxySet<ProfileId>(),
@@ -55,7 +58,51 @@ export const actions = {
   },
   setProfiles(config: Configuration<'banner'>) {
     Object.entries(config).forEach(([profileId, profile]) => {
-      banner.profiles[profileId as ProfileId] = profile
+      Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
+  }
+}
+
+export function subscribeProfilesToStorage() {
+  PROFILE_IDS.forEach((profileId) => {
+    subscribeProfileToStorage(profileId)
+  })
+}
+
+export function hydrateProfilesFromStorage() {
+  PROFILE_IDS.forEach((profileId) => {
+    const parsed = parseProfileFromStorage(profileId)
+    if (parsed) Object.assign(banner.profiles[profileId], parsed)
+  })
+}
+
+function subscribeProfileToStorage(profileId: ProfileId) {
+  const profile = banner.profiles[profileId]
+  subscribe(profile, () => {
+    const snap = snapshot(profile)
+    localStorage.setItem(getStorageKey(profileId), JSON.stringify(snap))
+  })
+}
+
+function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
+  const storageKey = getStorageKey(profileId)
+  const storage = localStorage.getItem(storageKey)
+  if (!storage) return null
+
+  try {
+    const profile: BannerProfile = JSON.parse(storage)
+    const isValid =
+      typeof profile === 'object' &&
+      Object.keys(profile).every((key) => key in banner.profile)
+
+    if (!isValid) throw new Error('Invalid profile shape')
+    return profile
+  } catch (error) {
+    console.warn(
+      `Failed to load profile ${profileId} from localStorage:`,
+      error
+    )
+    localStorage.removeItem(storageKey)
+    return null
   }
 }

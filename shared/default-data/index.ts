@@ -58,6 +58,7 @@ export const createDefaultBannerProfile = (
 ): BannerProfile => ({
   $version: '0.0.1',
   $name: profileName,
+  $modifiedAt: '',
   bannerFontName: FONT_FAMILY_OPTIONS[0],
   bannerFontSize: BANNER_FONT_SIZES.default,
   bannerPosition: BANNER_POSITION.Bottom,
