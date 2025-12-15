@@ -29,7 +29,12 @@ import {
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { actions, banner, hydrateProfilesFromStorage } from '~/stores/banner'
+import {
+  actions,
+  banner,
+  hydrateProfilesFromStorage,
+  subscribeProfilesToStorage
+} from '~/stores/banner'
 import {
   toolState,
   toolActions,
@@ -97,6 +102,7 @@ export default function Banner() {
     persistState()
 
     hydrateProfilesFromStorage()
+    subscribeProfilesToStorage()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)

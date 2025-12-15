@@ -48,7 +48,6 @@ export function useBannerProfile(options?: {
 }
 
 export const banner = createBannerStore()
-PROFILE_IDS.forEach((id) => subscribeProfileToStorage(id))
 
 export const actions = {
   setActiveTab(profileId: ProfileId) {
@@ -62,6 +61,12 @@ export const actions = {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   }
+}
+
+export function subscribeProfilesToStorage() {
+  PROFILE_IDS.forEach((profileId) => {
+    subscribeProfileToStorage(profileId)
+  })
 }
 
 export function hydrateProfilesFromStorage() {
