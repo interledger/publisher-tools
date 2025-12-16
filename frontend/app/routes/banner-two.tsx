@@ -29,12 +29,13 @@ import {
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import { hydrateSnapshotsFromStorage } from '~/stores/banner/snapshots'
 import {
   actions,
   banner,
   hydrateProfilesFromStorage,
   subscribeProfilesToStorage
-} from '~/stores/banner'
+} from '~/stores/banner/store'
 import {
   toolState,
   toolActions,
@@ -103,6 +104,7 @@ export default function Banner() {
 
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)

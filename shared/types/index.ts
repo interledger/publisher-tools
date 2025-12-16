@@ -57,6 +57,12 @@ export type Tool = (typeof TOOLS)[number]
 export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
 export type ProfileId = (typeof PROFILE_IDS)[number]
 
+export const DEFAULT_PROFILE_NAME = [
+  'Default profile 1',
+  'Default profile 2',
+  'Default profile 3'
+] as const
+
 export type Configuration<T extends Tool> = {
   $walletAddress: string
   $walletAddressId?: string

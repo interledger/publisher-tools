@@ -21,7 +21,7 @@ import {
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
-import { useBannerProfile } from '~/stores/banner'
+import { useBannerProfile } from '~/stores/banner/store'
 import {
   toolState,
   useCurrentConfig as useCurrentConfigLegacy
