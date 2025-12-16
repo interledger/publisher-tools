@@ -68,10 +68,7 @@ function subscribeProfileToUpdates(id: ProfileId) {
   })
 }
 
-export function checkForPendingUpdates(
-  id: ProfileId,
-  snap: BannerProfile
-): boolean {
+function checkForPendingUpdates(id: ProfileId, snap: BannerProfile): boolean {
   const baseline = snapshots.get(id)
   if (!baseline) {
     return false
