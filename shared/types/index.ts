@@ -57,7 +57,7 @@ export type Tool = (typeof TOOLS)[number]
 export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
 export type ProfileId = (typeof PROFILE_IDS)[number]
 
-export const DEFAULT_PROFILE_NAME = {
+export const DEFAULT_PROFILE_NAMES = {
   version1: 'Default profile 1',
   version2: 'Default profile 2',
   version3: 'Default profile 3'

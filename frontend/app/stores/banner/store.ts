@@ -6,7 +6,7 @@ import {
   type BannerProfile,
   type Configuration,
   PROFILE_IDS,
-  DEFAULT_PROFILE_NAME
+  DEFAULT_PROFILE_NAMES
 } from '@shared/types'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
@@ -22,7 +22,7 @@ function createBannerStore() {
     profiles: Object.fromEntries(
       PROFILE_IDS.map((id) => [
         id,
-        createProfileStoreBanner(DEFAULT_PROFILE_NAME[id])
+        createProfileStoreBanner(DEFAULT_PROFILE_NAMES[id])
       ])
     ) as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,

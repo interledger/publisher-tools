@@ -2,7 +2,7 @@ import { deepEqual } from 'fast-equals'
 import { snapshot, subscribe } from 'valtio'
 import { subscribeKey } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
-import { PROFILE_IDS, DEFAULT_PROFILE_NAME } from '@shared/types'
+import { PROFILE_IDS, DEFAULT_PROFILE_NAMES } from '@shared/types'
 import type { ProfileId, BannerProfile, Configuration } from '@shared/types'
 import { banner } from './store'
 import { toolState } from '../toolStore'
@@ -12,7 +12,7 @@ const SNAP_STORAGE_KEY = 'wmt-banner-snapshots'
 const snapshots = new Map<ProfileId, BannerProfile>(
   PROFILE_IDS.map((id) => [
     id,
-    createDefaultBannerProfile(DEFAULT_PROFILE_NAME[id])
+    createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
   ])
 )
 
