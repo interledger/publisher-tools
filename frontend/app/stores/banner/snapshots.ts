@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isequal'
+import isEqual from 'lodash/isEqual'
 import { snapshot } from 'valtio'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import { PROFILE_IDS, DEFAULT_PROFILE_NAME } from '@shared/types'
