@@ -1,35 +1,31 @@
-import isEqual from 'lodash/isEqual'
-import { snapshot } from 'valtio'
+import { deepEqual } from 'fast-equals'
+import { snapshot, subscribe } from 'valtio'
+import { subscribeKey } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import { PROFILE_IDS, DEFAULT_PROFILE_NAME } from '@shared/types'
 import type { ProfileId, BannerProfile, Configuration } from '@shared/types'
 import { banner } from './store'
+import { toolState } from '../toolStore'
 
 const SNAP_STORAGE_KEY = 'wmt-banner-snapshots'
 
 const snapshots = new Map<ProfileId, BannerProfile>(
-  PROFILE_IDS.map((id, idx) => [
+  PROFILE_IDS.map((id) => [
     id,
-    createDefaultBannerProfile(DEFAULT_PROFILE_NAME[idx])
+    createDefaultBannerProfile(DEFAULT_PROFILE_NAME[id])
   ])
 )
 
-export function setSnapshots(config: Configuration<'banner'>) {
-  Object.entries(config).forEach(([profileId, profile]) => {
-    snapshots.set(profileId as ProfileId, profile)
+export function subscribeSnapshotsToStorage() {
+  subscribeKey(toolState, `isWalletConnected`, () => {
+    const snap = snapshot(banner).profiles
+
+    Object.entries(snap).forEach(([profileId, profile]) => {
+      snapshots.set(profileId as ProfileId, profile)
+    })
+
+    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snap))
   })
-
-  localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(config))
-}
-
-export function isProfileDirty(id: ProfileId) {
-  const profile = snapshots.get(id)
-  if (!profile) {
-    return false
-  }
-
-  const snap = snapshot(banner.profiles[id])
-  return !isEqual(snap, profile)
 }
 
 export function hydrateSnapshotsFromStorage() {
@@ -38,12 +34,13 @@ export function hydrateSnapshotsFromStorage() {
 
   try {
     const stored: Configuration<'banner'> = JSON.parse(storage)
+
     const isValid = (profile: BannerProfile) =>
       typeof profile === 'object' &&
       Object.keys(profile).every((key) => key in banner.profile)
 
     Object.entries(stored).forEach(([id, profile]) => {
-      if (profile && isValid(profile)) {
+      if (isValid(profile)) {
         snapshots.set(id as ProfileId, profile)
       }
     })
@@ -51,4 +48,34 @@ export function hydrateSnapshotsFromStorage() {
     console.warn('Failed to hydrate banner baselines:', error)
     localStorage.removeItem(SNAP_STORAGE_KEY)
   }
+}
+
+export function subscribeProfilesToUpdates() {
+  PROFILE_IDS.forEach((profileId) => {
+    subscribeProfileToUpdates(profileId)
+  })
+}
+
+function subscribeProfileToUpdates(id: ProfileId) {
+  const profile = banner.profiles[id]
+  subscribe(profile, () => {
+    const snap = snapshot(profile)
+    if (checkForPendingUpdates(id, snap)) {
+      banner.profilesUpdate.add(id)
+    } else {
+      banner.profilesUpdate.delete(id)
+    }
+  })
+}
+
+export function checkForPendingUpdates(
+  id: ProfileId,
+  snap: BannerProfile
+): boolean {
+  const baseline = snapshots.get(id)
+  if (!baseline) {
+    return false
+  }
+
+  return !deepEqual(snap, baseline)
 }

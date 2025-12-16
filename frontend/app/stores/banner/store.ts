@@ -1,4 +1,5 @@
 import { proxy, snapshot, subscribe, useSnapshot } from 'valtio'
+import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
   type ProfileId,
@@ -7,7 +8,6 @@ import {
   PROFILE_IDS,
   DEFAULT_PROFILE_NAME
 } from '@shared/types'
-import { isProfileDirty, setSnapshots } from './snapshots'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 const STORAGE_KEY_PREFIX = 'wmt-banner'
@@ -19,12 +19,14 @@ const createProfileStoreBanner = (profileName: string) =>
 
 function createBannerStore() {
   return proxy({
-    profiles: {
-      version1: createProfileStoreBanner(DEFAULT_PROFILE_NAME[0]),
-      version2: createProfileStoreBanner(DEFAULT_PROFILE_NAME[1]),
-      version3: createProfileStoreBanner(DEFAULT_PROFILE_NAME[2])
-    } as Record<ProfileId, BannerProfile>,
+    profiles: Object.fromEntries(
+      PROFILE_IDS.map((id) => [
+        id,
+        createProfileStoreBanner(DEFAULT_PROFILE_NAME[id])
+      ])
+    ) as Record<ProfileId, BannerProfile>,
     activeTab: 'version1' as ProfileId,
+    profilesUpdate: proxySet<ProfileId>(),
 
     get profile(): BannerProfile {
       return this.profiles[this.activeTab]
@@ -33,7 +35,7 @@ function createBannerStore() {
       return PROFILE_IDS.map((id) => ({
         id,
         label: this.profiles[id].$name,
-        isDirty: isProfileDirty(id)
+        hasUpdates: this.profilesUpdate.has(id)
       }))
     }
   })
@@ -60,8 +62,6 @@ export const actions = {
     Object.entries(config).forEach(([profileId, profile]) => {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
-
-    setSnapshots(config)
   }
 }
 
@@ -74,7 +74,9 @@ export function subscribeProfilesToStorage() {
 export function hydrateProfilesFromStorage() {
   PROFILE_IDS.forEach((profileId) => {
     const parsed = parseProfileFromStorage(profileId)
-    if (parsed) Object.assign(banner.profiles[profileId], parsed)
+    if (parsed) {
+      Object.assign(banner.profiles[profileId], parsed)
+    }
   })
 }
 

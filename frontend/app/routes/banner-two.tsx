@@ -29,7 +29,11 @@ import {
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { hydrateSnapshotsFromStorage } from '~/stores/banner/snapshots'
+import {
+  hydrateSnapshotsFromStorage,
+  subscribeProfilesToUpdates,
+  subscribeSnapshotsToStorage
+} from '~/stores/banner/snapshots'
 import {
   actions,
   banner,
@@ -102,9 +106,11 @@ export default function Banner() {
     loadState(OP_WALLET_ADDRESS)
     persistState()
 
+    subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
+    subscribeSnapshotsToStorage()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
