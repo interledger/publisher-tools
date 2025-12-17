@@ -6,7 +6,7 @@ import React, {
   useState
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
-import { useBannerProfile } from '~/stores/banner'
+import { useBannerProfile } from '~/stores/banner-store'
 import {
   toolState,
   useCurrentConfig as useCurrentConfigLegacy

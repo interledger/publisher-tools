@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGEdit, SVGExclamationCircle } from '~/assets/svg'
 
-type TabOption<T extends string> = { id: T; label: string; isDirty: boolean }
+type TabOption<T extends string> = { id: T; label: string; hasUpdates: boolean }
 interface Props<T extends string> {
   options: readonly TabOption<T>[]
   children: React.ReactNode
@@ -120,7 +120,7 @@ export const BuilderPresetTabs = <T extends string>({
                 {option.label}
               </span>
 
-              {option.isDirty && (
+              {option.hasUpdates && (
                 <>
                   <span className="sr-only"> (modified)</span>
                   <DirtyMarker />

@@ -33,8 +33,11 @@ import {
   actions,
   banner,
   hydrateProfilesFromStorage,
-  subscribeProfilesToStorage
-} from '~/stores/banner'
+  hydrateSnapshotsFromStorage,
+  subscribeProfilesToStorage,
+  subscribeProfilesToUpdates,
+  subscribeSnapshotsToStorage
+} from '~/stores/banner-store'
 import {
   toolState,
   toolActions,
@@ -101,8 +104,11 @@ export default function Banner() {
     loadState(OP_WALLET_ADDRESS)
     persistState()
 
+    subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
+    subscribeSnapshotsToStorage()
 
     if (isGrantResponse) {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
