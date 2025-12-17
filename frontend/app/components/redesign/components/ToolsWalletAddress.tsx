@@ -8,7 +8,7 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import type { ElementErrors } from '~/lib/types'
-import { actions } from '~/stores/banner/store'
+import { actions } from '~/stores/banner-store'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { convertFrom } from '~/utils/profile-converter'

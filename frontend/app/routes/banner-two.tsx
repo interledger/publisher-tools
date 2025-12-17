@@ -30,16 +30,14 @@ import {
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
-  hydrateSnapshotsFromStorage,
-  subscribeProfilesToUpdates,
-  subscribeSnapshotsToStorage
-} from '~/stores/banner/snapshots'
-import {
   actions,
   banner,
   hydrateProfilesFromStorage,
-  subscribeProfilesToStorage
-} from '~/stores/banner/store'
+  hydrateSnapshotsFromStorage,
+  subscribeProfilesToStorage,
+  subscribeProfilesToUpdates,
+  subscribeSnapshotsToStorage
+} from '~/stores/banner-store'
 import {
   toolState,
   toolActions,
