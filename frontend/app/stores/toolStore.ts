@@ -543,21 +543,3 @@ function parsedStorageData(parsed: Record<string, unknown>) {
     )
   }
 }
-
-function isContentProperty(key: string): boolean {
-  return key.endsWith('Text') || key.endsWith('Visible')
-}
-
-// TODO: remove with versioning changes
-export function splitConfigProperties<T extends ElementConfigType>(config: T) {
-  const { versionName: _versionName, ...rest } = config
-  const { content = [], appearance = [] } = groupBy(
-    Object.entries(rest),
-    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
-  )
-
-  return {
-    content: Object.fromEntries(content) as Partial<T>,
-    appearance: Object.fromEntries(appearance) as Partial<T>
-  }
-}
