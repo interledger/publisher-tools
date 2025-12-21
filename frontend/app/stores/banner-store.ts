@@ -83,7 +83,11 @@ export const actions = {
   },
   resetProfileSection(section: 'content' | 'appearance') {
     const snapshot = snapshots.get(banner.activeTab)
-    const { content, appearance } = splitProfileProperties(snapshot!)
+    if (!snapshot) {
+      throw new Error('No snapshot found for the profile')
+    }
+
+    const { content, appearance } = splitProfileProperties(snapshot)
     Object.assign(banner.profile, section === 'content' ? content : appearance)
   }
 }
