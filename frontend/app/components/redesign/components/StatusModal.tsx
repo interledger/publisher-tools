@@ -1,32 +1,23 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGMarkSuccess, SVGClose, SVGErrorVector } from '~/assets/svg'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
+import { SVGMarkSuccess, SVGErrorVector } from '@/assets'
+import { ToolsSecondaryButton } from '@/components'
+import { BaseModal } from './modals/BaseModal'
 
 interface SaveResultModalProps {
-  isOpen?: boolean
-  onClose?: () => void
   onDone?: () => void
   message?: string
   fieldErrors?: Record<string, string>
-  isSuccess?: boolean
   className?: string
 }
 
-export const SaveResultModal: React.FC<SaveResultModalProps> = ({
-  isOpen = true,
-  onClose,
+export const StatusModal: React.FC<SaveResultModalProps> = ({
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
-  isSuccess = true,
   className = ''
-}) => {
-  if (!isOpen) {
-    return null
-  }
-
-  return (
+}) => (
+  <BaseModal>
     <div
       className={cx(
         'bg-interface-bg-container',
@@ -34,22 +25,13 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
         'rounded-lg',
         'p-8 pt-8 pb-4',
         'flex flex-col items-center gap-6',
-        'w-full max-w-[426px]',
+        'w-[426px]',
         'relative',
         className
       )}
     >
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
-          aria-label="Close modal"
-        >
-          <SVGClose className="w-6 h-6" />
-        </button>
-      )}
       <div className="flex items-center justify-center">
-        {isSuccess ? (
+        {!fieldErrors ? (
           <SVGMarkSuccess className="w-[60px] h-[60px]" />
         ) : (
           <SVGErrorVector className="w-[60px] h-[60px]" />
@@ -80,6 +62,7 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
         </ToolsSecondaryButton>
       </div>
     </div>
-  )
-}
-export default SaveResultModal
+  </BaseModal>
+)
+
+export default StatusModal

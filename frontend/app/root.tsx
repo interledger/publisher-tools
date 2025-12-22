@@ -12,6 +12,7 @@ import {
 } from 'react-router'
 import { Header, Footer } from '@/components'
 import faviconSvg from '~/assets/images/favicon.svg?url'
+import { ModalRoot } from '~/components/redesign/components/ModalRoot'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
@@ -33,6 +34,7 @@ export default function App() {
             <Outlet />
           </main>
           <Footer />
+          <ModalRoot />
         </UIProvider>
         <ScrollRestoration />
         <Scripts crossOrigin="" />
