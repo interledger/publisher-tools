@@ -45,7 +45,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.14.1",
+    "@cloudflare/vite-plugin": "^1.19.0",
     "@lit/react": "^1.0.8",
     "@react-router/dev": "^7.10.0",
     "@shared/default-data": "workspace:^",
