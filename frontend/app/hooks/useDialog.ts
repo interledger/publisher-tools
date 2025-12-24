@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import type { ReactNode } from 'react'
-import { DialogContext } from '~/lib/context/dialog'
+import { DialogContext } from '@/components'
 
 export const useDialog = () => {
   const { dispatch } = useContext(DialogContext)

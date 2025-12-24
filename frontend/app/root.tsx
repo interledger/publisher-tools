@@ -10,9 +10,8 @@ import {
   type LinksFunction,
   type MetaFunction
 } from 'react-router'
-import { Header, Footer } from '@/components'
+import { Header, Footer, DialogProvider } from '@/components'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { DialogProvider } from '~/providers/DialogProvider'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
