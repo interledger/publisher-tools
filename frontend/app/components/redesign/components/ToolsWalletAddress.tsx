@@ -99,6 +99,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
     toolActions.setConfigs(null)
+    actions.resetProfiles()
   }
 
   const handleWalletAddressChange = (

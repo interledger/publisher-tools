@@ -9,6 +9,7 @@ import {
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES
 } from '@shared/types'
+import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
@@ -72,6 +73,22 @@ export const actions = {
     Object.entries(config).forEach(([profileId, profile]) => {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
+  },
+  resetProfiles() {
+    PROFILE_IDS.forEach((id) => {
+      const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
+      Object.assign(banner.profiles[id], profile)
+      snapshots.set(id, profile)
+    })
+  },
+  resetProfileSection(section: 'content' | 'appearance') {
+    const snapshot = snapshots.get(banner.activeTab)
+    if (!snapshot) {
+      throw new Error('No snapshot found for the profile')
+    }
+
+    const { content, appearance } = splitProfileProperties(snapshot)
+    Object.assign(banner.profile, section === 'content' ? content : appearance)
   }
 }
 
