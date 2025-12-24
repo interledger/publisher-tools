@@ -136,8 +136,9 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
 
   return (
     <BaseModal>
-      <div
-        className={`
+      <>
+        <div
+          className={`
         bg-interface-bg-container
         border border-interface-edge-container
         rounded-sm
@@ -146,8 +147,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
         relative
         ${className}
       `}
-      >
-        <>
+        >
           <div className="px-md w-full text-center">
             <div className="text-style-body-standard space-y-2xs">
               <p>We found previous edits correlated to this wallet address.</p>
@@ -216,8 +216,8 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
               Add another wallet address
             </ToolsSecondaryButton>
           </div>
-        </>
-      </div>
+        </div>
+      </>
     </BaseModal>
   )
 }
