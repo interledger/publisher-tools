@@ -6,13 +6,13 @@ import {
   ToolsSecondaryButton
 } from '@/components'
 import type { ElementConfigType } from '@shared/types'
-import { modalActions } from '~/stores/modal-store'
+import { useDialog } from '~/hooks/useDialog'
 import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { BaseModal } from './modals/BaseModal'
 
 interface OverridePresetModalProps {
-  fetchedConfigs?: Record<string, ElementConfigType>
+  fetchedConfigs: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
   className?: string
@@ -26,6 +26,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
+  const [, closeDialog] = useDialog()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
       return []
@@ -87,10 +88,10 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   })
 
   const onAddWalletAddress = () => {
-    modalActions.setModal(undefined)
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
     uiActions.focusWalletInput()
+    closeDialog()
   }
 
   const handleConfigSelection = (configId: string, checked: boolean) => {
@@ -121,7 +122,10 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
         }
       })
 
-      toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
+      toolActions.overrideWithFetchedConfigs(
+        selectedLocalConfigs,
+        fetchedConfigs
+      )
       await toolActions.saveConfig('save-success')
     } catch (error) {
       console.error('Error overriding configurations:', error)

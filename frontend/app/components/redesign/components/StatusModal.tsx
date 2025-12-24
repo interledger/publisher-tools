@@ -8,6 +8,7 @@ interface SaveResultModalProps {
   onDone?: () => void
   message?: string
   fieldErrors?: Record<string, string>
+  status?: 'error' | 'success'
   className?: string
 }
 
@@ -15,6 +16,7 @@ export const StatusModal: React.FC<SaveResultModalProps> = ({
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
+  status,
   className = ''
 }) => (
   <BaseModal>
@@ -31,10 +33,10 @@ export const StatusModal: React.FC<SaveResultModalProps> = ({
       )}
     >
       <div className="flex items-center justify-center">
-        {!fieldErrors ? (
-          <SVGMarkSuccess className="w-[60px] h-[60px]" />
-        ) : (
+        {status === 'error' || fieldErrors ? (
           <SVGErrorVector className="w-[60px] h-[60px]" />
+        ) : (
+          <SVGMarkSuccess className="w-[60px] h-[60px]" />
         )}
       </div>
       <div className="text-center">

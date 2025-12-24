@@ -7,7 +7,6 @@ import { groupBy } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import { omit } from '~/utils/utils.storage'
-import { modalActions, store as modalStore } from './modal-store'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -231,13 +230,8 @@ export const toolActions = {
       }
 
       const data = (await response.json()) as SaveConfigResponse
-
       if (data?.grantRequired) {
-        modalActions.setModal({
-          type: 'wallet-ownership',
-          grantRedirectURI: data.grantRequired
-        })
-        return
+        return { success: false, data }
       }
 
       STABLE_KEYS.forEach((profileId) => {
@@ -245,9 +239,8 @@ export const toolActions = {
           ...toolState.configurations[profileId]
         }
       })
-
-      modalActions.setModal({ type: callToActionType })
       toolState.dirtyProfiles.clear()
+
       return { success: true, data }
     } catch (error) {
       console.error('Save error:', error)
@@ -260,18 +253,6 @@ export const toolActions = {
   setGrantResponse: (grantResponse: string, isGrantAccepted: boolean) => {
     toolState.grantResponse = grantResponse
     toolState.isGrantAccepted = isGrantAccepted
-  },
-  handleGrantResponse: () => {
-    if (toolState.isGrantAccepted) {
-      toolActions.saveConfig(toolState.lastSaveAction)
-    } else {
-      modalActions.setModal({
-        type: 'save-error',
-        error: {
-          message: 'Grant was not accepted'
-        }
-      })
-    }
   },
 
   /**
@@ -301,13 +282,9 @@ export const toolActions = {
    * @param selectedLocalConfigs - Record of configurations the user wants to keep (not override)
    */
   overrideWithFetchedConfigs: (
-    selectedLocalConfigs: Record<string, ElementConfigType>
+    selectedLocalConfigs: Record<string, ElementConfigType>,
+    fetchedConfigs: Record<string, ElementConfigType>
   ) => {
-    const fetchedConfigs =
-      modalStore.modal?.type === 'override-preset'
-        ? modalStore.modal.fetchedConfigs
-        : {}
-
     if (!fetchedConfigs) {
       console.error('No fetched configs found in modal state')
       return
@@ -381,35 +358,6 @@ export const toolActions = {
       hasLocalModifications,
       hasConflict: hasCustomEdits && hasLocalModifications
     }
-  },
-
-  /**
-   * Handles configuration conflicts by showing the OverridePresetModal.
-   *
-   * This function is called when both database configurations and local modifications
-   * exist for the same wallet address, creating a conflict that requires user resolution.
-   *
-   * It sets up the modal with all necessary data:
-   * - fetchedConfigs: The configurations retrieved from the database
-   * - currentLocalConfigs: The current local configurations (including modifications)
-   * - modifiedConfigs: Array of stable keys that have been modified locally
-   *
-   * The modal will present options to the user:
-   * - Keep local changes (ignore database versions)
-   * - Override with database versions (lose local changes)
-   * - Use different wallet address (start over)
-   *
-   * @param fetchedConfigs - The configurations retrieved from the database
-   */
-  handleConfigurationConflict: (
-    fetchedConfigs: Record<string, ElementConfigType>
-  ) => {
-    modalActions.setModal({
-      type: 'override-preset',
-      fetchedConfigs,
-      currentLocalConfigs: { ...toolState.configurations },
-      modifiedConfigs: [...toolState.dirtyProfiles]
-    })
   },
 
   handleTabSelect: (profileId: StableKey) => {

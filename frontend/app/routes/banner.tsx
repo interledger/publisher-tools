@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, act } from 'react'
 import {
   useLoaderData,
   useNavigate,
@@ -15,7 +15,10 @@ import {
   ToolsSecondaryButton,
   ToolsPrimaryButton,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
+  WalletOwnershipModal,
+  StatusModal,
+  ScriptReadyModal
 } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
@@ -24,8 +27,8 @@ import {
 } from '~/components/banner/BannerPreview'
 import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { useBodyClass } from '~/hooks/useBodyClass'
+import { useDialog } from '~/hooks/useDialog'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { modalActions } from '~/stores/modal-store'
 import {
   toolState,
   toolActions,
@@ -75,6 +78,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function Banner() {
   const snap = useSnapshot(toolState)
   const navigate = useNavigate()
+  const [openDialog, closeDialog] = useDialog()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -86,13 +90,31 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    loadState(OP_WALLET_ADDRESS)
-    persistState()
-
-    if (isGrantResponse) {
-      toolActions.setGrantResponse(grantResponse, isGrantAccepted)
-      toolActions.handleGrantResponse()
+    const initializeState = async () => {
+      loadState(OP_WALLET_ADDRESS)
+      persistState()
+      if (isGrantResponse) {
+        toolActions.setGrantResponse(grantResponse, isGrantAccepted)
+        if (toolState.isGrantAccepted) {
+          await toolActions.saveConfig(toolState.lastSaveAction)
+          if (toolState.lastSaveAction === 'save-success') {
+            openDialog(<StatusModal onDone={closeDialog} />)
+          } else {
+            openDialog(<ScriptReadyModal />)
+          }
+        } else {
+          openDialog(
+            <StatusModal
+              onDone={closeDialog}
+              message="Grant was not accepted"
+              status="error"
+            />
+          )
+        }
+      }
     }
+
+    initializeState()
   }, [grantResponse, isGrantAccepted, isGrantResponse])
 
   const scrollToWalletAddress = () => {
@@ -127,17 +149,33 @@ export default function Banner() {
 
     setLoading(true)
     try {
-      await toolActions.saveConfig(action)
+      const response = await toolActions.saveConfig(action)
+      if (!response.success && response.data?.grantRequired) {
+        openDialog(
+          <WalletOwnershipModal grantRedirect={response.data.grantRequired} />
+        )
+
+        return
+      }
+
+      if (action === 'save-success') {
+        openDialog(<StatusModal onDone={closeDialog} />)
+      } else if (action === 'script') {
+        openDialog(<ScriptReadyModal />)
+      }
     } catch (err) {
       const error = err as Error
       console.error({ error })
       const message = error.message
       // @ts-expect-error TODO
       const fieldErrors = error.cause?.details?.errors?.fieldErrors
-      modalActions.setModal({
-        type: 'save-error',
-        error: { message, fieldErrors }
-      })
+      openDialog(
+        <StatusModal
+          onDone={closeDialog}
+          fieldErrors={fieldErrors}
+          message={message}
+        />
+      )
     } finally {
       setLoading(false)
     }

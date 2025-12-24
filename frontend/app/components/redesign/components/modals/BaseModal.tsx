@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { SVGClose } from '@/assets'
-import { modalActions } from '~/stores/modal-store'
+import { useDialog } from '~/hooks/useDialog'
 
 interface ModalContainerProps {
   children: React.ReactNode
@@ -8,7 +8,7 @@ interface ModalContainerProps {
 
 export const BaseModal: React.FC<ModalContainerProps> = ({ children }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const handleClose = () => modalActions.close()
+  const [, closeDialog] = useDialog()
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -18,7 +18,7 @@ export const BaseModal: React.FC<ModalContainerProps> = ({ children }) => {
     const handleCancel = (e: Event) => {
       // close dialog on ESC key
       e.preventDefault()
-      handleClose()
+      closeDialog()
     }
     dialog?.addEventListener('cancel', handleCancel)
     return () => {
@@ -32,7 +32,7 @@ export const BaseModal: React.FC<ModalContainerProps> = ({ children }) => {
       className="bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl"
     >
       <button
-        onClick={handleClose}
+        onClick={closeDialog}
         className="absolute top-3 right-3 w-6 h-6 hover:bg-secondary-hover-surface transition-colors z-30"
         aria-label="Close dialog"
       >
