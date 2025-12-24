@@ -33,11 +33,11 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState,
-  splitConfigProperties
+  loadState
 } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
+import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
 
 export const meta: MetaFunction = () => {
   return [

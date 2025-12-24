@@ -3,7 +3,7 @@ import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { ElementConfigType } from '@shared/types'
-import { groupBy, toWalletAddressUrl } from '@shared/utils'
+import { toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import type { ModalType } from '~/lib/types'
@@ -541,23 +541,5 @@ function parsedStorageData(parsed: Record<string, unknown>) {
     dirtyProfiles: proxySet<StableKey>(
       Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
     )
-  }
-}
-
-function isContentProperty(key: string): boolean {
-  return key.endsWith('Text') || key.endsWith('Visible')
-}
-
-// TODO: remove with versioning changes
-export function splitConfigProperties<T extends ElementConfigType>(config: T) {
-  const { versionName: _versionName, ...rest } = config
-  const { content = [], appearance = [] } = groupBy(
-    Object.entries(rest),
-    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
-  )
-
-  return {
-    content: Object.fromEntries(content) as Partial<T>,
-    appearance: Object.fromEntries(appearance) as Partial<T>
   }
 }

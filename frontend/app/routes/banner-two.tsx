@@ -42,8 +42,7 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState,
-  splitConfigProperties
+  loadState
 } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
@@ -180,15 +179,6 @@ export default function Banner() {
     toolActions.setModal(undefined)
   }
 
-  const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
-    const { content, appearance } = splitConfigProperties(savedConfig)
-    Object.assign(
-      toolState.currentConfig,
-      section === 'content' ? content : appearance
-    )
-  }
-
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -250,7 +240,11 @@ export default function Banner() {
                       onChange={(profileId) => actions.setActiveTab(profileId)}
                       onRename={(name) => actions.setProfileName(name)}
                     >
-                      <BannerBuilder onRefresh={handleRefresh} />
+                      <BannerBuilder
+                        onRefresh={(section) =>
+                          actions.resetProfileSection(section)
+                        }
+                      />
                     </BuilderPresetTabs>
 
                     <div
