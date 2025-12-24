@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, act } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   useLoaderData,
   useNavigate,
