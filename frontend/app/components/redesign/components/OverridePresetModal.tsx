@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import type { ElementConfigType } from '@shared/types'
-import { SVGClose, SVGSpinner } from '~/assets/svg'
+import { SVGSpinner } from '~/assets/svg'
 import { ConfigCondition } from './ConfigCondition'
+import { BaseModal } from './modals/BaseModal'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 
@@ -24,18 +25,15 @@ interface OverridePresetModalProps {
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
   configs?: ConfigItem[]
-  className?: string
 }
 
 export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
-  onClose,
   onOverride,
   onAddWalletAddress,
   fetchedConfigs,
   currentLocalConfigs,
   modifiedVersions = [],
-  configs,
-  className = ''
+  configs
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const generatedConfigs = React.useMemo(() => {
@@ -139,27 +137,10 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   return (
-    <div
-      className={`
-        bg-interface-bg-container
-        border border-interface-edge-container
-        rounded-sm
-        pt-4xl pb-md px-0
-        flex flex-col items-center gap-lg w-[514px]
-        relative
-        ${className}
-      `}
+    <BaseModal
+      className="pt-4xl pb-md px-0
+        flex flex-col items-center gap-lg w-[514px]"
     >
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-sm right-sm w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
-          aria-label="Close modal"
-        >
-          <SVGClose className="w-6 h-6" />
-        </button>
-      )}
-
       <div className="px-md w-full text-center">
         <div className="text-style-body-standard space-y-2xs">
           <p>We found previous edits correlated to this wallet address.</p>
@@ -228,7 +209,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           Add another wallet address
         </ToolsSecondaryButton>
       </div>
-    </div>
+    </BaseModal>
   )
 }
 

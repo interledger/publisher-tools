@@ -1,8 +1,8 @@
 import React from 'react'
-import { cx } from 'class-variance-authority'
-import { SVGMarkSuccess, SVGClose } from '~/assets/svg'
+import { SVGMarkSuccess } from '~/assets/svg'
 import { ToolsPrimaryButton } from './ToolsPrimaryButton'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
+import { BaseModal } from './modals/BaseModal'
 
 interface ScriptReadyModalProps {
   isOpen?: boolean
@@ -13,36 +13,17 @@ interface ScriptReadyModalProps {
 
 export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
   isOpen = true,
-  onClose,
-  scriptContent,
-  className = ''
+  scriptContent
 }) => {
   const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
 
   if (!isOpen) return null
 
   return (
-    <div
-      className={cx(
-        'bg-interface-bg-container',
-        'border border-interface-edge-container',
-        'rounded-lg',
-        'p-xl pt-xl pb-md',
-        'flex flex-col items-center gap-lg',
-        'w-full max-w-[442px]',
-        'relative',
-        className
-      )}
+    <BaseModal
+      className="p-8 pb-4
+        flex flex-col items-center gap-6 w-full max-w-[442px]"
     >
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
-          aria-label="Close"
-        >
-          <SVGClose className="w-6 h-6" />
-        </button>
-      )}
       <div className="flex items-center justify-center">
         <SVGMarkSuccess className="w-[60px] h-[60px]" />
       </div>
@@ -66,7 +47,7 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
           {isCopied ? 'Copied' : 'Copy'} to clipboard
         </ToolsPrimaryButton>
       </div>
-    </div>
+    </BaseModal>
   )
 }
 
