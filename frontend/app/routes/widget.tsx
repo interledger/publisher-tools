@@ -284,93 +284,63 @@ export default function Widget() {
       </div>
 
       {snap.modal?.type === 'script' && (
-        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <ScriptReadyModal
-                isOpen={true}
-                onClose={handleCloseModal}
-                scriptContent={toolActions.getScriptToDisplay()}
-              />
-            </div>
-          </div>
-        </div>
+        <ScriptReadyModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          scriptContent={toolActions.getScriptToDisplay()}
+        />
       )}
 
       {snap.modal?.type === 'save-success' && (
-        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <SaveResultModal
-                isOpen={true}
-                onClose={handleCloseModal}
-                onDone={handleCloseModal}
-                message="Your edits have been saved"
-                isSuccess={true}
-              />
-            </div>
-          </div>
-        </div>
+        <SaveResultModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onDone={handleCloseModal}
+          message="Your edits have been saved"
+          isSuccess={true}
+        />
       )}
 
       {snap.modal?.type === 'save-error' && (
-        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <SaveResultModal
-                isOpen={true}
-                onClose={handleCloseModal}
-                onDone={handleCloseModal}
-                fieldErrors={snap.modal?.error?.fieldErrors}
-                message={
-                  snap.modal?.error?.message ||
-                  (!snap.isGrantAccepted
-                    ? String(snap.grantResponse)
-                    : 'Error saving your edits')
-                }
-                isSuccess={!snap.modal.error && snap.isGrantAccepted}
-              />
-            </div>
-          </div>
-        </div>
+        <SaveResultModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onDone={handleCloseModal}
+          fieldErrors={snap.modal?.error?.fieldErrors}
+          message={
+            snap.modal?.error?.message ||
+            (!snap.isGrantAccepted
+              ? String(snap.grantResponse)
+              : 'Error saving your edits')
+          }
+          isSuccess={!snap.modal.error && snap.isGrantAccepted}
+        />
       )}
 
       {snap.modal?.type === 'wallet-ownership' && (
-        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <WalletOwnershipModal
-                isOpen={true}
-                onClose={handleCloseModal}
-                onConfirm={handleConfirmWalletOwnership}
-                walletAddress={snap.walletAddress}
-              />
-            </div>
-          </div>
-        </div>
+        <WalletOwnershipModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmWalletOwnership}
+          walletAddress={snap.walletAddress}
+        />
       )}
 
       {snap.modal?.type === 'override-preset' && (
-        <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity z-50">
-          <div className="fixed inset-0 z-50 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <OverridePresetModal
-                onClose={handleCloseModal}
-                onOverride={async (selectedLocalConfigs) => {
-                  toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-                  await toolActions.saveConfig('save-success')
-                }}
-                onAddWalletAddress={() => {
-                  toolActions.resetWalletConnection()
-                  uiActions.focusWalletInput()
-                }}
-                fetchedConfigs={snap.modal?.fetchedConfigs}
-                currentLocalConfigs={snap.modal?.currentLocalConfigs}
-                modifiedVersions={snap.modal?.modifiedConfigs || []}
-              />
-            </div>
-          </div>
-        </div>
+        <OverridePresetModal
+          onClose={handleCloseModal}
+          onOverride={async (selectedLocalConfigs) => {
+            toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
+            await toolActions.saveConfig('save-success')
+          }}
+          onAddWalletAddress={() => {
+            toolActions.resetWalletConnection()
+            uiActions.focusWalletInput()
+          }}
+          fetchedConfigs={snap.modal?.fetchedConfigs}
+          currentLocalConfigs={snap.modal?.currentLocalConfigs}
+          modifiedVersions={snap.modal?.modifiedConfigs || []}
+        />
       )}
     </div>
   )

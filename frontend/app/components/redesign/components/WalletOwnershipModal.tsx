@@ -1,8 +1,7 @@
 import React from 'react'
-import { cx } from 'class-variance-authority'
-import { SVGClose } from '~/assets/svg'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Heading5, BodyEmphasis } from '../Typography'
+import { BaseModal } from './modals/BaseModal'
 
 interface WalletOwnershipModalProps {
   isOpen?: boolean
@@ -14,37 +13,18 @@ interface WalletOwnershipModalProps {
 
 export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
   isOpen = true,
-  onClose,
   onConfirm,
-  walletAddress = '',
-  className = ''
+  walletAddress = ''
 }) => {
   if (!isOpen) {
     return null
   }
 
   return (
-    <div
-      className={cx(
-        'bg-interface-bg-container',
-        'border border-interface-edge-container',
-        'rounded-lg',
-        'p-8 pt-8 pb-4',
-        'flex flex-col items-center gap-6',
-        'w-full max-w-[442px]',
-        'relative',
-        className
-      )}
+    <BaseModal
+      className="p-8 pb-4
+        flex flex-col items-center gap-6 w-full max-w-[442px]"
     >
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
-          aria-label="Close modal"
-        >
-          <SVGClose className="w-6 h-6" />
-        </button>
-      )}
       <div className="text-center">
         <Heading5>Please confirm you are owner of</Heading5>
         {walletAddress && (
@@ -68,7 +48,7 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
           Confirm
         </ToolsSecondaryButton>
       </div>
-    </div>
+    </BaseModal>
   )
 }
 
