@@ -27,15 +27,15 @@ export default function App() {
         <Links />
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
-        <DialogProvider>
-          <UIProvider>
+        <UIProvider>
+          <DialogProvider>
             <Header />
             <main className="flex-grow flex flex-col">
               <Outlet />
             </main>
             <Footer />
-          </UIProvider>
-        </DialogProvider>
+          </DialogProvider>
+        </UIProvider>
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>
