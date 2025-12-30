@@ -137,8 +137,8 @@ importers:
         specifier: workspace:^
         version: link:../shared/utils
       lit:
-        specifier: ^3.3.1
-        version: 3.3.1
+        specifier: ^3.3.2
+        version: 3.3.2
     devDependencies:
       '@interledger/open-payments':
         specifier: ^7.1.3
@@ -216,8 +216,8 @@ importers:
         specifier: ^5.1.32
         version: 5.1.32
       lit:
-        specifier: ^3.3.1
-        version: 3.3.1
+        specifier: ^3.3.2
+        version: 3.3.2
       react:
         specifier: ^19.2.1
         version: 19.2.1
@@ -251,7 +251,7 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.14.1
-        version: 1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20250924.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))
+        version: 1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20251109.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))
       '@lit/react':
         specifier: ^1.0.8
         version: 1.0.8(@types/react@19.2.7)
@@ -2907,8 +2907,8 @@ packages:
   lit-html@3.3.0:
     resolution: {integrity: sha512-RHoswrFAxY2d8Cf2mm4OZ1DgzCoBKUKSPvA1fhtSELxUERq2aQQ2h05pO9j81gS1o7RIRJ+CePLogfyahwmynw==}
 
-  lit@3.3.1:
-    resolution: {integrity: sha512-Ksr/8L3PTapbdXJCk+EJVB78jDodUMaP54gD24W186zGRARvwrsPfS60wae/SSCTCNZVPd1chXqio1qHQmu4NA==}
+  lit@3.3.2:
+    resolution: {integrity: sha512-NF9zbsP79l4ao2SNrH3NkfmFgN/hBYSQo90saIVI1o5GpjAdCPVstVzO1MrLOakHoEhYkrtRjPK6Ob521aoYWQ==}
 
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
@@ -4356,11 +4356,11 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/unenv-preset@2.7.10(unenv@2.0.0-rc.24)(workerd@1.20250924.0)':
+  '@cloudflare/unenv-preset@2.7.10(unenv@2.0.0-rc.24)(workerd@1.20251109.0)':
     dependencies:
       unenv: 2.0.0-rc.24
     optionalDependencies:
-      workerd: 1.20250924.0
+      workerd: 1.20251109.0
 
   '@cloudflare/unenv-preset@2.7.4(unenv@2.0.0-rc.21)(workerd@1.20250924.0)':
     dependencies:
@@ -4368,9 +4368,9 @@ snapshots:
     optionalDependencies:
       workerd: 1.20250924.0
 
-  '@cloudflare/vite-plugin@1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20250924.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))':
+  '@cloudflare/vite-plugin@1.14.1(vite@7.2.2(@types/node@24.6.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.7.1))(workerd@1.20251109.0)(wrangler@4.40.0(@cloudflare/workers-types@4.20251011.0))':
     dependencies:
-      '@cloudflare/unenv-preset': 2.7.10(unenv@2.0.0-rc.24)(workerd@1.20250924.0)
+      '@cloudflare/unenv-preset': 2.7.10(unenv@2.0.0-rc.24)(workerd@1.20251109.0)
       '@remix-run/node-fetch-server': 0.8.1
       get-port: 7.1.0
       miniflare: 4.20251109.0
@@ -6834,7 +6834,7 @@ snapshots:
     dependencies:
       '@types/trusted-types': 2.0.7
 
-  lit@3.3.1:
+  lit@3.3.2:
     dependencies:
       '@lit/reactive-element': 2.1.0
       lit-element: 4.2.0
