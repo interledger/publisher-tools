@@ -14,11 +14,11 @@ import {
   BuilderBackground,
   ToolsSecondaryButton,
   ToolsPrimaryButton,
-  StepsIndicator,
-  MobileStepsIndicator,
+  SaveResultModal,
+  ScriptReadyModal,
   WalletOwnershipModal,
-  StatusModal,
-  ScriptReadyModal
+  StepsIndicator,
+  MobileStepsIndicator
 } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
@@ -98,13 +98,13 @@ export default function Banner() {
         if (toolState.isGrantAccepted) {
           await toolActions.saveConfig(toolState.lastSaveAction)
           if (toolState.lastSaveAction === 'save-success') {
-            openDialog(<StatusModal onDone={closeDialog} />)
+            openDialog(<SaveResultModal onDone={closeDialog} />)
           } else {
             openDialog(<ScriptReadyModal />)
           }
         } else {
           openDialog(
-            <StatusModal
+            <SaveResultModal
               onDone={closeDialog}
               message="Grant was not accepted"
               status="error"
@@ -159,7 +159,7 @@ export default function Banner() {
       }
 
       if (action === 'save-success') {
-        openDialog(<StatusModal onDone={closeDialog} />)
+        openDialog(<SaveResultModal onDone={closeDialog} />)
       } else if (action === 'script') {
         openDialog(<ScriptReadyModal />)
       }
@@ -170,8 +170,9 @@ export default function Banner() {
       // @ts-expect-error TODO
       const fieldErrors = error.cause?.details?.errors?.fieldErrors
       openDialog(
-        <StatusModal
+        <SaveResultModal
           onDone={closeDialog}
+          status="error"
           fieldErrors={fieldErrors}
           message={message}
         />

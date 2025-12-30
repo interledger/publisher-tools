@@ -14,11 +14,11 @@ import {
   BuilderBackground,
   ToolsSecondaryButton,
   ToolsPrimaryButton,
-  StepsIndicator,
-  MobileStepsIndicator,
+  SaveResultModal,
+  ScriptReadyModal,
   WalletOwnershipModal,
-  StatusModal,
-  ScriptReadyModal
+  StepsIndicator,
+  MobileStepsIndicator
 } from '@/components'
 import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
@@ -94,13 +94,13 @@ export default function Widget() {
         if (toolState.isGrantAccepted) {
           await toolActions.saveConfig(toolState.lastSaveAction)
           if (toolState.lastSaveAction === 'save-success') {
-            openDialog(<StatusModal onDone={closeDialog} />)
+            openDialog(<SaveResultModal onDone={closeDialog} />)
           } else {
             openDialog(<ScriptReadyModal />)
           }
         } else {
           openDialog(
-            <StatusModal
+            <SaveResultModal
               onDone={closeDialog}
               message="Grant was not accepted"
               status="error"
@@ -155,7 +155,7 @@ export default function Widget() {
       }
 
       if (action === 'save-success') {
-        openDialog(<StatusModal onDone={closeDialog} />)
+        openDialog(<SaveResultModal onDone={closeDialog} />)
       } else {
         openDialog(<ScriptReadyModal />)
       }
@@ -166,8 +166,9 @@ export default function Widget() {
       // @ts-expect-error TODO
       const fieldErrors = error.cause?.details?.errors?.fieldErrors
       openDialog(
-        <StatusModal
+        <SaveResultModal
           onDone={closeDialog}
+          status="error"
           fieldErrors={fieldErrors}
           message={message}
         />

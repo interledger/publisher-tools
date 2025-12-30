@@ -10,7 +10,7 @@ interface SaveResultModalProps {
   status?: 'error' | 'success'
 }
 
-export const StatusModal: React.FC<SaveResultModalProps> = ({
+export const SaveResultModal: React.FC<SaveResultModalProps> = ({
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
@@ -56,4 +56,4 @@ export const StatusModal: React.FC<SaveResultModalProps> = ({
   )
 }
 
-export default StatusModal
+export default SaveResultModal
