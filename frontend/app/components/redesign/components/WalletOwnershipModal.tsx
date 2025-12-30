@@ -1,5 +1,4 @@
 import React from 'react'
-import { cx } from 'class-variance-authority'
 import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components'
 import { Heading5, BodyEmphasis } from '@/typography'
