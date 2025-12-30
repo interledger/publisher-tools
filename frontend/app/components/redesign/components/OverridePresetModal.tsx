@@ -15,14 +15,12 @@ interface OverridePresetModalProps {
   fetchedConfigs: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
-  className?: string
 }
 
 export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   fetchedConfigs,
   currentLocalConfigs,
-  modifiedVersions = [],
-  className = ''
+  modifiedVersions = []
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
@@ -135,89 +133,78 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   return (
-    <BaseModal>
-      <>
-        <div
-          className={`
-        bg-interface-bg-container
-        border border-interface-edge-container
-        rounded-sm
-        pt-4xl pb-md px-0
-        flex flex-col items-center gap-lg w-[514px]
-        relative
-        ${className}
-      `}
-        >
-          <div className="px-md w-full text-center">
-            <div className="text-style-body-standard space-y-2xs">
-              <p>We found previous edits correlated to this wallet address.</p>
-              <p>Choose configurations to keep:</p>
-            </div>
-          </div>
+    <BaseModal
+      className="pt-4xl pb-md px-0
+        flex flex-col items-center gap-lg w-[514px]"
+    >
+      <div className="px-md w-full text-center">
+        <div className="text-style-body-standard space-y-2xs">
+          <p>We found previous edits correlated to this wallet address.</p>
+          <p>Choose configurations to keep:</p>
+        </div>
+      </div>
 
-          <div className="flex flex-col gap-2xs px-md w-full">
-            <div className="bg-silver-50 rounded-sm p-sm">
-              <div className="flex items-center text-style-small-standard text-text-secondary">
-                <span className="w-[50px] mr-md">Tab</span>
-                <span className="w-[150px] mr-md">Current version</span>
-                <span className="w-[70px] text-center mr-md">Override</span>
-                <span className="w-[140px]">Saved version</span>
-              </div>
-            </div>
-
-            {generatedConfigs.map((config) => (
-              <ConfigCondition
-                key={config.id}
-                id={config.id}
-                number={config.number}
-                title={config.title}
-                hasLocalChanges={config.hasLocalChanges}
-                presetName={config.presetName}
-                checked={selectedConfigs.includes(config.id)}
-                onCheckedChange={(checked) =>
-                  handleConfigSelection(config.id, checked)
-                }
-                disabled={!config.hasEdits}
-                className={!config.hasEdits ? 'opacity-50' : ''}
-              />
-            ))}
-          </div>
-
-          <div className="w-full px-md flex flex-col gap-xs">
-            <ToolsPrimaryButton
-              className="w-full h-12 rounded-sm bg-primary-bg hover:bg-primary-bg-hover text-white"
-              onClick={handleOverride}
-              disabled={!fetchedConfigs || isOverriding}
-            >
-              <div className="flex items-center justify-center gap-2">
-                {isOverriding && <SVGSpinner className="w-4 h-4" />}
-                <span>
-                  {isOverriding
-                    ? 'Overriding and saving...'
-                    : selectedConfigs.length > 0
-                      ? `Override ${selectedConfigs.length} local configuration${selectedConfigs.length > 1 ? 's' : ''} and save`
-                      : 'Keep all saved edits and save'}
-                </span>
-              </div>
-            </ToolsPrimaryButton>
-          </div>
-
-          <div className="px-md w-full text-center">
-            <p className="text-style-body-standard max-w-[394px] mx-auto">
-              Would you like to use a different wallet address?
-            </p>
-          </div>
-
-          <div className="w-full px-md">
-            <ToolsSecondaryButton
-              className="w-full h-12 rounded-sm border border-secondary-edge text-text-buttons-default hover:border-secondary-edge-hover hover:text-secondary-edge-hover"
-              onClick={onAddWalletAddress}
-            >
-              Add another wallet address
-            </ToolsSecondaryButton>
+      <div className="flex flex-col gap-2xs px-md w-full">
+        <div className="bg-silver-50 rounded-sm p-sm">
+          <div className="flex items-center text-style-small-standard text-text-secondary">
+            <span className="w-[50px] mr-md">Tab</span>
+            <span className="w-[150px] mr-md">Current version</span>
+            <span className="w-[70px] text-center mr-md">Override</span>
+            <span className="w-[140px]">Saved version</span>
           </div>
         </div>
-      </>
+
+        {generatedConfigs.map((config) => (
+          <ConfigCondition
+            key={config.id}
+            id={config.id}
+            number={config.number}
+            title={config.title}
+            hasLocalChanges={config.hasLocalChanges}
+            presetName={config.presetName}
+            checked={selectedConfigs.includes(config.id)}
+            onCheckedChange={(checked) =>
+              handleConfigSelection(config.id, checked)
+            }
+            disabled={!config.hasEdits}
+            className={!config.hasEdits ? 'opacity-50' : ''}
+          />
+        ))}
+      </div>
+
+      <div className="w-full px-md flex flex-col gap-xs">
+        <ToolsPrimaryButton
+          className="w-full h-12 rounded-sm bg-primary-bg hover:bg-primary-bg-hover text-white"
+          onClick={handleOverride}
+          disabled={!fetchedConfigs || isOverriding}
+        >
+          <div className="flex items-center justify-center gap-2">
+            {isOverriding && <SVGSpinner className="w-4 h-4" />}
+            <span>
+              {isOverriding
+                ? 'Overriding and saving...'
+                : selectedConfigs.length > 0
+                  ? `Override ${selectedConfigs.length} local configuration${selectedConfigs.length > 1 ? 's' : ''} and save`
+                  : 'Keep all saved edits and save'}
+            </span>
+          </div>
+        </ToolsPrimaryButton>
+      </div>
+
+      <div className="px-md w-full text-center">
+        <p className="text-style-body-standard max-w-[394px] mx-auto">
+          Would you like to use a different wallet address?
+        </p>
+      </div>
+
+      <div className="w-full px-md">
+        <ToolsSecondaryButton
+          className="w-full h-12 rounded-sm border border-secondary-edge text-text-buttons-default hover:border-secondary-edge-hover hover:text-secondary-edge-hover"
+          onClick={onAddWalletAddress}
+        >
+          Add another wallet address
+        </ToolsSecondaryButton>
+      </div>
     </BaseModal>
   )
 }
