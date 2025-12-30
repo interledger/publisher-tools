@@ -7,31 +7,6 @@ import { toolState } from '~/stores/toolStore'
 import { BaseModal } from './modals/BaseModal'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
-function getScriptToDisplay(): string {
-  const {
-    walletAddress,
-    walletAddressId,
-    currentToolType: toolType,
-    activeVersion: preset,
-    cdnUrl
-  } = useSnapshot(toolState)
-
-  const wa = toWalletAddressUrl(walletAddress)
-  const src = new URL(`/${toolType}.js`, cdnUrl).href
-
-  const script = document.createElement('script')
-  script.id = `wmt-${toolType}-init-script`
-  script.type = 'module'
-  script.src = src
-  script.dataset.walletAddress = wa
-  if (walletAddressId && wa !== walletAddressId) {
-    script.dataset.walletAddressId = walletAddressId
-  }
-  script.dataset.tag = preset
-
-  return script.outerHTML
-}
-
 export const ScriptReadyModal: React.FC = () => {
   const scriptContent = getScriptToDisplay()
   const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
@@ -66,6 +41,31 @@ export const ScriptReadyModal: React.FC = () => {
       </div>
     </BaseModal>
   )
+}
+
+function getScriptToDisplay(): string {
+  const {
+    walletAddress,
+    walletAddressId,
+    currentToolType: toolType,
+    activeVersion: preset,
+    cdnUrl
+  } = useSnapshot(toolState)
+
+  const wa = toWalletAddressUrl(walletAddress)
+  const src = new URL(`/${toolType}.js`, cdnUrl).href
+
+  const script = document.createElement('script')
+  script.id = `wmt-${toolType}-init-script`
+  script.type = 'module'
+  script.src = src
+  script.dataset.walletAddress = wa
+  if (walletAddressId && wa !== walletAddressId) {
+    script.dataset.walletAddressId = walletAddressId
+  }
+  script.dataset.tag = preset
+
+  return script.outerHTML
 }
 
 export default ScriptReadyModal
