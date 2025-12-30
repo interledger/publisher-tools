@@ -104,31 +104,33 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   const handleOverride = async () => {
-    setIsOverriding(true)
-    try {
-      // build the selected LOCAL configurations (the ones user wants to keep)
-      const selectedLocalConfigs: Record<string, ElementConfigType> = {}
+    if (fetchedConfigs) {
+      setIsOverriding(true)
+      try {
+        // build the selected LOCAL configurations (the ones user wants to keep)
+        const selectedLocalConfigs: Record<string, ElementConfigType> = {}
 
-      selectedConfigs.forEach((localStableKey) => {
-        if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
-          selectedLocalConfigs[localStableKey] =
-            currentLocalConfigs[localStableKey]
-        } else {
-          console.warn(
-            `No local configuration found for stable key: ${localStableKey}`
-          )
-        }
-      })
+        selectedConfigs.forEach((localStableKey) => {
+          if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
+            selectedLocalConfigs[localStableKey] =
+              currentLocalConfigs[localStableKey]
+          } else {
+            console.warn(
+              `No local configuration found for stable key: ${localStableKey}`
+            )
+          }
+        })
 
-      toolActions.overrideWithFetchedConfigs(
-        selectedLocalConfigs,
-        fetchedConfigs
-      )
-      await toolActions.saveConfig('save-success')
-    } catch (error) {
-      console.error('Error overriding configurations:', error)
-    } finally {
-      setIsOverriding(false)
+        toolActions.overrideWithFetchedConfigs(
+          selectedLocalConfigs,
+          fetchedConfigs
+        )
+        await toolActions.saveConfig('save-success')
+      } catch (error) {
+        console.error('Error overriding configurations:', error)
+      } finally {
+        setIsOverriding(false)
+      }
     }
   }
 
