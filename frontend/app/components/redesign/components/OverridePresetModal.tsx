@@ -7,6 +7,7 @@ import {
 } from '@/components'
 import type { ElementConfigType } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
+import { useSaveConfig } from '~/hooks/useSaveConfig'
 import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { BaseModal } from './modals/BaseModal'
@@ -24,6 +25,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
+  const { saveLastAction } = useSaveConfig()
   const [, closeDialog] = useDialog()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
@@ -125,7 +127,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           selectedLocalConfigs,
           fetchedConfigs
         )
-        await toolActions.saveConfig('save-success')
+        await saveLastAction()
       } catch (error) {
         console.error('Error overriding configurations:', error)
       } finally {

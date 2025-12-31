@@ -183,12 +183,11 @@ export const toolActions = {
    * Checks if any local changes have been made to the configurations.
    */
   hasCustomEdits: (): boolean => toolState.dirtyProfiles.size > 0,
-  saveConfig: async (callToActionType: 'save-success' | 'script') => {
+  saveConfig: async () => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
     }
 
-    toolState.lastSaveAction = callToActionType
     toolState.isSubmitting = true
     try {
       const configToSave = {

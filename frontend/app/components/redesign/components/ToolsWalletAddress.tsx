@@ -68,8 +68,8 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
         openDialog(
           <OverridePresetModal
             fetchedConfigs={result.fetchedConfigs}
-            currentLocalConfigs={snap.configurations}
-            modifiedVersions={[...snap.dirtyProfiles]}
+            currentLocalConfigs={{ ...toolState.configurations }}
+            modifiedVersions={[...toolState.dirtyProfiles]}
           />
         )
         return

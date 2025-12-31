@@ -19,7 +19,7 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
   return (
     <BaseModal
       className="p-8 pb-4
-      flex flex-col items-center gap-6 w-[426px]"
+        flex flex-col items-center gap-6 w-[426px]"
     >
       <div className="flex items-center justify-center">
         {status === 'error' || fieldErrors ? (

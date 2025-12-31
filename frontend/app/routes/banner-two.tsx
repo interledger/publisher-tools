@@ -14,11 +14,9 @@ import {
   BuilderBackground,
   ToolsSecondaryButton,
   ToolsPrimaryButton,
-  WalletOwnershipModal,
   StepsIndicator,
   MobileStepsIndicator,
-  BuilderPresetTabs,
-  useSaveResultModal
+  BuilderPresetTabs
 } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
@@ -26,9 +24,9 @@ import {
   type BannerHandle
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
-import { useDialog } from '~/hooks/useDialog'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import { useSaveConfig } from '~/hooks/useSaveConfig'
 import {
   actions,
   banner,
@@ -87,8 +85,7 @@ export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
   const navigate = useNavigate()
-  const [openDialog] = useDialog()
-  const showSaveResult = useSaveResultModal()
+  const { save, saveLastAction } = useSaveConfig()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -108,7 +105,10 @@ export default function Banner() {
     loadState(OP_WALLET_ADDRESS)
     persistState()
   }, [OP_WALLET_ADDRESS])
-  useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse)
+
+  useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
+    onGrantSuccess: saveLastAction
+  })
 
   const scrollToWalletAddress = () => {
     if (!walletAddressRef.current) {
@@ -142,26 +142,7 @@ export default function Banner() {
 
     setLoading(true)
     try {
-      const response = await toolActions.saveConfig(action)
-      if (!response.success && response.data?.grantRequired) {
-        openDialog(
-          <WalletOwnershipModal grantRedirect={response.data.grantRequired} />
-        )
-
-        return
-      }
-
-      showSaveResult(action)
-    } catch (err) {
-      const error = err as Error
-      console.error({ error })
-      const message = error.message
-      // @ts-expect-error TODO
-      const fieldErrors = error.cause?.details?.errors?.fieldErrors
-      showSaveResult(action, {
-        message,
-        fieldErrors
-      })
+      await save(action)
     } finally {
       setLoading(false)
     }

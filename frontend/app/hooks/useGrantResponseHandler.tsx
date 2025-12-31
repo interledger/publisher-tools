@@ -1,15 +1,19 @@
 import { useEffect } from 'react'
-import { SaveResultModal, useSaveResultModal } from '@/components'
+import { SaveResultModal } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
-import { toolState, toolActions } from '~/stores/toolStore'
+import { toolActions } from '~/stores/toolStore'
+
+interface UseGrantResponseHandlerOptions {
+  onGrantSuccess: () => void | Promise<unknown>
+}
 
 export const useGrantResponseHandler = (
   grantResponse: string,
   isGrantAccepted: boolean,
-  isGrantResponse: boolean
+  isGrantResponse: boolean,
+  options: UseGrantResponseHandlerOptions
 ) => {
   const [openDialog, closeDialog] = useDialog()
-  const showSaveResult = useSaveResultModal()
 
   useEffect(() => {
     if (!isGrantResponse) return
@@ -17,31 +21,21 @@ export const useGrantResponseHandler = (
     const handleGrantResponse = async () => {
       toolActions.setGrantResponse(grantResponse, isGrantAccepted)
 
-      if (!toolState.isGrantAccepted) {
+      if (!isGrantAccepted) {
+        const errorMessage = 'Grant was not accepted'
         openDialog(
           <SaveResultModal
             onDone={closeDialog}
-            message="Grant was not accepted"
+            message={errorMessage}
             status="error"
           />
         )
         return
       }
 
-      try {
-        await toolActions.saveConfig(toolState.lastSaveAction)
-        showSaveResult(toolState.lastSaveAction)
-      } catch (err) {
-        const error = err as Error
-        // @ts-expect-error TODO: type error.cause properly
-        const fieldErrors = error.cause?.details?.errors?.fieldErrors
-        showSaveResult(toolState.lastSaveAction, {
-          message: error.message,
-          fieldErrors
-        })
-      }
+      await options.onGrantSuccess()
     }
 
     handleGrantResponse()
-  }, [grantResponse, isGrantAccepted, isGrantResponse, showSaveResult])
+  }, [])
 }
