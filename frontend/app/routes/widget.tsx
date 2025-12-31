@@ -14,10 +14,6 @@ import {
   BuilderBackground,
   ToolsSecondaryButton,
   ToolsPrimaryButton,
-  SaveResultModal,
-  ScriptReadyModal,
-  WalletOwnershipModal,
-  OverridePresetModal,
   StepsIndicator,
   MobileStepsIndicator
 } from '@/components'
@@ -25,14 +21,15 @@ import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
+import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import { useSaveConfig } from '~/hooks/useSaveConfig'
 import {
   toolState,
   toolActions,
   persistState,
   loadState
 } from '~/stores/toolStore'
-import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
 
@@ -75,26 +72,24 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
-  const uiActions = useUIActions()
   const navigate = useNavigate()
+  const { save, saveLastAction } = useSaveConfig()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
-
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
     loadState(OP_WALLET_ADDRESS)
     persistState()
+  }, [OP_WALLET_ADDRESS])
 
-    if (isGrantResponse) {
-      toolActions.setGrantResponse(grantResponse, isGrantAccepted)
-      toolActions.handleGrantResponse()
-    }
-  }, [grantResponse, isGrantAccepted, isGrantResponse])
+  useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
+    onGrantSuccess: saveLastAction
+  })
 
   const scrollToWalletAddress = () => {
     if (!walletAddressRef.current) {
@@ -128,30 +123,10 @@ export default function Widget() {
 
     setLoading(true)
     try {
-      await toolActions.saveConfig(action)
-    } catch (err) {
-      const error = err as Error
-      console.error({ error })
-      const message = error.message
-      // @ts-expect-error TODO
-      const fieldErrors = error.cause?.details?.errors?.fieldErrors
-      toolActions.setModal({
-        type: 'save-error',
-        error: { message, fieldErrors }
-      })
+      await save(action)
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleConfirmWalletOwnership = () => {
-    if (snap.modal?.grantRedirectURI) {
-      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
-    }
-  }
-
-  const handleCloseModal = () => {
-    toolActions.setModal(undefined)
   }
 
   const handleRefresh = (section: 'content' | 'appearance') => {
@@ -282,66 +257,6 @@ export default function Widget() {
           </div>
         </div>
       </div>
-
-      {snap.modal?.type === 'script' && (
-        <ScriptReadyModal
-          isOpen={true}
-          onClose={handleCloseModal}
-          scriptContent={toolActions.getScriptToDisplay()}
-        />
-      )}
-
-      {snap.modal?.type === 'save-success' && (
-        <SaveResultModal
-          isOpen={true}
-          onClose={handleCloseModal}
-          onDone={handleCloseModal}
-          message="Your edits have been saved"
-          isSuccess={true}
-        />
-      )}
-
-      {snap.modal?.type === 'save-error' && (
-        <SaveResultModal
-          isOpen={true}
-          onClose={handleCloseModal}
-          onDone={handleCloseModal}
-          fieldErrors={snap.modal?.error?.fieldErrors}
-          message={
-            snap.modal?.error?.message ||
-            (!snap.isGrantAccepted
-              ? String(snap.grantResponse)
-              : 'Error saving your edits')
-          }
-          isSuccess={!snap.modal.error && snap.isGrantAccepted}
-        />
-      )}
-
-      {snap.modal?.type === 'wallet-ownership' && (
-        <WalletOwnershipModal
-          isOpen={true}
-          onClose={handleCloseModal}
-          onConfirm={handleConfirmWalletOwnership}
-          walletAddress={snap.walletAddress}
-        />
-      )}
-
-      {snap.modal?.type === 'override-preset' && (
-        <OverridePresetModal
-          onClose={handleCloseModal}
-          onOverride={async (selectedLocalConfigs) => {
-            toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-            await toolActions.saveConfig('save-success')
-          }}
-          onAddWalletAddress={() => {
-            toolActions.resetWalletConnection()
-            uiActions.focusWalletInput()
-          }}
-          fetchedConfigs={snap.modal?.fetchedConfigs}
-          currentLocalConfigs={snap.modal?.currentLocalConfigs}
-          modifiedVersions={snap.modal?.modifiedConfigs || []}
-        />
-      )}
     </div>
   )
 }

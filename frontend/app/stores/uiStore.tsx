@@ -8,6 +8,7 @@ import React, {
   useMemo
 } from 'react'
 import type { ReactNode } from 'react'
+import { DialogProvider } from '@/components'
 import { toolActions } from '~/stores/toolStore'
 
 type UIState = {
@@ -95,7 +96,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   return (
     <UIStateContext.Provider value={state}>
       <UIActionsContext.Provider value={actions}>
-        {children}
+        <DialogProvider>{children}</DialogProvider>
       </UIActionsContext.Provider>
     </UIStateContext.Provider>
   )

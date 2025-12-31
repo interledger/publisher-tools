@@ -7,12 +7,14 @@ import {
   toWalletAddressUrl
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
+import { useDialog } from '~/hooks/useDialog'
 import type { ElementErrors } from '~/lib/types'
 import { actions } from '~/stores/banner-store'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { convertFrom } from '~/utils/profile-converter'
 import { InputField } from './InputField'
+import OverridePresetModal from './OverridePresetModal'
 import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 import { Tooltip } from './Tooltip'
 import { Heading5 } from '../Typography'
@@ -23,6 +25,7 @@ interface ToolsWalletAddressProps {
 
 export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   const snap = useSnapshot(toolState, { sync: true })
+  const [openDialog] = useDialog()
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
@@ -62,7 +65,13 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       const result = await toolActions.fetchRemoteConfigs(walletAddressInfo.id)
 
       if (result.hasConflict) {
-        toolActions.handleConfigurationConflict(result.fetchedConfigs)
+        openDialog(
+          <OverridePresetModal
+            fetchedConfigs={result.fetchedConfigs}
+            currentLocalConfigs={{ ...toolState.configurations }}
+            modifiedVersions={[...toolState.dirtyProfiles]}
+          />
+        )
         return
       }
 

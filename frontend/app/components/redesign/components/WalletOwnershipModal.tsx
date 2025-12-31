@@ -1,25 +1,18 @@
 import React from 'react'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { Heading5, BodyEmphasis } from '../Typography'
+import { useSnapshot } from 'valtio'
+import { ToolsSecondaryButton } from '@/components'
+import { Heading5, BodyEmphasis } from '@/typography'
+import { toolState } from '~/stores/toolStore'
 import { BaseModal } from './modals/BaseModal'
 
 interface WalletOwnershipModalProps {
-  isOpen?: boolean
-  onClose?: () => void
-  onConfirm?: () => void
-  walletAddress?: string
-  className?: string
+  grantRedirect: string
 }
 
 export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
-  isOpen = true,
-  onConfirm,
-  walletAddress = ''
+  grantRedirect
 }) => {
-  if (!isOpen) {
-    return null
-  }
-
+  const { walletAddress } = useSnapshot(toolState)
   return (
     <BaseModal
       className="p-8 pb-4
@@ -43,7 +36,9 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
       <div className="w-full">
         <ToolsSecondaryButton
           className="w-full flex items-center justify-center"
-          onClick={onConfirm}
+          onClick={() => {
+            window.location.href = grantRedirect
+          }}
         >
           Confirm
         </ToolsSecondaryButton>

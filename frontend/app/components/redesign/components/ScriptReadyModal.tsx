@@ -1,23 +1,15 @@
 import React from 'react'
-import { SVGMarkSuccess } from '~/assets/svg'
-import { ToolsPrimaryButton } from './ToolsPrimaryButton'
-import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
+import { useSnapshot } from 'valtio'
+import { SVGMarkSuccess } from '@/assets'
+import { ToolsPrimaryButton } from '@/components'
+import { toWalletAddressUrl } from '@shared/utils'
+import { toolState } from '~/stores/toolStore'
 import { BaseModal } from './modals/BaseModal'
+import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
-interface ScriptReadyModalProps {
-  isOpen?: boolean
-  onClose?: () => void
-  scriptContent: string
-  className?: string
-}
-
-export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
-  isOpen = true,
-  scriptContent
-}) => {
+export const ScriptReadyModal: React.FC = () => {
+  const scriptContent = getScriptToDisplay()
   const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
-
-  if (!isOpen) return null
 
   return (
     <BaseModal
@@ -49,6 +41,31 @@ export const ScriptReadyModal: React.FC<ScriptReadyModalProps> = ({
       </div>
     </BaseModal>
   )
+}
+
+function getScriptToDisplay(): string {
+  const {
+    walletAddress,
+    walletAddressId,
+    currentToolType: toolType,
+    activeVersion: preset,
+    cdnUrl
+  } = useSnapshot(toolState)
+
+  const wa = toWalletAddressUrl(walletAddress)
+  const src = new URL(`/${toolType}.js`, cdnUrl).href
+
+  const script = document.createElement('script')
+  script.id = `wmt-${toolType}-init-script`
+  script.type = 'module'
+  script.src = src
+  script.dataset.walletAddress = wa
+  if (walletAddressId && wa !== walletAddressId) {
+    script.dataset.walletAddressId = walletAddressId
+  }
+  script.dataset.tag = preset
+
+  return script.outerHTML
 }
 
 export default ScriptReadyModal

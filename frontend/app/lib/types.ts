@@ -6,23 +6,6 @@ import type {
   createWidgetSchema
 } from '../utils/validate.server.js'
 
-export type ModalType = {
-  type:
-    | 'script'
-    | 'wallet-ownership'
-    | 'grant-response'
-    | 'save-error'
-    | 'save-success'
-    | 'override-preset'
-  // set when type is "save-error"
-  error?: { message?: string; fieldErrors?: Record<string, string> }
-  grantRedirectIntent?: string
-  grantRedirectURI?: string
-  fetchedConfigs?: Record<string, ElementConfigType>
-  currentLocalConfigs?: Record<string, ElementConfigType>
-  modifiedConfigs?: readonly string[]
-}
-
 export type SanitizedFields = Pick<
   ElementConfigType,
   | 'bannerTitleText'
