@@ -13,7 +13,7 @@ import { useUIActions } from '~/stores/uiStore'
 import { BaseModal } from './modals/BaseModal'
 
 interface OverridePresetModalProps {
-  fetchedConfigs: Record<string, ElementConfigType>
+  fetchedConfigs?: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
 }
@@ -106,33 +106,34 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   const handleOverride = async () => {
-    if (fetchedConfigs) {
-      setIsOverriding(true)
-      try {
-        // build the selected LOCAL configurations (the ones user wants to keep)
-        const selectedLocalConfigs: Record<string, ElementConfigType> = {}
-
-        selectedConfigs.forEach((localStableKey) => {
-          if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
-            selectedLocalConfigs[localStableKey] =
-              currentLocalConfigs[localStableKey]
-          } else {
-            console.warn(
-              `No local configuration found for stable key: ${localStableKey}`
-            )
-          }
-        })
-
-        toolActions.overrideWithFetchedConfigs(
-          selectedLocalConfigs,
-          fetchedConfigs
-        )
-        await saveLastAction()
-      } catch (error) {
-        console.error('Error overriding configurations:', error)
-      } finally {
-        setIsOverriding(false)
+    setIsOverriding(true)
+    try {
+      if (!fetchedConfigs) {
+        throw new Error('Failed to fetch remote configurations')
       }
+      // build the selected LOCAL configurations (the ones user wants to keep)
+      const selectedLocalConfigs: Record<string, ElementConfigType> = {}
+
+      selectedConfigs.forEach((localStableKey) => {
+        if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
+          selectedLocalConfigs[localStableKey] =
+            currentLocalConfigs[localStableKey]
+        } else {
+          console.warn(
+            `No local configuration found for stable key: ${localStableKey}`
+          )
+        }
+      })
+
+      toolActions.overrideWithFetchedConfigs(
+        selectedLocalConfigs,
+        fetchedConfigs
+      )
+      await saveLastAction()
+    } catch (error) {
+      console.error('Error overriding configurations:', error)
+    } finally {
+      setIsOverriding(false)
     }
   }
 

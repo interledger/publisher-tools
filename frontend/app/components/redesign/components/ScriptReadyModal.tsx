@@ -8,7 +8,8 @@ import { BaseModal } from './modals/BaseModal'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 
 export const ScriptReadyModal: React.FC = () => {
-  const scriptContent = getScriptToDisplay()
+  const snap = useSnapshot(toolState)
+  const scriptContent = getScriptToDisplay(snap)
   const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
 
   return (
@@ -43,14 +44,20 @@ export const ScriptReadyModal: React.FC = () => {
   )
 }
 
-function getScriptToDisplay(): string {
+function getScriptToDisplay(snapshot: {
+  walletAddress: string
+  walletAddressId: string
+  currentToolType: string
+  activeVersion: string
+  cdnUrl: string
+}): string {
   const {
     walletAddress,
     walletAddressId,
     currentToolType: toolType,
     activeVersion: preset,
     cdnUrl
-  } = useSnapshot(toolState)
+  } = snapshot
 
   const wa = toWalletAddressUrl(walletAddress)
   const src = new URL(`/${toolType}.js`, cdnUrl).href
