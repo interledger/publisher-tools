@@ -142,12 +142,6 @@ export default function Widget() {
     }
   }
 
-  const handleConfirmWalletOwnership = () => {
-    if (snap.modal?.grantRedirectURI) {
-      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
-    }
-  }
-
   const handleCloseModal = () => {
     toolActions.setModal(undefined)
   }

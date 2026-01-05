@@ -167,12 +167,6 @@ export default function Banner() {
     }
   }
 
-  const handleConfirmWalletOwnership = () => {
-    if (snap.modal?.grantRedirectURI) {
-      toolActions.confirmWalletOwnership(snap.modal.grantRedirectURI)
-    }
-  }
-
   const handleCloseModal = () => {
     toolActions.setModal(undefined)
   }
