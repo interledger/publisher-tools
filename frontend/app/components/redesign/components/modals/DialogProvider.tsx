@@ -5,9 +5,6 @@ import {
   useMemo,
   type ReactNode
 } from 'react'
-import { useDialog } from '~/hooks/useDialog'
-import SaveResultModal from '../SaveResultModal'
-import ScriptReadyModal from '../ScriptReadyModal'
 
 export const DialogContext = createContext<{
   openDialog: (dialog: ReactNode) => void
@@ -34,33 +31,4 @@ export const DialogProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </DialogContext.Provider>
   )
-}
-
-export const useSaveResultModal = () => {
-  const [openDialog, closeDialog] = useDialog()
-
-  const showSaveResult = useCallback(
-    (
-      action: 'save-success' | 'script',
-      error?: { message?: string; fieldErrors?: Record<string, string> }
-    ) => {
-      if (error) {
-        openDialog(
-          <SaveResultModal
-            onDone={closeDialog}
-            message={error.message || 'An error occurred'}
-            fieldErrors={error.fieldErrors}
-            status="error"
-          />
-        )
-      } else if (action === 'script') {
-        openDialog(<ScriptReadyModal />)
-      } else {
-        openDialog(<SaveResultModal onDone={closeDialog} />)
-      }
-    },
-    [openDialog, closeDialog]
-  )
-
-  return showSaveResult
 }
