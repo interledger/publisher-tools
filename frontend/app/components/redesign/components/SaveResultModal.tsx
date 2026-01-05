@@ -1,38 +1,31 @@
 import React from 'react'
-import { SVGMarkSuccess, SVGErrorVector } from '~/assets/svg'
+import { SVGMarkSuccess, SVGErrorVector } from '@/assets'
+import { ToolsSecondaryButton } from '@/components'
 import { BaseModal } from './modals/BaseModal'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
 
 interface SaveResultModalProps {
-  isOpen?: boolean
-  onClose?: () => void
   onDone?: () => void
   message?: string
   fieldErrors?: Record<string, string>
-  isSuccess?: boolean
+  status?: 'error' | 'success'
 }
 
 export const SaveResultModal: React.FC<SaveResultModalProps> = ({
-  isOpen = true,
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
-  isSuccess = true
+  status
 }) => {
-  if (!isOpen) {
-    return null
-  }
-
   return (
     <BaseModal
       className="p-8 pb-4
         flex flex-col items-center gap-6 w-[426px]"
     >
       <div className="flex items-center justify-center">
-        {isSuccess ? (
-          <SVGMarkSuccess className="w-[60px] h-[60px]" />
-        ) : (
+        {status === 'error' || fieldErrors ? (
           <SVGErrorVector className="w-[60px] h-[60px]" />
+        ) : (
+          <SVGMarkSuccess className="w-[60px] h-[60px]" />
         )}
       </div>
       <div className="text-center">
@@ -62,4 +55,5 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
     </BaseModal>
   )
 }
+
 export default SaveResultModal

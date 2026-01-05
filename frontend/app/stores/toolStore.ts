@@ -337,13 +337,9 @@ export const toolActions = {
    * @param selectedLocalConfigs - Record of configurations the user wants to keep (not override)
    */
   overrideWithFetchedConfigs: (
-    selectedLocalConfigs: Record<string, ElementConfigType>
+    selectedLocalConfigs: Record<string, ElementConfigType>,
+    fetchedConfigs: Record<string, ElementConfigType>
   ) => {
-    const fetchedConfigs =
-      toolState.modal?.type === 'override-preset'
-        ? toolState.modal.fetchedConfigs
-        : {}
-
     if (!fetchedConfigs) {
       console.error('No fetched configs found in modal state')
       return

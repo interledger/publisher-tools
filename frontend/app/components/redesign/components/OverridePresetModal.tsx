@@ -1,41 +1,28 @@
 import React, { useState } from 'react'
+import { SVGSpinner } from '@/assets'
+import {
+  ConfigCondition,
+  ToolsPrimaryButton,
+  ToolsSecondaryButton
+} from '@/components'
 import type { ElementConfigType } from '@shared/types'
-import { SVGSpinner } from '~/assets/svg'
-import { ConfigCondition } from './ConfigCondition'
+import { toolActions } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import { BaseModal } from './modals/BaseModal'
-import { ToolsPrimaryButton } from './ToolsPrimaryButton'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-
-interface ConfigItem {
-  id: string
-  number: string | number
-  title: string
-  hasLocalChanges: boolean
-  presetName: string
-  hasEdits: boolean
-}
 
 interface OverridePresetModalProps {
-  onClose?: () => void
-  onOverride?: (
-    selectedLocalConfigs: Record<string, ElementConfigType>
-  ) => Promise<void>
-  onAddWalletAddress?: () => void
   fetchedConfigs?: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
-  configs?: ConfigItem[]
 }
 
 export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
-  onOverride,
-  onAddWalletAddress,
   fetchedConfigs,
   currentLocalConfigs,
-  modifiedVersions = [],
-  configs
+  modifiedVersions = []
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
+  const uiActions = useUIActions()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
       return []
@@ -88,15 +75,19 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
     })
   }, [fetchedConfigs, currentLocalConfigs, modifiedVersions])
 
-  const configsToUse = configs || generatedConfigs
-
   const [selectedConfigs, setSelectedConfigs] = useState<string[]>(() => {
     // initially select only configurations that have local modifications
-    const modifiedVersionsWithEdits = configsToUse.filter(
+    const modifiedVersionsWithEdits = generatedConfigs.filter(
       (config) => config.hasEdits
     )
     return modifiedVersionsWithEdits.map((config) => config.id)
   })
+
+  const onAddWalletAddress = () => {
+    toolActions.setWalletConnected(false)
+    toolActions.setHasRemoteConfigs(false)
+    uiActions.focusWalletInput()
+  }
 
   const handleConfigSelection = (configId: string, checked: boolean) => {
     setSelectedConfigs((prev) => {
@@ -110,29 +101,34 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   const handleOverride = async () => {
-    if (onOverride && currentLocalConfigs) {
-      setIsOverriding(true)
-      try {
-        // build the selected LOCAL configurations (the ones user wants to keep)
-        const selectedLocalConfigs: Record<string, ElementConfigType> = {}
-
-        selectedConfigs.forEach((localStableKey) => {
-          if (currentLocalConfigs[localStableKey]) {
-            selectedLocalConfigs[localStableKey] =
-              currentLocalConfigs[localStableKey]
-          } else {
-            console.warn(
-              `No local configuration found for stable key: ${localStableKey}`
-            )
-          }
-        })
-
-        await onOverride(selectedLocalConfigs)
-      } catch (error) {
-        console.error('Error overriding configurations:', error)
-      } finally {
-        setIsOverriding(false)
+    setIsOverriding(true)
+    try {
+      if (!fetchedConfigs) {
+        throw new Error('Failed to fetch remote configurations')
       }
+      // build the selected LOCAL configurations (the ones user wants to keep)
+      const selectedLocalConfigs: Record<string, ElementConfigType> = {}
+
+      selectedConfigs.forEach((localStableKey) => {
+        if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
+          selectedLocalConfigs[localStableKey] =
+            currentLocalConfigs[localStableKey]
+        } else {
+          console.warn(
+            `No local configuration found for stable key: ${localStableKey}`
+          )
+        }
+      })
+
+      toolActions.overrideWithFetchedConfigs(
+        selectedLocalConfigs,
+        fetchedConfigs
+      )
+      await toolActions.saveConfig('save-success')
+    } catch (error) {
+      console.error('Error overriding configurations:', error)
+    } finally {
+      setIsOverriding(false)
     }
   }
 
@@ -158,7 +154,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           </div>
         </div>
 
-        {configsToUse.map((config) => (
+        {generatedConfigs.map((config) => (
           <ConfigCondition
             key={config.id}
             id={config.id}

@@ -32,7 +32,6 @@ import {
   persistState,
   loadState
 } from '~/stores/toolStore'
-import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
 
@@ -75,7 +74,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
-  const uiActions = useUIActions()
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -283,28 +281,17 @@ export default function Widget() {
         </div>
       </div>
 
-      {snap.modal?.type === 'script' && (
-        <ScriptReadyModal
-          isOpen={true}
-          onClose={handleCloseModal}
-          scriptContent={toolActions.getScriptToDisplay()}
-        />
-      )}
+      {snap.modal?.type === 'script' && <ScriptReadyModal />}
 
       {snap.modal?.type === 'save-success' && (
         <SaveResultModal
-          isOpen={true}
-          onClose={handleCloseModal}
           onDone={handleCloseModal}
           message="Your edits have been saved"
-          isSuccess={true}
         />
       )}
 
       {snap.modal?.type === 'save-error' && (
         <SaveResultModal
-          isOpen={true}
-          onClose={handleCloseModal}
           onDone={handleCloseModal}
           fieldErrors={snap.modal?.error?.fieldErrors}
           message={
@@ -313,33 +300,18 @@ export default function Widget() {
               ? String(snap.grantResponse)
               : 'Error saving your edits')
           }
-          isSuccess={!snap.modal.error && snap.isGrantAccepted}
         />
       )}
 
       {snap.modal?.type === 'wallet-ownership' && (
-        <WalletOwnershipModal
-          isOpen={true}
-          onClose={handleCloseModal}
-          onConfirm={handleConfirmWalletOwnership}
-          walletAddress={snap.walletAddress}
-        />
+        <WalletOwnershipModal grantRedirect={snap.modal.grantRedirectURI!} />
       )}
 
       {snap.modal?.type === 'override-preset' && (
         <OverridePresetModal
-          onClose={handleCloseModal}
-          onOverride={async (selectedLocalConfigs) => {
-            toolActions.overrideWithFetchedConfigs(selectedLocalConfigs)
-            await toolActions.saveConfig('save-success')
-          }}
-          onAddWalletAddress={() => {
-            toolActions.resetWalletConnection()
-            uiActions.focusWalletInput()
-          }}
           fetchedConfigs={snap.modal?.fetchedConfigs}
           currentLocalConfigs={snap.modal?.currentLocalConfigs}
-          modifiedVersions={snap.modal?.modifiedConfigs || []}
+          modifiedVersions={snap.modal?.modifiedConfigs}
         />
       )}
     </div>
