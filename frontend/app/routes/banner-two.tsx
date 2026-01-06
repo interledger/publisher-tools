@@ -14,10 +14,6 @@ import {
   BuilderBackground,
   ToolsSecondaryButton,
   ToolsPrimaryButton,
-  SaveResultModal,
-  ScriptReadyModal,
-  WalletOwnershipModal,
-  OverridePresetModal,
   StepsIndicator,
   MobileStepsIndicator,
   BuilderPresetTabs
@@ -28,7 +24,9 @@ import {
   type BannerHandle
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
+import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import { useSaveConfig } from '~/hooks/useSaveConfig'
 import {
   actions,
   banner,
@@ -87,6 +85,7 @@ export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
   const navigate = useNavigate()
+  const { save, saveLastAction } = useSaveConfig()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -94,24 +93,22 @@ export default function Banner() {
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
-
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    loadState(OP_WALLET_ADDRESS)
-    persistState()
-
     subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
     subscribeSnapshotsToStorage()
 
-    if (isGrantResponse) {
-      toolActions.setGrantResponse(grantResponse, isGrantAccepted)
-      toolActions.handleGrantResponse()
-    }
-  }, [grantResponse, isGrantAccepted, isGrantResponse])
+    loadState(OP_WALLET_ADDRESS)
+    persistState()
+  }, [OP_WALLET_ADDRESS])
+
+  useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
+    onGrantSuccess: saveLastAction
+  })
 
   const scrollToWalletAddress = () => {
     if (!walletAddressRef.current) {
@@ -145,17 +142,7 @@ export default function Banner() {
 
     setLoading(true)
     try {
-      await toolActions.saveConfig(action)
-    } catch (err) {
-      const error = err as Error
-      console.error({ error })
-      const message = error.message
-      // @ts-expect-error TODO
-      const fieldErrors = error.cause?.details?.errors?.fieldErrors
-      toolActions.setModal({
-        type: 'save-error',
-        error: { message, fieldErrors }
-      })
+      await save(action)
     } finally {
       setLoading(false)
     }
@@ -165,10 +152,6 @@ export default function Banner() {
     if (bannerRef.current) {
       bannerRef.current.triggerPreview()
     }
-  }
-
-  const handleCloseModal = () => {
-    toolActions.setModal(undefined)
   }
 
   return (
@@ -298,40 +281,6 @@ export default function Banner() {
           </div>
         </div>
       </div>
-
-      {snap.modal?.type === 'script' && <ScriptReadyModal />}
-
-      {snap.modal?.type === 'save-success' && (
-        <SaveResultModal
-          onDone={handleCloseModal}
-          message="Your edits have been saved"
-        />
-      )}
-
-      {snap.modal?.type === 'save-error' && (
-        <SaveResultModal
-          onDone={handleCloseModal}
-          fieldErrors={snap.modal?.error?.fieldErrors}
-          message={
-            snap.modal?.error?.message ||
-            (!snap.isGrantAccepted
-              ? String(snap.grantResponse)
-              : 'Error saving your edits')
-          }
-        />
-      )}
-
-      {snap.modal?.type === 'wallet-ownership' && (
-        <WalletOwnershipModal grantRedirect={snap.modal.grantRedirectURI!} />
-      )}
-
-      {snap.modal?.type === 'override-preset' && (
-        <OverridePresetModal
-          fetchedConfigs={snap.modal?.fetchedConfigs}
-          currentLocalConfigs={snap.modal?.currentLocalConfigs}
-          modifiedVersions={snap.modal?.modifiedConfigs}
-        />
-      )}
     </div>
   )
 }

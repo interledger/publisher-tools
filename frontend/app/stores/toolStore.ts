@@ -3,10 +3,8 @@ import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { ElementConfigType } from '@shared/types'
-import { toWalletAddressUrl } from '@shared/utils'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
-import type { ModalType } from '~/lib/types'
 import { omit } from '~/utils/utils.storage'
 
 const STORAGE_KEY = 'valtio-store'
@@ -78,7 +76,6 @@ export const toolState = proxy({
   },
 
   // UI state
-  modal: undefined as ModalType | undefined,
   lastSaveAction: 'save-success' as 'save-success' | 'script',
 
   // loading states
@@ -144,10 +141,6 @@ export const toolActions = {
     toolState.dirtyProfiles.clear()
   },
 
-  setModal: (modal: ModalType | undefined) => {
-    toolState.modal = modal
-  },
-
   setCurrentToolType: (toolType: ToolType) => {
     toolState.currentToolType = toolType
   },
@@ -176,29 +169,6 @@ export const toolActions = {
   setBuildCompleteStep: (step: StepStatus) => {
     toolState.buildStep = step
   },
-  getScriptToDisplay: (): string => {
-    const {
-      walletAddress,
-      walletAddressId,
-      currentToolType: toolType,
-      activeVersion: preset,
-      cdnUrl
-    } = toolState
-
-    const wa = toWalletAddressUrl(walletAddress)
-    const src = new URL(`/${toolType}.js`, cdnUrl).href
-
-    const script = document.createElement('script')
-    script.id = `wmt-${toolType}-init-script`
-    script.type = 'module'
-    script.src = src
-    script.dataset.walletAddress = wa
-    if (walletAddressId && wa !== walletAddressId) {
-      script.dataset.walletAddressId = walletAddressId
-    }
-    script.dataset.tag = preset
-    return script.outerHTML
-  },
   setWalletAddress: (walletAddress: string) => {
     toolState.walletAddress = walletAddress
   },
@@ -213,12 +183,11 @@ export const toolActions = {
    * Checks if any local changes have been made to the configurations.
    */
   hasCustomEdits: (): boolean => toolState.dirtyProfiles.size > 0,
-  saveConfig: async (callToActionType: 'save-success' | 'script') => {
+  saveConfig: async () => {
     if (!toolState.walletAddress) {
       throw new Error('Wallet address is missing')
     }
 
-    toolState.lastSaveAction = callToActionType
     toolState.isSubmitting = true
     try {
       const configToSave = {
@@ -259,18 +228,8 @@ export const toolActions = {
       }
 
       const data = (await response.json()) as SaveConfigResponse
-
       if (data?.grantRequired) {
-        toolState.modal = {
-          type: 'wallet-ownership',
-          grantRedirectURI: data.grantRequired,
-          grantRedirectIntent: data.intent
-        }
-        return {
-          requiresGrant: true,
-          grantRedirectURI: data.grantRequired,
-          grantRedirectIntent: data.intent
-        }
+        return { success: false, data }
       }
 
       STABLE_KEYS.forEach((profileId) => {
@@ -278,9 +237,8 @@ export const toolActions = {
           ...toolState.configurations[profileId]
         }
       })
-
-      toolState.modal = { type: callToActionType }
       toolState.dirtyProfiles.clear()
+
       return { success: true, data }
     } catch (error) {
       console.error('Save error:', error)
@@ -290,24 +248,9 @@ export const toolActions = {
     }
   },
 
-  confirmWalletOwnership: (grantRedirectURI?: string) => {
-    if (!grantRedirectURI) {
-      throw new Error('Grant redirect URI not found')
-    }
-    window.location.href = grantRedirectURI
-  },
   setGrantResponse: (grantResponse: string, isGrantAccepted: boolean) => {
     toolState.grantResponse = grantResponse
     toolState.isGrantAccepted = isGrantAccepted
-  },
-  handleGrantResponse: () => {
-    if (toolState.isGrantAccepted) {
-      toolActions.saveConfig(toolState.lastSaveAction)
-    } else {
-      toolState.modal = {
-        type: 'save-error'
-      }
-    }
   },
 
   /**
@@ -364,13 +307,6 @@ export const toolActions = {
     toolActions.setWalletConnected(true)
   },
 
-  resetWalletConnection: () => {
-    toolActions.setWalletConnected(false)
-    toolActions.setHasRemoteConfigs(false)
-    toolActions.clearConflictState()
-    toolActions.setModal(undefined)
-  },
-
   /**
    * Fetches existing configurations from the database for a given wallet address
    * and performs conflict detection with local modifications.
@@ -419,41 +355,6 @@ export const toolActions = {
       hasCustomEdits,
       hasLocalModifications,
       hasConflict: hasCustomEdits && hasLocalModifications
-    }
-  },
-
-  /**
-   * Handles configuration conflicts by showing the OverridePresetModal.
-   *
-   * This function is called when both database configurations and local modifications
-   * exist for the same wallet address, creating a conflict that requires user resolution.
-   *
-   * It sets up the modal with all necessary data:
-   * - fetchedConfigs: The configurations retrieved from the database
-   * - currentLocalConfigs: The current local configurations (including modifications)
-   * - modifiedConfigs: Array of stable keys that have been modified locally
-   *
-   * The modal will present options to the user:
-   * - Keep local changes (ignore database versions)
-   * - Override with database versions (lose local changes)
-   * - Use different wallet address (start over)
-   *
-   * @param fetchedConfigs - The configurations retrieved from the database
-   */
-  handleConfigurationConflict: (
-    fetchedConfigs: Record<string, ElementConfigType>
-  ) => {
-    toolActions.setModal({
-      type: 'override-preset',
-      fetchedConfigs,
-      currentLocalConfigs: { ...toolState.configurations },
-      modifiedConfigs: [...toolState.dirtyProfiles]
-    })
-  },
-
-  clearConflictState: () => {
-    if (toolState.modal?.type === 'override-preset') {
-      toolState.modal = undefined
     }
   },
 
