@@ -51,7 +51,7 @@
     "@shared/default-data": "workspace:^",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
-    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/forms": "^0.5.11",
     "@types/he": "^1.2.3",
     "@types/node": "^24.6.0",
     "@types/react": "^19.2.7",
