@@ -3,14 +3,14 @@ import { SVGMarkSuccess, SVGErrorVector } from '@/assets'
 import { ToolsSecondaryButton } from '@/components'
 import { BaseDialog } from './BaseDialog'
 
-interface StatusDialogProps {
+interface Props {
   onDone?: () => void
   message?: string
   fieldErrors?: Record<string, string>
   status?: 'error' | 'success'
 }
 
-export const StatusDialog: React.FC<StatusDialogProps> = ({
+export const StatusDialog: React.FC<Props> = ({
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
@@ -55,5 +55,3 @@ export const StatusDialog: React.FC<StatusDialogProps> = ({
     </BaseDialog>
   )
 }
-
-export default StatusDialog

@@ -5,13 +5,11 @@ import { Heading5, BodyEmphasis } from '@/typography'
 import { toolState } from '~/stores/toolStore'
 import { BaseDialog } from './BaseDialog'
 
-interface GrantConfirmationDialogProps {
+interface Props {
   grantRedirect: string
 }
 
-export const GrantConfirmationDialog: React.FC<
-  GrantConfirmationDialogProps
-> = ({ grantRedirect }) => {
+export const GrantConfirmationDialog: React.FC<Props> = ({ grantRedirect }) => {
   const { walletAddress } = useSnapshot(toolState)
   return (
     <BaseDialog
@@ -46,5 +44,3 @@ export const GrantConfirmationDialog: React.FC<
     </BaseDialog>
   )
 }
-
-export default GrantConfirmationDialog

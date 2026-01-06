@@ -74,5 +74,3 @@ function getScriptToDisplay(snapshot: {
 
   return script.outerHTML
 }
-
-export default ScriptDialog

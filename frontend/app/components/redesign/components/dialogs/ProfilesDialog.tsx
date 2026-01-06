@@ -12,13 +12,13 @@ import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { BaseDialog } from './BaseDialog'
 
-interface ProfilesDialogProps {
+interface Props {
   fetchedConfigs?: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
 }
 
-export const ProfilesDialog: React.FC<ProfilesDialogProps> = ({
+export const ProfilesDialog: React.FC<Props> = ({
   fetchedConfigs,
   currentLocalConfigs,
   modifiedVersions = []
@@ -213,5 +213,3 @@ export const ProfilesDialog: React.FC<ProfilesDialogProps> = ({
     </BaseDialog>
   )
 }
-
-export default ProfilesDialog

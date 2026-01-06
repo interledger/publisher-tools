@@ -3,15 +3,12 @@ import { cx } from 'class-variance-authority'
 import { SVGClose } from '@/assets'
 import { useDialog } from '~/hooks/useDialog'
 
-interface DialogContainerProps {
+interface Props {
   children: React.ReactNode
   className?: string
 }
 
-export const BaseDialog: React.FC<DialogContainerProps> = ({
-  children,
-  className
-}) => {
+export const BaseDialog: React.FC<Props> = ({ children, className }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [, closeDialog] = useDialog()
 
