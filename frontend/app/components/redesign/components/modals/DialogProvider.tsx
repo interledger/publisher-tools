@@ -1,69 +1,33 @@
-import { createContext, useReducer, type ReactNode } from 'react'
-
-type DialogState = {
-  isOpen: boolean
-  dialog: ReactNode | null
-}
-
-type DialogAction =
-  | {
-      type: 'OPEN'
-      data: {
-        isOpen: true
-        dialog: ReactNode
-      }
-    }
-  | {
-      type: 'CLOSE'
-      data: {
-        isOpen: false
-        dialog: null
-      }
-    }
-
-const dialogInitialState: DialogState = {
-  isOpen: false,
-  dialog: null
-}
+import {
+  createContext,
+  useState,
+  useCallback,
+  useMemo,
+  type ReactNode
+} from 'react'
 
 export const DialogContext = createContext<{
-  state: DialogState
-  dispatch: React.Dispatch<DialogAction>
+  openDialog: (dialog: ReactNode) => void
+  closeDialog: () => void
 }>({
-  state: dialogInitialState,
-  dispatch: () => null
+  openDialog: () => null,
+  closeDialog: () => null
 })
 
-const reducer = (state: DialogState, action: DialogAction): DialogState => {
-  switch (action.type) {
-    case 'OPEN':
-      return {
-        ...state,
-        isOpen: action.data.isOpen,
-        dialog: action.data.dialog
-      }
-    case 'CLOSE':
-      return {
-        ...state,
-        isOpen: action.data.isOpen,
-        dialog: action.data.dialog
-      }
-  }
-}
-
 export const DialogProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(reducer, dialogInitialState)
+  const [dialog, setDialog] = useState<ReactNode | null>(null)
 
-  const Dialog = () => {
-    if (!state.isOpen) return null
-    if (!state.dialog) return null
+  const openDialog = useCallback((content: ReactNode) => setDialog(content), [])
+  const closeDialog = useCallback(() => setDialog(null), [])
 
-    return state.dialog
-  }
+  const value = useMemo(
+    () => ({ openDialog, closeDialog }),
+    [openDialog, closeDialog]
+  )
 
   return (
-    <DialogContext.Provider value={{ state, dispatch }}>
-      <Dialog />
+    <DialogContext.Provider value={value}>
+      {dialog}
       {children}
     </DialogContext.Provider>
   )
