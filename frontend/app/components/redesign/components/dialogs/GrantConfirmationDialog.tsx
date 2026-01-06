@@ -3,18 +3,18 @@ import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components'
 import { Heading5, BodyEmphasis } from '@/typography'
 import { toolState } from '~/stores/toolStore'
-import { BaseModal } from './modals/BaseModal'
+import { BaseDialog } from './BaseDialog'
 
-interface WalletOwnershipModalProps {
+interface GrantConfirmationDialogProps {
   grantRedirect: string
 }
 
-export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
-  grantRedirect
-}) => {
+export const GrantConfirmationDialog: React.FC<
+  GrantConfirmationDialogProps
+> = ({ grantRedirect }) => {
   const { walletAddress } = useSnapshot(toolState)
   return (
-    <BaseModal
+    <BaseDialog
       className="p-8 pb-4
         flex flex-col items-center gap-6 w-full max-w-[442px]"
     >
@@ -43,8 +43,8 @@ export const WalletOwnershipModal: React.FC<WalletOwnershipModalProps> = ({
           Confirm
         </ToolsSecondaryButton>
       </div>
-    </BaseModal>
+    </BaseDialog>
   )
 }
 
-export default WalletOwnershipModal
+export default GrantConfirmationDialog

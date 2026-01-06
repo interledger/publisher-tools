@@ -4,16 +4,16 @@ import { SVGMarkSuccess } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
 import { toWalletAddressUrl } from '@shared/utils'
 import { toolState } from '~/stores/toolStore'
-import { BaseModal } from './modals/BaseModal'
-import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
+import { BaseDialog } from './BaseDialog'
+import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 
-export const ScriptReadyModal: React.FC = () => {
+export const ScriptDialog: React.FC = () => {
   const snap = useSnapshot(toolState)
   const scriptContent = getScriptToDisplay(snap)
   const { isCopied, handleCopyClick } = useCopyToClipboard(scriptContent)
 
   return (
-    <BaseModal
+    <BaseDialog
       className="p-8 pb-4
         flex flex-col items-center gap-6 w-full max-w-[442px]"
     >
@@ -40,7 +40,7 @@ export const ScriptReadyModal: React.FC = () => {
           {isCopied ? 'Copied' : 'Copy'} to clipboard
         </ToolsPrimaryButton>
       </div>
-    </BaseModal>
+    </BaseDialog>
   )
 }
 
@@ -75,4 +75,4 @@ function getScriptToDisplay(snapshot: {
   return script.outerHTML
 }
 
-export default ScriptReadyModal
+export default ScriptDialog

@@ -10,15 +10,15 @@ import { useDialog } from '~/hooks/useDialog'
 import { useSaveConfig } from '~/hooks/useSaveConfig'
 import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
-import { BaseModal } from './modals/BaseModal'
+import { BaseDialog } from './BaseDialog'
 
-interface OverridePresetModalProps {
+interface ProfilesDialogProps {
   fetchedConfigs?: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
 }
 
-export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
+export const ProfilesDialog: React.FC<ProfilesDialogProps> = ({
   fetchedConfigs,
   currentLocalConfigs,
   modifiedVersions = []
@@ -138,7 +138,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   return (
-    <BaseModal
+    <BaseDialog
       className="pt-4xl pb-md px-0
         flex flex-col items-center gap-lg w-[514px]"
     >
@@ -210,8 +210,8 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           Add another wallet address
         </ToolsSecondaryButton>
       </div>
-    </BaseModal>
+    </BaseDialog>
   )
 }
 
-export default OverridePresetModal
+export default ProfilesDialog

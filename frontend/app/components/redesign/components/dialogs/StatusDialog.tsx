@@ -1,23 +1,23 @@
 import React from 'react'
 import { SVGMarkSuccess, SVGErrorVector } from '@/assets'
 import { ToolsSecondaryButton } from '@/components'
-import { BaseModal } from './modals/BaseModal'
+import { BaseDialog } from './BaseDialog'
 
-interface SaveResultModalProps {
+interface StatusDialogProps {
   onDone?: () => void
   message?: string
   fieldErrors?: Record<string, string>
   status?: 'error' | 'success'
 }
 
-export const SaveResultModal: React.FC<SaveResultModalProps> = ({
+export const StatusDialog: React.FC<StatusDialogProps> = ({
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
   status
 }) => {
   return (
-    <BaseModal
+    <BaseDialog
       className="p-8 pb-4
         flex flex-col items-center gap-6 w-[426px]"
     >
@@ -52,8 +52,8 @@ export const SaveResultModal: React.FC<SaveResultModalProps> = ({
           Done
         </ToolsSecondaryButton>
       </div>
-    </BaseModal>
+    </BaseDialog>
   )
 }
 
-export default SaveResultModal
+export default StatusDialog

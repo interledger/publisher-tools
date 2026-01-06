@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import {
-  SaveResultModal,
-  ScriptReadyModal,
-  WalletOwnershipModal
+  StatusDialog,
+  ScriptDialog,
+  GrantConfirmationDialog
 } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
 import { toolActions, toolState } from '~/stores/toolStore'
@@ -24,15 +24,17 @@ export const useSaveConfig = () => {
 
         if (!response.success && response.data?.grantRequired) {
           openDialog(
-            <WalletOwnershipModal grantRedirect={response.data.grantRequired} />
+            <GrantConfirmationDialog
+              grantRedirect={response.data.grantRequired}
+            />
           )
           return { success: false, grantRequired: true }
         }
 
         if (action === 'script') {
-          openDialog(<ScriptReadyModal />)
+          openDialog(<ScriptDialog />)
         } else {
-          openDialog(<SaveResultModal onDone={closeDialog} />)
+          openDialog(<StatusDialog onDone={closeDialog} />)
         }
         return { success: true }
       } catch (err) {
@@ -41,7 +43,7 @@ export const useSaveConfig = () => {
         // @ts-expect-error TODO: type error.cause properly
         const fieldErrors = error.cause?.details?.errors?.fieldErrors
         openDialog(
-          <SaveResultModal
+          <StatusDialog
             onDone={closeDialog}
             message={error.message || 'An error occurred'}
             fieldErrors={fieldErrors}

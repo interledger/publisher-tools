@@ -2,6 +2,13 @@ import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { useSnapshot } from 'valtio'
 import {
+  ToolsSecondaryButton,
+  InputField,
+  Tooltip,
+  ProfilesDialog
+} from '@/components'
+import { Heading5 } from '@/typography'
+import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl
@@ -13,11 +20,6 @@ import { actions } from '~/stores/banner-store'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { convertFrom } from '~/utils/profile-converter'
-import { InputField } from './InputField'
-import OverridePresetModal from './OverridePresetModal'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { Tooltip } from './Tooltip'
-import { Heading5 } from '../Typography'
 
 interface ToolsWalletAddressProps {
   toolName: 'drawer banner' | 'payment widget'
@@ -66,7 +68,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
 
       if (result.hasConflict) {
         openDialog(
-          <OverridePresetModal
+          <ProfilesDialog
             fetchedConfigs={result.fetchedConfigs}
             currentLocalConfigs={{ ...toolState.configurations }}
             modifiedVersions={[...toolState.dirtyProfiles]}

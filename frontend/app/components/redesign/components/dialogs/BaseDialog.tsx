@@ -3,12 +3,12 @@ import { cx } from 'class-variance-authority'
 import { SVGClose } from '@/assets'
 import { useDialog } from '~/hooks/useDialog'
 
-interface ModalContainerProps {
+interface DialogContainerProps {
   children: React.ReactNode
   className?: string
 }
 
-export const BaseModal: React.FC<ModalContainerProps> = ({
+export const BaseDialog: React.FC<DialogContainerProps> = ({
   children,
   className
 }) => {
