@@ -8,8 +8,7 @@ import {
   SVGShareScript
 } from '@/assets'
 
-interface ToolsPrimaryButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ToolsPrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   iconPosition?: 'left' | 'right' | 'none'
   icon?: 'script' | 'copy' | 'link' | 'share' | 'check'

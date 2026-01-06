@@ -7,8 +7,10 @@ export type DropdownOption = {
   value: string
 }
 
-interface ToolsDropdownProps
-  extends Omit<React.ComponentPropsWithRef<'div'>, 'onChange'> {
+interface ToolsDropdownProps extends Omit<
+  React.ComponentPropsWithRef<'div'>,
+  'onChange'
+> {
   options: DropdownOption[]
   label?: string
   error?: string
