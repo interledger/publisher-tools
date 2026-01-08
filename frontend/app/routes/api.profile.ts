@@ -34,8 +34,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const body = await request.json()
     const parsed = BannerProfileSchema.safeParse(body)
     if (!parsed.success) {
-      const errors = z.treeifyError(parsed.error)
-      return data({ errors }, { status: 400 })
+      return data(
+        {
+          error: 'Validation failed',
+          cause: { err: z.prettifyError(parsed.error) }
+        },
+        { status: 400 }
+      )
     }
 
     const sanitizedProfile = sanitizeProfileFields(parsed.data)

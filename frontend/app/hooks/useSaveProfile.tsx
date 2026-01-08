@@ -5,6 +5,7 @@ import {
   GrantConfirmationDialog
 } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
+import { ApiError } from '~/lib/helpers'
 import { actions } from '~/stores/banner-store'
 import { toolState } from '~/stores/toolStore'
 
@@ -31,15 +32,16 @@ export const useSaveProfile = () => {
           openDialog(<StatusDialog onDone={closeDialog} />)
         }
       } catch (err) {
-        const error = err as Error
-        console.error({ error })
-        // TODO: type error.cause properly
-        const fieldErrors = { errors: error?.cause } as Record<string, string>
+        const errorMessage =
+          err instanceof ApiError || err instanceof Error
+            ? err.message
+            : 'Use save profile error'
+
         openDialog(
           <StatusDialog
             onDone={closeDialog}
-            message={error.message || 'An error occurred'}
-            fieldErrors={fieldErrors}
+            message={errorMessage}
+            fieldErrors={err instanceof ApiError ? err.cause : undefined}
             status="error"
           />
         )

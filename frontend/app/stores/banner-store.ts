@@ -11,13 +11,15 @@ import {
 } from '@shared/types'
 import { urlWithParams } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants'
+import { ApiError } from '~/lib/helpers'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 
 interface SaveResult {
-  success: boolean
+  success?: boolean
   grantRequired?: string
-  error?: Error
+  error?: string
+  cause?: Record<string, string>
 }
 
 export type BannerStore = ReturnType<typeof createBannerStore>
@@ -112,16 +114,16 @@ export const actions = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(profile)
     })
+    const data: SaveResult = await response.json()
 
-    const details: SaveResult = await response.json()
     if (!response.ok) {
-      throw new Error(`Save request failed with status: ${response.status}`, {
-        cause: details.error
-      })
+      throw new ApiError(data.error || 'Save profile error', data.cause)
     }
+    // manually clear the update flag
     snapshots.set(banner.activeTab, profile)
+    banner.profilesUpdate.delete(banner.activeTab)
 
-    return details
+    return data
   }
 }
 
