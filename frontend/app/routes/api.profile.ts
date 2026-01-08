@@ -57,6 +57,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
       )
     }
 
+    session.set('wallet-address', walletAddressData)
+
     const walletAddressId = normalizeWalletAddress(walletAddressData)
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
     let config: Configuration = {
@@ -85,7 +87,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
       }
     })
 
-    return data({ success: true }, { status: 200 })
+    return data(
+      { success: true },
+      {
+        status: 200,
+        headers: { 'Set-Cookie': await commitSession(session) }
+      }
+    )
   } catch (error) {
     console.error('Save profile error: ', error)
     return data(
