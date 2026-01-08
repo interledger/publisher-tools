@@ -63,17 +63,19 @@ export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {
   version3: 'Default profile 3'
 } as const
 
-export type Configuration<T extends Tool> = {
+export interface Configuration {
   $walletAddress: string
   $walletAddressId?: string
   $modifiedAt?: string
-  banner: {
+  banner?: {
     [presetId in ProfileId]?: BannerProfile
   }
-  widget: {
+  widget?: {
     [presetId in ProfileId]?: WidgetProfile
   }
-}[T]
+}
+
+export type ToolProfiles<T extends Tool> = Configuration[T]
 
 export interface BaseToolProfile {
   $version: string

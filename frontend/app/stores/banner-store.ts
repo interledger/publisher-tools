@@ -5,12 +5,22 @@ import { createDefaultBannerProfile } from '@shared/default-data'
 import {
   type ProfileId,
   type BannerProfile,
-  type Configuration,
+  type ToolProfiles,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES
 } from '@shared/types'
+import { urlWithParams } from '@shared/utils'
+import { APP_BASEPATH } from '~/lib/constants'
+import { ApiError } from '~/lib/helpers'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
+
+interface SaveResult {
+  success?: boolean
+  grantRequired?: string
+  error?: string
+  cause?: Record<string, string>
+}
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 const STORAGE_KEY_PREFIX = 'wmt-banner'
@@ -69,8 +79,9 @@ export const actions = {
   setProfileName(name: string) {
     banner.profiles[banner.activeTab].$name = name
   },
-  setProfiles(config: Configuration<'banner'>) {
-    Object.entries(config).forEach(([profileId, profile]) => {
+  setProfiles(profiles: ToolProfiles<'banner'>) {
+    if (!profiles) return
+    Object.entries(profiles).forEach(([profileId, profile]) => {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   },
@@ -89,6 +100,30 @@ export const actions = {
 
     const { content, appearance } = splitProfileProperties(snapshot)
     Object.assign(banner.profile, section === 'content' ? content : appearance)
+  },
+  async saveProfile(): Promise<SaveResult> {
+    const profile = snapshot(banner.profile)
+    const baseUrl = location.origin + APP_BASEPATH
+    const url = urlWithParams(`${baseUrl}/api/profile`, {
+      walletAddress: toolState.walletAddress,
+      profileId: banner.activeTab
+    })
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(profile)
+    })
+    const data: SaveResult = await response.json()
+
+    if (!response.ok) {
+      throw new ApiError(data.error || 'Save profile error', data.cause)
+    }
+    // manually clear the update flag
+    snapshots.set(banner.activeTab, profile)
+    banner.profilesUpdate.delete(banner.activeTab)
+
+    return data
   }
 }
 
@@ -155,7 +190,8 @@ export function hydrateSnapshotsFromStorage() {
   if (!storage) return
 
   try {
-    const stored: Configuration<'banner'> = JSON.parse(storage)
+    const stored: ToolProfiles<'banner'> = JSON.parse(storage)
+    if (!stored) return
 
     const isValid = (profile: BannerProfile) =>
       typeof profile === 'object' &&

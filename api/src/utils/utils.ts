@@ -142,15 +142,3 @@ export function createHTTPException(
     cause: serializedError
   })
 }
-
-export function urlWithParams(
-  url: string | URL,
-  params: Record<string, string>
-): URL {
-  const result = new URL(url)
-  const searchParams = new URLSearchParams(params)
-  for (const [key, val] of searchParams.entries()) {
-    result.searchParams.set(key, val)
-  }
-  return result
-}

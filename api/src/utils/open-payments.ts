@@ -10,13 +10,8 @@ import {
   createAuthenticatedClient
 } from '@interledger/open-payments'
 import { createId } from '@paralleldrive/cuid2'
-import { getWalletAddress } from '@shared/utils'
-import {
-  createHeaders,
-  sleep,
-  createHTTPException,
-  urlWithParams
-} from './utils.js'
+import { getWalletAddress, urlWithParams } from '@shared/utils'
+import { createHeaders, sleep, createHTTPException } from './utils.js'
 import type { Env } from '../app.js'
 
 export interface Amount {
