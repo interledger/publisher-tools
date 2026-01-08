@@ -16,6 +16,7 @@ import {
   widgetFieldsSchema
 } from './validate.shared'
 
+// TODO: refactor walletSchema to .transform() and return WalletAddress object directly from getWalletAddress
 export const walletSchema = z.object({
   walletAddress: z
     .string()
@@ -39,6 +40,7 @@ export const walletSchema = z.object({
     })
 })
 
+/** @deprecated */
 export const versionSchema = z.object({
   version: z.string().min(1, { message: 'Version is required' })
 })

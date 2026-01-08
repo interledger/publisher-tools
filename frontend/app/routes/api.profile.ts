@@ -1,14 +1,20 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
 import { AWS_PREFIX } from '@shared/defines'
-import { type Configuration, type ProfileId, PROFILE_IDS } from '@shared/types'
+import { type Configuration, PROFILE_IDS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { sanitizeConfigFields as sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
+import { walletSchema } from '~/utils/validate.server'
 import { BannerProfileSchema } from '~/utils/validate.shared'
+
+const QueryParamsSchema = z.object({
+  ...walletSchema.shape,
+  profileId: z.enum(PROFILE_IDS)
+})
 
 export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== 'POST') {
@@ -17,18 +23,24 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const { env } = context.cloudflare
   const url = new URL(request.url)
-  const walletAddress = url.searchParams.get('walletAddress')
-  const profileId = url.searchParams.get('profileId') as ProfileId | null
 
-  if (!walletAddress) {
+  // TODO: after versioning refactor update; (avoid double getWalletAddress call) see walletSchema
+  const queryParams = await QueryParamsSchema.safeParseAsync({
+    walletAddress: url.searchParams.get('walletAddress'),
+    profileId: url.searchParams.get('profileId')
+  })
+
+  if (!queryParams.success) {
     return data(
-      { error: 'walletAddress query param required' },
+      {
+        error: 'Invalid query params',
+        cause: { err: z.prettifyError(queryParams.error) }
+      },
       { status: 400 }
     )
   }
-  if (!profileId || !PROFILE_IDS.includes(profileId)) {
-    return data({ error: 'Invalid profileId' }, { status: 400 })
-  }
+
+  const { walletAddress, profileId } = queryParams.data
 
   try {
     const body = await request.json()
