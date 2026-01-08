@@ -1,6 +1,6 @@
 import type {
   ConfigVersions,
-  Configuration,
+  ToolProfiles,
   ProfileId,
   BannerProfile,
   Tool,
@@ -30,7 +30,7 @@ function toBannerProfile(config: ElementConfigType): BannerProfile {
 export function convertFrom<T extends Tool>(
   configuration: ConfigVersions,
   _: T
-): Configuration<T> {
+): ToolProfiles<T> {
   const profiles: Record<string, BannerProfile> = {}
 
   Object.entries(configuration).forEach(([profileId, config]) => {

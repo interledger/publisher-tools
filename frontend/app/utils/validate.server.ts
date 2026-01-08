@@ -43,25 +43,25 @@ export const versionSchema = z.object({
   version: z.string().min(1, { message: 'Version is required' })
 })
 
-// TODO: need a better definition & validation for this
+/** @deprecated */
 export const fullConfigSchema = z.object({
   fullconfig: z.string().min(1, { message: 'Unknown error' })
 })
-
+/** @deprecated */
 export const createButtonSchema = z.object({
   elementType: z.literal('button'),
   ...buttonFieldsSchema.shape,
   ...walletSchema.shape,
   ...versionSchema.shape
 })
-
+/** @deprecated */
 export const createBannerSchema = z.object({
   elementType: z.literal('banner'),
   ...bannerFieldsSchema.shape,
   ...walletSchema.shape,
   ...versionSchema.shape
 })
-
+/** @deprecated */
 export const createWidgetSchema = z.object({
   elementType: z.literal('widget'),
   ...widgetFieldsSchema.shape,
@@ -69,6 +69,7 @@ export const createWidgetSchema = z.object({
   ...versionSchema.shape
 })
 
+/** @deprecated */
 export const getElementSchema = (type: string) => {
   switch (type) {
     case 'banner':
@@ -81,6 +82,7 @@ export const getElementSchema = (type: string) => {
   }
 }
 
+/** @deprecated */
 export const validateForm = async (
   formData: {
     [k: string]: FormDataEntryValue
