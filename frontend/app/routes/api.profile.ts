@@ -6,8 +6,9 @@ import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
+import { sanitizeConfigFields as sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { Banner } from '~/utils/validate.shared'
+import { BannerProfileSchema } from '~/utils/validate.shared'
 
 export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== 'POST') {
@@ -31,17 +32,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   try {
     const body = await request.json()
-    const parsed = Banner.safeParse(body)
+    const parsed = BannerProfileSchema.safeParse(body)
     if (!parsed.success) {
       const errors = z.treeifyError(parsed.error)
       return data({ errors }, { status: 400 })
     }
 
+    const sanitizedProfile = sanitizeProfileFields(parsed.data)
     const walletAddressData = await getWalletAddress(walletAddress)
 
     const session = await getSession(request.headers.get('Cookie'))
     const validForWallet = session.get('validForWallet')
-    session.set('wallet-address', walletAddressData)
 
     if (!validForWallet || validForWallet !== walletAddressData.id) {
       const baseUrl = url.origin + APP_BASEPATH
@@ -81,7 +82,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       banner: {
         ...config.banner,
         [profileId]: {
-          ...parsed.data,
+          ...sanitizedProfile,
           $modifiedAt: new Date().toISOString()
         }
       }
