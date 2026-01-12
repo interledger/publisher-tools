@@ -44,8 +44,13 @@ export async function action({ request, context }: ActionFunctionArgs) {
     if (!parsed.success) {
       return data(
         {
-          error: 'Validation failed',
-          cause: { err: z.prettifyError(parsed.error) }
+          error: {
+            message: 'Validation failed',
+            cause: {
+              message: 'One or more fields failed validation',
+              errors: { field: z.prettifyError(parsed.error) }
+            }
+          }
         },
         { status: 400 }
       )
@@ -119,7 +124,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
   } catch (error) {
     console.error('Save profile error: ', error)
     return data(
-      { error: `Failed to save profile: ${(error as Error).message}` },
+      {
+        error: {
+          message: `Failed to save profile: ${(error as Error).message}`
+        }
+      },
       { status: 500 }
     )
   }

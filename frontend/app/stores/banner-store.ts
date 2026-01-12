@@ -18,8 +18,13 @@ import { toolState } from './toolStore'
 interface SaveResult {
   success?: boolean
   grantRedirect?: string
-  error?: string
-  cause?: Record<string, string>
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
 }
 
 export type BannerStore = ReturnType<typeof createBannerStore>
@@ -119,7 +124,10 @@ export const actions = {
     const data: SaveResult = await response.json()
 
     if (!response.ok) {
-      throw new ApiError(data.error || 'Failed save profile', data.cause)
+      throw new ApiError(
+        data.error?.message || 'Failed to save profile',
+        data.error?.cause?.errors
+      )
     }
 
     return data
