@@ -1,3 +1,4 @@
+/** @deprecated will be removed in future versions */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
 }

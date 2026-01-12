@@ -6,6 +6,7 @@ import type { ElementConfigType, ProfileId } from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import { omit } from '~/utils/utils.storage'
+import { captureSnapshotsToStorage } from './banner-store'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -122,6 +123,7 @@ export const toolActions = {
     }))
   },
 
+  /** legacy backwards compatibility */
   setConfigs: (
     fullConfigObject: Record<StableKey, ElementConfigType> | null
   ) => {
@@ -129,10 +131,12 @@ export const toolActions = {
       createDefaultConfigs()
 
     STABLE_KEYS.forEach((profileId) => {
-      if (fullConfigObject) {
-        newFullConfig[profileId] = {
-          ...fullConfigObject[profileId]
-        }
+      if (!fullConfigObject || !fullConfigObject[profileId]) {
+        return
+      }
+
+      newFullConfig[profileId] = {
+        ...fullConfigObject[profileId]
       }
 
       toolState.configurations[profileId] = { ...newFullConfig[profileId] }
@@ -162,6 +166,8 @@ export const toolActions = {
     } else {
       toolState.walletConnectStep = 'unfilled'
     }
+
+    captureSnapshotsToStorage()
   },
 
   setConnectWalletStep: (step: StepStatus) => {

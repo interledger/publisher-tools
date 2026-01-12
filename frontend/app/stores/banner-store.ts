@@ -1,6 +1,6 @@
 import { deepEqual } from 'fast-equals'
 import { proxy, snapshot, subscribe, useSnapshot } from 'valtio'
-import { proxySet, subscribeKey } from 'valtio/utils'
+import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
   type ProfileId,
@@ -177,17 +177,13 @@ function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
   }
 }
 
-export function subscribeSnapshotsToStorage() {
-  subscribeKey(toolState, `isWalletConnected`, (isConnected) => {
-    if (isConnected) return
-
-    const snap = snapshot(banner.profiles)
-    Object.entries(snap).forEach(([profileId, profile]) => {
-      snapshots.set(profileId as ProfileId, profile)
-    })
-
-    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snap))
+export function captureSnapshotsToStorage() {
+  const snap = snapshot(banner.profiles)
+  Object.entries(snap).forEach(([profileId, profile]) => {
+    snapshots.set(profileId as ProfileId, profile)
   })
+
+  localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snap))
 }
 
 export function hydrateSnapshotsFromStorage() {

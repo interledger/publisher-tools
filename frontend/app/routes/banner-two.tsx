@@ -33,8 +33,7 @@ import {
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToStorage,
-  subscribeProfilesToUpdates,
-  subscribeSnapshotsToStorage
+  subscribeProfilesToUpdates
 } from '~/stores/banner-store'
 import {
   toolState,
@@ -100,7 +99,6 @@ export default function Banner() {
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
-    subscribeSnapshotsToStorage()
 
     loadState(OP_WALLET_ADDRESS)
     persistState()

@@ -1,7 +1,13 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
+import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
-import { PROFILE_IDS, TOOLS, type Configuration } from '@shared/types'
+import {
+  type ConfigVersions,
+  PROFILE_IDS,
+  TOOLS,
+  type Configuration
+} from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import type { SaveResult } from '~/lib/types'
@@ -90,8 +96,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     let config: Configuration | null = null
+    let configLegacy: ConfigVersions | null = null
     try {
-      config = await storage.getJson<Configuration>(walletAddressId)
+      configLegacy = await storage.getJson<ConfigVersions>(walletAddressId)
     } catch (e) {
       const err = e as Error
       if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
@@ -106,7 +113,20 @@ export async function action({ request, context }: ActionFunctionArgs) {
       }
     }
 
-    await storage.putJson(walletAddressId, {
+    // legacy
+    await storage.putJson<ConfigVersions>(walletAddressId, {
+      ...configLegacy,
+      [profileId]: {
+        ...getDefaultData(),
+        ...sanitizedProfile,
+        walletAddress: walletAddressId,
+        versionName: sanitizedProfile.$name
+      }
+    })
+
+    //@ts-expect-error TO DO putJson config usage
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    config = {
       ...config,
       $modifiedAt: new Date().toISOString(),
       [tool]: {
@@ -116,7 +136,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           $modifiedAt: new Date().toISOString()
         }
       }
-    })
+    }
 
     return data<SaveResult>(
       { success: true },
