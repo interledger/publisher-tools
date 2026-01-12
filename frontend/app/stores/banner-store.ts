@@ -7,7 +7,8 @@ import {
   type BannerProfile,
   type ToolProfiles,
   PROFILE_IDS,
-  DEFAULT_PROFILE_NAMES
+  DEFAULT_PROFILE_NAMES,
+  TOOLS
 } from '@shared/types'
 import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
@@ -102,7 +103,7 @@ export const actions = {
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
     const baseUrl = location.origin + APP_BASEPATH
-    const url = `${baseUrl}/api/profile/banner`
+    const url = `${baseUrl}/api/profile`
 
     const response = await fetch(url, {
       method: 'POST',
@@ -110,7 +111,8 @@ export const actions = {
       body: JSON.stringify({
         walletAddress: toolState.walletAddress,
         profile,
-        profileId: toolState.activeTab
+        profileId: toolState.activeTab,
+        tool: TOOLS[0] // 'banner'
       })
     })
 

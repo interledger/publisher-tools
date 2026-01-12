@@ -54,6 +54,8 @@ export const bannerFieldsSchema = z.object({
 
 export const BannerProfileSchema = z.object({
   ...bannerFieldsSchema.shape,
+  $createdAt: z.iso.datetime(),
+  $modifiedAt: z.iso.datetime().optional(),
   $version: z.string(),
   $name: z.string()
 }) satisfies z.ZodType<BannerProfile>
@@ -91,6 +93,8 @@ export const widgetFieldsSchema = z.object({
 
 export const WidgetProfileSchema = z.object({
   ...widgetFieldsSchema.shape,
+  $createdAt: z.iso.datetime(),
+  $modifiedAt: z.iso.datetime().optional(),
   $version: z.string(),
   $name: z.string()
 }) satisfies z.ZodType<WidgetProfile>

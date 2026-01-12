@@ -1,12 +1,7 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
 import { AWS_PREFIX } from '@shared/defines'
-import {
-  PROFILE_IDS,
-  TOOLS,
-  type Configuration,
-  type Tool
-} from '@shared/types'
+import { PROFILE_IDS, TOOLS, type Configuration } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
@@ -19,17 +14,23 @@ import {
   WidgetProfileSchema
 } from '~/utils/validate.shared'
 
-const ApiSaveProfileSchema = z.object({
+const BaseApiSchema = z.object({
   ...walletSchema.shape,
-  profile: z.union([BannerProfileSchema, WidgetProfileSchema]),
   profileId: z.enum(PROFILE_IDS)
 })
 
-function isToolType(tool?: string): tool is Tool {
-  return !!tool && TOOLS.includes(tool as Tool)
-}
+const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
+  BaseApiSchema.extend({
+    tool: z.literal(TOOLS[0]), // 'banner'
+    profile: BannerProfileSchema
+  }),
+  BaseApiSchema.extend({
+    tool: z.literal(TOOLS[1]), // 'widget'
+    profile: WidgetProfileSchema
+  })
+])
 
-export async function action({ request, params, context }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== 'POST') {
     return data({ error: 'Method not allowed' }, { status: 405 })
   }
@@ -38,16 +39,6 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
   const url = new URL(request.url)
 
   try {
-    const { tool } = params
-    if (!isToolType(tool)) {
-      return data(
-        {
-          error: `Invalid tool. Must be one of: ${TOOLS.join(', ')}`
-        },
-        { status: 400 }
-      )
-    }
-
     const body = await request.json()
     const parsed = await ApiSaveProfileSchema.safeParseAsync(body)
     if (!parsed.success) {
@@ -60,7 +51,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       )
     }
 
-    const { walletAddress, profile, profileId } = parsed.data
+    const { walletAddress, profileId, tool, profile } = parsed.data
     const sanitizedProfile = sanitizeProfileFields(profile)
 
     // TODO: use walletAddress from walletSchema after updating it to .transform()
@@ -101,12 +92,14 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
       config = {
         $walletAddress: walletAddress,
         $walletAddressId: walletAddressId,
+        $createdAt: new Date().toISOString(),
         $modifiedAt: new Date().toISOString()
       }
     }
 
     await storage.putJson(walletAddressId, {
       ...config,
+      $modifiedAt: new Date().toISOString(),
       [tool]: {
         ...config?.[tool],
         [profileId]: {

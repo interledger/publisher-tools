@@ -66,6 +66,7 @@ export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {
 export interface Configuration {
   $walletAddress: string
   $walletAddressId?: string
+  $createdAt: string
   $modifiedAt?: string
   banner?: {
     [presetId in ProfileId]?: BannerProfile
