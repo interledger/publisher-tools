@@ -2,7 +2,7 @@ import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type { ElementConfigType } from '@shared/types'
+import type { ElementConfigType, ProfileId } from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import { omit } from '~/utils/utils.storage'
@@ -67,7 +67,9 @@ export const toolState = proxy({
    * dirtyProfiles: tracks the configurations that are modified locally.
    */
   dirtyProfiles: proxySet<StableKey>(),
+  /** @deprecated */
   activeVersion: 'version1' as StableKey,
+  activeTab: 'version1' as ProfileId,
   currentToolType: 'unknown' as ToolType,
 
   /** always returns the active configuration */

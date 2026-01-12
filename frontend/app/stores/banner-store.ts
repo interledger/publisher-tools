@@ -29,11 +29,10 @@ function createBannerStore() {
         createProfileStoreBanner(DEFAULT_PROFILE_NAMES[id])
       ])
     ) as Record<ProfileId, BannerProfile>,
-    activeTab: 'version1' as ProfileId,
     profilesUpdate: proxySet<ProfileId>(),
 
     get profile(): BannerProfile {
-      return this.profiles[this.activeTab]
+      return this.profiles[toolState.activeTab]
     },
     get profileTabs() {
       return PROFILE_IDS.map((id) => ({
@@ -49,7 +48,7 @@ export function useBannerProfile(options?: {
   sync: boolean
 }): [BannerProfile, BannerProfile] {
   // https://github.com/pmndrs/valtio/issues/132
-  const snapshot = useSnapshot(banner, options).profile
+  const snapshot = useSnapshot(banner.profile, options)
   return [snapshot, banner.profile]
 }
 
@@ -64,10 +63,10 @@ const snapshots = new Map<ProfileId, BannerProfile>(
 
 export const actions = {
   setActiveTab(profileId: ProfileId) {
-    banner.activeTab = profileId
+    toolState.activeTab = profileId
   },
   setProfileName(name: string) {
-    banner.profiles[banner.activeTab].$name = name
+    banner.profiles[toolState.activeTab].$name = name
   },
   setProfiles(config: Configuration<'banner'>) {
     Object.entries(config).forEach(([profileId, profile]) => {
@@ -82,7 +81,7 @@ export const actions = {
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
-    const snapshot = snapshots.get(banner.activeTab)
+    const snapshot = snapshots.get(toolState.activeTab)
     if (!snapshot) {
       throw new Error('No snapshot found for the profile')
     }
@@ -140,8 +139,7 @@ function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
 
 export function subscribeSnapshotsToStorage() {
   subscribeKey(toolState, `isWalletConnected`, () => {
-    const snap = snapshot(banner).profiles
-
+    const snap = snapshot(banner.profiles)
     Object.entries(snap).forEach(([profileId, profile]) => {
       snapshots.set(profileId as ProfileId, profile)
     })
