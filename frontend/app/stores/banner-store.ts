@@ -6,13 +6,13 @@ import {
   type ProfileId,
   type BannerProfile,
   type ToolProfiles,
-  type SaveResult,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOLS
 } from '@shared/types'
 import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
+import type { SaveResult } from '~/lib/types'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 

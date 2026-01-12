@@ -1,14 +1,10 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
 import { AWS_PREFIX } from '@shared/defines'
-import {
-  PROFILE_IDS,
-  TOOLS,
-  type Configuration,
-  type SaveResult
-} from '@shared/types'
+import { PROFILE_IDS, TOOLS, type Configuration } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { sanitizeConfigFields as sanitizeProfileFields } from '~/utils/sanitize.server'
