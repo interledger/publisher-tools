@@ -6,6 +6,7 @@ import {
   type ProfileId,
   type BannerProfile,
   type ToolProfiles,
+  type SaveResult,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOLS
@@ -14,18 +15,6 @@ import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
-
-interface SaveResult {
-  success?: boolean
-  grantRedirect?: string
-  error?: {
-    message: string
-    cause?: {
-      message: string
-      errors: Record<string, string>
-    }
-  }
-}
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 const STORAGE_KEY_PREFIX = 'wmt-banner'

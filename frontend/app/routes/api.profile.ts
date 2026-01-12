@@ -1,7 +1,12 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
 import { AWS_PREFIX } from '@shared/defines'
-import { PROFILE_IDS, TOOLS, type Configuration } from '@shared/types'
+import {
+  PROFILE_IDS,
+  TOOLS,
+  type Configuration,
+  type SaveResult
+} from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
@@ -32,7 +37,10 @@ const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
 
 export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== 'POST') {
-    return data({ error: 'Method not allowed' }, { status: 405 })
+    return data<SaveResult>(
+      { error: { message: 'Method not allowed' } },
+      { status: 405 }
+    )
   }
 
   const { env } = context.cloudflare
@@ -42,7 +50,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const body = await request.json()
     const parsed = await ApiSaveProfileSchema.safeParseAsync(body)
     if (!parsed.success) {
-      return data(
+      return data<SaveResult>(
         {
           error: {
             message: 'Validation failed',
@@ -76,7 +84,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       session.set('payment-grant', grant)
       session.set('wallet-address', walletAddressData)
 
-      return data(
+      return data<SaveResult>(
         { grantRedirect: grant.interact.redirect, success: false },
         { status: 200, headers: { 'Set-Cookie': await commitSession(session) } }
       )
@@ -114,7 +122,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       }
     })
 
-    return data(
+    return data<SaveResult>(
       { success: true },
       {
         status: 200,
@@ -123,7 +131,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     )
   } catch (error) {
     console.error('Save profile error: ', error)
-    return data(
+    return data<SaveResult>(
       {
         error: {
           message: `Failed to save profile: ${(error as Error).message}`

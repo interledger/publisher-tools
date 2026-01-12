@@ -123,6 +123,18 @@ export interface WidgetProfile extends BaseToolProfile {
   widgetTriggerIcon: string
 }
 
+export type SaveResult = {
+  success?: boolean
+  grantRedirect?: string
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
+}
+
 type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
 /** @deprecated Use BannerProfile instead */
 export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
