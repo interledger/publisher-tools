@@ -138,9 +138,7 @@ function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
 }
 
 export function subscribeSnapshotsToStorage() {
-  subscribeKey(toolState, `isWalletConnected`, (isConnected) => {
-    if (isConnected) return
-
+  subscribeKey(toolState, `isWalletConnected`, () => {
     const snap = snapshot(banner.profiles)
     Object.entries(snap).forEach(([profileId, profile]) => {
       snapshots.set(profileId as ProfileId, profile)
