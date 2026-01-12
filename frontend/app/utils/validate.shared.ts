@@ -1,5 +1,5 @@
 import z from 'zod'
-import type { BannerProfile } from '@shared/types'
+import type { BannerProfile, WidgetProfile } from '@shared/types'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
@@ -69,13 +69,10 @@ export const widgetFieldsSchema = z.object({
     .string()
     .min(1, { message: 'Title cannot be empty' })
     .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
-  widgetDescriptionText: z
-    .string()
-    .max(WIDGET_DESCRIPTION_MAX_LENGTH, {
-      message: 'Description is too long'
-    })
-    .optional(),
-  widgetDescriptionVisible: z.coerce.boolean().optional(),
+  widgetDescriptionText: z.string().max(WIDGET_DESCRIPTION_MAX_LENGTH, {
+    message: 'Description is too long'
+  }),
+  widgetDescriptionVisible: z.coerce.boolean(),
   widgetPosition: z.enum(WIDGET_POSITION),
   widgetDonateAmount: z.coerce
     .number()
@@ -89,5 +86,11 @@ export const widgetFieldsSchema = z.object({
   widgetTextColor: z.string().min(1),
   widgetBackgroundColor: z.string().min(1),
   widgetTriggerBackgroundColor: z.string().min(1),
-  widgetTriggerIcon: z.string().optional()
+  widgetTriggerIcon: z.string()
 })
+
+export const WidgetProfileSchema = z.object({
+  ...widgetFieldsSchema.shape,
+  $version: z.string(),
+  $name: z.string()
+}) satisfies z.ZodType<WidgetProfile>

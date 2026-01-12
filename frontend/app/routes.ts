@@ -13,5 +13,5 @@ export default [
   // API routes
   route('api/config/:type', 'routes/api.config.$type.ts'),
   route('api/grant/:type', 'routes/api.grant.$type.ts'),
-  route('api/profile', 'routes/api.profile.ts')
+  route('api/profile/:tool', 'routes/api.profile.$tool.ts')
 ] satisfies RouteConfig

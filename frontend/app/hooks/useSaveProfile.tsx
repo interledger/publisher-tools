@@ -17,25 +17,27 @@ export const useSaveProfile = () => {
       toolState.lastSaveAction = action
 
       try {
-        const response = await actions.saveProfile()
+        const result = await actions.saveProfile()
 
-        if (!response.success && response.grantRequired) {
+        if (result.grantRedirect) {
           openDialog(
-            <GrantConfirmationDialog grantRedirect={response.grantRequired} />
+            <GrantConfirmationDialog grantRedirect={result.grantRedirect} />
           )
           return
         }
 
-        if (action === 'script') {
-          openDialog(<ScriptDialog />)
-        } else {
-          openDialog(<StatusDialog onDone={closeDialog} />)
+        if (result.success) {
+          actions.commitProfile()
+
+          if (action === 'script') {
+            openDialog(<ScriptDialog />)
+          } else {
+            openDialog(<StatusDialog onDone={closeDialog} />)
+          }
         }
       } catch (err) {
         const errorMessage =
-          err instanceof ApiError || err instanceof Error
-            ? err.message
-            : 'Use save profile error'
+          err instanceof ApiError ? err.message : 'Use save profile error'
 
         openDialog(
           <StatusDialog
