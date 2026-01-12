@@ -211,7 +211,7 @@ export default function Banner() {
                     <BuilderPresetTabs
                       idPrefix="profile"
                       options={bannerSnap.profileTabs}
-                      selectedId={bannerSnap.activeTab}
+                      selectedId={snap.activeTab}
                       onChange={(profileId) => actions.setActiveTab(profileId)}
                       onRename={(name) => actions.setProfileName(name)}
                     >
