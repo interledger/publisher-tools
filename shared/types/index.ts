@@ -52,7 +52,9 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
-export const TOOLS = ['banner', 'widget'] as const
+export const TOOL_BANNER = 'banner'
+export const TOOL_WIDGET = 'widget'
+export const TOOLS = [TOOL_BANNER, TOOL_WIDGET] as const
 export type Tool = (typeof TOOLS)[number]
 
 export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const

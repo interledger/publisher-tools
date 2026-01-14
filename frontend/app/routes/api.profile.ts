@@ -5,8 +5,9 @@ import { AWS_PREFIX } from '@shared/defines'
 import {
   type ConfigVersions,
   PROFILE_IDS,
-  TOOLS,
-  type Configuration
+  type Configuration,
+  TOOL_BANNER,
+  TOOL_WIDGET
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
@@ -28,11 +29,11 @@ const BaseApiSchema = z.object({
 
 const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
   BaseApiSchema.extend({
-    tool: z.literal(TOOLS[0]), // 'banner'
+    tool: z.literal(TOOL_BANNER),
     profile: BannerProfileSchema
   }),
   BaseApiSchema.extend({
-    tool: z.literal(TOOLS[1]), // 'widget'
+    tool: z.literal(TOOL_WIDGET),
     profile: WidgetProfileSchema
   })
 ])
@@ -94,6 +95,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     const walletAddressId = normalizeWalletAddress(walletAddressData)
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
+    const now = new Date().toISOString()
 
     let config: Configuration | null = null
     let configLegacy: ConfigVersions | null = null
@@ -108,8 +110,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
       config = {
         $walletAddress: walletAddress,
         $walletAddressId: walletAddressId,
-        $createdAt: new Date().toISOString(),
-        $modifiedAt: new Date().toISOString()
+        $createdAt: now,
+        $modifiedAt: now
       }
     }
 
@@ -128,12 +130,12 @@ export async function action({ request, context }: ActionFunctionArgs) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     config = {
       ...config,
-      $modifiedAt: new Date().toISOString(),
+      $modifiedAt: now,
       [tool]: {
         ...config?.[tool],
         [profileId]: {
           ...sanitizedProfile,
-          $modifiedAt: new Date().toISOString()
+          $modifiedAt: now
         }
       }
     }

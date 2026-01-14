@@ -8,7 +8,7 @@ import {
   type ToolProfiles,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
-  TOOLS
+  TOOL_BANNER
 } from '@shared/types'
 import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
@@ -106,7 +106,7 @@ export const actions = {
         walletAddress: toolState.walletAddress,
         profile,
         profileId: toolState.activeTab,
-        tool: TOOLS[0] // 'banner'
+        tool: TOOL_BANNER
       })
     })
 
