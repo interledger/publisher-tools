@@ -81,6 +81,11 @@ export interface Configuration {
 
 export type ToolProfiles<T extends Tool> = Configuration[T]
 
+export type ToolProfile<T extends Tool> = {
+  banner: BannerProfile
+  widget: WidgetProfile
+}[T]
+
 export interface BaseToolProfile {
   $version: string
   $name: string

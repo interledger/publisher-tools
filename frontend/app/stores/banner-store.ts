@@ -10,9 +10,8 @@ import {
   DEFAULT_PROFILE_NAMES,
   TOOL_BANNER
 } from '@shared/types'
-import { APP_BASEPATH } from '~/lib/constants'
-import { ApiError } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
+import { saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 
@@ -96,30 +95,7 @@ export const actions = {
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
-    const baseUrl = location.origin + APP_BASEPATH
-    const url = `${baseUrl}/api/profile`
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        walletAddress: toolState.walletAddress,
-        profile,
-        profileId: toolState.activeTab,
-        tool: TOOL_BANNER
-      })
-    })
-
-    const data: SaveResult = await response.json()
-
-    if (!response.ok) {
-      throw new ApiError(
-        data.error?.message || 'Failed to save profile',
-        data.error?.cause?.errors
-      )
-    }
-
-    return data
+    return await saveToolProfile(TOOL_BANNER, profile)
   },
   commitProfile() {
     const profile = snapshot(banner.profile)
