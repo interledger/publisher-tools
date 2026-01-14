@@ -130,10 +130,13 @@ function Revshare() {
           onBackClick={() => navigate('/')}
         >
           Probabilistic revenue sharing is a way to share a portion of a web
-          monetized page&apos;s earnings between multiple recipients. Each time
-          a web monetized user visits the page, a recipient will be chosen at
-          random. Payments will go to the chosen recipient until the page is
-          closed or reloaded.
+          monetized page&apos;s earnings between multiple recipients.
+          <br />
+          Each time a web monetized user visits the page, a recipient will be
+          chosen at random.
+          <br />
+          Payments will go to the chosen recipient until the page is closed or
+          reloaded.
         </HeadingCore>
         <Card>
           <Heading5>Recipients</Heading5>

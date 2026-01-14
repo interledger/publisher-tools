@@ -2,15 +2,17 @@ import { SVGCloseIcon } from '@/assets'
 import { GhostButton, PoweredByFooter } from '@/components'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
 
+import { APP_BASEPATH } from '~/lib/constants.js'
+
 const toolItems: MobileMenuItemData[] = [
-  { to: '/publishers', text: 'Publisher tools' },
-  { to: '/supporters', text: 'Supporter tools' },
-  { to: '/developers', text: 'Developer tools' }
+  { to: `${APP_BASEPATH}/publishers`, text: 'Publisher tools' },
+  { to: `${APP_BASEPATH}/supporters`, text: 'Supporter tools' },
+  { to: `${APP_BASEPATH}/developers`, text: 'Developer tools' }
 ]
 
 const technicalItems: MobileMenuItemData[] = [
-  { to: '/docs', text: 'Documentation' },
-  { to: '/specification', text: 'Specification' }
+  { to: `${APP_BASEPATH}/docs`, text: 'Documentation' },
+  { to: `${APP_BASEPATH}/specification`, text: 'Specification' }
 ]
 
 interface MobileMenuItemData {

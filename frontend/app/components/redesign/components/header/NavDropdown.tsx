@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import ClickAwayListener from 'react-click-away-listener'
 import { cx } from 'class-variance-authority'
 import { SVGDownArrow } from '@/assets'
+import { APP_BASEPATH } from '~/lib/constants.js'
 import developerImage from '~/assets/images/dropdown-developer.png'
 import publisherHoverImage from '~/assets/images/dropdown-publisher-active.png'
 import publisherDefaultImage from '~/assets/images/dropdown-publisher-inactive.png'
@@ -142,19 +143,19 @@ export const NavDropdown = ({
         >
           <ul className="flex w-full flex-grow list-none flex-col gap-xs">
             <ToolsMenuItem
-              to="/publishers"
+              to={`${APP_BASEPATH}/publishers`}
               hoverImage={publisherHoverImage}
               defaultImage={publisherDefaultImage}
               text="For publishers"
             />
             <ToolsMenuItem
-              to="/supporters"
+              to={`${APP_BASEPATH}/supporters`}
               hoverImage={supporterHoverImage}
               defaultImage={supporterDefaultImage}
               text="For supporters"
             />
             <ToolsMenuItem
-              to="/developers"
+              to={`${APP_BASEPATH}/developers`}
               defaultImage={developerImage}
               text="For developers"
             />

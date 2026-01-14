@@ -26,14 +26,15 @@
     "globals": "^17.0.0",
     "prettier": "^3.7.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.52.0"
+    "typescript-eslint": "^8.52.0",
+      "wrangler": "4.59.1"
   },
   "resolutions": {
     "esbuild": "^0.27.2"
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "4.54.0"
+      "wrangler": "4.59.1"
     }
   },
   "engines": {
