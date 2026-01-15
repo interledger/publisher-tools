@@ -1,14 +1,17 @@
 import { deepEqual } from 'fast-equals'
 import { proxy, snapshot, subscribe, useSnapshot } from 'valtio'
-import { proxySet, subscribeKey } from 'valtio/utils'
+import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
   type ProfileId,
   type BannerProfile,
-  type Configuration,
+  type ToolProfiles,
   PROFILE_IDS,
-  DEFAULT_PROFILE_NAMES
+  DEFAULT_PROFILE_NAMES,
+  TOOL_BANNER
 } from '@shared/types'
+import type { SaveResult } from '~/lib/types'
+import { saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 
@@ -68,8 +71,9 @@ export const actions = {
   setProfileName(name: string) {
     banner.profiles[toolState.activeTab].$name = name
   },
-  setProfiles(config: Configuration<'banner'>) {
-    Object.entries(config).forEach(([profileId, profile]) => {
+  setProfiles(profiles: ToolProfiles<'banner'>) {
+    if (!profiles) return
+    Object.entries(profiles).forEach(([profileId, profile]) => {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   },
@@ -88,6 +92,19 @@ export const actions = {
 
     const { content, appearance } = splitProfileProperties(snapshot)
     Object.assign(banner.profile, section === 'content' ? content : appearance)
+  },
+  async saveProfile(): Promise<SaveResult> {
+    const profile = snapshot(banner.profile)
+    const { walletAddress, activeTab } = toolState
+    return await saveToolProfile(walletAddress, TOOL_BANNER, profile, activeTab)
+  },
+  commitProfile() {
+    const profile = snapshot(banner.profile)
+    snapshots.set(toolState.activeTab, profile)
+    banner.profilesUpdate.delete(toolState.activeTab)
+
+    const snaps = Object.fromEntries(snapshots.entries())
+    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))
   }
 }
 
@@ -137,15 +154,13 @@ function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
   }
 }
 
-export function subscribeSnapshotsToStorage() {
-  subscribeKey(toolState, `isWalletConnected`, () => {
-    const snap = snapshot(banner.profiles)
-    Object.entries(snap).forEach(([profileId, profile]) => {
-      snapshots.set(profileId as ProfileId, profile)
-    })
-
-    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snap))
+export function captureSnapshotsToStorage() {
+  const snap = snapshot(banner.profiles)
+  Object.entries(snap).forEach(([profileId, profile]) => {
+    snapshots.set(profileId as ProfileId, profile)
   })
+
+  localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snap))
 }
 
 export function hydrateSnapshotsFromStorage() {
@@ -153,7 +168,8 @@ export function hydrateSnapshotsFromStorage() {
   if (!storage) return
 
   try {
-    const stored: Configuration<'banner'> = JSON.parse(storage)
+    const stored: ToolProfiles<'banner'> = JSON.parse(storage)
+    if (!stored) return
 
     const isValid = (profile: BannerProfile) =>
       typeof profile === 'object' &&

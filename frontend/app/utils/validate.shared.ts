@@ -1,4 +1,5 @@
 import z from 'zod'
+import type { BannerProfile, WidgetProfile } from '@shared/types'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
@@ -29,6 +30,7 @@ export const buttonFieldsSchema = z.object({
   buttonDescriptionText: z.string().optional()
 })
 
+/** @legacy */
 export const bannerFieldsSchema = z.object({
   bannerFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
   bannerFontSize: z.coerce
@@ -37,23 +39,26 @@ export const bannerFieldsSchema = z.object({
     .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
   bannerTitleText: z
     .string()
-    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' })
-    .optional(),
-  bannerDescriptionText: z
-    .string()
-    .max(BANNER_DESCRIPTION_MAX_LENGTH, {
-      message: 'Description is too long'
-    })
-    .optional(),
-  bannerDescriptionVisible: z.coerce.boolean().optional(),
+    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
+  bannerDescriptionText: z.string().max(BANNER_DESCRIPTION_MAX_LENGTH, {
+    message: 'Description is too long'
+  }),
+  bannerDescriptionVisible: z.coerce.boolean(),
   bannerTextColor: z.string().min(6),
   bannerBackgroundColor: z.string().min(6),
   bannerSlideAnimation: z.enum(SLIDE_ANIMATION),
-  bannerThumbnail: z.string().optional(),
+  bannerThumbnail: z.string(),
   bannerPosition: z.enum(BANNER_POSITION),
   bannerBorder: z.enum(CORNER_OPTION)
 })
 
+export const BannerProfileSchema = z.object({
+  ...bannerFieldsSchema.shape,
+  $version: z.string(),
+  $name: z.string()
+}) satisfies z.ZodType<BannerProfile>
+
+/** @legacy */
 export const widgetFieldsSchema = z.object({
   widgetFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
   widgetFontSize: z.coerce
@@ -64,13 +69,10 @@ export const widgetFieldsSchema = z.object({
     .string()
     .min(1, { message: 'Title cannot be empty' })
     .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
-  widgetDescriptionText: z
-    .string()
-    .max(WIDGET_DESCRIPTION_MAX_LENGTH, {
-      message: 'Description is too long'
-    })
-    .optional(),
-  widgetDescriptionVisible: z.coerce.boolean().optional(),
+  widgetDescriptionText: z.string().max(WIDGET_DESCRIPTION_MAX_LENGTH, {
+    message: 'Description is too long'
+  }),
+  widgetDescriptionVisible: z.coerce.boolean(),
   widgetPosition: z.enum(WIDGET_POSITION),
   widgetDonateAmount: z.coerce
     .number()
@@ -84,5 +86,11 @@ export const widgetFieldsSchema = z.object({
   widgetTextColor: z.string().min(1),
   widgetBackgroundColor: z.string().min(1),
   widgetTriggerBackgroundColor: z.string().min(1),
-  widgetTriggerIcon: z.string().optional()
+  widgetTriggerIcon: z.string()
 })
+
+export const WidgetProfileSchema = z.object({
+  ...widgetFieldsSchema.shape,
+  $version: z.string(),
+  $name: z.string()
+}) satisfies z.ZodType<WidgetProfile>
