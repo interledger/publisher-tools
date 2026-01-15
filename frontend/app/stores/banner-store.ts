@@ -95,12 +95,8 @@ export const actions = {
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
-    return await saveToolProfile(
-      toolState.walletAddress,
-      TOOL_BANNER,
-      profile,
-      toolState.activeTab
-    )
+    const { walletAddress, activeTab } = toolState
+    return await saveToolProfile(walletAddress, TOOL_BANNER, profile, activeTab)
   },
   commitProfile() {
     const profile = snapshot(banner.profile)
