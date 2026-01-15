@@ -1,14 +1,14 @@
-import type { Tool, ToolProfile } from '@shared/types'
+import type { ProfileId, Tool, ToolProfile } from '@shared/types'
 import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
-import { toolState } from '~/stores/toolStore'
 
 export async function saveToolProfile<T extends Tool>(
+  walletAddress: string,
   tool: T,
-  profile: ToolProfile<T>
+  profile: ToolProfile<T>,
+  profileId: ProfileId
 ): Promise<SaveResult> {
-  const { walletAddress, activeTab: profileId } = toolState
   const baseUrl = location.origin + APP_BASEPATH
   const url = `${baseUrl}/api/profile`
 
