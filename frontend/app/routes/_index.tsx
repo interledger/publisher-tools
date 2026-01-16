@@ -47,8 +47,13 @@ const setupTools = [
 const interactionTools = [
   {
     title: 'Banner',
-    description:
-      'Show a customizable banner to introduce Web Monetization. The banner disappears when dismissed or the extension is installed.',
+    description: (
+      <>
+        Show a customizable banner to introduce Web Monetization.
+        <br />
+        The banner disappears when dismissed or the extension is installed.
+      </>
+    ),
     tags: [
       'Web Monetization',
       'Visibility boost',
@@ -60,7 +65,13 @@ const interactionTools = [
   },
   {
     title: 'Widget',
-    description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
+    description: (
+      <>
+        A floating icon that lets visitors support you with one-time payments.
+        <br />
+        No extension needed, simple and flexible.
+      </>
+    ),
     tags: [
       'Web Monetization',
       'One time support',
@@ -72,8 +83,14 @@ const interactionTools = [
   },
   {
     title: 'Call-to-Action button',
-    description:
-      'The most classic, yet one of the most effective methods in order to link to your supporters. Ladies and gents, the button!',
+    description: (
+      <>
+        The most classic, yet one of the most effective methods in order to link
+        to your supporters.
+        <br />
+        Ladies and gents, the button!
+      </>
+    ),
     tags: ['flawless', 'dynamic', 'high click rate', 'button'],
     icon: SVGButton,
     link: '/button',
@@ -117,6 +134,7 @@ export default function Index() {
 
         <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-body-standard">
           Use our suite of tools to set up and promote Web Monetization.
+          <br />
           Encourage your visitors to support your content and website.
         </p>
       </div>
@@ -136,7 +154,7 @@ export default function Index() {
             Setup tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-small-standard max-xl:text-center xl:text-left">
             Get started quickly with tools designed to help you set up Web
             Monetization on your website
           </p>
@@ -175,11 +193,12 @@ export default function Index() {
             Interaction tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-small-standard max-xl:text-center xl:text-left">
             Add lightweight and embeddable tools, like banners and widgets, to
-            your site with simple scripts. They&apos;re easily customizable,
-            helping you connect with your audience to encourage Web Monetization
-            support.
+            your site with simple scripts.
+            <br />
+            They&apos;re easily customizable, helping you connect with your
+            audience to encourage Web Monetization support.
           </p>
 
           <ul
