@@ -133,21 +133,9 @@ From the root directory:
 - `pnpm lint` - Lint and fix code with ESLint
 - `pnpm typecheck` - Run TypeScript type checking across all packages
 
-## Content Security Policy (CSP) Requirements
+## Documentation
 
-If your website uses Content Security Policy headers, you'll need to add the following directives to allow Publisher Tools embed script to function properly:
+For detailed information on how to use and configure Publisher Tools, including Content Security Policy requirements and customization options, see the official documentation:
 
-- **script-src**: `https://tools-cdn.webmonetization.org`  
-  Allows loading interactive tool script from the CDN
-
-- **connect-src**: `https://tools-api.webmonetization.org`  
-  Allows fetching configuration data from the API
-
-- **img-src**: `data: https://tools-cdn.webmonetization.org`  
-  Allows loading logos/thumbnails and inline SVG icons
-
-- **style-src**: `https://tools-cdn.webmonetization.org`  
-  Allows loading CSS files and dynamic theme styling (custom colors/fonts)
-
-- **font-src**: `https://tools-cdn.webmonetization.org`  
-  Allows loading custom web fonts
+- [Banner Tool](https://webmonetization.org/publishers/banner-tool/)
+- [Widget Tool](https://webmonetization.org/publishers/widget-tool/)
