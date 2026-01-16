@@ -26,15 +26,14 @@ import {
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
+import { useSaveProfile } from '~/hooks/useSaveProfile'
 import {
   actions,
   banner,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToStorage,
-  subscribeProfilesToUpdates,
-  subscribeSnapshotsToStorage
+  subscribeProfilesToUpdates
 } from '~/stores/banner-store'
 import {
   toolState,
@@ -85,7 +84,7 @@ export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveConfig()
+  const { save, saveLastAction } = useSaveProfile()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -100,7 +99,6 @@ export default function Banner() {
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
-    subscribeSnapshotsToStorage()
 
     loadState(OP_WALLET_ADDRESS)
     persistState()

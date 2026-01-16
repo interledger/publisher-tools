@@ -1,3 +1,4 @@
+/** @deprecated will be removed in future versions */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
 }
@@ -51,7 +52,9 @@ export interface ElementConfigType {
   widgetTriggerIcon: string
 }
 
-export const TOOLS = ['banner', 'widget'] as const
+export const TOOL_BANNER = 'banner'
+export const TOOL_WIDGET = 'widget'
+export const TOOLS = [TOOL_BANNER, TOOL_WIDGET] as const
 export type Tool = (typeof TOOLS)[number]
 
 export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
@@ -63,16 +66,24 @@ export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {
   version3: 'Default profile 3'
 } as const
 
-export type Configuration<T extends Tool> = {
+export interface Configuration {
   $walletAddress: string
   $walletAddressId?: string
+  $createdAt: string
   $modifiedAt?: string
-  banner: {
+  banner?: {
     [presetId in ProfileId]?: BannerProfile
   }
-  widget: {
+  widget?: {
     [presetId in ProfileId]?: WidgetProfile
   }
+}
+
+export type ToolProfiles<T extends Tool> = Configuration[T]
+
+export type ToolProfile<T extends Tool> = {
+  banner: BannerProfile
+  widget: WidgetProfile
 }[T]
 
 export interface BaseToolProfile {

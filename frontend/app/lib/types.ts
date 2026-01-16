@@ -6,6 +6,18 @@ import type {
   createWidgetSchema
 } from '../utils/validate.server.js'
 
+export type SaveResult = {
+  success?: boolean
+  grantRedirect?: string
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
+}
+
 export type SanitizedFields = Pick<
   ElementConfigType,
   | 'bannerTitleText'
