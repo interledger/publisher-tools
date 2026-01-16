@@ -4,7 +4,7 @@ import { sharesToChartData } from '~/lib/revshare'
 import type { Share } from '~/lib/revshare'
 
 function genLabel({
-  dataEntry
+  dataEntry,
 }: {
   dataEntry: { title: string; value: number; percentage: number }
 }): string {
@@ -30,12 +30,12 @@ export const RevShareChart = React.memo(
         label={genLabel}
         radius={40}
         labelStyle={() => ({
-          fontSize: '6px'
+          fontSize: '6px',
         })}
         labelPosition={112}
       />
     )
-  }
+  },
 )
 
 RevShareChart.displayName = 'RevShareChart'

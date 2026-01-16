@@ -1,7 +1,7 @@
 import type {
   BorderRadiusKey,
   FontFamilyKey,
-  WidgetPositionKey
+  WidgetPositionKey,
 } from '@shared/types'
 
 export interface WidgetConfig {

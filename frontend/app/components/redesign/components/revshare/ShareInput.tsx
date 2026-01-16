@@ -50,7 +50,7 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
           'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
           'md:grid',
           GRID_COLS,
-          GRID_GAP
+          GRID_GAP,
         )}
       >
         <div
@@ -108,7 +108,7 @@ export const ShareInput = React.memo(
     onValidationChange,
     onRemove,
     showDelete = false,
-    weightDisabled = false
+    weightDisabled = false,
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
     const [showSuccess, setShowSuccess] = useState(false)
@@ -150,7 +150,7 @@ export const ShareInput = React.memo(
           'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
           GRID_COLS,
-          GRID_GAP
+          GRID_GAP,
         )}
       >
         <div className="flex flex-row justify-between items-center md:hidden">
@@ -199,7 +199,7 @@ export const ShareInput = React.memo(
             ariaDescription="Enter a valid wallet address or payment pointer for this recipient"
             className={cx(
               showIcon && 'pr-10',
-              hasError && 'border-field-border-error'
+              hasError && 'border-field-border-error',
             )}
           />
           {showIcon && (
@@ -252,7 +252,7 @@ export const ShareInput = React.memo(
         )}
       </div>
     )
-  }
+  },
 )
 
 ShareInput.displayName = 'ShareInput'

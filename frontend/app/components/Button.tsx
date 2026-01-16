@@ -14,18 +14,18 @@ const buttonStyles = cva(
         danger:
           'disabled:bg-red-200 bg-red-500 hover:bg-red-600 shadow-md text-white',
         icon: 'bg-white enabled:hover:bg-gradient-to-r enabled:hover:from-wm-green enabled:hover:to-wm-green-fade aspect-square shadow-md max-w-[30px] disabled:bg-gray-200 disabled:hover:bg-gray-200!',
-        invisible: 'px-1 border-none text-white'
+        invisible: 'px-1 border-none text-white',
       },
       size: {
         sm: 'px-2 py-1 ',
-        md: ''
-      }
+        md: '',
+      },
     },
     defaultVariants: {
       intent: 'default',
-      size: 'md'
-    }
-  }
+      size: 'md',
+    },
+  },
 )
 
 type ButtonProps = VariantProps<typeof buttonStyles> &
@@ -45,7 +45,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </ButtonOrLink>
     )
-  }
+  },
 )
 
 Button.displayName = 'Button'

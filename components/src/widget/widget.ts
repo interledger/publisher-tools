@@ -58,7 +58,7 @@ export class PaymentWidget extends LitElement {
     try {
       const { apiUrl } = this.configController.config
       const walletAddressUrl = checkHrefFormat(
-        toWalletAddressUrl(walletAddress)
+        toWalletAddressUrl(walletAddress),
       )
 
       const url = new URL('/wallet', apiUrl)
@@ -72,7 +72,7 @@ export class PaymentWidget extends LitElement {
       }
 
       this.configController.updateState({
-        walletAddress: data as WalletAddress
+        walletAddress: data as WalletAddress,
       })
 
       this.walletAddressError = ''
@@ -95,8 +95,8 @@ export class PaymentWidget extends LitElement {
       new CustomEvent('widget-toggle', {
         detail: { isOpen: this.isOpen },
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -139,8 +139,8 @@ export class PaymentWidget extends LitElement {
         assetScale: 2,
         authServer: 'https://auth.interledger.cards',
         resourceServer: 'https://ilp.dev',
-        publicName: 'Wallet (Preview)'
-      }
+        publicName: 'Wallet (Preview)',
+      },
     })
     this.currentView = 'confirmation'
   }

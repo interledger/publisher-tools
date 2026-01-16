@@ -38,7 +38,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
 
   return redirect(`/${elementType}`, {
     headers: {
-      'Set-Cookie': await commitSession(session)
-    }
+      'Set-Cookie': await commitSession(session),
+    },
   })
 }
