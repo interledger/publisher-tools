@@ -15,7 +15,7 @@ export function TitleInput({
   suggestions,
   onChange,
   maxLength,
-  helpText
+  helpText,
 }: Props) {
   return (
     <>
@@ -40,7 +40,7 @@ export function TitleInput({
 function SuggestedTitles({
   value,
   suggestions,
-  onChange
+  onChange,
 }: Pick<Props, 'value' | 'suggestions' | 'onChange'>) {
   return (
     <div
@@ -76,7 +76,7 @@ function CustomTitle({
   onChange,
   placeholder,
   maxLength,
-  helpText
+  helpText,
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
   const id = 'custom-title-input'
   return (

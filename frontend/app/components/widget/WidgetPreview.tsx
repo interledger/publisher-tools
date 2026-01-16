@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import type {
   WidgetConfig,
-  PaymentWidget as WidgetComponent
+  PaymentWidget as WidgetComponent,
 } from '@tools/components'
 import { useCurrentConfig } from '~/stores/toolStore'
 
@@ -12,7 +12,7 @@ interface Props {
 
 export const WidgetPreview = ({
   serviceUrls,
-  opWallet
+  opWallet,
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [profile] = useCurrentConfig()
@@ -51,8 +51,8 @@ export const WidgetPreview = ({
         fontSize: profile.widgetFontSize,
         fontFamily: profile.widgetFontName,
         widgetBorderRadius: profile.widgetButtonBorder,
-        widgetButtonBackgroundColor: profile.widgetTriggerBackgroundColor
-      }
+        widgetButtonBackgroundColor: profile.widgetTriggerBackgroundColor,
+      },
     } as WidgetConfig
   }, [profile, serviceUrls, opWallet])
 
@@ -77,7 +77,7 @@ export const WidgetPreview = ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
       }}
     >
       <wm-payment-widget ref={widgetRef} />

@@ -53,7 +53,7 @@ export function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
 export async function createHeaders({
   request,
   privateKey,
-  keyId
+  keyId,
 }: SignOptions): Promise<Headers> {
   if (request.body) {
     const contentHeaders = createContentHeaders(request.body)
@@ -63,12 +63,12 @@ export async function createHeaders({
   const signatureHeaders = await createSignatureHeaders({
     request,
     privateKey,
-    keyId
+    keyId,
   })
 
   return {
     ...request.headers,
-    ...signatureHeaders
+    ...signatureHeaders,
   }
 }
 
@@ -76,16 +76,16 @@ function createContentHeaders(body: string): ContentHeaders {
   return {
     'Content-Digest': createContentDigestHeader(
       JSON.stringify(JSON.parse(body)),
-      ['sha-512']
+      ['sha-512'],
     ),
     'Content-Length': new TextEncoder().encode(body).length.toString(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 }
 async function createSignatureHeaders({
   request,
   privateKey,
-  keyId
+  keyId,
 }: SignOptions): Promise<SignatureHeaders> {
   const components = ['@method', '@target-uri']
   if (request.headers.Authorization || request.headers.authorization) {
@@ -102,18 +102,18 @@ async function createSignatureHeaders({
       name: 'sig1',
       params: ['keyid', 'created'],
       fields: components,
-      key: signingKey
+      key: signingKey,
     },
     {
       url: request.url,
       method: request.method,
-      headers: request.headers
-    }
+      headers: request.headers,
+    },
   )
 
   return {
     'Signature': headers.Signature as string,
-    'Signature-Input': headers['Signature-Input'] as string
+    'Signature-Input': headers['Signature-Input'] as string,
   }
 }
 
@@ -123,7 +123,7 @@ function createSigner(key: Uint8Array, keyId: string) {
     alg: 'ed25519',
     async sign(data: Uint8Array) {
       return Buffer.from(await signAsync(data, key))
-    }
+    },
   }
 }
 
@@ -134,11 +134,11 @@ export function serializeError(error: unknown) {
 export function createHTTPException(
   statusCode: ContentfulStatusCode,
   message: string,
-  error: unknown
+  error: unknown,
 ) {
   const serializedError = serializeError(error)
   return new HTTPException(statusCode, {
     message,
-    cause: serializedError
+    cause: serializedError,
   })
 }

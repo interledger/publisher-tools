@@ -18,7 +18,7 @@ export const BuilderPresetTabs = <T extends string>({
   selectedId,
   idPrefix,
   onChange,
-  onRename
+  onRename,
 }: Props<T>) => {
   const tabListRef = useRef<HTMLDivElement>(null)
 
@@ -29,7 +29,7 @@ export const BuilderPresetTabs = <T extends string>({
 
   const getTabElement = (id: T) => {
     return tabListRef.current!.querySelector<HTMLElement>(
-      `#${idPrefix}-tab-${id}`
+      `#${idPrefix}-tab-${id}`,
     )
   }
 
@@ -40,7 +40,7 @@ export const BuilderPresetTabs = <T extends string>({
       onChange(tabId)
       getTabElement(tabId)?.focus()
     },
-    [options, onChange]
+    [options, onChange],
   )
 
   const onKeyDown = useCallback(
@@ -68,7 +68,7 @@ export const BuilderPresetTabs = <T extends string>({
         setEditingId(null)
       }
     },
-    [activeTabId, activeTabIdx]
+    [activeTabId, activeTabIdx],
   )
 
   return (
@@ -76,7 +76,7 @@ export const BuilderPresetTabs = <T extends string>({
       <div
         className="grid w-full overflow-x-auto"
         style={{
-          gridTemplateColumns: `repeat(${options.length}, minmax(12rem, 1fr))` // not same as grid-cols-3
+          gridTemplateColumns: `repeat(${options.length}, minmax(12rem, 1fr))`, // not same as grid-cols-3
         }}
       >
         <div
@@ -105,7 +105,7 @@ export const BuilderPresetTabs = <T extends string>({
                 !editingId && 'mb-2',
                 option.id === activeTabId
                   ? 'bg-white text-text-buttons-default'
-                  : 'text-silver-600 hover:bg-purple-50'
+                  : 'text-silver-600 hover:bg-purple-50',
               )}
             >
               <span
@@ -114,7 +114,7 @@ export const BuilderPresetTabs = <T extends string>({
                   'truncate inline-block w-48 pr-4',
                   option.id === activeTabId
                     ? 'text-text-buttons-default'
-                    : 'text-silver-600'
+                    : 'text-silver-600',
                 )}
               >
                 {option.label}
@@ -158,7 +158,7 @@ export const BuilderPresetTabs = <T extends string>({
           role="tabpanel"
           className={cx(
             'bg-interface-bg-container rounded-b-sm p-md flex-col gap-md w-full -mt-2',
-            option.id === activeTabId ? 'flex' : 'hidden'
+            option.id === activeTabId ? 'flex' : 'hidden',
           )}
           aria-labelledby={`${idPrefix}-tab-${option.id}`}
           id={`${idPrefix}-tabpanel-${option.id}`}
@@ -211,7 +211,7 @@ function TabNameEditor<T extends string>({
   tabIdx,
   onSubmit,
   setHasError,
-  inputId
+  inputId,
 }: TabNameEditorProps<T>) {
   const [errorMessage, setErrorMessage] = useState('')
   const ALLOWED_CHARS = /[a-zA-Z0-9-_\s#@&]/
@@ -224,7 +224,7 @@ function TabNameEditor<T extends string>({
       setHasError(!!errMsg)
       return !errMsg
     },
-    [tabId, options, setErrorMessage]
+    [tabId, options, setErrorMessage],
   )
 
   const onKeyDown = useCallback((ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -242,7 +242,7 @@ function TabNameEditor<T extends string>({
         validateTabName(input)
       }, 0)
     },
-    [tabId]
+    [tabId],
   )
 
   return (
@@ -257,7 +257,7 @@ function TabNameEditor<T extends string>({
       className={cx(
         'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm bg-white pr-2 relative mb-2',
         // 'focus-within:outline outline-2 outline-primary-focus',
-        !!errorMessage && 'outline outline-2 outline-field-border-error'
+        !!errorMessage && 'outline outline-2 outline-field-border-error',
       )}
     >
       <input
@@ -268,7 +268,7 @@ function TabNameEditor<T extends string>({
           'text-style-body-standard leading-md font-normal w-full',
           'text-text-buttons-default bg-white rounded-t-sm',
           'invalid:text-text-error invalid:underline invalid:empty:no-underline decoration-dashed',
-          'focus:outline-none'
+          'focus:outline-none',
         )}
         placeholder="Preset name"
         autoFocus={true}
@@ -313,7 +313,7 @@ function TabNameEditor<T extends string>({
 const validateInput = <T extends string>(
   value: string,
   options: readonly TabOption<T>[],
-  currentTabId: T
+  currentTabId: T,
 ): string | '' => {
   const val = value.trim()
   if (!val) {
@@ -322,7 +322,7 @@ const validateInput = <T extends string>(
 
   const isDuplicate = options.some(
     (opt) =>
-      opt.id !== currentTabId && opt.label.toLowerCase() === val.toLowerCase()
+      opt.id !== currentTabId && opt.label.toLowerCase() === val.toLowerCase(),
   )
   if (isDuplicate) {
     return 'This name is already used'

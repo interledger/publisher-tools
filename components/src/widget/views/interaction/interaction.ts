@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import type {
   PaymentStatusSuccess,
   PaymentStatus,
-  PaymentStatusRejected
+  PaymentStatusRejected,
 } from 'publisher-tools-api'
 import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
 import interactionStyles from './interaction.css?raw'
@@ -13,13 +13,13 @@ import successIcon from '../../../assets/interaction/authorization_success.svg'
 import type { WidgetController } from '../../controller'
 
 function isInteractionSuccess(
-  params: PaymentStatus
+  params: PaymentStatus,
 ): params is PaymentStatusSuccess {
   return 'interact_ref' in params
 }
 
 function isInteractionRejected(
-  params: PaymentStatus
+  params: PaymentStatus,
 ): params is PaymentStatusRejected {
   return 'result' in params && params.result === 'grant_rejected'
 }
@@ -59,8 +59,8 @@ export class PaymentInteraction extends LitElement {
     }
     const {
       outgoingPaymentGrant: {
-        interact: { redirect }
-      }
+        interact: { redirect },
+      },
     } = this.configController.state
     if (!redirect) return
 
@@ -103,8 +103,8 @@ export class PaymentInteraction extends LitElement {
     this.dispatchEvent(
       new CustomEvent('interaction-cancelled', {
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -112,8 +112,8 @@ export class PaymentInteraction extends LitElement {
     this.dispatchEvent(
       new CustomEvent('back', {
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -127,7 +127,7 @@ export class PaymentInteraction extends LitElement {
         outgoingPaymentGrant,
         quote,
         incomingPaymentGrant,
-        note
+        note,
       } = this.configController.state
       const { apiUrl } = this.configController.config
       const url = new URL('/payment/finalize', apiUrl).href
@@ -135,7 +135,7 @@ export class PaymentInteraction extends LitElement {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           walletAddress,
@@ -143,13 +143,13 @@ export class PaymentInteraction extends LitElement {
           quote,
           incomingPaymentGrant,
           interactRef,
-          note
-        })
+          note,
+        }),
       })
 
       if (!response.ok) {
         this.handleInteractionFail(
-          'Failed to process payment. Please try again'
+          'Failed to process payment. Please try again',
         )
         return
       }
@@ -158,7 +158,7 @@ export class PaymentInteraction extends LitElement {
 
       if (result.success === false) {
         this.handleInteractionFail(
-          result.error?.message || 'Payment processing failed'
+          result.error?.message || 'Payment processing failed',
         )
         return
       }

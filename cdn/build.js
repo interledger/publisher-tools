@@ -20,13 +20,13 @@ await build({
   sourcemap: true,
   treeShaking: true,
   define: {
-    BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL ?? '')
+    BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL ?? ''),
   },
   assetNames: 'assets/[ext]/[name]-[hash]',
   loader: {
     '.svg': 'dataurl',
     '.woff': 'file',
-    '.woff2': 'file'
+    '.woff2': 'file',
   },
   plugins: [
     rawPlugin(),
@@ -37,19 +37,19 @@ await build({
           const dir = build.initialOptions.outdir
           const tree = directoryTree(dir, {
             attributes: ['type'],
-            exclude: [/\b404\.html$/m, /\b_headers$/, /\.gitkeep$/]
+            exclude: [/\b404\.html$/m, /\b_headers$/, /\.gitkeep$/],
           })
 
           const content = generateDirectoryTreeHTML(tree)
           const file = path.join(dir, '404.html')
           writeFileSync(file, content, 'utf-8')
         })
-      }
+      },
     },
     copy({
-      assets: [{ from: 'public/**', to: '.' }]
-    })
-  ]
+      assets: [{ from: 'public/**', to: '.' }],
+    }),
+  ],
 })
 
 /** @returns {import('esbuild').Plugin} */
@@ -67,7 +67,7 @@ function rawPlugin() {
         const contents = await readFile(args.path.replace(filter, ''))
         return { contents, loader: 'text' }
       })
-    }
+    },
   }
 }
 

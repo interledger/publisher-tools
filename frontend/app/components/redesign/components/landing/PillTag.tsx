@@ -9,7 +9,7 @@ export type PillTagProps = {
 export const PillTag = ({
   children,
   variant = 'default',
-  className = ''
+  className = '',
 }: PillTagProps) => {
   const textColorClass =
     variant === 'active' ? 'text-text-secondary' : 'text-text-helper'

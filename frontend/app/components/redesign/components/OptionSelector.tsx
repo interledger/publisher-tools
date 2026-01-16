@@ -21,7 +21,7 @@ export function OptionSelector<T extends string | number>({
   options,
   defaultValue,
   onChange,
-  renderCustomOption
+  renderCustomOption,
 }: OptionSelectorProps<T>) {
   const handleChange = (value: T) => {
     if (onChange) {
@@ -53,7 +53,7 @@ export function OptionSelector<T extends string | number>({
             key={option.id}
             className={cx(
               'flex flex-row flex-1 items-center gap-xs',
-              option.label ? 'cursor-pointer' : 'pointer-events-none'
+              option.label ? 'cursor-pointer' : 'pointer-events-none',
             )}
             onClick={() => option.label && handleChange(option.value)}
           >
@@ -62,7 +62,7 @@ export function OptionSelector<T extends string | number>({
                 type="button"
                 className={cx(
                   'w-4 h-4 rounded-full flex items-center justify-center border',
-                  isSelected ? 'border-purple-600' : 'border-purple-300'
+                  isSelected ? 'border-purple-600' : 'border-purple-300',
                 )}
               >
                 {isSelected && (

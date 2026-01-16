@@ -32,12 +32,12 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetConfig) => {
       fontSize: config.widgetFontSize,
       fontFamily: config.widgetFontName,
       widgetBorderRadius: config.widgetButtonBorder,
-      widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor
+      widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor,
     },
     widgetTitleText: config.widgetTitleText,
     widgetDescriptionText: config.widgetDescriptionText,
     isWidgetDescriptionVisible: config.widgetDescriptionVisible,
-    widgetPosition: config.widgetPosition
+    widgetPosition: config.widgetPosition,
   }
 
   element.style.position = 'fixed'

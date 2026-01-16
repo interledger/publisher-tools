@@ -4,7 +4,7 @@ import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
 import {
   validateAndConfirmPointer,
-  WalletAddressFormatError
+  WalletAddressFormatError,
 } from '@shared/utils/index'
 
 const htmlEncodePointer = (pointer: string): string => {
@@ -47,7 +47,7 @@ export const LinkTagGenerator = () => {
         setIsLoading(false)
       }
     },
-    [pointerInput]
+    [pointerInput],
   )
 
   const handleOnChange = useCallback(
@@ -56,7 +56,7 @@ export const LinkTagGenerator = () => {
       setInvalidUrl(false)
       setShowCodeBox(false)
     },
-    []
+    [],
   )
 
   const handleCopyStatusChange = useCallback((copied: boolean) => {

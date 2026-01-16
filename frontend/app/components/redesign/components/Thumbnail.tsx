@@ -9,7 +9,7 @@ export interface ThumbnailProps {
 export const Thumbnail: React.FC<ThumbnailProps> = ({
   isSelected,
   imageUrl,
-  onClick
+  onClick,
 }) => {
   return (
     <div

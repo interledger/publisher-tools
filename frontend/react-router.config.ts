@@ -6,5 +6,5 @@ export default {
   basename: APP_BASEPATH,
   appDirectory: 'app',
   buildDirectory: 'build',
-  serverModuleFormat: 'esm'
+  serverModuleFormat: 'esm',
 } satisfies Config

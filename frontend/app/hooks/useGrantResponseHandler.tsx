@@ -11,7 +11,7 @@ export const useGrantResponseHandler = (
   grantResponse: string,
   isGrantAccepted: boolean,
   isGrantResponse: boolean,
-  options: UseGrantResponseHandlerOptions
+  options: UseGrantResponseHandlerOptions,
 ) => {
   const [openDialog, closeDialog] = useDialog()
 
@@ -28,7 +28,7 @@ export const useGrantResponseHandler = (
             onDone={closeDialog}
             message={errorMessage}
             status="error"
-          />
+          />,
         )
         return
       }

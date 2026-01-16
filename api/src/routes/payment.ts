@@ -6,7 +6,7 @@ import {
   PaymentQuoteSchema,
   PaymentGrantSchema,
   PaymentFinalizeSchema,
-  PaymentStatusParamSchema
+  PaymentStatusParamSchema,
 } from '../schemas/payment.js'
 import type { PaymentStatus } from '../types'
 import { OpenPaymentsService } from '../utils/open-payments.js'
@@ -25,14 +25,14 @@ app.post(
         senderWalletAddress,
         receiverWalletAddress,
         amount,
-        note
+        note,
       })
 
       return json(result)
     } catch (error) {
       throw createHTTPException(500, 'Payment quote creation error: ', error)
     }
-  }
+  },
 )
 
 app.post(
@@ -51,14 +51,14 @@ app.post(
         walletAddress,
         debitAmount,
         receiveAmount,
-        redirectUrl
+        redirectUrl,
       })
 
       return json(result)
     } catch (error) {
       throw createHTTPException(500, 'Payment grant creation error: ', error)
     }
-  }
+  },
 )
 
 app.post(
@@ -72,7 +72,7 @@ app.post(
         quote,
         incomingPaymentGrant,
         interactRef,
-        note
+        note,
       } = req.valid('json')
 
       const openPaymentsService = await OpenPaymentsService.getInstance(env)
@@ -82,14 +82,14 @@ app.post(
         quote,
         incomingPaymentGrant,
         interactRef,
-        note
+        note,
       )
 
       return json(result)
     } catch (error) {
       throw createHTTPException(500, 'Payment finalization error: ', error)
     }
-  }
+  },
 )
 
 app.get(
@@ -108,13 +108,13 @@ app.get(
 
         const status = await env.PUBLISHER_TOOLS_KV.get<PaymentStatus>(
           KV_PAYMENTS_PREFIX + paymentId,
-          'json'
+          'json',
         )
 
         if (status) {
           return json({
             type: 'GRANT_INTERACTION',
-            ...status
+            ...status,
           })
         }
       }
@@ -127,7 +127,7 @@ app.get(
 
       throw createHTTPException(404, 'Failed to retrieve data', error)
     }
-  }
+  },
 )
 
 function isAllowedRedirectUrl(redirectUrl: string) {

@@ -5,7 +5,7 @@ import {
   CORNER_OPTION,
   SLIDE_ANIMATION,
   WIDGET_POSITION,
-  FONT_FAMILY_OPTIONS
+  FONT_FAMILY_OPTIONS,
 } from '@shared/types'
 import type { BannerProfile, ElementConfigType } from '@shared/types'
 
@@ -49,12 +49,12 @@ export function getDefaultData(): ElementConfigType {
     widgetTextColor: '#000000',
     widgetBackgroundColor: '#ffffff',
     widgetTriggerBackgroundColor: '#ffffff',
-    widgetTriggerIcon: ''
+    widgetTriggerIcon: '',
   }
 }
 
 export const createDefaultBannerProfile = (
-  profileName: string
+  profileName: string,
 ): BannerProfile => ({
   $version: '0.0.1',
   $name: profileName,
@@ -70,5 +70,5 @@ export const createDefaultBannerProfile = (
   bannerTitleText: 'How to support?',
   bannerDescriptionText:
     'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-  bannerDescriptionVisible: true
+  bannerDescriptionVisible: true,
 })

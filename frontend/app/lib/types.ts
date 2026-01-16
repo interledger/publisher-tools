@@ -3,7 +3,7 @@ import type { ElementConfigType } from '@shared/types'
 import type {
   createBannerSchema,
   createButtonSchema,
-  createWidgetSchema
+  createWidgetSchema,
 } from '../utils/validate.server.js'
 
 export type SaveResult = {

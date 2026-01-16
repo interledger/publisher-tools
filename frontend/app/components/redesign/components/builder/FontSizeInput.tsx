@@ -15,7 +15,7 @@ export function FontSizeInput({
   min,
   max,
   onChange,
-  label = 'Size'
+  label = 'Size',
 }: Props) {
   const id = useId()
   return (
@@ -60,7 +60,7 @@ export function FontSizeInput({
 function IncDecButton({
   label,
   onClick,
-  children
+  children,
 }: { label: string } & React.ComponentProps<'button'>) {
   return (
     <button
@@ -78,7 +78,7 @@ function IncDecIcon({ type }: { type: 'inc' | 'dec' }) {
     <span
       className={cx(
         'text-text-primary hover:font-bold',
-        type === 'inc' ? 'text-3xl leading-3xl' : 'text-sm leading-sm'
+        type === 'inc' ? 'text-3xl leading-3xl' : 'text-sm leading-sm',
       )}
       aria-hidden="true"
     >

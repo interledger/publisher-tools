@@ -1,12 +1,12 @@
 /* eslint react/prop-types: 0 */
 type SVGProps = React.SVGProps<SVGSVGElement>
 type SvgIcon = (
-  props: SVGProps & Required<Pick<SVGProps, 'className'>>
+  props: SVGProps & Required<Pick<SVGProps, 'className'>>,
 ) => React.ReactElement<SVGProps, 'svg'>
 
 const defaultProps: SVGProps = {
   'aria-hidden': true,
-  'fill': 'none'
+  'fill': 'none',
 }
 
 export const SVGScriptCode: SvgIcon = ({ className }) => (

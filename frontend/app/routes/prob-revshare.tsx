@@ -11,7 +11,7 @@ import {
   ShareInputHeader,
   ShareInputTable,
   ToolsPrimaryButton,
-  ToolsSecondaryButton
+  ToolsSecondaryButton,
 } from '@/components'
 import { API_URL } from '@shared/defines'
 import { Heading5 } from '../components/redesign/Typography'
@@ -20,7 +20,7 @@ import {
   dropIndex,
   sharesToPaymentPointer,
   tagOrPointerToShares,
-  validateShares
+  validateShares,
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
 
@@ -30,8 +30,8 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Create a probabilistic revenue share to split Web Monetization earnings among multiple recipients.'
-    }
+        'Create a probabilistic revenue share to split Web Monetization earnings among multiple recipients.',
+    },
   ]
 }
 
@@ -55,11 +55,11 @@ function Revshare() {
   const showDeleteColumn = shares.length > 2
   const revShareUrl = useMemo(
     () => sharesToPaymentPointer(shares, baseUrl) ?? '',
-    [shares]
+    [shares],
   )
   const totalWeight = useMemo(
     () => shares.reduce((a, b) => a + Number(b.weight), 0),
-    [shares]
+    [shares],
   )
   const hasValidShares = validateShares(shares)
 
@@ -71,37 +71,37 @@ function Revshare() {
     (index: number) => {
       setShares((prevShares) => dropIndex(prevShares, index))
     },
-    [setShares]
+    [setShares],
   )
 
   const handleChangeName = useCallback(
     (index: number, name: string) => {
       setShares((prevShares) => changeList(prevShares, index, { name }))
     },
-    [setShares]
+    [setShares],
   )
 
   const handleChangePointer = useCallback(
     (index: number, pointer: string) => {
       setShares((prevShares) =>
-        changeList(prevShares, index, { pointer: pointer.trim() })
+        changeList(prevShares, index, { pointer: pointer.trim() }),
       )
     },
-    [setShares]
+    [setShares],
   )
 
   const handleChangeWeight = useCallback(
     (index: number, weight: number) => {
       setShares((prevShares) => changeList(prevShares, index, { weight }))
     },
-    [setShares]
+    [setShares],
   )
 
   const handleValidationChange = useCallback(
     (index: number, isValid: boolean) => {
       setShares((prevShares) => changeList(prevShares, index, { isValid }))
     },
-    [setShares]
+    [setShares],
   )
 
   const handleLinkTagImport = useCallback(() => {

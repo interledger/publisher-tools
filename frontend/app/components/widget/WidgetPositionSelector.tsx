@@ -1,7 +1,7 @@
 import { SVGPositionLeft, SVGPositionRight } from '@/assets'
 import {
   PositionSelectorInput,
-  type Option
+  type Option,
 } from '@/components/builder/PositionSelectorInput'
 import { WIDGET_POSITION, type WidgetPositionKey } from '@shared/types'
 
@@ -14,18 +14,18 @@ const widgetPositionOptions: Option<WidgetPositionKey>[] = [
   {
     label: 'Left',
     value: WIDGET_POSITION.Left,
-    icon: <SVGPositionLeft className="w-11 h-11" />
+    icon: <SVGPositionLeft className="w-11 h-11" />,
   },
   {
     label: 'Right',
     value: WIDGET_POSITION.Right,
-    icon: <SVGPositionRight className="w-11 h-11" />
-  }
+    icon: <SVGPositionRight className="w-11 h-11" />,
+  },
 ]
 
 export function WidgetPositionSelector({
   value,
-  onChange
+  onChange,
 }: WidgetPositionSelectorProps) {
   return (
     <PositionSelectorInput

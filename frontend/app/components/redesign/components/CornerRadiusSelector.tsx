@@ -9,12 +9,12 @@ export interface CornerRadiusSelectorProps {
 const options: Array<{ value: CornerType; label: string }> = [
   { label: 'No rounding', value: CORNER_OPTION.None },
   { label: 'Light rounding', value: CORNER_OPTION.Light },
-  { label: 'Pill rounding', value: CORNER_OPTION.Pill }
+  { label: 'Pill rounding', value: CORNER_OPTION.Pill },
 ]
 
 export function CornerRadiusSelector({
   value,
-  onChange
+  onChange,
 }: CornerRadiusSelectorProps) {
   return (
     <div className="flex max-xl:self-center items-start xl:flex-row flex-col gap-md">

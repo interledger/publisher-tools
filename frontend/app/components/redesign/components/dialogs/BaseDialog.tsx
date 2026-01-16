@@ -36,7 +36,7 @@ export const BaseDialog: React.FC<Props> = ({ children, className }) => {
       <div
         className={cx(
           'bg-interface-bg-container border border-interface-edge-container rounded-lg',
-          className
+          className,
         )}
       >
         <button

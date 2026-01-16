@@ -13,8 +13,8 @@ app.get(
   zValidator(
     'param',
     z.object({
-      payload: z.base64url().max(50_000).min(20)
-    })
+      payload: z.base64url().max(50_000).min(20),
+    }),
   ),
   async ({ req, json }) => {
     const encodedPayload = req.param('payload')
@@ -25,7 +25,7 @@ app.get(
       if (error instanceof HTTPException) throw error
       throw createHTTPException(500, 'Revenue share error', error)
     }
-  }
+  },
 )
 
 async function handler(encodedPayload: string): Promise<WalletAddress> {
@@ -45,7 +45,7 @@ async function handler(encodedPayload: string): Promise<WalletAddress> {
   }
 
   const res = await fetch(walletAddressUrl, {
-    headers: { 'Content-type': 'application/json' }
+    headers: { 'Content-type': 'application/json' },
   })
   if (!res.ok) {
     const msg = 'did not resolve to a valid wallet address'

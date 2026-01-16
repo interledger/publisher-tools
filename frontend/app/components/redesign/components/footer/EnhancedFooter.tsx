@@ -11,28 +11,28 @@ const socialLinks = [
   {
     href: 'https://www.linkedin.com/company/interledger-foundation/',
     icon: socialLinkedInIcon,
-    text: 'LinkedIn'
+    text: 'LinkedIn',
   },
   {
     href: 'https://interledger.slack.com/archives/CNYTXJKMX',
     icon: socialSlackIcon,
-    text: 'Slack'
+    text: 'Slack',
   },
   {
     href: 'https://www.instagram.com/interledgerfoundation/',
     icon: socialInstagramIcon,
-    text: 'Instagram'
+    text: 'Instagram',
   },
   {
     href: 'https://github.com/interledger',
     icon: socialGitGubIcon,
-    text: 'GitHub'
+    text: 'GitHub',
   },
   {
     href: 'https://www.youtube.com/@interledgerfoundation',
     icon: socialYoutubeIcon,
-    text: 'YouTube'
-  }
+    text: 'YouTube',
+  },
 ]
 
 const SocialLinks = ({ className }: { className: string }) => (

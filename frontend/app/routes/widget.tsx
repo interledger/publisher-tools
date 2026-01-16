@@ -4,7 +4,7 @@ import {
   useNavigate,
   data,
   type LoaderFunctionArgs,
-  type MetaFunction
+  type MetaFunction,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { SVGSpinner } from '@/assets'
@@ -15,7 +15,7 @@ import {
   ToolsSecondaryButton,
   ToolsPrimaryButton,
   StepsIndicator,
-  MobileStepsIndicator
+  MobileStepsIndicator,
 } from '@/components'
 import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
@@ -28,7 +28,7 @@ import {
   toolState,
   toolActions,
   persistState,
-  loadState
+  loadState,
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
@@ -39,8 +39,8 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Create and customize a Web Monetization payment widget for your website. The widget allows visitors to make one-time payments to support your content.'
-    }
+        'Create and customize a Web Monetization payment widget for your website. The widget allows visitors to make one-time payments to support your content.',
+    },
   ]
 }
 
@@ -60,13 +60,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       grantResponse,
       isGrantAccepted,
       isGrantResponse,
-      OP_WALLET_ADDRESS: env.OP_WALLET_ADDRESS
+      OP_WALLET_ADDRESS: env.OP_WALLET_ADDRESS,
     },
     {
       headers: {
-        'Set-Cookie': await commitSession(session)
-      }
-    }
+        'Set-Cookie': await commitSession(session),
+      },
+    },
   )
 }
 
@@ -88,7 +88,7 @@ export default function Widget() {
   }, [OP_WALLET_ADDRESS])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
-    onGrantSuccess: saveLastAction
+    onGrantSuccess: saveLastAction,
   })
 
   const scrollToWalletAddress = () => {
@@ -98,7 +98,7 @@ export default function Widget() {
     walletAddressRef.current.scrollIntoView({
       behavior: 'smooth',
       block: 'center',
-      inline: 'nearest'
+      inline: 'nearest',
     })
 
     walletAddressRef.current.style.transition = 'all 0.3s ease'
@@ -134,7 +134,7 @@ export default function Widget() {
     const { content, appearance } = splitConfigProperties(savedConfig)
     Object.assign(
       toolState.currentConfig,
-      section === 'content' ? content : appearance
+      section === 'content' ? content : appearance,
     )
   }
   return (
@@ -160,13 +160,13 @@ export default function Widget() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep
+                      status: snap.walletConnectStep,
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: snap.buildStep
-                    }
+                      status: snap.buildStep,
+                    },
                   ]}
                 />
               </div>

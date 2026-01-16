@@ -11,7 +11,7 @@ export interface TabTooltipProps {
 export function TabTooltip({
   children,
   text,
-  className = ''
+  className = '',
 }: TabTooltipProps) {
   const [isVisible, setIsVisible] = useState(false)
   const [shouldShowTooltip, setShouldShowTooltip] = useState(false)
@@ -63,7 +63,7 @@ export function TabTooltip({
           ref={textRef}
           className={cx(
             'w-[140px] text-base leading-md font-normal overflow-hidden whitespace-nowrap text-ellipsis',
-            className
+            className,
           )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -80,12 +80,12 @@ export function TabTooltip({
               position: 'fixed',
               left: `${tooltipPosition.x}px`,
               top: `${tooltipPosition.y}px`,
-              pointerEvents: 'none'
+              pointerEvents: 'none',
             }}
           >
             {text}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   )

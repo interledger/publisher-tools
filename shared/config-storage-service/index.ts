@@ -16,7 +16,7 @@ export class ConfigStorageService {
   constructor(env: Secrets) {
     ConfigStorageService.instance ??= new AwsClient({
       accessKeyId: env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
     })
     this.endpoint = env.AWS_S3_ENDPOINT
 
@@ -46,8 +46,8 @@ export class ConfigStorageService {
       method: 'PUT',
       body: jsonString,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
 
     if (!response.ok) {

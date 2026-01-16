@@ -5,7 +5,7 @@ import type {
   Quote,
   Grant,
   WalletAddress,
-  PendingGrant
+  PendingGrant,
 } from '@interledger/open-payments'
 import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
@@ -59,13 +59,13 @@ export class PaymentConfirmation extends LitElement {
     }
 
     const {
-      walletAddress: { id }
+      walletAddress: { id },
     } = this.configController.state
 
     const paymentData = {
       walletAddress: id,
       receiver: this.configController.config.receiverAddress,
-      amount: Number(amount)
+      amount: Number(amount),
     }
 
     if (this.isPreview) {
@@ -121,7 +121,7 @@ export class PaymentConfirmation extends LitElement {
 
     return new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     }).format(number)
   }
 
@@ -158,14 +158,14 @@ export class PaymentConfirmation extends LitElement {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         senderWalletAddress: paymentData.walletAddress,
         receiverWalletAddress: paymentData.receiver,
         amount: paymentData.amount,
-        note: this.note
-      } satisfies PaymentQuoteInput)
+        note: this.note,
+      } satisfies PaymentQuoteInput),
     })
 
     if (!response.ok) {
@@ -178,13 +178,13 @@ export class PaymentConfirmation extends LitElement {
     this.formattedDebitAmount = this.configController.getFormattedAmount({
       value: quote.debitAmount.value,
       assetCode: quote.debitAmount.assetCode,
-      assetScale: quote.debitAmount.assetScale
+      assetScale: quote.debitAmount.assetScale,
     }).amountWithCurrency
 
     this.formattedReceiveAmount = this.configController.getFormattedAmount({
       value: quote.receiveAmount.value,
       assetCode: quote.receiveAmount.assetCode,
-      assetScale: quote.receiveAmount.assetScale
+      assetScale: quote.receiveAmount.assetScale,
     }).amountWithCurrency
 
     this.configController.updateState({ ...payment })
@@ -198,7 +198,7 @@ export class PaymentConfirmation extends LitElement {
     return new Promise((resolve) => {
       setTimeout(() => {
         const currencySymbol = this.configController.getCurrencySymbol(
-          this.configController.state.walletAddress.assetCode
+          this.configController.state.walletAddress.assetCode,
         )
         this.formattedDebitAmount = `${currencySymbol}${paymentData.amount.toString()}`
         this.formattedReceiveAmount = `${currencySymbol}${paymentData.amount.toString()}`
@@ -222,20 +222,20 @@ export class PaymentConfirmation extends LitElement {
       const { grant, paymentId } = await this.requestOutgoingGrant({
         walletAddress,
         debitAmount: quote.debitAmount,
-        receiveAmount: quote.receiveAmount
+        receiveAmount: quote.receiveAmount,
       })
 
       this.configController.updateState({
         outgoingPaymentGrant: grant,
         paymentId,
-        note: this.note
+        note: this.note,
       })
 
       this.dispatchEvent(
         new CustomEvent('payment-confirmed', {
           bubbles: true,
-          composed: true
-        })
+          composed: true,
+        }),
       )
     } catch (error) {
       console.error('Error initializing payment:', error)
@@ -246,8 +246,8 @@ export class PaymentConfirmation extends LitElement {
     this.dispatchEvent(
       new CustomEvent('payment-confirmed', {
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -263,15 +263,15 @@ export class PaymentConfirmation extends LitElement {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         redirectUrl,
         walletAddress:
           paymentData.walletAddress as PaymentGrantInput['walletAddress'],
         debitAmount: paymentData.debitAmount,
-        receiveAmount: paymentData.receiveAmount
-      } satisfies PaymentGrantInput)
+        receiveAmount: paymentData.receiveAmount,
+      } satisfies PaymentGrantInput),
     })
 
     if (!response.ok) {
@@ -285,8 +285,8 @@ export class PaymentConfirmation extends LitElement {
     this.dispatchEvent(
       new CustomEvent('back', {
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -294,8 +294,8 @@ export class PaymentConfirmation extends LitElement {
     this.dispatchEvent(
       new CustomEvent('close', {
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -308,7 +308,7 @@ export class PaymentConfirmation extends LitElement {
 
   render() {
     const {
-      walletAddress: { assetCode }
+      walletAddress: { assetCode },
     } = this.configController.state
     const currencySymbol = this.configController.getCurrencySymbol(assetCode)
 

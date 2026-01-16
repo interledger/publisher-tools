@@ -11,7 +11,7 @@ export const applyFontFamily = (
   element: HTMLElement,
   fontName: FontFamilyKey,
   componentType: 'banner' | 'widget',
-  fontBaseUrl: string
+  fontBaseUrl: string,
 ): void => {
   const fontLinkId = `wmt-font-family-${componentType}`
   const existingFont = document.getElementById(fontLinkId) as HTMLLinkElement
@@ -51,7 +51,7 @@ function getCustomFontData(fontName: FontFamilyKey, baseUrl: string) {
   if (fontData) {
     return {
       url: baseUrl + fontData.fileName,
-      family: [`'${fontName}'`, ...fontData.fallback].join(', ')
+      family: [`'${fontName}'`, ...fontData.fallback].join(', '),
     }
   }
 }

@@ -14,7 +14,7 @@ type PointerList = Array<[pointer: string, weight: number, name: string]>
 
 export function encode(payload: Payload) {
   const pointerList: PointerList = payload.flatMap((e) =>
-    e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : []
+    e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : [],
   )
   return base64url(JSON.stringify(pointerList))
 }
@@ -41,7 +41,7 @@ export function decode(pathPart: string): Payload {
   return pointerList.map(([pointer, weight, name]) => ({
     pointer,
     weight,
-    name
+    name,
   }))
 }
 

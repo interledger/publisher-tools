@@ -28,11 +28,11 @@ export default {
       const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 
       return await requestHandler(request, {
-        cloudflare: { env, ctx }
+        cloudflare: { env, ctx },
       })
     } catch (error) {
       const errorMessage = `Error: ${error instanceof Error ? error.message : String(error)}`
       return new Response(errorMessage, { status: 500 })
     }
-  }
+  },
 } satisfies ExportedHandler<Env>

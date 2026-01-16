@@ -3,13 +3,13 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react'
 import type { BannerConfig, Banner as BannerElement } from '@tools/components'
 import { useBannerProfile } from '~/stores/banner-store'
 import {
   toolState,
-  useCurrentConfig as useCurrentConfigLegacy
+  useCurrentConfig as useCurrentConfigLegacy,
 } from '~/stores/toolStore'
 
 export interface BannerHandle {
@@ -31,7 +31,7 @@ function useCurrentConfig(options?: { sync: boolean }) {
 
 export const BannerPreview = ({
   cdnUrl,
-  ref
+  ref,
 }: React.PropsWithChildren<Props>) => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [profile] = useCurrentConfig()
@@ -43,7 +43,7 @@ export const BannerPreview = ({
       if (bannerElementRef.current) {
         bannerElementRef.current.previewAnimation()
       }
-    }
+    },
   }))
 
   useEffect(() => {
@@ -75,8 +75,8 @@ export const BannerPreview = ({
         backgroundColor: profile.bannerBackgroundColor,
         textColor: profile.bannerTextColor,
         fontSize: profile.bannerFontSize,
-        fontFamily: profile.bannerFontName
-      }
+        fontFamily: profile.bannerFontName,
+      },
     } as BannerConfig
   }, [profile, cdnUrl])
 
@@ -105,7 +105,7 @@ export const BannerPreview = ({
       style={{
         position: 'relative',
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
     />
   )

@@ -38,7 +38,7 @@ export function TextareaField({
           'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
           'disabled:border-field-border-disabled disabled:bg-field-bg-disabled',
           error ? 'border-field-border-error' : 'border-field-border',
-          className
+          className,
         )}
         maxLength={maxLength}
         {...props}
@@ -48,7 +48,7 @@ export function TextareaField({
           <span
             className={cx(
               'text-xs leading-xs',
-              error ? 'text-text-error' : 'text-text-secondary'
+              error ? 'text-text-error' : 'text-text-secondary',
             )}
           >
             {error || helpText}

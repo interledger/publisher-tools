@@ -63,7 +63,7 @@ const palettes = {
   'silver-700': '#7B7B7B',
   'silver-800': '#676767',
   'silver-900': '#545454',
-  'silver-950': '#363636'
+  'silver-950': '#363636',
 } as const
 
 export default {
@@ -81,7 +81,7 @@ export default {
     'text-style-small-standard',
     'text-style-small-emphasis',
     'text-style-caption-standard',
-    'text-style-caption-emphasis'
+    'text-style-caption-emphasis',
   ],
   theme: {
     extend: {
@@ -143,7 +143,7 @@ export default {
         'wm-red-fade': '#EFA4B4',
         'wm-orange': '#F69656',
         'wm-teal': '#9CD6CB',
-        'wm-purple': '#7F76B2'
+        'wm-purple': '#7F76B2',
       },
 
       spacing: {
@@ -161,7 +161,7 @@ export default {
         // Custom old sizes
         '256': '72rem',
         '148': '42rem',
-        '128': '36rem'
+        '128': '36rem',
       },
 
       fontSize: {
@@ -175,7 +175,7 @@ export default {
         '4xl': '36px',
         '5xl': '48px',
         '6xl': '60px',
-        '7xl': '72px'
+        '7xl': '72px',
       },
 
       lineHeight: {
@@ -189,7 +189,7 @@ export default {
         '4xl': '44px',
         '5xl': '56px',
         '6xl': '70px',
-        '7xl': '80px'
+        '7xl': '80px',
       },
 
       fontWeight: {
@@ -197,7 +197,7 @@ export default {
         normal: '400',
         medium: '500',
         semibold: '600',
-        bold: '700'
+        bold: '700',
       },
 
       fontFamily: {
@@ -216,7 +216,7 @@ export default {
           'Apple Color Emoji',
           'Segoe UI Emoji',
           'Segoe UI Symbol',
-          'Noto Color Emoji'
+          'Noto Color Emoji',
         ],
         mono: [
           'ui-monospace',
@@ -225,8 +225,8 @@ export default {
           'Menlo',
           'Consolas',
           'DejaVu Sans Mono',
-          'monospace'
-        ]
+          'monospace',
+        ],
       },
 
       borderRadius: {
@@ -234,7 +234,7 @@ export default {
         xs: '4px',
         sm: '8px',
         md: '16px',
-        full: '99999px'
+        full: '99999px',
       },
 
       // typography styles
@@ -245,8 +245,8 @@ export default {
             lineHeight: '56px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'h2': [
           '36px',
@@ -254,8 +254,8 @@ export default {
             lineHeight: '44px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'h2-semibold': [
           '36px',
@@ -263,8 +263,8 @@ export default {
             lineHeight: '44px',
             fontWeight: '600', // Semi-bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'h3': [
           '30px',
@@ -272,8 +272,8 @@ export default {
             lineHeight: '38px',
             fontWeight: '500', // Medium
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'h4': [
           '24px',
@@ -281,8 +281,8 @@ export default {
             lineHeight: '32px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'h5': [
           '20px', // font-size xl
@@ -290,8 +290,8 @@ export default {
             lineHeight: '28px',
             fontWeight: '400', // Regular
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#8075B3' // purple-300
-          }
+            color: '#8075B3', // purple-300
+          },
         ],
         'h6': [
           '18px',
@@ -299,8 +299,8 @@ export default {
             lineHeight: '26px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
 
         // Body text styles
@@ -310,8 +310,8 @@ export default {
             lineHeight: '24px',
             fontWeight: '400', // Regular
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'body-emphasis': [
           '16px',
@@ -319,8 +319,8 @@ export default {
             lineHeight: '24px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         // Small text styles
         'small-standard': [
@@ -329,8 +329,8 @@ export default {
             lineHeight: '20px',
             fontWeight: '400', // Regular
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'small-emphasis': [
           '14px',
@@ -338,8 +338,8 @@ export default {
             lineHeight: '20px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         // Caption
         'caption-standard': [
@@ -348,8 +348,8 @@ export default {
             lineHeight: '16px',
             fontWeight: '400', // Regular
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         'caption-emphasis': [
           '12px',
@@ -357,8 +357,8 @@ export default {
             lineHeight: '16px',
             fontWeight: '700', // Bold
             fontFamily: 'Inter, ui-sans-serif, system-ui',
-            color: '#363636' // silver-950
-          }
+            color: '#363636', // silver-950
+          },
         ],
         // Display text
         'display-1': [
@@ -366,28 +366,28 @@ export default {
           {
             lineHeight: '80px',
             fontWeight: '700', // Bold
-            fontFamily: 'Inter, ui-sans-serif, system-ui'
-          }
+            fontFamily: 'Inter, ui-sans-serif, system-ui',
+          },
         ],
         'display-2': [
           '60px',
           {
             lineHeight: '70px',
             fontWeight: '500', // Medium
-            fontFamily: 'Inter, ui-sans-serif, system-ui'
-          }
-        ]
+            fontFamily: 'Inter, ui-sans-serif, system-ui',
+          },
+        ],
       },
 
       // Custom old heights and widths
       height: {
-        '148': '42rem'
+        '148': '42rem',
       },
       width: {
         '256': '72rem',
         '148': '42rem',
         '128': '36rem',
-        'md-old': '28rem'
+        'md-old': '28rem',
       },
 
       padding: {
@@ -399,9 +399,9 @@ export default {
         'lg': '24px',
         'xl': '32px',
         '2xl': '60px',
-        '3xl': '120px'
-      }
-    }
+        '3xl': '120px',
+      },
+    },
   },
   plugins: [
     function ({ addUtilities, theme }) {
@@ -417,11 +417,11 @@ export default {
           lineHeight,
           fontWeight,
           fontFamily,
-          color
+          color,
         }
       }
 
       addUtilities(textStylesUtilities)
-    }
-  ]
+    },
+  ],
 }

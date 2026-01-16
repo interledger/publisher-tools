@@ -3,7 +3,7 @@ import { SVGSpinner } from '@/assets'
 import {
   ConfigCondition,
   ToolsPrimaryButton,
-  ToolsSecondaryButton
+  ToolsSecondaryButton,
 } from '@/components'
 import type { ElementConfigType } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
@@ -21,7 +21,7 @@ interface Props {
 export const ProfilesDialog: React.FC<Props> = ({
   fetchedConfigs,
   currentLocalConfigs,
-  modifiedVersions = []
+  modifiedVersions = [],
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
@@ -51,7 +51,7 @@ export const ProfilesDialog: React.FC<Props> = ({
       if (fetchedConfigs[localStableKey]) {
         // exact stable key match found
         databaseTitle = truncateTitle(
-          fetchedConfigs[localStableKey].versionName
+          fetchedConfigs[localStableKey].versionName,
         )
       } else {
         databaseStableKey =
@@ -72,7 +72,7 @@ export const ProfilesDialog: React.FC<Props> = ({
         title: currentTitle,
         hasLocalChanges: isModified,
         presetName: databaseTitle,
-        hasEdits: canOverride
+        hasEdits: canOverride,
       }
 
       return configItem
@@ -82,7 +82,7 @@ export const ProfilesDialog: React.FC<Props> = ({
   const [selectedConfigs, setSelectedConfigs] = useState<string[]>(() => {
     // initially select only configurations that have local modifications
     const modifiedVersionsWithEdits = generatedConfigs.filter(
-      (config) => config.hasEdits
+      (config) => config.hasEdits,
     )
     return modifiedVersionsWithEdits.map((config) => config.id)
   })
@@ -120,14 +120,14 @@ export const ProfilesDialog: React.FC<Props> = ({
             currentLocalConfigs[localStableKey]
         } else {
           console.warn(
-            `No local configuration found for stable key: ${localStableKey}`
+            `No local configuration found for stable key: ${localStableKey}`,
           )
         }
       })
 
       toolActions.overrideWithFetchedConfigs(
         selectedLocalConfigs,
-        fetchedConfigs
+        fetchedConfigs,
       )
       await saveLastAction()
     } catch (error) {

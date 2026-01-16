@@ -24,7 +24,7 @@ export const GhostButton: React.FC<GhostButtonProps> = ({
         'hover:text-secondary-edge-hover',
         'hover:bg-secondary-hover-surface',
         'px-xs py-sm',
-        className
+        className,
       )}
       {...props}
     >

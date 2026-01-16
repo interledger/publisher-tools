@@ -9,7 +9,7 @@ interface BannerThumbnailSelectorProps {
 
 export function BannerThumbnailSelector({
   value,
-  onChange
+  onChange,
 }: BannerThumbnailSelectorProps) {
   const thumbnails = [wmLogo]
   const [selectedThumbnail, setSelectedThumbnail] = useState(0)

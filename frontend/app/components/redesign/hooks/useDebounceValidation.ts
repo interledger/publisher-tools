@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   validateAndConfirmPointer,
-  WalletAddressFormatError
+  WalletAddressFormatError,
 } from '@shared/utils/index'
 
 interface ValidationState {
@@ -12,12 +12,12 @@ interface ValidationState {
 
 export function useDebounceValidation(
   value: string,
-  delay: number = 500
+  delay: number = 500,
 ): ValidationState {
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
     isValid: false,
-    error: ''
+    error: '',
   })
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export function useDebounceValidation(
       setValidationState({
         isValidating: false,
         isValid: false,
-        error: ''
+        error: '',
       })
       return
     }
@@ -35,7 +35,7 @@ export function useDebounceValidation(
     setValidationState((prevState) => ({
       ...prevState,
       isValid: false,
-      error: ''
+      error: '',
     }))
 
     const validatePointer = async (pointer: string) => {
@@ -50,7 +50,7 @@ export function useDebounceValidation(
           error:
             error instanceof WalletAddressFormatError
               ? error.message
-              : 'Invalid wallet address'
+              : 'Invalid wallet address',
         }
       }
 
@@ -58,7 +58,7 @@ export function useDebounceValidation(
         setValidationState((prevState) => ({
           ...prevState,
           isValidating: false,
-          ...finalState
+          ...finalState,
         }))
       }
     }
@@ -66,7 +66,7 @@ export function useDebounceValidation(
     const timeoutId = setTimeout(() => {
       setValidationState((prevState) => ({
         ...prevState,
-        isValidating: true
+        isValidating: true,
       }))
       validatePointer(value)
     }, delay)

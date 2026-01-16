@@ -4,7 +4,7 @@ import {
   generateShareId,
   validateShares,
   type Share,
-  type SharesState
+  type SharesState,
 } from '../lib/revshare'
 
 const SHARES_KEY = 'prob-revshare-shares'
@@ -12,12 +12,12 @@ const SHARES_KEY = 'prob-revshare-shares'
 interface SharesContextState {
   shares: SharesState
   setShares: (
-    shares: SharesState | ((prevShares: SharesState) => SharesState)
+    shares: SharesState | ((prevShares: SharesState) => SharesState),
   ) => void
 }
 
 export const SharesContext = createContext<SharesContextState | undefined>(
-  undefined
+  undefined,
 )
 SharesContext.displayName = 'SharesContext'
 
@@ -26,7 +26,7 @@ export function newShare(): Share {
     id: generateShareId(),
     name: '',
     pointer: '',
-    weight: 1
+    weight: 1,
   }
 }
 
@@ -63,7 +63,7 @@ export function SharesProvider({ children }: SharesProviderProps) {
   }, [])
 
   const setShares = (
-    newShares: SharesState | ((prevShares: SharesState) => SharesState)
+    newShares: SharesState | ((prevShares: SharesState) => SharesState),
   ) => {
     if (typeof newShares === 'function') {
       _setShares((prevShares) => {

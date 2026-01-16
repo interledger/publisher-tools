@@ -59,7 +59,7 @@ const derBytes = atob(
   currentKey
     .replace('-----BEGIN PRIVATE KEY-----', '')
     .replace('-----END PRIVATE KEY-----', '')
-    .replace(/\s/g, '')
+    .replace(/\s/g, ''),
 )
 const bytes = new Uint8Array(derBytes.length)
 for (let i = 0; i < derBytes.length; i++) {

@@ -23,7 +23,7 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
   checked = false,
   onCheckedChange,
   className = '',
-  disabled = false
+  disabled = false,
 }) => {
   const isDisabled = disabled || !hasLocalChanges
 

@@ -14,7 +14,7 @@ export const StatusDialog: React.FC<Props> = ({
   onDone,
   message = 'Your edits have been saved',
   fieldErrors,
-  status
+  status,
 }) => {
   return (
     <BaseDialog

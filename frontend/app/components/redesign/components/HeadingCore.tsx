@@ -13,7 +13,7 @@ interface HeadingCoreProps {
 export const HeadingCore: React.FC<HeadingCoreProps> = ({
   children,
   title,
-  onBackClick
+  onBackClick,
 }) => {
   return (
     <>

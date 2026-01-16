@@ -1,7 +1,7 @@
 import type { WalletAddress } from '@interledger/open-payments'
 
 export async function getWalletAddress(
-  walletAddressUrl: string
+  walletAddressUrl: string,
 ): Promise<WalletAddress> {
   const url = toWalletAddressUrl(walletAddressUrl)
 
@@ -12,8 +12,8 @@ export async function getWalletAddress(
     }
     throw new WalletAddressFormatError('Unable to fetch wallet details', {
       cause: new WalletAddressFormatError(
-        response.statusText || `HTTP ${response.status}`
-      )
+        response.statusText || `HTTP ${response.status}`,
+      ),
     })
   }
 
@@ -24,8 +24,8 @@ export async function getWalletAddress(
     throw new WalletAddressFormatError(
       'Provided URL is not a valid wallet address',
       {
-        cause: error
-      }
+        cause: error,
+      },
     )
   }
   if (!isWalletAddress(json)) {
@@ -99,7 +99,7 @@ export function checkHrefFormat(href: string): string {
     url = new URL(href)
     if (url.protocol !== 'https:') {
       throw new WalletAddressFormatError(
-        'Wallet address must use HTTPS protocol'
+        'Wallet address must use HTTPS protocol',
       )
     }
   } catch (e) {
@@ -107,7 +107,7 @@ export function checkHrefFormat(href: string): string {
       throw e
     }
     throw new WalletAddressFormatError(
-      `Invalid wallet address URL: ${JSON.stringify(href)}`
+      `Invalid wallet address URL: ${JSON.stringify(href)}`,
     )
   }
 
@@ -115,7 +115,7 @@ export function checkHrefFormat(href: string): string {
 
   if (hash || search || port || username || password) {
     throw new WalletAddressFormatError(
-      `Wallet address URL must not contain query/fragment/port/username/password elements.`
+      `Wallet address URL must not contain query/fragment/port/username/password elements.`,
     )
   }
 
@@ -124,7 +124,7 @@ export function checkHrefFormat(href: string): string {
 
 export async function fetchWalletDetails(url: string): Promise<WalletAddress> {
   const res = await fetch(url, {
-    headers: { Accept: 'application/json' }
+    headers: { Accept: 'application/json' },
   })
   if (!res.ok) {
     if (res.status === 404) {
@@ -136,7 +136,7 @@ export async function fetchWalletDetails(url: string): Promise<WalletAddress> {
 }
 
 export async function confirmWalletAddress(
-  walletAddress: string
+  walletAddress: string,
 ): Promise<void> {
   const wallet = await fetchWalletDetails(walletAddress)
 
@@ -183,7 +183,7 @@ export const validateWalletAddressOrPointer = (input: string): string => {
   }
   if (url.search || url.hash) {
     throw new WalletAddressFormatError(
-      'must not contain query string or fragment'
+      'must not contain query string or fragment',
     )
   }
   if (url.pathname && !url.pathname.startsWith('/')) {
@@ -208,7 +208,7 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
 
 export function urlWithParams(
   url: string | URL,
-  params: Record<string, string>
+  params: Record<string, string>,
 ): URL {
   const result = new URL(url)
   const searchParams = new URLSearchParams(params)
@@ -220,7 +220,7 @@ export function urlWithParams(
 
 export function groupBy<T, K extends PropertyKey>(
   items: T[],
-  keySelector: (item: T) => K
+  keySelector: (item: T) => K,
 ): Partial<Record<K, T[]>> {
   const result: Partial<Record<K, T[]>> = {}
 

@@ -14,7 +14,7 @@ export const BodyStandardLink = ({
   children,
   target = '_blank',
   rel = 'noreferrer',
-  className = ''
+  className = '',
 }: BodyStandardLinkProps) => {
   return (
     <a

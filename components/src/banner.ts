@@ -3,7 +3,7 @@ import {
   unsafeCSS,
   LitElement,
   type ReactiveController,
-  type ReactiveControllerHost
+  type ReactiveControllerHost,
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { BORDER_RADIUS } from '@shared/types'
@@ -11,7 +11,7 @@ import type {
   FontFamilyKey,
   BorderRadiusKey,
   SlideAnimationType,
-  BannerPositionKey
+  BannerPositionKey,
 } from '@shared/types'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
@@ -71,8 +71,8 @@ export class Banner extends LitElement {
       new CustomEvent('banner-closed', {
         detail: { dismissed: true },
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -185,7 +185,7 @@ export class BannerController implements ReactiveController {
   private _config!: BannerConfig
   private _state: BannerState = {
     isVisible: true,
-    isDismissed: false
+    isDismissed: false,
   }
 
   constructor(host: ReactiveControllerHost & HTMLElement) {
@@ -235,7 +235,7 @@ export class BannerController implements ReactiveController {
     const borderRadiusValue = BORDER_RADIUS[borderRadius]
     this.host.style.setProperty(
       '--wm-border-radius',
-      borderRadiusValue || BORDER_RADIUS.None
+      borderRadiusValue || BORDER_RADIUS.None,
     )
   }
 

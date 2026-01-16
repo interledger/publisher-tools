@@ -1,6 +1,6 @@
 import {
   PositionSelectorInput,
-  type Option
+  type Option,
 } from '@/components/builder/PositionSelectorInput'
 import { BANNER_POSITION, type BannerPositionKey } from '@shared/types'
 
@@ -28,18 +28,18 @@ const bannerPositionOptions: Option<BannerPositionKey>[] = [
   {
     label: 'Bottom',
     value: BANNER_POSITION.Bottom,
-    icon: <PositionBottom />
+    icon: <PositionBottom />,
   },
   {
     label: 'Top',
     value: BANNER_POSITION.Top,
-    icon: <PositionTop />
-  }
+    icon: <PositionTop />,
+  },
 ]
 
 export function BannerPositionSelector({
   value,
-  onChange
+  onChange,
 }: BannerPositionSelectorProps) {
   return (
     <PositionSelectorInput

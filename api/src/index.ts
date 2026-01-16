@@ -10,7 +10,7 @@ app.get('/', (c) => {
     .filter((route) => route.method !== 'ALL')
     .map((route) => ({
       path: route.path,
-      method: route.method
+      method: route.method,
     }))
 
   return c.json(
@@ -18,9 +18,9 @@ app.get('/', (c) => {
       status: 'ok',
       message: 'Publisher Tools API',
       endpoints: routes,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     },
-    200
+    200,
   )
 })
 

@@ -7,14 +7,14 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const filterDeepProperties = (
   obj: Record<string, any>,
-  levelCount: number = 2
+  levelCount: number = 2,
 ): Record<string, any> => {
   const result: Record<string, any> = {}
 
   const traverse = (
     current: any,
     path: string[],
-    parent: Record<string, any>
+    parent: Record<string, any>,
   ) => {
     if (typeof current === 'object' && current !== null) {
       for (const key in current) {

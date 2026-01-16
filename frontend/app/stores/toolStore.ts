@@ -14,7 +14,7 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
   'buildStep',
   'opWallet',
-  'cdnUrl'
+  'cdnUrl',
 ])
 
 export const TOOL_TYPES = [
@@ -22,13 +22,13 @@ export const TOOL_TYPES = [
   'banner-two',
   'widget',
   'button',
-  'unknown'
+  'unknown',
 ] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
   'Default preset 2',
-  'Default preset 3'
+  'Default preset 3',
 ] as const
 
 export type StableKey = (typeof STABLE_KEYS)[number]
@@ -43,7 +43,7 @@ interface SaveConfigResponse {
 
 const createDefaultConfig = (versionName: string): ElementConfigType => ({
   ...getDefaultData(),
-  versionName
+  versionName,
 })
 
 const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
@@ -52,7 +52,7 @@ const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
       configs[key] = createDefaultConfig(DEFAULT_VERSION_NAMES[index])
       return configs
     },
-    {} as Record<StableKey, ElementConfigType>
+    {} as Record<StableKey, ElementConfigType>,
   )
 }
 
@@ -100,7 +100,7 @@ export const toolState = proxy({
   isWalletConnected: false,
   hasRemoteConfigs: false,
   walletConnectStep: 'unfilled' as StepStatus,
-  buildStep: 'unfilled' as StepStatus
+  buildStep: 'unfilled' as StepStatus,
 })
 
 subscribe(toolState, () => {
@@ -119,13 +119,13 @@ export const toolActions = {
   get versionOptions() {
     return STABLE_KEYS.map((key) => ({
       stableKey: key,
-      versionName: toolState.configurations[key].versionName
+      versionName: toolState.configurations[key].versionName,
     }))
   },
 
   /** legacy backwards compatibility */
   setConfigs: (
-    fullConfigObject: Record<StableKey, ElementConfigType> | null
+    fullConfigObject: Record<StableKey, ElementConfigType> | null,
   ) => {
     const newFullConfig: Record<StableKey, ElementConfigType> =
       createDefaultConfigs()
@@ -136,7 +136,7 @@ export const toolActions = {
       }
 
       newFullConfig[profileId] = {
-        ...fullConfigObject[profileId]
+        ...fullConfigObject[profileId],
       }
 
       toolState.configurations[profileId] = { ...newFullConfig[profileId] }
@@ -200,7 +200,7 @@ export const toolActions = {
     try {
       const configToSave = {
         ...toolState.currentConfig,
-        walletAddress: toolState.walletAddress
+        walletAddress: toolState.walletAddress,
       }
 
       const formData = new FormData()
@@ -216,7 +216,7 @@ export const toolActions = {
 
       const updatedFullConfig = {
         ...toolState.configurations,
-        [toolState.activeVersion]: configToSave
+        [toolState.activeVersion]: configToSave,
       }
 
       formData.append('fullconfig', JSON.stringify(updatedFullConfig))
@@ -226,12 +226,12 @@ export const toolActions = {
       const url = new URL(`${baseUrl}/api/config/${toolState.currentToolType}`)
       const response = await fetch(url, {
         method: 'PUT',
-        body: formData
+        body: formData,
       })
       if (!response.ok) {
         const details = await response.json()
         throw new Error(`Save request failed with status: ${response.status}`, {
-          cause: { details }
+          cause: { details },
         })
       }
 
@@ -242,7 +242,7 @@ export const toolActions = {
 
       STABLE_KEYS.forEach((profileId) => {
         toolState.savedConfigurations[profileId] = {
-          ...toolState.configurations[profileId]
+          ...toolState.configurations[profileId],
         }
       })
       toolState.dirtyProfiles.clear()
@@ -289,7 +289,7 @@ export const toolActions = {
    */
   overrideWithFetchedConfigs: (
     selectedLocalConfigs: Record<string, ElementConfigType>,
-    fetchedConfigs: Record<string, ElementConfigType>
+    fetchedConfigs: Record<string, ElementConfigType>,
   ) => {
     if (!fetchedConfigs) {
       console.error('No fetched configs found in modal state')
@@ -337,7 +337,7 @@ export const toolActions = {
     const baseUrl = location.origin + APP_BASEPATH
     const tool = toolState.currentToolType
     const response = await fetch(
-      `${baseUrl}/api/config/${tool}?walletAddress=${encodeURIComponent(walletAddress)}`
+      `${baseUrl}/api/config/${tool}?walletAddress=${encodeURIComponent(walletAddress)}`,
     )
 
     if (!response.ok) {
@@ -362,7 +362,7 @@ export const toolActions = {
       fetchedConfigs,
       hasCustomEdits,
       hasLocalModifications,
-      hasConflict: hasCustomEdits && hasLocalModifications
+      hasConflict: hasCustomEdits && hasLocalModifications,
     }
   },
 
@@ -372,7 +372,7 @@ export const toolActions = {
 
   handleVersionNameChange: (newName: string) => {
     toolState.currentConfig.versionName = newName
-  }
+  },
 }
 
 function isConfigModified(profileId: StableKey): boolean {
@@ -424,7 +424,7 @@ export function persistState() {
   subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(createStorageState(toolState))
+      JSON.stringify(createStorageState(toolState)),
     )
   })
 }
@@ -434,7 +434,7 @@ function createStorageState(state: typeof toolState) {
 
   return {
     ...omitted,
-    dirtyProfiles: Array.from(state.dirtyProfiles)
+    dirtyProfiles: Array.from(state.dirtyProfiles),
   }
 }
 
@@ -444,7 +444,7 @@ function parsedStorageData(parsed: Record<string, unknown>) {
   return {
     ...omitted,
     dirtyProfiles: proxySet<StableKey>(
-      Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : []
-    )
+      Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : [],
+    ),
   }
 }
