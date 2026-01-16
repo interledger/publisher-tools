@@ -13,8 +13,8 @@ import { useUIActions } from '~/stores/uiStore'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
-  fetchedConfigs?: Record<string, ElementConfigType>
-  currentLocalConfigs?: Record<string, ElementConfigType>
+  fetchedConfigs?: Record<string, Partial<ElementConfigType>>
+  currentLocalConfigs?: Record<string, Partial<ElementConfigType>>
   modifiedVersions?: readonly string[]
 }
 
@@ -43,7 +43,7 @@ export const ProfilesDialog: React.FC<Props> = ({
 
     return localStableKeys.map((localStableKey, index) => {
       const localConfig = currentLocalConfigs[localStableKey]
-      const currentTitle = truncateTitle(localConfig.versionName)
+      const currentTitle = truncateTitle(localConfig.versionName!)
 
       let databaseStableKey = localStableKey
       let databaseTitle = ''
@@ -51,14 +51,14 @@ export const ProfilesDialog: React.FC<Props> = ({
       if (fetchedConfigs[localStableKey]) {
         // exact stable key match found
         databaseTitle = truncateTitle(
-          fetchedConfigs[localStableKey].versionName
+          fetchedConfigs[localStableKey].versionName!
         )
       } else {
         databaseStableKey =
           fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
         const databaseConfig = fetchedConfigs[databaseStableKey]
         databaseTitle = databaseConfig
-          ? truncateTitle(databaseConfig.versionName)
+          ? truncateTitle(databaseConfig.versionName!)
           : 'No database version'
       }
 
@@ -112,7 +112,10 @@ export const ProfilesDialog: React.FC<Props> = ({
         throw new Error('Failed to fetch remote configurations')
       }
       // build the selected LOCAL configurations (the ones user wants to keep)
-      const selectedLocalConfigs: Record<string, ElementConfigType> = {}
+      const selectedLocalConfigs: Record<
+        string,
+        Partial<ElementConfigType>
+      > = {}
 
       selectedConfigs.forEach((localStableKey) => {
         if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {

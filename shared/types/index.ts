@@ -3,6 +3,7 @@ export interface ConfigVersions {
   [key: string]: ElementConfigType
 }
 
+/** @deprecated will be removed in future versions */
 export interface ElementConfigType {
   // general config
   /** the display name for this configuration version */

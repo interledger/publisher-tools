@@ -2,7 +2,7 @@ import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type { ElementConfigType, ProfileId } from '@shared/types'
+import type { Configuration, ElementConfigType, ProfileId } from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import { omit } from '~/utils/utils.storage'
@@ -125,7 +125,7 @@ export const toolActions = {
 
   /** legacy backwards compatibility */
   setConfigs: (
-    fullConfigObject: Record<StableKey, ElementConfigType> | null
+    fullConfigObject: Record<StableKey, Partial<ElementConfigType>> | null
   ) => {
     const newFullConfig: Record<StableKey, ElementConfigType> =
       createDefaultConfigs()
@@ -136,6 +136,7 @@ export const toolActions = {
       }
 
       newFullConfig[profileId] = {
+        ...newFullConfig[profileId],
         ...fullConfigObject[profileId]
       }
 
@@ -288,8 +289,8 @@ export const toolActions = {
    * @param selectedLocalConfigs - Record of configurations the user wants to keep (not override)
    */
   overrideWithFetchedConfigs: (
-    selectedLocalConfigs: Record<string, ElementConfigType>,
-    fetchedConfigs: Record<string, ElementConfigType>
+    selectedLocalConfigs: Record<string, Partial<ElementConfigType>>,
+    fetchedConfigs: Record<string, Partial<ElementConfigType>>
   ) => {
     if (!fetchedConfigs) {
       console.error('No fetched configs found in modal state')
@@ -304,7 +305,10 @@ export const toolActions = {
       if (hasLocalVersion) {
         // keep the local version - no changes needed
       } else if (hasDatabaseVersion) {
-        toolState.configurations[stableKey] = { ...hasDatabaseVersion }
+        toolState.configurations[stableKey] = {
+          ...toolState.configurations[stableKey],
+          ...hasDatabaseVersion
+        }
 
         // remove from modified configs since we're using database version
         toolState.dirtyProfiles.delete(stableKey)
@@ -313,57 +317,6 @@ export const toolActions = {
 
     toolActions.setHasRemoteConfigs(true)
     toolActions.setWalletConnected(true)
-  },
-
-  /**
-   * Fetches existing configurations from the database for a given wallet address
-   * and performs conflict detection with local modifications.
-   *
-   * This is the core function that drives the override feature workflow:
-   * 1. Makes API call to fetch saved configurations from database
-   * 2. Determines if there are any saved configurations (hasCustomEdits)
-   * 3. Determines if there are any local modifications (hasLocalModifications)
-   * 4. Calculates conflict state: both database configs AND local modifications exist
-   *
-   * The returned data is used to decide the next steps:
-   * - No conflict: Automatically load database configs or continue with local
-   * - Conflict: Show OverridePresetModal for user to resolve
-   *
-   * @param walletAddress - The wallet address to fetch configurations for
-   * @returns Object containing fetchedConfigs, conflict flags, and state information
-   * @throws Error if wallet address is invalid or API call fails
-   */
-  fetchRemoteConfigs: async (walletAddress: string) => {
-    const baseUrl = location.origin + APP_BASEPATH
-    const tool = toolState.currentToolType
-    const response = await fetch(
-      `${baseUrl}/api/config/${tool}?walletAddress=${encodeURIComponent(walletAddress)}`
-    )
-
-    if (!response.ok) {
-      const data = (await response.json()) as {
-        errors?: { fieldErrors?: { walletAddress?: string[] } }
-      }
-      const errorMessage =
-        data.errors?.fieldErrors?.walletAddress?.[0] ||
-        `Failed to fetch configuration (${response.status})`
-      throw new Error(errorMessage)
-    }
-
-    const fetchedConfigs = (await response.json()) as Record<
-      string,
-      ElementConfigType
-    >
-    const hasCustomEdits = Object.keys(fetchedConfigs).length > 0
-    const hasLocalModifications = toolState.dirtyProfiles.size > 0
-
-    return {
-      walletAddressId: walletAddress,
-      fetchedConfigs,
-      hasCustomEdits,
-      hasLocalModifications,
-      hasConflict: hasCustomEdits && hasLocalModifications
-    }
   },
 
   handleTabSelect: (profileId: StableKey) => {

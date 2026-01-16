@@ -1,5 +1,5 @@
 import type z from 'zod'
-import type { ElementConfigType } from '@shared/types'
+import type { ElementConfigType, Tool, ToolProfiles } from '@shared/types'
 import type {
   createBannerSchema,
   createButtonSchema,
@@ -9,6 +9,17 @@ import type {
 export type SaveResult = {
   success?: boolean
   grantRedirect?: string
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
+}
+
+export type GetProfilesResult<T extends Tool> = {
+  profiles?: ToolProfiles<T>
   error?: {
     message: string
     cause?: {
