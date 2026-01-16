@@ -139,3 +139,5 @@ For detailed information on how to use and configure Publisher Tools, including 
 
 - [Banner Tool](https://webmonetization.org/publishers/banner-tool/)
 - [Widget Tool](https://webmonetization.org/publishers/widget-tool/)
+- [Link Tag Generator](https://webmonetization.org/publishers/link-tag-tool/)
+- [Probabilistic revshare generator](https://webmonetization.org/publishers/revshare-tool/)
