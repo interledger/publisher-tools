@@ -6,12 +6,13 @@ import {
   type ProfileId,
   type BannerProfile,
   type ToolProfiles,
+  type Tool,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOL_BANNER
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
-import { saveToolProfile } from '~/utils/profile-api'
+import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 
@@ -76,6 +77,10 @@ export const actions = {
     Object.entries(profiles).forEach(([profileId, profile]) => {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
+  },
+  async getProfiles(tool: Tool): Promise<ToolProfiles<Tool>> {
+    const { walletAddress } = toolState
+    return await getToolProfiles(walletAddress, tool)
   },
   resetProfiles() {
     PROFILE_IDS.forEach((id) => {
