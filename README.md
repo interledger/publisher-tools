@@ -132,3 +132,12 @@ From the root directory:
 - `pnpm format` - Format code with Prettier
 - `pnpm lint` - Lint and fix code with ESLint
 - `pnpm typecheck` - Run TypeScript type checking across all packages
+
+## Documentation
+
+For detailed information on how to use and configure Publisher Tools, including Content Security Policy requirements and customization options, see the official documentation:
+
+- [Banner Tool](https://webmonetization.org/publishers/banner-tool/)
+- [Widget Tool](https://webmonetization.org/publishers/widget-tool/)
+- [Link Tag Generator](https://webmonetization.org/publishers/link-tag-tool/)
+- [Probabilistic revshare generator](https://webmonetization.org/publishers/revshare-tool/)
