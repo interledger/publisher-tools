@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
+import type { KVNamespace } from '@cloudflare/workers-types'
 import { serializeError } from './utils/utils.js'
 
 export type Env = {
@@ -11,6 +12,7 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
+  PUBLISHER_TOOLS_KV: KVNamespace
 }
 
 export const app = new Hono<{ Bindings: Env }>()
@@ -44,7 +46,7 @@ app.onError((error, c) => {
       message: 'Validation failed',
       code: 'VALIDATION_ERROR',
       details: {
-        issues: error.errors.map((err) => ({
+        issues: error.issues.map((err) => ({
           path: err.path.join('.'),
           message: err.message,
           code: err.code

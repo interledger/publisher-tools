@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useNavigate } from '@remix-run/react'
-import type { MetaFunction } from '@remix-run/cloudflare'
+import { useNavigate, type MetaFunction } from 'react-router'
 import {
   Card,
   CodeBlockLink,
@@ -14,6 +13,8 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton
 } from '@/components'
+import { API_URL } from '@shared/defines'
+import { Heading5 } from '../components/redesign/Typography'
 import {
   changeList,
   dropIndex,
@@ -22,8 +23,6 @@ import {
   validateShares
 } from '../lib/revshare'
 import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
-import { Heading5 } from '../components/redesign/Typography'
-import { API_URL } from '@shared/defines'
 
 export const meta: MetaFunction = () => {
   return [
@@ -166,25 +165,23 @@ function Revshare() {
               })}
             </div>
           </ShareInputTable>
+          <ToolsPrimaryButton
+            icon="share"
+            iconPosition="right"
+            className="self-center w-full md:w-fit"
+            onClick={addShare}
+          >
+            + Add recipient
+          </ToolsPrimaryButton>
           <hr className={!hasValidShares ? 'md:mt-2xs' : ''} />
           <div className="flex flex-col-reverse md:flex-col gap-md">
             {hasValidShares && <CodeBlockLink link={revShareUrl} />}
-            <div className="flex flex-col-reverse md:flex-row justify-end gap-xs">
-              <ToolsSecondaryButton
-                className="w-full md:w-auto"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Import
-              </ToolsSecondaryButton>
-              <ToolsPrimaryButton
-                icon="share"
-                iconPosition="right"
-                className="flex w-full items-center justify-center md:w-auto"
-                onClick={addShare}
-              >
-                Add recipient
-              </ToolsPrimaryButton>
-            </div>
+            <ToolsSecondaryButton
+              className="self-end w-full md:w-fit"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Import
+            </ToolsSecondaryButton>
           </div>
         </Card>
         <div className="my-lg md:my-md">

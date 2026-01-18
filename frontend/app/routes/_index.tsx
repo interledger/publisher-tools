@@ -1,12 +1,12 @@
-import type { MetaFunction } from '@remix-run/cloudflare'
-import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
-import { Heading1, Heading3 } from '~/components/redesign/Typography'
+import type { MetaFunction } from 'react-router'
+import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
+import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
-import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
-import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
+import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
+import { Heading1, Heading3 } from '~/components/redesign/Typography'
 
 const DEFAULT_TITLE = 'Publisher Tools'
 const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
@@ -142,9 +142,9 @@ export default function Index() {
           </p>
 
           <ul
-            className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
+            className="grid gap-lg w-full justify-items-center"
             style={{
-              gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
             }}
           >
             {setupTools.map((tool, index) => (
@@ -160,7 +160,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-lg:hidden" />
+            <div className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -183,9 +183,9 @@ export default function Index() {
           </p>
 
           <ul
-            className="grid items-stretch gap-lg w-full justify-items-center lg:justify-items-start"
+            className="grid gap-lg w-full justify-items-center"
             style={{
-              gridTemplateColumns: 'repeat(auto-fill, minmax(19rem, 1fr))'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
             }}
           >
             {interactionTools.map((tool, index) => (
@@ -200,6 +200,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
+            <div className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
       </div>

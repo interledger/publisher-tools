@@ -1,16 +1,15 @@
+import { LitElement, html, unsafeCSS } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 import type {
   Quote,
   Grant,
   WalletAddress,
   PendingGrant
 } from '@interledger/open-payments'
-import { LitElement, html, unsafeCSS } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
+import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
-
-import confirmationCss from './confirmation.css?raw'
 
 export interface PaymentResponse {
   quote: Quote
@@ -220,14 +219,15 @@ export class PaymentConfirmation extends LitElement {
   private async handlePaymentConfirmed() {
     try {
       const { walletAddress, quote } = this.configController.state
-      const outgoingPaymentGrant = await this.requestOutgoingGrant({
+      const { grant, paymentId } = await this.requestOutgoingGrant({
         walletAddress,
         debitAmount: quote.debitAmount,
         receiveAmount: quote.receiveAmount
       })
 
       this.configController.updateState({
-        outgoingPaymentGrant,
+        outgoingPaymentGrant: grant,
+        paymentId,
         note: this.note
       })
 
@@ -255,7 +255,7 @@ export class PaymentConfirmation extends LitElement {
     walletAddress: WalletAddress
     debitAmount: Amount
     receiveAmount: Amount
-  }): Promise<PendingGrant> {
+  }): Promise<{ grant: PendingGrant; paymentId: string }> {
     const { apiUrl, frontendUrl } = this.configController.config
     const url = new URL('/payment/grant', apiUrl).href
     const redirectUrl = new URL('payment-confirmation', frontendUrl).href

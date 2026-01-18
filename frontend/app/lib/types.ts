@@ -1,26 +1,21 @@
-import type { z } from 'zod'
+import type z from 'zod'
+import type { ElementConfigType } from '@shared/types'
 import type {
   createBannerSchema,
   createButtonSchema,
   createWidgetSchema
 } from '../utils/validate.server.js'
-import type { ElementConfigType } from '@shared/types'
 
-export type ModalType = {
-  type:
-    | 'script'
-    | 'wallet-ownership'
-    | 'grant-response'
-    | 'save-error'
-    | 'save-success'
-    | 'override-preset'
-  // set when type is "save-error"
-  error?: { message?: string; fieldErrors?: Record<string, string> }
-  grantRedirectIntent?: string
-  grantRedirectURI?: string
-  fetchedConfigs?: Record<string, ElementConfigType>
-  currentLocalConfigs?: Record<string, ElementConfigType>
-  modifiedConfigs?: readonly string[]
+export type SaveResult = {
+  success?: boolean
+  grantRedirect?: string
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
 }
 
 export type SanitizedFields = Pick<
@@ -37,7 +32,7 @@ export type SanitizedFields = Pick<
 >
 
 export type JSONError<T extends z.ZodTypeAny> = {
-  errors: z.typeToFlattenedError<z.infer<T>>
+  errors: z.ZodFlattenedError<z.infer<T>>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,5 +60,7 @@ declare global {
     AWS_ACCESS_KEY_ID: string
     AWS_SECRET_ACCESS_KEY: string
     AWS_S3_ENDPOINT: string
+
+    PUBLISHER_TOOLS_KV: KVNamespace
   }
 }

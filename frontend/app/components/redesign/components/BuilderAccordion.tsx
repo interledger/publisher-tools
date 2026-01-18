@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
-import { GhostButton } from './GhostButton'
-import { Heading5 } from '@/typography'
 import { ToolsSecondaryButton, Divider } from '@/components'
+import { Heading5 } from '@/typography'
+import { GhostButton } from './GhostButton'
 
 interface BuilderAccordionProps {
   title: string
@@ -74,23 +74,20 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         </GhostButton>
       )}
 
-      <div className="flex flex-col gap-sm mt-sm">
-        {children}
-
-        {isOpen && (
-          <>
-            <Divider />
-            <div className="flex justify-end">
-              <ToolsSecondaryButton
-                className="w-full xl:w-[140px]"
-                onClick={handleDoneClick}
-              >
-                Done
-              </ToolsSecondaryButton>
-            </div>
-          </>
-        )}
-      </div>
+      <div className="flex flex-col gap-lg mt-sm">{children}</div>
+      {isOpen && (
+        <>
+          <Divider />
+          <div className="flex justify-end">
+            <ToolsSecondaryButton
+              className="w-full xl:w-[140px]"
+              onClick={handleDoneClick}
+            >
+              Done
+            </ToolsSecondaryButton>
+          </div>
+        </>
+      )}
     </details>
   )
 }

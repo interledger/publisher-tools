@@ -1,15 +1,15 @@
+import { useCallback, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { SVGEdit, SVGExclamationCircle } from '~/assets/svg'
 
-type TabOption<T extends string> = { id: T; label: string; isDirty: boolean }
+type TabOption<T extends string> = { id: T; label: string; hasUpdates: boolean }
 interface Props<T extends string> {
-  options: TabOption<T>[]
+  options: readonly TabOption<T>[]
   children: React.ReactNode
   selectedId: T
   idPrefix: string
   onChange: (id: T) => void
-  onRename: (id: T, label: string) => void
+  onRename: (label: string) => void
 }
 
 export const BuilderPresetTabs = <T extends string>({
@@ -22,16 +22,10 @@ export const BuilderPresetTabs = <T extends string>({
 }: Props<T>) => {
   const tabListRef = useRef<HTMLDivElement>(null)
 
-  const [activeTabId, setActiveTabId] = useState(selectedId)
-  const [activeTabIdx, setActiveTabIdx] = useState(
-    options.findIndex((option) => option.id === selectedId)
-  )
+  const activeTabId = selectedId
+  const activeTabIdx = options.findIndex((option) => option.id === selectedId)
   const [editingId, setEditingId] = useState<T | null>()
   const [hasEditingError, setHasEditingError] = useState(false)
-
-  useEffect(() => {
-    setActiveTab(options.findIndex((option) => option.id === selectedId))
-  }, [options, selectedId])
 
   const getTabElement = (id: T) => {
     return tabListRef.current!.querySelector<HTMLElement>(
@@ -43,8 +37,6 @@ export const BuilderPresetTabs = <T extends string>({
     (tabIndex: number) => {
       if (tabIndex < 0) tabIndex += options.length
       const tabId = options[tabIndex].id
-      setActiveTabIdx(tabIndex)
-      setActiveTabId(tabId)
       onChange(tabId)
       getTabElement(tabId)?.focus()
     },
@@ -128,7 +120,7 @@ export const BuilderPresetTabs = <T extends string>({
                 {option.label}
               </span>
 
-              {option.isDirty && (
+              {option.hasUpdates && (
                 <>
                   <span className="sr-only"> (modified)</span>
                   <DirtyMarker />
@@ -149,7 +141,7 @@ export const BuilderPresetTabs = <T extends string>({
               options={options}
               onSubmit={(label) => {
                 setEditingId(null)
-                onRename(activeTabId, label)
+                onRename(label)
               }}
               setHasError={setHasEditingError}
               inputId={`${idPrefix}-tab-label-${activeTabId}`}
@@ -205,7 +197,7 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
 }
 
 interface TabNameEditorProps<T extends string> {
-  options: TabOption<T>[]
+  options: readonly TabOption<T>[]
   tabId: T
   tabIdx: number
   onSubmit: (label: string) => void
@@ -320,7 +312,7 @@ function TabNameEditor<T extends string>({
 
 const validateInput = <T extends string>(
   value: string,
-  options: TabOption<T>[],
+  options: readonly TabOption<T>[],
   currentTabId: T
 ): string | '' => {
   const val = value.trim()

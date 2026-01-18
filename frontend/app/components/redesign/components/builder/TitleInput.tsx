@@ -54,19 +54,14 @@ function SuggestedTitles({
       >
         Suggested title
       </div>
-      <div
-        className="flex flex-wrap gap-xs group"
-        onChange={(ev) => {
-          const input = ev.target as HTMLInputElement
-          onChange(input.value)
-        }}
-      >
+      <div className="flex flex-wrap gap-xs group">
         {suggestions.map((title) => (
           <PillRadioListItem
             key={title}
             value={title}
             selected={value === title}
             radioGroup="suggested-title"
+            onSelect={() => onChange(title)}
           >
             {title}
           </PillRadioListItem>
@@ -83,17 +78,20 @@ function CustomTitle({
   maxLength,
   helpText
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
+  const id = 'custom-title-input'
   return (
     <div className="flex flex-col gap-xs">
-      <h4 className="text-base leading-md font-bold text-text-primary">
+      <label
+        htmlFor={id}
+        className="text-base leading-md font-bold text-text-primary"
+      >
         Custom title
-      </h4>
+      </label>
       <InputField
+        id={id}
         value={value}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        onChange={(e) => {
-          onChange(e.target.value.trim())
-        }}
         showCounter={true}
         currentLength={value.length}
         maxLength={maxLength}

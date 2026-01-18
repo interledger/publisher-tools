@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/cloudflare'
+import type { ReactNode } from 'react'
 import {
   Links,
   Meta,
@@ -6,15 +6,16 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
-  isRouteErrorResponse
-} from '@remix-run/react'
-import type { ReactNode } from 'react'
-import stylesheet from '~/tailwind.css?url'
-import { Button } from './components/index.js'
+  isRouteErrorResponse,
+  type LinksFunction,
+  type MetaFunction
+} from 'react-router'
 import { Header, Footer } from '@/components'
-import { XCircle } from './components/icons.js'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { UIProvider } from '~/stores/uiStore'
+import stylesheet from '~/tailwind.css?url'
+import { XCircle } from './components/icons.js'
+import { Button } from './components/index.js'
 
 export default function App() {
   return (

@@ -1,44 +1,32 @@
 import React, { useState } from 'react'
-import { ToolsPrimaryButton } from './ToolsPrimaryButton'
-import { ToolsSecondaryButton } from './ToolsSecondaryButton'
-import { ConfigCondition } from './ConfigCondition'
-import { SVGClose } from '~/assets/svg'
-import { SVGSpinner } from '~/assets/svg'
+import { SVGSpinner } from '@/assets'
+import {
+  ConfigCondition,
+  ToolsPrimaryButton,
+  ToolsSecondaryButton
+} from '@/components'
 import type { ElementConfigType } from '@shared/types'
+import { useDialog } from '~/hooks/useDialog'
+import { useSaveConfig } from '~/hooks/useSaveConfig'
+import { toolActions } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
+import { BaseDialog } from './BaseDialog'
 
-interface ConfigItem {
-  id: string
-  number: string | number
-  title: string
-  hasLocalChanges: boolean
-  presetName: string
-  hasEdits: boolean
-}
-
-interface OverridePresetModalProps {
-  onClose?: () => void
-  onOverride?: (
-    selectedLocalConfigs: Record<string, ElementConfigType>
-  ) => Promise<void>
-  onAddWalletAddress?: () => void
+interface Props {
   fetchedConfigs?: Record<string, ElementConfigType>
   currentLocalConfigs?: Record<string, ElementConfigType>
   modifiedVersions?: readonly string[]
-  configs?: ConfigItem[]
-  className?: string
 }
 
-export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
-  onClose,
-  onOverride,
-  onAddWalletAddress,
+export const ProfilesDialog: React.FC<Props> = ({
   fetchedConfigs,
   currentLocalConfigs,
-  modifiedVersions = [],
-  configs,
-  className = ''
+  modifiedVersions = []
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
+  const uiActions = useUIActions()
+  const { saveLastAction } = useSaveConfig()
+  const [, closeDialog] = useDialog()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
       return []
@@ -91,15 +79,20 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
     })
   }, [fetchedConfigs, currentLocalConfigs, modifiedVersions])
 
-  const configsToUse = configs || generatedConfigs
-
   const [selectedConfigs, setSelectedConfigs] = useState<string[]>(() => {
     // initially select only configurations that have local modifications
-    const modifiedVersionsWithEdits = configsToUse.filter(
+    const modifiedVersionsWithEdits = generatedConfigs.filter(
       (config) => config.hasEdits
     )
     return modifiedVersionsWithEdits.map((config) => config.id)
   })
+
+  const onAddWalletAddress = () => {
+    toolActions.setWalletConnected(false)
+    toolActions.setHasRemoteConfigs(false)
+    uiActions.focusWalletInput()
+    closeDialog()
+  }
 
   const handleConfigSelection = (configId: string, checked: boolean) => {
     setSelectedConfigs((prev) => {
@@ -113,54 +106,42 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
   }
 
   const handleOverride = async () => {
-    if (onOverride && currentLocalConfigs) {
-      setIsOverriding(true)
-      try {
-        // build the selected LOCAL configurations (the ones user wants to keep)
-        const selectedLocalConfigs: Record<string, ElementConfigType> = {}
-
-        selectedConfigs.forEach((localStableKey) => {
-          if (currentLocalConfigs[localStableKey]) {
-            selectedLocalConfigs[localStableKey] =
-              currentLocalConfigs[localStableKey]
-          } else {
-            console.warn(
-              `No local configuration found for stable key: ${localStableKey}`
-            )
-          }
-        })
-
-        await onOverride(selectedLocalConfigs)
-      } catch (error) {
-        console.error('Error overriding configurations:', error)
-      } finally {
-        setIsOverriding(false)
+    setIsOverriding(true)
+    try {
+      if (!fetchedConfigs) {
+        throw new Error('Failed to fetch remote configurations')
       }
+      // build the selected LOCAL configurations (the ones user wants to keep)
+      const selectedLocalConfigs: Record<string, ElementConfigType> = {}
+
+      selectedConfigs.forEach((localStableKey) => {
+        if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
+          selectedLocalConfigs[localStableKey] =
+            currentLocalConfigs[localStableKey]
+        } else {
+          console.warn(
+            `No local configuration found for stable key: ${localStableKey}`
+          )
+        }
+      })
+
+      toolActions.overrideWithFetchedConfigs(
+        selectedLocalConfigs,
+        fetchedConfigs
+      )
+      await saveLastAction()
+    } catch (error) {
+      console.error('Error overriding configurations:', error)
+    } finally {
+      setIsOverriding(false)
     }
   }
 
   return (
-    <div
-      className={`
-        bg-interface-bg-container
-        border border-interface-edge-container
-        rounded-sm
-        pt-4xl pb-md px-0
-        flex flex-col items-center gap-lg w-[514px]
-        relative
-        ${className}
-      `}
+    <BaseDialog
+      className="pt-4xl pb-md px-0
+        flex flex-col items-center gap-lg w-[514px]"
     >
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-sm right-sm w-6 h-6 text-text-primary hover:text-text-secondary transition-colors"
-          aria-label="Close modal"
-        >
-          <SVGClose className="w-6 h-6" />
-        </button>
-      )}
-
       <div className="px-md w-full text-center">
         <div className="text-style-body-standard space-y-2xs">
           <p>We found previous edits correlated to this wallet address.</p>
@@ -178,7 +159,7 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           </div>
         </div>
 
-        {configsToUse.map((config) => (
+        {generatedConfigs.map((config) => (
           <ConfigCondition
             key={config.id}
             id={config.id}
@@ -229,8 +210,6 @@ export const OverridePresetModal: React.FC<OverridePresetModalProps> = ({
           Add another wallet address
         </ToolsSecondaryButton>
       </div>
-    </div>
+    </BaseDialog>
   )
 }
-
-export default OverridePresetModal

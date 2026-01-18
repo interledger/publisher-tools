@@ -1,23 +1,17 @@
-import './views/confirmation/confirmation.js'
-import './views/interaction/interaction.js'
-
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { WidgetController } from './controller'
-import {
-  checkHrefFormat,
-  getWalletAddress,
-  normalizeWalletAddress,
-  toWalletAddressUrl
-} from '@shared/utils'
+import type { ApiErrorResponse } from 'publisher-tools-api'
 import type { WalletAddress } from '@interledger/open-payments'
+import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
+import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
-
-import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
-import closeButtonIcon from '../assets/wm_close_button.svg'
-import walletTotemIcon from '../assets/wm_wallet_totem.svg'
-import interledgerLogoIcon from '../assets/interledger_logo.svg'
 import widgetStyles from './widget.css?raw'
+import interledgerLogoIcon from '../assets/interledger_logo.svg'
+import closeButtonIcon from '../assets/wm_close_button.svg'
+import defaultTriggerIcon from '../assets/wm_logo_animated.svg'
+import walletTotemIcon from '../assets/wm_wallet_totem.svg'
+import './views/confirmation/confirmation.js'
+import './views/interaction/interaction.js'
 
 const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
@@ -61,20 +55,26 @@ export class PaymentWidget extends LitElement {
       return
     }
 
-    let walletAddressInfo: WalletAddress
     try {
+      const { apiUrl } = this.configController.config
       const walletAddressUrl = checkHrefFormat(
         toWalletAddressUrl(walletAddress)
       )
 
-      walletAddressInfo = await getWalletAddress(walletAddressUrl)
+      const url = new URL('/wallet', apiUrl)
+      url.searchParams.set('walletAddress', walletAddressUrl)
+
+      const response = await fetch(url)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error((data as ApiErrorResponse).error?.message)
+      }
 
       this.configController.updateState({
-        walletAddress: {
-          ...walletAddressInfo,
-          id: normalizeWalletAddress(walletAddressInfo)
-        }
+        walletAddress: data as WalletAddress
       })
+
       this.walletAddressError = ''
       this.currentView = 'confirmation'
     } catch (error) {
@@ -151,7 +151,7 @@ export class PaymentWidget extends LitElement {
     const showDescription = this.config.isWidgetDescriptionVisible ?? true
     const descriptionElement = showDescription
       ? html`<p>${description}</p>`
-      : null
+      : html`<div class="divider" />`
 
     return html`
       <div class="widget-header-container">

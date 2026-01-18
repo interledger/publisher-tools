@@ -19,7 +19,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       
       - name: Check deployment permissions
         id: deploy-check
@@ -146,7 +146,7 @@ jobs:
       #region Summary
       - name: Create Job summary
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: summary
         with:
           script: |
@@ -191,7 +191,7 @@ jobs:
       - name: Create deploy comment
         if: github.event_name == 'pull_request'
         continue-on-error: true
-        uses: edumserrano/find-create-or-update-comment@v2
+        uses: edumserrano/find-create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: '<!-- worker-deploy-summary -->'

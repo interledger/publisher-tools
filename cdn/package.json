@@ -13,16 +13,16 @@
   },
   "devDependencies": {
     "@fontsource-variable/open-sans": "^5.2.7",
-    "@fontsource-variable/roboto": "^5.2.8",
+    "@fontsource-variable/roboto": "^5.2.9",
     "@fontsource/cookie": "^5.2.7",
     "@fontsource/titillium-web": "^5.2.8",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "@tools/components": "workspace:*",
     "directory-tree": "^3.5.2",
-    "esbuild": "0.25.10",
+    "esbuild": "0.27.0",
     "esbuild-plugin-copy": "^2.1.1",
-    "typescript": "^5.9.2",
-    "wrangler": "^4.40.0"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.54.0"
   }
 }

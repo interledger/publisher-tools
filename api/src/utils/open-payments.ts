@@ -2,20 +2,16 @@ import {
   type PendingGrant,
   type WalletAddress,
   type AuthenticatedClient,
+  type OutgoingPayment,
   type Quote,
   type Grant,
   isFinalizedGrant,
   isPendingGrant,
   createAuthenticatedClient
 } from '@interledger/open-payments'
-import { getWalletAddress } from '@shared/utils'
-import {
-  createHeaders,
-  timeout,
-  createHTTPException,
-  urlWithParams
-} from './utils.js'
 import { createId } from '@paralleldrive/cuid2'
+import { getWalletAddress, urlWithParams } from '@shared/utils'
+import { createHeaders, sleep, createHTTPException } from './utils.js'
 import type { Env } from '../app.js'
 
 export interface Amount {
@@ -49,6 +45,18 @@ type CreateOutgoingPaymentParams = {
   receiveAmount?: Amount
   nonce?: string
   paymentId: string
+}
+
+const OUTGOING_PAYMENT_POLLING_INITIAL_DELAY = 3000
+const OUTGOING_PAYMENT_POLLING_INTERVAL = 1500
+const OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS = 3
+
+function hasCancellationReason(outgoingPayment: OutgoingPayment): boolean {
+  return (
+    outgoingPayment.failed &&
+    typeof outgoingPayment.metadata === 'object' &&
+    'cancellationReason' in outgoingPayment.metadata
+  )
 }
 
 export class OpenPaymentsService {
@@ -193,7 +201,7 @@ export class OpenPaymentsService {
     debitAmount: Amount
     receiveAmount: Amount
     redirectUrl: string
-  }): Promise<PendingGrant> {
+  }): Promise<{ grant: PendingGrant; paymentId: string }> {
     const clientNonce = crypto.randomUUID()
     const paymentId = createId()
 
@@ -206,7 +214,7 @@ export class OpenPaymentsService {
       redirectUrl: args.redirectUrl
     })
 
-    return outgoingPaymentGrant
+    return { grant: outgoingPaymentGrant, paymentId }
   }
 
   async finishPaymentProcess(
@@ -231,11 +239,9 @@ export class OpenPaymentsService {
       throw new Error('Expected finalized grant.')
     }
 
-    const url = new URL(walletAddress.resourceServer).origin
-
     const outgoingPayment = await this.client!.outgoingPayment.create(
       {
-        url: url,
+        url: walletAddress.resourceServer,
         accessToken: continuation.access_token.value
       },
       {
@@ -249,11 +255,11 @@ export class OpenPaymentsService {
       throw new Error('Could not create outgoing payment.')
     })
 
-    return await this.checkOutgoingPayment(
-      outgoingPayment.id,
-      continuation.access_token.value,
+    return await this.completePaymentProcess(
+      quote.receiver,
       incomingPaymentGrant,
-      quote.receiver
+      outgoingPayment.id,
+      continuation.access_token.value
     )
   }
 
@@ -418,30 +424,46 @@ export class OpenPaymentsService {
     }
   }
 
-  private async checkOutgoingPayment(
-    finishPaymentUrl: string,
-    continuationAccessToken: string,
+  private async completePaymentProcess(
+    incomingPaymentId: string,
     incomingPaymentGrant: Grant,
-    incomingPaymentId: string
+    outgoingPaymentId: OutgoingPayment['id'],
+    continuationAccessToken: string
   ): Promise<CheckPaymentResult> {
-    await timeout(3000)
-
-    // get outgoing payment, to check if there was enough balance
-    const checkOutgoingPaymentResponse = await this.client!.outgoingPayment.get(
-      {
-        url: finishPaymentUrl,
+    let attempts = 0
+    await sleep(OUTGOING_PAYMENT_POLLING_INITIAL_DELAY)
+    while (++attempts <= OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS) {
+      const outgoingPayment = await this.client!.outgoingPayment.get({
+        url: outgoingPaymentId,
         accessToken: continuationAccessToken
-      }
-    )
+      })
 
-    if (!(Number(checkOutgoingPaymentResponse.sentAmount.value) > 0)) {
-      return {
-        success: false,
-        error: {
-          code: 'INSUFFICIENT_BALANCE',
-          message: 'Insufficient funds. Check your balance and try again.'
+      if (hasCancellationReason(outgoingPayment)) {
+        return {
+          success: false,
+          error: {
+            code: 'CANCELLATION_REASON',
+            message: `Payment aborted due to: ${outgoingPayment.metadata?.cancellationReason}`
+          }
         }
       }
+
+      if (
+        outgoingPayment.debitAmount.value === outgoingPayment.sentAmount.value
+      ) {
+        break
+      }
+
+      if (attempts === OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS) {
+        return {
+          success: false,
+          error: {
+            code: 'OUTGOING_PAYMENT_INCOMPLETE',
+            message: 'The payment did not complete within the expected time.'
+          }
+        }
+      }
+      await sleep(OUTGOING_PAYMENT_POLLING_INTERVAL)
     }
 
     try {
@@ -461,7 +483,7 @@ export class OpenPaymentsService {
       (error) => {
         throw createHTTPException(
           500,
-          'Could not revoke incoming payment grant. ',
+          'Could not revoke incoming payment grant.',
           error
         )
       }

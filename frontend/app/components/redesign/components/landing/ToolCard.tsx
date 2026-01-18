@@ -1,5 +1,5 @@
 import React, { useId } from 'react'
-import { Link } from '@remix-run/react'
+import { Link } from 'react-router'
 import { PillTag } from '@/components'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 
@@ -73,7 +73,7 @@ export const ToolCard = ({
         </ul>
       </div>
 
-      <div className="absolute bottom-4 right-4 w-6 h-6 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200">
+      <div className="absolute bottom-2 right-2 w-6 h-6 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200">
         <img
           src={arrowOutwardIcon}
           className="w-full h-full"

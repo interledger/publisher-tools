@@ -1,9 +1,9 @@
+import { HTTPException } from 'hono/http-exception'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
+import type { Request } from 'http-message-signatures'
 import { signMessage } from 'http-message-signatures/lib/httpbis'
 import { createContentDigestHeader } from 'httpbis-digest-headers'
-import type { Request } from 'http-message-signatures'
-import * as ed from '@noble/ed25519'
-import type { ContentfulStatusCode } from 'hono/utils/http-status'
-import { HTTPException } from 'hono/http-exception'
+import { signAsync } from '@noble/ed25519'
 
 type Headers = SignatureHeaders & Partial<ContentHeaders>
 
@@ -28,8 +28,26 @@ interface SignOptions {
   keyId: string
 }
 
-export function timeout(delay: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, delay))
+export function sleep(delay: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, delay))
+}
+
+export function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(new Error('TimeoutError'))
+      return
+    }
+
+    const timer = setTimeout(resolve, ms)
+
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new Error('TimeoutError'))
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
 }
 
 export async function createHeaders({
@@ -104,7 +122,7 @@ function createSigner(key: Uint8Array, keyId: string) {
     id: keyId,
     alg: 'ed25519',
     async sign(data: Uint8Array) {
-      return Buffer.from(await ed.signAsync(data, key))
+      return Buffer.from(await signAsync(data, key))
     }
   }
 }
@@ -123,16 +141,4 @@ export function createHTTPException(
     message,
     cause: serializedError
   })
-}
-
-export function urlWithParams(
-  url: string | URL,
-  params: Record<string, string>
-): URL {
-  const result = new URL(url)
-  const searchParams = new URLSearchParams(params)
-  for (const [key, val] of searchParams.entries()) {
-    result.searchParams.set(key, val)
-  }
-  return result
 }

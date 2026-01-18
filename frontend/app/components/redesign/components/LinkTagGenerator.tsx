@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
+import { SVGSpinner } from '@/assets'
 import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
-import { SVGSpinner } from '@/assets'
 import {
   validateAndConfirmPointer,
   WalletAddressFormatError
@@ -74,7 +74,7 @@ export const LinkTagGenerator = () => {
       <div>
         <InputField
           id="paymentPointer"
-          label="Your payment pointer"
+          label="Your payment pointer/wallet address"
           required
           placeholder="Fill in your payment pointer/wallet address"
           value={pointerInput}
