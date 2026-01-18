@@ -15,6 +15,10 @@ inputs:
   mode:
     required: true
     description: 'Deployment mode: `staging` (push to main), `production` (push to release) or `preview` (pull_request to main)'
+  skip-deploy:
+    required: false
+    description: 'Skip actual deployment (only build/test for validation)'
+    default: 'false'
   stagingUrl:
     required: true
     description: 'Staging URL Origin'
@@ -55,8 +59,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Build worker
-      if: ${{ (inputs.build && inputs.changed == 'true') || inputs.mode == 'production' }}
+    - name: Build worker (validation)
+      if: ${{ inputs.build && ((inputs.changed == 'true' && inputs.skip-deploy == 'false') || inputs.mode == 'production' || inputs.skip-deploy == 'true') }}
       shell: bash
       run: ${{ inputs.build }}
       env:
@@ -66,7 +70,7 @@ runs:
         BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
 
     - name: Get worker deploy command
-      if: inputs.changed == 'true' || inputs.mode == 'production'
+      if: ${{ inputs.skip-deploy == 'false' && (inputs.changed == 'true' || inputs.mode == 'production') }}
       id: command
       shell: bash
       run: |
@@ -79,7 +83,7 @@ runs:
         echo "command=$DEPLOY_COMMAND" >> $GITHUB_OUTPUT
 
     - name: Deploy Worker
-      if: inputs.changed == 'true' || inputs.mode == 'production'
+      if: ${{ inputs.skip-deploy == 'false' && (inputs.changed == 'true' || inputs.mode == 'production') }}
       id: deploy
       uses: cloudflare/wrangler-action@v3
       with:

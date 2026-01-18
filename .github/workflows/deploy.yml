@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
     paths-ignore: ['**.md']
+  pull_request_review:
+    types: [submitted]
+    branches: [main]
 
 defaults:
   run:
@@ -26,23 +29,11 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const script = require('./.github/scripts/check-deploy-permissions.js');
-            await script({ core, context });
+            const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
+            await script.default({ core, context });
       
       - uses: ./.github/workflows/setup
-      
-      # Build and test steps (always run for validation)
-      - name: Build API (validation)
-        if: steps.deploy-check.outputs.should-deploy == 'false'
-        run: pnpm -C api run build
-        
-      - name: Build CDN (validation)
-        if: steps.deploy-check.outputs.should-deploy == 'false'
-        run: pnpm -C cdn run build
-        
-      - name: Build Frontend (validation)
-        if: steps.deploy-check.outputs.should-deploy == 'false'
-        run: pnpm -C frontend run build
+
       - name: Install wrangler globally
         # The wrangler Action expects a global installation, so we better reuse
         # what we've in our project.
@@ -96,13 +87,13 @@ jobs:
       # 3. frontend
 
       - name: Deploy API
-        if: steps.deploy-check.outputs.should-deploy == 'true'
         uses: ./.github/workflows/deploy-worker
         id: api
         with:
           name: 'api'
           changed: ${{ steps.changes.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
+          skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           stagingUrl: ${{ vars.API_STAGING_URL }}
           productionUrl: ${{ vars.API_PRODUCTION_URL }}
@@ -110,13 +101,13 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy CDN
-        if: steps.deploy-check.outputs.should-deploy == 'true'
         uses: ./.github/workflows/deploy-worker
         id: cdn
         with:
           name: 'cdn'
           changed: ${{ steps.changes.outputs.cdn }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
+          skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           build: 'pnpm -C cdn run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
@@ -126,13 +117,13 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy Frontend
-        if: steps.deploy-check.outputs.should-deploy == 'true'
         uses: ./.github/workflows/deploy-worker
         id: frontend
         with:
           name: 'frontend'
           changed: ${{ steps.changes.outputs.frontend }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
+          skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           build: 'pnpm -C frontend run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
