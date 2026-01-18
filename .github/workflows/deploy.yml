@@ -26,7 +26,7 @@ jobs:
       
       - name: Check deployment permissions
         id: deploy-check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
