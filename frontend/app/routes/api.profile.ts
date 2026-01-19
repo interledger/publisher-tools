@@ -7,7 +7,7 @@ import {
   PROFILE_IDS,
   type Configuration,
   TOOL_BANNER,
-  TOOL_WIDGET
+  TOOL_WIDGET,
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
@@ -19,30 +19,30 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
 import {
   BannerProfileSchema,
-  WidgetProfileSchema
+  WidgetProfileSchema,
 } from '~/utils/validate.shared'
 
 const BaseApiSchema = z.object({
   ...walletSchema.shape,
-  profileId: z.enum(PROFILE_IDS)
+  profileId: z.enum(PROFILE_IDS),
 })
 
 const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
   BaseApiSchema.extend({
     tool: z.literal(TOOL_BANNER),
-    profile: BannerProfileSchema
+    profile: BannerProfileSchema,
   }),
   BaseApiSchema.extend({
     tool: z.literal(TOOL_WIDGET),
-    profile: WidgetProfileSchema
-  })
+    profile: WidgetProfileSchema,
+  }),
 ])
 
 export async function action({ request, context }: ActionFunctionArgs) {
   if (request.method !== 'POST') {
     return data<SaveResult>(
       { error: { message: 'Method not allowed' } },
-      { status: 405 }
+      { status: 405 },
     )
   }
 
@@ -59,11 +59,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
             message: 'Validation failed',
             cause: {
               message: 'One or more fields failed validation',
-              errors: { field: z.prettifyError(parsed.error) }
-            }
-          }
+              errors: { field: z.prettifyError(parsed.error) },
+            },
+          },
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -82,14 +82,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
       const grant = await createInteractiveGrant(env, {
         walletAddress: walletAddressData,
-        redirectUrl
+        redirectUrl,
       })
       session.set('payment-grant', grant)
       session.set('wallet-address', walletAddressData)
 
       return data<SaveResult>(
         { grantRedirect: grant.interact.redirect, success: false },
-        { status: 200, headers: { 'Set-Cookie': await commitSession(session) } }
+        {
+          status: 200,
+          headers: { 'Set-Cookie': await commitSession(session) },
+        },
       )
     }
 
@@ -111,7 +114,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
         $walletAddress: walletAddress,
         $walletAddressId: walletAddressId,
         $createdAt: now,
-        $modifiedAt: now
+        $modifiedAt: now,
       }
     }
 
@@ -122,8 +125,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
         ...getDefaultData(),
         ...sanitizedProfile,
         walletAddress: walletAddressId,
-        versionName: sanitizedProfile.$name
-      }
+        versionName: sanitizedProfile.$name,
+      },
     })
 
     //@ts-expect-error TO DO putJson config usage
@@ -135,27 +138,27 @@ export async function action({ request, context }: ActionFunctionArgs) {
         ...config?.[tool],
         [profileId]: {
           ...sanitizedProfile,
-          $modifiedAt: now
-        }
-      }
+          $modifiedAt: now,
+        },
+      },
     }
 
     return data<SaveResult>(
       { success: true },
       {
         status: 200,
-        headers: { 'Set-Cookie': await commitSession(session) }
-      }
+        headers: { 'Set-Cookie': await commitSession(session) },
+      },
     )
   } catch (error) {
     console.error('Save profile error: ', error)
     return data<SaveResult>(
       {
         error: {
-          message: `Failed to save profile: ${(error as Error).message}`
-        }
+          message: `Failed to save profile: ${(error as Error).message}`,
+        },
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

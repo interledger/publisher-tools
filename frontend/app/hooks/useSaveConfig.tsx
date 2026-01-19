@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import {
   StatusDialog,
   ScriptDialog,
-  GrantConfirmationDialog
+  GrantConfirmationDialog,
 } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
 import { toolActions, toolState } from '~/stores/toolStore'
@@ -26,7 +26,7 @@ export const useSaveConfig = () => {
           openDialog(
             <GrantConfirmationDialog
               grantRedirect={response.data.grantRequired}
-            />
+            />,
           )
           return { success: false, grantRequired: true }
         }
@@ -48,12 +48,12 @@ export const useSaveConfig = () => {
             message={error.message || 'An error occurred'}
             fieldErrors={fieldErrors}
             status="error"
-          />
+          />,
         )
         return { success: false }
       }
     },
-    [openDialog, closeDialog]
+    [openDialog, closeDialog],
   )
 
   const saveLastAction = useCallback(async (): Promise<SaveResult> => {

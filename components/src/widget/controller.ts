@@ -3,7 +3,7 @@ import type {
   Grant,
   Quote,
   PendingGrant,
-  WalletAddress
+  WalletAddress,
 } from '@interledger/open-payments'
 import { WIDGET_POSITION, BORDER_RADIUS } from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
@@ -72,7 +72,7 @@ export class WidgetController implements ReactiveController {
       style: 'currency',
       currencyDisplay: 'symbol',
       maximumFractionDigits: 0,
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
     })
       .format(0)
       .replace(/0/g, '')
@@ -85,23 +85,23 @@ export class WidgetController implements ReactiveController {
       style: 'currency',
       currency: assetCode,
       maximumFractionDigits: assetScale,
-      minimumFractionDigits: assetScale
+      minimumFractionDigits: assetScale,
     })
     const formatter = new Intl.NumberFormat('en-US', {
       maximumFractionDigits: assetScale,
-      minimumFractionDigits: assetScale
+      minimumFractionDigits: assetScale,
     })
 
     const amount = Number(formatter.format(Number(`${value}e-${assetScale}`)))
     const amountWithCurrency = formatterWithCurrency.format(
-      Number(`${value}e-${assetScale}`)
+      Number(`${value}e-${assetScale}`),
     )
     const symbol = this.getCurrencySymbol(assetCode)
 
     return {
       amount,
       amountWithCurrency,
-      symbol
+      symbol,
     }
   }
 
@@ -109,7 +109,7 @@ export class WidgetController implements ReactiveController {
     const borderRadiusValue = BORDER_RADIUS[borderRadius]
     this.host.style.setProperty(
       '--wm-border-radius',
-      borderRadiusValue || BORDER_RADIUS.None
+      borderRadiusValue || BORDER_RADIUS.None,
     )
   }
 
@@ -151,7 +151,7 @@ export class WidgetController implements ReactiveController {
     if (theme.widgetBorderRadius) {
       element.style.setProperty(
         '--wm-widget-border-radius',
-        theme.widgetBorderRadius
+        theme.widgetBorderRadius,
       )
     }
     if (theme.widgetBorderRadius) {
@@ -160,7 +160,7 @@ export class WidgetController implements ReactiveController {
     if (theme.widgetButtonBackgroundColor) {
       element.style.setProperty(
         '--wm-widget-trigger-bg-color',
-        theme.widgetButtonBackgroundColor
+        theme.widgetButtonBackgroundColor,
       )
     }
   }

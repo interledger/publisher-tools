@@ -2,7 +2,7 @@ import {
   Divider,
   ToolsDropdown,
   CornerRadiusSelector,
-  WidgetColorsSelector
+  WidgetColorsSelector,
 } from '@/components'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
@@ -14,7 +14,7 @@ import {
   SVGColorPicker,
   SVGHeaderPosition,
   SVGRoundedCorner,
-  SVGText
+  SVGText,
 } from '~/assets/svg'
 import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
 import { useCurrentConfig } from '~/stores/toolStore'
@@ -30,7 +30,7 @@ const config = {
     'Make a payment',
     'Contribute now',
     'Help support',
-    'One-time donation'
+    'One-time donation',
   ],
   titleHelpText: 'Message to encourage one-time payments',
   titleMaxLength: 30,
@@ -40,7 +40,7 @@ const config = {
   messageMaxLength: 300,
 
   showThumbnail: false,
-  fontSizeRange: WIDGET_FONT_SIZES
+  fontSizeRange: WIDGET_FONT_SIZES,
 }
 
 export function WidgetBuilder({ onRefresh }: Props) {
@@ -105,7 +105,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   const [snap, profile] = useCurrentConfig()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === snap.widgetFontName
+    (option) => option === snap.widgetFontName,
   )
 
   return (
@@ -134,7 +134,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           }}
           options={FONT_FAMILY_OPTIONS.map((font, index) => ({
             label: font,
-            value: index.toString()
+            value: index.toString(),
           }))}
         />
 

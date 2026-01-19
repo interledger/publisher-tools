@@ -19,7 +19,7 @@ const ToolsMenuItem = ({
   to,
   defaultImage,
   hoverImage,
-  text
+  text,
 }: ToolsMenuItemProps) => {
   const imgClasses =
     'absolute h-full w-full transition-opacity duration-200 ease-in'
@@ -30,7 +30,7 @@ const ToolsMenuItem = ({
         href={to}
         className={cx(
           'flex w-full items-center gap-xs p-sm focusable-nav-item',
-          hoverImage && 'group'
+          hoverImage && 'group',
         )}
       >
         <div className="relative w-20 h-20">
@@ -62,7 +62,7 @@ type NavDropdownProps = {
 
 export const NavDropdown = ({
   title,
-  onMenuItemClick: _onMenuItemClick
+  onMenuItemClick: _onMenuItemClick,
 }: NavDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -107,7 +107,7 @@ export const NavDropdown = ({
           'font-sans text-sm font-normal leading-sm',
           'md:w-auto md:justify-normal',
           'focusable-nav-item',
-          isOpen ? 'text-nav-link-hover' : 'text-nav-link-default'
+          isOpen ? 'text-nav-link-hover' : 'text-nav-link-default',
         )}
         aria-label={`Toggle submenu for ${title}`}
         aria-expanded={isOpen}
@@ -119,7 +119,7 @@ export const NavDropdown = ({
           className={cx(
             'w-4 h-4',
             'flex items-center justify-center transition-transform duration-200',
-            isOpen ? 'rotate-180 fill-nav-link-hover' : 'fill-nav-link-default'
+            isOpen ? 'rotate-180 fill-nav-link-hover' : 'fill-nav-link-default',
           )}
         />
       </button>
@@ -137,7 +137,7 @@ export const NavDropdown = ({
             'md:items-start md:justify-start md:bg-interface-bg-container',
             'md:shadow-[0px_24px_24px_0px_rgba(0,0,0,0.08)]',
             'md:outline md:outline-1 md:outline-offset-[-1px] md:outline-interface-edge-container',
-            'focus-visible:outline-offset-0'
+            'focus-visible:outline-offset-0',
           )}
         >
           <ul className="flex w-full flex-grow list-none flex-col gap-xs">

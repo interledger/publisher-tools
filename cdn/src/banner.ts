@@ -23,7 +23,7 @@ function drawBanner(profile: BannerConfig) {
 
   // check if user / visitor has monetization
   const monetizationLinks = document.querySelector<HTMLLinkElement>(
-    'link[rel=monetization]'
+    'link[rel=monetization]',
   )
   if (
     (monetizationLinks && monetizationLinks.relList.supports('monetization')) ||
@@ -49,8 +49,8 @@ function drawBanner(profile: BannerConfig) {
       backgroundColor: config.bannerBackgroundColor,
       textColor: config.bannerTextColor,
       fontFamily: config.bannerFontName,
-      fontSize: config.bannerFontSize
-    }
+      fontSize: config.bannerFontSize,
+    },
   }
   bannerElement.config = bannerConfig
 
