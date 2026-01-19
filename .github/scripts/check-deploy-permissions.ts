@@ -1,11 +1,13 @@
-import type { AsyncFunctionArguments } from '@actions/github-script';
+import type * as core from '@actions/core';
+import type { Context } from '@actions/github/lib/context';
 import type { PullRequestEvent, PullRequestReviewEvent } from '@octokit/webhooks-types';
 
-type Params = AsyncFunctionArguments & {
-  context: AsyncFunctionArguments['context'] & {
+interface Params {
+  core: typeof core;
+  context: Context & {
     payload: PullRequestEvent | PullRequestReviewEvent;
   };
-};
+}
 
 export default async function checkDeployPermissions({ core, context }: Params): Promise<void> {
   if (context.eventName === 'pull_request_review') {
