@@ -28,7 +28,7 @@ const getBorderColor = (status: StepStatus) =>
 const getStepContent = (
   number: number,
   status: StepStatus,
-  size: 'small' | 'large' = 'small'
+  size: 'small' | 'large' = 'small',
 ) => {
   if (status === 'filled') {
     return (
@@ -59,7 +59,7 @@ const getStepContent = (
 
 export const MobileStep: React.FC<{ number: number; status: StepStatus }> = ({
   number,
-  status
+  status,
 }) => {
   return (
     <div className="flex flex-col items-center gap-1">
@@ -81,7 +81,7 @@ const Step: React.FC<StepProps> = ({
   number,
   label,
   status,
-  textPosition = 'bottom'
+  textPosition = 'bottom',
 }) => {
   return (
     <div className="flex flex-col items-center">
@@ -134,7 +134,7 @@ export const StepsIndicator: React.FC<StepsIndicatorProps> = ({ steps }) => {
 export const MobileStepsIndicator: React.FC<StepProps> = ({
   number,
   label,
-  status
+  status,
 }) => {
   return (
     <div className="xl:hidden flex items-center gap-1 mb-sm">

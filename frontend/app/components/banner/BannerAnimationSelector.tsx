@@ -15,7 +15,7 @@ function getValidSlideAnimation(value: unknown): SlideAnimationType {
 
 export function BannerAnimationSelector({
   value,
-  onChange
+  onChange,
 }: BannerAnimationSelectorProps) {
   const [lastSelectedAnimation, setLastSelectedAnimation] =
     useState<SlideAnimationType>(() => {
@@ -47,7 +47,7 @@ export function BannerAnimationSelector({
           }
           options={[
             { label: 'Slide', value: SLIDE_ANIMATION.Slide },
-            { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn }
+            { label: 'Fade-in', value: SLIDE_ANIMATION.FadeIn },
           ]}
           onChange={(value) => {
             const selectedAnimation = value as SlideAnimationType

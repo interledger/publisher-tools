@@ -10,7 +10,7 @@ const DEV_AWS_PREFIX = '20250717-dev'
 export const APP_URL = {
   production: 'https://webmonetization.org',
   staging: 'https://staging-publisher-tools.webmonetization.workers.dev',
-  development: new URL(DEV_FRONTEND_URL).origin
+  development: new URL(DEV_FRONTEND_URL).origin,
 }
 
 export const API_URL =

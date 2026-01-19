@@ -11,14 +11,14 @@ type CodeBlockProps = {
 export const CodeBlockLink = ({ link, className, onCopy }: CodeBlockProps) => {
   const { isCopied, handleCopyClick } = useCopyToClipboard(
     `<link rel="monetization" href="${link}" />`,
-    onCopy
+    onCopy,
   )
 
   return (
     <div
       className={cx(
         'flex items-center justify-between rounded-sm bg-interface-bg-main',
-        className
+        className,
       )}
     >
       <CodeOutput link={link} />
@@ -46,7 +46,7 @@ const CodeOutput = ({ link }: { link: string }) => {
 
 const CopyButton = ({
   isCopied,
-  onCopyClick
+  onCopyClick,
 }: {
   isCopied: boolean
   onCopyClick: () => void

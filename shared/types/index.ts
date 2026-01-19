@@ -64,7 +64,7 @@ export type ProfileId = (typeof PROFILE_IDS)[number]
 export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {
   version1: 'Default profile 1',
   version2: 'Default profile 2',
-  version3: 'Default profile 3'
+  version3: 'Default profile 3',
 } as const
 
 export interface Configuration {
@@ -153,47 +153,47 @@ export const WIDGET_DESCRIPTION_MAX_LENGTH = 300
 export const BANNER_FONT_SIZES = {
   min: 16,
   max: 24,
-  default: 20
+  default: 20,
 } as const
 
 export const WIDGET_FONT_SIZES = {
   min: 12,
   max: 20,
-  default: 16
+  default: 16,
 } as const
 
 export const CORNER_OPTION = {
   Light: 'Light',
   Pill: 'Pill',
-  None: 'None'
+  None: 'None',
 } as const
 export type CornerType = keyof typeof CORNER_OPTION
 
 export const SLIDE_ANIMATION = {
   None: 'None',
   FadeIn: 'FadeIn',
-  Slide: 'Slide'
+  Slide: 'Slide',
 } as const
 export type SlideAnimationType = keyof typeof SLIDE_ANIMATION
 
 export const BANNER_POSITION = {
   Top: 'Top',
   Bottom: 'Bottom',
-  Empty: 'Empty'
+  Empty: 'Empty',
 } as const
 export type BannerPositionKey = keyof typeof BANNER_POSITION
 
 export const BORDER_RADIUS = {
   Light: '0.375rem',
   Pill: '1rem',
-  None: '0'
+  None: '0',
 } as const
 export type BorderRadiusKey = keyof typeof BORDER_RADIUS
 
 export const WIDGET_POSITION = {
   Left: 'Left',
   Right: 'Right',
-  Empty: 'Empty'
+  Empty: 'Empty',
 } as const
 export type WidgetPositionKey = keyof typeof WIDGET_POSITION
 
@@ -203,7 +203,7 @@ export const FONT_FAMILY_OPTIONS = [
   'Open Sans',
   'Cookie',
   'Titillium Web',
-  'Roboto'
+  'Roboto',
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]

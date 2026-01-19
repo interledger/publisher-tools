@@ -11,7 +11,7 @@ const AnchorOrLink = forwardRef<HTMLAnchorElement, AnchorOrLinkProps>(
     if (isAnchor) {
       if (prefetch) {
         console.warn(
-          'Property "prefetch" does not have any effect when using it with simple anchor tag.'
+          'Property "prefetch" does not have any effect when using it with simple anchor tag.',
         )
       }
 
@@ -27,7 +27,7 @@ const AnchorOrLink = forwardRef<HTMLAnchorElement, AnchorOrLinkProps>(
         {children}
       </Link>
     )
-  }
+  },
 )
 AnchorOrLink.displayName = 'AnchorOrLink'
 

@@ -3,7 +3,7 @@ import {
   useState,
   useCallback,
   useMemo,
-  type ReactNode
+  type ReactNode,
 } from 'react'
 
 export const DialogContext = createContext<{
@@ -11,7 +11,7 @@ export const DialogContext = createContext<{
   closeDialog: () => void
 }>({
   openDialog: () => null,
-  closeDialog: () => null
+  closeDialog: () => null,
 })
 
 export const DialogProvider = ({ children }: { children: ReactNode }) => {
@@ -22,7 +22,7 @@ export const DialogProvider = ({ children }: { children: ReactNode }) => {
 
   const value = useMemo(
     () => ({ openDialog, closeDialog }),
-    [openDialog, closeDialog]
+    [openDialog, closeDialog],
   )
 
   return (

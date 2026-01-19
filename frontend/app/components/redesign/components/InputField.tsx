@@ -28,7 +28,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onChange,
       ...props
     },
-    ref
+    ref,
   ) => {
     const generatedId = useId()
     const fieldId = id || generatedId
@@ -77,7 +77,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
               'placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
               error ? 'border-field-border-error' : 'border-field-border',
-              className
+              className,
             )}
             id={fieldId}
             name={fieldId}
@@ -118,7 +118,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         )}
       </div>
     )
-  }
+  },
 )
 
 InputField.displayName = 'InputField'

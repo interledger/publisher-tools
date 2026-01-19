@@ -6,7 +6,7 @@ import { Heading5 } from '@/typography'
 import {
   checkHrefFormat,
   getWalletAddress,
-  toWalletAddressUrl
+  toWalletAddressUrl,
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
@@ -14,7 +14,6 @@ import type { ElementErrors } from '~/lib/types'
 import { actions } from '~/stores/banner-store'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
-import { convertToProfiles } from '~/utils/profile-converter'
 
 interface ToolsWalletAddressProps {
   toolName: 'drawer banner' | 'payment widget'
@@ -36,7 +35,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
           const length = inputRef.current.value.length
           inputRef.current.setSelectionRange(length, length)
         }
-      }
+      },
     }
 
     return uiActions.registerWalletInput(walletInputApi)
@@ -46,7 +45,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     if (!snap.walletAddress.trim()) {
       setError({
         fieldErrors: { walletAddress: ['This field is required'] },
-        message: []
+        message: [],
       })
       return
     }
@@ -55,7 +54,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     setError(undefined)
     try {
       const walletAddressUrl = checkHrefFormat(
-        toWalletAddressUrl(snap.walletAddress)
+        toWalletAddressUrl(snap.walletAddress),
       )
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
@@ -71,7 +70,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       console.error('### Error connecting wallet address:', error)
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
-        message: []
+        message: [],
       })
     } finally {
       setIsLoading(false)
@@ -86,7 +85,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   }
 
   const handleWalletAddressChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     toolActions.setWalletAddress(e.target.value)
 
@@ -112,26 +111,26 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     if (snap.walletConnectStep === 'error') {
       return {
         message: 'You have not connected your wallet address yet.',
-        type: 'error'
+        type: 'error',
       }
     }
     if (!snap.isWalletConnected) {
       return {
         message:
           "If you're connecting your wallet address for the first time, you'll start with the default configuration. You can then customize and save your config as needed.",
-        type: 'info'
+        type: 'info',
       }
     }
     if (!snap.hasRemoteConfigs) {
       return {
         message: `There are no custom edits for the ${toolName} correlated to this wallet address but you can start customizing when you want.`,
-        type: 'success'
+        type: 'success',
       }
     }
 
     return {
       message: `We've loaded your configuration. Feel free to keep customizing your ${toolName} to fit your style.`,
-      type: 'success'
+      type: 'success',
     }
   }
 
@@ -141,7 +140,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       onSubmit={handleSubmit}
       className={cx(
         'flex flex-col xl:flex-row xl:items-start gap-2xl p-md bg-white rounded-lg',
-        snap.walletConnectStep === 'error' && 'border border-red-600'
+        snap.walletConnectStep === 'error' && 'border border-red-600',
       )}
     >
       <div className="items-start gap-md w-full xl:flex-1 xl:grow">
@@ -196,7 +195,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
           className={cx(
             'w-full text-style-small-standard',
             statusMessage.type === 'error' && '!text-red-600',
-            statusMessage.type === 'success' && '!text-text-success'
+            statusMessage.type === 'success' && '!text-text-success',
           )}
         >
           {statusMessage.message}

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 export const useCopyToClipboard = (
   text: string,
-  callback?: (copied: boolean) => void
+  callback?: (copied: boolean) => void,
 ) => {
   const [isCopied, setIsCopied] = useState(false)
 

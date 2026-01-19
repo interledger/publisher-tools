@@ -8,7 +8,7 @@ export async function saveToolProfile<T extends Tool>(
   walletAddress: string,
   tool: T,
   profile: ToolProfile<T>,
-  profileId: ProfileId
+  profileId: ProfileId,
 ): Promise<SaveResult> {
   const baseUrl = location.origin + APP_BASEPATH
   const url = `${baseUrl}/api/profile`
@@ -20,8 +20,8 @@ export async function saveToolProfile<T extends Tool>(
       walletAddress,
       profile,
       profileId,
-      tool
-    })
+      tool,
+    }),
   })
 
   const data: SaveResult = await response.json()
@@ -29,7 +29,7 @@ export async function saveToolProfile<T extends Tool>(
   if (!response.ok) {
     throw new ApiError(
       data.error?.message || 'Failed to save profile',
-      data.error?.cause?.errors
+      data.error?.cause?.errors,
     )
   }
 

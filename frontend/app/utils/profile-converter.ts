@@ -7,38 +7,38 @@ import type {
   Configuration,
   WidgetConfig,
   BannerConfig,
-  ToolProfile
+  ToolProfile,
 } from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
 
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
-  tool: T
+  tool: T,
 ): ToolProfile<T> {
   return {
     $version: '0.0.1',
     $name: config.versionName,
     $modifiedAt: '',
-    ...getToolProfile(config, tool)
+    ...getToolProfile(config, tool),
   } as ToolProfile<T>
 }
 
 /** @legacy */
 function convertToConfigLegacy<T extends Tool>(
   walletAddress: string,
-  profile: ToolProfile<T>
+  profile: ToolProfile<T>,
 ): ElementConfigType {
   return {
     walletAddress,
     versionName: profile.$name,
-    ...profile
+    ...profile,
   } as unknown as ElementConfigType
 }
 
 /** @legacy */
 export function convertToConfigsLegacy<T extends Tool>(
   walletAddress: string,
-  profiles: ToolProfiles<T>
+  profiles: ToolProfiles<T>,
 ): Record<StableKey, Partial<ElementConfigType>> {
   const configs: Record<string, ElementConfigType> = {}
 
@@ -52,7 +52,7 @@ export function convertToConfigsLegacy<T extends Tool>(
 // TODO: to be removed after the completion of versioned configurations
 export function convertToProfiles<T extends Tool>(
   configuration: ConfigVersions,
-  _: T
+  _: T,
 ): ToolProfiles<T> {
   const profiles: Record<string, ToolProfile<T>> = {}
 
@@ -66,13 +66,13 @@ export function convertToProfiles<T extends Tool>(
 export function convertToConfiguration<T extends Tool>(
   configuration: ConfigVersions,
   tool: T,
-  walletAddress: string
+  walletAddress: string,
 ): Configuration {
   return {
     $walletAddress: walletAddress,
     $createdAt: '',
     $modifiedAt: '',
-    [tool]: convertToProfiles<T>(configuration, tool)
+    [tool]: convertToProfiles<T>(configuration, tool),
   }
 }
 
@@ -82,12 +82,12 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
     case 'widget':
       return extract<WidgetConfig>(
         profile,
-        (key) => key.startsWith('widget') || key.includes('Widget')
+        (key) => key.startsWith('widget') || key.includes('Widget'),
       )
     case 'banner':
       return extract<BannerConfig>(
         profile,
-        (key) => key.startsWith('banner') || key.includes('Banner')
+        (key) => key.startsWith('banner') || key.includes('Banner'),
       )
   }
 }
@@ -95,10 +95,10 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
 /** @legacy */
 function extract<R, T = ElementConfigType, K = keyof T>(
   obj: T,
-  filter: (key: K) => boolean
+  filter: (key: K) => boolean,
 ): R {
   const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K)
+    ([key]) => filter(key as K),
   )
   if (!entries.length) {
     throw new Error('No matching profile found')

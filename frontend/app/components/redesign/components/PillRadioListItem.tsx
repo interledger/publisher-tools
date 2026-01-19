@@ -16,11 +16,11 @@ export const PillRadioListItem = <T extends string>({
   onSelect,
   children,
   selected,
-  size = 'md'
+  size = 'md',
 }: PillRadioListItemProps<T>) => {
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs leading-xs',
-    md: 'px-sm py-2xs text-sm leading-sm'
+    md: 'px-sm py-2xs text-sm leading-sm',
   }
 
   const variantClasses = {
@@ -30,14 +30,14 @@ export const PillRadioListItem = <T extends string>({
       'hover:border-field-border-hover',
       'hover:text-text-primary',
       'focus:border-field-border-focus',
-      'focus:text-text-primary'
+      'focus:text-text-primary',
     ],
     active: [
       'border-field-border-focus',
       'text-text-primary',
       'hover:border-field-border-focus',
-      'hover:text-text-primary'
-    ]
+      'hover:text-text-primary',
+    ],
   }
 
   return (
@@ -56,7 +56,7 @@ export const PillRadioListItem = <T extends string>({
         'disabled:hover:border-field-border',
         'disabled:hover:text-text-placeholder',
         sizeClasses[size],
-        ...variantClasses[selected ? 'active' : 'default']
+        ...variantClasses[selected ? 'active' : 'default'],
       )}
     >
       <span className="relative z-10 whitespace-nowrap">{children}</span>

@@ -24,7 +24,7 @@ interface BuilderBackgroundProps {
 export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   className = '',
   children,
-  onPreviewClick
+  onPreviewClick,
 }) => {
   const snap = useSnapshot(toolState)
   const isWidgetTool = snap.currentToolType === 'widget'
@@ -44,12 +44,12 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         'p-md',
         'flex flex-col items-center justify-end',
         'min-h-[600px]',
-        className
+        className,
       )}
       style={{
         backgroundImage: `url("${createDotPattern()}")`,
         backgroundRepeat: 'repeat',
-        backgroundSize: '16px 16px'
+        backgroundSize: '16px 16px',
       }}
     >
       {onPreviewClick && !isAnimationDisabled && (
@@ -66,7 +66,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         id="browser-mockup"
         className={cx(
           'w-full bg-transparent rounded-2xl border border-field-border overflow-hidden flex flex-col',
-          isWidgetTool ? 'h-[752px]' : 'h-[406px]'
+          isWidgetTool ? 'h-[752px]' : 'h-[406px]',
         )}
       >
         <div className="flex items-center p-md bg-white">
