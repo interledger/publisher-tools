@@ -8,7 +8,7 @@ import {
   type ToolProfiles,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
-  TOOL_BANNER
+  TOOL_BANNER,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
 import { saveToolProfile } from '~/utils/profile-api'
@@ -29,8 +29,8 @@ function createBannerStore() {
     profiles: Object.fromEntries(
       PROFILE_IDS.map((id) => [
         id,
-        createProfileStoreBanner(DEFAULT_PROFILE_NAMES[id])
-      ])
+        createProfileStoreBanner(DEFAULT_PROFILE_NAMES[id]),
+      ]),
     ) as Record<ProfileId, BannerProfile>,
     profilesUpdate: proxySet<ProfileId>(),
 
@@ -41,9 +41,9 @@ function createBannerStore() {
       return PROFILE_IDS.map((id) => ({
         id,
         label: this.profiles[id].$name,
-        hasUpdates: this.profilesUpdate.has(id)
+        hasUpdates: this.profilesUpdate.has(id),
       }))
-    }
+    },
   })
 }
 
@@ -60,8 +60,8 @@ export const banner = createBannerStore()
 const snapshots = new Map<ProfileId, BannerProfile>(
   PROFILE_IDS.map((id) => [
     id,
-    createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
-  ])
+    createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id]),
+  ]),
 )
 
 export const actions = {
@@ -105,7 +105,7 @@ export const actions = {
 
     const snaps = Object.fromEntries(snapshots.entries())
     localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))
-  }
+  },
 }
 
 export function subscribeProfilesToStorage() {
@@ -147,7 +147,7 @@ function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
   } catch (error) {
     console.warn(
       `Failed to load profile ${profileId} from localStorage:`,
-      error
+      error,
     )
     localStorage.removeItem(storageKey)
     return null

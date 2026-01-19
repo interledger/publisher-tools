@@ -3,7 +3,7 @@ import {
   useLoaderData,
   data,
   type LoaderFunctionArgs,
-  type MetaFunction
+  type MetaFunction,
 } from 'react-router'
 import { KV_PAYMENTS_PREFIX } from '@shared/types'
 import { validatePaymentParams } from '~/utils/validate.server'
@@ -11,7 +11,7 @@ import { validatePaymentParams } from '~/utils/validate.server'
 export const meta: MetaFunction = () => {
   return [
     { title: 'Grant Interaction' },
-    { name: 'description', content: 'Interaction success' }
+    { name: 'description', content: 'Interaction success' },
   ]
 }
 
@@ -25,7 +25,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     return data({
       success: false,
       error: 'Invalid parameters',
-      params
+      params,
     })
   }
 
@@ -33,7 +33,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   try {
     const existingData = await env.PUBLISHER_TOOLS_KV.get(
-      KV_PAYMENTS_PREFIX + paymentId
+      KV_PAYMENTS_PREFIX + paymentId,
     )
 
     if (existingData) {
@@ -45,15 +45,15 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       KV_PAYMENTS_PREFIX + paymentId,
       JSON.stringify(params),
       {
-        expirationTtl: 300 // 5min
-      }
+        expirationTtl: 300, // 5min
+      },
     )
 
     return data({ success: true, params })
   } catch {
     return data(
       { success: false, error: 'Failed to store data', params },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

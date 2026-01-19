@@ -3,24 +3,24 @@ import { groupBy } from '@shared/utils'
 
 export function omit<T extends Record<string, unknown>>(
   obj: T,
-  keys: readonly (keyof T | string)[] | Set<keyof T | string>
+  keys: readonly (keyof T | string)[] | Set<keyof T | string>,
 ): Partial<T> {
   const excludedKeys = keys instanceof Set ? keys : new Set(keys)
 
   return Object.fromEntries(
-    Object.entries(obj).filter(([key]) => !excludedKeys.has(key))
+    Object.entries(obj).filter(([key]) => !excludedKeys.has(key)),
   ) as Partial<T>
 }
 
 export function splitProfileProperties(profile: BannerProfile) {
   const { content = [], appearance = [] } = groupBy(
     Object.entries(profile),
-    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
+    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance'),
   )
 
   return {
     content: Object.fromEntries(content) as Partial<BannerProfile>,
-    appearance: Object.fromEntries(appearance) as Partial<BannerProfile>
+    appearance: Object.fromEntries(appearance) as Partial<BannerProfile>,
   }
 }
 
@@ -30,16 +30,16 @@ function isContentProperty(key: string): boolean {
 
 // TODO: remove with versioning changes
 export function legacySplitConfigProperties<T extends ElementConfigType>(
-  config: T
+  config: T,
 ) {
   const { versionName: _versionName, ...rest } = config
   const { content = [], appearance = [] } = groupBy(
     Object.entries(rest),
-    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance')
+    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance'),
   )
 
   return {
     content: Object.fromEntries(content) as Partial<T>,
-    appearance: Object.fromEntries(appearance) as Partial<T>
+    appearance: Object.fromEntries(appearance) as Partial<T>,
   }
 }

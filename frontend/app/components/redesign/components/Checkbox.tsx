@@ -15,7 +15,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   onChange,
   label,
   className = '',
-  disabled = false
+  disabled = false,
 }) => {
   const handleChange = () => {
     if (onChange && !disabled) {
@@ -35,7 +35,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
       className={cx(
         'flex items-center gap-xs',
         disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
-        className
+        className,
       )}
       onClick={disabled ? undefined : handleChange}
       onKeyDown={handleKeyDown}
@@ -47,7 +47,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           checked
             ? 'bg-purple-300 border-purple-300'
             : 'bg-white border border-purple-300',
-          !disabled && !checked && 'hover:border-purple-400'
+          !disabled && !checked && 'hover:border-purple-400',
         )}
       >
         {checked && <SVGCheck className="w-3 h-3" />}

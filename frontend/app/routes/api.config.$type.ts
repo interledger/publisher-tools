@@ -22,22 +22,22 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     const elementType = params.type
     const errors: ElementErrors = {
       fieldErrors: {},
-      message: []
+      message: [],
     }
 
     const { result, payload } = await validateForm(
       { walletAddress, intent: 'import' },
-      elementType
+      elementType,
     )
     if (!result.success || !payload) {
       errors.fieldErrors = result.error?.flatten().fieldErrors || {
-        walletAddress: undefined
+        walletAddress: undefined,
       }
       return data({ errors, success: false }, { status: 400 })
     }
 
     const ownerWalletAddress = normalizeWalletAddress(
-      await getWalletAddress(payload.walletAddress as string)
+      await getWalletAddress(payload.walletAddress as string),
     )
     try {
       const storageService = new ConfigStorageService({ ...env, AWS_PREFIX })
@@ -59,9 +59,9 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
   } catch (error) {
     return data(
       {
-        error: `An error occurred while fetching data: ${(error as Error).message}`
+        error: `An error occurred while fetching data: ${(error as Error).message}`,
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -75,22 +75,24 @@ export async function action({ request, params, context }: Route.ActionArgs) {
   if (!entries.walletAddress) {
     return data(
       {
-        errors: { fieldErrors: { walletAddress: 'Wallet address is required' } }
+        errors: {
+          fieldErrors: { walletAddress: 'Wallet address is required' },
+        },
       },
-      { status: 400 }
+      { status: 400 },
     )
   }
   const intent = entries.intent
   const errors: ElementErrors = {
     fieldErrors: {},
-    message: []
+    message: [],
   }
 
   const { result, payload } = await validateForm(entries, elementType)
   if (!result.success || !payload) {
     const message = result.error?.message
     errors.fieldErrors = result.error?.flatten().fieldErrors || {
-      walletAddress: undefined
+      walletAddress: undefined,
     }
     return data({ message, errors, success: false, intent }, { status: 400 })
   }
@@ -108,7 +110,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
       const redirectUrl = `${baseUrl}/api/grant/${elementType}/`
       const grant = await createInteractiveGrant(env, {
         walletAddress,
-        redirectUrl
+        redirectUrl,
       })
       session.set('payment-grant', grant)
 
@@ -116,19 +118,19 @@ export async function action({ request, params, context }: Route.ActionArgs) {
         {
           errors,
           grantRequired: grant.interact.redirect,
-          intent
+          intent,
         },
         {
           status: 200,
           headers: {
-            'Set-Cookie': await commitSession(session)
-          }
-        }
+            'Set-Cookie': await commitSession(session),
+          },
+        },
       )
     } catch (error) {
       console.error(error)
       errors.fieldErrors = {
-        walletAddress: ['Could not verify ownership of wallet address']
+        walletAddress: ['Could not verify ownership of wallet address'],
       }
       return data({ errors }, { status: 500 })
     }
@@ -154,7 +156,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
 async function handleCreate(
   storageService: ConfigStorageService,
   formData: FormData,
-  walletAddress: string
+  walletAddress: string,
 ) {
   try {
     const version = formData.get('version') as string
@@ -162,7 +164,7 @@ async function handleCreate(
     if (!version) {
       return data(
         { errors: { fieldErrors: { version: 'Version required' } } },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -180,9 +182,9 @@ async function handleCreate(
         // for NoSuchKey, continue with defaults
         return data(
           {
-            error: `An error occurred while fetching data: ${(error as Error).message}`
+            error: `An error occurred while fetching data: ${(error as Error).message}`,
           },
-          { status: 500 }
+          { status: 500 },
         )
       }
     }
@@ -191,16 +193,16 @@ async function handleCreate(
       if (configs[version]) {
         return data(
           { errors: { fieldErrors: { version: 'Version already exists' } } },
-          { status: 409 }
+          { status: 409 },
         )
       }
       configs = Object.assign(filterDeepProperties(configs), {
-        [version]: defaultDataContent
+        [version]: defaultDataContent,
       })
     } else {
       configs = Object.assign(
         { default: configs },
-        { [version]: defaultDataContent }
+        { [version]: defaultDataContent },
       )
     }
 
@@ -214,7 +216,7 @@ async function handleCreate(
 async function handleUpdate(
   configStorage: ConfigStorageService,
   formData: FormData,
-  walletAddress: string
+  walletAddress: string,
 ) {
   try {
     const fullConfigStr = formData.get('fullconfig') as string
@@ -245,7 +247,7 @@ async function handleUpdate(
 async function handleDelete(
   configStorage: ConfigStorageService,
   formData: FormData,
-  walletAddress: string
+  walletAddress: string,
 ) {
   try {
     const version = formData.get('version') as string
@@ -253,7 +255,7 @@ async function handleDelete(
     if (!version) {
       return data(
         { errors: { fieldErrors: { version: 'Version required' } } },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -273,9 +275,9 @@ async function handleDelete(
   } catch (error) {
     return data(
       {
-        error: `Error occurred while deleting version: ${(error as Error).message}`
+        error: `Error occurred while deleting version: ${(error as Error).message}`,
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

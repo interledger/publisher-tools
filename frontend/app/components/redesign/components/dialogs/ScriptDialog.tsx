@@ -56,7 +56,7 @@ function getScriptToDisplay(snapshot: {
     walletAddressId,
     currentToolType: toolType,
     activeVersion: preset,
-    cdnUrl
+    cdnUrl,
   } = snapshot
 
   const wa = toWalletAddressUrl(walletAddress)

@@ -22,8 +22,8 @@ app.use(
   cors({
     origin: '*',
     allowMethods: ['GET', 'POST', 'OPTIONS'],
-    maxAge: 7200
-  })
+    maxAge: 7200,
+  }),
 )
 
 app.onError((error, c) => {
@@ -35,8 +35,8 @@ app.onError((error, c) => {
       message: error.message,
       details: {
         // @ts-expect-error if there's a cause, it should have a message
-        message: error.cause?.message
-      }
+        message: error.cause?.message,
+      },
     }
     return c.json({ error: err }, error.status)
   }
@@ -49,9 +49,9 @@ app.onError((error, c) => {
         issues: error.issues.map((err) => ({
           path: err.path.join('.'),
           message: err.message,
-          code: err.code
-        }))
-      }
+          code: err.code,
+        })),
+      },
     }
     return c.json({ error: err }, 400)
   }
@@ -60,7 +60,7 @@ app.onError((error, c) => {
   console.error('Unexpected error: ', serializedError)
   const err = {
     message: 'INTERNAL_ERROR',
-    ...serializedError
+    ...serializedError,
   }
 
   return c.json({ error: err }, 500)

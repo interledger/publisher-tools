@@ -20,7 +20,7 @@ export function DescriptionInput({
   onVisibilityChange,
   maxLength,
   helpText,
-  placeholder
+  placeholder,
 }: Props) {
   return (
     <fieldset className="space-y-xs">

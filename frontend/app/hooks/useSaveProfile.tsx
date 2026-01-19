@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import {
   StatusDialog,
   ScriptDialog,
-  GrantConfirmationDialog
+  GrantConfirmationDialog,
 } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
@@ -21,7 +21,7 @@ export const useSaveProfile = () => {
 
         if (result.grantRedirect) {
           openDialog(
-            <GrantConfirmationDialog grantRedirect={result.grantRedirect} />
+            <GrantConfirmationDialog grantRedirect={result.grantRedirect} />,
           )
           return
         }
@@ -45,11 +45,11 @@ export const useSaveProfile = () => {
             message={errorMessage}
             fieldErrors={err instanceof ApiError ? err.cause : undefined}
             status="error"
-          />
+          />,
         )
       }
     },
-    [openDialog, closeDialog]
+    [openDialog, closeDialog],
   )
 
   const saveLastAction = useCallback(async (): Promise<void> => {

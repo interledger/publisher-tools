@@ -3,7 +3,7 @@ import type {
   PaymentFinalizeSchema,
   PaymentGrantSchema,
   PaymentQuoteSchema,
-  WalletAddressParamSchema
+  WalletAddressParamSchema,
 } from './schemas/payment.js'
 
 export type ApiErrorResponse = {

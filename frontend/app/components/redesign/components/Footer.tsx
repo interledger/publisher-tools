@@ -34,7 +34,7 @@ export function Copyright() {
 
 function CopyrightLink({
   href,
-  children
+  children,
 }: React.PropsWithChildren<{ href: string }>) {
   return (
     <a

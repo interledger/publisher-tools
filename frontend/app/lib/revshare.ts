@@ -1,7 +1,7 @@
 import {
   decode,
   encode,
-  type PayloadEntry
+  type PayloadEntry,
 } from '@shared/probabilistic-revenue-share'
 
 const POINTER_LIST_PARAM = 'p'
@@ -15,7 +15,7 @@ const CHART_COLORS = [
   '#db4d9b',
   '#d6338d',
   '#d11a7e',
-  '#cc0070'
+  '#cc0070',
 ]
 
 /** Represents a single revenue share participant */
@@ -50,12 +50,12 @@ export function generateShareId(): string {
  * @returns Array of chart data objects with title, value, and color properties
  */
 export function sharesToChartData(
-  shares: Share[]
+  shares: Share[],
 ): { title: string; value: number; color: string }[] {
   return getValidShares(shares).map((share, i) => ({
     title: share.name || share.pointer,
     value: Number(share.weight),
-    color: CHART_COLORS[i % CHART_COLORS.length]
+    color: CHART_COLORS[i % CHART_COLORS.length],
   }))
 }
 
@@ -69,12 +69,12 @@ export function sharesToChartData(
 export function changeList(
   arr: SharesState,
   i: number,
-  alteration: Partial<Share>
+  alteration: Partial<Share>,
 ): SharesState {
   return [
     ...arr.slice(0, i),
     Object.assign({}, arr[i], alteration),
-    ...arr.slice(i + 1)
+    ...arr.slice(i + 1),
   ]
 }
 
@@ -96,7 +96,7 @@ export function dropIndex(arr: SharesState, i: number): SharesState {
 export function sharesToPaymentPointer(
   shares: Share[],
   /** Must end with a trailing slash */
-  baseUrl: string
+  baseUrl: string,
 ): string {
   const validShares = getValidShares(shares)
   if (!validShares.length) return ''
@@ -122,21 +122,21 @@ export function pointerToShares(pointer: string): SharesState {
 
     if (!encodedList) {
       throw new Error(
-        'No share data found. Make sure you copy the whole "content" field from your meta tag.'
+        'No share data found. Make sure you copy the whole "content" field from your meta tag.',
       )
     }
 
     const decoded = decode(encodedList)
     return decoded.map((e) => ({
       ...e,
-      id: generateShareId()
+      id: generateShareId(),
     }))
   } catch (err: unknown) {
     if (err instanceof TypeError) {
       throw new Error('Meta tag or payment pointer is malformed')
     } else if (err instanceof SyntaxError) {
       throw new Error(
-        'Payment pointer has malformed share data. Make sure to copy the entire pointer.'
+        'Payment pointer has malformed share data. Make sure to copy the entire pointer.',
       )
     } else {
       throw err
@@ -163,7 +163,7 @@ export function tagToShares(tag: string): SharesState {
     return pointerToShares(link.href)
   }
   throw new Error(
-    'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.'
+    'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.',
   )
 }
 

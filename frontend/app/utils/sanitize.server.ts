@@ -3,7 +3,7 @@ import sanitizeHtml from 'sanitize-html'
 import type { SanitizedFields } from '~/lib/types.js'
 
 export const sanitizeConfigFields = <T extends Partial<SanitizedFields>>(
-  config: T
+  config: T,
 ): T => {
   const textFields: Array<keyof SanitizedFields> = [
     'bannerTitleText',
@@ -12,12 +12,12 @@ export const sanitizeConfigFields = <T extends Partial<SanitizedFields>>(
     'buttonText',
     'buttonDescriptionText',
     'walletAddress',
-    'tag'
+    'tag',
   ]
 
   const htmlFields: Array<keyof SanitizedFields> = [
     'bannerDescriptionText',
-    'widgetDescriptionText'
+    'widgetDescriptionText',
   ]
 
   for (const field of textFields) {
@@ -29,7 +29,7 @@ export const sanitizeConfigFields = <T extends Partial<SanitizedFields>>(
         allowedAttributes: {},
         textFilter(text) {
           return he.decode(text)
-        }
+        },
       })
       if (sanitizedText !== decoded) {
         throw new Error(`HTML not allowed in field: ${field}`)
@@ -46,7 +46,7 @@ export const sanitizeConfigFields = <T extends Partial<SanitizedFields>>(
       const sanitizedHTML = sanitizeHtml(decoded, {
         allowedTags: [],
         allowedAttributes: {},
-        allowProtocolRelative: false
+        allowProtocolRelative: false,
       })
       const decodedSanitized = he.decode(sanitizedHTML)
       // compare decoded versions to check for malicious content

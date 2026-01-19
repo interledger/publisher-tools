@@ -5,12 +5,12 @@ import mobileLogo from '~/assets/images/mobile_logo.svg'
 const toolItems: MobileMenuItemData[] = [
   { to: '/publishers', text: 'Publisher tools' },
   { to: '/supporters', text: 'Supporter tools' },
-  { to: '/developers', text: 'Developer tools' }
+  { to: '/developers', text: 'Developer tools' },
 ]
 
 const technicalItems: MobileMenuItemData[] = [
   { to: '/docs', text: 'Documentation' },
-  { to: '/specification', text: 'Specification' }
+  { to: '/specification', text: 'Specification' },
 ]
 
 interface MobileMenuItemData {
