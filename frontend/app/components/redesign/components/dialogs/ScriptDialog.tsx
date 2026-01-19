@@ -12,43 +12,6 @@ interface ScriptAttribute {
   value: string
 }
 
-function getScriptAttributes(snapshot: {
-  walletAddress: string
-  walletAddressId: string
-  currentToolType: string
-  activeVersion: string
-  cdnUrl: string
-}): ScriptAttribute[] {
-  const {
-    walletAddress,
-    walletAddressId,
-    currentToolType: tool,
-    activeVersion: profileId,
-    cdnUrl,
-  } = snapshot
-
-  const wa = toWalletAddressUrl(walletAddress)
-  const src = new URL(`/${tool}.js`, cdnUrl).href
-
-  return [
-    { name: 'id', value: `wmt-${tool}-init-script` },
-    { name: 'type', value: 'module' },
-    { name: 'src', value: src },
-    {
-      name: 'data-wallet-address',
-      value: walletAddressId && wa !== walletAddressId ? walletAddressId : wa,
-    },
-    { name: 'data-tag', value: profileId },
-  ]
-}
-
-function toScriptHtml(attributes: ScriptAttribute[]): string {
-  const attrLines = attributes
-    .map((attr) => `${attr.name}="${attr.value}"`)
-    .join(' ')
-  return `<script ${attrLines}></script>`
-}
-
 export const ScriptDialog: React.FC = () => {
   const snap = useSnapshot(toolState)
   const attributes = getScriptAttributes(snap)
@@ -131,4 +94,41 @@ export const ScriptDialog: React.FC = () => {
       </div>
     </BaseDialog>
   )
+}
+
+function getScriptAttributes(snapshot: {
+  walletAddress: string
+  walletAddressId: string
+  currentToolType: string
+  activeVersion: string
+  cdnUrl: string
+}): ScriptAttribute[] {
+  const {
+    walletAddress,
+    walletAddressId,
+    currentToolType: tool,
+    activeVersion: profileId,
+    cdnUrl,
+  } = snapshot
+
+  const wa = toWalletAddressUrl(walletAddress)
+  const src = new URL(`/${tool}.js`, cdnUrl).href
+
+  return [
+    { name: 'id', value: `wmt-${tool}-init-script` },
+    { name: 'type', value: 'module' },
+    { name: 'src', value: src },
+    {
+      name: 'data-wallet-address',
+      value: walletAddressId && wa !== walletAddressId ? walletAddressId : wa,
+    },
+    { name: 'data-tag', value: profileId },
+  ]
+}
+
+function toScriptHtml(attributes: ScriptAttribute[]): string {
+  const attrLines = attributes
+    .map((attr) => `${attr.name}="${attr.value}"`)
+    .join(' ')
+  return `<script ${attrLines}></script>`
 }
