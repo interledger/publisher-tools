@@ -24,7 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+        # Ensures we checkout the PR head commit for both pull_request and pull_request_review events
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          # Fetches the full git history, both base and head SHAs are available
           fetch-depth: 0
 
       - name: Check deployment permissions
