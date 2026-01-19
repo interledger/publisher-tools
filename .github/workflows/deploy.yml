@@ -41,7 +41,9 @@ jobs:
           wrangler_version=$(cat package.json | jq -r '.pnpm.overrides.wrangler')
           pnpm install -g "wrangler@${wrangler_version}"
 
+      # https://github.com/dorny/paths-filter/issues/232
       - uses: dorny/paths-filter@v3
+        if: github.event_name != 'pull_request_review'
         id: changes
         with:
           filters: |
@@ -62,6 +64,36 @@ jobs:
               - *api
               - *cdn
               - 'frontend/**'
+
+      - name: Detect changes for review-triggered deployment
+        if: github.event_name == 'pull_request_review'
+        id: changes-review
+        run: |
+          # Get the PR base and head SHAs
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          HEAD_SHA=${{ github.event.pull_request.head.sha }}
+
+          # Get list of changed files in the PR
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA)
+
+          # Check each component (matching the logic from paths-filter)
+          if echo "$CHANGED_FILES" | grep -qE '^(\.github/workflows/(deploy\.yml|deploy-worker/)|api/|shared/)'; then
+            echo "api=true" >> $GITHUB_OUTPUT
+          else
+            echo "api=false" >> $GITHUB_OUTPUT
+          fi
+
+          if echo "$CHANGED_FILES" | grep -qE '^(\.github/workflows/(deploy\.yml|deploy-worker/)|api/|shared/|components/|cdn/)'; then
+            echo "cdn=true" >> $GITHUB_OUTPUT
+          else
+            echo "cdn=false" >> $GITHUB_OUTPUT
+          fi
+
+          if echo "$CHANGED_FILES" | grep -qE '^(\.github/workflows/(deploy\.yml|deploy-worker/)|api/|shared/|components/|cdn/|frontend/)'; then
+            echo "frontend=true" >> $GITHUB_OUTPUT
+          else
+            echo "frontend=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Get deploy mode
         id: deploy-mode
@@ -91,7 +123,7 @@ jobs:
         id: api
         with:
           name: 'api'
-          changed: ${{ steps.changes.outputs.api }}
+          changed: ${{ steps.changes.outputs.api || steps.changes-review.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
@@ -105,7 +137,7 @@ jobs:
         id: cdn
         with:
           name: 'cdn'
-          changed: ${{ steps.changes.outputs.cdn }}
+          changed: ${{ steps.changes.outputs.cdn || steps.changes-review.outputs.cdn }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           build: 'pnpm -C cdn run build'
@@ -121,7 +153,7 @@ jobs:
         id: frontend
         with:
           name: 'frontend'
-          changed: ${{ steps.changes.outputs.frontend }}
+          changed: ${{ steps.changes.outputs.frontend || steps.changes-review.outputs.frontend }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           build: 'pnpm -C frontend run build'
