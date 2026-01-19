@@ -115,7 +115,7 @@ pnpm -C localenv/s3 dev
 
 ### How to Run Preview Changes
 
-For a pull request, **external contributors** (those without write access to the repository), deployment previews are not automatically. However, user with write access to repository can trigger the workflow **preview deployments** by adding a review-comment with body `pull-request-review` exactly.
+For a pull request, **external contributors** (those without write access to the repository), deployment previews are not automatically. However, user with write access to repository can trigger the workflow **preview deployments** by adding a review-comment with body `ok-to-deploy` exactly.
 This will trigger the deploy workflow and create preview environments for the PR.
 
 ## Technology Stack
