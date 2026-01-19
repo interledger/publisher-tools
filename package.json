@@ -18,6 +18,8 @@
     "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
+    "@actions/core": "^2.0.2",
+    "@actions/github": "^7.0.0",
     "@eslint/js": "^9.36.0",
     "@octokit/webhooks-types": "^7.6.1",
     "del-cli": "^7.0.0",

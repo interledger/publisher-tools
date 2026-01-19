@@ -1,24 +1,15 @@
+import type * as core from '@actions/core';
+import type { Context } from '@actions/github/lib/context';
 import type { PullRequestEvent, PullRequestReviewEvent } from '@octokit/webhooks-types';
 
-interface CoreSummary {
-  addQuote: (text: string) => CoreSummary;
-  addDetails: (label: string, content: string) => CoreSummary;
-  write: () => Promise<void>;
-}
-
-interface CheckParams {
-  core: {
-    setOutput: (name: string, value: string) => void;
-    info: (message: string) => void;
-    summary: CoreSummary;
-  };
-  context: {
-    eventName: string;
+interface Params {
+  core: typeof core;
+  context: Context & {
     payload: PullRequestEvent | PullRequestReviewEvent | Record<string, unknown>;
   };
 }
 
-export default async function checkDeployPermissions({ core, context }: CheckParams): Promise<void> {
+export default async function checkDeployPermissions({ core, context }: Params): Promise<void> {
   if (context.eventName === 'pull_request_review') {
     const event = context.payload as PullRequestReviewEvent;
     const reviewerAssociation = event.review.author_association;
@@ -28,7 +19,7 @@ export default async function checkDeployPermissions({ core, context }: CheckPar
       return;
     }
 
-    if (event.review.body === 'pull-request-review') {
+    if (event.review.body === 'ok-to-deploy') {
       core.setOutput('should-deploy', 'true');
       core.info('Deployment allowed: Triggered by maintainer review comment');
       return;
@@ -69,10 +60,10 @@ function isAllowedAuthor(authorAssociation: string): boolean {
   );
 }
 
-async function skipDeployment(core: CheckParams['core'], reason: string): Promise<void> {
-  core.info('Skipping deployment for security reasons.');
-  core.setOutput('should-deploy', 'false');
-  await core.summary
+async function skipDeployment(coreApi: typeof core, reason: string): Promise<void> {
+  coreApi.info('Skipping deployment for security reasons.');
+  coreApi.setOutput('should-deploy', 'false');
+  await coreApi.summary
     .addQuote(`🚫 Deployment skipped: ${reason}`)
     .addDetails(
       'Security Notice',

@@ -60,7 +60,7 @@ runs:
   using: 'composite'
   steps:
     - name: Build worker (validation)
-      if: ${{ inputs.build && ((inputs.changed == 'true' && inputs.skip-deploy == 'false') || inputs.mode == 'production' || inputs.skip-deploy == 'true') }}
+      if: ${{ inputs.build && (inputs.skip-deploy == 'true' || inputs.changed == 'true' || inputs.mode == 'production') }}
       shell: bash
       run: ${{ inputs.build }}
       env:
