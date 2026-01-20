@@ -1,15 +1,7 @@
-import type * as core from '@actions/core';
-import type { Context } from '@actions/github/lib/context';
+import type { AsyncFunctionArguments } from 'github-script';
 import type { PullRequestEvent, PullRequestReviewEvent } from '@octokit/webhooks-types';
 
-interface Params {
-  core: typeof core;
-  context: Context & {
-    payload: PullRequestEvent | PullRequestReviewEvent;
-  };
-}
-
-export default async function checkDeployPermissions({ core, context }: Params): Promise<void> {
+export default async function checkDeployPermissions({ core, context }: AsyncFunctionArguments) {
   if (context.eventName === 'pull_request_review') {
     const event = context.payload as PullRequestReviewEvent;
     const reviewerAssociation = event.review.author_association;
@@ -60,7 +52,7 @@ function isAllowedAuthor(authorAssociation: string): boolean {
   );
 }
 
-async function skipDeployment(coreApi: Params['core'], reason: string): Promise<void> {
+async function skipDeployment(coreApi: AsyncFunctionArguments['core'], reason: string): Promise<void> {
   coreApi.info('Skipping deployment for security reasons.');
   coreApi.setOutput('should-deploy', 'false');
   await coreApi.summary
