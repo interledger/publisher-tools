@@ -20,7 +20,7 @@ export const ToolCard = ({
   icon,
   to,
   target,
-  className = ''
+  className = '',
 }: ToolCardProps) => {
   const id = useId()
   const linkContent = title

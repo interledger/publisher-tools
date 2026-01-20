@@ -113,6 +113,11 @@ pnpm -C cdn dev
 pnpm -C localenv/s3 dev
 ```
 
+### How to Run Preview Changes
+
+For a pull request, **external contributors** (those without write access to the repository), deployment previews are not automatically. However, user with write access to repository can trigger the workflow **preview deployments** by adding a review-comment with body `ok-to-deploy` exactly.
+This will trigger the deploy workflow and create preview environments for the PR.
+
 ## Technology Stack
 
 - **Runtime**: Cloudflare workers
@@ -132,3 +137,12 @@ From the root directory:
 - `pnpm format` - Format code with Prettier
 - `pnpm lint` - Lint and fix code with ESLint
 - `pnpm typecheck` - Run TypeScript type checking across all packages
+
+## Documentation
+
+For detailed information on how to use and configure Publisher Tools, including Content Security Policy requirements and customization options, see the official documentation:
+
+- [Banner Tool](https://webmonetization.org/publishers/banner-tool/)
+- [Widget Tool](https://webmonetization.org/publishers/widget-tool/)
+- [Link Tag Generator](https://webmonetization.org/publishers/link-tag-tool/)
+- [Probabilistic revshare generator](https://webmonetization.org/publishers/revshare-tool/)

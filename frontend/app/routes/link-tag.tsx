@@ -7,8 +7,8 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Use the Link Tag Generator to generate a monetization <link> element for your HTML documents. Enter a payment pointer or wallet address to get started.'
-    }
+        'Use the Link Tag Generator to generate a monetization <link> element for your HTML documents. Enter a payment pointer or wallet address to get started.',
+    },
   ]
 }
 

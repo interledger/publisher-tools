@@ -24,10 +24,10 @@ const setupTools = [
       'Easy integration',
       'Easy setup',
       'HTML tag',
-      'No code'
+      'No code',
     ],
     icon: SVGLinkGenerator,
-    link: '/link-tag/'
+    link: '/link-tag/',
   },
   {
     title: 'Probabilistic revenue share',
@@ -37,11 +37,11 @@ const setupTools = [
       'Web Monetization',
       'Shared revenue',
       'Automatic split',
-      'Fair payout'
+      'Fair payout',
     ],
     icon: SVGRevShareGenerator,
-    link: '/prob-revshare/'
-  }
+    link: '/prob-revshare/',
+  },
 ]
 
 const interactionTools = [
@@ -58,10 +58,10 @@ const interactionTools = [
       'Web Monetization',
       'Visibility boost',
       'Audience education',
-      'Engagement'
+      'Engagement',
     ],
     icon: SVGBanner,
-    link: '/banner'
+    link: '/banner',
   },
   {
     title: 'Widget',
@@ -76,10 +76,10 @@ const interactionTools = [
       'Web Monetization',
       'One time support',
       'Pay with Interledger',
-      'Engagement'
+      'Engagement',
     ],
     icon: SVGWidget,
-    link: '/widget'
+    link: '/widget',
   },
   {
     title: 'Call-to-Action button',
@@ -94,8 +94,8 @@ const interactionTools = [
     tags: ['flawless', 'dynamic', 'high click rate', 'button'],
     icon: SVGButton,
     link: '/button',
-    disabled: true
-  }
+    disabled: true,
+  },
 ].filter((e) => !e.disabled)
 
 export const meta: MetaFunction = () => {
@@ -113,7 +113,7 @@ export const meta: MetaFunction = () => {
     { property: 'og:url', content: pageUrl },
     { property: 'og:type', content: 'website' },
     { property: 'og:site_name', content: SITE_NAME },
-    { tagName: 'link', rel: 'canonical', href: pageUrl }
+    { tagName: 'link', rel: 'canonical', href: pageUrl },
   ]
 }
 
@@ -162,7 +162,7 @@ export default function Index() {
           <ul
             className="grid gap-lg w-full justify-items-center"
             style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))',
             }}
           >
             {setupTools.map((tool, index) => (
@@ -204,7 +204,7 @@ export default function Index() {
           <ul
             className="grid gap-lg w-full justify-items-center"
             style={{
-              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))',
             }}
           >
             {interactionTools.map((tool, index) => (

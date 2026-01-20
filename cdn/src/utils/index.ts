@@ -2,7 +2,7 @@ import type { Tool, ProfileId, ToolConfig } from '@shared/types'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
-    `script#wmt-${tool}-init-script`
+    `script#wmt-${tool}-init-script`,
   )
   if (!script) {
     throw new Error(`Could not find ${tool}.js script element.`)
@@ -18,7 +18,7 @@ export function getScriptParams(tool: Tool) {
     void new URL(walletAddress)
   } catch {
     throw new Error(
-      `Invalid data-wallet-address for ${tool}.js script: ${walletAddress}`
+      `Invalid data-wallet-address for ${tool}.js script: ${walletAddress}`,
     )
   }
   if (walletAddressId) {
@@ -26,7 +26,7 @@ export function getScriptParams(tool: Tool) {
       void new URL(walletAddressId)
     } catch {
       throw new Error(
-        `Invalid data-wallet-address-id for ${tool}.js script: ${walletAddressId}`
+        `Invalid data-wallet-address-id for ${tool}.js script: ${walletAddressId}`,
       )
     }
   }
@@ -41,7 +41,7 @@ export function getScriptParams(tool: Tool) {
 export async function fetchProfile<T extends Tool>(
   apiUrl: string,
   tool: T,
-  params: ReturnType<typeof getScriptParams>
+  params: ReturnType<typeof getScriptParams>,
 ): Promise<ToolConfig<T>> {
   const url = new URL(`profile/${tool}`, apiUrl)
   url.searchParams.set('wa', params.walletAddressId || params.walletAddress)
@@ -50,7 +50,7 @@ export async function fetchProfile<T extends Tool>(
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(
-      `Failed to fetch config: HTTP ${res.status} ${res.statusText}`
+      `Failed to fetch config: HTTP ${res.status} ${res.statusText}`,
     )
   }
 

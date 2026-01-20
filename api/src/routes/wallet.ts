@@ -3,13 +3,13 @@ import { zValidator } from '@hono/zod-validator'
 import {
   getWalletAddress,
   normalizeWalletAddress,
-  WalletAddressFormatError
+  WalletAddressFormatError,
 } from '@shared/utils'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
 
 const walletAddressSchema = z.object({
-  walletAddress: z.url('Wallet address must be a valid URL')
+  walletAddress: z.url('Wallet address must be a valid URL'),
 })
 
 app.get(
@@ -23,7 +23,7 @@ app.get(
 
       return json({
         ...walletAddressInfo,
-        id: normalizeWalletAddress(walletAddressInfo)
+        id: normalizeWalletAddress(walletAddressInfo),
       })
     } catch (error) {
       if (error instanceof WalletAddressFormatError) {
@@ -31,5 +31,5 @@ app.get(
       }
       throw createHTTPException(500, 'Failed to fetch wallet address', error)
     }
-  }
+  },
 )

@@ -16,7 +16,7 @@ const defaultColors: Color[] = [
   { value: '#F69656', label: 'Orange' }, // wm-orange
   { value: '#F8C6DB', label: 'Pink' }, // wm-pink
   { value: '#A9CAC9', label: 'Teal' }, // custom teal
-  { value: '#F2797F', label: 'Red' } // custom red
+  { value: '#F2797F', label: 'Red' }, // custom red
 ]
 
 interface ColorSelectorProps {
@@ -34,9 +34,9 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
       value = '#FFFFFF',
       className = '',
       disabled = false,
-      onChange
+      onChange,
     },
-    ref
+    ref,
   ) => {
     const [isOpen, setIsOpen] = useState(false)
     const [openColorPicker, setDisplayColorPicker] = useState(false)
@@ -78,7 +78,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                     : isFocused
                       ? 'border-field-border-hover'
                       : 'border-field-border hover:border-field-border-hover',
-                'focus:outline-none'
+                'focus:outline-none',
               )}
               disabled={disabled}
               aria-expanded={isOpen}
@@ -99,13 +99,13 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               <span
                 className={cx(
                   'flex items-center justify-center transition-transform duration-200',
-                  isOpen ? 'rotate-180' : ''
+                  isOpen ? 'rotate-180' : '',
                 )}
               >
                 <SVGArrowDropdown
                   className={cx(
                     'w-5 h-5',
-                    disabled ? 'fill-text-disabled' : 'fill-text-primary'
+                    disabled ? 'fill-text-disabled' : 'fill-text-primary',
                   )}
                 />
               </span>
@@ -130,7 +130,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                         'h-5 w-5 rounded-full border border-silver-300',
                         selectedColor === color.value
                           ? 'ring-1 ring-offset-1 ring-purple-600'
-                          : ''
+                          : '',
                       )}
                       style={{ backgroundColor: color.value }}
                       aria-label={color.label || `Color ${index + 1}`}
@@ -158,7 +158,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                   <div
                     className={cx(
                       'absolute border border-gray-400 p-1 bg-gray-200 rounded-lg z-10',
-                      openColorPicker ? 'flex flex-col' : 'hidden'
+                      openColorPicker ? 'flex flex-col' : 'hidden',
                     )}
                   >
                     <style>{`.react-colorful__last-control { border-radius: 0; }`}</style>
@@ -193,7 +193,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
         </ClickAwayListener>
       </div>
     )
-  }
+  },
 )
 
 ColorSelector.displayName = 'ColorSelector'

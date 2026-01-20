@@ -12,5 +12,6 @@ export default [
   route('widget/', 'routes/widget.tsx'),
   // API routes
   route('api/config/:type', 'routes/api.config.$type.ts'),
-  route('api/grant/:type', 'routes/api.grant.$type.ts')
+  route('api/grant/:type', 'routes/api.grant.$type.ts'),
+  route('api/profile', 'routes/api.profile.ts'),
 ] satisfies RouteConfig

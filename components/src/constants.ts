@@ -12,15 +12,15 @@ export const FONT_MAP = new Map<
     'Open Sans',
     {
       fileName: 'open-sans.css',
-      fallback: ['Open Sans Variable', '"Segoe UI"', 'Tahoma', 'sans-serif']
-    }
+      fallback: ['Open Sans Variable', '"Segoe UI"', 'Tahoma', 'sans-serif'],
+    },
   ],
   [
     'Cookie',
     {
       fileName: 'cookie.css',
-      fallback: ['cursive']
-    }
+      fallback: ['cursive'],
+    },
   ],
   [
     'Roboto',
@@ -30,15 +30,15 @@ export const FONT_MAP = new Map<
         '"Roboto Variable"',
         '"Franklin Gothic Medium"',
         'Tahoma',
-        'sans-serif'
-      ]
-    }
+        'sans-serif',
+      ],
+    },
   ],
   [
     'Titillium Web',
     {
       fileName: 'titillium-web.css',
-      fallback: ['sans-serif']
-    }
-  ]
+      fallback: ['sans-serif'],
+    },
+  ],
 ])

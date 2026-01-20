@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useState,
   useEffect,
-  useMemo
+  useMemo,
 } from 'react'
 import type { ReactNode } from 'react'
 import { DialogProvider } from '@/components'
@@ -73,7 +73,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     contentComplete,
     activeSection,
     appearanceComplete,
-    buildStepComplete
+    buildStepComplete,
   }
 
   const actions: UIActions = useMemo(
@@ -82,15 +82,15 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       registerWalletInput,
       setContentComplete,
       setAppearanceComplete,
-      setActiveSection
+      setActiveSection,
     }),
     [
       focusWalletInput,
       registerWalletInput,
       setContentComplete,
       setAppearanceComplete,
-      setActiveSection
-    ]
+      setActiveSection,
+    ],
   )
 
   return (

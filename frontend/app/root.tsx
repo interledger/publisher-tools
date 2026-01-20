@@ -8,7 +8,7 @@ import {
   useRouteError,
   isRouteErrorResponse,
   type LinksFunction,
-  type MetaFunction
+  type MetaFunction,
 } from 'react-router'
 import { Header, Footer } from '@/components'
 import faviconSvg from '~/assets/images/favicon.svg?url'
@@ -115,25 +115,25 @@ const ErrorPage = ({ children }: { children: ReactNode }) => {
 export const meta: MetaFunction = () => [
   { title: 'Publisher Tools' },
   { charset: 'utf-8' },
-  { name: 'viewport', content: 'width=device-width,initial-scale=1' }
+  { name: 'viewport', content: 'width=device-width,initial-scale=1' },
 ]
 
 export const links: LinksFunction = () => [
   {
     rel: 'apple-touch-icon',
     sizes: '180x180',
-    href: faviconSvg
+    href: faviconSvg,
   },
   {
     rel: 'icon',
     href: faviconSvg,
-    type: 'image/svg+xml'
+    type: 'image/svg+xml',
   },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
     rel: 'preconnect',
     href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous'
+    crossOrigin: 'anonymous',
   },
-  { rel: 'stylesheet', href: stylesheet }
+  { rel: 'stylesheet', href: stylesheet },
 ]

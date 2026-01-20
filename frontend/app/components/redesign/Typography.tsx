@@ -41,7 +41,7 @@ export function Typography({
 }
 
 function getDefaultElementForVariant(
-  variant: TextStyleType
+  variant: TextStyleType,
 ): React.ElementType {
   switch (variant) {
     case 'h1':

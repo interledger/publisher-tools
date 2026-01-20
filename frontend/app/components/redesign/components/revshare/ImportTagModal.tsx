@@ -24,7 +24,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
   onConfirm,
   className = '',
   errorMessage,
-  setImportError
+  setImportError,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<Element | null>(null)
@@ -38,7 +38,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
 
     triggerRef.current = document.activeElement
     focusableElementsRef.current = modalRef.current?.querySelectorAll(
-      'button:not([disabled]), textarea:not([disabled])'
+      'button:not([disabled]), textarea:not([disabled])',
     ) as NodeListOf<HTMLElement> | null
 
     inputRef.current?.focus()
@@ -105,7 +105,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           'relative w-full max-w-[426px] bg-interface-bg-container',
           'border-[1.135px] border-interface-edge-container',
           'pt-2xl pb-md rounded-lg',
-          className
+          className,
         )}
         role="dialog"
         aria-modal="true"
@@ -115,7 +115,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           onClick={onClose}
           className={cx(
             'absolute top-3 right-3 text-silver-800 hover:text-text-secondary transition-colors rounded-sm',
-            'focus:border-field-border-focus focus:outline-none focus:ring-2 focus:ring-primary-focus'
+            'focus:border-field-border-focus focus:outline-none focus:ring-2 focus:ring-primary-focus',
           )}
           aria-label="Close modal"
         >
@@ -124,7 +124,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
         <div
           className={cx(
             'flex flex-col items-center justify-center px-md',
-            errorMessage ? '' : 'gap-lg'
+            errorMessage ? '' : 'gap-lg',
           )}
         >
           <h2 id="import-modal-title" className="text-style-body-standard">
@@ -140,7 +140,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
               'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none',
               'w-full max-w-full h-[136px]',
               'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
-              'placeholder:text-xs sm:placeholder:text-sm text-sm font-mono'
+              'placeholder:text-xs sm:placeholder:text-sm text-sm font-mono',
             )}
             placeholder={PLACEHOLDER_LINK_TAG}
             value={tag}

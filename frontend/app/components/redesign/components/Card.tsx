@@ -11,7 +11,7 @@ export const Card = ({ children, className = '' }: CardProps) => {
     <div
       className={cx(
         'bg-interface-bg-container rounded-sm p-md gap-md flex flex-col',
-        className
+        className,
       )}
     >
       {children}

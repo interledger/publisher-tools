@@ -1,21 +1,22 @@
 import type {
   PaymentStatus,
   PaymentStatusRejected,
-  PaymentStatusSuccess
+  PaymentStatusSuccess,
 } from 'publisher-tools-api'
 import z from 'zod'
 import {
   checkHrefFormat,
   getWalletAddress,
   toWalletAddressUrl,
-  WalletAddressFormatError
+  WalletAddressFormatError,
 } from '@shared/utils'
 import {
   bannerFieldsSchema,
   buttonFieldsSchema,
-  widgetFieldsSchema
+  widgetFieldsSchema,
 } from './validate.shared'
 
+// TODO: refactor walletSchema to .transform() and return WalletAddress object directly from getWalletAddress
 export const walletSchema = z.object({
   walletAddress: z
     .string()
@@ -33,42 +34,44 @@ export const walletSchema = z.object({
           message:
             e instanceof WalletAddressFormatError
               ? e.message
-              : 'Invalid wallet address format'
+              : 'Invalid wallet address format',
         })
       }
-    })
+    }),
 })
 
+/** @deprecated */
 export const versionSchema = z.object({
-  version: z.string().min(1, { message: 'Version is required' })
+  version: z.string().min(1, { message: 'Version is required' }),
 })
 
-// TODO: need a better definition & validation for this
+/** @deprecated */
 export const fullConfigSchema = z.object({
-  fullconfig: z.string().min(1, { message: 'Unknown error' })
+  fullconfig: z.string().min(1, { message: 'Unknown error' }),
 })
-
+/** @deprecated */
 export const createButtonSchema = z.object({
   elementType: z.literal('button'),
   ...buttonFieldsSchema.shape,
   ...walletSchema.shape,
-  ...versionSchema.shape
+  ...versionSchema.shape,
 })
-
+/** @deprecated */
 export const createBannerSchema = z.object({
   elementType: z.literal('banner'),
   ...bannerFieldsSchema.shape,
   ...walletSchema.shape,
-  ...versionSchema.shape
+  ...versionSchema.shape,
 })
-
+/** @deprecated */
 export const createWidgetSchema = z.object({
   elementType: z.literal('widget'),
   ...widgetFieldsSchema.shape,
   ...walletSchema.shape,
-  ...versionSchema.shape
+  ...versionSchema.shape,
 })
 
+/** @deprecated */
 export const getElementSchema = (type: string) => {
   switch (type) {
     case 'banner':
@@ -81,11 +84,12 @@ export const getElementSchema = (type: string) => {
   }
 }
 
+/** @deprecated */
 export const validateForm = async (
   formData: {
     [k: string]: FormDataEntryValue
   },
-  elementType?: string
+  elementType?: string,
 ) => {
   const intent = formData?.intent
   let result
@@ -94,7 +98,7 @@ export const validateForm = async (
   } else if (intent === 'newversion') {
     const newVersionSchema = z.object({
       ...versionSchema.shape,
-      ...walletSchema.shape
+      ...walletSchema.shape,
     })
     result = await newVersionSchema.safeParseAsync(formData)
   } else {
@@ -113,10 +117,10 @@ export const validateForm = async (
     }
     const mergedSchema = z.object({
       ...currentSchema.shape,
-      ...fullConfigSchema.shape
+      ...fullConfigSchema.shape,
     })
     result = await mergedSchema.safeParseAsync(
-      Object.assign(formData, { ...{ elementType } })
+      Object.assign(formData, { ...{ elementType } }),
     )
   }
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -128,17 +132,17 @@ export const validateForm = async (
 export const PaymentStatusSuccessSchema = z.object({
   paymentId: z.string().min(1, 'Payment ID is required'),
   hash: z.string().min(1, 'Hash is required'),
-  interact_ref: z.string().min(1, 'Interact reference is required')
+  interact_ref: z.string().min(1, 'Interact reference is required'),
 }) satisfies z.ZodType<PaymentStatusSuccess>
 
 export const PaymentStatusRejectedSchema = z.object({
   paymentId: z.string().min(1, 'Payment ID is required'),
-  result: z.literal('grant_rejected')
+  result: z.literal('grant_rejected'),
 }) satisfies z.ZodType<PaymentStatusRejected>
 
 const PaymentStatusSchema = z.union([
   PaymentStatusSuccessSchema,
-  PaymentStatusRejectedSchema
+  PaymentStatusRejectedSchema,
 ]) satisfies z.ZodType<PaymentStatus>
 
 export const validatePaymentParams = (params: Record<string, string>) => {

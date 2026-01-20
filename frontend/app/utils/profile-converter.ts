@@ -1,10 +1,10 @@
 import type {
   ConfigVersions,
-  Configuration,
+  ToolProfiles,
   ProfileId,
   BannerProfile,
   Tool,
-  ElementConfigType
+  ElementConfigType,
 } from '@shared/types'
 
 function toBannerProfile(config: ElementConfigType): BannerProfile {
@@ -22,15 +22,15 @@ function toBannerProfile(config: ElementConfigType): BannerProfile {
     bannerBorder: config.bannerBorder,
     bannerTextColor: config.bannerTextColor,
     bannerBackgroundColor: config.bannerBackgroundColor,
-    bannerThumbnail: config.bannerThumbnail
+    bannerThumbnail: config.bannerThumbnail,
   }
 }
 
 // TODO: to be removed after the completion of versioned configurations
 export function convertFrom<T extends Tool>(
   configuration: ConfigVersions,
-  _: T
-): Configuration<T> {
+  _: T,
+): ToolProfiles<T> {
   const profiles: Record<string, BannerProfile> = {}
 
   Object.entries(configuration).forEach(([profileId, config]) => {

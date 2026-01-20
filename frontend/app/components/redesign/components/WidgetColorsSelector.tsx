@@ -16,7 +16,7 @@ export function WidgetColorsSelector({
   buttonColor,
   onBackgroundColorChange,
   onTextColorChange,
-  onButtonColorChange
+  onButtonColorChange,
 }: WidgetColorsSelectorProps) {
   return (
     <div className="flex justify-between sm:flex-row flex-col gap-md">

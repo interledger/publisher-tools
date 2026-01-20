@@ -4,7 +4,7 @@ import {
   useNavigate,
   data,
   type LoaderFunctionArgs,
-  type MetaFunction
+  type MetaFunction,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { SVGSpinner } from '@/assets'
@@ -16,17 +16,17 @@ import {
   ToolsPrimaryButton,
   StepsIndicator,
   MobileStepsIndicator,
-  BuilderPresetTabs
+  BuilderPresetTabs,
 } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
-  type BannerHandle
+  type BannerHandle,
 } from '~/components/banner/BannerPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
+import { useSaveProfile } from '~/hooks/useSaveProfile'
 import {
   actions,
   banner,
@@ -34,13 +34,12 @@ import {
   hydrateSnapshotsFromStorage,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
-  subscribeSnapshotsToStorage
 } from '~/stores/banner-store'
 import {
   toolState,
   toolActions,
   persistState,
-  loadState
+  loadState,
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
@@ -50,8 +49,8 @@ export const meta: MetaFunction = () => {
     {
       name: 'description',
       content:
-        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.'
-    }
+        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.',
+    },
   ]
 }
 
@@ -71,13 +70,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       grantResponse,
       isGrantAccepted,
       isGrantResponse,
-      OP_WALLET_ADDRESS: env.OP_WALLET_ADDRESS
+      OP_WALLET_ADDRESS: env.OP_WALLET_ADDRESS,
     },
     {
       headers: {
-        'Set-Cookie': await commitSession(session)
-      }
-    }
+        'Set-Cookie': await commitSession(session),
+      },
+    },
   )
 }
 
@@ -85,7 +84,7 @@ export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveConfig()
+  const { save, saveLastAction } = useSaveProfile()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -100,14 +99,13 @@ export default function Banner() {
     hydrateProfilesFromStorage()
     subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
-    subscribeSnapshotsToStorage()
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
   }, [OP_WALLET_ADDRESS])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
-    onGrantSuccess: saveLastAction
+    onGrantSuccess: saveLastAction,
   })
 
   const scrollToWalletAddress = () => {
@@ -117,7 +115,7 @@ export default function Banner() {
     walletAddressRef.current.scrollIntoView({
       behavior: 'smooth',
       block: 'center',
-      inline: 'nearest'
+      inline: 'nearest',
     })
 
     walletAddressRef.current.style.transition = 'all 0.3s ease'
@@ -176,13 +174,13 @@ export default function Banner() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep
+                      status: snap.walletConnectStep,
                     },
                     {
                       number: 2,
                       label: 'Build',
-                      status: snap.buildStep
-                    }
+                      status: snap.buildStep,
+                    },
                   ]}
                 />
               </div>

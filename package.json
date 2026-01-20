@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@octokit/webhooks-types": "^7.6.1",
+    "@types/github-script": "github:actions/github-script#v8.0.0",
     "del-cli": "^7.0.0",
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
@@ -33,7 +35,7 @@
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "4.54.0"
+      "wrangler": "^4.59.2"
     }
   },
   "engines": {
