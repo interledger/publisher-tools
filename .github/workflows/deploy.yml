@@ -81,26 +81,25 @@ jobs:
           # Get list of changed files in the PR
           CHANGED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA)
 
-          WORKFLOW_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^\.github/workflows/(deploy\.yml|deploy-worker/)' && echo true || echo false)
+          SHARED_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^(\.github/workflows/(deploy\.yml|deploy-worker/)|shared/)' && echo true || echo false)
           API_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^api/' && echo true || echo false)
-          SHARED_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^shared/' && echo true || echo false)
           COMPONENTS_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^components/' && echo true || echo false)
           CDN_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^cdn/' && echo true || echo false)
           FRONTEND_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^frontend/' && echo true || echo false)
 
-          if $WORKFLOW_CHANGED || $API_CHANGED || $SHARED_CHANGED; then
+          if $SHARED_CHANGED || $API_CHANGED; then
             echo "api=true" >> $GITHUB_OUTPUT
           else
             echo "api=false" >> $GITHUB_OUTPUT
           fi
 
-          if $WORKFLOW_CHANGED || $API_CHANGED || $SHARED_CHANGED || $COMPONENTS_CHANGED || $CDN_CHANGED; then
+          if $SHARED_CHANGED || $API_CHANGED || $COMPONENTS_CHANGED || $CDN_CHANGED; then
             echo "cdn=true" >> $GITHUB_OUTPUT
           else
             echo "cdn=false" >> $GITHUB_OUTPUT
           fi
 
-          if $WORKFLOW_CHANGED || $API_CHANGED || $SHARED_CHANGED || $COMPONENTS_CHANGED || $CDN_CHANGED || $FRONTEND_CHANGED; then
+          if $SHARED_CHANGED || $API_CHANGED || $COMPONENTS_CHANGED || $CDN_CHANGED || $FRONTEND_CHANGED; then
             echo "frontend=true" >> $GITHUB_OUTPUT
           else
             echo "frontend=false" >> $GITHUB_OUTPUT
