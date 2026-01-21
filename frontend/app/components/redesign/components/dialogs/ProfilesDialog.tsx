@@ -5,9 +5,10 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton,
 } from '@/components'
-import type { ProfileId, Tool, ToolProfiles } from '@shared/types'
+import type { Tool, ToolProfiles } from '@shared/types'
 import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
+import { useSaveConfig } from '~/hooks/useSaveConfig'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
@@ -27,14 +28,14 @@ export const ProfilesDialog: React.FC<Props> = ({
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
+  const { saveLastAction } = useSaveConfig()
   const [, closeDialog] = useDialog()
-
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
       return []
     }
 
-    const localProfileIds = PROFILE_IDS.filter((id) => currentLocalConfigs[id])
+    const localStableKeys = PROFILE_IDS.filter((id) => currentLocalConfigs[id])
     const fetchedStableKeys = PROFILE_IDS.filter((id) => fetchedConfigs[id])
 
     const truncateTitle = (title: string, maxLength: number = 20) => {
@@ -43,11 +44,11 @@ export const ProfilesDialog: React.FC<Props> = ({
         : title
     }
 
-    return localProfileIds.map((localStableKey, index) => {
+    return localStableKeys.map((localStableKey, index) => {
       const localProfile = currentLocalConfigs[localStableKey]
       const currentTitle = truncateTitle(localProfile?.$name ?? 'Unknown')
 
-      let databaseProfileId: ProfileId = localStableKey
+      let databaseStaleKey = localStableKey
       let databaseTitle = ''
 
       if (fetchedConfigs[localStableKey]) {
@@ -55,17 +56,17 @@ export const ProfilesDialog: React.FC<Props> = ({
         const fetchedProfile = fetchedConfigs[localStableKey]
         databaseTitle = truncateTitle(fetchedProfile.$name)
       } else {
-        databaseProfileId =
+        databaseStaleKey =
           fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
-        const databaseProfile = fetchedConfigs[databaseProfileId]
-        databaseTitle = databaseProfile
-          ? truncateTitle(databaseProfile.$name)
+        const databaseConfig = fetchedConfigs[databaseStaleKey]
+        databaseTitle = databaseConfig
+          ? truncateTitle(databaseConfig.$name)
           : 'No database version'
       }
 
       const isModified = modifiedVersions.includes(localStableKey)
       const canOverride =
-        isModified && fetchedConfigs[databaseProfileId] !== undefined
+        isModified && fetchedConfigs[databaseStaleKey] !== undefined
 
       return {
         id: localStableKey,
@@ -125,8 +126,10 @@ export const ProfilesDialog: React.FC<Props> = ({
       })
 
       if (toolState.currentToolType === 'banner-two') {
+        // let user save last action for banner separately on banner-two
         bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
       } else {
+        await saveLastAction()
         toolActions.setConfigs(
           convertToConfigsLegacy(
             toolState.walletAddressId,

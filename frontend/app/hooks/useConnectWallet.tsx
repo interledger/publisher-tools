@@ -24,9 +24,8 @@ function setProfiles(profiles: ToolProfiles<Tool>) {
     actions.setProfiles(profiles as ToolProfiles<'banner'>)
     actions.commitProfiles()
   } else {
-    const test = convertToConfigsLegacy(toolState.walletAddressId, profiles)
-
-    toolActions.setConfigs(test)
+    const config = convertToConfigsLegacy(toolState.walletAddressId, profiles)
+    toolActions.setConfigs(config)
   }
 }
 

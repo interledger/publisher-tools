@@ -76,10 +76,11 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   }
 
   const handleDisconnect = () => {
+    actions.resetProfiles()
+    toolActions.setConfigs(createDefaultConfigs())
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
-    toolActions.setConfigs(createDefaultConfigs())
-    actions.resetProfiles()
+    uiActions.focusWalletInput()
   }
 
   const handleWalletAddressChange = (
@@ -173,10 +174,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={() => {
-                handleDisconnect()
-                uiActions.focusWalletInput()
-              }}
+              onClick={handleDisconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >
