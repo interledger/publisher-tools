@@ -52,9 +52,8 @@ export const ProfilesDialog: React.FC<Props> = ({
       let databaseTitle = ''
 
       if (fetchedConfigs[localStableKey]) {
-        // exact profile id match found
-        const fetchedProfile = fetchedConfigs[localStableKey]
-        databaseTitle = truncateTitle(fetchedProfile.$name)
+        // exact stable key match found
+        databaseTitle = truncateTitle(fetchedConfigs[localStableKey].$name)
       } else {
         databaseStableKey =
           fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
