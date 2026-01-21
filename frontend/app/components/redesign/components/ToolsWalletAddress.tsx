@@ -109,14 +109,12 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     type: 'error' | 'success' | 'info'
   } => {
     if (snap.walletConnectStep === 'error') {
-      console.error('1. Wallet connection error')
       return {
         message: 'You have not connected your wallet address yet.',
         type: 'error',
       }
     }
     if (!snap.isWalletConnected) {
-      console.error('2. Wallet not connected')
       return {
         message:
           "If you're connecting your wallet address for the first time, you'll start with the default configuration. You can then customize and save your config as needed.",
@@ -124,14 +122,12 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       }
     }
     if (!snap.hasRemoteConfigs) {
-      console.error('3. No remote configs found')
       return {
         message: `There are no custom edits for the ${toolName} correlated to this wallet address but you can start customizing when you want.`,
         type: 'success',
       }
     }
 
-    console.error('4. Wallet connected with remote configs')
     return {
       message: `We've loaded your configuration. Feel free to keep customizing your ${toolName} to fit your style.`,
       type: 'success',
