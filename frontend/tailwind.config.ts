@@ -219,7 +219,6 @@ export default {
           'Noto Color Emoji',
         ],
         mono: [
-          'JetBrains Mono',
           'ui-monospace',
           'Cascadia Code',
           'Source Code Pro',
