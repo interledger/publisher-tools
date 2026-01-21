@@ -1,12 +1,6 @@
 import { useCallback } from 'react'
-import { useSnapshot } from 'valtio'
 import { ProfilesDialog, StatusDialog } from '@/components'
-import {
-  type Tool,
-  type ToolProfiles,
-  type ProfileId,
-  TOOL_BANNER,
-} from '@shared/types'
+import { type Tool, type ToolProfiles, TOOL_BANNER } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { actions, banner } from '~/stores/banner-store'
@@ -64,8 +58,8 @@ export const useConnectWallet = () => {
       if (options.hasConflicts) {
         openDialog(
           <ProfilesDialog
-            fetchedProfiles={fetchedProfiles}
-            currentLocalProfiles={options.profiles}
+            fetchedConfigs={fetchedProfiles}
+            currentLocalConfigs={options.profiles}
             modifiedVersions={options.updates}
           />,
         )

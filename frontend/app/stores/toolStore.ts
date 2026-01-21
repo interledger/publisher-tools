@@ -46,7 +46,11 @@ const createDefaultConfig = (versionName: string): ElementConfigType => ({
   versionName,
 })
 
-const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
+/** @deprecated */
+export const createDefaultConfigs = (): Record<
+  StableKey,
+  ElementConfigType
+> => {
   return STABLE_KEYS.reduce(
     (configs, key, index) => {
       configs[key] = createDefaultConfig(DEFAULT_VERSION_NAMES[index])

@@ -15,14 +15,14 @@ import { convertToConfigsLegacy } from '~/utils/profile-converter'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
-  fetchedProfiles?: ToolProfiles<Tool>
-  currentLocalProfiles?: ToolProfiles<Tool>
+  fetchedConfigs?: ToolProfiles<Tool>
+  currentLocalConfigs?: ToolProfiles<Tool>
   modifiedVersions?: readonly string[]
 }
 
 export const ProfilesDialog: React.FC<Props> = ({
-  fetchedProfiles,
-  currentLocalProfiles,
+  fetchedConfigs,
+  currentLocalConfigs,
   modifiedVersions = [],
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
@@ -30,12 +30,12 @@ export const ProfilesDialog: React.FC<Props> = ({
   const [, closeDialog] = useDialog()
 
   const generatedConfigs = React.useMemo(() => {
-    if (!fetchedProfiles || !currentLocalProfiles) {
+    if (!fetchedConfigs || !currentLocalConfigs) {
       return []
     }
 
-    const localProfileIds = PROFILE_IDS.filter((id) => currentLocalProfiles[id])
-    const fetchedProfileIds = PROFILE_IDS.filter((id) => fetchedProfiles[id])
+    const localProfileIds = PROFILE_IDS.filter((id) => currentLocalConfigs[id])
+    const fetchedStableKeys = PROFILE_IDS.filter((id) => fetchedConfigs[id])
 
     const truncateTitle = (title: string, maxLength: number = 20) => {
       return title.length > maxLength
@@ -43,32 +43,32 @@ export const ProfilesDialog: React.FC<Props> = ({
         : title
     }
 
-    return localProfileIds.map((profileId, index) => {
-      const localProfile = currentLocalProfiles[profileId]
+    return localProfileIds.map((localStableKey, index) => {
+      const localProfile = currentLocalConfigs[localStableKey]
       const currentTitle = truncateTitle(localProfile?.$name ?? 'Unknown')
 
-      let databaseProfileId: ProfileId = profileId
+      let databaseProfileId: ProfileId = localStableKey
       let databaseTitle = ''
 
-      if (fetchedProfiles[profileId]) {
+      if (fetchedConfigs[localStableKey]) {
         // exact profile id match found
-        const fetchedProfile = fetchedProfiles[profileId]
-        databaseTitle = truncateTitle(fetchedProfile?.$name ?? 'Unknown')
+        const fetchedProfile = fetchedConfigs[localStableKey]
+        databaseTitle = truncateTitle(fetchedProfile.$name)
       } else {
         databaseProfileId =
-          fetchedProfileIds[index] || fetchedProfileIds[0] || profileId
-        const databaseProfile = fetchedProfiles[databaseProfileId]
+          fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
+        const databaseProfile = fetchedConfigs[databaseProfileId]
         databaseTitle = databaseProfile
           ? truncateTitle(databaseProfile.$name)
           : 'No database version'
       }
 
-      const isModified = modifiedVersions.includes(profileId)
+      const isModified = modifiedVersions.includes(localStableKey)
       const canOverride =
-        isModified && fetchedProfiles[databaseProfileId] !== undefined
+        isModified && fetchedConfigs[databaseProfileId] !== undefined
 
       return {
-        id: profileId,
+        id: localStableKey,
         number: index + 1,
         title: currentTitle,
         hasLocalChanges: isModified,
@@ -76,7 +76,7 @@ export const ProfilesDialog: React.FC<Props> = ({
         hasEdits: canOverride,
       }
     })
-  }, [fetchedProfiles, currentLocalProfiles, modifiedVersions])
+  }, [fetchedConfigs, currentLocalConfigs, modifiedVersions])
 
   const [selectedConfigs, setSelectedConfigs] = useState<string[]>(() => {
     // initially select only configurations that have local modifications
@@ -107,20 +107,20 @@ export const ProfilesDialog: React.FC<Props> = ({
   const handleOverride = async () => {
     setIsOverriding(true)
     try {
-      if (!fetchedProfiles) {
+      if (!fetchedConfigs) {
         throw new Error('Failed to fetch remote configurations')
       }
 
       const mergedProfiles: ToolProfiles<Tool> = {}
 
       PROFILE_IDS.forEach((profileId) => {
-        if (!fetchedProfiles[profileId]) return
+        if (!fetchedConfigs[profileId]) return
 
         const keepLocal = selectedConfigs.includes(profileId)
-        if (keepLocal && currentLocalProfiles?.[profileId]) {
-          mergedProfiles[profileId] = currentLocalProfiles[profileId]
+        if (keepLocal && currentLocalConfigs?.[profileId]) {
+          mergedProfiles[profileId] = currentLocalConfigs[profileId]
         } else {
-          mergedProfiles[profileId] = fetchedProfiles[profileId]
+          mergedProfiles[profileId] = fetchedConfigs[profileId]
         }
       })
 
@@ -189,7 +189,7 @@ export const ProfilesDialog: React.FC<Props> = ({
         <ToolsPrimaryButton
           className="w-full h-12 rounded-sm bg-primary-bg hover:bg-primary-bg-hover text-white"
           onClick={handleOverride}
-          disabled={!fetchedProfiles || isOverriding}
+          disabled={!fetchedConfigs || isOverriding}
         >
           <div className="flex items-center justify-center gap-2">
             {isOverriding && <SVGSpinner className="w-4 h-4" />}

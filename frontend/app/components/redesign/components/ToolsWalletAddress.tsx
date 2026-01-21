@@ -12,7 +12,11 @@ import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import type { ElementErrors } from '~/lib/types'
 import { actions } from '~/stores/banner-store'
-import { toolState, toolActions } from '~/stores/toolStore'
+import {
+  toolState,
+  toolActions,
+  createDefaultConfigs,
+} from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 
 interface ToolsWalletAddressProps {
@@ -74,7 +78,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   const handleDisconnect = () => {
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
-    toolActions.setConfigs(null)
+    toolActions.setConfigs(createDefaultConfigs())
     actions.resetProfiles()
   }
 
