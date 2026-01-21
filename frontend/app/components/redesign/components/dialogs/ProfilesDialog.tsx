@@ -45,10 +45,10 @@ export const ProfilesDialog: React.FC<Props> = ({
     }
 
     return localStableKeys.map((localStableKey, index) => {
-      const localProfile = currentLocalConfigs[localStableKey]
-      const currentTitle = truncateTitle(localProfile?.$name ?? 'Unknown')
+      const localConfig = currentLocalConfigs[localStableKey]
+      const currentTitle = truncateTitle(localConfig?.$name ?? 'Unknown')
 
-      let databaseStaleKey = localStableKey
+      let databaseStableKey = localStableKey
       let databaseTitle = ''
 
       if (fetchedConfigs[localStableKey]) {
@@ -56,9 +56,9 @@ export const ProfilesDialog: React.FC<Props> = ({
         const fetchedProfile = fetchedConfigs[localStableKey]
         databaseTitle = truncateTitle(fetchedProfile.$name)
       } else {
-        databaseStaleKey =
+        databaseStableKey =
           fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
-        const databaseConfig = fetchedConfigs[databaseStaleKey]
+        const databaseConfig = fetchedConfigs[databaseStableKey]
         databaseTitle = databaseConfig
           ? truncateTitle(databaseConfig.$name)
           : 'No database version'
@@ -66,7 +66,7 @@ export const ProfilesDialog: React.FC<Props> = ({
 
       const isModified = modifiedVersions.includes(localStableKey)
       const canOverride =
-        isModified && fetchedConfigs[databaseStaleKey] !== undefined
+        isModified && fetchedConfigs[databaseStableKey] !== undefined
 
       return {
         id: localStableKey,
