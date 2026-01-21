@@ -127,19 +127,19 @@ export const ProfilesDialog: React.FC<Props> = ({
       if (toolState.currentToolType === 'banner-two') {
         // let user save last action for banner separately on banner-two
         bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
+        closeDialog()
       } else {
-        await saveLastAction()
         toolActions.setConfigs(
           convertToConfigsLegacy(
             toolState.walletAddressId,
             mergedProfiles as ToolProfiles<Tool>,
           ),
         )
+        await saveLastAction()
       }
 
       toolActions.setHasRemoteConfigs(true)
       toolActions.setWalletConnected(true)
-      closeDialog()
     } catch (error) {
       console.error('Error overriding configurations:', error)
     } finally {
