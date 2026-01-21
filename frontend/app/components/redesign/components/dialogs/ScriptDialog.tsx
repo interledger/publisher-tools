@@ -49,8 +49,8 @@ export const ScriptDialog: React.FC = () => {
             <span className="block">
               <span className="text-silver-800">{'<script'}</span>
             </span>
-            {attributes.map((attr, index) => (
-              <span key={index} className="block whitespace-pre">
+            {attributes.map((attr) => (
+              <span key={attr.name} className="block whitespace-pre">
                 {'  '}
                 <span className="text-silver-800">{attr.name}</span>
                 <span className="text-[#f97583]">=</span>
