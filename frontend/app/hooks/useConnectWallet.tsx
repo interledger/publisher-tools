@@ -1,12 +1,20 @@
 import { useCallback } from 'react'
 import { useSnapshot } from 'valtio'
 import { ProfilesDialog, StatusDialog } from '@/components'
-import { type Tool, type ToolProfiles, TOOL_BANNER } from '@shared/types'
+import {
+  type Tool,
+  type ToolProfiles,
+  type ProfileId,
+  TOOL_BANNER,
+} from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { actions, banner } from '~/stores/banner-store'
 import { toolActions, toolState } from '~/stores/toolStore'
-import { convertToConfigsLegacy } from '~/utils/profile-converter'
+import {
+  convertToConfigsLegacy,
+  convertToProfiles,
+} from '~/utils/profile-converter'
 
 async function getProfiles(): Promise<ToolProfiles<Tool>> {
   if (toolState.currentToolType === 'banner-two') {
@@ -27,76 +35,75 @@ function setProfiles(profiles: ToolProfiles<Tool>) {
   }
 }
 
-//TODO: refactor profiles dialog to support new profiles format type
 function getLegacyOptions(options: {
   profiles: ToolProfiles<Tool>
-  profilesUpdate: Set<string>
+  profilesUpdate: ProfileId[]
 }) {
   const { profiles, profilesUpdate } = options
   if (toolState.currentToolType === 'banner-two') {
+    console.log('@@@ Getting legacy options for banner-two: ', profilesUpdate)
     return {
-      conflicts: profilesUpdate.size > 0,
+      hasConflicts: profilesUpdate.length > 0,
       updates: [...profilesUpdate],
-      local: convertToConfigsLegacy(toolState.walletAddressId, profiles)
+      profiles,
     }
   }
   return {
-    conflicts: toolState.dirtyProfiles.size > 0,
+    hasConflicts: toolState.dirtyProfiles.size > 0,
     updates: [...toolState.dirtyProfiles],
-    local: toolState.configurations
+    profiles: convertToProfiles(
+      toolState.configurations,
+      toolState.currentToolType as Tool,
+    ),
   }
 }
 
 export const useConnectWallet = () => {
   const [openDialog, closeDialog] = useDialog()
-  const { profiles: l, profilesUpdate } = useSnapshot(banner)
+  const { profiles, profilesUpdate } = useSnapshot(banner)
+  console.log('@@@ log profilesUpdate: ', profilesUpdate.data)
 
-  const connect = useCallback(
-    async (walletAddress: string): Promise<void> => {
-      try {
-        const profiles = await getProfiles()
-        const options = getLegacyOptions({
-          profiles: l,
-          profilesUpdate: new Set(profilesUpdate)
-        })
+  const connect = useCallback(async (): Promise<void> => {
+    try {
+      const fetchedProfiles = await getProfiles()
+      const options = getLegacyOptions({
+        profiles,
+        profilesUpdate: profilesUpdate.data,
+      })
 
-        if (options.conflicts) {
-          const legacy = convertToConfigsLegacy(walletAddress, profiles)
-          openDialog(
-            <ProfilesDialog
-              fetchedConfigs={legacy}
-              currentLocalConfigs={options.local}
-              modifiedVersions={options.updates}
-            />
-          )
-          return
-        }
-
-        console.log('!!! Profiles fetched: ', profiles)
-
-        setProfiles(profiles)
-      } catch (err) {
-        console.log('!!! Use connect wallet error: ', err)
-        //TODO: set has remote configs to false?
-        toolActions.setHasRemoteConfigs(false)
-        const errorMessage =
-          err instanceof ApiError ? err.message : 'Use connect wallet error'
-
+      if (options.hasConflicts) {
         openDialog(
-          <StatusDialog
-            onDone={closeDialog}
-            message={errorMessage}
-            fieldErrors={
-              err instanceof ApiError ? err.cause : { error: String(err) }
-            }
-            status="error"
-          />
+          <ProfilesDialog
+            fetchedProfiles={fetchedProfiles}
+            currentLocalProfiles={options.profiles}
+            modifiedVersions={options.updates}
+          />,
         )
-        throw err
+        return
       }
-    },
-    [openDialog]
-  )
+
+      console.log('!!! Profiles fetched: ', fetchedProfiles)
+
+      setProfiles(fetchedProfiles)
+    } catch (err) {
+      console.log('!!! Use connect wallet error: ', err)
+      toolActions.setHasRemoteConfigs(false)
+      const errorMessage =
+        err instanceof ApiError ? err.message : 'Use connect wallet error'
+
+      openDialog(
+        <StatusDialog
+          onDone={closeDialog}
+          message={errorMessage}
+          fieldErrors={
+            err instanceof ApiError ? err.cause : { error: String(err) }
+          }
+          status="error"
+        />,
+      )
+      throw err
+    }
+  }, [openDialog])
 
   return { connect }
 }

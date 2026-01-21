@@ -38,20 +38,22 @@ export async function saveToolProfile<T extends Tool>(
 
 export async function getToolProfiles<T extends Tool>(
   walletAddress: string,
-  tool: T
+  tool: T,
 ): Promise<ToolProfiles<T>> {
   const baseUrl = location.origin + APP_BASEPATH
-  const url = urlWithParams(`${baseUrl}/api/profiles`, {walletAddress, tool})
+  const url = urlWithParams(`${baseUrl}/api/profiles`, { walletAddress, tool })
   const response = await fetch(url, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
   })
+  console.log('??? 1 Fetching profiles from:', url)
   const data: GetProfilesResult<T> = await response.json()
 
+  console.log('??? 2 Fetched profiles:', data)
   if (!response.ok) {
     throw new ApiError(
       data.error?.message || 'Failed to fetch profiles',
-      data.error?.cause?.errors
+      data.error?.cause?.errors,
     )
   }
 

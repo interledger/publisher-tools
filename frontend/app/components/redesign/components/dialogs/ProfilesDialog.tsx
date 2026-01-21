@@ -5,35 +5,42 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton,
 } from '@/components'
-import type { ElementConfigType } from '@shared/types'
+import type { ProfileId, Tool, ToolProfiles } from '@shared/types'
+import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { useSaveConfig } from '~/hooks/useSaveConfig'
-import { toolActions } from '~/stores/toolStore'
+import { actions as bannerActions } from '~/stores/banner-store'
+import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import { convertToConfigsLegacy } from '~/utils/profile-converter'
 import { BaseDialog } from './BaseDialog'
 
+// Use Record for flexible indexing while maintaining type safety
+// type ProfilesRecord = Record<ProfileId, ToolProfile<Tool> | undefined>
+
 interface Props {
-  fetchedConfigs?: Record<string, Partial<ElementConfigType>>
-  currentLocalConfigs?: Record<string, Partial<ElementConfigType>>
+  fetchedProfiles?: ToolProfiles<Tool>
+  currentLocalProfiles?: ToolProfiles<Tool>
   modifiedVersions?: readonly string[]
 }
 
 export const ProfilesDialog: React.FC<Props> = ({
-  fetchedConfigs,
-  currentLocalConfigs,
+  fetchedProfiles,
+  currentLocalProfiles,
   modifiedVersions = [],
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
   const { saveLastAction } = useSaveConfig()
   const [, closeDialog] = useDialog()
+
   const generatedConfigs = React.useMemo(() => {
-    if (!fetchedConfigs || !currentLocalConfigs) {
+    if (!fetchedProfiles || !currentLocalProfiles) {
       return []
     }
 
-    const localStableKeys = Object.keys(currentLocalConfigs)
-    const fetchedStableKeys = Object.keys(fetchedConfigs)
+    const localProfileIds = PROFILE_IDS.filter((id) => currentLocalProfiles[id])
+    const fetchedProfileIds = PROFILE_IDS.filter((id) => fetchedProfiles[id])
 
     const truncateTitle = (title: string, maxLength: number = 20) => {
       return title.length > maxLength
@@ -41,43 +48,40 @@ export const ProfilesDialog: React.FC<Props> = ({
         : title
     }
 
-    return localStableKeys.map((localStableKey, index) => {
-      const localConfig = currentLocalConfigs[localStableKey]
-      const currentTitle = truncateTitle(localConfig.versionName!)
+    return localProfileIds.map((profileId, index) => {
+      const localProfile = currentLocalProfiles[profileId]
+      const currentTitle = truncateTitle(localProfile?.$name ?? 'Unknown')
 
-      let databaseStableKey = localStableKey
+      let databaseProfileId: ProfileId = profileId
       let databaseTitle = ''
 
-      if (fetchedConfigs[localStableKey]) {
-        // exact stable key match found
-        databaseTitle = truncateTitle(
-          fetchedConfigs[localStableKey].versionName!,
-        )
+      if (fetchedProfiles[profileId]) {
+        // exact profile id match found
+        const fetchedProfile = fetchedProfiles[profileId]
+        databaseTitle = truncateTitle(fetchedProfile?.$name ?? 'Unknown')
       } else {
-        databaseStableKey =
-          fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
-        const databaseConfig = fetchedConfigs[databaseStableKey]
-        databaseTitle = databaseConfig
-          ? truncateTitle(databaseConfig.versionName!)
+        databaseProfileId =
+          fetchedProfileIds[index] || fetchedProfileIds[0] || profileId
+        const databaseProfile = fetchedProfiles[databaseProfileId]
+        databaseTitle = databaseProfile
+          ? truncateTitle(databaseProfile.$name)
           : 'No database version'
       }
 
-      const isModified = modifiedVersions.includes(localStableKey)
+      const isModified = modifiedVersions.includes(profileId)
       const canOverride =
-        isModified && fetchedConfigs[databaseStableKey] !== undefined
+        isModified && fetchedProfiles[databaseProfileId] !== undefined
 
-      const configItem = {
-        id: localStableKey,
+      return {
+        id: profileId,
         number: index + 1,
         title: currentTitle,
         hasLocalChanges: isModified,
         presetName: databaseTitle,
         hasEdits: canOverride,
       }
-
-      return configItem
     })
-  }, [fetchedConfigs, currentLocalConfigs, modifiedVersions])
+  }, [fetchedProfiles, currentLocalProfiles, modifiedVersions])
 
   const [selectedConfigs, setSelectedConfigs] = useState<string[]>(() => {
     // initially select only configurations that have local modifications
@@ -108,31 +112,39 @@ export const ProfilesDialog: React.FC<Props> = ({
   const handleOverride = async () => {
     setIsOverriding(true)
     try {
-      if (!fetchedConfigs) {
+      if (!fetchedProfiles) {
         throw new Error('Failed to fetch remote configurations')
       }
-      // build the selected LOCAL configurations (the ones user wants to keep)
-      const selectedLocalConfigs: Record<
-        string,
-        Partial<ElementConfigType>
-      > = {}
 
-      selectedConfigs.forEach((localStableKey) => {
-        if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
-          selectedLocalConfigs[localStableKey] =
-            currentLocalConfigs[localStableKey]
+      const mergedProfiles: ToolProfiles<Tool> = {}
+
+      PROFILE_IDS.forEach((profileId) => {
+        if (!fetchedProfiles[profileId]) return
+
+        const keepLocal = selectedConfigs.includes(profileId)
+        if (keepLocal && currentLocalProfiles?.[profileId]) {
+          mergedProfiles[profileId] = currentLocalProfiles[profileId]
         } else {
-          console.warn(
-            `No local configuration found for stable key: ${localStableKey}`,
-          )
+          mergedProfiles[profileId] = fetchedProfiles[profileId]
         }
       })
 
-      toolActions.overrideWithFetchedConfigs(
-        selectedLocalConfigs,
-        fetchedConfigs,
-      )
+      // Apply merged profiles based on current tool type
+      if (toolState.currentToolType === 'banner-two') {
+        bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
+      } else {
+        toolActions.setConfigs(
+          convertToConfigsLegacy(
+            toolState.walletAddressId,
+            mergedProfiles as ToolProfiles<Tool>,
+          ),
+        )
+      }
+
       await saveLastAction()
+      toolActions.setHasRemoteConfigs(true)
+      toolActions.setWalletConnected(true)
+      closeDialog()
     } catch (error) {
       console.error('Error overriding configurations:', error)
     } finally {
@@ -184,7 +196,7 @@ export const ProfilesDialog: React.FC<Props> = ({
         <ToolsPrimaryButton
           className="w-full h-12 rounded-sm bg-primary-bg hover:bg-primary-bg-hover text-white"
           onClick={handleOverride}
-          disabled={!fetchedConfigs || isOverriding}
+          disabled={!fetchedProfiles || isOverriding}
         >
           <div className="flex items-center justify-center gap-2">
             {isOverriding && <SVGSpinner className="w-4 h-4" />}

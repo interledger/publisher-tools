@@ -59,8 +59,8 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       toolActions.setWalletAddressId(walletAddressInfo.id)
-
-      await connect(walletAddressInfo.id)
+      console.log('### walletAddressInfo:')
+      await connect()
 
       toolActions.setHasRemoteConfigs(true)
 

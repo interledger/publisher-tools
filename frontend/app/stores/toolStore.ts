@@ -262,63 +262,6 @@ export const toolActions = {
     toolState.isGrantAccepted = isGrantAccepted
   },
 
-  /**
-   * Executes the override operation by replacing local configurations with database versions.
-   * This function is called after the user has made their selection in the OverridePresetModal
-   * and represents the final step in the conflict resolution workflow.
-   *
-   * Override Process:
-   * 1. Receives selectedLocalConfigs (configurations the user wants to keep)
-   * 2. Retrieves fetched configurations from the modal state
-   * 3. For each stable key: keeps local if selected, otherwise uses database version
-   * 4. Updates currentConfig if the active version is being overridden
-   * 5. Removes overridden versions from dirtyProfiles set
-   *
-   * State Management:
-   * - configurations: Updated with database versions where they exist and aren't selected to keep
-   * - currentConfig: Updated if the active version is overridden
-   * - modifiedVersions: Cleaned up to remove overridden configs
-   * - Connection state: Updated to reflect successful override
-   *
-   * Important Notes:
-   * - selectedLocalConfigs contains configurations the user wants to KEEP (not override)
-   * - Configurations not in selectedLocalConfigs will be overridden with database versions
-   * - The function automatically handles modification tracking cleanup
-   * - Sets wallet connection state to indicate successful override
-   *
-   * @param selectedLocalConfigs - Record of configurations the user wants to keep (not override)
-   */
-  overrideWithFetchedConfigs: (
-    selectedLocalConfigs: Record<string, Partial<ElementConfigType>>,
-    fetchedConfigs: Record<string, Partial<ElementConfigType>>,
-  ) => {
-    if (!fetchedConfigs) {
-      console.error('No fetched configs found in modal state')
-      return
-    }
-
-    // for each configuration, decide whether to keep local or use database
-    STABLE_KEYS.forEach((stableKey) => {
-      const hasLocalVersion = selectedLocalConfigs[stableKey]
-      const hasDatabaseVersion = fetchedConfigs[stableKey]
-
-      if (hasLocalVersion) {
-        // keep the local version - no changes needed
-      } else if (hasDatabaseVersion) {
-        toolState.configurations[stableKey] = {
-          ...toolState.configurations[stableKey],
-          ...hasDatabaseVersion,
-        }
-
-        // remove from modified configs since we're using database version
-        toolState.dirtyProfiles.delete(stableKey)
-      }
-    })
-
-    toolActions.setHasRemoteConfigs(true)
-    toolActions.setWalletConnected(true)
-  },
-
   handleTabSelect: (profileId: StableKey) => {
     toolState.activeVersion = profileId
   },

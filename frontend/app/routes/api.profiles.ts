@@ -12,7 +12,7 @@ import type { Route } from './+types/api.profiles'
 
 const ApiGetProfilesSchema = z.object({
   ...walletSchema.shape,
-  tool: z.enum(TOOLS)
+  tool: z.enum(TOOLS),
 })
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -22,7 +22,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const url = new URL(request.url)
     const params = {
       walletAddress: url.searchParams.get('walletAddress'),
-      tool: url.searchParams.get('tool')
+      tool: url.searchParams.get('tool'),
     }
     const parsed = await ApiGetProfilesSchema.safeParseAsync(params)
     if (!parsed.success) {
@@ -32,11 +32,11 @@ export async function loader({ request, context }: Route.LoaderArgs) {
             message: 'Validation failed',
             cause: {
               message: 'One or more fields failed validation',
-              errors: { field: z.prettifyError(parsed.error) }
-            }
-          }
+              errors: { field: z.prettifyError(parsed.error) },
+            },
+          },
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
     const { walletAddress, tool } = parsed.data
@@ -50,24 +50,25 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     return data<GetProfilesResult<Tool>>(
       { profiles },
       {
-        status: 200
-      }
+        status: 200,
+      },
     )
   } catch (error) {
+    console.error('??? Error in GET /api/profiles:', error)
     const err = error as Error
     if (err.name === 'NoSuchKey' || err.message.includes('404')) {
       return data<GetProfilesResult<Tool>>(
         {
-          error: { message: 'Configuration not found' }
+          error: { message: 'Configuration not found' },
         },
-        { status: 404 }
+        { status: 404 },
       )
     }
     return data<GetProfilesResult<Tool>>(
       {
-        error: { message: `Failed to get configuration: ${err.message}` }
+        error: { message: `Failed to get configuration: ${err.message}` },
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
