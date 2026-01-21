@@ -122,7 +122,9 @@ export const toolActions = {
       versionName: toolState.configurations[key].versionName,
     }))
   },
-
+  setActiveTab(profileId: ProfileId) {
+    toolState.activeTab = profileId
+  },
   /** legacy backwards compatibility */
   setConfigs: (
     fullConfigObject: Record<StableKey, Partial<ElementConfigType>> | null,

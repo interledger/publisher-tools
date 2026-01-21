@@ -46,14 +46,13 @@ export async function getToolProfiles<T extends Tool>(
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   })
-  console.log('??? 1 Fetching profiles from:', url)
   const data: GetProfilesResult<T> = await response.json()
 
-  console.log('??? 2 Fetched profiles:', data)
   if (!response.ok) {
     throw new ApiError(
       data.error?.message || 'Failed to fetch profiles',
       data.error?.cause?.errors,
+      response.status,
     )
   }
 

@@ -59,21 +59,15 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       toolActions.setWalletAddressId(walletAddressInfo.id)
-      console.log('### walletAddressInfo:')
       await connect()
-
-      toolActions.setHasRemoteConfigs(true)
-
-      toolActions.setWalletConnected(true)
-      setError(undefined)
     } catch (error) {
-      console.error('### Error connecting wallet address:', error)
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
         message: [],
       })
     } finally {
       setIsLoading(false)
+      setError(undefined)
     }
   }
 

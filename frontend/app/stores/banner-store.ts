@@ -66,9 +66,6 @@ const snapshots = new Map<ProfileId, BannerProfile>(
 )
 
 export const actions = {
-  setActiveTab(profileId: ProfileId) {
-    toolState.activeTab = profileId
-  },
   setProfileName(name: string) {
     banner.profiles[toolState.activeTab].$name = name
   },
@@ -85,8 +82,8 @@ export const actions = {
   resetProfiles() {
     PROFILE_IDS.forEach((id) => {
       const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
-      Object.assign(banner.profiles[id], profile)
       snapshots.set(id, profile)
+      Object.assign(banner.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
@@ -107,6 +104,16 @@ export const actions = {
     const profile = snapshot(banner.profile)
     snapshots.set(toolState.activeTab, profile)
     banner.profilesUpdate.delete(toolState.activeTab)
+
+    const snaps = Object.fromEntries(snapshots.entries())
+    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))
+  },
+  commitProfiles() {
+    PROFILE_IDS.forEach((id) => {
+      const profile = snapshot(banner.profiles[id])
+      snapshots.set(id, profile)
+      banner.profilesUpdate.delete(id)
+    })
 
     const snaps = Object.fromEntries(snapshots.entries())
     localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))

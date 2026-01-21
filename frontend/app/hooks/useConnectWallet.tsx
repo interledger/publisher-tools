@@ -28,6 +28,7 @@ async function getProfiles(): Promise<ToolProfiles<Tool>> {
 function setProfiles(profiles: ToolProfiles<Tool>) {
   if (toolState.currentToolType === 'banner-two') {
     actions.setProfiles(profiles as ToolProfiles<'banner'>)
+    actions.commitProfiles()
   } else {
     const test = convertToConfigsLegacy(toolState.walletAddressId, profiles)
 
@@ -35,17 +36,12 @@ function setProfiles(profiles: ToolProfiles<Tool>) {
   }
 }
 
-function getLegacyOptions(options: {
-  profiles: ToolProfiles<Tool>
-  profilesUpdate: ProfileId[]
-}) {
-  const { profiles, profilesUpdate } = options
+function getLegacyOptions() {
   if (toolState.currentToolType === 'banner-two') {
-    console.log('@@@ Getting legacy options for banner-two: ', profilesUpdate)
     return {
-      hasConflicts: profilesUpdate.length > 0,
-      updates: [...profilesUpdate],
-      profiles,
+      hasConflicts: banner.profilesUpdate.size > 0,
+      updates: [...banner.profilesUpdate],
+      profiles: banner.profiles,
     }
   }
   return {
@@ -60,17 +56,11 @@ function getLegacyOptions(options: {
 
 export const useConnectWallet = () => {
   const [openDialog, closeDialog] = useDialog()
-  const { profiles, profilesUpdate } = useSnapshot(banner)
-  console.log('@@@ log profilesUpdate: ', profilesUpdate.data)
 
   const connect = useCallback(async (): Promise<void> => {
     try {
       const fetchedProfiles = await getProfiles()
-      const options = getLegacyOptions({
-        profiles,
-        profilesUpdate: profilesUpdate.data,
-      })
-
+      const options = getLegacyOptions()
       if (options.hasConflicts) {
         openDialog(
           <ProfilesDialog
@@ -82,12 +72,15 @@ export const useConnectWallet = () => {
         return
       }
 
-      console.log('!!! Profiles fetched: ', fetchedProfiles)
-
       setProfiles(fetchedProfiles)
+      toolActions.setHasRemoteConfigs(true)
+      toolActions.setWalletConnected(true)
     } catch (err) {
-      console.log('!!! Use connect wallet error: ', err)
-      toolActions.setHasRemoteConfigs(false)
+      if (err instanceof ApiError && err.status === 404) {
+        toolActions.setHasRemoteConfigs(false)
+        return
+      }
+
       const errorMessage =
         err instanceof ApiError ? err.message : 'Use connect wallet error'
 

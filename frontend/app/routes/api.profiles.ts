@@ -54,7 +54,6 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       },
     )
   } catch (error) {
-    console.error('??? Error in GET /api/profiles:', error)
     const err = error as Error
     if (err.name === 'NoSuchKey' || err.message.includes('404')) {
       return data<GetProfilesResult<Tool>>(

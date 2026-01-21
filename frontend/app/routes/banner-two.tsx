@@ -210,7 +210,9 @@ export default function Banner() {
                       idPrefix="profile"
                       options={bannerSnap.profileTabs}
                       selectedId={snap.activeTab}
-                      onChange={(profileId) => actions.setActiveTab(profileId)}
+                      onChange={(profileId) =>
+                        toolActions.setActiveTab(profileId)
+                      }
                       onRename={(name) => actions.setProfileName(name)}
                     >
                       <BannerBuilder

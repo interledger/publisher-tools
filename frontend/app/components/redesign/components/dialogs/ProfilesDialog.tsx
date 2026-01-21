@@ -8,15 +8,11 @@ import {
 import type { ProfileId, Tool, ToolProfiles } from '@shared/types'
 import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { convertToConfigsLegacy } from '~/utils/profile-converter'
 import { BaseDialog } from './BaseDialog'
-
-// Use Record for flexible indexing while maintaining type safety
-// type ProfilesRecord = Record<ProfileId, ToolProfile<Tool> | undefined>
 
 interface Props {
   fetchedProfiles?: ToolProfiles<Tool>
@@ -31,7 +27,6 @@ export const ProfilesDialog: React.FC<Props> = ({
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
-  const { saveLastAction } = useSaveConfig()
   const [, closeDialog] = useDialog()
 
   const generatedConfigs = React.useMemo(() => {
@@ -129,7 +124,6 @@ export const ProfilesDialog: React.FC<Props> = ({
         }
       })
 
-      // Apply merged profiles based on current tool type
       if (toolState.currentToolType === 'banner-two') {
         bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
       } else {
@@ -141,7 +135,6 @@ export const ProfilesDialog: React.FC<Props> = ({
         )
       }
 
-      await saveLastAction()
       toolActions.setHasRemoteConfigs(true)
       toolActions.setWalletConnected(true)
       closeDialog()
