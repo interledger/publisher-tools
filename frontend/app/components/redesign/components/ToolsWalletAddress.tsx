@@ -72,7 +72,6 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       })
     } finally {
       setIsLoading(false)
-      setError(undefined)
     }
   }
 
