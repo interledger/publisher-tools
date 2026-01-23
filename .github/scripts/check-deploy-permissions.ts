@@ -89,7 +89,7 @@ async function skipDeployment(coreApi: AsyncFunctionArguments['core'], reason: s
       'Security Notice',
       `Deployments are restricted to organization members, collaborators, and repository owners.
       External contributors can still run builds and tests.
-      Maintainers can trigger deployments by commenting "ok-to-deploy" on the pull request.`
+      Maintainers can trigger deployments by adding a regular PR comment with "ok-to-deploy" exactly.`
     )
     .write();
 }
