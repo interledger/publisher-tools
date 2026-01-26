@@ -1,24 +1,46 @@
 import type { AsyncFunctionArguments } from 'github-script';
-import type { PullRequestEvent, PullRequestReviewEvent } from '@octokit/webhooks-types';
+import type { PullRequestEvent, IssueCommentEvent } from '@octokit/webhooks-types';
 
-export default async function checkDeployPermissions({ core, context }: AsyncFunctionArguments) {
-  if (context.eventName === 'pull_request_review') {
-    const event = context.payload as PullRequestReviewEvent;
-    const reviewerAssociation = event.review.author_association;
+export default async function checkDeployPermissions({ core, context, github }: AsyncFunctionArguments) {
+  if (context.eventName === 'issue_comment') {
+    const event = context.payload as IssueCommentEvent;
 
-    if (!isAllowedAuthor(reviewerAssociation)) {
+    if (!event.issue.pull_request) {
+      core.setOutput('should-deploy', 'false');
+      core.info('Comment is not on a pull request');
+      return;
+    }
+
+    if (event.comment.body?.trim() !== 'ok-to-deploy') {
+      core.setOutput('should-deploy', 'false');
+      core.info('Comment is not the deployment command');
+      return;
+    }
+
+    const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      username: event.comment.user.login
+    });
+
+    const isAuthorized = ['admin', 'maintain', 'write'].includes(permission.permission);
+
+    if (!isAuthorized) {
       await skipDeployment(core, 'Not authorized to trigger deployments.');
       return;
     }
 
-    if (event.review.body === 'ok-to-deploy') {
-      core.setOutput('should-deploy', 'true');
-      core.info('Deployment allowed: Triggered by maintainer review comment');
-      return;
-    }
+    const { data: pr } = await github.rest.pulls.get({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: event.issue.number
+    });
 
-    core.setOutput('should-deploy', 'false');
-    core.info('No deployment command found in review');
+    core.setOutput('should-deploy', 'true');
+    core.setOutput('pr-number', pr.number);
+    core.setOutput('pr-head-sha', pr.head.sha);
+    core.setOutput('pr-base-sha', pr.base.sha);
+    core.info(`Deployment allowed: "ok-to-deploy" comment from authorized user @${event.comment.user.login}`);
     return;
   }
 
@@ -29,13 +51,19 @@ export default async function checkDeployPermissions({ core, context }: AsyncFun
     if (!isAllowedAuthor(authorAssociation)) {
       await skipDeployment(
         core,
-        'The PR author is not authorized to run deployments. Maintainers can trigger a deployment by submitting a review with "pull-request-review" in the comment.'
+        'The PR author is not authorized to run deployments. Maintainers can trigger a deployment by commenting "ok-to-deploy" on the pull request.'
       );
       return;
     }
 
     core.setOutput('should-deploy', 'true');
     core.info('Deployment allowed: Authorized contributor');
+    return;
+  }
+
+  if (context.eventName === 'push') {
+    core.setOutput('should-deploy', 'true');
+    core.info('Deployment allowed: Push to protected branch');
     return;
   }
 
@@ -61,7 +89,7 @@ async function skipDeployment(coreApi: AsyncFunctionArguments['core'], reason: s
       'Security Notice',
       `Deployments are restricted to organization members, collaborators, and repository owners.
       External contributors can still run builds and tests.
-      Maintainers can trigger deployments by reviewing the PR with "pull-request-review" in the comment.`
+      Maintainers can trigger deployments by adding a regular PR comment with "ok-to-deploy" exactly.`
     )
     .write();
 }
