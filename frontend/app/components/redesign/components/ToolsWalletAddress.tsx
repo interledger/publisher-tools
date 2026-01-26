@@ -1,12 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { useSnapshot } from 'valtio'
-import {
-  ToolsSecondaryButton,
-  InputField,
-  Tooltip,
-  ProfilesDialog,
-} from '@/components'
+import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
 import {
   checkHrefFormat,
@@ -14,12 +9,15 @@ import {
   toWalletAddressUrl,
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
-import { useDialog } from '~/hooks/useDialog'
+import { useConnectWallet } from '~/hooks/useConnectWallet'
 import type { ElementErrors } from '~/lib/types'
 import { actions } from '~/stores/banner-store'
-import { toolState, toolActions } from '~/stores/toolStore'
+import {
+  toolState,
+  toolActions,
+  createDefaultConfigs,
+} from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
-import { convertFrom } from '~/utils/profile-converter'
 
 interface ToolsWalletAddressProps {
   toolName: 'drawer banner' | 'payment widget'
@@ -27,7 +25,7 @@ interface ToolsWalletAddressProps {
 
 export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   const snap = useSnapshot(toolState, { sync: true })
-  const [openDialog] = useDialog()
+  const { connect } = useConnectWallet()
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
@@ -64,29 +62,9 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
       )
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
-      const result = await toolActions.fetchRemoteConfigs(walletAddressInfo.id)
-
-      if (result.hasConflict) {
-        openDialog(
-          <ProfilesDialog
-            fetchedConfigs={result.fetchedConfigs}
-            currentLocalConfigs={{ ...toolState.configurations }}
-            modifiedVersions={[...toolState.dirtyProfiles]}
-          />,
-        )
-        return
-      }
-
-      toolActions.setHasRemoteConfigs(result.hasCustomEdits)
-
-      if (result.hasCustomEdits) {
-        toolActions.setConfigs(result.fetchedConfigs)
-        actions.setProfiles(convertFrom(result.fetchedConfigs, 'banner'))
-      }
-
       toolActions.setWalletAddressId(walletAddressInfo.id)
+      await connect()
       toolActions.setWalletConnected(true)
-      setError(undefined)
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
@@ -98,10 +76,11 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   }
 
   const handleDisconnect = () => {
+    actions.resetProfiles()
+    toolActions.setConfigs(createDefaultConfigs())
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
-    toolActions.setConfigs(null)
-    actions.resetProfiles()
+    uiActions.focusWalletInput()
   }
 
   const handleWalletAddressChange = (
@@ -195,10 +174,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={() => {
-                handleDisconnect()
-                uiActions.focusWalletInput()
-              }}
+              onClick={handleDisconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >

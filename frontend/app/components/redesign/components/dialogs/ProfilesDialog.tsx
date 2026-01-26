@@ -5,16 +5,19 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton,
 } from '@/components'
-import type { ElementConfigType } from '@shared/types'
+import type { Tool, ToolProfiles } from '@shared/types'
+import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { useSaveConfig } from '~/hooks/useSaveConfig'
-import { toolActions } from '~/stores/toolStore'
+import { actions as bannerActions } from '~/stores/banner-store'
+import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import { convertToConfigsLegacy } from '~/utils/profile-converter'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
-  fetchedConfigs?: Record<string, ElementConfigType>
-  currentLocalConfigs?: Record<string, ElementConfigType>
+  fetchedConfigs?: ToolProfiles<Tool>
+  currentLocalConfigs?: ToolProfiles<Tool>
   modifiedVersions?: readonly string[]
 }
 
@@ -32,8 +35,8 @@ export const ProfilesDialog: React.FC<Props> = ({
       return []
     }
 
-    const localStableKeys = Object.keys(currentLocalConfigs)
-    const fetchedStableKeys = Object.keys(fetchedConfigs)
+    const localStableKeys = PROFILE_IDS.filter((id) => currentLocalConfigs[id])
+    const fetchedStableKeys = PROFILE_IDS.filter((id) => fetchedConfigs[id])
 
     const truncateTitle = (title: string, maxLength: number = 20) => {
       return title.length > maxLength
@@ -43,22 +46,20 @@ export const ProfilesDialog: React.FC<Props> = ({
 
     return localStableKeys.map((localStableKey, index) => {
       const localConfig = currentLocalConfigs[localStableKey]
-      const currentTitle = truncateTitle(localConfig.versionName)
+      const currentTitle = truncateTitle(localConfig?.$name ?? 'Unknown')
 
       let databaseStableKey = localStableKey
       let databaseTitle = ''
 
       if (fetchedConfigs[localStableKey]) {
         // exact stable key match found
-        databaseTitle = truncateTitle(
-          fetchedConfigs[localStableKey].versionName,
-        )
+        databaseTitle = truncateTitle(fetchedConfigs[localStableKey].$name)
       } else {
         databaseStableKey =
           fetchedStableKeys[index] || fetchedStableKeys[0] || localStableKey
         const databaseConfig = fetchedConfigs[databaseStableKey]
         databaseTitle = databaseConfig
-          ? truncateTitle(databaseConfig.versionName)
+          ? truncateTitle(databaseConfig.$name)
           : 'No database version'
       }
 
@@ -66,7 +67,7 @@ export const ProfilesDialog: React.FC<Props> = ({
       const canOverride =
         isModified && fetchedConfigs[databaseStableKey] !== undefined
 
-      const configItem = {
+      return {
         id: localStableKey,
         number: index + 1,
         title: currentTitle,
@@ -74,8 +75,6 @@ export const ProfilesDialog: React.FC<Props> = ({
         presetName: databaseTitle,
         hasEdits: canOverride,
       }
-
-      return configItem
     })
   }, [fetchedConfigs, currentLocalConfigs, modifiedVersions])
 
@@ -111,25 +110,36 @@ export const ProfilesDialog: React.FC<Props> = ({
       if (!fetchedConfigs) {
         throw new Error('Failed to fetch remote configurations')
       }
-      // build the selected LOCAL configurations (the ones user wants to keep)
-      const selectedLocalConfigs: Record<string, ElementConfigType> = {}
 
-      selectedConfigs.forEach((localStableKey) => {
-        if (currentLocalConfigs && currentLocalConfigs[localStableKey]) {
-          selectedLocalConfigs[localStableKey] =
-            currentLocalConfigs[localStableKey]
+      const mergedProfiles: ToolProfiles<Tool> = {}
+
+      PROFILE_IDS.forEach((profileId) => {
+        if (!fetchedConfigs[profileId]) return
+
+        const keepLocal = selectedConfigs.includes(profileId)
+        if (keepLocal && currentLocalConfigs?.[profileId]) {
+          mergedProfiles[profileId] = currentLocalConfigs[profileId]
         } else {
-          console.warn(
-            `No local configuration found for stable key: ${localStableKey}`,
-          )
+          mergedProfiles[profileId] = fetchedConfigs[profileId]
         }
       })
 
-      toolActions.overrideWithFetchedConfigs(
-        selectedLocalConfigs,
-        fetchedConfigs,
-      )
-      await saveLastAction()
+      if (toolState.currentToolType === 'banner-two') {
+        // let user save last action for banner separately on banner-two
+        bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
+        closeDialog()
+      } else {
+        toolActions.setConfigs(
+          convertToConfigsLegacy(
+            toolState.walletAddressId,
+            mergedProfiles as ToolProfiles<Tool>,
+          ),
+        )
+        await saveLastAction()
+      }
+
+      toolActions.setHasRemoteConfigs(true)
+      toolActions.setWalletConnected(true)
     } catch (error) {
       console.error('Error overriding configurations:', error)
     } finally {

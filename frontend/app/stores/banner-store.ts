@@ -6,12 +6,13 @@ import {
   type ProfileId,
   type BannerProfile,
   type ToolProfiles,
+  type Tool,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOL_BANNER,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
-import { saveToolProfile } from '~/utils/profile-api'
+import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
 
@@ -65,9 +66,6 @@ const snapshots = new Map<ProfileId, BannerProfile>(
 )
 
 export const actions = {
-  setActiveTab(profileId: ProfileId) {
-    toolState.activeTab = profileId
-  },
   setProfileName(name: string) {
     banner.profiles[toolState.activeTab].$name = name
   },
@@ -77,11 +75,15 @@ export const actions = {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   },
+  async getProfiles(tool: Tool): Promise<ToolProfiles<Tool>> {
+    const { walletAddress } = toolState
+    return await getToolProfiles(walletAddress, tool)
+  },
   resetProfiles() {
     PROFILE_IDS.forEach((id) => {
       const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
-      Object.assign(banner.profiles[id], profile)
       snapshots.set(id, profile)
+      Object.assign(banner.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
@@ -102,6 +104,16 @@ export const actions = {
     const profile = snapshot(banner.profile)
     snapshots.set(toolState.activeTab, profile)
     banner.profilesUpdate.delete(toolState.activeTab)
+
+    const snaps = Object.fromEntries(snapshots.entries())
+    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))
+  },
+  commitProfiles() {
+    PROFILE_IDS.forEach((id) => {
+      const profile = snapshot(banner.profiles[id])
+      snapshots.set(id, profile)
+      banner.profilesUpdate.delete(id)
+    })
 
     const snaps = Object.fromEntries(snapshots.entries())
     localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))

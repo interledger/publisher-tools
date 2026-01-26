@@ -46,7 +46,11 @@ const createDefaultConfig = (versionName: string): ElementConfigType => ({
   versionName,
 })
 
-const createDefaultConfigs = (): Record<StableKey, ElementConfigType> => {
+/** @deprecated */
+export const createDefaultConfigs = (): Record<
+  StableKey,
+  ElementConfigType
+> => {
   return STABLE_KEYS.reduce(
     (configs, key, index) => {
       configs[key] = createDefaultConfig(DEFAULT_VERSION_NAMES[index])
@@ -122,10 +126,12 @@ export const toolActions = {
       versionName: toolState.configurations[key].versionName,
     }))
   },
-
+  setActiveTab(profileId: ProfileId) {
+    toolState.activeTab = profileId
+  },
   /** legacy backwards compatibility */
   setConfigs: (
-    fullConfigObject: Record<StableKey, ElementConfigType> | null,
+    fullConfigObject: Record<StableKey, Partial<ElementConfigType>> | null,
   ) => {
     const newFullConfig: Record<StableKey, ElementConfigType> =
       createDefaultConfigs()
@@ -136,6 +142,7 @@ export const toolActions = {
       }
 
       newFullConfig[profileId] = {
+        ...newFullConfig[profileId],
         ...fullConfigObject[profileId],
       }
 
@@ -259,111 +266,6 @@ export const toolActions = {
   setGrantResponse: (grantResponse: string, isGrantAccepted: boolean) => {
     toolState.grantResponse = grantResponse
     toolState.isGrantAccepted = isGrantAccepted
-  },
-
-  /**
-   * Executes the override operation by replacing local configurations with database versions.
-   * This function is called after the user has made their selection in the OverridePresetModal
-   * and represents the final step in the conflict resolution workflow.
-   *
-   * Override Process:
-   * 1. Receives selectedLocalConfigs (configurations the user wants to keep)
-   * 2. Retrieves fetched configurations from the modal state
-   * 3. For each stable key: keeps local if selected, otherwise uses database version
-   * 4. Updates currentConfig if the active version is being overridden
-   * 5. Removes overridden versions from dirtyProfiles set
-   *
-   * State Management:
-   * - configurations: Updated with database versions where they exist and aren't selected to keep
-   * - currentConfig: Updated if the active version is overridden
-   * - modifiedVersions: Cleaned up to remove overridden configs
-   * - Connection state: Updated to reflect successful override
-   *
-   * Important Notes:
-   * - selectedLocalConfigs contains configurations the user wants to KEEP (not override)
-   * - Configurations not in selectedLocalConfigs will be overridden with database versions
-   * - The function automatically handles modification tracking cleanup
-   * - Sets wallet connection state to indicate successful override
-   *
-   * @param selectedLocalConfigs - Record of configurations the user wants to keep (not override)
-   */
-  overrideWithFetchedConfigs: (
-    selectedLocalConfigs: Record<string, ElementConfigType>,
-    fetchedConfigs: Record<string, ElementConfigType>,
-  ) => {
-    if (!fetchedConfigs) {
-      console.error('No fetched configs found in modal state')
-      return
-    }
-
-    // for each configuration, decide whether to keep local or use database
-    STABLE_KEYS.forEach((stableKey) => {
-      const hasLocalVersion = selectedLocalConfigs[stableKey]
-      const hasDatabaseVersion = fetchedConfigs[stableKey]
-
-      if (hasLocalVersion) {
-        // keep the local version - no changes needed
-      } else if (hasDatabaseVersion) {
-        toolState.configurations[stableKey] = { ...hasDatabaseVersion }
-
-        // remove from modified configs since we're using database version
-        toolState.dirtyProfiles.delete(stableKey)
-      }
-    })
-
-    toolActions.setHasRemoteConfigs(true)
-    toolActions.setWalletConnected(true)
-  },
-
-  /**
-   * Fetches existing configurations from the database for a given wallet address
-   * and performs conflict detection with local modifications.
-   *
-   * This is the core function that drives the override feature workflow:
-   * 1. Makes API call to fetch saved configurations from database
-   * 2. Determines if there are any saved configurations (hasCustomEdits)
-   * 3. Determines if there are any local modifications (hasLocalModifications)
-   * 4. Calculates conflict state: both database configs AND local modifications exist
-   *
-   * The returned data is used to decide the next steps:
-   * - No conflict: Automatically load database configs or continue with local
-   * - Conflict: Show OverridePresetModal for user to resolve
-   *
-   * @param walletAddress - The wallet address to fetch configurations for
-   * @returns Object containing fetchedConfigs, conflict flags, and state information
-   * @throws Error if wallet address is invalid or API call fails
-   */
-  fetchRemoteConfigs: async (walletAddress: string) => {
-    const baseUrl = location.origin + APP_BASEPATH
-    const tool = toolState.currentToolType
-    const response = await fetch(
-      `${baseUrl}/api/config/${tool}?walletAddress=${encodeURIComponent(walletAddress)}`,
-    )
-
-    if (!response.ok) {
-      const data = (await response.json()) as {
-        errors?: { fieldErrors?: { walletAddress?: string[] } }
-      }
-      const errorMessage =
-        data.errors?.fieldErrors?.walletAddress?.[0] ||
-        `Failed to fetch configuration (${response.status})`
-      throw new Error(errorMessage)
-    }
-
-    const fetchedConfigs = (await response.json()) as Record<
-      string,
-      ElementConfigType
-    >
-    const hasCustomEdits = Object.keys(fetchedConfigs).length > 0
-    const hasLocalModifications = toolState.dirtyProfiles.size > 0
-
-    return {
-      walletAddressId: walletAddress,
-      fetchedConfigs,
-      hasCustomEdits,
-      hasLocalModifications,
-      hasConflict: hasCustomEdits && hasLocalModifications,
-    }
   },
 
   handleTabSelect: (profileId: StableKey) => {
