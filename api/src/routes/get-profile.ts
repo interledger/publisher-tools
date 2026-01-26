@@ -57,6 +57,7 @@ app.get(
   },
 )
 
+// TODO: to be removed after the completion of versioned configurations
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
