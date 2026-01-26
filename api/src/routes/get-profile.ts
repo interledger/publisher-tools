@@ -8,8 +8,8 @@ import type {
   BannerConfig,
   ConfigVersions,
   ElementConfigType,
-  ProfileId,
   Tool,
+  ToolProfile,
   WidgetConfig,
 } from '@shared/types'
 import { app } from '../app.js'
@@ -38,8 +38,9 @@ app.get(
 
     try {
       const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const profile = getToolProfile(fullConfig, tool, profileId)
-      return json(profile)
+      const legacyProfile = fullConfig[profileId]
+      const profile = convertToProfile(legacyProfile, tool)
+      return json<ToolProfile<typeof tool>>(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
@@ -56,18 +57,19 @@ app.get(
   },
 )
 
-function getToolProfile(
-  config: ConfigVersions,
-  tool: Tool,
-  profileId: ProfileId,
-) {
-  const profile = config[profileId]
-  if (!profile) {
-    throw createHTTPException(404, 'Profile not found for given id', {
-      message: `Use one of ${JSON.stringify(Object.keys(config))}`,
-    })
-  }
+function convertToProfile<T extends Tool>(
+  config: ElementConfigType,
+  tool: T,
+): ToolProfile<T> {
+  return {
+    $version: '0.0.1',
+    $name: config.versionName,
+    $modifiedAt: '',
+    ...getToolProfile(config, tool),
+  } as ToolProfile<T>
+}
 
+function getToolProfile(profile: ElementConfigType, tool: Tool) {
   switch (tool) {
     case 'widget':
       return extract<WidgetConfig>(
