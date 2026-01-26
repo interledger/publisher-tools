@@ -97,8 +97,9 @@ export default function PaymentComplete() {
           </h2>
 
           <p className="text-gray-600 mb-8">
-            Your payment has been processed successfully. You can now close this
-            window.
+            Your payment has been processed successfully.
+            <br />
+            You can now close this window.
           </p>
         </div>
       </div>
