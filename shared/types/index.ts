@@ -137,7 +137,7 @@ type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
 export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
 /** @deprecated Use WidgetProfile instead */
 export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
-
+/** @deprecated Use ToolProfile instead */
 export type ToolConfig<T extends Tool> = {
   banner: BannerConfig
   widget: WidgetConfig

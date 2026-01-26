@@ -1,5 +1,5 @@
 import { API_URL } from '@shared/defines'
-import type { BannerConfig } from '@shared/types'
+import type { BannerProfile } from '@shared/types'
 import { Banner } from '@tools/components/banner'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
@@ -17,7 +17,7 @@ fetchProfile(API_URL, 'banner', params)
   })
   .catch((error) => console.error(error))
 
-function drawBanner(profile: BannerConfig) {
+function drawBanner(profile: BannerProfile) {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 

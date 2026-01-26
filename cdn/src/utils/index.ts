@@ -1,4 +1,4 @@
-import type { Tool, ProfileId, ToolConfig } from '@shared/types'
+import type { Tool, ProfileId, ToolProfile } from '@shared/types'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
@@ -42,7 +42,7 @@ export async function fetchProfile<T extends Tool>(
   apiUrl: string,
   tool: T,
   params: ReturnType<typeof getScriptParams>,
-): Promise<ToolConfig<T>> {
+): Promise<ToolProfile<T>> {
   const url = new URL(`profile/${tool}`, apiUrl)
   url.searchParams.set('wa', params.walletAddressId || params.walletAddress)
   url.searchParams.set('id', params.profileId)
@@ -55,7 +55,7 @@ export async function fetchProfile<T extends Tool>(
   }
 
   const json = await res.json()
-  return json as ToolConfig<T>
+  return json as ToolProfile<T>
 }
 
 export function appendPaymentPointer(walletAddressUrl: string) {
