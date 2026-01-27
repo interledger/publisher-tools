@@ -8,6 +8,8 @@ interface Secrets {
 }
 
 export class ConfigStorageService {
+  /** TODO: to be removed after the completion of versioned config migration */
+  private readonly LEGACY_AWS_PREFIX = '20250717-dev'
   private static instance: AwsClient | null = null
   private client: AwsClient
   private prefix: string
@@ -27,6 +29,20 @@ export class ConfigStorageService {
   async getJson<T>(walletAddress: string): Promise<T> {
     const key = walletAddressToKey(walletAddress)
     const url = new URL(`${this.prefix}/${key}`, this.endpoint)
+
+    const response = await this.client.fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`S3 request failed with status: ${response.status}`)
+    }
+
+    return await response.json()
+  }
+
+  /** @legacy */
+  async getLegacyJson<T>(walletAddress: string): Promise<T> {
+    const key = walletAddressToKey(walletAddress)
+    const url = new URL(`${this.LEGACY_AWS_PREFIX}/${key}`, this.endpoint)
 
     const response = await this.client.fetch(url)
 

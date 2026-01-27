@@ -1,18 +1,32 @@
 import { data } from 'react-router'
 import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
-import type { ConfigVersions } from '@shared/types'
+import {
+  type Configuration,
+  type ConfigVersions,
+  type Tool,
+  TOOLS,
+} from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import type { ElementErrors } from '~/lib/types.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
+import {
+  convertToConfiguration,
+  convertToProfiles,
+} from '~/utils/profile-converter'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { validateForm } from '~/utils/validate.server.js'
 import type { Route } from './+types/api.config.$type'
 
+function isToolType(type: string): type is Tool {
+  return TOOLS.includes(type as Tool)
+}
+
+/** @legacy - no longer used */
 export async function loader({ request, params, context }: Route.LoaderArgs) {
   try {
     const { env } = context.cloudflare
@@ -65,10 +79,14 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
     )
   }
 }
-
+/** TODO: to be removed after the completion of versioned config migration */
 export async function action({ request, params, context }: Route.ActionArgs) {
   const { env } = context.cloudflare
   const elementType = params.type
+
+  if (!isToolType(elementType)) {
+    return data({ error: `Invalid tool type: ${elementType}` }, { status: 400 })
+  }
 
   const formData = await request.formData()
   const entries = Object.fromEntries(formData.entries())
@@ -143,7 +161,12 @@ export async function action({ request, params, context }: Route.ActionArgs) {
       return handleCreate(storageService, formData, ownerWalletAddress)
 
     case 'PUT':
-      return handleUpdate(storageService, formData, ownerWalletAddress)
+      return handleUpdate(
+        storageService,
+        formData,
+        ownerWalletAddress,
+        elementType,
+      )
 
     case 'DELETE':
       return handleDelete(storageService, formData, ownerWalletAddress)
@@ -217,6 +240,7 @@ async function handleUpdate(
   configStorage: ConfigStorageService,
   formData: FormData,
   walletAddress: string,
+  tool: Tool,
 ) {
   try {
     const fullConfigStr = formData.get('fullconfig') as string
@@ -234,11 +258,44 @@ async function handleUpdate(
       }
     })
 
-    const filteredData = filterDeepProperties(sanitizedConfig)
-    await configStorage.putJson(walletAddress, filteredData)
+    let config: Configuration | null = null
+    const now = new Date().toISOString()
+    try {
+      config = await configStorage.getJson<Configuration>(walletAddress)
+    } catch (e) {
+      const err = e as Error
+      if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+        throw e
+      }
 
-    // TODO: reduce payload size, return only ok
-    return data(filteredData)
+      try {
+        const legacy =
+          await configStorage.getLegacyJson<ConfigVersions>(walletAddress)
+        config = convertToConfiguration(legacy, tool, walletAddress)
+      } catch (e) {
+        const err = e as Error
+        if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+          throw e
+        }
+
+        config = {
+          $walletAddress: walletAddress,
+          $walletAddressId: walletAddress,
+          $createdAt: now,
+          $modifiedAt: now,
+        }
+      }
+    }
+
+    const profiles = convertToProfiles(sanitizedConfig, tool)
+    await configStorage.putJson(walletAddress, {
+      ...config,
+      $modifiedAt: now,
+      [tool]: profiles,
+    })
+
+    // we don't do anything with this return data, it's oke
+    return data(config)
   } catch (error) {
     return data({ error: (error as Error).message }, { status: 500 })
   }
