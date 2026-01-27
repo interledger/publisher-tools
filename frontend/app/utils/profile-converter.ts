@@ -68,10 +68,12 @@ export function convertToConfiguration<T extends Tool>(
   tool: T,
   walletAddress: string,
 ): Configuration {
+  const now = new Date().toISOString()
   return {
     $walletAddress: walletAddress,
-    $createdAt: '',
-    $modifiedAt: '',
+    $walletAddressId: walletAddress,
+    $createdAt: now,
+    $modifiedAt: now,
     [tool]: convertToProfiles<T>(configuration, tool),
   }
 }

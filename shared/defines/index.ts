@@ -5,7 +5,7 @@ declare const BUILD_AWS_PREFIX: string
 const DEV_API_URL = 'http://localhost:8787'
 const DEV_CDN_URL = 'http://localhost:5173'
 const DEV_FRONTEND_URL = 'http://localhost:3000/tools/' // contains trailing slash and pathname.
-const DEV_AWS_PREFIX = '20250717-dev'
+const DEV_AWS_PREFIX = '20260126-dev'
 
 export const APP_URL = {
   production: 'https://webmonetization.org',
