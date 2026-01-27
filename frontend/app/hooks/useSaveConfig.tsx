@@ -12,6 +12,7 @@ interface SaveResult {
   grantRequired?: boolean
 }
 
+/** TODO: to be removed after the completion of versioned config migration */
 export const useSaveConfig = () => {
   const [openDialog, closeDialog] = useDialog()
 

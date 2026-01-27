@@ -15,10 +15,11 @@ function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
 ): ToolProfile<T> {
+  const now = new Date().toISOString()
   return {
     $version: '0.0.1',
     $name: config.versionName,
-    $modifiedAt: '',
+    $modifiedAt: now,
     ...getToolProfile(config, tool),
   } as ToolProfile<T>
 }
