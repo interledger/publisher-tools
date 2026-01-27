@@ -13,7 +13,7 @@ importers:
   .:
     devDependencies:
       '@eslint/js':
-        specifier: ^9.36.0
+        specifier: ^9.39.2
         version: 9.39.2
       '@octokit/webhooks-types':
         specifier: ^7.6.1
