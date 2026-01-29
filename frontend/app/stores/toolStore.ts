@@ -17,13 +17,7 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'cdnUrl',
 ])
 
-export const TOOL_TYPES = [
-  'banner',
-  'banner-two',
-  'widget',
-  'button',
-  'unknown',
-] as const
+export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',

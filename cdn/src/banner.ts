@@ -34,29 +34,12 @@ function drawBanner(profile: BannerProfile) {
   }
 
   const bannerElement = document.createElement('wm-banner')
-  const config = profile
-
-  const bannerConfig = {
+  bannerElement.config = {
+    ...profile,
     cdnUrl: params.cdnUrl,
-    bannerTitleText: config.bannerTitleText,
-    bannerDescriptionText: config.bannerDescriptionText,
-    isBannerDescriptionVisible: config.bannerDescriptionVisible,
-    bannerBorderRadius: config.bannerBorder,
-    bannerPosition: config.bannerPosition,
-    bannerSlideAnimation: config.bannerSlideAnimation,
-    bannerThumbnail: config.bannerThumbnail,
-    theme: {
-      backgroundColor: config.bannerBackgroundColor,
-      textColor: config.bannerTextColor,
-      fontFamily: config.bannerFontName,
-      fontSize: config.bannerFontSize,
-    },
   }
-  bannerElement.config = bannerConfig
 
-  const position = config.bannerPosition
-    ? config.bannerPosition.toLowerCase()
-    : 'bottom'
+  const position = profile.position ? profile.position.toLowerCase() : 'bottom'
 
   bannerElement.style.position = 'fixed'
   bannerElement.style.left = '0'

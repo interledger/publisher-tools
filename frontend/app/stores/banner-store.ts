@@ -13,8 +13,22 @@ import {
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
-import { splitProfileProperties } from '~/utils/utils.storage'
 import { toolState } from './toolStore'
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
+}
+
+function patchProxy<T extends object>(target: T, source: DeepPartial<T>): void {
+  for (const key in source) {
+    const value = source[key]
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      patchProxy(target[key] as object, value as object)
+    } else {
+      target[key] = value as T[Extract<keyof T, string>]
+    }
+  }
+}
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 const STORAGE_KEY_PREFIX = 'wmt-banner'
@@ -87,13 +101,25 @@ export const actions = {
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
-    const snapshot = snapshots.get(toolState.activeTab)
-    if (!snapshot) {
+    const snap = snapshots.get(toolState.activeTab)
+    if (!snap) {
       throw new Error('No snapshot found for the profile')
     }
 
-    const { content, appearance } = splitProfileProperties(snapshot)
-    Object.assign(banner.profile, section === 'content' ? content : appearance)
+    if (section === 'content') {
+      const { title, description } = snap
+      patchProxy(banner.profile, { title, description })
+    } else {
+      const { font, animation, position, border, color, thumbnail } = snap
+      patchProxy(banner.profile, {
+        font,
+        animation,
+        position,
+        border,
+        color,
+        thumbnail,
+      })
+    }
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
