@@ -27,11 +27,12 @@ export const buttonFieldsSchema = z.object({
   buttonDescriptionText: z.string().optional(),
 })
 
-const hexColorSchema = z.string().min(4).max(9) // #RGB to #RRGGBBAA
+const hexColorSchema = z
+  .string()
+  .regex(/^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6})$/, 'Invalid hex color')
 const gradientSchema = z.object({
   gradient: z.string(),
 })
-const backgroundSchema = z.union([hexColorSchema, gradientSchema])
 
 export const bannerFieldsSchema = z.object({
   title: z.object({
@@ -62,7 +63,7 @@ export const bannerFieldsSchema = z.object({
   }),
   color: z.object({
     text: hexColorSchema,
-    background: backgroundSchema,
+    background: z.union([hexColorSchema, gradientSchema]),
   }),
   thumbnail: z.object({
     value: z.string(),
