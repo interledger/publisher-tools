@@ -5,18 +5,15 @@ import {
   BANNER_POSITION,
   WIDGET_POSITION,
   SLIDE_ANIMATION,
-  BANNER_FONT_SIZES,
   WIDGET_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
   BANNER_TITLE_MAX_LENGTH,
   BANNER_DESCRIPTION_MAX_LENGTH,
   WIDGET_TITLE_MAX_LENGTH,
   WIDGET_DESCRIPTION_MAX_LENGTH,
+  BANNER_FONT_SIZE_KEYS,
 } from '@shared/types'
 
-const bannerFontSizeError = {
-  message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`,
-}
 const widgetFontSizeError = {
   message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`,
 }
@@ -30,32 +27,52 @@ export const buttonFieldsSchema = z.object({
   buttonDescriptionText: z.string().optional(),
 })
 
-/** @legacy */
+const hexColorSchema = z.string().min(4).max(9) // #RGB to #RRGGBBAA
+const gradientSchema = z.object({
+  gradient: z.string(),
+})
+const backgroundSchema = z.union([hexColorSchema, gradientSchema])
+
 export const bannerFieldsSchema = z.object({
-  bannerFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  bannerFontSize: z.coerce
-    .number()
-    .min(BANNER_FONT_SIZES.min, bannerFontSizeError)
-    .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
-  bannerTitleText: z
-    .string()
-    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
-  bannerDescriptionText: z.string().max(BANNER_DESCRIPTION_MAX_LENGTH, {
-    message: 'Description is too long',
+  title: z.object({
+    text: z
+      .string()
+      .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
   }),
-  bannerDescriptionVisible: z.coerce.boolean(),
-  bannerTextColor: z.string().min(6),
-  bannerBackgroundColor: z.string().min(6),
-  bannerSlideAnimation: z.enum(SLIDE_ANIMATION),
-  bannerThumbnail: z.string(),
-  bannerPosition: z.enum(BANNER_POSITION),
-  bannerBorder: z.enum(CORNER_OPTION),
+  description: z.object({
+    text: z.string().max(BANNER_DESCRIPTION_MAX_LENGTH, {
+      message: 'Description is too long',
+    }),
+    isVisible: z.boolean(),
+  }),
+  font: z.object({
+    name: z.enum(FONT_FAMILY_OPTIONS, {
+      message: 'Choose a valid font family',
+    }),
+    size: z.enum(BANNER_FONT_SIZE_KEYS, {
+      message: 'Choose a valid font size',
+    }),
+  }),
+  animation: z.object({
+    type: z.enum(SLIDE_ANIMATION),
+  }),
+  position: z.enum(BANNER_POSITION),
+  border: z.object({
+    type: z.enum(CORNER_OPTION),
+  }),
+  color: z.object({
+    text: hexColorSchema,
+    background: backgroundSchema,
+  }),
+  thumbnail: z.object({
+    value: z.string(),
+  }),
 })
 
-export const BannerProfileSchema = z.object({
-  ...bannerFieldsSchema.shape,
+export const BannerProfileSchema = bannerFieldsSchema.extend({
   $version: z.string(),
   $name: z.string(),
+  $modifiedAt: z.string().optional(),
 }) satisfies z.ZodType<BannerProfile>
 
 /** @legacy */

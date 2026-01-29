@@ -6,12 +6,11 @@ import {
   type ReactiveControllerHost,
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { BORDER_RADIUS } from '@shared/types'
+import { bannerFontSizeToNumber, BORDER_RADIUS } from '@shared/types'
 import type {
   FontFamilyKey,
   BorderRadiusKey,
-  SlideAnimationType,
-  BannerPositionKey,
+  BannerProfile,
 } from '@shared/types'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
@@ -23,22 +22,7 @@ const DEFAULT_BANNER_DESCRIPTION =
 const DEFAULT_BANNER_LINK_TEXT =
   'Install the Web Monetization browser extension'
 
-export interface BannerConfig {
-  bannerTitleText?: string
-  bannerDescriptionText?: string
-  isBannerDescriptionVisible?: boolean
-  bannerBorderRadius?: BorderRadiusKey
-  bannerPosition?: BannerPositionKey
-  bannerSlideAnimation?: SlideAnimationType
-  bannerThumbnail?: string
-  theme?: {
-    primaryColor?: string
-    backgroundColor?: string
-    textColor?: string
-    fontFamily?: FontFamilyKey
-    fontSize?: number
-  }
-  logo?: string
+interface Props extends BannerProfile {
   cdnUrl: string
 }
 
@@ -46,7 +30,7 @@ export class Banner extends LitElement {
   private configController = new BannerController(this)
 
   @property({ type: Object })
-  set config(value: Partial<BannerConfig>) {
+  set config(value: Props) {
     this.configController.updateConfig(value)
   }
   get config() {
@@ -89,11 +73,11 @@ export class Banner extends LitElement {
 
     this.isDismissed = false
     this.isAnimating = true
-    const position = this.config.bannerPosition || 'Bottom'
+    const position = this.config.position || 'Bottom'
 
-    if (this.config.bannerSlideAnimation === 'FadeIn') {
+    if (this.config.animation.type === 'FadeIn') {
       this.animationClass = 'fade-in-preview'
-    } else if (this.config.bannerSlideAnimation === 'Slide') {
+    } else if (this.config.animation.type === 'Slide') {
       this.animationClass =
         position === 'Top' ? 'slide-down-preview' : 'slide-up-preview'
     } else {
@@ -114,14 +98,13 @@ export class Banner extends LitElement {
       return html``
     }
 
-    const logo = this.config.logo || defaultLogo
-    const title = this.config.bannerTitleText || DEFAULT_BANNER_TITLE
+    const logo = defaultLogo
+    const title = this.config.title.text || DEFAULT_BANNER_TITLE
     const description =
-      this.config.bannerDescriptionText || DEFAULT_BANNER_DESCRIPTION
+      this.config.description.text || DEFAULT_BANNER_DESCRIPTION
 
     const showThumbnail =
-      typeof this.config.bannerThumbnail === 'undefined' ||
-      !!this.config.bannerThumbnail
+      typeof this.config.thumbnail === 'undefined' || !!this.config.thumbnail
     const thumbnail = showThumbnail
       ? html`<img
           src="${logo}"
@@ -130,7 +113,7 @@ export class Banner extends LitElement {
         />`
       : html``
 
-    const showDescription = this.config.isBannerDescriptionVisible ?? true
+    const showDescription = this.config.description.isVisible ?? true
     const descriptionElement = showDescription
       ? html`<p class="banner-description">${description}</p>`
       : null
@@ -182,7 +165,7 @@ interface BannerState {
 
 export class BannerController implements ReactiveController {
   private host: ReactiveControllerHost & HTMLElement
-  private _config!: BannerConfig
+  private _config!: Props
   private _state: BannerState = {
     isVisible: true,
     isDismissed: false,
@@ -198,23 +181,23 @@ export class BannerController implements ReactiveController {
   /** called when the host is disconnected from the DOM */
   hostDisconnected() {}
 
-  get config(): BannerConfig {
+  get config(): Props {
     return this._config
   }
 
   get state(): BannerState {
     return this._state
   }
-  updateConfig(updates: Partial<BannerConfig>) {
+  updateConfig(updates: Partial<Props>) {
     this._config = { ...this._config, ...updates }
 
     this.applyTheme(this.host)
 
-    if (updates.bannerBorderRadius) {
-      this.applyBorderRadius(updates.bannerBorderRadius)
+    if (updates.border?.type) {
+      this.applyBorderRadius(updates.border.type)
     }
 
-    if (updates.bannerPosition) {
+    if (updates.position) {
       this.applyPosition()
     }
 
@@ -245,7 +228,7 @@ export class BannerController implements ReactiveController {
   applyPosition() {
     this.host.classList.remove('position-top', 'position-bottom')
 
-    const position = this._config.bannerPosition || 'Bottom'
+    const position = this.config.position || 'Bottom'
     if (position === 'Top') {
       this.host.classList.add('position-top')
     } else {
@@ -264,23 +247,24 @@ export class BannerController implements ReactiveController {
   }
 
   applyTheme(element: HTMLElement) {
-    const theme = this.config.theme
-    if (!theme) return
-
-    if (theme.primaryColor) {
-      element.style.setProperty('--wm-primary-color', theme.primaryColor)
+    const { color, font } = this.config
+    if (color?.background) {
+      element.style.setProperty(
+        '--wm-background-color',
+        color.background as string,
+      )
     }
-    if (theme.backgroundColor) {
-      element.style.setProperty('--wm-background-color', theme.backgroundColor)
+    if (color?.text) {
+      element.style.setProperty('--wm-text-color', color.text as string)
     }
-    if (theme.textColor) {
-      element.style.setProperty('--wm-text-color', theme.textColor)
+    if (font?.name) {
+      this.applyFontFamily(font.name)
     }
-    if (theme.fontFamily) {
-      this.applyFontFamily(theme.fontFamily)
-    }
-    if (theme.fontSize) {
-      element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
+    if (font?.size) {
+      element.style.setProperty(
+        '--wm-font-size',
+        bannerFontSizeToNumber(font.size) + 'px',
+      )
     }
   }
 }

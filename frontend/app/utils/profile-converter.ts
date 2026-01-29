@@ -6,7 +6,6 @@ import type {
   ElementConfigType,
   Configuration,
   WidgetConfig,
-  BannerConfig,
   ToolProfile,
 } from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
@@ -88,10 +87,33 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         (key) => key.startsWith('widget') || key.includes('Widget'),
       )
     case 'banner':
-      return extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      )
+      return {
+        title: {
+          text: profile.bannerTitleText,
+        },
+        description: {
+          text: profile.bannerDescriptionText,
+          isVisible: profile.bannerDescriptionVisible,
+        },
+        font: {
+          name: profile.bannerFontName,
+          size: profile.bannerFontSize,
+        },
+        animation: {
+          type: profile.bannerSlideAnimation,
+        },
+        position: profile.bannerPosition,
+        border: {
+          type: profile.bannerBorder,
+        },
+        color: {
+          text: profile.bannerTextColor,
+          background: profile.bannerBackgroundColor,
+        },
+        thumbnail: {
+          value: profile.bannerThumbnail,
+        },
+      }
   }
 }
 

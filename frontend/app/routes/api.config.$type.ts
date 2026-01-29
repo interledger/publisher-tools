@@ -16,7 +16,7 @@ import {
   convertToConfiguration,
   convertToProfiles,
 } from '~/utils/profile-converter'
-import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
+import { sanitizeLegacyConfigFields as sanitizeConfigFields } from '~/utils/sanitize.server.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { validateForm } from '~/utils/validate.server.js'
