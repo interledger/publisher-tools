@@ -11,7 +11,7 @@ import type {
 } from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
 
-function convertToProfile<T extends Tool>(
+export function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
 ): ToolProfile<T> {
@@ -24,14 +24,16 @@ function convertToProfile<T extends Tool>(
 }
 
 /** @legacy */
-function convertToConfigLegacy<T extends Tool>(
+export function convertToConfigLegacy<T extends Tool>(
   walletAddress: string,
   profile: ToolProfile<T>,
 ): ElementConfigType {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { $name, $version, $modifiedAt, ...rest } = profile
   return {
     walletAddress,
-    versionName: profile.$name,
-    ...profile,
+    versionName: $name,
+    ...rest,
   } as unknown as ElementConfigType
 }
 
@@ -77,7 +79,7 @@ export function convertToConfiguration<T extends Tool>(
 }
 
 /** @legacy */
-function getToolProfile(profile: ElementConfigType, tool: Tool) {
+export function getToolProfile(profile: ElementConfigType, tool: Tool) {
   switch (tool) {
     case 'widget':
       return extract<WidgetConfig>(
@@ -101,7 +103,7 @@ function extract<R, T = ElementConfigType, K = keyof T>(
     ([key]) => filter(key as K),
   )
   if (!entries.length) {
-    throw new Error('No matching profile found')
+    return {} as R
   }
   return Object.fromEntries(entries) as R
 }

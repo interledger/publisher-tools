@@ -1,18 +1,30 @@
 import { data } from 'react-router'
 import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
-import type { ConfigVersions } from '@shared/types'
+import {
+  TOOL_WIDGET,
+  TOOLS,
+  type ConfigVersions,
+  type ElementConfigType,
+  type Tool,
+} from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import type { ElementErrors } from '~/lib/types.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
+import { convertToProfile, getToolProfile } from '~/utils/profile-converter'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { filterDeepProperties } from '~/utils/utils.server.js'
 import { validateForm } from '~/utils/validate.server.js'
 import type { Route } from './+types/api.config.$type'
 
+function isToolType(type: string): type is Tool {
+  return TOOLS.includes(type as Tool)
+}
+
+/** @deprecated */
 export async function loader({ request, params, context }: Route.LoaderArgs) {
   try {
     const { env } = context.cloudflare
@@ -69,6 +81,9 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 export async function action({ request, params, context }: Route.ActionArgs) {
   const { env } = context.cloudflare
   const elementType = params.type
+  if (!isToolType(elementType) && elementType !== TOOL_WIDGET) {
+    return data({ error: `Invalid tool type: ${elementType}` }, { status: 400 })
+  }
 
   const formData = await request.formData()
   const entries = Object.fromEntries(formData.entries())
@@ -153,6 +168,7 @@ export async function action({ request, params, context }: Route.ActionArgs) {
   }
 }
 
+/** @deprecated */
 async function handleCreate(
   storageService: ConfigStorageService,
   formData: FormData,
@@ -170,7 +186,7 @@ async function handleCreate(
 
     const defaultDataContent = getDefaultData()
     defaultDataContent.walletAddress = walletAddress
-    sanitizeConfigFields({ ...defaultDataContent, version })
+    // sanitizeConfigFields({ ...defaultDataContent, version })
 
     // Get existing configs or handle new wallet
     let configs: ConfigVersions = {}
@@ -213,6 +229,7 @@ async function handleCreate(
   }
 }
 
+/** @legacy - for widget tool save */
 async function handleUpdate(
   configStorage: ConfigStorageService,
   formData: FormData,
@@ -226,19 +243,34 @@ async function handleUpdate(
     }
 
     const newConfigData: ConfigVersions = JSON.parse(fullConfigStr)
+    let legacy: ConfigVersions | null = null
+    try {
+      legacy = await configStorage.getJson<ConfigVersions>(walletAddress)
+    } catch (e) {
+      const err = e as Error
+      if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+        throw e
+      }
+    }
 
     const sanitizedConfig: ConfigVersions = {}
     Object.keys(newConfigData).forEach((key) => {
       if (typeof newConfigData[key] === 'object') {
-        sanitizedConfig[key] = sanitizeConfigFields(newConfigData[key])
+        const widgetConfig = getToolProfile(newConfigData[key], TOOL_WIDGET)
+        const profile = convertToProfile(newConfigData[key], TOOL_WIDGET)
+        const sanitized = sanitizeConfigFields(profile, TOOL_WIDGET)
+        sanitizedConfig[key] = {
+          ...legacy?.[key],
+          ...widgetConfig,
+          ...sanitized,
+        } as ElementConfigType
       }
     })
 
-    const filteredData = filterDeepProperties(sanitizedConfig)
-    await configStorage.putJson(walletAddress, filteredData)
+    await configStorage.putJson(walletAddress, sanitizedConfig)
 
-    // TODO: reduce payload size, return only ok
-    return data(filteredData)
+    // we don't do anything with this return data, it's oke
+    return data(sanitizedConfig)
   } catch (error) {
     return data({ error: (error as Error).message }, { status: 500 })
   }

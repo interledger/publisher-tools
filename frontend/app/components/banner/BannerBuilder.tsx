@@ -9,7 +9,13 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
+import type { Background } from '@shared/types'
+import {
+  BANNER_FONT_SIZES,
+  bannerFontSizeToNumber,
+  FONT_FAMILY_OPTIONS,
+  numberToBannerFontSize,
+} from '@shared/types'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -22,10 +28,6 @@ import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSele
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useBannerProfile } from '~/stores/banner-store'
-import {
-  toolState,
-  useCurrentConfig as useCurrentConfigLegacy,
-} from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -51,14 +53,6 @@ const config = {
   fontSizeRange: BANNER_FONT_SIZES,
 }
 
-function useCurrentConfig(options?: { sync: boolean }) {
-  if (toolState.currentToolType === 'banner-two') {
-    return useBannerProfile(options)
-  }
-
-  return useCurrentConfigLegacy(options)
-}
-
 export function BannerBuilder({ onRefresh }: Props) {
   return (
     <>
@@ -71,7 +65,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfig({ sync: true })
+  const [snap, profile] = useBannerProfile({ sync: true })
 
   return (
     <BuilderAccordion
@@ -118,7 +112,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfig()
+  const [snap, profile] = useBannerProfile({ sync: true })
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.bannerFontName,

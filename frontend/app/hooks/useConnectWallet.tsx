@@ -11,7 +11,7 @@ import {
 } from '~/utils/profile-converter'
 
 async function getProfiles(): Promise<ToolProfiles<Tool>> {
-  if (toolState.currentToolType === 'banner-two') {
+  if (toolState.currentToolType === 'banner') {
     const profiles = await actions.getProfiles(TOOL_BANNER)
     return profiles
   }
@@ -20,7 +20,7 @@ async function getProfiles(): Promise<ToolProfiles<Tool>> {
 }
 
 function setProfiles(profiles: ToolProfiles<Tool>) {
-  if (toolState.currentToolType === 'banner-two') {
+  if (toolState.currentToolType === 'banner') {
     actions.setProfiles(profiles as ToolProfiles<'banner'>)
     actions.commitProfiles()
   } else {
@@ -30,7 +30,7 @@ function setProfiles(profiles: ToolProfiles<Tool>) {
 }
 
 function getLegacyOptions() {
-  if (toolState.currentToolType === 'banner-two') {
+  if (toolState.currentToolType === 'banner') {
     return {
       hasConflicts: banner.profilesUpdate.size > 0,
       updates: [...banner.profilesUpdate],

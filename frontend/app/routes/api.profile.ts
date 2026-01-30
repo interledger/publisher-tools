@@ -1,6 +1,5 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
-import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
 import {
   type ConfigVersions,
@@ -14,6 +13,7 @@ import { APP_BASEPATH } from '~/lib/constants.js'
 import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
+import { convertToConfigLegacy } from '~/utils/profile-converter'
 import { sanitizeConfigFields as sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
@@ -68,7 +68,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     const { walletAddress, profileId, tool, profile } = parsed.data
-    const sanitizedProfile = sanitizeProfileFields(profile)
+    const sanitizedProfile = sanitizeProfileFields(profile, tool)
 
     // TODO: use walletAddress from walletSchema after updating it to .transform()
     const walletAddressData = await getWalletAddress(walletAddress)
@@ -77,8 +77,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     if (!validForWallet || validForWallet !== walletAddressData.id) {
       const baseUrl = url.origin + APP_BASEPATH
-      //TODO: use `${tool}` not hardcoded 'banner-two' after versioning update
-      const redirectUrl = `${baseUrl}/api/grant/banner-two/`
+      const redirectUrl = `${baseUrl}/api/grant/${tool}/`
 
       const grant = await createInteractiveGrant(env, {
         walletAddress: walletAddressData,
@@ -119,15 +118,16 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     // legacy
+    const profileLegacy = convertToConfigLegacy(walletAddress, profile)
     await storage.putJson<ConfigVersions>(walletAddressId, {
       ...configLegacy,
       [profileId]: {
-        ...getDefaultData(),
+        ...configLegacy?.[profileId],
+        ...profileLegacy,
         ...sanitizedProfile,
         walletAddress: walletAddressId,
-        versionName: sanitizedProfile.$name,
       },
-    })
+    } as ConfigVersions)
 
     //@ts-expect-error TO DO putJson config usage
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
