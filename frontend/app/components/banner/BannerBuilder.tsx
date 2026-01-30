@@ -9,13 +9,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import type { Background } from '@shared/types'
-import {
-  BANNER_FONT_SIZES,
-  bannerFontSizeToNumber,
-  FONT_FAMILY_OPTIONS,
-  numberToBannerFontSize,
-} from '@shared/types'
+import { BANNER_FONT_SIZES, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   SVGAnimation,
   SVGColorPicker,
