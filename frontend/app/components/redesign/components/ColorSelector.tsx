@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, forwardRef } from 'react'
 import ClickAwayListener from 'react-click-away-listener'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { cx } from 'class-variance-authority'
-import type { Background, TextColor } from '@shared/types'
 import { SVGColorPicker, SVGArrowDropdown } from '../../../assets/svg'
 
 export type Color = {
@@ -22,7 +21,7 @@ const defaultColors: Color[] = [
 
 interface ColorSelectorProps {
   label?: string
-  value?: Background | TextColor
+  value?: string
   className?: string
   disabled?: boolean
   onChange?: (color: string) => void
@@ -41,9 +40,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
   ) => {
     const [isOpen, setIsOpen] = useState(false)
     const [openColorPicker, setDisplayColorPicker] = useState(false)
-    const [selectedColor, setSelectedColor] = useState<Background | TextColor>(
-      value,
-    )
+    const [selectedColor, setSelectedColor] = useState<string>(value)
     const [isFocused, setIsFocused] = useState(false)
     const selectorRef = useRef<HTMLButtonElement>(null)
     useEffect(() => {
@@ -91,7 +88,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               <div className="flex items-center">
                 <div
                   className="w-8 h-8 rounded-full border border-silver-200 mr-2"
-                  style={{ backgroundColor: selectedColor as string }}
+                  style={{ backgroundColor: selectedColor }}
                 />
 
                 <span className="text-sm leading-sm text-text-primary">
