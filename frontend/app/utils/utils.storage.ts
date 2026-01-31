@@ -1,4 +1,8 @@
-import type { BannerProfile, ElementConfigType } from '@shared/types'
+import type {
+  BannerProfile,
+  WidgetProfile,
+  ElementConfigType,
+} from '@shared/types'
 import { groupBy } from '@shared/utils'
 
 export function omit<T extends Record<string, unknown>>(
@@ -12,15 +16,15 @@ export function omit<T extends Record<string, unknown>>(
   ) as Partial<T>
 }
 
-export function splitProfileProperties(profile: BannerProfile) {
+export function splitProfileProperties(profile: BannerProfile | WidgetProfile) {
   const { content = [], appearance = [] } = groupBy(
     Object.entries(profile),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance'),
   )
 
   return {
-    content: Object.fromEntries(content) as Partial<BannerProfile>,
-    appearance: Object.fromEntries(appearance) as Partial<BannerProfile>,
+    content: Object.fromEntries(content),
+    appearance: Object.fromEntries(appearance),
   }
 }
 
