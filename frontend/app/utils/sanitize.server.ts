@@ -9,7 +9,7 @@ import {
   TOOL_WIDGET,
   TOOL_BANNER,
 } from '@shared/types'
-
+import { convertToConfigLegacy } from './profile-converter'
 function sanitizeText(value: string, fieldName: string): string {
   const decoded = he.decode(value)
   const sanitizedText = sanitizeHtml(value, {
@@ -42,10 +42,11 @@ function sanitizeHtmlField(value: string, fieldName: string): string {
 export const sanitizeConfigFields = <T extends Tool>(
   config: ToolProfile<T>,
   tool: T,
-): Partial<ElementConfigType> => {
+): ElementConfigType => {
   if (tool === TOOL_WIDGET) {
     const widget = config as WidgetProfile
     return {
+      ...convertToConfigLegacy('', widget),
       versionName: sanitizeText(widget.$name, 'versionName'),
       widgetTitleText: sanitizeText(widget.widgetTitleText, 'widgetTitleText'),
       widgetDescriptionText: sanitizeHtmlField(
@@ -62,6 +63,7 @@ export const sanitizeConfigFields = <T extends Tool>(
   if (tool === TOOL_BANNER) {
     const banner = config as BannerProfile
     return {
+      ...convertToConfigLegacy('', banner),
       versionName: sanitizeText(banner.$name, 'versionName'),
       bannerTitleText: sanitizeText(banner.bannerTitleText, 'bannerTitleText'),
       bannerDescriptionText: sanitizeHtmlField(

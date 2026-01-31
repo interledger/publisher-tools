@@ -79,7 +79,7 @@ export function convertToConfiguration<T extends Tool>(
 }
 
 /** @legacy */
-export function getToolProfile(profile: ElementConfigType, tool: Tool) {
+function getToolProfile(profile: ElementConfigType, tool: Tool) {
   switch (tool) {
     case 'widget':
       return extract<WidgetConfig>(

@@ -5,7 +5,6 @@ import {
   TOOL_WIDGET,
   TOOLS,
   type ConfigVersions,
-  type ElementConfigType,
   type Tool,
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
@@ -13,7 +12,7 @@ import { APP_BASEPATH } from '~/lib/constants.js'
 import type { ElementErrors } from '~/lib/types.js'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
-import { convertToProfile, getToolProfile } from '~/utils/profile-converter'
+import { convertToProfile } from '~/utils/profile-converter'
 import { sanitizeConfigFields } from '~/utils/sanitize.server.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { filterDeepProperties } from '~/utils/utils.server.js'
@@ -256,14 +255,13 @@ async function handleUpdate(
     const sanitizedConfig: ConfigVersions = {}
     Object.keys(newConfigData).forEach((key) => {
       if (typeof newConfigData[key] === 'object') {
-        const widgetConfig = getToolProfile(newConfigData[key], TOOL_WIDGET)
         const profile = convertToProfile(newConfigData[key], TOOL_WIDGET)
         const sanitized = sanitizeConfigFields(profile, TOOL_WIDGET)
         sanitizedConfig[key] = {
           ...legacy?.[key],
-          ...widgetConfig,
           ...sanitized,
-        } as ElementConfigType
+          walletAddress,
+        }
       }
     })
 
