@@ -13,7 +13,7 @@ import {
 import type { SaveResult } from '~/lib/types'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
-import { createProfileStoreUtils, getStorageKeys } from './profile-store-utils'
+import { createToolStoreUtils, getStorageKeys } from './tool-store-utils'
 import { toolState } from './toolStore'
 
 export type WidgetStore = ReturnType<typeof createWidgetStore>
@@ -60,7 +60,7 @@ const snapshots = new Map<ProfileId, WidgetProfile>(
   ]),
 )
 
-const widgetStoreUtils = createProfileStoreUtils({
+const widgetStoreUtils = createToolStoreUtils({
   tool: TOOL_WIDGET,
   store: widget,
   snapshots,

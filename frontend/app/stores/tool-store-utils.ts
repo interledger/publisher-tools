@@ -39,14 +39,14 @@ function getCreateDefaultProfile<T extends Tool>(tool: T) {
   }
 }
 
-interface ProfileStoreConfig<T extends Tool> {
+interface ToolStoreConfig<T extends Tool> {
   tool: T
   store: Store
   snapshots: Map<ProfileId, ToolProfile<T>>
 }
 
-export function createProfileStoreUtils<T extends Tool>(
-  config: ProfileStoreConfig<T>,
+export function createToolStoreUtils<T extends Tool>(
+  config: ToolStoreConfig<T>,
 ) {
   const { tool, store, snapshots } = config
   const { snapshotsStorageKey, getProfileStorageKey } = getStorageKeys(tool)

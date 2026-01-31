@@ -13,7 +13,7 @@ import {
 import type { SaveResult } from '~/lib/types'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
-import { createProfileStoreUtils, getStorageKeys } from './profile-store-utils'
+import { createToolStoreUtils, getStorageKeys } from './tool-store-utils'
 import { toolState } from './toolStore'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
@@ -61,7 +61,7 @@ const snapshots = new Map<ProfileId, BannerProfile>(
   ]),
 )
 
-const bannerStoreUtils = createProfileStoreUtils({
+const bannerStoreUtils = createToolStoreUtils({
   tool: TOOL_BANNER,
   store: banner,
   snapshots,
