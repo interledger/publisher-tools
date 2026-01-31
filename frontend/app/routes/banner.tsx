@@ -16,17 +16,25 @@ import {
   ToolsPrimaryButton,
   StepsIndicator,
   MobileStepsIndicator,
+  BuilderPresetTabs,
 } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
   type BannerHandle,
 } from '~/components/banner/BannerPreview'
-import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
+import { useSaveProfile } from '~/hooks/useSaveProfile'
+import {
+  actions,
+  banner,
+  hydrateProfilesFromStorage,
+  hydrateSnapshotsFromStorage,
+  subscribeProfilesToStorage,
+  subscribeProfilesToUpdates,
+} from '~/stores/banner-store'
 import {
   toolState,
   toolActions,
@@ -34,7 +42,6 @@ import {
   loadState,
 } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
 
 export const meta: MetaFunction = () => {
   return [
@@ -75,8 +82,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
+  const bannerSnap = useSnapshot(banner)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveConfig()
+  const { save, saveLastAction } = useSaveProfile()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
   const walletAddressRef = useRef<HTMLDivElement>(null)
@@ -87,6 +95,11 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    subscribeProfilesToUpdates()
+    hydrateProfilesFromStorage()
+    subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
+
     loadState(OP_WALLET_ADDRESS)
     persistState()
   }, [OP_WALLET_ADDRESS])
@@ -137,15 +150,6 @@ export default function Banner() {
     if (bannerRef.current) {
       bannerRef.current.triggerPreview()
     }
-  }
-
-  const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
-    const { content, appearance } = splitConfigProperties(savedConfig)
-    Object.assign(
-      toolState.currentConfig,
-      section === 'content' ? content : appearance,
-    )
   }
 
   return (
@@ -202,9 +206,21 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderTabs>
-                      <BannerBuilder onRefresh={handleRefresh} />
-                    </BuilderTabs>
+                    <BuilderPresetTabs
+                      idPrefix="profile"
+                      options={bannerSnap.profileTabs}
+                      selectedId={snap.activeTab}
+                      onChange={(profileId) =>
+                        toolActions.setActiveTab(profileId)
+                      }
+                      onRename={(name) => actions.setProfileName(name)}
+                    >
+                      <BannerBuilder
+                        onRefresh={(section) =>
+                          actions.resetProfileSection(section)
+                        }
+                      />
+                    </BuilderPresetTabs>
 
                     <div
                       id="builder-actions"

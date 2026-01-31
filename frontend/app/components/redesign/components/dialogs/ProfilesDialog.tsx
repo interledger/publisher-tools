@@ -124,8 +124,8 @@ export const ProfilesDialog: React.FC<Props> = ({
         }
       })
 
-      if (toolState.currentToolType === 'banner-two') {
-        // let user save last action for banner separately on banner-two
+      if (toolState.currentToolType === 'banner') {
+        // let user save last action for banner separately on banner
         bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
         closeDialog()
       } else {
