@@ -126,7 +126,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
         ...sanitizedProfile,
         walletAddress: walletAddressId,
       },
-    } as ConfigVersions)
+    })
 
     //@ts-expect-error TO DO putJson config usage
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
