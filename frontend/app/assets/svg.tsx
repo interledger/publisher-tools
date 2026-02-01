@@ -352,6 +352,30 @@ export const SVGArrow1: SvgIcon = ({ className }: { className: string }) => (
   </svg>
 )
 
+export const SVGStepArrow: SvgIcon = ({ className }: { className: string }) => (
+  <svg {...defaultProps} className={className}>
+    <path
+      fill="url(#a)"
+      d="M-.001 7.364a5.333 5.333 0 1 0 10.666 0A5.333 5.333 0 0 0 0 7.364Zm186.04.707a1 1 0 0 0 0-1.414L179.675.293a1 1 0 1 0-1.414 1.414l5.657 5.657-5.657 5.657a1 1 0 1 0 1.414 1.414l6.364-6.364ZM5.332 7.364v1h180v-2h-180v1Z"
+    />
+    <defs>
+      <linearGradient
+        id="a"
+        x1="166.69"
+        x2="164.347"
+        y1="8.364"
+        y2="-10.28"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop offset=".12" stopColor="#7F76B2" />
+        <stop offset=".298" stopColor="#F69656" />
+        <stop offset=".591" stopColor="#F2797F" />
+        <stop offset=".904" stopColor="#9CD6CB" />
+      </linearGradient>
+    </defs>
+  </svg>
+)
+
 export const SVGShareScript: SvgIcon = ({ className }) => (
   <svg {...defaultProps} className={className} viewBox="0 0 16 12">
     <path

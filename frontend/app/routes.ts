@@ -10,6 +10,7 @@ export default [
   route('payment-confirmation/', 'routes/payment-confirmation.tsx'),
   route('prob-revshare/', 'routes/prob-revshare.tsx'),
   route('widget/', 'routes/widget.tsx'),
+  route('wip/', 'routes/offerwall.tsx'),
   // API routes
   route('api/config/:type', 'routes/api.config.$type.ts'),
   route('api/grant/:type', 'routes/api.grant.$type.ts'),
