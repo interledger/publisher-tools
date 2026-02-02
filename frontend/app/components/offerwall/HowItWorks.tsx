@@ -10,35 +10,30 @@ import {
 } from '~/components/redesign/Typography'
 
 interface StepProps {
-  stepNumber: number
   image: string
   description: string
+  showNext?: boolean
 }
 
-const Step: React.FC<StepProps> = ({ stepNumber, image, description }) => (
-  <article
-    className="flex flex-1 flex-col items-center gap-2xl"
-    aria-labelledby={`step-${stepNumber}-description`}
-  >
-    <div
-      className="h-[160px] overflow-hidden"
-      role="img"
-      aria-label={description}
-    >
-      <img
-        src={image}
-        alt=""
-        aria-hidden="true"
-        className="h-full w-auto object-contain"
-      />
+const Step: React.FC<StepProps> = ({
+  image,
+  description,
+  showNext = false,
+}) => (
+  <>
+    <div className="flex max-h-[240px] w-[296px] flex-1 flex-col items-center gap-2xl">
+      <img src={image} alt="" className="h-full w-auto object-contain" />
+      <BodyEmphasis className="min-w-full shrink-0 text-center !text-green-400">
+        {description}
+      </BodyEmphasis>
     </div>
-    <BodyEmphasis
-      id={`step-${stepNumber}-description`}
-      className="text-center !text-green-400"
-    >
-      {description}
-    </BodyEmphasis>
-  </article>
+    {showNext && (
+      <SVGStepArrow
+        className="h-[15px] w-[187px] shrink-0 self-center"
+        aria-hidden="true"
+      />
+    )}
+  </>
 )
 
 const Heading: React.FC = () => {
@@ -61,36 +56,27 @@ const Heading: React.FC = () => {
       </header>
 
       <ol
-        className="flex w-full list-none items-center p-0"
+        className="flex w-full list-none items-start p-0"
         aria-label="Steps to use Web Monetization with Google Offerwall"
       >
-        <li className="flex flex-1">
+        <li className="flex flex-1 items-start">
           <Step
-            stepNumber={1}
             image={step1}
             description="You can customize the banner"
+            showNext
           />
         </li>
 
-        <li>
-          <SVGStepArrow className="h-[15px] w-[187px]" />
-        </li>
-
-        <li className="flex flex-1">
+        <li className="flex flex-1 items-start">
           <Step
-            stepNumber={2}
             image={step2}
             description="You use what they customized on OfferWall to use WM as a custom choice"
+            showNext
           />
         </li>
 
-        <li>
-          <SVGStepArrow className="h-[15px] w-[187px]" />
-        </li>
-
-        <li className="flex flex-1">
+        <li className="flex flex-1 items-start">
           <Step
-            stepNumber={3}
             image={step3}
             description="You start receiving support as users choose to use WM and install the extension"
           />
