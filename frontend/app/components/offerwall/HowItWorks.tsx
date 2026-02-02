@@ -1,13 +1,9 @@
 import React from 'react'
-import { SVGStepArrow } from '@/assets'
+import { SVGStepArrow, SVGStepArrowMobile } from '@/assets'
+import { BodyEmphasis, BodyStandard, Heading4 } from '@/typography'
 import step1 from '~/assets/images/offerwall/illustration_offerwall_step1.svg'
 import step2 from '~/assets/images/offerwall/illustration_offerwall_step2.svg'
 import step3 from '~/assets/images/offerwall/illustration_offerwall_step3.svg'
-import {
-  BodyEmphasis,
-  Heading2SemiBold,
-  Heading5,
-} from '~/components/redesign/Typography'
 
 interface StepProps {
   image: string
@@ -21,64 +17,62 @@ const Step: React.FC<StepProps> = ({
   showNext = false,
 }) => (
   <>
-    <div className="flex max-h-[240px] w-[296px] flex-1 flex-col items-center gap-2xl">
+    <div className="flex w-[343px] flex-col items-center gap-2xl xl:w-[296px] xl:max-h-[240px] xl:flex-1">
       <img src={image} alt="" className="h-full w-auto object-contain" />
       <BodyEmphasis className="min-w-full shrink-0 text-center !text-green-400">
         {description}
       </BodyEmphasis>
     </div>
     {showNext && (
-      <SVGStepArrow
-        className="h-[15px] w-[187px] shrink-0 self-center"
-        aria-hidden="true"
-      />
+      <>
+        <SVGStepArrow className="h-[15px] w-[187px] shrink-0 self-center hidden xl:block" />
+        <SVGStepArrowMobile className="h-[63px] w-[15px] shrink-0 self-center block xl:hidden" />
+      </>
     )}
   </>
 )
 
-const Heading: React.FC = () => {
+const HowItWorks: React.FC = () => {
   return (
     <section
       className="flex max-w-[1280px] flex-col gap-2xl rounded-md px-md"
       aria-labelledby="how-it-works-heading"
     >
-      <header className="flex flex-col gap-md">
-        <Heading2SemiBold id="how-it-works-heading">
-          How it works
-        </Heading2SemiBold>
-        <Heading5 as="p" className="!text-text-primary">
-          To use Web Monetization with Google Offerwall, you need a Google Ad
-          Manager account.
+      <header className="flex flex-col items-center gap-md xl:items-start">
+        <Heading4 className="xl:text-style-h2-semibold">How it works</Heading4>
+        <BodyStandard className="text-center xl:text-left xl:text-xl xl:leading-xl">
+          If you have a Google Ad Manager account you can add Web Monetization
+          to your Offerwall.
           <br />
-          Customize the user choice screen here, then copy the generated script
-          into your Offerwall custom choice option.
-        </Heading5>
+          Customize the user choice screen here, then copy the script into your
+          Offerwall&apos;s custom choice option.
+        </BodyStandard>
       </header>
 
       <ol
-        className="flex w-full list-none items-start p-0"
+        className="flex w-full list-none flex-col items-center p-0 xl:flex-row xl:items-center"
         aria-label="Steps to use Web Monetization with Google Offerwall"
       >
-        <li className="flex flex-1 items-start">
+        <li className="flex flex-col items-center xl:flex-1 xl:flex-row xl:items-center">
           <Step
             image={step1}
-            description="You can customize the banner"
+            description="Customize your Offerwall experience"
             showNext
           />
         </li>
 
-        <li className="flex flex-1 items-start">
+        <li className="flex flex-col items-center xl:flex-1 xl:flex-row xl:items-center">
           <Step
             image={step2}
-            description="You use what they customized on OfferWall to use WM as a custom choice"
+            description="Copy your customization into your Offerwall"
             showNext
           />
         </li>
 
-        <li className="flex flex-1 items-start">
+        <li className="flex flex-col items-center xl:flex-1 xl:flex-row xl:items-center">
           <Step
             image={step3}
-            description="You start receiving support as users choose to use WM and install the extension"
+            description="Start receiving support as users choose to use WM"
           />
         </li>
       </ol>
@@ -86,4 +80,4 @@ const Heading: React.FC = () => {
   )
 }
 
-export default Heading
+export default HowItWorks
