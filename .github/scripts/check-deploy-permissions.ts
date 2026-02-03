@@ -1,7 +1,7 @@
 import type { AsyncFunctionArguments } from 'github-script';
 import type { PullRequestEvent, PullRequestReviewEvent } from '@octokit/webhooks-types';
 
-export default async function checkDeployPermissions({ core, context }: AsyncFunctionArguments) {
+export default async function checkDeployPermissions({ core, context, github }: AsyncFunctionArguments) {
   if (context.eventName === 'pull_request_review') {
     const event = context.payload as PullRequestReviewEvent;
     const reviewerAssociation = event.review.author_association;
@@ -36,6 +36,25 @@ export default async function checkDeployPermissions({ core, context }: AsyncFun
 
     core.setOutput('should-deploy', 'true');
     core.info('Deployment allowed: Authorized contributor');
+    return;
+  }
+
+  if (context.eventName === 'push') {
+    const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      username: context.actor
+    });
+
+    const isAuthorized = ['admin', 'maintain', 'write'].includes(permission.permission);
+
+    if (!isAuthorized) {
+      await skipDeployment(core, 'Not authorized to trigger deployments.');
+      return;
+    }
+
+    core.setOutput('should-deploy', 'true');
+    core.info('Deployment allowed: Push to protected branch');
     return;
   }
 

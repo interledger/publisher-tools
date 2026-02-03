@@ -35,7 +35,7 @@ jobs:
         with:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
-            await script.default({ core, context });
+            await script.default({ core, context, github });
       
       - uses: ./.github/workflows/setup
 
