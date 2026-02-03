@@ -32,8 +32,6 @@ jobs:
       - name: Check deployment permissions
         id: deploy-check
         uses: actions/github-script@v8
-        env:
-          BRANCH_NAME: ${{ github.ref_name }}
         with:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');

@@ -40,15 +40,10 @@ export default async function checkDeployPermissions({ core, context }: AsyncFun
   }
 
   if (context.eventName === 'push') {
-    const branch = process.env.BRANCH_NAME;
-    if (!branch) {
-      core.setOutput('should-deploy', 'false');
-      core.info('No branch information found for push event');
-      return;
-    }
+    const branch = context.ref
+    const allowed = ['refs/heads/main', 'refs/heads/release'];
 
-    const allowedBranches = ['main', 'release'];
-    if (allowedBranches.includes(branch)) {
+    if (allowed.includes(branch)) {
       core.setOutput('should-deploy', 'true');
       core.info(`Deployment allowed: Push to ${branch}`);
       return;
