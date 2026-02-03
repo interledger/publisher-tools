@@ -1,9 +1,17 @@
 import React from 'react'
-import { SVGStepArrow, SVGStepArrowMobile } from '@/assets'
 import { BodyEmphasis, BodyStandard, Heading4 } from '@/typography'
 import step1 from '~/assets/images/offerwall/illustration_offerwall_step1.svg'
 import step2 from '~/assets/images/offerwall/illustration_offerwall_step2.svg'
 import step3 from '~/assets/images/offerwall/illustration_offerwall_step3.svg'
+
+const StepArrow = ({ className }: { className?: string }) => (
+  // adapts length to the container
+  <div className={`flex items-center ${className}`} aria-hidden="true">
+    <div className="size-[10px] shrink-0 rounded-full bg-[#9CD6CB]" />
+    <div className="h-[2px] flex-1 bg-gradient-to-r from-[#9CD6CB] via-[#F2797F] to-[#7F76B2]" />
+    <div className="size-0 shrink-0 border-y-[5px] border-l-[7px] border-y-transparent border-l-[#7F76B2]" />
+  </div>
+)
 
 interface StepProps {
   image: string
@@ -17,17 +25,14 @@ const Step: React.FC<StepProps> = ({
   showNext = false,
 }) => (
   <li className="flex flex-col items-center xl:flex-1 xl:flex-row xl:items-center">
-    <div className="flex w-[343px] flex-col items-center gap-2xl xl:w-[296px] xl:max-h-[240px] xl:flex-1">
+    <div className="flex w-[200px] flex-col items-center gap-2xl xl:w-[296px] xl:max-h-[240px] xl:flex-1">
       <img src={image} alt="" className="h-full w-auto object-contain" />
       <BodyEmphasis className="min-w-full shrink-0 text-center !text-green-400">
         {description}
       </BodyEmphasis>
     </div>
     {showNext && (
-      <>
-        <SVGStepArrow className="h-[15px] w-[187px] shrink-0 self-center hidden xl:block" />
-        <SVGStepArrowMobile className="h-[63px] w-[15px] shrink-0 self-center block xl:hidden" />
-      </>
+      <StepArrow className="h-[56px] w-[56px] shrink-0 rotate-90 self-center xl:h-auto xl:w-[187px] xl:rotate-0" />
     )}
   </li>
 )
