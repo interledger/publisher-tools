@@ -1,29 +1,29 @@
 import { API_URL } from '@shared/defines'
-import type { BannerConfig } from '@shared/types'
+import type { BannerProfile } from '@shared/types'
 import { Banner } from '@tools/components/banner'
-import { appendPaymentPointer, fetchConfig, getScriptParams } from './utils'
+import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
-fetchConfig(API_URL, 'banner', params)
-  .then((config) => {
-    const el = drawBanner(config)
+fetchProfile(API_URL, 'banner', params)
+  .then((profile) => {
+    const el = drawBanner(profile)
     if (el) {
       document.body.appendChild(el)
     }
   })
   .catch((error) => console.error(error))
 
-function drawBanner(config: BannerConfig) {
+function drawBanner(profile: BannerProfile) {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
   // check if user / visitor has monetization
   const monetizationLinks = document.querySelector<HTMLLinkElement>(
-    'link[rel=monetization]'
+    'link[rel=monetization]',
   )
   if (
     (monetizationLinks && monetizationLinks.relList.supports('monetization')) ||
@@ -34,6 +34,7 @@ function drawBanner(config: BannerConfig) {
   }
 
   const bannerElement = document.createElement('wm-banner')
+  const config = profile
 
   const bannerConfig = {
     cdnUrl: params.cdnUrl,
@@ -48,8 +49,8 @@ function drawBanner(config: BannerConfig) {
       backgroundColor: config.bannerBackgroundColor,
       textColor: config.bannerTextColor,
       fontFamily: config.bannerFontName,
-      fontSize: config.bannerFontSize
-    }
+      fontSize: config.bannerFontSize,
+    },
   }
   bannerElement.config = bannerConfig
 

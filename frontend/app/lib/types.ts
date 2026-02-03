@@ -1,26 +1,32 @@
 import type z from 'zod'
-import type { ElementConfigType } from '@shared/types'
+import type { ElementConfigType, Tool, ToolProfiles } from '@shared/types'
 import type {
   createBannerSchema,
   createButtonSchema,
-  createWidgetSchema
+  createWidgetSchema,
 } from '../utils/validate.server.js'
 
-export type ModalType = {
-  type:
-    | 'script'
-    | 'wallet-ownership'
-    | 'grant-response'
-    | 'save-error'
-    | 'save-success'
-    | 'override-preset'
-  // set when type is "save-error"
-  error?: { message?: string; fieldErrors?: Record<string, string> }
-  grantRedirectIntent?: string
-  grantRedirectURI?: string
-  fetchedConfigs?: Record<string, ElementConfigType>
-  currentLocalConfigs?: Record<string, ElementConfigType>
-  modifiedConfigs?: readonly string[]
+export type SaveResult = {
+  success?: boolean
+  grantRedirect?: string
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
+}
+
+export type GetProfilesResult<T extends Tool> = {
+  profiles?: ToolProfiles<T>
+  error?: {
+    message: string
+    cause?: {
+      message: string
+      errors: Record<string, string>
+    }
+  }
 }
 
 export type SanitizedFields = Pick<

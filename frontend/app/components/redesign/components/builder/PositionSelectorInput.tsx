@@ -15,7 +15,7 @@ interface Props<T extends string> {
 export function PositionSelectorInput<T extends string>({
   value,
   onChange,
-  options
+  options,
 }: Props<T>) {
   return (
     <div className="grid xl:grid-cols-3 max-xl:self-center items-start gap-md">

@@ -2,7 +2,7 @@ import {
   BannerColorsSelector,
   Divider,
   ToolsDropdown,
-  CornerRadiusSelector
+  CornerRadiusSelector,
 } from '@/components'
 import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
@@ -16,12 +16,16 @@ import {
   SVGHeaderPosition,
   SVGRoundedCorner,
   SVGText,
-  SVGThumbnail
+  SVGThumbnail,
 } from '~/assets/svg'
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
-import { useCurrentConfig } from '~/stores/toolStore'
+import { useBannerProfile } from '~/stores/banner-store'
+import {
+  toolState,
+  useCurrentConfig as useCurrentConfigLegacy,
+} from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -34,7 +38,7 @@ const config = {
     'Fund me',
     'Pay as you browse',
     'Easy donate',
-    'Support my work'
+    'Support my work',
   ],
   titleHelpText: 'Strong message to help people engage with Web Monetization',
   titleMaxLength: 60,
@@ -44,7 +48,15 @@ const config = {
   messageMaxLength: 300,
 
   showThumbnail: true,
-  fontSizeRange: BANNER_FONT_SIZES
+  fontSizeRange: BANNER_FONT_SIZES,
+}
+
+function useCurrentConfig(options?: { sync: boolean }) {
+  if (toolState.currentToolType === 'banner-two') {
+    return useBannerProfile(options)
+  }
+
+  return useCurrentConfigLegacy(options)
 }
 
 export function BannerBuilder({ onRefresh }: Props) {
@@ -109,7 +121,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   const [snap, profile] = useCurrentConfig()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === snap.bannerFontName
+    (option) => option === snap.bannerFontName,
   )
 
   return (
@@ -138,7 +150,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           }}
           options={FONT_FAMILY_OPTIONS.map((font, index) => ({
             label: font,
-            value: index.toString()
+            value: index.toString(),
           }))}
         />
 

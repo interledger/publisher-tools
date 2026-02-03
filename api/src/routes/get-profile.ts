@@ -3,90 +3,97 @@ import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import { PRESET_IDS, TOOLS } from '@shared/types'
+import { PROFILE_IDS, TOOLS } from '@shared/types'
 import type {
   BannerConfig,
   ConfigVersions,
   ElementConfigType,
-  PresetId,
   Tool,
-  WidgetConfig
+  ToolProfile,
+  WidgetConfig,
 } from '@shared/types'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
 
 app.get(
-  '/config/:tool',
+  '/profile/:tool',
   zValidator(
     'param',
     z.object({
-      tool: z.enum(TOOLS)
-    })
+      tool: z.enum(TOOLS),
+    }),
   ),
   zValidator(
     'query',
     z.object({
       wa: z.url(),
-      preset: z.enum(PRESET_IDS)
-    })
+      id: z.enum(PROFILE_IDS),
+    }),
   ),
   async ({ req, json, env }) => {
     const { tool } = req.valid('param')
-    const { wa: walletAddress, preset: presetId } = req.valid('query')
+    const { wa: walletAddress, id: profileId } = req.valid('query')
 
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {
       const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const config = getToolConfig(fullConfig, tool, presetId)
-      return json(config)
+      const legacyProfile = fullConfig[profileId]
+      const profile = convertToProfile(legacyProfile, tool)
+      return json<ToolProfile<typeof tool>>(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
         if (error.message.includes('404')) {
-          const msg = 'No saved config found for given wallet address'
+          const msg = 'No saved profile found for given wallet address'
           throw createHTTPException(404, msg, {
             message: 'Not found', // can include the S3 key here perhaps
-            code: '404'
+            code: '404',
           })
         }
       }
       throw createHTTPException(500, 'Config fetch error: ', error)
     }
-  }
+  },
 )
 
-function getToolConfig(config: ConfigVersions, tool: Tool, presetId: PresetId) {
-  const conf = config[presetId]
-  if (!conf) {
-    throw createHTTPException(404, 'Saved config not found for given preset', {
-      message: `Use one of ${JSON.stringify(Object.keys(config))}`
-    })
-  }
+// TODO: to be removed after the completion of versioned configurations
+function convertToProfile<T extends Tool>(
+  config: ElementConfigType,
+  tool: T,
+): ToolProfile<T> {
+  return {
+    $version: '0.0.1',
+    $name: config.versionName,
+    $modifiedAt: '',
+    ...getToolProfile(config, tool),
+  } as ToolProfile<T>
+}
 
+function getToolProfile(profile: ElementConfigType, tool: Tool) {
   switch (tool) {
     case 'widget':
       return extract<WidgetConfig>(
-        conf,
-        (key) => key.startsWith('widget') || key.includes('Widget')
+        profile,
+        (key) => key.startsWith('widget') || key.includes('Widget'),
       )
     case 'banner':
       return extract<BannerConfig>(
-        conf,
-        (key) => key.startsWith('banner') || key.includes('Banner')
+        profile,
+        (key) => key.startsWith('banner') || key.includes('Banner'),
       )
   }
 }
 
 function extract<R, T = ElementConfigType, K = keyof T>(
   obj: T,
-  filter: (key: K) => boolean
+  filter: (key: K) => boolean,
 ): R {
   const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K)
+    ([key]) => filter(key as K),
   )
   if (!entries.length) {
-    throw new Error('No matching config found')
+    throw new Error('No matching profile found')
   }
   return Object.fromEntries(entries) as R
 }

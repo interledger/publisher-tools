@@ -7,12 +7,12 @@ export default {
     const { pathname } = new URL(request.url)
     if (request.method === 'GET' && pathname === '/') {
       const keys = await env.STORAGE.list({
-        include: ['customMetadata', 'httpMetadata']
+        include: ['customMetadata', 'httpMetadata'],
       })
       return Response.json(
         keys.objects.sort(
-          (k1, k2) => k2.uploaded.valueOf() - k1.uploaded.valueOf()
-        )
+          (k1, k2) => k2.uploaded.valueOf() - k1.uploaded.valueOf(),
+        ),
       )
     }
 
@@ -25,11 +25,11 @@ export default {
       headers: Object.fromEntries(
         Object.entries(res.httpMetadata || {}).map(([k, v]) => [
           k.replace(/([A-Z])/g, '-$1').toLowerCase(),
-          v
-        ])
-      )
+          v,
+        ]),
+      ),
     })
-  }
+  },
 } satisfies ExportedHandler<Env>
 
 async function handlePut(request: Request, env: Env) {
@@ -41,8 +41,8 @@ async function handlePut(request: Request, env: Env) {
     customMetadata: Object.fromEntries(
       [...request.headers]
         .filter(([k]) => k.startsWith('x-amz-meta-'))
-        .map(([k, v]) => [k.replace('x-amz-meta-', ''), v])
-    )
+        .map(([k, v]) => [k.replace('x-amz-meta-', ''), v]),
+    ),
   })
   return Response.json(res)
 }

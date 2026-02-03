@@ -5,9 +5,10 @@ import React, {
   useCallback,
   useState,
   useEffect,
-  useMemo
+  useMemo,
 } from 'react'
 import type { ReactNode } from 'react'
+import { DialogProvider } from '@/components'
 import { toolActions } from '~/stores/toolStore'
 
 type UIState = {
@@ -72,7 +73,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     contentComplete,
     activeSection,
     appearanceComplete,
-    buildStepComplete
+    buildStepComplete,
   }
 
   const actions: UIActions = useMemo(
@@ -81,21 +82,21 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       registerWalletInput,
       setContentComplete,
       setAppearanceComplete,
-      setActiveSection
+      setActiveSection,
     }),
     [
       focusWalletInput,
       registerWalletInput,
       setContentComplete,
       setAppearanceComplete,
-      setActiveSection
-    ]
+      setActiveSection,
+    ],
   )
 
   return (
     <UIStateContext.Provider value={state}>
       <UIActionsContext.Provider value={actions}>
-        {children}
+        <DialogProvider>{children}</DialogProvider>
       </UIActionsContext.Provider>
     </UIStateContext.Provider>
   )

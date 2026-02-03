@@ -7,7 +7,7 @@ import {
   type AuthenticatedClient,
   isFinalizedGrant,
   isPendingGrant,
-  createAuthenticatedClient
+  createAuthenticatedClient,
 } from '@interledger/open-payments'
 import { signAsync } from '@noble/ed25519'
 import { createId } from '@paralleldrive/cuid2'
@@ -57,20 +57,20 @@ async function createClient(env: Env) {
           method: request.method,
           url: request.url,
           headers: Object.fromEntries(request.headers.entries()),
-          body: request.body ? JSON.stringify(await request.json()) : undefined
+          body: request.body ? JSON.stringify(await request.json()) : undefined,
         },
         privateKey: Buffer.from(env.OP_PRIVATE_KEY, 'base64'),
-        keyId: env.OP_KEY_ID
+        keyId: env.OP_KEY_ID,
       })
 
       if (request.body) {
         initialRequest.headers.set(
           'Content-Type',
-          headers['Content-Type'] as string
+          headers['Content-Type'] as string,
         )
         initialRequest.headers.set(
           'Content-Digest',
-          headers['Content-Digest'] as string
+          headers['Content-Digest'] as string,
         )
       }
 
@@ -78,7 +78,7 @@ async function createClient(env: Env) {
       initialRequest.headers.set('Signature-Input', headers['Signature-Input'])
 
       return initialRequest as typeof request
-    }
+    },
   })
 
   return client
@@ -89,7 +89,7 @@ export async function createInteractiveGrant(
   args: {
     walletAddress: WalletAddress
     redirectUrl?: string
-  }
+  },
 ) {
   const opClient = await createClient(env)
   const clientNonce = crypto.randomUUID()
@@ -100,12 +100,12 @@ export async function createInteractiveGrant(
     debitAmount: {
       value: String(1 * 10 ** args.walletAddress.assetScale),
       assetCode: args.walletAddress.assetCode,
-      assetScale: args.walletAddress.assetScale
+      assetScale: args.walletAddress.assetScale,
     },
     nonce: clientNonce,
     paymentId: paymentId,
     opClient,
-    redirectUrl: args.redirectUrl
+    redirectUrl: args.redirectUrl,
   })
 
   return outgoingPaymentGrant
@@ -126,7 +126,7 @@ type CreateOutgoingPaymentParams = {
 }
 
 async function createOutgoingPaymentGrant(
-  params: CreateOutgoingPaymentParams & { redirectUrl?: string }
+  params: CreateOutgoingPaymentParams & { redirectUrl?: string },
 ): Promise<PendingGrant> {
   const {
     walletAddress,
@@ -134,13 +134,13 @@ async function createOutgoingPaymentGrant(
     nonce,
     paymentId,
     opClient,
-    redirectUrl
+    redirectUrl,
   } = params
 
   const grant = await opClient.grant
     .request(
       {
-        url: walletAddress.authServer
+        url: walletAddress.authServer,
       },
       {
         access_token: {
@@ -150,24 +150,24 @@ async function createOutgoingPaymentGrant(
               type: 'outgoing-payment',
               actions: ['create', 'read'],
               limits: {
-                debitAmount: debitAmount
-              }
-            }
-          ]
+                debitAmount: debitAmount,
+              },
+            },
+          ],
         },
         interact: {
           start: ['redirect'],
           finish: {
             method: 'redirect',
             uri: `${redirectUrl}?paymentId=${paymentId}`,
-            nonce: nonce || ''
-          }
-        }
-      }
+            nonce: nonce || '',
+          },
+        },
+      },
     )
     .catch((error) => {
       throw new Error('Could not retrieve outgoing payment grant.', {
-        cause: error
+        cause: error,
       })
     })
 
@@ -181,18 +181,18 @@ async function createOutgoingPaymentGrant(
 export async function isGrantValidAndAccepted(
   env: Env,
   payment: PendingGrant,
-  interactRef: string
+  interactRef: string,
 ): Promise<boolean> {
   const opClient = await createClient(env)
 
   const continuation = await opClient.grant.continue(
     {
       accessToken: payment.continue.access_token.value,
-      url: payment.continue.uri
+      url: payment.continue.uri,
     },
     {
-      interact_ref: interactRef
-    }
+      interact_ref: interactRef,
+    },
   )
 
   if (!isFinalizedGrant(continuation)) {
@@ -206,7 +206,7 @@ export async function isGrantValidAndAccepted(
 async function createHeaders({
   request,
   privateKey,
-  keyId
+  keyId,
 }: SignOptions): Promise<Headers> {
   if (request.body) {
     const contentHeaders = createContentHeaders(request.body)
@@ -216,12 +216,12 @@ async function createHeaders({
   const signatureHeaders = await createSignatureHeaders({
     request,
     privateKey,
-    keyId
+    keyId,
   })
 
   return {
     ...request.headers,
-    ...signatureHeaders
+    ...signatureHeaders,
   }
 }
 
@@ -229,17 +229,17 @@ function createContentHeaders(body: string): ContentHeaders {
   return {
     'Content-Digest': createContentDigestHeader(
       JSON.stringify(JSON.parse(body)),
-      ['sha-512']
+      ['sha-512'],
     ),
     'Content-Length': new TextEncoder().encode(body).length.toString(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 }
 
 async function createSignatureHeaders({
   request,
   privateKey,
-  keyId
+  keyId,
 }: SignOptions): Promise<SignatureHeaders> {
   const components = ['@method', '@target-uri']
   if (request.headers.Authorization || request.headers.authorization) {
@@ -256,18 +256,18 @@ async function createSignatureHeaders({
       name: 'sig1',
       params: ['keyid', 'created'],
       fields: components,
-      key: signingKey
+      key: signingKey,
     },
     {
       url: request.url,
       method: request.method,
-      headers: request.headers
-    }
+      headers: request.headers,
+    },
   )
 
   return {
     'Signature': headers.Signature as string,
-    'Signature-Input': headers['Signature-Input'] as string
+    'Signature-Input': headers['Signature-Input'] as string,
   }
 }
 
@@ -277,6 +277,6 @@ function createSigner(key: Uint8Array, keyId: string) {
     alg: 'ed25519',
     async sign(data: Uint8Array) {
       return Buffer.from(await signAsync(data, key))
-    }
+    },
   }
 }

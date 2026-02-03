@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import Divider from '../Divider'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
@@ -16,7 +15,7 @@ export function TitleInput({
   suggestions,
   onChange,
   maxLength,
-  helpText
+  helpText,
 }: Props) {
   return (
     <>
@@ -41,7 +40,7 @@ export function TitleInput({
 function SuggestedTitles({
   value,
   suggestions,
-  onChange
+  onChange,
 }: Pick<Props, 'value' | 'suggestions' | 'onChange'>) {
   return (
     <div
@@ -77,9 +76,8 @@ function CustomTitle({
   onChange,
   placeholder,
   maxLength,
-  helpText
+  helpText,
 }: Omit<Props, 'suggestions'> & { placeholder: string }) {
-  const ref = useRef<HTMLInputElement>(null)
   const id = 'custom-title-input'
   return (
     <div className="flex flex-col gap-xs">
@@ -92,8 +90,7 @@ function CustomTitle({
       <InputField
         id={id}
         value={value}
-        onChange={(e) => onChange(e.target.value.trim())}
-        ref={ref}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         showCounter={true}
         currentLength={value.length}

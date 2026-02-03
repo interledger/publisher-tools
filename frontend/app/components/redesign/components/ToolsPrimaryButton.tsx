@@ -5,11 +5,10 @@ import {
   SVGCopyScript,
   SVGCheckIcon,
   SVGLinkIcon,
-  SVGShareScript
+  SVGShareScript,
 } from '@/assets'
 
-interface ToolsPrimaryButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ToolsPrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   iconPosition?: 'left' | 'right' | 'none'
   icon?: 'script' | 'copy' | 'link' | 'share' | 'check'
@@ -37,7 +36,7 @@ export function ToolsPrimaryButton({
         'gap-2',
         'focus:outline-none focus:ring-2 focus:ring-primary-focus',
         'transition-colors duration-200',
-        className
+        className,
       )}
       onClick={onClick}
       {...props}

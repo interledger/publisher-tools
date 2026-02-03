@@ -8,9 +8,9 @@ const { getSession, commitSession, destroySession } =
       secure: process.env.NODE_ENV === 'production', // only use secure in production
       sameSite: 'lax', // changed from 'none' since we're using HTTP in dev
       secrets: [
-        process.env.SESSION_COOKIE_SECRET_KEY || 'supersecretilpaystring'
-      ]
-    }
+        process.env.SESSION_COOKIE_SECRET_KEY || 'supersecretilpaystring',
+      ],
+    },
   })
 
 export { getSession, commitSession, destroySession }

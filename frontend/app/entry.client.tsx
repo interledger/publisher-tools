@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'development') {
     enabled: false,
     trackUnnecessaryRenders: true,
     showToolbar: true,
-    log: true
+    log: true,
   })
 }
 
@@ -23,6 +23,6 @@ startTransition(() => {
     document,
     <StrictMode>
       <HydratedRouter />
-    </StrictMode>
+    </StrictMode>,
   )
 })

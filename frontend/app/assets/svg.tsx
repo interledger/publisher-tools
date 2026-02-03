@@ -1,12 +1,12 @@
 /* eslint react/prop-types: 0 */
 type SVGProps = React.SVGProps<SVGSVGElement>
 type SvgIcon = (
-  props: SVGProps & Required<Pick<SVGProps, 'className'>>
+  props: SVGProps & Required<Pick<SVGProps, 'className'>>,
 ) => React.ReactElement<SVGProps, 'svg'>
 
 const defaultProps: SVGProps = {
   'aria-hidden': true,
-  'fill': 'none'
+  'fill': 'none',
 }
 
 export const SVGScriptCode: SvgIcon = ({ className }) => (
@@ -205,7 +205,7 @@ export const SVGClose: SvgIcon = ({ className }) => (
   <svg {...defaultProps} className={className} viewBox="0 0 24 24">
     <path
       d="M6.39941 18.3079L5.69141 17.5999L11.2914 11.9999L5.69141 6.39989L6.39941 5.69189L11.9994 11.2919L17.5994 5.69189L18.3074 6.39989L12.7074 11.9999L18.3074 17.5999L17.5994 18.3079L11.9994 12.7079L6.39941 18.3079Z"
-      fill="#363636"
+      fill="#7469a8"
     />
   </svg>
 )
@@ -220,6 +220,13 @@ export const SVGMarkSuccess: SvgIcon = ({ className }) => (
       d="M30 0C13.425 0 0 13.425 0 30C0 46.575 13.425 60 30 60C46.575 60 60 46.575 60 30C60 13.425 46.575 0 30 0ZM3.75 30C3.75 15.4875 15.4875 3.75 30 3.75C44.5125 3.75 56.25 15.4875 56.25 30C56.25 44.5125 44.5125 56.25 30 56.25C15.4875 56.25 3.75 44.5125 3.75 30Z"
       fill="#4AB7A5"
     />
+  </svg>
+)
+
+export const SVGMarkStatusSmall: SvgIcon = ({ className }) => (
+  <svg {...defaultProps} className={className} viewBox="0 0 24 24">
+    <path d="m17.102 10.275c0.1367-0.1414 0.2123-0.33086 0.2106-0.52751-0.0018-0.19665-0.0806-0.38476-0.2197-0.52381-0.139-0.13906-0.3272-0.21794-0.5238-0.21965-0.1966-0.0017-0.3861 0.07389-0.5276 0.21051l-5.475 5.475-2.475-2.475c-0.14145-0.1366-0.33091-0.2122-0.52755-0.2105-0.19665 0.0017-0.38476 0.0806-0.52382 0.2197-0.13905 0.139-0.21793 0.3271-0.21964 0.5238-0.00171 0.1966 0.07389 0.3861 0.21051 0.5275l3 3c0.1407 0.1406 0.3314 0.2196 0.5303 0.2196s0.3896-0.079 0.5302-0.2196l6-6h0.0105z" />
+    <path d="m12 0c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12-5.37-12-12-12zm-10.5 12c0-5.805 4.695-10.5 10.5-10.5s10.5 4.695 10.5 10.5-4.695 10.5-10.5 10.5-10.5-4.695-10.5-10.5z" />
   </svg>
 )
 

@@ -1,12 +1,8 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import type { ApiErrorResponse } from 'publisher-tools-api'
 import type { WalletAddress } from '@interledger/open-payments'
-import {
-  checkHrefFormat,
-  getWalletAddress,
-  normalizeWalletAddress,
-  toWalletAddressUrl
-} from '@shared/utils'
+import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
@@ -59,20 +55,26 @@ export class PaymentWidget extends LitElement {
       return
     }
 
-    let walletAddressInfo: WalletAddress
     try {
+      const { apiUrl } = this.configController.config
       const walletAddressUrl = checkHrefFormat(
-        toWalletAddressUrl(walletAddress)
+        toWalletAddressUrl(walletAddress),
       )
 
-      walletAddressInfo = await getWalletAddress(walletAddressUrl)
+      const url = new URL('/wallet', apiUrl)
+      url.searchParams.set('walletAddress', walletAddressUrl)
+
+      const response = await fetch(url)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error((data as ApiErrorResponse).error?.message)
+      }
 
       this.configController.updateState({
-        walletAddress: {
-          ...walletAddressInfo,
-          id: normalizeWalletAddress(walletAddressInfo)
-        }
+        walletAddress: data as WalletAddress,
       })
+
       this.walletAddressError = ''
       this.currentView = 'confirmation'
     } catch (error) {
@@ -93,8 +95,8 @@ export class PaymentWidget extends LitElement {
       new CustomEvent('widget-toggle', {
         detail: { isOpen: this.isOpen },
         bubbles: true,
-        composed: true
-      })
+        composed: true,
+      }),
     )
   }
 
@@ -137,8 +139,8 @@ export class PaymentWidget extends LitElement {
         assetScale: 2,
         authServer: 'https://auth.interledger.cards',
         resourceServer: 'https://ilp.dev',
-        publicName: 'Wallet (Preview)'
-      }
+        publicName: 'Wallet (Preview)',
+      },
     })
     this.currentView = 'confirmation'
   }

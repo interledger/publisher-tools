@@ -6,7 +6,7 @@ import {
   shift,
   autoUpdate,
   size,
-  arrow
+  arrow,
 } from '@floating-ui/react-dom'
 import { SVGTooltip } from '../../../assets/svg'
 
@@ -30,7 +30,7 @@ export function Tooltip({ children, label }: TooltipProps) {
       offset(VIEWPORT_PADDING * 2),
       flip({
         fallbackPlacements: ['top', 'bottom'],
-        padding: VIEWPORT_PADDING
+        padding: VIEWPORT_PADDING,
       }),
       shift({ padding: VIEWPORT_PADDING }),
       size({
@@ -38,14 +38,14 @@ export function Tooltip({ children, label }: TooltipProps) {
           const maxWidth = Math.min(availableWidth, MAX_TOOLTIP_WIDTH)
           Object.assign(elements.floating.style, {
             maxWidth: `${maxWidth}px`,
-            width: 'auto'
+            width: 'auto',
           })
         },
-        padding: VIEWPORT_PADDING
+        padding: VIEWPORT_PADDING,
       }),
-      arrow({ element: arrowRef })
+      arrow({ element: arrowRef }),
     ],
-    whileElementsMounted: autoUpdate
+    whileElementsMounted: autoUpdate,
   })
   const { x: arrowX, y: arrowY } = middlewareData.arrow ?? {}
 
@@ -84,7 +84,7 @@ export function Tooltip({ children, label }: TooltipProps) {
           style={{
             position: strategy,
             top: y,
-            left: x
+            left: x,
           }}
           className="relative z-50 p-md bg-interface-tooltip rounded-lg shadow-lg text-white text-xs sm:text-sm"
         >
@@ -97,17 +97,17 @@ export function Tooltip({ children, label }: TooltipProps) {
               left: arrowX,
               top: arrowY,
               ...(placement.startsWith('top') && {
-                bottom: `-${ARROW_HEIGHT}px`
+                bottom: `-${ARROW_HEIGHT}px`,
               }),
               ...(placement.startsWith('bottom') && {
-                top: `-${ARROW_HEIGHT}px`
+                top: `-${ARROW_HEIGHT}px`,
               }),
               ...(placement.startsWith('right') && {
-                left: `-${ARROW_HEIGHT}px`
+                left: `-${ARROW_HEIGHT}px`,
               }),
               ...(placement.startsWith('left') && {
-                right: `-${ARROW_HEIGHT}px`
-              })
+                right: `-${ARROW_HEIGHT}px`,
+              }),
             }}
           />
         </div>

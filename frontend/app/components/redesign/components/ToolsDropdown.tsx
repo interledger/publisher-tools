@@ -7,8 +7,10 @@ export type DropdownOption = {
   value: string
 }
 
-interface ToolsDropdownProps
-  extends Omit<React.ComponentPropsWithRef<'div'>, 'onChange'> {
+interface ToolsDropdownProps extends Omit<
+  React.ComponentPropsWithRef<'div'>,
+  'onChange'
+> {
   options: DropdownOption[]
   label?: string
   error?: string
@@ -33,7 +35,7 @@ export function ToolsDropdown({
   disabled = false,
   name,
   ref,
-  className = ''
+  className = '',
 }: ToolsDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
@@ -42,7 +44,7 @@ export function ToolsDropdown({
 
   const selectedOption = useMemo(
     () => options.find((opt) => opt.value === defaultValue),
-    [defaultValue, options]
+    [defaultValue, options],
   )
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export function ToolsDropdown({
               ? 'text-text-error'
               : isFocused
                 ? 'text-purple-600'
-                : 'text-silver-800'
+                : 'text-silver-800',
           )}
         >
           {label}
@@ -117,7 +119,7 @@ export function ToolsDropdown({
                 : isFocused
                   ? 'border-field-border-focus'
                   : 'border-field-border hover:border-field-border-hover',
-            'focus:outline-none'
+            'focus:outline-none',
           )}
           disabled={disabled}
           aria-expanded={isOpen}
@@ -132,7 +134,7 @@ export function ToolsDropdown({
                     ? 'fill-text-disabled'
                     : selectedOption
                       ? 'fill-text-primary'
-                      : 'fill-text-placeholder'
+                      : 'fill-text-placeholder',
                 )}
               />
             </span>
@@ -144,7 +146,7 @@ export function ToolsDropdown({
                   ? 'text-text-disabled'
                   : selectedOption
                     ? 'text-text-primary'
-                    : 'text-text-placeholder'
+                    : 'text-text-placeholder',
               )}
             >
               {selectedOption ? selectedOption.label : placeholder}
@@ -154,13 +156,13 @@ export function ToolsDropdown({
           <span
             className={cx(
               'flex items-center justify-center transition-transform duration-200',
-              isOpen ? 'rotate-180' : ''
+              isOpen ? 'rotate-180' : '',
             )}
           >
             <SVGArrowDropdown
               className={cx(
                 'w-5 h-5',
-                disabled ? 'fill-text-disabled' : 'fill-text-primary'
+                disabled ? 'fill-text-disabled' : 'fill-text-primary',
               )}
             />
           </span>
@@ -182,7 +184,7 @@ export function ToolsDropdown({
                       'w-full text-left px-md py-xs text-sm leading-5 text-text-primary hover:bg-purple-50 rounded-xs',
                       selectedOption?.value === option.value
                         ? 'font-medium'
-                        : 'font-normal'
+                        : 'font-normal',
                     )}
                   >
                     {option.label}

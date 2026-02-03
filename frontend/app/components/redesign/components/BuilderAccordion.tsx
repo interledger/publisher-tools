@@ -22,7 +22,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   onToggle,
   onRefresh,
   onDone,
-  children
+  children,
 }) => {
   const [isOpen, setIsOpen] = useState(initialIsOpen)
 
@@ -44,7 +44,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
       className={cx(
         'flex flex-col rounded-lg relative',
         'transition-transform duration-300 ease-in-out',
-        isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main'
+        isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main',
       )}
       onToggle={handleToggle}
     >
@@ -52,7 +52,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         className={cx(
           'flex gap-xs items-center cursor-pointer list-none',
           'transition-all duration-300 ease-in-out',
-          isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs'
+          isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs',
         )}
       >
         {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
