@@ -24,7 +24,7 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@tools/components": "workspace:*",
     "@typescript-eslint/parser": "^8.44.1",
-    "autoprefixer": "^10.4.23",
+    "autoprefixer": "^10.4.24",
     "class-variance-authority": "^0.7.1",
     "crypto-browserify": "^3.12.1",
     "fast-equals": "^5.4.0",
