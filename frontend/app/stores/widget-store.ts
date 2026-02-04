@@ -1,14 +1,14 @@
 import { proxy, snapshot, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
-import { createDefaultBannerProfile } from '@shared/default-data'
+import { createDefaultWidgetProfile } from '@shared/default-data'
 import {
   type ProfileId,
-  type BannerProfile,
+  type WidgetProfile,
   type ToolProfiles,
   type Tool,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
-  TOOL_BANNER,
+  TOOL_WIDGET,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
@@ -16,22 +16,22 @@ import { splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
 
-export type BannerStore = ReturnType<typeof createBannerStore>
+export type WidgetStore = ReturnType<typeof createWidgetStore>
 
-const createProfileStoreBanner = (profileName: string) =>
-  proxy(createDefaultBannerProfile(profileName))
+const createProfileStoreWidget = (profileName: string) =>
+  proxy(createDefaultWidgetProfile(profileName))
 
-function createBannerStore() {
+function createWidgetStore() {
   return proxy({
     profiles: Object.fromEntries(
       PROFILE_IDS.map((id) => [
         id,
-        createProfileStoreBanner(DEFAULT_PROFILE_NAMES[id]),
+        createProfileStoreWidget(DEFAULT_PROFILE_NAMES[id]),
       ]),
-    ) as Record<ProfileId, BannerProfile>,
+    ) as Record<ProfileId, WidgetProfile>,
     profilesUpdate: proxySet<ProfileId>(),
 
-    get profile(): BannerProfile {
+    get profile(): WidgetProfile {
       return this.profiles[toolState.activeTab]
     },
     get profileTabs() {
@@ -44,39 +44,38 @@ function createBannerStore() {
   })
 }
 
-export function useBannerProfile(options?: {
+export function useWidgetProfile(options?: {
   sync: boolean
-}): [BannerProfile, BannerProfile] {
-  // https://github.com/pmndrs/valtio/issues/132
-  const snapshot = useSnapshot(banner.profile, options)
-  return [snapshot, banner.profile]
+}): [WidgetProfile, WidgetProfile] {
+  const snapshot = useSnapshot(widget.profile, options)
+  return [snapshot, widget.profile]
 }
 
-export const banner = createBannerStore()
+export const widget = createWidgetStore()
 
-const snapshots = new Map<ProfileId, BannerProfile>(
+const snapshots = new Map<ProfileId, WidgetProfile>(
   PROFILE_IDS.map((id) => [
     id,
-    createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id]),
+    createDefaultWidgetProfile(DEFAULT_PROFILE_NAMES[id]),
   ]),
 )
 
-const bannerStoreUtils = createToolStoreUtils({
-  tool: TOOL_BANNER,
-  store: banner,
+const widgetStoreUtils = createToolStoreUtils({
+  tool: TOOL_WIDGET,
+  store: widget,
   snapshots,
 })
 
-const { snapshotsStorageKey } = getStorageKeys(TOOL_BANNER)
+const { snapshotsStorageKey } = getStorageKeys(TOOL_WIDGET)
 
 export const actions = {
   setProfileName(name: string) {
-    banner.profiles[toolState.activeTab].$name = name
+    widget.profiles[toolState.activeTab].$name = name
   },
-  setProfiles(profiles: ToolProfiles<'banner'>) {
+  setProfiles(profiles: ToolProfiles<'widget'>) {
     if (!profiles) return
     Object.entries(profiles).forEach(([profileId, profile]) => {
-      Object.assign(banner.profiles[profileId as ProfileId], profile)
+      Object.assign(widget.profiles[profileId as ProfileId], profile)
     })
   },
   async getProfiles(tool: Tool): Promise<ToolProfiles<Tool>> {
@@ -85,9 +84,9 @@ export const actions = {
   },
   resetProfiles() {
     PROFILE_IDS.forEach((id) => {
-      const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
+      const profile = createDefaultWidgetProfile(DEFAULT_PROFILE_NAMES[id])
       snapshots.set(id, profile)
-      Object.assign(banner.profiles[id], profile)
+      Object.assign(widget.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
@@ -97,26 +96,26 @@ export const actions = {
     }
 
     const { content, appearance } = splitProfileProperties(snapshot)
-    Object.assign(banner.profile, section === 'content' ? content : appearance)
+    Object.assign(widget.profile, section === 'content' ? content : appearance)
   },
   async saveProfile(): Promise<SaveResult> {
-    const profile = snapshot(banner.profile)
+    const profile = snapshot(widget.profile)
     const { walletAddress, activeTab } = toolState
-    return await saveToolProfile(walletAddress, TOOL_BANNER, profile, activeTab)
+    return await saveToolProfile(walletAddress, TOOL_WIDGET, profile, activeTab)
   },
   commitProfile() {
-    const profile = snapshot(banner.profile)
+    const profile = snapshot(widget.profile)
     snapshots.set(toolState.activeTab, profile)
-    banner.profilesUpdate.delete(toolState.activeTab)
+    widget.profilesUpdate.delete(toolState.activeTab)
 
     const snaps = Object.fromEntries(snapshots.entries())
     localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
   },
   commitProfiles() {
     PROFILE_IDS.forEach((id) => {
-      const profile = snapshot(banner.profiles[id])
+      const profile = snapshot(widget.profiles[id])
       snapshots.set(id, profile)
-      banner.profilesUpdate.delete(id)
+      widget.profilesUpdate.delete(id)
     })
 
     const snaps = Object.fromEntries(snapshots.entries())
@@ -130,4 +129,4 @@ export const {
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToUpdates,
-} = bannerStoreUtils
+} = widgetStoreUtils
