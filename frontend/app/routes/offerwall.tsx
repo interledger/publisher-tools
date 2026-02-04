@@ -20,7 +20,10 @@ export default function Offerwall() {
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore title="Offerwall" onBackClick={() => navigate('/')}>
+          <HeadingCore
+            title="Offerwall experience"
+            onBackClick={() => navigate('/')}
+          >
             The Offerwall experience helps visitors who don’t yet have Web
             Monetization enabled discover it and support your content.
           </HeadingCore>
