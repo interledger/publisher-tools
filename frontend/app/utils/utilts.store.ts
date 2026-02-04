@@ -72,7 +72,7 @@ export function createToolStoreUtils<T extends Tool>(
 
   function subscribeProfileToStorage(profileId: ProfileId) {
     const profile = store.profiles[profileId]
-    subscribe(profile, () => {
+    return subscribe(profile, () => {
       const snap = snapshot(profile)
       localStorage.setItem(
         getProfileStorageKey(profileId),
@@ -92,7 +92,7 @@ export function createToolStoreUtils<T extends Tool>(
 
   function subscribeProfileToUpdates(id: ProfileId) {
     const profile = store.profiles[id]
-    subscribe(profile, () => {
+    return subscribe(profile, () => {
       const snap = snapshot(profile) as ToolProfile<T>
       if (hasPendingUpdates(id, snap)) {
         store.profilesUpdate.add(id)
@@ -104,7 +104,8 @@ export function createToolStoreUtils<T extends Tool>(
 
   return {
     subscribeProfilesToStorage() {
-      PROFILE_IDS.forEach(subscribeProfileToStorage)
+      const unsubscribes = PROFILE_IDS.map(subscribeProfileToStorage)
+      return () => unsubscribes.forEach((s) => s())
     },
 
     hydrateProfilesFromStorage() {
@@ -148,7 +149,8 @@ export function createToolStoreUtils<T extends Tool>(
     },
 
     subscribeProfilesToUpdates() {
-      PROFILE_IDS.forEach(subscribeProfileToUpdates)
+      const unsubscribes = PROFILE_IDS.map(subscribeProfileToUpdates)
+      return () => unsubscribes.forEach((s) => s())
     },
 
     resetSnapshots() {
