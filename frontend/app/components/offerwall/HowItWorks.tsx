@@ -55,8 +55,8 @@ export default function HowItWorks() {
           If you have a Google Ad Manager account you can add Web Monetization
           to your Offerwall.
           <br />
-          Customize the user choice screen here, then copy the script into your
-          Offerwall&apos;s custom choice option.
+          Customize the user choice screen here, then copy the generated script
+          and add it to your website.
         </BodyStandard>
       </header>
 
