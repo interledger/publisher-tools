@@ -101,7 +101,7 @@ function extract<R, T = ElementConfigType, K = keyof T>(
     ([key]) => filter(key as K),
   )
   if (!entries.length) {
-    throw new Error('No matching profile found')
+    return {} as R
   }
   return Object.fromEntries(entries) as R
 }

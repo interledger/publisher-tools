@@ -77,8 +77,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     if (!validForWallet || validForWallet !== walletAddressData.id) {
       const baseUrl = url.origin + APP_BASEPATH
-      //TODO: use `${tool}` not hardcoded 'banner-two' after versioning update
-      const redirectUrl = `${baseUrl}/api/grant/banner-two/`
+      const redirectUrl = `${baseUrl}/api/grant/${tool}/`
 
       const grant = await createInteractiveGrant(env, {
         walletAddress: walletAddressData,
@@ -123,9 +122,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
       ...configLegacy,
       [profileId]: {
         ...getDefaultData(),
+        ...configLegacy?.[profileId],
         ...sanitizedProfile,
         walletAddress: walletAddressId,
-        versionName: sanitizedProfile.$name,
       },
     })
 
