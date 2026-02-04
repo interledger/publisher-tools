@@ -70,7 +70,7 @@ export default function HowItWorks() {
         />
         <Step
           image={step2}
-          description="Copy your customization into your Offerwall"
+          description="Copy your custom script into your website"
           showNext
         />
         <Step
