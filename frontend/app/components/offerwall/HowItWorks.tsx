@@ -4,9 +4,12 @@ import step1 from '~/assets/images/offerwall/illustration_offerwall_step1.svg'
 import step2 from '~/assets/images/offerwall/illustration_offerwall_step2.svg'
 import step3 from '~/assets/images/offerwall/illustration_offerwall_step3.svg'
 
-const StepArrow = ({ className }: { className?: string }) => (
+const StepArrow = () => (
   // adapts length to the container
-  <div className={`flex items-center ${className}`} aria-hidden="true">
+  <div
+    className="flex h-[56px] w-[56px] shrink-0 rotate-90 items-center self-center xl:h-auto xl:w-[187px] xl:rotate-0"
+    aria-hidden="true"
+  >
     <div className="size-[10px] shrink-0 rounded-full bg-[#9CD6CB]" />
     <div className="h-[2px] flex-1 bg-gradient-to-r from-[#9CD6CB] via-[#F2797F] to-[#7F76B2]" />
     <div className="size-0 shrink-0 border-y-[5px] border-l-[7px] border-y-transparent border-l-[#7F76B2]" />
@@ -31,9 +34,7 @@ const Step: React.FC<StepProps> = ({
         {description}
       </BodyEmphasis>
     </div>
-    {showNext && (
-      <StepArrow className="h-[56px] w-[56px] shrink-0 rotate-90 self-center xl:h-auto xl:w-[187px] xl:rotate-0" />
-    )}
+    {showNext && <StepArrow />}
   </li>
 )
 
