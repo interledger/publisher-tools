@@ -17,8 +17,8 @@ import {
   SVGText,
 } from '~/assets/svg'
 import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
-import { useCurrentConfig } from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
+import { useWidgetProfile } from '~/stores/widget-store'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -55,7 +55,7 @@ export function WidgetBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfig({ sync: true })
+  const [snap, profile] = useWidgetProfile({ sync: true })
 
   return (
     <BuilderAccordion
@@ -102,7 +102,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfig()
+  const [snap, profile] = useWidgetProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.widgetFontName,

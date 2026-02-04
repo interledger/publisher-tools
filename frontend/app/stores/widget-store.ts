@@ -5,7 +5,6 @@ import {
   type ProfileId,
   type WidgetProfile,
   type ToolProfiles,
-  type Tool,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOL_WIDGET,

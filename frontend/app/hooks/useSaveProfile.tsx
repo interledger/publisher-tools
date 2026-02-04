@@ -4,10 +4,23 @@ import {
   ScriptDialog,
   GrantConfirmationDialog,
 } from '@/components'
+import { TOOL_BANNER, TOOL_WIDGET } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
-import { actions } from '~/stores/banner-store'
+import { actions as bannerActions } from '~/stores/banner-store'
 import { toolState } from '~/stores/toolStore'
+import { actions as widgetActions } from '~/stores/widget-store'
+
+function getToolActions() {
+  switch (toolState.currentToolType) {
+    case TOOL_BANNER:
+      return bannerActions
+    case TOOL_WIDGET:
+      return widgetActions
+    default:
+      throw new Error(`Unsupported tool type: ${toolState.currentToolType}`)
+  }
+}
 
 export const useSaveProfile = () => {
   const [openDialog, closeDialog] = useDialog()
@@ -15,7 +28,7 @@ export const useSaveProfile = () => {
   const save = useCallback(
     async (action: 'save-success' | 'script'): Promise<void> => {
       toolState.lastSaveAction = action
-
+      const actions = getToolActions()
       try {
         const result = await actions.saveProfile()
 

@@ -134,9 +134,9 @@ export const toolActions = {
   },
   async getToolProfiles<T extends Tool>(): Promise<ToolProfiles<T>> {
     switch (toolState.currentToolType) {
-      case 'banner':
+      case TOOL_BANNER:
         return (await bannerActions.getProfiles(TOOL_BANNER)) as ToolProfiles<T>
-      case 'widget':
+      case TOOL_WIDGET:
         return (await widgetActions.getProfiles(TOOL_WIDGET)) as ToolProfiles<T>
 
       default:
@@ -147,11 +147,13 @@ export const toolActions = {
     if (!profiles) return
 
     switch (toolState.currentToolType) {
-      case 'banner':
+      case TOOL_BANNER:
         bannerActions.setProfiles(profiles as ToolProfiles<'banner'>)
+        bannerActions.commitProfiles()
         break
-      case 'widget':
+      case TOOL_WIDGET:
         widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
+        widgetActions.commitProfiles()
         break
 
       default:
