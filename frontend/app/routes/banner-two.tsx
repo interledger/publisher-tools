@@ -95,13 +95,18 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    subscribeProfilesToUpdates()
+    const unsubscribeUpdates = subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
-    subscribeProfilesToStorage()
+    const unsubscribeStorage = subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
+
+    return () => {
+      unsubscribeStorage()
+      unsubscribeUpdates()
+    }
   }, [OP_WALLET_ADDRESS])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
