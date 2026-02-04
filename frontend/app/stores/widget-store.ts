@@ -78,7 +78,7 @@ export const actions = {
       Object.assign(widget.profiles[profileId as ProfileId], profile)
     })
   },
-  async getProfiles(tool: Tool): Promise<ToolProfiles<Tool>> {
+  async getProfiles(tool: typeof TOOL_WIDGET): Promise<ToolProfiles<'widget'>> {
     const { walletAddress } = toolState
     return await getToolProfiles(walletAddress, tool)
   },
