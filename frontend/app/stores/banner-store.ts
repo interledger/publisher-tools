@@ -13,7 +13,7 @@ import {
 import type { SaveResult } from '~/lib/types'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { splitProfileProperties } from '~/utils/utils.storage'
-import { createToolStoreUtils, getStorageKeys } from './tool-store-utils'
+import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
 
 export type BannerStore = ReturnType<typeof createBannerStore>
