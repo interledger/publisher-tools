@@ -158,7 +158,7 @@ function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
     return profile
   } catch (error) {
     console.warn(
-      `Failed to load profile ${profileId} from localStorage:`,
+      `Failed to load profile ${profileId} from localStorage: `,
       error,
     )
     localStorage.removeItem(storageKey)
