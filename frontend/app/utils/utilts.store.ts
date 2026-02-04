@@ -81,10 +81,7 @@ export function createToolStoreUtils<T extends Tool>(
     })
   }
 
-  function checkForPendingUpdates(
-    id: ProfileId,
-    snap: ToolProfile<T>,
-  ): boolean {
+  function hasPendingUpdates(id: ProfileId, snap: ToolProfile<T>): boolean {
     const baseline = snapshots.get(id)
     if (!baseline) {
       return false
@@ -97,7 +94,7 @@ export function createToolStoreUtils<T extends Tool>(
     const profile = store.profiles[id]
     subscribe(profile, () => {
       const snap = snapshot(profile) as ToolProfile<T>
-      if (checkForPendingUpdates(id, snap)) {
+      if (hasPendingUpdates(id, snap)) {
         store.profilesUpdate.add(id)
       } else {
         store.profilesUpdate.delete(id)
