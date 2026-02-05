@@ -111,7 +111,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useBannerProfile({ sync: true })
+  const [snap, profile] = useBannerProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,

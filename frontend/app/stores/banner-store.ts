@@ -5,7 +5,6 @@ import {
   type ProfileId,
   type BannerProfile,
   type ToolProfiles,
-  type Tool,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOL_BANNER,
@@ -93,7 +92,7 @@ export const actions = {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   },
-  async getProfiles(tool: Tool): Promise<ToolProfiles<Tool>> {
+  async getProfiles(tool: typeof TOOL_BANNER): Promise<ToolProfiles<'banner'>> {
     const { walletAddress } = toolState
     return await getToolProfiles(walletAddress, tool)
   },

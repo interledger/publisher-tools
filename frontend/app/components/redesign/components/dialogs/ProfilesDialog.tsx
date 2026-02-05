@@ -8,11 +8,8 @@ import {
 import type { Tool, ToolProfiles } from '@shared/types'
 import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
-import { actions as bannerActions } from '~/stores/banner-store'
-import { toolActions, toolState } from '~/stores/toolStore'
+import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
-import { convertToConfigsLegacy } from '~/utils/profile-converter'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
@@ -28,7 +25,6 @@ export const ProfilesDialog: React.FC<Props> = ({
 }) => {
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
-  const { saveLastAction } = useSaveConfig()
   const [, closeDialog] = useDialog()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
@@ -124,19 +120,9 @@ export const ProfilesDialog: React.FC<Props> = ({
         }
       })
 
-      if (toolState.currentToolType === 'banner') {
-        // let user save last action for banner separately on banner
-        bannerActions.setProfiles(mergedProfiles as ToolProfiles<'banner'>)
-        closeDialog()
-      } else {
-        toolActions.setConfigs(
-          convertToConfigsLegacy(
-            toolState.walletAddressId,
-            mergedProfiles as ToolProfiles<Tool>,
-          ),
-        )
-        await saveLastAction()
-      }
+      // let user save last action for banner separately
+      toolActions.setToolProfiles<Tool>(mergedProfiles)
+      closeDialog()
 
       toolActions.setHasRemoteConfigs(true)
       toolActions.setWalletConnected(true)

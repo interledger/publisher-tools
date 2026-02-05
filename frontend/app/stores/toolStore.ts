@@ -2,9 +2,18 @@ import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type { ElementConfigType, ProfileId } from '@shared/types'
+import {
+  type ElementConfigType,
+  type Tool,
+  type ProfileId,
+  type ToolProfiles,
+  TOOL_BANNER,
+  TOOL_WIDGET,
+} from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
+import { actions as bannerActions } from '~/stores/banner-store'
+import { actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
 import { captureSnapshotsToStorage } from './banner-store'
 
@@ -122,6 +131,34 @@ export const toolActions = {
   },
   setActiveTab(profileId: ProfileId) {
     toolState.activeTab = profileId
+  },
+  async getToolProfiles<T extends Tool>(): Promise<ToolProfiles<T>> {
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        return (await bannerActions.getProfiles(TOOL_BANNER)) as ToolProfiles<T>
+      case TOOL_WIDGET:
+        return (await widgetActions.getProfiles(TOOL_WIDGET)) as ToolProfiles<T>
+
+      default:
+        break
+    }
+  },
+  setToolProfiles<T extends Tool>(profiles: ToolProfiles<T>) {
+    if (!profiles) return
+
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        bannerActions.setProfiles(profiles as ToolProfiles<'banner'>)
+        bannerActions.commitProfiles()
+        break
+      case TOOL_WIDGET:
+        widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
+        widgetActions.commitProfiles()
+        break
+
+      default:
+        break
+    }
   },
   /** legacy backwards compatibility */
   setConfigs: (
