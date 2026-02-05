@@ -68,7 +68,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     const { walletAddress, profileId, tool, profile } = parsed.data
-    const sanitizedProfile = sanitizeProfileFields(profile, tool)
+    const sanitizedProfile = sanitizeProfileFields(profile)
 
     // TODO: use walletAddress from walletSchema after updating it to .transform()
     const walletAddressData = await getWalletAddress(walletAddress)
