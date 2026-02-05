@@ -6,7 +6,6 @@ import type {
   ElementConfigType,
   Configuration,
   WidgetConfig,
-  BannerConfig,
   ToolProfile,
 } from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
@@ -15,10 +14,11 @@ function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
 ): ToolProfile<T> {
+  const now = new Date().toISOString()
   return {
     $version: '0.0.1',
     $name: config.versionName,
-    $modifiedAt: '',
+    $modifiedAt: now,
     ...getToolProfile(config, tool),
   } as ToolProfile<T>
 }
@@ -68,10 +68,12 @@ export function convertToConfiguration<T extends Tool>(
   tool: T,
   walletAddress: string,
 ): Configuration {
+  const now = new Date().toISOString()
   return {
     $walletAddress: walletAddress,
-    $createdAt: '',
-    $modifiedAt: '',
+    $walletAddressId: walletAddress,
+    $createdAt: now,
+    $modifiedAt: now,
     [tool]: convertToProfiles<T>(configuration, tool),
   }
 }
@@ -85,10 +87,33 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         (key) => key.startsWith('widget') || key.includes('Widget'),
       )
     case 'banner':
-      return extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      )
+      return {
+        title: {
+          text: profile.bannerTitleText,
+        },
+        description: {
+          text: profile.bannerDescriptionText,
+          isVisible: profile.bannerDescriptionVisible,
+        },
+        font: {
+          name: profile.bannerFontName,
+          size: profile.bannerFontSize,
+        },
+        animation: {
+          type: profile.bannerSlideAnimation,
+        },
+        position: profile.bannerPosition,
+        border: {
+          type: profile.bannerBorder,
+        },
+        color: {
+          text: profile.bannerTextColor,
+          background: profile.bannerBackgroundColor,
+        },
+        thumbnail: {
+          value: profile.bannerThumbnail,
+        },
+      }
   }
 }
 

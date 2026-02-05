@@ -18,7 +18,7 @@ export function omit<T extends Record<string, unknown>>(
 
 export function splitProfileProperties(profile: BannerProfile | WidgetProfile) {
   const { content = [], appearance = [] } = groupBy(
-    Object.entries(profile),
+    Object.entries(profile).filter(([key]) => !key.startsWith('$')),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance'),
   )
 
@@ -29,7 +29,7 @@ export function splitProfileProperties(profile: BannerProfile | WidgetProfile) {
 }
 
 function isContentProperty(key: string): boolean {
-  return key.endsWith('Text') || key.endsWith('Visible')
+  return key.endsWith('title') || key.endsWith('description')
 }
 
 // TODO: remove with versioning changes
