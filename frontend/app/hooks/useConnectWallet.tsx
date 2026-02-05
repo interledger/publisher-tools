@@ -7,6 +7,7 @@ import { toolActions, toolState } from '~/stores/toolStore'
 import { widget } from '~/stores/widget-store'
 
 function getLegacyOptions() {
+  //TODO: refactor ProfilesDialog and remove legacy options
   if (toolState.currentToolType === 'banner') {
     return {
       hasConflicts: banner.profilesUpdate.size > 0,
