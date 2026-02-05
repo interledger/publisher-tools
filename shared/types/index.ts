@@ -87,38 +87,6 @@ export type ToolProfile<T extends Tool> = {
   widget: WidgetProfile
 }[T]
 
-export type WidgetFontSize = '3xs' | BannerFontSize | '3xl'
-
-export const BANNER_FONT_SIZE_MAP = {
-  '2xs': 16,
-  'xs': 17,
-  'sm': 18,
-  'md': 19,
-  'base': 20,
-  'lg': 21,
-  '2lg': 22,
-  'xl': 23,
-  '2xl': 24,
-} as const
-
-export const BANNER_FONT_SIZE_KEYS = Object.keys(
-  BANNER_FONT_SIZE_MAP,
-) as (keyof typeof BANNER_FONT_SIZE_MAP)[]
-
-export type BannerFontSize = (typeof BANNER_FONT_SIZE_KEYS)[number]
-
-export const BANNER_FONT_SIZE_REVERSE_MAP: Record<number, BannerFontSize> = {
-  16: '2xs',
-  17: 'xs',
-  18: 'sm',
-  19: 'md',
-  20: 'base',
-  21: 'lg',
-  22: '2lg',
-  23: 'xl',
-  24: '2xl',
-}
-
 export interface BaseToolProfile {
   $version: string
   $name: string
@@ -239,31 +207,3 @@ export const FONT_FAMILY_OPTIONS = [
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]
-
-export type HexString = string
-export type GradientCssString = string
-
-export type TextColor = HexString
-export type Background = HexString | { gradient: GradientCssString }
-
-export function bannerFontSizeToNumber(size: BannerFontSize): number {
-  return BANNER_FONT_SIZE_MAP[size]
-}
-
-export function numberToBannerFontSize(value: number): BannerFontSize {
-  const clamped = Math.max(
-    BANNER_FONT_SIZES.min,
-    Math.min(BANNER_FONT_SIZES.max, value),
-  )
-  return BANNER_FONT_SIZE_REVERSE_MAP[clamped] ?? 'base'
-}
-
-export function isBackgroundGradient(
-  background: Background,
-): background is { gradient: GradientCssString } {
-  return (
-    typeof background === 'object' &&
-    background !== null &&
-    'gradient' in background
-  )
-}
