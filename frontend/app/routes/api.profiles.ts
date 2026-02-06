@@ -5,6 +5,7 @@ import { AWS_PREFIX } from '@shared/defines'
 import type { ConfigVersions, Tool } from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
 import { convertToProfiles } from '~/utils/profile-converter'
 import { walletSchema } from '~/utils/validate.server'
@@ -29,10 +30,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       return data<GetProfilesResult<Tool>>(
         {
           error: {
-            message: 'Validation failed',
+            message: 'Failed to get profiles',
             cause: {
-              message: 'One or more fields failed validation',
-              errors: { field: z.prettifyError(parsed.error) },
+              message: INVALID_PAYLOAD_ERROR,
+              errors: { reason: z.prettifyError(parsed.error) },
             },
           },
         },

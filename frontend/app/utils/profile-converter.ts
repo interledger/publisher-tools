@@ -24,14 +24,16 @@ function convertToProfile<T extends Tool>(
 }
 
 /** @legacy */
-function convertToConfigLegacy<T extends Tool>(
+export function convertToConfigLegacy<T extends Tool>(
   walletAddress: string,
   profile: ToolProfile<T>,
 ): ElementConfigType {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { $name, $version, $modifiedAt, ...rest } = profile
   return {
     walletAddress,
-    versionName: profile.$name,
-    ...profile,
+    versionName: $name,
+    ...rest,
   } as unknown as ElementConfigType
 }
 
