@@ -14,6 +14,22 @@ import {
   WIDGET_DESCRIPTION_MAX_LENGTH,
 } from '@shared/types'
 
+const hexColorSchema = z
+  .string()
+  .min(1)
+  .regex(/^#?[0-9a-fA-F]{3,8}$/, { message: 'Invalid color format' })
+
+const versionSchema = z
+  .string()
+  .min(1)
+  .regex(/^[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z0-9.-]*$/, {
+    message: 'Invalid version format',
+  })
+
+const assetNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
+
 const bannerFontSizeError = {
   message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`,
 }
@@ -21,6 +37,7 @@ const widgetFontSizeError = {
   message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`,
 }
 
+/** @deprecated */
 export const buttonFieldsSchema = z.object({
   buttonFontName: z.string().min(1, { message: 'Choose a font' }),
   buttonText: z.string().min(1, { message: 'Button label cannot be empty' }),
@@ -44,18 +61,18 @@ export const bannerFieldsSchema = z.object({
     message: 'Description is too long',
   }),
   bannerDescriptionVisible: z.coerce.boolean(),
-  bannerTextColor: z.string().min(6),
-  bannerBackgroundColor: z.string().min(6),
+  bannerTextColor: hexColorSchema,
+  bannerBackgroundColor: hexColorSchema,
   bannerSlideAnimation: z.enum(SLIDE_ANIMATION),
-  bannerThumbnail: z.string(),
+  bannerThumbnail: assetNameSchema,
   bannerPosition: z.enum(BANNER_POSITION),
   bannerBorder: z.enum(CORNER_OPTION),
 })
 
 export const BannerProfileSchema = z.object({
   ...bannerFieldsSchema.shape,
-  $version: z.string(),
-  $name: z.string(),
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<BannerProfile>
 
 /** @legacy */
@@ -81,16 +98,16 @@ export const widgetFieldsSchema = z.object({
     .string()
     .min(1, { message: 'Button text cannot be empty' }),
   widgetButtonBorder: z.enum(CORNER_OPTION),
-  widgetButtonBackgroundColor: z.string().min(1),
-  widgetButtonTextColor: z.string().min(1),
-  widgetTextColor: z.string().min(1),
-  widgetBackgroundColor: z.string().min(1),
-  widgetTriggerBackgroundColor: z.string().min(1),
-  widgetTriggerIcon: z.string(),
+  widgetButtonBackgroundColor: hexColorSchema,
+  widgetButtonTextColor: hexColorSchema,
+  widgetTextColor: hexColorSchema,
+  widgetBackgroundColor: hexColorSchema,
+  widgetTriggerBackgroundColor: hexColorSchema,
+  widgetTriggerIcon: assetNameSchema,
 })
 
 export const WidgetProfileSchema = z.object({
   ...widgetFieldsSchema.shape,
-  $version: z.string(),
-  $name: z.string(),
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<WidgetProfile>
