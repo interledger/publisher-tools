@@ -43,3 +43,14 @@ jobs:
         uses: ./.github/workflows/setup
       - name: Check format
         run: pnpm format:check
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Environment setup
+        uses: ./.github/workflows/setup
+      - name: Run tests
+        run: pnpm test
