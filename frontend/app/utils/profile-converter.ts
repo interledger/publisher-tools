@@ -11,7 +11,7 @@ import type {
 } from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
 
-export function convertToProfile<T extends Tool>(
+function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
 ): ToolProfile<T> {
