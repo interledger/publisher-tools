@@ -11,7 +11,7 @@ import {
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
-import { ApiError } from '~/lib/helpers'
+import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
@@ -57,7 +57,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       return data<SaveResult>(
         {
           error: {
-            message: 'Validation failed',
+            message: INVALID_PAYLOAD_ERROR,
             cause: {
               message: 'One or more fields failed validation',
               errors: { field: z.prettifyError(parsed.error) },
