@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs } from 'react-router'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { BannerProfile, WidgetProfile } from '@shared/types'
-import { SANITIZATION_ERROR_CAUSE } from '~/utils/sanitize.server'
+import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import { action } from './api.profile'
 
 vi.mock('@shared/utils', () => ({
@@ -42,7 +42,6 @@ vi.mock('~/utils/open-payments.server.js', () => ({
 }))
 
 describe('api.profile action - HTML injection', () => {
-  let mockRequest: Request
   let mockContext: ActionFunctionArgs['context']
 
   const bannerProfilePayload: BannerProfile = {
@@ -94,98 +93,64 @@ describe('api.profile action - HTML injection', () => {
   })
 
   it('should reject XSS script injection in widget title text', async () => {
-    const maliciousPayload = {
-      walletAddress: 'https://example.com/wallet',
-      profileId: 'version1',
-      tool: 'widget',
-      profile: {
-        $version: '1.0.0',
-        $name: 'version1',
-        widgetTitleText: '<script>alert("XSS")</script>',
-        widgetDescriptionText: 'Please support our work',
-        widgetDescriptionVisible: true,
-        widgetButtonText: 'Donate',
-        widgetPosition: 'Left',
-        widgetDonateAmount: 5,
-        widgetButtonBorder: 'Pill',
-        widgetFontName: 'Arial',
-        widgetFontSize: 16,
-        widgetTextColor: '#000000',
-        widgetBackgroundColor: '#ffffff',
-        widgetButtonTextColor: '#ffffff',
-        widgetButtonBackgroundColor: '#000000',
-        widgetTriggerBackgroundColor: '#000000',
-        widgetTriggerIcon: 'heart',
-      },
-    }
-
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(maliciousPayload),
+      body: JSON.stringify({
+        walletAddress: 'https://example.com/wallet',
+        profileId: 'version1',
+        tool: 'widget',
+        profile: {
+          ...widgetProfilePayload,
+          widgetTitleText: '<script>alert("XSS")</script>',
+        },
+      }),
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
     expect(response.data.error?.message).toContain('widgetTitleText')
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'widgetTitleText',
     })
   })
 
   it('should reject HTML injection in widget description field', async () => {
-    const maliciousPayload = {
-      walletAddress: 'https://example.com/wallet',
-      profileId: 'version1',
-      tool: 'widget',
-      profile: {
-        $version: '1.0.0',
-        $name: 'test-profile',
-        widgetTitleText: 'Support Us',
-        widgetDescriptionText:
-          '<img src=x onerror="alert(\'XSS\')">Please support our work',
-        widgetDescriptionVisible: true,
-        widgetButtonText: 'Donate',
-        widgetPosition: 'Right',
-        widgetDonateAmount: 5,
-        widgetButtonBorder: 'Pill',
-        widgetFontName: 'Arial',
-        widgetFontSize: 16,
-        widgetTextColor: '#000000',
-        widgetBackgroundColor: '#ffffff',
-        widgetButtonTextColor: '#ffffff',
-        widgetButtonBackgroundColor: '#000000',
-        widgetTriggerBackgroundColor: '#000000',
-        widgetTriggerIcon: 'heart',
-      },
-    }
-
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(maliciousPayload),
+      body: JSON.stringify({
+        walletAddress: 'https://example.com/wallet',
+        profileId: 'version1',
+        tool: 'widget',
+        profile: {
+          ...widgetProfilePayload,
+          widgetDescriptionText:
+            '<img src=x onerror="alert(\'XSS\')">Please support our work',
+        },
+      }),
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
     expect(response.data.error?.message).toContain('widgetDescriptionText')
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'widgetDescriptionText',
     })
   })
 
   it('should reject event handler attributes in banner title', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -200,20 +165,20 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
     expect(response.data.error?.message).toContain('bannerTitleText')
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'bannerTitleText',
     })
   })
 
   it('should reject encoded HTML entities in banner description', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -229,7 +194,7 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
@@ -238,13 +203,13 @@ describe('api.profile action - HTML injection', () => {
       'Invalid HTML in field: bannerDescriptionText',
     )
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'bannerDescriptionText',
     })
   })
 
   it('should reject HTML in widget title text field', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -259,20 +224,20 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
     expect(response.data.error?.message).toContain('widgetTitleText')
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'widgetTitleText',
     })
   })
 
   it('should reject HTML in widget version name field', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -287,20 +252,20 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
     expect(response.data.error?.message).toContain('versionName')
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'versionName',
     })
   })
 
   it('should reject HTML in banner version name field', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -315,20 +280,20 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
     expect(response.data.error?.message).toContain('versionName')
     expect(response.data.error?.cause?.errors).toEqual({
-      reason: SANITIZATION_ERROR_CAUSE,
+      reason: INVALID_PAYLOAD_ERROR,
       field: 'versionName',
     })
   })
 
   it('should reject malicious widgetBackgroundColor via Zod validation', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -343,19 +308,19 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toBe('Validation failed')
+    expect(response.data.error?.message).toBe(INVALID_PAYLOAD_ERROR)
     expect(response.data.error?.cause?.message).toBe(
       'One or more fields failed validation',
     )
   })
 
   it('should reject malicious bannerTextColor via Zod validation', async () => {
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -370,12 +335,12 @@ describe('api.profile action - HTML injection', () => {
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toBe('Validation failed')
+    expect(response.data.error?.message).toBe(INVALID_PAYLOAD_ERROR)
     expect(response.data.error?.cause?.message).toBe(
       'One or more fields failed validation',
     )
@@ -391,14 +356,14 @@ describe('api.profile action - HTML injection', () => {
       },
     }
 
-    mockRequest = new Request('https://example.com/api/profile', {
+    const request = new Request('https://example.com/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cleanPayload),
     })
 
     const response = await action({
-      request: mockRequest,
+      request,
       context: mockContext,
     } as ActionFunctionArgs)
 

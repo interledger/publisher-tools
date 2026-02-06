@@ -2,7 +2,6 @@ import he from 'he'
 import sanitizeHtml from 'sanitize-html'
 import type { SanitizedFields } from '~/lib/types.js'
 
-export const SANITIZATION_ERROR_CAUSE = 'SANITIZATION_FAILED'
 export const sanitizeConfigFields = <T extends Partial<SanitizedFields>>(
   config: T,
 ): T => {
