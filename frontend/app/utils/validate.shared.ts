@@ -22,7 +22,7 @@ const hexColorSchema = z
 const versionSchema = z
   .string()
   .min(1)
-  .regex(/^[0-9]+\.[0-9]+\.[0-9]+$/, {
+  .regex(/^[0-9]{1,2}\.[0-9]{1,3}\.[0-9]{1,4}$/, {
     message: 'Invalid version format',
   })
 
