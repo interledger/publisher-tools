@@ -24,6 +24,15 @@ export default {
       if (url.pathname === '/') {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
+
+      if (url.pathname === '/favicon.ico') {
+        return new Response(null, { status: 404 })
+      }
+
+      if (!url.pathname.startsWith(APP_BASEPATH)) {
+        return new Response(null, { status: 404 })
+      }
+
       const serverBuild = await build()
       const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 

@@ -153,8 +153,10 @@ export default function Widget() {
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Widget" onBackClick={() => navigate('/')}>
             The payment widget allows visitors to make one-time payments to
-            support your content directly. It provides a clean, customizable
-            interface for Web Monetization payments.
+            support your content directly.
+            <br />
+            It provides a clean, customizable interface for Web Monetization
+            payments.
             <br />
             Configure your wallet address to receive payments from your
             supporters.
