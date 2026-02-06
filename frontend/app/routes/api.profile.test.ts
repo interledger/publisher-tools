@@ -113,10 +113,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain('widgetTitleText')
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'widgetTitleText',
     })
   })
 
@@ -142,10 +140,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain('widgetDescriptionText')
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'widgetDescriptionText',
     })
   })
 
@@ -170,10 +166,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain('bannerTitleText')
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'bannerTitleText',
     })
   })
 
@@ -199,12 +193,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain(
-      'Invalid HTML in field: bannerDescriptionText',
-    )
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'bannerDescriptionText',
     })
   })
 
@@ -229,10 +219,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain('widgetTitleText')
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'widgetTitleText',
     })
   })
 
@@ -257,10 +245,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain('versionName')
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'versionName',
     })
   })
 
@@ -285,10 +271,8 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toContain('versionName')
     expect(response.data.error?.cause?.errors).toEqual({
       reason: INVALID_PAYLOAD_ERROR,
-      field: 'versionName',
     })
   })
 
@@ -313,10 +297,7 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toBe(INVALID_PAYLOAD_ERROR)
-    expect(response.data.error?.cause?.message).toBe(
-      'One or more fields failed validation',
-    )
+    expect(response.data.error?.cause?.message).toEqual(INVALID_PAYLOAD_ERROR)
   })
 
   it('should reject malicious bannerTextColor via Zod validation', async () => {
@@ -340,10 +321,7 @@ describe('api.profile action - HTML injection', () => {
     } as ActionFunctionArgs)
 
     expect(response.init?.status).toBe(400)
-    expect(response.data.error?.message).toBe(INVALID_PAYLOAD_ERROR)
-    expect(response.data.error?.cause?.message).toBe(
-      'One or more fields failed validation',
-    )
+    expect(response.data.error?.cause?.message).toEqual(INVALID_PAYLOAD_ERROR)
   })
 
   it('should accept clean text without HTML in all fields', async () => {

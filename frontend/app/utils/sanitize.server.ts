@@ -12,7 +12,7 @@ import {
 import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import { convertToConfigLegacy } from './profile-converter'
 
-function sanitizeText(value: string, fieldName: string): string {
+function sanitizeText(value: string): string {
   const decoded = he.decode(value)
   const sanitizedText = sanitizeHtml(value, {
     allowedTags: [],
@@ -23,15 +23,17 @@ function sanitizeText(value: string, fieldName: string): string {
   })
   if (sanitizedText !== decoded) {
     throw new ApiError(
-      `HTML not allowed in field: ${fieldName}`,
-      { reason: INVALID_PAYLOAD_ERROR, field: fieldName },
+      'Failed to save profile',
+      {
+        reason: INVALID_PAYLOAD_ERROR,
+      },
       400,
     )
   }
   return sanitizedText
 }
 
-function sanitizeHtmlField(value: string, fieldName: string): string {
+function sanitizeHtmlField(value: string): string {
   const decoded = he.decode(value.replace(/&nbsp;/g, '').trim())
   const sanitizedHTML = sanitizeHtml(decoded, {
     allowedTags: [],
@@ -41,8 +43,10 @@ function sanitizeHtmlField(value: string, fieldName: string): string {
   const decodedSanitized = he.decode(sanitizedHTML)
   if (decodedSanitized !== decoded) {
     throw new ApiError(
-      `Invalid HTML in field: ${fieldName}`,
-      { reason: INVALID_PAYLOAD_ERROR, field: fieldName },
+      'Failed to save profile',
+      {
+        reason: INVALID_PAYLOAD_ERROR,
+      },
       400,
     )
   }
@@ -57,20 +61,11 @@ export const sanitizeConfigFields = <T extends Tool>(
     const widget = config as WidgetProfile
     return {
       ...convertToConfigLegacy('', widget),
-      versionName: sanitizeText(widget.$name, 'versionName'),
-      widgetTitleText: sanitizeText(widget.widgetTitleText, 'widgetTitleText'),
-      widgetDescriptionText: sanitizeHtmlField(
-        widget.widgetDescriptionText,
-        'widgetDescriptionText',
-      ),
-      widgetButtonText: sanitizeText(
-        widget.widgetButtonText,
-        'widgetButtonText',
-      ),
-      widgetTriggerIcon: sanitizeText(
-        widget.widgetTriggerIcon,
-        'widgetTriggerIcon',
-      ),
+      versionName: sanitizeText(widget.$name),
+      widgetTitleText: sanitizeText(widget.widgetTitleText),
+      widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
+      widgetButtonText: sanitizeText(widget.widgetButtonText),
+      widgetTriggerIcon: sanitizeText(widget.widgetTriggerIcon),
     }
   }
 
@@ -78,13 +73,10 @@ export const sanitizeConfigFields = <T extends Tool>(
     const banner = config as BannerProfile
     return {
       ...convertToConfigLegacy('', banner),
-      versionName: sanitizeText(banner.$name, 'versionName'),
-      bannerTitleText: sanitizeText(banner.bannerTitleText, 'bannerTitleText'),
-      bannerDescriptionText: sanitizeHtmlField(
-        banner.bannerDescriptionText,
-        'bannerDescriptionText',
-      ),
-      bannerThumbnail: sanitizeText(banner.bannerThumbnail, 'bannerThumbnail'),
+      versionName: sanitizeText(banner.$name),
+      bannerTitleText: sanitizeText(banner.bannerTitleText),
+      bannerDescriptionText: sanitizeHtmlField(banner.bannerDescriptionText),
+      bannerThumbnail: sanitizeText(banner.bannerThumbnail),
     }
   }
 
