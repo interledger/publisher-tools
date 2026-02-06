@@ -9,7 +9,11 @@ import {
   TOOL_WIDGET,
   TOOL_BANNER,
 } from '@shared/types'
+import { ApiError } from '~/lib/helpers'
 import { convertToConfigLegacy } from './profile-converter'
+
+export const SANITIZATION_ERROR_CAUSE = 'SANITIZATION_FAILED'
+
 function sanitizeText(value: string, fieldName: string): string {
   const decoded = he.decode(value)
   const sanitizedText = sanitizeHtml(value, {
@@ -20,7 +24,11 @@ function sanitizeText(value: string, fieldName: string): string {
     },
   })
   if (sanitizedText !== decoded) {
-    throw new Error(`HTML not allowed in field: ${fieldName}`)
+    throw new ApiError(
+      `HTML not allowed in field: ${fieldName}`,
+      { reason: SANITIZATION_ERROR_CAUSE, field: fieldName },
+      400,
+    )
   }
   return sanitizedText
 }
@@ -34,7 +42,11 @@ function sanitizeHtmlField(value: string, fieldName: string): string {
   })
   const decodedSanitized = he.decode(sanitizedHTML)
   if (decodedSanitized !== decoded) {
-    throw new Error(`Invalid HTML in field: ${fieldName}`)
+    throw new ApiError(
+      `Invalid HTML in field: ${fieldName}`,
+      { reason: SANITIZATION_ERROR_CAUSE, field: fieldName },
+      400,
+    )
   }
   return decodedSanitized
 }
@@ -57,6 +69,10 @@ export const sanitizeConfigFields = <T extends Tool>(
         widget.widgetButtonText,
         'widgetButtonText',
       ),
+      widgetTriggerIcon: sanitizeText(
+        widget.widgetTriggerIcon,
+        'widgetTriggerIcon',
+      ),
     }
   }
 
@@ -70,6 +86,7 @@ export const sanitizeConfigFields = <T extends Tool>(
         banner.bannerDescriptionText,
         'bannerDescriptionText',
       ),
+      bannerThumbnail: sanitizeText(banner.bannerThumbnail, 'bannerThumbnail'),
     }
   }
 
