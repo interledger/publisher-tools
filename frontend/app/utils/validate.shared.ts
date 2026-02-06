@@ -16,7 +16,7 @@ import {
 
 const hexColorSchema = z
   .string()
-  .min(1)
+  .min(4)
   .regex(/^#?[0-9a-fA-F]{3,8}$/, { message: 'Invalid color format' })
 
 const versionSchema = z
