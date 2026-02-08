@@ -3,7 +3,12 @@ import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import { PROFILE_IDS, TOOLS } from '@shared/types'
+import {
+  numberToBannerFontSize,
+  numberToWidgetFontSize,
+  PROFILE_IDS,
+  TOOLS,
+} from '@shared/types'
 import type {
   BannerConfig,
   ConfigVersions,
@@ -70,18 +75,23 @@ function convertToProfile<T extends Tool>(
   } as ToolProfile<T>
 }
 
+/** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
-  switch (tool) {
-    case 'widget':
-      return extract<WidgetConfig>(
-        profile,
-        (key) => key.startsWith('widget') || key.includes('Widget'),
-      )
-    case 'banner':
-      return extract<BannerConfig>(
+  if (tool === 'banner') {
+    return {
+      ...extract<BannerConfig>(
         profile,
         (key) => key.startsWith('banner') || key.includes('Banner'),
-      )
+      ),
+      bannerFontSize: numberToBannerFontSize(profile.bannerFontSize),
+    }
+  }
+  return {
+    ...extract<WidgetConfig>(
+      profile,
+      (key) => key.startsWith('widget') || key.includes('Widget'),
+    ),
+    widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
   }
 }
 

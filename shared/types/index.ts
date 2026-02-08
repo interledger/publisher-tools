@@ -87,6 +87,75 @@ export type ToolProfile<T extends Tool> = {
   widget: WidgetProfile
 }[T]
 
+function findFontSizeKey<T extends Record<string, number>>(
+  map: T,
+  value: number,
+): keyof T | undefined {
+  return (Object.keys(map) as (keyof T)[]).find((key) => map[key] === value)
+}
+
+export const BANNER_FONT_SIZE_MAP = {
+  '2xs': 16,
+  'xs': 17,
+  'sm': 18,
+  'md': 19,
+  'base': 20,
+  'lg': 21,
+  '2lg': 22,
+  'xl': 23,
+  '2xl': 24,
+} as const
+
+export type BannerFontSize = keyof typeof BANNER_FONT_SIZE_MAP
+
+export function bannerFontSizeToNumber(size: BannerFontSize): number {
+  return BANNER_FONT_SIZE_MAP[size]
+}
+
+// TODO: to be removed after the completion of versioned configurations
+export function numberToBannerFontSize(value: number): BannerFontSize {
+  const clamped = Math.max(
+    BANNER_FONT_SIZES.min,
+    Math.min(BANNER_FONT_SIZES.max, value),
+  )
+  return findFontSizeKey(BANNER_FONT_SIZE_MAP, clamped) ?? 'base'
+}
+
+export const WIDGET_FONT_SIZE_MAP = {
+  '3xs': 12,
+  '2xs': 13,
+  'xs': 14,
+  'sm': 15,
+  'md': 16,
+  'base': 17,
+  'lg': 18,
+  '2lg': 19,
+  'xl': 20,
+} as const
+
+export type WidgetFontSize = keyof typeof WIDGET_FONT_SIZE_MAP
+
+export function widgetFontSizeToNumber(size: WidgetFontSize): number {
+  return WIDGET_FONT_SIZE_MAP[size]
+}
+
+// TODO: to be removed after the completion of versioned configurations
+export function numberToWidgetFontSize(value: number): WidgetFontSize {
+  const clamped = Math.max(
+    WIDGET_FONT_SIZES.min,
+    Math.min(WIDGET_FONT_SIZES.max, value),
+  )
+  return findFontSizeKey(WIDGET_FONT_SIZE_MAP, clamped) ?? 'base'
+}
+
+export type FontSize = BannerFontSize | WidgetFontSize
+
+export type HexString = string
+export type GradientCssString = string
+
+export type TextColor = HexString
+export type Background = HexString | { gradient: GradientCssString }
+
 export interface BaseToolProfile {
   $version: string
   $name: string
@@ -101,7 +170,7 @@ export interface BannerProfile extends BaseToolProfile {
 
   // appearance
   bannerFontName: FontFamilyKey
-  bannerFontSize: number
+  bannerFontSize: BannerFontSize
   bannerSlideAnimation: SlideAnimationType
   bannerPosition: BannerPositionKey
   bannerBorder: CornerType
@@ -119,7 +188,7 @@ export interface WidgetProfile extends BaseToolProfile {
 
   // appearance
   widgetFontName: FontFamilyKey
-  widgetFontSize: number
+  widgetFontSize: WidgetFontSize
   widgetPosition: WidgetPositionKey
   widgetDonateAmount: number // not posibble currently
   widgetButtonText: string

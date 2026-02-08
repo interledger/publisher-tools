@@ -9,6 +9,12 @@ import type {
   BannerConfig,
   ToolProfile,
 } from '@shared/types'
+import {
+  numberToBannerFontSize,
+  numberToWidgetFontSize,
+  bannerFontSizeToNumber,
+  widgetFontSizeToNumber,
+} from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
 
 function convertToProfile<T extends Tool>(
@@ -34,6 +40,7 @@ export function convertToConfigLegacy<T extends Tool>(
     walletAddress,
     versionName: $name,
     ...rest,
+    ...getLegacyFontSize(profile),
   } as unknown as ElementConfigType
 }
 
@@ -79,18 +86,30 @@ export function convertToConfiguration<T extends Tool>(
 }
 
 /** @legacy */
+function getLegacyFontSize(profile: ToolProfile<Tool>) {
+  if ('bannerFontSize' in profile) {
+    return { bannerFontSize: bannerFontSizeToNumber(profile.bannerFontSize) }
+  }
+  return { widgetFontSize: widgetFontSizeToNumber(profile.widgetFontSize) }
+}
+
+/** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
-  switch (tool) {
-    case 'widget':
-      return extract<WidgetConfig>(
-        profile,
-        (key) => key.startsWith('widget') || key.includes('Widget'),
-      )
-    case 'banner':
-      return extract<BannerConfig>(
+  if (tool === 'banner') {
+    return {
+      ...extract<BannerConfig>(
         profile,
         (key) => key.startsWith('banner') || key.includes('Banner'),
-      )
+      ),
+      bannerFontSize: numberToBannerFontSize(profile.bannerFontSize),
+    }
+  }
+  return {
+    ...extract<WidgetConfig>(
+      profile,
+      (key) => key.startsWith('widget') || key.includes('Widget'),
+    ),
+    widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
   }
 }
 

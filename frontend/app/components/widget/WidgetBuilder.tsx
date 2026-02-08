@@ -9,7 +9,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZE_MAP } from '@shared/types'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
@@ -40,7 +40,6 @@ const config = {
   messageMaxLength: 300,
 
   showThumbnail: false,
-  fontSizeRange: WIDGET_FONT_SIZES,
 }
 
 export function WidgetBuilder({ onRefresh }: Props) {
@@ -141,8 +140,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
         <FontSizeInput
           value={snap.widgetFontSize}
           onChange={(value) => (profile.widgetFontSize = value)}
-          min={config.fontSizeRange.min}
-          max={config.fontSizeRange.max}
+          sizeMap={WIDGET_FONT_SIZE_MAP}
         />
       </InputFieldset>
 

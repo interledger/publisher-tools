@@ -6,12 +6,13 @@ import {
   type ReactiveControllerHost,
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { BORDER_RADIUS } from '@shared/types'
+import { bannerFontSizeToNumber, BORDER_RADIUS } from '@shared/types'
 import type {
   FontFamilyKey,
   BorderRadiusKey,
   SlideAnimationType,
   BannerPositionKey,
+  BannerFontSize,
 } from '@shared/types'
 import defaultLogo from './assets/wm_logo_animated.svg?url'
 import bannerStyles from './banner.css?raw'
@@ -36,7 +37,7 @@ export interface BannerConfig {
     backgroundColor?: string
     textColor?: string
     fontFamily?: FontFamilyKey
-    fontSize?: number
+    fontSize?: BannerFontSize
   }
   logo?: string
   cdnUrl: string
@@ -280,7 +281,10 @@ export class BannerController implements ReactiveController {
       this.applyFontFamily(theme.fontFamily)
     }
     if (theme.fontSize) {
-      element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
+      element.style.setProperty(
+        '--wm-font-size',
+        `${bannerFontSizeToNumber(theme.fontSize)}px`,
+      )
     }
   }
 }

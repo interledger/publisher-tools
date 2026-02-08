@@ -1,17 +1,22 @@
 import z from 'zod'
-import type { BannerProfile, WidgetProfile } from '@shared/types'
+import type {
+  BannerFontSize,
+  BannerProfile,
+  WidgetFontSize,
+  WidgetProfile,
+} from '@shared/types'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
   WIDGET_POSITION,
   SLIDE_ANIMATION,
-  BANNER_FONT_SIZES,
-  WIDGET_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
   BANNER_TITLE_MAX_LENGTH,
   BANNER_DESCRIPTION_MAX_LENGTH,
   WIDGET_TITLE_MAX_LENGTH,
   WIDGET_DESCRIPTION_MAX_LENGTH,
+  BANNER_FONT_SIZE_MAP,
+  WIDGET_FONT_SIZE_MAP,
 } from '@shared/types'
 
 const hexColorSchema = z
@@ -30,13 +35,6 @@ const assetNameSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
 
-const bannerFontSizeError = {
-  message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`,
-}
-const widgetFontSizeError = {
-  message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`,
-}
-
 /** @deprecated */
 export const buttonFieldsSchema = z.object({
   buttonFontName: z.string().min(1, { message: 'Choose a font' }),
@@ -50,10 +48,12 @@ export const buttonFieldsSchema = z.object({
 /** @legacy */
 export const bannerFieldsSchema = z.object({
   bannerFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  bannerFontSize: z.coerce
-    .number()
-    .min(BANNER_FONT_SIZES.min, bannerFontSizeError)
-    .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
+  bannerFontSize: z.enum(
+    Object.keys(BANNER_FONT_SIZE_MAP) as BannerFontSize[],
+    {
+      message: 'Choose a font size',
+    },
+  ),
   bannerTitleText: z
     .string()
     .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
@@ -78,10 +78,12 @@ export const BannerProfileSchema = z.object({
 /** @legacy */
 export const widgetFieldsSchema = z.object({
   widgetFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  widgetFontSize: z.coerce
-    .number()
-    .min(WIDGET_FONT_SIZES.min, widgetFontSizeError)
-    .max(WIDGET_FONT_SIZES.max, widgetFontSizeError),
+  widgetFontSize: z.enum(
+    Object.keys(WIDGET_FONT_SIZE_MAP) as WidgetFontSize[],
+    {
+      message: 'Choose a font size',
+    },
+  ),
   widgetTitleText: z
     .string()
     .min(1, { message: 'Title cannot be empty' })
