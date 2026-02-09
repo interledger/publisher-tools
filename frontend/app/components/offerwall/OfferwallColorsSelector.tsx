@@ -23,7 +23,7 @@ export function OfferwallColorsSelector({
   onThemeColorChange,
 }: Props) {
   return (
-    <div className="grid grid-cols-2 gap-md">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-md">
       <ColorSelector
         label="Background"
         value={backgroundColor}
