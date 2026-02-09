@@ -1,5 +1,3 @@
-import { offerwall } from '~/stores/offerwall-store'
-
 /** @deprecated will be removed in future versions */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
