@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router'
-import { TOOL_TYPES, toolActions, type ToolType } from '~/stores/toolStore'
+import { TOOLS, type Tool } from '@shared/types'
+import { toolActions } from '~/stores/toolStore'
 
 export const usePathTracker = (): string => {
   const location = useLocation()
@@ -17,6 +18,6 @@ export const usePathTracker = (): string => {
   return location.pathname
 }
 
-function isValidToolType(value: string | undefined): value is ToolType {
-  return value !== undefined && TOOL_TYPES.includes(value as ToolType)
+function isValidToolType(value: string | undefined): value is Tool {
+  return value !== undefined && TOOLS.includes(value as Tool)
 }
