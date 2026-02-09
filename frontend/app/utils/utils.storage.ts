@@ -5,6 +5,27 @@ import type {
 } from '@shared/types'
 import { groupBy } from '@shared/utils'
 
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
+}
+
+/**
+ * recursively mutating each property in place so valtio can track the changes
+ */
+export function patchProxy<T extends object>(
+  target: T,
+  source: DeepPartial<T>,
+): void {
+  for (const key in source) {
+    const value = source[key]
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      patchProxy(target[key] as object, value as object)
+    } else {
+      target[key] = value as T[Extract<keyof T, string>]
+    }
+  }
+}
+
 export function omit<T extends Record<string, unknown>>(
   obj: T,
   keys: readonly (keyof T | string)[] | Set<keyof T | string>,

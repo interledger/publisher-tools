@@ -1,3 +1,5 @@
+import { offerwall } from '~/stores/offerwall-store'
+
 /** @deprecated will be removed in future versions */
 export interface ConfigVersions {
   [key: string]: ElementConfigType
@@ -55,7 +57,8 @@ export interface ElementConfigType {
 
 export const TOOL_BANNER = 'banner'
 export const TOOL_WIDGET = 'widget'
-export const TOOLS = [TOOL_BANNER, TOOL_WIDGET] as const
+export const TOOL_OFFERWALL = 'offerwall'
+export const TOOLS = [TOOL_BANNER, TOOL_WIDGET, TOOL_OFFERWALL] as const
 export type Tool = (typeof TOOLS)[number]
 
 export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
@@ -78,6 +81,9 @@ export interface Configuration {
   widget?: {
     [presetId in ProfileId]?: WidgetProfile
   }
+  offerwall?: {
+    [presetId in ProfileId]?: OfferwallProfile
+  }
 }
 
 export type ToolProfiles<T extends Tool> = Configuration[T]
@@ -85,7 +91,14 @@ export type ToolProfiles<T extends Tool> = Configuration[T]
 export type ToolProfile<T extends Tool> = {
   banner: BannerProfile
   widget: WidgetProfile
+  offerwall: OfferwallProfile
 }[T]
+
+export type HexString = string
+export type GradientCssString = string
+
+export type TextColor = HexString
+export type Background = HexString | { gradient: GradientCssString }
 
 export interface BaseToolProfile {
   $version: string
@@ -132,16 +145,26 @@ export interface WidgetProfile extends BaseToolProfile {
   widgetTriggerIcon: string
 }
 
+export interface OfferwallProfile extends BaseToolProfile {
+  font: {
+    name: FontFamilyKey
+  }
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+    headline: TextColor
+    theme: Background
+  }
+}
+
 type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
 /** @deprecated Use BannerProfile instead */
 export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
 /** @deprecated Use WidgetProfile instead */
 export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
-/** @deprecated Use ToolProfile instead */
-export type ToolConfig<T extends Tool> = {
-  banner: BannerConfig
-  widget: WidgetConfig
-}[T]
 
 export const KV_PAYMENTS_PREFIX = 'payments/'
 
