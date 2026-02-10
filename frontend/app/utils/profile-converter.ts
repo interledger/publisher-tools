@@ -90,7 +90,11 @@ function getLegacyFontSize(profile: ToolProfile<Tool>) {
   if ('bannerFontSize' in profile) {
     return { bannerFontSize: bannerFontSizeToNumber(profile.bannerFontSize) }
   }
-  return { widgetFontSize: widgetFontSizeToNumber(profile.widgetFontSize) }
+  if ('widgetFontSize' in profile) {
+    return { widgetFontSize: widgetFontSizeToNumber(profile.widgetFontSize) }
+  }
+
+  return {}
 }
 
 /** @legacy */
