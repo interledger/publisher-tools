@@ -100,15 +100,15 @@ function findFontSizeKey<T extends Record<string, number>>(
 }
 
 export const BANNER_FONT_SIZE_MAP = {
-  '2xs': 16,
-  'xs': 17,
-  'sm': 18,
-  'md': 19,
-  'base': 20,
-  'lg': 21,
-  '2lg': 22,
-  'xl': 23,
-  '2xl': 24,
+  '2xs': 14,
+  'xs': 15,
+  'sm': 16,
+  'md': 17,
+  'base': 18,
+  'lg': 19,
+  '2lg': 20,
+  'xl': 21,
+  '2xl': 22,
 } as const
 
 export type BannerFontSize = keyof typeof BANNER_FONT_SIZE_MAP
