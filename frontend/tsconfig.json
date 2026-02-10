@@ -30,7 +30,7 @@
       "@/components/*": ["./app/components/redesign/components/*"],
       "@/typography": ["./app/components/redesign/Typography.tsx"],
       "@/assets": ["./app/assets/svg.tsx"],
-      "@c/*": ["../components/src/*"],
+      "@c/*": ["../components/src/*"]
     },
     "types": [
       "./worker-configuration.d.ts",
