@@ -1,5 +1,4 @@
 import { LitElement, html, unsafeCSS } from 'lit'
-import { property } from 'lit/decorators.js'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
 import iconCheck from '@c/assets/icon_check.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
@@ -9,8 +8,6 @@ import styleTokens from '../../vars.css?raw'
 
 export class AllSet extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
-
-  @property({ type: Function }) onDone: (ev: MouseEvent) => void = () => {}
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -44,12 +41,17 @@ export class AllSet extends LitElement {
           >
         </p>
 
-        <button>Close</button>
+        <button type="button" @click=${this.#onCloseButtonClick}>Close</button>
 
         <div class="footer">
           <powered-by-interledger></powered-by-interledger>
         </div>
       </div>
     `
+  }
+
+  #onCloseButtonClick = () => {
+    const event = new CustomEvent('all-set-done', { cancelable: true })
+    this.dispatchEvent(event)
   }
 }

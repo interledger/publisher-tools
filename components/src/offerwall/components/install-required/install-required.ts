@@ -1,5 +1,4 @@
 import { LitElement, html, unsafeCSS } from 'lit'
-import { property } from 'lit/decorators.js'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
 import iconCheckDone from '@c/assets/icon_check_done.svg?raw'
 import iconExtension from '@c/assets/icon_extension.svg?raw'
@@ -20,9 +19,6 @@ const BUTTON_CTA = 'Install the Web Monetization Extension'
 
 export class InstallRequired extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
-
-  @property({ type: Function }) onExtensionLinkClick: (ev: MouseEvent) => void =
-    () => {}
 
   constructor() {
     super()
@@ -61,7 +57,7 @@ export class InstallRequired extends LitElement {
               class="button"
               href="${this.extensionUrl}"
               target="_blank"
-              @click=${this.onExtensionLinkClick}
+              @click=${this.#onExtensionLinkClick}
               >${BUTTON_CTA}</a
             >
           </li>
@@ -86,11 +82,7 @@ export class InstallRequired extends LitElement {
           <powered-by-interledger></powered-by-interledger>
         </div>
 
-        <button
-          type="button"
-          @click=${() =>
-            this.dispatchEvent(new CustomEvent('close', { cancelable: true }))}
-        >
+        <button type="button" @click=${this.#onCloseButtonClick}>
           <span aria-hidden="true" tabindex="-1">${unsafeSVG(iconClose)}</span>
           <span class="sr-only">Close</span>
         </button>
@@ -103,5 +95,20 @@ export class InstallRequired extends LitElement {
     url.searchParams.set('utm_source', window.location.origin)
     url.searchParams.set('utm_medium', 'offerwall-embed')
     return url.href
+  }
+
+  #onExtensionLinkClick = (ev: MouseEvent) => {
+    const event = new CustomEvent('click-extension-link', {
+      cancelable: true,
+    })
+    this.dispatchEvent(event)
+    if (event.defaultPrevented) {
+      ev.preventDefault()
+    }
+  }
+
+  #onCloseButtonClick = () => {
+    const event = new CustomEvent('close', { cancelable: true })
+    this.dispatchEvent(event)
   }
 }

@@ -1,5 +1,4 @@
 import { LitElement, html, unsafeCSS } from 'lit'
-import { property } from 'lit/decorators.js'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
 import lockWithGradient from '@c/assets/lock_with_gradient.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
@@ -9,8 +8,6 @@ import styleTokens from '../../vars.css?raw'
 
 export class ContributionRequired extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
-
-  @property({ type: Function }) onDone: (ev: MouseEvent) => void = () => {}
 
   connectedCallback(): void {
     super.connectedCallback()

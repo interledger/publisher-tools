@@ -64,11 +64,13 @@ export class OfferwallModal extends LitElement {
   firstUpdated() {
     this.#openDialog()
 
-    this.screenRef.value!.addEventListener('close', this.#onInstallScreenClose)
-    this.dialogRef.value!.addEventListener('cancel', (ev) => {
+    const dialog = this.#dialogRef.value!
+    dialog.addEventListener('cancel', (ev) => {
       if (this._screen === 'install-required') {
-        this.#onInstallScreenClose(ev)
-        return
+        return this.#onInstallScreenClose(ev)
+      }
+      if (this._screen === 'all-set') {
+        return this.#onAllSetDone(ev)
       }
       ev.preventDefault()
     })
@@ -76,7 +78,7 @@ export class OfferwallModal extends LitElement {
 
   render() {
     return html`
-      <dialog ${ref(this.dialogRef)}>
+      <dialog ${ref(this.#dialogRef)}>
         ${this.#renderScreen(this._screen)}
       </dialog>
     `
@@ -87,37 +89,47 @@ export class OfferwallModal extends LitElement {
       case 'install-required':
         return html`
           <wm-offerwall-install-required
-            ${ref(this.screenRef)}
+            @close=${this.#onInstallScreenClose}
+            @click-extension-link=${this.#onExtensionLinkClick}
           ></wm-offerwall-install-required>
         `
       case 'all-set':
         return html`
-          <wm-offerwall-all-set ${ref(this.screenRef)}></wm-offerwall-all-set>
+          <wm-offerwall-all-set
+            @all-set-done=${this.#onAllSetDone}
+          ></wm-offerwall-all-set>
         `
       case 'contribution-required':
         return html`
-          <wm-offerwall-contribution-required
-            ${ref(this.screenRef)}
-          ></wm-offerwall-contribution-required>
+          <wm-offerwall-contribution-required></wm-offerwall-contribution-required>
         `
     }
   }
 
-  #onInstallScreenClose(ev: MouseEvent | Event) {
+  #onInstallScreenClose = (ev: MouseEvent | Event) => {
     this.#controller.onModalClose(ev)
     if (ev.defaultPrevented) return
     this.#closeDialog()
   }
 
-  dialogRef: Ref<HTMLDialogElement> = createRef()
-  screenRef: Ref<HTMLElement> = createRef()
-
-  #openDialog() {
-    this.dialogRef.value!.showModal()
+  #onExtensionLinkClick = (ev: Event) => {
+    this.#controller.onExtensionLinkClick(ev)
+    if (ev.defaultPrevented) return
   }
 
-  #closeDialog() {
-    this.dialogRef.value!.close()
-    this.dialogRef.value!.remove()
+  #onAllSetDone = (ev: Event) => {
+    console.warn('hererr')
+    this.#controller.onDone(ev)
+    if (ev.defaultPrevented) return
+    this.#closeDialog()
+  }
+
+  #dialogRef: Ref<HTMLDialogElement> = createRef()
+  #openDialog() {
+    this.#dialogRef.value!.showModal()
+  }
+  #closeDialog = () => {
+    this.#dialogRef.value!.close()
+    this.#dialogRef.value!.remove()
   }
 }
