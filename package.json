@@ -40,11 +40,11 @@
     }
   },
   "engines": {
-    "pnpm": "^10.27.0",
+    "pnpm": "^10.29.2",
     "npm": "pnpm",
     "yarn": "pnpm",
     "node": ">=24.0.0"
   },
   "private": true,
-  "packageManager": "pnpm@10.27.0"
+  "packageManager": "pnpm@10.29.2"
 }
