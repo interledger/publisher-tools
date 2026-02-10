@@ -77,16 +77,18 @@ function AppearanceBuilder({ onRefresh }: Props) {
           textColor={snap.color.text}
           headlineColor={snap.color.headline}
           themeColor={snap.color.theme}
-          onBackgroundColorChange={(color: Background) =>
-            (profile.color.background = color)
-          }
-          onTextColorChange={(color: TextColor) => (profile.color.text = color)}
-          onHeadlineColorChange={(color: TextColor) =>
-            (profile.color.headline = color)
-          }
-          onThemeColorChange={(color: Background) =>
-            (profile.color.theme = color)
-          }
+          onBackgroundColorChange={(color: Background) => {
+            profile.color.background = color
+          }}
+          onTextColorChange={(color: TextColor) => {
+            profile.color.text = color
+          }}
+          onHeadlineColorChange={(color: TextColor) => {
+            profile.color.headline = color
+          }}
+          onThemeColorChange={(color: Background) => {
+            profile.color.theme = color
+          }}
         />
       </InputFieldset>
 
@@ -98,7 +100,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
       >
         <CornerRadiusSelector
           value={snap.border.type}
-          onChange={(value) => (profile.border.type = value)}
+          onChange={(value) => {
+            profile.border.type = value
+          }}
         />
       </InputFieldset>
     </BuilderAccordion>
