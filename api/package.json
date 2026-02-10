@@ -32,6 +32,6 @@
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "typescript": "5.9.3",
-    "wrangler": "^4.59.2"
+    "wrangler": "^4.63.0"
   }
 }
