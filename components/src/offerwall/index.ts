@@ -118,7 +118,6 @@ export class OfferwallModal extends LitElement {
   }
 
   #onAllSetDone = (ev: Event) => {
-    console.warn('hererr')
     this.#controller.onDone(ev)
     if (ev.defaultPrevented) return
     this.#closeDialog()
