@@ -5,6 +5,39 @@ import type {
 } from '@shared/types'
 import { groupBy } from '@shared/utils'
 
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
+}
+
+/**
+ * Recursively assigns properties from `source` onto a valtio `target` proxy,
+ * mutating each property **in place** rather than replacing nested objects.
+ *
+ * Why not `Object.assign`?
+ * Valtio wraps every nested object in its own proxy. If you replace a nested
+ * object wholesale (e.g. `target.nested = { ... }`), the old proxy is
+ * discarded and any existing subscriptions / `useSnapshot` hooks that
+ * reference it will stop receiving updates.
+ *
+ * By walking the tree and only writing leaf values, the original proxy
+ * references are preserved and valtio can track every change.
+ *
+ * @see https://valtio.dev/docs/how-tos/how-valtio-works
+ */
+export function patchProxy<T extends object>(
+  target: T,
+  source: DeepPartial<T>,
+): void {
+  for (const key in source) {
+    const value = source[key]
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      patchProxy(target[key] as object, value as object)
+    } else {
+      target[key] = value as T[Extract<keyof T, string>]
+    }
+  }
+}
+
 export function omit<T extends Record<string, unknown>>(
   obj: T,
   keys: readonly (keyof T | string)[] | Set<keyof T | string>,
