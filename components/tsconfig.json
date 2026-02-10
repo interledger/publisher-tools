@@ -11,6 +11,9 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "types": ["vite/client"],
+    "paths": {
+      "@c/*": ["./src/*"]
+    },
     "noEmit": true
-  }
+  },
 }
