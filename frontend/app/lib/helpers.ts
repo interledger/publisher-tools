@@ -8,3 +8,5 @@ export class ApiError extends Error {
     this.name = 'ApiError'
   }
 }
+
+export const INVALID_PAYLOAD_ERROR = 'invalid payload'

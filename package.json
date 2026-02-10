@@ -15,7 +15,8 @@
     "format:check": "prettier . --check --cache --cache-location='node_modules/.cache/prettiercache'",
     "lint": "eslint . --fix --cache --cache-location 'node_modules/.cache/eslintcache'",
     "lint:check": "eslint . --cache --cache-location 'node_modules/.cache/eslintcache'",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
