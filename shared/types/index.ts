@@ -238,9 +238,9 @@ export const BANNER_FONT_SIZES = {
 } as const
 
 export const WIDGET_FONT_SIZES = {
-  min: 12,
-  max: 20,
-  default: 16,
+  min: 14,
+  max: 19,
+  default: 17,
 } as const
 
 export const CORNER_OPTION = {
