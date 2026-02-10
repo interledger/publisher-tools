@@ -10,7 +10,19 @@ type DeepPartial<T> = {
 }
 
 /**
- * recursively mutating each property in place so valtio can track the changes
+ * Recursively assigns properties from `source` onto a valtio `target` proxy,
+ * mutating each property **in place** rather than replacing nested objects.
+ *
+ * Why not `Object.assign`?
+ * Valtio wraps every nested object in its own proxy. If you replace a nested
+ * object wholesale (e.g. `target.nested = { ... }`), the old proxy is
+ * discarded and any existing subscriptions / `useSnapshot` hooks that
+ * reference it will stop receiving updates.
+ *
+ * By walking the tree and only writing leaf values, the original proxy
+ * references are preserved and valtio can track every change.
+ *
+ * @see https://valtio.dev/docs/how-tos/how-valtio-works
  */
 export function patchProxy<T extends object>(
   target: T,
