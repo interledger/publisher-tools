@@ -6,10 +6,10 @@ import type {
   PaymentStatusRejected,
 } from 'publisher-tools-api'
 import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
+import failedIcon from '@c/assets/interaction/authorization_failed.svg'
+import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
+import successIcon from '@c/assets/interaction/authorization_success.svg'
 import interactionStyles from './interaction.css?raw'
-import failedIcon from '../../../assets/interaction/authorization_failed.svg'
-import loadingIcon from '../../../assets/interaction/authorization_loading.svg'
-import successIcon from '../../../assets/interaction/authorization_success.svg'
 import type { WidgetController } from '../../controller'
 
 function isInteractionSuccess(
