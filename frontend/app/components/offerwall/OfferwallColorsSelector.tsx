@@ -30,6 +30,11 @@ export function OfferwallColorsSelector({
         onChange={onBackgroundColorChange}
       />
       <ColorSelector
+        label="Theme"
+        value={themeColor}
+        onChange={onThemeColorChange}
+      />
+      <ColorSelector
         label="Body text"
         value={textColor}
         onChange={onTextColorChange}
@@ -38,11 +43,6 @@ export function OfferwallColorsSelector({
         label="Headline"
         value={headlineColor}
         onChange={onHeadlineColorChange}
-      />
-      <ColorSelector
-        label="Theme"
-        value={themeColor}
-        onChange={onThemeColorChange}
       />
     </div>
   )
