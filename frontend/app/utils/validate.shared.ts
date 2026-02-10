@@ -14,10 +14,27 @@ import {
   BANNER_FONT_SIZE_KEYS,
 } from '@shared/types'
 
+const hexColorSchema = z
+  .string()
+  .min(4)
+  .regex(/^#?[0-9a-fA-F]{3,8}$/, { message: 'Invalid color format' })
+
+const versionSchema = z
+  .string()
+  .min(1)
+  .regex(/^[0-9]{1,2}\.[0-9]{1,3}\.[0-9]{1,4}$/, {
+    message: 'Invalid version format',
+  })
+
+const assetNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
+
 const widgetFontSizeError = {
   message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`,
 }
 
+/** @deprecated */
 export const buttonFieldsSchema = z.object({
   buttonFontName: z.string().min(1, { message: 'Choose a font' }),
   buttonText: z.string().min(1, { message: 'Button label cannot be empty' }),
@@ -27,13 +44,7 @@ export const buttonFieldsSchema = z.object({
   buttonDescriptionText: z.string().optional(),
 })
 
-const hexColorSchema = z
-  .string()
-  .regex(/^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6})$/, 'Invalid hex color')
-const gradientSchema = z.object({
-  gradient: z.string(),
-})
-
+/** @legacy */
 export const bannerFieldsSchema = z.object({
   title: z.object({
     text: z
@@ -63,7 +74,7 @@ export const bannerFieldsSchema = z.object({
   }),
   color: z.object({
     text: hexColorSchema,
-    background: z.union([hexColorSchema, gradientSchema]),
+    background: z.union([hexColorSchema]),
   }),
   thumbnail: z.object({
     value: z.string(),
@@ -71,8 +82,8 @@ export const bannerFieldsSchema = z.object({
 })
 
 export const BannerProfileSchema = bannerFieldsSchema.extend({
-  $version: z.string(),
-  $name: z.string(),
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
   $modifiedAt: z.string().optional(),
 }) satisfies z.ZodType<BannerProfile>
 
@@ -99,16 +110,16 @@ export const widgetFieldsSchema = z.object({
     .string()
     .min(1, { message: 'Button text cannot be empty' }),
   widgetButtonBorder: z.enum(CORNER_OPTION),
-  widgetButtonBackgroundColor: z.string().min(1),
-  widgetButtonTextColor: z.string().min(1),
-  widgetTextColor: z.string().min(1),
-  widgetBackgroundColor: z.string().min(1),
-  widgetTriggerBackgroundColor: z.string().min(1),
-  widgetTriggerIcon: z.string(),
+  widgetButtonBackgroundColor: hexColorSchema,
+  widgetButtonTextColor: hexColorSchema,
+  widgetTextColor: hexColorSchema,
+  widgetBackgroundColor: hexColorSchema,
+  widgetTriggerBackgroundColor: hexColorSchema,
+  widgetTriggerIcon: assetNameSchema,
 })
 
 export const WidgetProfileSchema = z.object({
   ...widgetFieldsSchema.shape,
-  $version: z.string(),
-  $name: z.string(),
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<WidgetProfile>

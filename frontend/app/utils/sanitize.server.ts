@@ -1,9 +1,16 @@
 import he from 'he'
 import sanitizeHtml from 'sanitize-html'
-import type { BannerProfile, WidgetProfile } from '@shared/types'
-import type { SanitizedFields } from '~/lib/types.js'
+import {
+  type BannerProfile,
+  type WidgetProfile,
+  type Tool,
+  type ToolProfile,
+  TOOL_WIDGET,
+  TOOL_BANNER,
+} from '@shared/types'
+import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 
-function sanitizeText(value: string, fieldName: string): string {
+function sanitizeText(value: string): string {
   const decoded = he.decode(value)
   const sanitizedText = sanitizeHtml(value, {
     allowedTags: [],
@@ -13,12 +20,18 @@ function sanitizeText(value: string, fieldName: string): string {
     },
   })
   if (sanitizedText !== decoded) {
-    throw new Error(`HTML not allowed in field: ${fieldName}`)
+    throw new ApiError(
+      'Failed to save profile',
+      {
+        reason: INVALID_PAYLOAD_ERROR,
+      },
+      400,
+    )
   }
   return sanitizedText
 }
 
-function sanitizeHtmlField(value: string, fieldName: string): string {
+function sanitizeHtmlField(value: string): string {
   const decoded = he.decode(value.replace(/&nbsp;/g, '').trim())
   const sanitizedHTML = sanitizeHtml(decoded, {
     allowedTags: [],
@@ -27,98 +40,47 @@ function sanitizeHtmlField(value: string, fieldName: string): string {
   })
   const decodedSanitized = he.decode(sanitizedHTML)
   if (decodedSanitized !== decoded) {
-    throw new Error(`Invalid HTML in field: ${fieldName}`)
+    throw new ApiError(
+      'Failed to save profile',
+      {
+        reason: INVALID_PAYLOAD_ERROR,
+      },
+      400,
+    )
   }
   return decodedSanitized
 }
 
-export function sanitizeProfileFields<T extends BannerProfile | WidgetProfile>(
-  profile: T,
-): T {
-  if ('title' in profile && 'description' in profile) {
+export const sanitizeProfileFields = <T extends Tool>(
+  profile: ToolProfile<T>,
+  tool: T,
+): ToolProfile<T> => {
+  if (tool === TOOL_WIDGET) {
+    const widget = profile as WidgetProfile
+    return {
+      ...widget,
+      $name: sanitizeText(widget.$name),
+      widgetTitleText: sanitizeText(widget.widgetTitleText),
+      widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
+      widgetButtonText: sanitizeText(widget.widgetButtonText),
+    } as ToolProfile<T>
+  }
+
+  if (tool === TOOL_BANNER) {
     const banner = profile as BannerProfile
     return {
       ...banner,
-      $name: sanitizeText(banner.$name, '$name'),
+      $name: sanitizeText(banner.$name),
       title: {
         ...banner.title,
-        text: sanitizeText(banner.title.text, 'title.text'),
+        text: sanitizeText(banner.title.text),
       },
       description: {
         ...banner.description,
-        text: sanitizeHtmlField(banner.description.text, 'description.text'),
+        text: sanitizeHtmlField(banner.description.text),
       },
-    } as T
+    } as ToolProfile<T>
   }
 
-  const widget = profile as WidgetProfile
-  return {
-    ...widget,
-    $name: sanitizeText(widget.$name, '$name'),
-    widgetTitleText: sanitizeText(widget.widgetTitleText, 'widgetTitleText'),
-    widgetDescriptionText: sanitizeHtmlField(
-      widget.widgetDescriptionText,
-      'widgetDescriptionText',
-    ),
-    widgetButtonText: sanitizeText(widget.widgetButtonText, 'widgetButtonText'),
-  } as T
-}
-
-/** @deprecated  */
-export const sanitizeLegacyConfigFields = <T extends Partial<SanitizedFields>>(
-  config: T,
-): T => {
-  const textFields: Array<keyof SanitizedFields> = [
-    'bannerTitleText',
-    'widgetTitleText',
-    'widgetButtonText',
-    'buttonText',
-    'buttonDescriptionText',
-    'walletAddress',
-    'tag',
-  ]
-
-  const htmlFields: Array<keyof SanitizedFields> = [
-    'bannerDescriptionText',
-    'widgetDescriptionText',
-  ]
-
-  for (const field of textFields) {
-    const value = config[field]
-    if (typeof value === 'string' && value) {
-      const decoded = he.decode(value)
-      const sanitizedText = sanitizeHtml(value, {
-        allowedTags: [],
-        allowedAttributes: {},
-        textFilter(text) {
-          return he.decode(text)
-        },
-      })
-      if (sanitizedText !== decoded) {
-        throw new Error(`HTML not allowed in field: ${field}`)
-      }
-
-      config[field] = sanitizedText
-    }
-  }
-
-  for (const field of htmlFields) {
-    const value = config[field]
-    if (value && typeof value === 'string') {
-      const decoded = he.decode(value.replace(/&nbsp;/g, '').trim())
-      const sanitizedHTML = sanitizeHtml(decoded, {
-        allowedTags: [],
-        allowedAttributes: {},
-        allowProtocolRelative: false,
-      })
-      const decodedSanitized = he.decode(sanitizedHTML)
-      // compare decoded versions to check for malicious content
-      if (decodedSanitized !== decoded) {
-        throw new Error(`Invalid HTML in field: ${field}`)
-      }
-
-      config[field] = decodedSanitized
-    }
-  }
-  return config
+  throw new Error(`Unsupported tool type: ${tool}`)
 }

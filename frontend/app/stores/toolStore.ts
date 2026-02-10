@@ -26,7 +26,6 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'cdnUrl',
 ])
 
-export const TOOL_TYPES = ['banner', 'widget', 'button', 'unknown'] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -35,7 +34,6 @@ const DEFAULT_VERSION_NAMES = [
 ] as const
 
 export type StableKey = (typeof STABLE_KEYS)[number]
-export type ToolType = (typeof TOOL_TYPES)[number]
 
 interface SaveConfigResponse {
   grantRequired?: string
@@ -78,7 +76,7 @@ export const toolState = proxy({
   /** @deprecated */
   activeVersion: 'version1' as StableKey,
   activeTab: 'version1' as ProfileId,
-  currentToolType: 'unknown' as ToolType,
+  currentToolType: 'unknown' as Tool,
 
   /** always returns the active configuration */
   get currentConfig() {
@@ -185,7 +183,7 @@ export const toolActions = {
     toolState.dirtyProfiles.clear()
   },
 
-  setCurrentToolType: (toolType: ToolType) => {
+  setCurrentToolType: (toolType: Tool) => {
     toolState.currentToolType = toolType
   },
 
