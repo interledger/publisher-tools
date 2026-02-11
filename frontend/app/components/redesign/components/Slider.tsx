@@ -5,6 +5,7 @@ interface Props {
   min: number
   max: number
   onChange: (value: number) => void
+  ariaValueText: string
   id?: string
   step?: number
 }
@@ -14,6 +15,7 @@ export const Slider: React.FC<Props> = ({
   min,
   max,
   onChange,
+  ariaValueText,
   id,
   step = 1,
 }) => (
@@ -34,6 +36,7 @@ export const Slider: React.FC<Props> = ({
       min={min}
       max={max}
       step={step}
+      aria-valuetext={ariaValueText}
       onChange={(e) => onChange(Number(e.target.value))}
       className="w-full opacity-0 cursor-pointer focus:outline-none"
     />

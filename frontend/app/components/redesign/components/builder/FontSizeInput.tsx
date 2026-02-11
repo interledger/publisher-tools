@@ -29,6 +29,8 @@ export function FontSizeInput<T extends FontSize>({
     onChange(sizes[clampedIndex])
   }
 
+  const ariaSize = `${sizeMap[sizes[sliderValue]]}px`
+
   return (
     <div className="space-y-2xs" role="group" aria-labelledby={`label-${id}`}>
       <label
@@ -41,7 +43,7 @@ export function FontSizeInput<T extends FontSize>({
 
       <div className="flex items-center h-12 gap-md">
         <IncDecButton
-          label="Decrease font size"
+          label={`Decrease font size, currently ${ariaSize}`}
           onClick={() => handleSliderChange(sliderValue - 1)}
           aria-controls={id}
         >
@@ -54,10 +56,11 @@ export function FontSizeInput<T extends FontSize>({
           min={min}
           max={max}
           onChange={handleSliderChange}
+          ariaValueText={ariaSize}
         />
 
         <IncDecButton
-          label="Increase font size"
+          label={`Increase font size, currently ${ariaSize}`}
           onClick={() => handleSliderChange(sliderValue + 1)}
           aria-controls={id}
         >
