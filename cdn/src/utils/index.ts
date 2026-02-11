@@ -63,4 +63,23 @@ export function appendPaymentPointer(walletAddressUrl: string) {
   monetizationElement.rel = 'monetization'
   monetizationElement.href = walletAddressUrl
   document.head.appendChild(monetizationElement)
+  return monetizationElement
+}
+
+/**
+ * Polyfill for `Promise.withResolvers()`
+ */
+export function withResolvers<T>(): {
+  resolve: (value: T | PromiseLike<T>) => void
+  reject: (reason?: unknown) => void
+  promise: Promise<T>
+} {
+  let resolve
+  let reject
+  const promise = new Promise((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  // @ts-expect-error I know, I know
+  return { resolve, reject, promise }
 }
