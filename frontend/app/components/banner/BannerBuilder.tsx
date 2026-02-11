@@ -9,12 +9,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import {
-  BANNER_FONT_SIZES,
-  FONT_FAMILY_OPTIONS,
-  bannerFontSizeToNumber,
-  numberToBannerFontSize,
-} from '@shared/types'
+import { BANNER_FONT_SIZE_MAP, FONT_FAMILY_OPTIONS } from '@shared/types'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -49,7 +44,6 @@ const config = {
   messageMaxLength: 300,
 
   showThumbnail: true,
-  fontSizeRange: BANNER_FONT_SIZES,
 }
 
 export function BannerBuilder({ onRefresh }: Props) {
@@ -148,12 +142,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
         />
 
         <FontSizeInput
-          value={bannerFontSizeToNumber(snap.font.size)}
-          onChange={(value) =>
-            (profile.font.size = numberToBannerFontSize(value))
-          }
-          min={config.fontSizeRange.min}
-          max={config.fontSizeRange.max}
+          value={snap.font.size}
+          onChange={(value) => (profile.font.size = value)}
+          sizeMap={BANNER_FONT_SIZE_MAP}
         />
       </InputFieldset>
 

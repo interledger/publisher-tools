@@ -1,6 +1,7 @@
 import type {
   BorderRadiusKey,
   FontFamilyKey,
+  WidgetFontSize,
   WidgetPositionKey,
 } from '@shared/types'
 
@@ -20,7 +21,7 @@ export interface WidgetConfig {
     primaryColor?: string
     backgroundColor?: string
     textColor?: string
-    fontSize?: number
+    fontSize?: WidgetFontSize
     fontFamily?: FontFamilyKey
     widgetBorderRadius?: BorderRadiusKey
     widgetButtonBackgroundColor?: string

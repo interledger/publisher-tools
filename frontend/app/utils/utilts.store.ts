@@ -2,6 +2,7 @@ import { deepEqual } from 'fast-equals'
 import { snapshot, subscribe } from 'valtio'
 import {
   createDefaultBannerProfile,
+  createDefaultOfferwallProfile,
   createDefaultWidgetProfile,
 } from '@shared/default-data'
 import {
@@ -12,12 +13,14 @@ import {
   DEFAULT_PROFILE_NAMES,
   PROFILE_IDS,
   TOOL_BANNER,
+  TOOL_OFFERWALL,
   TOOL_WIDGET,
 } from '@shared/types'
 import type { BannerStore } from '~/stores/banner-store'
+import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { WidgetStore } from '~/stores/widget-store'
 
-type Store = BannerStore | WidgetStore
+type Store = BannerStore | WidgetStore | OfferwallStore
 const STORAGE_PREFIX = 'wmt'
 
 export function getStorageKeys(tool: Tool) {
@@ -34,6 +37,9 @@ function getCreateDefaultProfile<T extends Tool>(tool: T) {
       return createDefaultBannerProfile
     case TOOL_WIDGET:
       return createDefaultWidgetProfile
+    case TOOL_OFFERWALL:
+      return createDefaultOfferwallProfile
+
     default:
       throw new Error(`Unknown tool: ${tool}`)
   }

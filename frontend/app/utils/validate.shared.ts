@@ -1,17 +1,22 @@
 import z from 'zod'
-import type { BannerProfile, WidgetProfile } from '@shared/types'
+import type {
+  BannerFontSize,
+  BannerProfile,
+  WidgetFontSize,
+  WidgetProfile,
+} from '@shared/types'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
   WIDGET_POSITION,
   SLIDE_ANIMATION,
-  WIDGET_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
   BANNER_TITLE_MAX_LENGTH,
   BANNER_DESCRIPTION_MAX_LENGTH,
   WIDGET_TITLE_MAX_LENGTH,
   WIDGET_DESCRIPTION_MAX_LENGTH,
-  BANNER_FONT_SIZE_KEYS,
+  WIDGET_FONT_SIZE_MAP,
+  BANNER_FONT_SIZE_MAP,
 } from '@shared/types'
 
 const hexColorSchema = z
@@ -29,10 +34,6 @@ const versionSchema = z
 const assetNameSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
-
-const widgetFontSizeError = {
-  message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`,
-}
 
 /** @deprecated */
 export const buttonFieldsSchema = z.object({
@@ -61,8 +62,8 @@ export const bannerFieldsSchema = z.object({
     name: z.enum(FONT_FAMILY_OPTIONS, {
       message: 'Choose a valid font family',
     }),
-    size: z.enum(BANNER_FONT_SIZE_KEYS, {
-      message: 'Choose a valid font size',
+    size: z.enum(Object.keys(BANNER_FONT_SIZE_MAP) as BannerFontSize[], {
+      message: 'Select a valid font size',
     }),
   }),
   animation: z.object({
@@ -90,10 +91,12 @@ export const BannerProfileSchema = bannerFieldsSchema.extend({
 /** @legacy */
 export const widgetFieldsSchema = z.object({
   widgetFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  widgetFontSize: z.coerce
-    .number()
-    .min(WIDGET_FONT_SIZES.min, widgetFontSizeError)
-    .max(WIDGET_FONT_SIZES.max, widgetFontSizeError),
+  widgetFontSize: z.enum(
+    Object.keys(WIDGET_FONT_SIZE_MAP) as WidgetFontSize[],
+    {
+      message: 'Select a valid font size',
+    },
+  ),
   widgetTitleText: z
     .string()
     .min(1, { message: 'Title cannot be empty' })

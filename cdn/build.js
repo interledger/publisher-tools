@@ -60,7 +60,14 @@ function rawPlugin() {
       const namespace = 'raw-loader'
       const filter = /\?raw$/
       build.onResolve({ filter }, (args) => {
-        const resolvedPath = path.join(args.resolveDir, args.path)
+        let resolvedPath = path.join(args.resolveDir, args.path)
+        // resolve TypeScript aliases
+        if (args.path.includes('@c/')) {
+          const filepath = args.path.split('@c/')[1]
+          const root = path.join(process.cwd(), '..')
+          const components = path.join(root, 'components')
+          resolvedPath = path.join(components, 'src', filepath)
+        }
         return { path: resolvedPath, namespace }
       })
       build.onLoad({ filter, namespace }, async (args) => {

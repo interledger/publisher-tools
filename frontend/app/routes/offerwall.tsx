@@ -20,7 +20,16 @@ import {
   ToolsWalletAddress,
 } from '@/components'
 import HowItWorks from '~/components/offerwall/HowItWorks'
+import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import {
+  actions,
+  hydrateProfilesFromStorage,
+  hydrateSnapshotsFromStorage,
+  offerwall,
+  subscribeProfilesToStorage,
+  subscribeProfilesToUpdates,
+} from '~/stores/offerwall-store'
 import {
   loadState,
   persistState,
@@ -58,6 +67,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Offerwall() {
   const snap = useSnapshot(toolState)
+  const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -66,8 +76,18 @@ export default function Offerwall() {
   usePathTracker()
 
   useEffect(() => {
+    const unsubscribeUpdates = subscribeProfilesToUpdates()
+    hydrateProfilesFromStorage()
+    const unsubscribeStorage = subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
+
     loadState(OP_WALLET_ADDRESS)
     persistState()
+
+    return () => {
+      unsubscribeStorage()
+      unsubscribeUpdates()
+    }
   }, [OP_WALLET_ADDRESS])
 
   const handleSave = async (action: 'save-success' | 'script') => {
@@ -137,16 +157,16 @@ export default function Offerwall() {
 
                     <BuilderPresetTabs
                       idPrefix="profile"
-                      //TODO: replace with 'offerwallSnap.profileTabs'
-                      options={[]}
+                      options={offerwallSnap.profileTabs}
                       selectedId={snap.activeTab}
                       onChange={(profileId) =>
                         toolActions.setActiveTab(profileId)
                       }
-                      //TODO: use actions.setProfileName
-                      onRename={() => {}}
+                      onRename={(name) => actions.setProfileName(name)}
                     >
-                      <>{/* TODO: Add offerwall builder */}</>
+                      <OfferwallBuilder
+                        onRefresh={() => actions.resetProfileSection()}
+                      />
                     </BuilderPresetTabs>
 
                     <div

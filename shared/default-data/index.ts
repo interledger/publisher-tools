@@ -10,6 +10,7 @@ import {
 import type {
   BannerProfile,
   ElementConfigType,
+  OfferwallProfile,
   WidgetProfile,
 } from '@shared/types'
 
@@ -100,7 +101,7 @@ export const createDefaultWidgetProfile = (
   $name: profileName,
   $modifiedAt: '',
   widgetFontName: FONT_FAMILY_OPTIONS[0],
-  widgetFontSize: WIDGET_FONT_SIZES.default,
+  widgetFontSize: 'base',
   widgetPosition: WIDGET_POSITION.Right,
   widgetTextColor: '#000000',
   widgetBackgroundColor: '#ffffff',
@@ -115,4 +116,24 @@ export const createDefaultWidgetProfile = (
   widgetDonateAmount: 1,
   widgetButtonText: 'Support me',
   widgetTriggerIcon: '',
+})
+
+export const createDefaultOfferwallProfile = (
+  profileName: string,
+): OfferwallProfile => ({
+  $version: '0.0.1',
+  $name: profileName,
+  $modifiedAt: '',
+  font: {
+    name: FONT_FAMILY_OPTIONS[0],
+  },
+  border: {
+    type: CORNER_OPTION.Light,
+  },
+  color: {
+    text: '#000000',
+    background: '#ffffff',
+    headline: '#000000',
+    theme: '#4ec6c0',
+  },
 })

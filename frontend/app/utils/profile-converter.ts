@@ -8,6 +8,12 @@ import type {
   WidgetConfig,
   ToolProfile,
 } from '@shared/types'
+import {
+  numberToBannerFontSize,
+  numberToWidgetFontSize,
+  bannerFontSizeToNumber,
+  widgetFontSizeToNumber,
+} from '@shared/types'
 import type { StableKey } from '~/stores/toolStore'
 
 function convertToProfile<T extends Tool>(
@@ -34,6 +40,7 @@ export function convertToConfigLegacy<T extends Tool>(
     walletAddress,
     versionName: $name,
     ...rest,
+    ...getLegacyFontSize(profile),
   } as unknown as ElementConfigType
 }
 
@@ -81,13 +88,28 @@ export function convertToConfiguration<T extends Tool>(
 }
 
 /** @legacy */
+function getLegacyFontSize(profile: ToolProfile<Tool>) {
+  if ('thumbnail' in profile) {
+    return { bannerFontSize: bannerFontSizeToNumber(profile.font.size) }
+  }
+  if ('widgetFontSize' in profile) {
+    return { widgetFontSize: widgetFontSizeToNumber(profile.widgetFontSize) }
+  }
+
+  return {}
+}
+
+/** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
   switch (tool) {
     case 'widget':
-      return extract<WidgetConfig>(
-        profile,
-        (key) => key.startsWith('widget') || key.includes('Widget'),
-      )
+      return {
+        ...extract<WidgetConfig>(
+          profile,
+          (key) => key.startsWith('widget') || key.includes('Widget'),
+        ),
+        widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
+      }
     case 'banner':
       return {
         title: {
@@ -99,7 +121,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         },
         font: {
           name: profile.bannerFontName,
-          size: profile.bannerFontSize,
+          size: numberToBannerFontSize(profile.bannerFontSize),
         },
         animation: {
           type: profile.bannerSlideAnimation,
