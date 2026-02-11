@@ -1,0 +1,71 @@
+p,
+h1,
+h2 {
+  margin: 0;
+}
+
+wm-header {
+  margin-bottom: 0.5rem;
+}
+
+.container {
+  font-family: var(--font-family);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--Spacings-lg);
+  background: var(--background);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+  color: var(--heading-color);
+}
+
+.icon {
+  display: flex;
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+  border: 0.25rem solid var(--accent-color);
+  border-radius: 50%;
+  padding: 0.5rem;
+  color: var(--accent-color);
+
+  svg {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.strong {
+  font-weight: 700;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+button {
+  background-color: transparent;
+  color: var(--accent-color);
+
+  display: flex;
+  gap: var(--Spacings-xs);
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+
+  padding: var(--Paddings-sm);
+  line-height: 1.5rem;
+
+  border: 1px solid var(--accent-color);
+  border-radius: var(--Radius-Moderate-rounding);
+}
