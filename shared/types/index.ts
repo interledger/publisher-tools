@@ -232,15 +232,15 @@ export const WIDGET_TITLE_MAX_LENGTH = 30
 export const WIDGET_DESCRIPTION_MAX_LENGTH = 300
 
 export const BANNER_FONT_SIZES = {
-  min: 16,
-  max: 24,
-  default: 20,
+  min: BANNER_FONT_SIZE_MAP['2xs'],
+  max: BANNER_FONT_SIZE_MAP['2xl'],
+  default: BANNER_FONT_SIZE_MAP.base,
 } as const
 
 export const WIDGET_FONT_SIZES = {
-  min: 14,
-  max: 19,
-  default: 17,
+  min: WIDGET_FONT_SIZE_MAP.xs,
+  max: WIDGET_FONT_SIZE_MAP.xl,
+  default: WIDGET_FONT_SIZE_MAP.base,
 } as const
 
 export const CORNER_OPTION = {
