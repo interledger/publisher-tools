@@ -43,7 +43,7 @@ export function FontSizeInput<T extends FontSize>({
 
       <div className="flex items-center h-12 gap-md">
         <IncDecButton
-          label={`Decrease font size, currently ${ariaSize}`}
+          label={'Decrease font size, currently'}
           onClick={() => handleSliderChange(sliderValue - 1)}
           aria-controls={id}
         >
@@ -60,7 +60,7 @@ export function FontSizeInput<T extends FontSize>({
         />
 
         <IncDecButton
-          label={`Increase font size, currently ${ariaSize}`}
+          label={'Increase font size, currently'}
           onClick={() => handleSliderChange(sliderValue + 1)}
           aria-controls={id}
         >

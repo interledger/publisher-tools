@@ -5,7 +5,7 @@ interface Props {
   min: number
   max: number
   onChange: (value: number) => void
-  ariaValueText: string
+  ariaValueText?: string
   id?: string
   step?: number
 }
