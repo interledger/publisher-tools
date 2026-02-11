@@ -102,14 +102,6 @@ function getLegacyFontSize(profile: ToolProfile<Tool>) {
 /** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
   switch (tool) {
-    case 'widget':
-      return {
-        ...extract<WidgetConfig>(
-          profile,
-          (key) => key.startsWith('widget') || key.includes('Widget'),
-        ),
-        widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
-      }
     case 'banner':
       return {
         title: {
@@ -137,6 +129,14 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         thumbnail: {
           value: profile.bannerThumbnail,
         },
+      }
+    case 'widget':
+      return {
+        ...extract<WidgetConfig>(
+          profile,
+          (key) => key.startsWith('widget') || key.includes('Widget'),
+        ),
+        widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
       }
   }
 }

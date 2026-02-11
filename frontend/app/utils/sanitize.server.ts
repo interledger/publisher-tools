@@ -63,6 +63,7 @@ export const sanitizeProfileFields = <T extends Tool>(
       widgetTitleText: sanitizeText(widget.widgetTitleText),
       widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
       widgetButtonText: sanitizeText(widget.widgetButtonText),
+      widgetTriggerIcon: sanitizeText(widget.widgetTriggerIcon),
     } as ToolProfile<T>
   }
 
@@ -78,6 +79,10 @@ export const sanitizeProfileFields = <T extends Tool>(
       description: {
         ...banner.description,
         text: sanitizeHtmlField(banner.description.text),
+      },
+      thumbnail: {
+        ...banner.thumbnail,
+        value: sanitizeText(banner.thumbnail.value),
       },
     } as ToolProfile<T>
   }

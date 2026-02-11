@@ -11,23 +11,9 @@ import {
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
+import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
-
-type DeepPartial<T> = {
-  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
-}
-
-function patchProxy<T extends object>(target: T, source: DeepPartial<T>): void {
-  for (const key in source) {
-    const value = source[key]
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      patchProxy(target[key] as object, value as object)
-    } else {
-      target[key] = value as T[Extract<keyof T, string>]
-    }
-  }
-}
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 
@@ -109,19 +95,11 @@ export const actions = {
       throw new Error('No snapshot found for the profile')
     }
 
+    const { content, appearance } = splitProfileProperties(snap)
     if (section === 'content') {
-      const { title, description } = snap
-      patchProxy(banner.profile, { title, description })
+      patchProxy(banner.profile, content)
     } else {
-      const { font, animation, position, border, color, thumbnail } = snap
-      patchProxy(banner.profile, {
-        font,
-        animation,
-        position,
-        border,
-        color,
-        thumbnail,
-      })
+      patchProxy(banner.profile, appearance)
     }
   },
   async saveProfile(): Promise<SaveResult> {

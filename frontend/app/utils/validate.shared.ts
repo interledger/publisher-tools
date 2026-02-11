@@ -85,7 +85,6 @@ export const bannerFieldsSchema = z.object({
 export const BannerProfileSchema = bannerFieldsSchema.extend({
   $version: versionSchema,
   $name: z.string().min(1).max(40),
-  $modifiedAt: z.string().optional(),
 }) satisfies z.ZodType<BannerProfile>
 
 /** @legacy */

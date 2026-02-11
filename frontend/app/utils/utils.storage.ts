@@ -1,8 +1,4 @@
-import type {
-  BannerProfile,
-  WidgetProfile,
-  ElementConfigType,
-} from '@shared/types'
+import type { Tool, ToolProfile, WidgetProfile } from '@shared/types'
 import { groupBy } from '@shared/utils'
 
 type DeepPartial<T> = {
@@ -49,7 +45,13 @@ export function omit<T extends Record<string, unknown>>(
   ) as Partial<T>
 }
 
-export function splitProfileProperties(profile: BannerProfile | WidgetProfile) {
+export function splitProfileProperties<T extends Tool>(
+  profile: ToolProfile<T>,
+) {
+  if (!profile) {
+    throw new Error('No profile provided')
+  }
+
   const { content = [], appearance = [] } = groupBy(
     Object.entries(profile).filter(([key]) => !key.startsWith('$')),
     ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance'),
@@ -66,17 +68,22 @@ function isContentProperty(key: string): boolean {
 }
 
 // TODO: remove with versioning changes
-export function legacySplitConfigProperties<T extends ElementConfigType>(
+export function legacySplitConfigProperties<T extends WidgetProfile>(
   config: T,
 ) {
-  const { versionName: _versionName, ...rest } = config
+  const { $name: _versionName, ...rest } = config
   const { content = [], appearance = [] } = groupBy(
     Object.entries(rest),
-    ([key]) => (isContentProperty(String(key)) ? 'content' : 'appearance'),
+    ([key]) =>
+      legacyIsContentProperty(String(key)) ? 'content' : 'appearance',
   )
 
   return {
     content: Object.fromEntries(content) as Partial<T>,
     appearance: Object.fromEntries(appearance) as Partial<T>,
   }
+}
+
+function legacyIsContentProperty(key: string): boolean {
+  return key.endsWith('Text') || key.endsWith('Visible')
 }
