@@ -51,7 +51,7 @@ export const bannerFieldsSchema = z.object({
   bannerFontSize: z.enum(
     Object.keys(BANNER_FONT_SIZE_MAP) as BannerFontSize[],
     {
-      message: 'Choose a font size',
+      message: 'Select a valid font size',
     },
   ),
   bannerTitleText: z
