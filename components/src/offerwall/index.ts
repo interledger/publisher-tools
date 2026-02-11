@@ -63,22 +63,11 @@ export class OfferwallModal extends LitElement {
 
   firstUpdated() {
     this.#openDialog()
-
-    const dialog = this.#dialogRef.value!
-    dialog.addEventListener('cancel', (ev) => {
-      if (this._screen === 'install-required') {
-        return this.#onInstallScreenClose(ev)
-      }
-      if (this._screen === 'all-set') {
-        return this.#onAllSetDone(ev)
-      }
-      ev.preventDefault()
-    })
   }
 
   render() {
     return html`
-      <dialog ${ref(this.#dialogRef)}>
+      <dialog ${ref(this.#dialogRef)} @cancel=${this.#onDialogCancel}>
         ${this.#renderScreen(this._screen)}
       </dialog>
     `
@@ -104,6 +93,16 @@ export class OfferwallModal extends LitElement {
           <wm-offerwall-contribution-required></wm-offerwall-contribution-required>
         `
     }
+  }
+
+  #onDialogCancel = (ev: Event) => {
+    if (this._screen === 'install-required') {
+      return this.#onInstallScreenClose(ev)
+    }
+    if (this._screen === 'all-set') {
+      return this.#onAllSetDone(ev)
+    }
+    ev.preventDefault()
   }
 
   #onInstallScreenClose = (ev: MouseEvent | Event) => {
