@@ -81,7 +81,7 @@ export const widgetFieldsSchema = z.object({
   widgetFontSize: z.enum(
     Object.keys(WIDGET_FONT_SIZE_MAP) as WidgetFontSize[],
     {
-      message: 'Choose a font size',
+      message: 'Select a valid font size',
     },
   ),
   widgetTitleText: z
