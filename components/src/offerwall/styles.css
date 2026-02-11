@@ -30,3 +30,15 @@ dialog::backdrop {
     padding: var(--Paddings-sm);
   }
 }
+
+/* preview mode */
+dialog[data-preview] {
+  position: relative;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  max-width: auto;
+  max-height: auto;
+  border: none;
+  overflow: hidden;
+}
