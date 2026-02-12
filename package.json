@@ -19,7 +19,7 @@
     "test": "pnpm -r test"
   },
   "devDependencies": {
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.39.2",
     "@octokit/webhooks-types": "^7.6.1",
     "@types/github-script": "github:actions/github-script#v8.0.0",
     "del-cli": "^7.0.0",
