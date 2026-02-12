@@ -10,7 +10,7 @@ import { FONT_MAP } from './constants'
 export const applyFontFamily = (
   element: HTMLElement,
   fontName: FontFamilyKey,
-  componentType: 'banner' | 'widget',
+  componentType: 'banner' | 'widget' | 'offerwall',
   fontBaseUrl: string,
 ): void => {
   const fontLinkId = `wmt-font-family-${componentType}`

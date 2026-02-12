@@ -1,15 +1,34 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { OfferwallModal } from '@c/index'
 import type { Controller } from '@c/offerwall/controller'
+import { BORDER_RADIUS, type OfferwallProfile } from '@shared/types'
 import { useOfferwallProfile } from '~/stores/offerwall-store'
 
-interface Props {
-  cdnUrl: string
-}
-
-export default function OfferwallPreview({ cdnUrl }: Props) {
+export default function OfferwallPreview() {
+  const [isLoaded, setIsLoaded] = useState(false)
   const [profile] = useOfferwallProfile()
   const offerwallRef = useRef<OfferwallModal>(null)
+
+  const setCssVars = (elem: OfferwallModal, profile: OfferwallProfile) => {
+    elem.setFontFamily(profile.font.name)
+
+    elem.style.setProperty(
+      '--wm-border-radius',
+      BORDER_RADIUS[profile.border.type],
+    )
+
+    const { background, text, theme, headline } = profile.color
+    elem.style.setProperty('--wm-text-color', text)
+    elem.style.setProperty('--wm-heading-color', headline)
+    elem.style.setProperty(
+      '--wm-background',
+      typeof background === 'string' ? background : '', // TODO: handle gradient,
+    )
+    elem.style.setProperty(
+      '--wm-accent-color',
+      typeof theme === 'string' ? theme : '', // TODO: handle gradient,
+    )
+  }
 
   useEffect(() => {
     const name = 'wm-offerwall'
@@ -25,6 +44,7 @@ export default function OfferwallPreview({ cdnUrl }: Props) {
       const el = document.querySelector<OfferwallModal>('wm-offerwall')!
       const controller: Controller = {
         onModalClose: (ev) => {
+          // TODO: any reason to handle events here?
           console.log('onModalClose')
           console.log('showing offerwall options')
         },
@@ -37,30 +57,23 @@ export default function OfferwallPreview({ cdnUrl }: Props) {
         },
         onDone(ev) {
           console.log('onDone')
-          // ev.preventDefault()
+          ev.preventDefault()
         },
         isPreviewMode: true,
       }
       el.setController(controller)
 
-      // setTimeout(() => {
-      // el.setScreen('contribution-required')
-      // }, 5000)
+      setIsLoaded(true)
     }
     load()
   }, [])
 
-  const offerwallConfig = useMemo(
-    () => ({ profile, cdnUrl }),
-    [profile, cdnUrl],
-  )
   useEffect(() => {
-    if (offerwallRef.current) {
+    if (offerwallRef.current && isLoaded) {
       const offerwall = offerwallRef.current
-      offerwall.config = offerwallConfig
+      setCssVars(offerwall, profile)
     }
-  }, [offerwallConfig])
-
+  }, [profile, isLoaded])
   return (
     <div
       style={{
