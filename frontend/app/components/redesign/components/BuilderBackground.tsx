@@ -27,7 +27,6 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   onPreviewClick,
 }) => {
   const snap = useSnapshot(toolState)
-  const isWidgetTool = snap.currentToolType === 'widget'
   const isAnimationDisabled =
     snap.currentConfig.bannerSlideAnimation === SLIDE_ANIMATION.None
 
@@ -39,11 +38,8 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
     <div
       id="builder-background"
       className={cx(
-        'bg-silver-100',
-        'rounded-[20px]',
-        'p-md',
-        'flex flex-col items-center justify-end',
-        'min-h-[600px]',
+        'bg-silver-100 rounded-[20px] p-md flex flex-col items-center min-h-[600px]',
+        onPreviewClick && 'gap-4xl',
         className,
       )}
       style={{
@@ -55,7 +51,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
       {onPreviewClick && !isAnimationDisabled && (
         <ToolsSecondaryButton
           icon="play"
-          className="w-[130px] order-first mb-auto"
+          className="w-[130px]"
           onClick={onPreviewClick}
         >
           Preview
@@ -64,10 +60,9 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
       <div
         id="browser-mockup"
-        className={cx(
-          'w-full bg-transparent rounded-2xl border border-field-border overflow-hidden flex flex-col',
-          isWidgetTool ? 'h-[752px]' : 'h-[406px]',
-        )}
+        className={
+          'w-full flex-1 rounded-2xl border border-field-border overflow-hidden flex flex-col'
+        }
       >
         <div className="flex items-center p-md bg-white">
           <div className="flex items-center gap-4 w-full">
@@ -78,7 +73,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
         <div
           id="browser-content"
-          className="flex-1 p-md bg-transparent [container-type:inline-size]"
+          className="flex-1 flex flex-col p-md [container-type:inline-size]"
         >
           {children}
         </div>
