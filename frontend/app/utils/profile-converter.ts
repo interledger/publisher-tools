@@ -15,7 +15,6 @@ import {
   bannerFontSizeToNumber,
   widgetFontSizeToNumber,
 } from '@shared/types'
-import type { StableKey } from '~/stores/toolStore'
 
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
@@ -33,23 +32,39 @@ function convertToProfile<T extends Tool>(
 export function convertToConfigLegacy<T extends Tool>(
   walletAddress: string,
   profile: ToolProfile<T>,
-): ElementConfigType {
+): Partial<ElementConfigType> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { $name, $version, $modifiedAt, ...rest } = profile
+  if ('thumbnail' in profile) {
+    return {
+      bannerFontName: profile.font.name,
+      bannerTitleText: profile.title.text,
+      bannerDescriptionText: profile.description.text,
+      bannerDescriptionVisible: profile.description.isVisible,
+      bannerSlideAnimation: profile.animation.type,
+      bannerPosition: profile.position,
+      bannerBorder: profile.border.type,
+      bannerTextColor: profile.color.text,
+      bannerBackgroundColor: profile.color.background as string,
+      bannerThumbnail: profile.thumbnail.value,
+      ...getLegacyFontSize(profile),
+    }
+  }
   return {
     walletAddress,
     versionName: $name,
     ...rest,
     ...getLegacyFontSize(profile),
-  } as unknown as ElementConfigType
+  }
 }
 
 /** @legacy */
+// TODO: to be removed after the completion of versioned configurations
 export function convertToConfigsLegacy<T extends Tool>(
   walletAddress: string,
   profiles: ToolProfiles<T>,
-): Record<StableKey, Partial<ElementConfigType>> {
-  const configs: Record<string, ElementConfigType> = {}
+) {
+  const configs: Record<string, Partial<ElementConfigType>> = {}
 
   Object.entries(profiles ?? {}).forEach(([profileId, profile]) => {
     configs[profileId] = convertToConfigLegacy<T>(walletAddress, profile)

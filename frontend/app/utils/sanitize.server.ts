@@ -56,7 +56,7 @@ function sanitizeHtmlField(value: string): string {
 export const sanitizeConfigFields = <T extends Tool>(
   config: ToolProfile<T>,
   tool: T,
-): ElementConfigType => {
+): Partial<ElementConfigType> => {
   if (tool === TOOL_WIDGET) {
     const widget = config as WidgetProfile
     return {
