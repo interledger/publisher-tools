@@ -6,7 +6,7 @@ import iconWallet from '@c/assets/icon_wallet.svg?raw'
 import iconClose from '@c/assets/icon_x_close.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
 import { WebMonetizationHeader } from '@c/shared/web-monetization-header'
-import { getWebMonetizationLinkHref } from '@c/utils'
+import { getBrowserSupportForExtension, getExtensionUrl } from '@shared/utils'
 import styles from './install-required.css?raw'
 import styleTokens from '../../vars.css?raw'
 
@@ -91,10 +91,18 @@ export class InstallRequired extends LitElement {
   }
 
   get extensionUrl(): string {
-    const url = new URL(getWebMonetizationLinkHref(navigator.userAgent))
-    url.searchParams.set('utm_source', window.location.origin)
-    url.searchParams.set('utm_medium', 'offerwall-embed')
-    return url.href
+    const browserId = getBrowserSupportForExtension(
+      navigator.userAgent,
+      navigator.vendor,
+    )
+    if (!browserId) {
+      console.warn('Using on browser that does not have WM extension support')
+      return 'https://webmonetization.org'
+    }
+    return getExtensionUrl(browserId, {
+      utm_source: window.location.origin,
+      utm_medium: 'offerwall-embed',
+    }).href
   }
 
   #onExtensionLinkClick = (ev: MouseEvent) => {

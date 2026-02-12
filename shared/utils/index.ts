@@ -122,6 +122,61 @@ export function checkHrefFormat(href: string): string {
   return href
 }
 
+type BrowserId = NonNullable<ReturnType<typeof getBrowserSupportForExtension>>
+export function getBrowserSupportForExtension(ua: string, vendor = '') {
+  const isMobile =
+    /Mobi|Android|iPhone|iPad|iPod/i.test(ua) ||
+    (navigator.maxTouchPoints > 0 && /Macintosh/.test(ua))
+  const isMacOS = /Macintosh/i.test(ua) && !isMobile
+
+  // Firefox (Desktop & Android supported, iOS excluded)
+  if (/Firefox/i.test(ua) && !/FxiOS/i.test(ua)) {
+    return 'firefox' // Both Desktop and Android
+  }
+
+  // Safari (macOS supported, iOS/iPadOS excluded)
+  if (
+    /Safari/i.test(ua) &&
+    /Apple Computer/i.test(vendor) &&
+    !/Chrome|CriOS|Android/i.test(ua)
+  ) {
+    if (isMacOS) {
+      return 'safari'
+    } else {
+      return null // Identified as Safari, but on mobile/iPad
+    }
+  }
+
+  // Chromium-based Browsers
+  // Chromium Rule: Supported on Desktop Only
+  // (Excludes Chrome Android, Chrome iOS, Edge Mobile, etc.)
+  if (/Chrome|CriOS|Edg|Vivaldi|Opr|Brave/i.test(ua)) {
+    // Determine the specific flavor
+    if (/Edg/i.test(ua)) {
+      return isMobile ? null : 'edge'
+    } else if (/Vivaldi/i.test(ua) || /Opr/i.test(ua) || /Brave/i.test(ua)) {
+      return isMobile ? null : 'chromium'
+    } else {
+      return isMobile ? null : 'chrome'
+    }
+  }
+
+  return null
+}
+
+export function getExtensionUrl(browserId: BrowserId, utm?: UtmParams): URL {
+  const URL_MAP: Record<BrowserId, string> = {
+    chrome: `https://chromewebstore.google.com/detail/web-monetization/oiabcfomehhigdepbbclppomkhlknpii`,
+    chromium: `https://chromewebstore.google.com/detail/web-monetization/oiabcfomehhigdepbbclppomkhlknpii`,
+    edge: `https://microsoftedge.microsoft.com/addons/detail/web-monetization/imjgemgmeoioefpmfefmffbboogighjl`,
+    firefox: `https://addons.mozilla.org/en-US/firefox/addon/web-monetization-extension/`,
+    safari: `https://apps.apple.com/app/web-monetization/id6754325288`,
+  }
+
+  const url = URL_MAP[browserId]
+  return urlWithParams(url, utm || {})
+}
+
 export async function fetchWalletDetails(url: string): Promise<WalletAddress> {
   const res = await fetch(url, {
     headers: { Accept: 'application/json' },
@@ -206,6 +261,32 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   return validUrl
 }
 
+/**
+ * Polyfill for `Promise.withResolvers()`
+ */
+export function withResolvers<T>(): {
+  resolve: (value: T | PromiseLike<T>) => void
+  reject: (reason?: unknown) => void
+  promise: Promise<T>
+} {
+  let resolve
+  let reject
+  const promise = new Promise((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  // @ts-expect-error I know, I know
+  return { resolve, reject, promise }
+}
+
+export type UtmParams = {
+  utm_source: string
+  utm_medium: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+}
+
 export function urlWithParams(
   url: string | URL,
   params: Record<string, string>,
@@ -216,6 +297,23 @@ export function urlWithParams(
     result.searchParams.set(key, val)
   }
   return result
+}
+
+export function isValidDate(d: unknown): d is Date {
+  return d instanceof Date && !isNaN(d.valueOf())
+}
+
+export function isValidUrl(v: unknown): v is string {
+  if (typeof v !== 'string' || !v) return false
+
+  try {
+    const url = new URL(v)
+    if (url.protocol !== 'https:') return false
+    if (url.pathname.length <= 1) return false
+    return true
+  } catch {
+    return false
+  }
 }
 
 export function groupBy<T, K extends PropertyKey>(
