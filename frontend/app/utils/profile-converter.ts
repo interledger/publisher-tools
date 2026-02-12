@@ -6,8 +6,8 @@ import type {
   ElementConfigType,
   Configuration,
   WidgetConfig,
-  BannerConfig,
   ToolProfile,
+  BaseToolProfile,
 } from '@shared/types'
 import {
   numberToBannerFontSize,
@@ -87,8 +87,8 @@ export function convertToConfiguration<T extends Tool>(
 
 /** @legacy */
 function getLegacyFontSize(profile: ToolProfile<Tool>) {
-  if ('bannerFontSize' in profile) {
-    return { bannerFontSize: bannerFontSizeToNumber(profile.bannerFontSize) }
+  if ('thumbnail' in profile) {
+    return { bannerFontSize: bannerFontSizeToNumber(profile.font.size) }
   }
   if ('widgetFontSize' in profile) {
     return { widgetFontSize: widgetFontSizeToNumber(profile.widgetFontSize) }
@@ -98,15 +98,38 @@ function getLegacyFontSize(profile: ToolProfile<Tool>) {
 }
 
 /** @legacy */
-function getToolProfile(profile: ElementConfigType, tool: Tool) {
+function getToolProfile(
+  profile: ElementConfigType,
+  tool: Tool,
+): Omit<ToolProfile<Tool>, keyof BaseToolProfile> {
   if (tool === 'banner') {
     return {
-      ...extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      ),
-      bannerFontSize: numberToBannerFontSize(profile.bannerFontSize),
-    }
+      title: {
+        text: profile.bannerTitleText,
+      },
+      description: {
+        text: profile.bannerDescriptionText,
+        isVisible: profile.bannerDescriptionVisible,
+      },
+      font: {
+        name: profile.bannerFontName,
+        size: numberToBannerFontSize(profile.bannerFontSize),
+      },
+      animation: {
+        type: profile.bannerSlideAnimation,
+      },
+      position: profile.bannerPosition,
+      border: {
+        type: profile.bannerBorder,
+      },
+      color: {
+        text: profile.bannerTextColor,
+        background: profile.bannerBackgroundColor,
+      },
+      thumbnail: {
+        value: profile.bannerThumbnail,
+      },
+    } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
   return {
     ...extract<WidgetConfig>(
