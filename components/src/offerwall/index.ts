@@ -1,6 +1,14 @@
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import { html, LitElement, unsafeCSS } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { createRef, ref, type Ref } from 'lit/directives/ref.js'
+import { applyFontFamily } from '@c/utils.js'
+import {
+  BORDER_RADIUS,
+  type FontFamilyKey,
+  type CornerType,
+  type OfferwallProfile,
+} from '@shared/types'
 import {
   AllSet,
   ContributionRequired,
@@ -22,11 +30,22 @@ const ALLOWED_SCREENS: Screen[] = [
   'all-set',
 ]
 
+interface OfferwallConfig {
+  profile: OfferwallProfile
+  cdnUrl: string
+}
+
 export class OfferwallModal extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
-  constructor() {
-    super()
+  private profileController = new OfferwallController(this)
+
+  @property({ type: Object })
+  set config(value: Partial<OfferwallConfig>) {
+    this.profileController.updateProfile(value)
+  }
+  get config() {
+    return this.profileController.config
   }
 
   #controller: Controller = NO_OP_CONTROLLER
@@ -138,5 +157,70 @@ export class OfferwallModal extends LitElement {
   #closeDialog = () => {
     this.#dialogRef.value!.close()
     this.#dialogRef.value!.remove()
+  }
+}
+
+class OfferwallController implements ReactiveController {
+  private host: ReactiveControllerHost & HTMLElement
+  private _config!: OfferwallConfig
+
+  constructor(host: ReactiveControllerHost & HTMLElement) {
+    this.host = host
+    host.addController(this)
+  }
+
+  /** called when the host is connected to the DOM */
+  hostConnected(): void {}
+
+  /** called when the host is disconnected from the DOM */
+  hostDisconnected(): void {}
+
+  get config(): OfferwallConfig {
+    return this._config
+  }
+
+  updateProfile(updates: Partial<OfferwallConfig>) {
+    this._config = { ...this._config, ...updates }
+
+    if (updates.profile?.border?.type) {
+      this.applyBorderRadius(updates.profile.border.type)
+    }
+
+    if (updates.profile?.font?.name) {
+      this.applyFontFamily(updates.profile.font.name)
+    }
+
+    if (updates.profile?.color) {
+      this.applyTheme()
+    }
+
+    this.host.requestUpdate()
+  }
+
+  private applyBorderRadius(borderRadius: CornerType) {
+    const borderRadiusValue = BORDER_RADIUS[borderRadius]
+    this.host.style.setProperty('--wm-border-radius', borderRadiusValue)
+  }
+
+  private applyFontFamily(fontName: FontFamilyKey) {
+    const fontBaseUrl = new URL('/assets/fonts/', this.config.cdnUrl).href
+    applyFontFamily(this.host, fontName, 'banner', fontBaseUrl)
+  }
+
+  private applyTheme() {
+    const element = this.host
+    const { color } = this.config.profile
+    if (color?.text) {
+      element.style.setProperty('--wm-text-color', color.text)
+    }
+    if (color?.background) {
+      element.style.setProperty('--wm-background', color.background as string)
+    }
+    if (color?.headline) {
+      element.style.setProperty('--wm-headline-color', color.headline)
+    }
+    if (color?.theme) {
+      element.style.setProperty('--wm-accent-color', color.theme as string)
+    }
   }
 }
