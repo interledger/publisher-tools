@@ -1,6 +1,6 @@
 import type { OfferwallModal } from '@c/offerwall'
 import type { Controller } from '@c/offerwall/controller'
-import type { OfferwallProfile } from '@shared/types'
+import type { MonetizationEvent, OfferwallProfile } from '@shared/types'
 import {
   getBrowserSupportForExtension,
   isValidDate,
@@ -96,7 +96,6 @@ export class WebMonetizationCustomOfferwallChoice {
 
     // in case initialize() wasn't called
     this.#configPromise ??= fetchConfig(params)
-
     const profile = await this.#configPromise
     this.#setCssVars(owElem, profile)
 
@@ -119,11 +118,11 @@ export class WebMonetizationCustomOfferwallChoice {
     if (!lastEvent) return false
 
     if (lastEvent.type === 'install') {
-      return isWithinAllowedTime(lastEvent.timestamp)
+      return this.#isWithinAllowedTime(lastEvent.timestamp)
     }
     if (lastEvent.type === 'monetization') {
       if (
-        isWithinAllowedTime(lastEvent.timestamp) &&
+        this.#isWithinAllowedTime(lastEvent.timestamp) &&
         this.#isForSameWalletAddress(lastEvent.event.paymentPointer)
       ) {
         return isValidPayment(lastEvent.event.incomingPayment)
@@ -140,18 +139,14 @@ export class WebMonetizationCustomOfferwallChoice {
    */
   #runBusinessLogic = async (elem: OfferwallModal) => {
     const { linkElem } = this.#deps
-    const wasExtensionInstalledAtStart = isExtensionInstalled()
+    const wasExtensionInstalledAtStart = this.#isExtensionInstalled()
 
     const lastEvent = this.#getLastEvent()
-    if (lastEvent && isWithinAllowedTime(lastEvent.timestamp)) {
-      // give access if last event was within allowed time
-      elem.setScreen('all-set')
-      return
+    if (lastEvent && this.#isWithinAllowedTime(lastEvent.timestamp)) {
+      return elem.setScreen('all-set')
     }
 
     if (wasExtensionInstalledAtStart) {
-      // wait for a monetization event
-      // give access for 24h after last event
       elem.setScreen('contribution-required')
       while (true) {
         if (!this.#monetizationEventResolver) {
@@ -189,23 +184,15 @@ export class WebMonetizationCustomOfferwallChoice {
         }
       }
     } else {
-      try {
-        // give access for 24h immediately on extension install
-        await this.#waitForExtensionInstall()
-        elem.setScreen('all-set')
-        this.#setLastEvent({ type: 'install', timestamp: Date.now() })
-      } catch (error) {
-        throw new Error('timeout', { cause: error })
-      }
+      await this.#waitForExtensionInstall()
+      elem.setScreen('all-set')
+      this.#setLastEvent({ type: 'install', timestamp: Date.now() })
     }
   }
 
-  #isForSameWalletAddress(walletAddress: string): boolean {
-    const { params } = this.#deps
-    return (
-      walletAddress === params.walletAddress ||
-      walletAddress === params.walletAddressId
-    )
+  #isForSameWalletAddress(url: string): boolean {
+    const { walletAddress, walletAddressId } = this.#deps.params
+    return url === walletAddress || url === walletAddressId
   }
 
   // Get the last stored event and validate its structure
@@ -238,21 +225,18 @@ export class WebMonetizationCustomOfferwallChoice {
       if (!('target' in ev) || !ev.target || typeof ev.target !== 'object') {
         return null
       }
-      if (!('paymentPointer' in ev)) return null
-      if (!('incomingPayment' in ev)) return null
+      if (!('paymentPointer' in ev) || !('incomingPayment' in ev)) return null
       if (!('href' in ev.target)) return null
-
-      const { target, paymentPointer, incomingPayment } = ev
-      if (!isValidUrl(target.href)) return null
-      if (!isValidUrl(paymentPointer)) return null
-      if (!isValidUrl(incomingPayment)) return null
+      if (!isValidUrl(ev.target.href)) return null
+      if (!isValidUrl(ev.paymentPointer)) return null
+      if (!isValidUrl(ev.incomingPayment)) return null
       return {
         type,
         timestamp,
         event: {
-          target: { href: target.href },
-          paymentPointer,
-          incomingPayment,
+          target: { href: ev.target.href },
+          paymentPointer: ev.paymentPointer,
+          incomingPayment: ev.incomingPayment,
         },
       }
     }
@@ -294,14 +278,14 @@ export class WebMonetizationCustomOfferwallChoice {
     return new Promise<void>((resolve, reject) => {
       let elapsed = 0
       const intervalId = setInterval(() => {
-        if (isExtensionInstalled()) {
+        if (this.#isExtensionInstalled()) {
           clearInterval(intervalId)
           resolve()
         } else {
           elapsed += interval
           if (timeout > 0 && elapsed >= timeout) {
             clearInterval(intervalId)
-            reject()
+            reject(new Error('timeout'))
           }
         }
       }, interval)
@@ -313,12 +297,24 @@ export class WebMonetizationCustomOfferwallChoice {
     onSuccess: (ev: MonetizationEvent) => void,
   ) {
     const listener = (event: Event) => {
-      if (event instanceof MonetizationEvent) {
-        onSuccess(event)
+      // @ts-expect-error should be defined globally
+      if (event instanceof globalThis.MonetizationEvent) {
+        onSuccess(event as MonetizationEvent)
         linkElem.removeEventListener('monetization', listener)
       }
     }
     linkElem.addEventListener('monetization', listener)
+  }
+
+  #isWithinAllowedTime(ts: number, allowedTime = 24 * 60 * 60 * 1000): boolean {
+    return Date.now() - ts < allowedTime
+  }
+
+  #isExtensionInstalled(): boolean {
+    return (
+      'MonetizationEvent' in window &&
+      typeof window.MonetizationEvent !== 'undefined'
+    )
   }
 }
 
@@ -355,6 +351,10 @@ declare enum InitializeResponseEnum {
   ACCESS_NOT_GRANTED,
 }
 
+interface InitializeParams {
+  offerwallLanguageCode?: string
+}
+
 export interface GoogleOfcExtendedWindow extends Window {
   googlefc: {
     offerwall: {
@@ -368,16 +368,6 @@ export interface GoogleOfcExtendedWindow extends Window {
     cmd?: (() => void)[]
     enableServices?: () => void
   }
-}
-
-interface InitializeParams {
-  offerwallLanguageCode?: string
-}
-
-declare class MonetizationEvent extends Event {
-  amountSent: { value: string; currency: string }
-  paymentPointer: string
-  incomingPayment: string
 }
 // #endregion
 
@@ -394,23 +384,9 @@ function borderRadiusToNumber(border: OfferwallProfile['border']['type']) {
   }
 }
 
-function isWithinAllowedTime(
-  ts: number,
-  allowedTime = 24 * 60 * 60 * 1000,
-): boolean {
-  return Date.now() - ts < allowedTime
-}
-
 async function isValidPayment(incomingPaymentUrl: string): Promise<boolean> {
   if (!isValidUrl(incomingPaymentUrl)) return false
   // TODO: fetch to check validity
   return true
-}
-
-function isExtensionInstalled(): boolean {
-  return (
-    'MonetizationEvent' in window &&
-    typeof window.MonetizationEvent !== 'undefined'
-  )
 }
 // #endregion

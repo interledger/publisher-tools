@@ -16,15 +16,9 @@ const linkElem = appendPaymentPointer(params.walletAddress)
 const STORAGE_KEY_PREFIX = 'wmt.offerwall.'
 const toStorageKey = (key: string) => `${STORAGE_KEY_PREFIX}${key}`
 const storage: OfferwallChoiceConstructorParams['storage'] = {
-  get(key) {
-    return localStorage.getItem(toStorageKey(key))
-  },
-  set(key, value) {
-    localStorage.setItem(toStorageKey(key), value)
-  },
-  delete(key) {
-    localStorage.removeItem(toStorageKey(key))
-  },
+  get: (key) => localStorage.getItem(toStorageKey(key)),
+  set: (key, value) => localStorage.setItem(toStorageKey(key), value),
+  delete: (key) => localStorage.removeItem(toStorageKey(key)),
 }
 
 const offerwallConstructorParams: OfferwallChoiceConstructorParams = {

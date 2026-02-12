@@ -224,6 +224,12 @@ export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
 /** @deprecated Use WidgetProfile instead */
 export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
 
+export declare class MonetizationEvent extends Event {
+  amountSent: { value: string; currency: string }
+  paymentPointer: string
+  incomingPayment: string
+}
+
 export const KV_PAYMENTS_PREFIX = 'payments/'
 
 export const BANNER_TITLE_MAX_LENGTH = 60
