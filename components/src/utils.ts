@@ -1,4 +1,4 @@
-import type { FontFamilyKey } from '@shared/types'
+import type { FontFamilyKey, Tool } from '@shared/types'
 import { FONT_MAP } from './constants'
 
 /**
@@ -10,7 +10,7 @@ import { FONT_MAP } from './constants'
 export const applyFontFamily = (
   element: HTMLElement,
   fontName: FontFamilyKey,
-  componentType: 'banner' | 'widget',
+  componentType: Tool,
   fontBaseUrl: string,
 ): void => {
   const fontLinkId = `wmt-font-family-${componentType}`

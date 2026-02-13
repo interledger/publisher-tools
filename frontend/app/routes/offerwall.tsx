@@ -21,6 +21,7 @@ import {
 } from '@/components'
 import HowItWorks from '~/components/offerwall/HowItWorks'
 import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
+import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import {
   actions,
@@ -218,7 +219,9 @@ export default function Offerwall() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground />
+                    <BuilderBackground>
+                      <OfferwallPreview />
+                    </BuilderBackground>
                   </div>
                 </div>
               </div>
