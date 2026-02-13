@@ -114,6 +114,8 @@ export class WebMonetizationCustomOfferwallChoice {
 
   // TODO: strengthen security and prevent users to bypass this easily
   async #isAllowedAccessOnStart(): Promise<boolean> {
+    if (!this.#isExtensionInstalled()) return false
+
     const lastEvent = this.#getLastEvent()
     if (!lastEvent) return false
 
