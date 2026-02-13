@@ -62,7 +62,7 @@ export function getExtensionHref(
   options?: Partial<{ fallbackUrl: string; utm: UtmParams }>,
 ): string {
   const utm: UtmParams = {
-    utm_source: window.location.origin,
+    utm_source: window.location.hostname,
     utm_medium: `tools.embed.${tool}`,
     ...options?.utm,
   }
