@@ -1,5 +1,7 @@
 import type { OfferwallModal } from '@c/offerwall'
 import type { Controller } from '@c/offerwall/controller'
+import { applyFontFamily } from '@c/utils'
+import { CDN_URL } from '@shared/defines'
 import type { MonetizationEvent, OfferwallProfile } from '@shared/types'
 import {
   getBrowserSupportForExtension,
@@ -251,8 +253,9 @@ export class WebMonetizationCustomOfferwallChoice {
   }
 
   #setCssVars(elem: OfferwallModal, profile: OfferwallProfile) {
+    const fontBaseUrl = new URL('/assets/fonts/', CDN_URL).href
     const fontFamily = profile.font.name
-    elem.style.setProperty('--wm-font-family', fontFamily)
+    applyFontFamily(elem, fontFamily, 'offerwall', fontBaseUrl)
 
     const borderRadius = profile.border.type
     elem.style.setProperty(

@@ -91,7 +91,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
   // TODO(@DarianM): handle appropriately
   if (tool === 'offerwall') {
     return {
-      font: { name: 'Inherit' },
+      font: { name: 'Titillium Web' },
       border: { type: 'Light' },
       color: {
         text: '#000000',
