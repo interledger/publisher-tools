@@ -1,8 +1,6 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { state } from 'lit/decorators.js'
 import { createRef, ref, type Ref } from 'lit/directives/ref.js'
-import type { FontFamilyKey } from '@shared/types'
-import { applyFontFamily } from '../utils.js'
 import {
   AllSet,
   ContributionRequired,
@@ -26,7 +24,6 @@ const ALLOWED_SCREENS: Screen[] = [
 
 export class OfferwallModal extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
-  static readonly cdnUrl = 'https://tools-cdn.webmonetization.org'
 
   constructor() {
     super()
@@ -38,11 +35,6 @@ export class OfferwallModal extends LitElement {
       throw new Error('Controller already set')
     }
     this.#controller = controller
-  }
-
-  setFontFamily(fontFamily: FontFamilyKey) {
-    const fontBaseUrl = new URL('/assets/fonts/', OfferwallModal.cdnUrl).href
-    applyFontFamily(this, fontFamily, 'offerwall', fontBaseUrl)
   }
 
   @state() _screen: Screen = 'install-required'

@@ -1,16 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSnapshot } from 'valtio'
 import type { OfferwallModal } from '@c/index'
 import type { Controller } from '@c/offerwall/controller'
-import { BORDER_RADIUS, type OfferwallProfile } from '@shared/types'
+import { applyFontFamily } from '@c/utils'
+import {
+  BORDER_RADIUS,
+  TOOL_OFFERWALL,
+  type OfferwallProfile,
+} from '@shared/types'
 import { useOfferwallProfile } from '~/stores/offerwall-store'
+import { toolState } from '~/stores/toolStore'
 
 export default function OfferwallPreview() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [profile] = useOfferwallProfile()
   const offerwallRef = useRef<OfferwallModal>(null)
+  const snap = useSnapshot(toolState)
 
   const setCssVars = (elem: OfferwallModal, profile: OfferwallProfile) => {
-    elem.setFontFamily(profile.font.name)
+    applyFontFamily(elem, profile.font.name, TOOL_OFFERWALL, snap.cdnUrl)
 
     elem.style.setProperty(
       '--wm-border-radius',
@@ -43,7 +51,7 @@ export default function OfferwallPreview() {
 
       const el = document.querySelector<OfferwallModal>('wm-offerwall')!
       const controller: Controller = {
-        onModalClose: (ev) => {
+        onModalClose: () => {
           // TODO: any reason to handle events here?
           console.log('onModalClose')
           console.log('showing offerwall options')
