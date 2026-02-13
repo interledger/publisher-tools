@@ -51,8 +51,8 @@ export default function OfferwallPreview() {
 
       const el = document.querySelector<OfferwallModal>('wm-offerwall')!
       const controller: Controller = {
-        onModalClose: () => {
-          // TODO: any reason to handle events here?
+        onModalClose: (ev) => {
+          ev.preventDefault()
           console.log('onModalClose')
           console.log('showing offerwall options')
         },
@@ -66,6 +66,7 @@ export default function OfferwallPreview() {
         onDone(ev) {
           console.log('onDone')
           ev.preventDefault()
+          el.setScreen('install-required')
         },
         isPreviewMode: true,
       }
