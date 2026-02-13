@@ -85,12 +85,14 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
   async show(): Promise<boolean> {
     const { elementName, params, fetchConfig } = this.#deps
 
+    const abortController = new AbortController()
     const onDoneResolver = withResolvers<boolean>()
     const controller: Controller = {
       onExtensionLinkClick() {
         // can start tracking
       },
       onModalClose() {
+        abortController.abort('modal closed by user')
         onDoneResolver.resolve(false)
       },
       onDone() {
@@ -109,10 +111,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     document.body.appendChild(owElem)
 
     try {
-      await Promise.race([
-        this.#runBusinessLogic(owElem),
-        onDoneResolver.promise,
-      ])
+      await this.#runBusinessLogic(owElem, abortController.signal)
       onDoneResolver.resolve(true)
     } catch (error) {
       console.error(error)
@@ -149,7 +148,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
    *   to give access.
    * - If either of above was within allowed time, give access.
    */
-  #runBusinessLogic = async (elem: OfferwallModal) => {
+  #runBusinessLogic = async (elem: OfferwallModal, signal: AbortSignal) => {
     const { linkElem } = this.#deps
     const wasExtensionInstalledAtStart = isExtensionInstalled()
 
@@ -171,6 +170,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
           this.#waitForMonetizationEvent(
             linkElem,
             this.#monetizationEventResolver.resolve,
+            signal,
           )
         }
 
@@ -196,11 +196,12 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
           this.#waitForMonetizationEvent(
             linkElem,
             this.#monetizationEventResolver.resolve,
+            signal,
           )
         }
       }
     } else {
-      await this.#waitForExtensionInstall()
+      await this.#waitForExtensionInstall(signal)
       elem.setScreen('all-set')
       this.#setLastEvent({ type: 'install', timestamp: Date.now() })
     }
@@ -288,7 +289,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     )
   }
 
-  #waitForExtensionInstall() {
+  #waitForExtensionInstall(signal: AbortSignal) {
     const interval = 1000
     const timeout = 3 * 60 * 1000
 
@@ -306,12 +307,17 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
           }
         }
       }, interval)
+      signal.addEventListener('abort', () => {
+        clearInterval(intervalId)
+        reject(new Error('aborted'))
+      })
     })
   }
 
   #waitForMonetizationEvent(
     linkElem: HTMLLinkElement,
     onSuccess: (ev: MonetizationEvent) => void,
+    signal?: AbortSignal,
   ) {
     const listener = (event: Event) => {
       // @ts-expect-error should be defined globally
@@ -320,7 +326,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
         linkElem.removeEventListener('monetization', listener)
       }
     }
-    linkElem.addEventListener('monetization', listener)
+    linkElem.addEventListener('monetization', listener, { signal })
   }
 
   #isWithinAllowedTime(ts: number, allowedTime = 24 * 60 * 60 * 1000): boolean {
