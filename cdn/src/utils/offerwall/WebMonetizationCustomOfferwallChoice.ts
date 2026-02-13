@@ -9,9 +9,16 @@ import {
   isValidUrl,
   withResolvers,
 } from '@shared/utils'
-import type { getScriptParams } from './index'
+import type {
+  GoogleOfcExtendedWindow,
+  InitializeParams,
+  InitializeResponseEnum,
+  OfferwallChoiceConstructorParams,
+  OfferwallCustomChoice,
+  StoredEvent,
+} from './types'
 
-export class WebMonetizationCustomOfferwallChoice {
+export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoice {
   #browserSupportKey = getBrowserSupportForExtension(
     navigator.userAgent,
     navigator.vendor,
@@ -322,59 +329,6 @@ export class WebMonetizationCustomOfferwallChoice {
     )
   }
 }
-
-// #region Types
-export interface OfferwallChoiceConstructorParams {
-  elementName: string
-  linkElem: HTMLLinkElement
-  params: ReturnType<typeof getScriptParams>
-  storage: {
-    get(key: string): string | null
-    set(key: string, value: string): void
-    delete(key: string): void
-  }
-  fetchConfig(
-    params: ReturnType<typeof getScriptParams>,
-  ): Promise<OfferwallProfile>
-}
-
-type StoredEvent =
-  | { type: 'install'; timestamp: number }
-  | {
-      type: 'monetization'
-      timestamp: number
-      event: {
-        target: { href: HTMLLinkElement['href'] } // wallet address
-        paymentPointer: MonetizationEvent['paymentPointer']
-        incomingPayment: MonetizationEvent['incomingPayment']
-      }
-    }
-
-declare enum InitializeResponseEnum {
-  CUSTOM_CHOICE_DISABLED,
-  ACCESS_GRANTED,
-  ACCESS_NOT_GRANTED,
-}
-
-interface InitializeParams {
-  offerwallLanguageCode?: string
-}
-
-export interface GoogleOfcExtendedWindow extends Window {
-  googlefc: {
-    offerwall: {
-      customchoice: {
-        InitializeResponseEnum: typeof InitializeResponseEnum
-        registry: WebMonetizationCustomOfferwallChoice
-      }
-    }
-  }
-  googletag?: {
-    cmd?: (() => void)[]
-    enableServices?: () => void
-  }
-}
-// #endregion
 
 // #region Utils
 function borderRadiusToNumber(border: OfferwallProfile['border']['type']) {

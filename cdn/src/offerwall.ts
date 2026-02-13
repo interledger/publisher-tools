@@ -5,7 +5,7 @@ import {
   WebMonetizationCustomOfferwallChoice,
   type OfferwallChoiceConstructorParams,
   type GoogleOfcExtendedWindow,
-} from './utils/WebMonetizationCustomOfferwallChoice'
+} from './utils/offerwall'
 
 const NAME = 'wm-offerwall'
 customElements.define(NAME, OfferwallModal)
