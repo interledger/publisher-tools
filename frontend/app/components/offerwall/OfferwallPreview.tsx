@@ -84,7 +84,7 @@ export default function OfferwallPreview() {
     }
   }, [profile, isLoaded])
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-[744px]">
       <wm-offerwall ref={offerwallRef} />
     </div>
   )
