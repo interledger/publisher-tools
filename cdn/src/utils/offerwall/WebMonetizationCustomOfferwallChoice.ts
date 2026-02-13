@@ -151,7 +151,11 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     const wasExtensionInstalledAtStart = isExtensionInstalled()
 
     const lastEvent = this.#getLastEvent()
-    if (lastEvent && this.#isWithinAllowedTime(lastEvent.timestamp)) {
+    if (
+      lastEvent &&
+      this.#isWithinAllowedTime(lastEvent.timestamp) &&
+      isExtensionInstalled()
+    ) {
       return elem.setScreen('all-set')
     }
 
