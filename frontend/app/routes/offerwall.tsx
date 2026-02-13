@@ -220,7 +220,7 @@ export default function Offerwall() {
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
                     <BuilderBackground>
-                      <OfferwallPreview cdnUrl={snap.cdnUrl} />
+                      <OfferwallPreview />
                     </BuilderBackground>
                   </div>
                 </div>
