@@ -60,9 +60,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
       <div
         id="browser-mockup"
-        className={
-          'w-full flex-1 rounded-2xl border border-field-border overflow-hidden flex flex-col'
-        }
+        className="w-full flex-1 rounded-2xl border border-field-border overflow-hidden flex flex-col"
       >
         <div className="flex items-center p-md bg-white">
           <div className="flex items-center gap-4 w-full">
