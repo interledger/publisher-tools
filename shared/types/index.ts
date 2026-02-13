@@ -288,3 +288,11 @@ export const FONT_FAMILY_OPTIONS = [
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]
+
+export type UtmParams = {
+  utm_source: string
+  utm_medium: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+}
