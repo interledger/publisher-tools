@@ -2,12 +2,11 @@ import type { OfferwallModal } from '@c/offerwall'
 import type { Controller } from '@c/offerwall/controller'
 import { applyFontFamily } from '@c/utils'
 import type { MonetizationEvent, OfferwallProfile } from '@shared/types'
+import { isValidDate, isValidUrl, withResolvers } from '@shared/utils'
 import {
   getBrowserSupportForExtension,
-  isValidDate,
-  isValidUrl,
-  withResolvers,
-} from '@shared/utils'
+  isExtensionInstalled,
+} from '@shared/utils/extension'
 import type {
   GoogleOfcExtendedWindow,
   InitializeParams,
@@ -122,7 +121,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
   // TODO: strengthen security and prevent users to bypass this easily
   async #isAllowedAccessOnStart(): Promise<boolean> {
-    if (!this.#isExtensionInstalled()) return false
+    if (!isExtensionInstalled()) return false
 
     const lastEvent = this.#getLastEvent()
     if (!lastEvent) return false
@@ -149,7 +148,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
    */
   #runBusinessLogic = async (elem: OfferwallModal) => {
     const { linkElem } = this.#deps
-    const wasExtensionInstalledAtStart = this.#isExtensionInstalled()
+    const wasExtensionInstalledAtStart = isExtensionInstalled()
 
     const lastEvent = this.#getLastEvent()
     if (lastEvent && this.#isWithinAllowedTime(lastEvent.timestamp)) {
@@ -289,7 +288,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     return new Promise<void>((resolve, reject) => {
       let elapsed = 0
       const intervalId = setInterval(() => {
-        if (this.#isExtensionInstalled()) {
+        if (isExtensionInstalled()) {
           clearInterval(intervalId)
           resolve()
         } else {
@@ -319,13 +318,6 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
   #isWithinAllowedTime(ts: number, allowedTime = 24 * 60 * 60 * 1000): boolean {
     return Date.now() - ts < allowedTime
-  }
-
-  #isExtensionInstalled(): boolean {
-    return (
-      'MonetizationEvent' in window &&
-      typeof window.MonetizationEvent !== 'undefined'
-    )
   }
 }
 

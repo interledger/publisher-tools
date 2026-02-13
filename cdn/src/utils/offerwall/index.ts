@@ -1,5 +1,5 @@
-export type { GoogleOfcExtendedWindow } from './types'
-export {
-  WebMonetizationCustomOfferwallChoice,
-  type OfferwallChoiceConstructorParams,
-} from './WebMonetizationCustomOfferwallChoice'
+export type {
+  GoogleOfcExtendedWindow,
+  OfferwallChoiceConstructorParams,
+} from './types'
+export { WebMonetizationCustomOfferwallChoice } from './WebMonetizationCustomOfferwallChoice'
