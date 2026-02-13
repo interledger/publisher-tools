@@ -109,7 +109,10 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     document.body.appendChild(owElem)
 
     try {
-      await this.#runBusinessLogic(owElem)
+      await Promise.race([
+        this.#runBusinessLogic(owElem),
+        onDoneResolver.promise,
+      ])
       onDoneResolver.resolve(true)
     } catch (error) {
       console.error(error)
