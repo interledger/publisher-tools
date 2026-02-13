@@ -61,7 +61,7 @@ export default function OfferwallPreview() {
           ev.preventDefault()
           setTimeout(() => {
             el.setScreen('all-set')
-          }, 100)
+          }, 500)
         },
         onDone(ev) {
           console.log('onDone')
@@ -84,13 +84,7 @@ export default function OfferwallPreview() {
     }
   }, [profile, isLoaded])
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-      }}
-    >
+    <div className="relative w-full h-full">
       <wm-offerwall ref={offerwallRef} />
     </div>
   )
