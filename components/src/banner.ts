@@ -13,8 +13,9 @@ import type {
   BorderRadiusKey,
   BannerProfile,
 } from '@shared/types'
+import { getExtensionHref } from '@shared/utils/extension'
 import bannerStyles from './banner.css?raw'
-import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
+import { applyFontFamily } from './utils.js'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =
@@ -117,8 +118,6 @@ export class Banner extends LitElement {
       ? html`<p class="banner-description">${description}</p>`
       : null
 
-    const extensionLink = getWebMonetizationLinkHref(navigator.userAgent)
-
     return html`
       <div class="banner ${this.animationClass}">
         ${thumbnail}
@@ -128,7 +127,7 @@ export class Banner extends LitElement {
           ${descriptionElement}
           <a
             class="banner-link"
-            href="${extensionLink}"
+            href="${this.extensionUrl}"
             target="_blank"
             rel="noopener noreferrer"
             @click=${this.handleLinkClick}
@@ -154,6 +153,10 @@ export class Banner extends LitElement {
         </button>
       </div>
     `
+  }
+
+  get extensionUrl(): string {
+    return getExtensionHref('banner')
   }
 }
 
