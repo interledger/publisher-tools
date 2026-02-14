@@ -173,7 +173,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       color: {
         text: profile.widgetTextColor,
         background: profile.widgetBackgroundColor,
-        theme: profile.widgetBackgroundColor,
+        theme: profile.widgetButtonBackgroundColor,
       },
       ctaPayButton: {
         text: profile.widgetButtonText,
