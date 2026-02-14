@@ -5,7 +5,6 @@ import type {
   Tool,
   ElementConfigType,
   Configuration,
-  WidgetConfig,
   ToolProfile,
   BaseToolProfile,
 } from '@shared/types'
@@ -50,12 +49,23 @@ export function convertToConfigLegacy<T extends Tool>(
       ...getLegacyFontSize(profile),
     }
   }
-  return {
-    walletAddress,
-    versionName: $name,
-    ...rest,
-    ...getLegacyFontSize(profile),
+  if ('icon' in profile) {
+    return {
+      widgetFontName: profile.font.name,
+      widgetTitleText: profile.title.text,
+      widgetDescriptionText: profile.description.text,
+      widgetDescriptionVisible: profile.description.isVisible,
+      widgetPosition: profile.position,
+      widgetButtonBorder: profile.border.type,
+      widgetButtonText: profile.ctaPayButton.text,
+      widgetTextColor: profile.color.text,
+      widgetBackgroundColor: profile.color.background as string,
+      widgetButtonBackgroundColor: profile.color.theme as string,
+      ...getLegacyFontSize(profile),
+    }
   }
+
+  throw new Error(`Unsupported profile type`)
 }
 
 /** @legacy */
@@ -105,18 +115,15 @@ function getLegacyFontSize(profile: ToolProfile<Tool>) {
   if ('thumbnail' in profile) {
     return { bannerFontSize: bannerFontSizeToNumber(profile.font.size) }
   }
-  if ('widgetFontSize' in profile) {
-    return { widgetFontSize: widgetFontSizeToNumber(profile.widgetFontSize) }
+  if ('icon' in profile) {
+    return { widgetFontSize: widgetFontSizeToNumber(profile.font.size) }
   }
 
   return {}
 }
 
 /** @legacy */
-function getToolProfile(
-  profile: ElementConfigType,
-  tool: Tool,
-): Omit<ToolProfile<Tool>, keyof BaseToolProfile> {
+function getToolProfile(profile: ElementConfigType, tool: Tool) {
   if (tool === 'banner') {
     return {
       title: {
@@ -146,25 +153,37 @@ function getToolProfile(
       },
     } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
-  return {
-    ...extract<WidgetConfig>(
-      profile,
-      (key) => key.startsWith('widget') || key.includes('Widget'),
-    ),
-    widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
+  if (tool === 'widget') {
+    return {
+      title: {
+        text: profile.widgetTitleText,
+      },
+      description: {
+        text: profile.widgetDescriptionText,
+        isVisible: profile.widgetDescriptionVisible,
+      },
+      font: {
+        name: profile.widgetFontName,
+        size: numberToWidgetFontSize(profile.widgetFontSize),
+      },
+      position: profile.widgetPosition,
+      border: {
+        type: profile.widgetButtonBorder,
+      },
+      color: {
+        text: profile.widgetTextColor,
+        background: profile.widgetBackgroundColor,
+        theme: profile.widgetButtonBackgroundColor,
+      },
+      ctaPayButton: {
+        text: profile.widgetButtonText,
+      },
+      icon: {
+        value: '',
+        color: profile.widgetTriggerBackgroundColor,
+      },
+    } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
   }
-}
 
-/** @legacy */
-function extract<R, T = ElementConfigType, K = keyof T>(
-  obj: T,
-  filter: (key: K) => boolean,
-): R {
-  const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K),
-  )
-  if (!entries.length) {
-    return {} as R
-  }
-  return Object.fromEntries(entries) as R
+  throw new Error(`Unsupported tool type: ${tool}`)
 }

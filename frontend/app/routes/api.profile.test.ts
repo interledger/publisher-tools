@@ -75,22 +75,34 @@ describe('api.profile action - HTML injection', () => {
   }
   const widgetProfilePayload: WidgetProfile = {
     $version: '1.0.0',
-    $name: 'clean-profile',
-    widgetTitleText: 'Support Our Work',
-    widgetDescriptionText: 'We appreciate your contributions to our project',
-    widgetDescriptionVisible: true,
-    widgetButtonText: 'Donate Now',
-    widgetPosition: 'Right',
-    widgetDonateAmount: 5,
-    widgetButtonBorder: 'Pill',
-    widgetFontName: 'Arial',
-    widgetFontSize: 'md',
-    widgetTextColor: '#000000',
-    widgetBackgroundColor: '#ffffff',
-    widgetButtonTextColor: '#ffffff',
-    widgetButtonBackgroundColor: '#000000',
-    widgetTriggerBackgroundColor: '#000000',
-    widgetTriggerIcon: 'heart',
+    $name: 'ilf-profile',
+    title: {
+      text: 'Support',
+    },
+    description: {
+      text: 'Web Monetization in your browser.',
+      isVisible: true,
+    },
+    position: 'Right',
+    border: {
+      type: 'Light',
+    },
+    font: {
+      name: 'Arial',
+      size: 'base',
+    },
+    color: {
+      text: '#000',
+      background: '#ffffff',
+      theme: '#4ec6c0',
+    },
+    ctaPayButton: {
+      text: 'Support Me',
+    },
+    icon: {
+      value: '/path/to/icon',
+      color: '#000',
+    },
   }
 
   beforeEach(() => {
@@ -116,7 +128,7 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetTitleText: '<script>alert("XSS")</script>',
+          title: { text: '<script>alert("XSS")</script>' },
         },
       }),
     })
@@ -142,8 +154,10 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetDescriptionText:
-            '<img src=x onerror="alert(\'XSS\')">Please support our work',
+          description: {
+            text: '<img src=x onerror="alert(\'XSS\')">Please support our work',
+            isVisible: false,
+          },
         },
       }),
     })
@@ -226,7 +240,7 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetTitleText: '<b>Click Here</b>',
+          title: { text: '<b>Click Here</b>' },
         },
       }),
     })
@@ -304,7 +318,7 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetBackgroundColor: '<script>alert("XSS")</script>',
+          color: { text: '<script>alert("XSS")</script>' },
         },
       }),
     })
