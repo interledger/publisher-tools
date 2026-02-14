@@ -122,8 +122,8 @@ importers:
         specifier: workspace:*
         version: link:../components
       directory-tree:
-        specifier: ^3.5.2
-        version: 3.5.2
+        specifier: ^3.6.0
+        version: 3.6.0
       esbuild:
         specifier: ^0.27.2
         version: 0.27.2
@@ -2248,8 +2248,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  directory-tree@3.5.2:
-    resolution: {integrity: sha512-DsOqeZEHkZnZrVOJG3mE/J9M6J8PulImiC6I1ZpoprVlfno8GvLOPDMkxiJihklLK7B9aVudG463L1+S/kzjiw==}
+  directory-tree@3.6.0:
+    resolution: {integrity: sha512-rTMWs+zxr0QEbzQKRfwV6SeEy+zIHFkorskI4bhG2o7ayr82c+FC7yWg3yLpurgp6Hs2NGy1NWrKIaDodr2r8A==}
     engines: {node: '>=10.0'}
     hasBin: true
 
@@ -2614,6 +2614,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globals@14.0.0:
@@ -6189,7 +6190,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  directory-tree@3.5.2:
+  directory-tree@3.6.0:
     dependencies:
       command-line-args: 5.2.1
       command-line-usage: 6.1.3
