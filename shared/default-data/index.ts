@@ -60,23 +60,39 @@ export function getDefaultData(): ElementConfigType {
 
 export const createDefaultBannerProfile = (
   profileName: string,
-): BannerProfile => ({
-  $version: '0.0.1',
-  $name: profileName,
-  $modifiedAt: '',
-  bannerFontName: FONT_FAMILY_OPTIONS[0],
-  bannerFontSize: 'base',
-  bannerPosition: BANNER_POSITION.Bottom,
-  bannerSlideAnimation: SLIDE_ANIMATION.Slide,
-  bannerBorder: CORNER_OPTION.Light,
-  bannerTextColor: '#ffffff',
-  bannerBackgroundColor: '#7f76b2',
-  bannerThumbnail: 'default',
-  bannerTitleText: 'How to support?',
-  bannerDescriptionText:
-    'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
-  bannerDescriptionVisible: true,
-})
+): BannerProfile => {
+  const now = new Date().toISOString()
+  return {
+    $version: '0.0.1',
+    $name: profileName,
+    $modifiedAt: now,
+    title: {
+      text: 'How to support?',
+    },
+    description: {
+      text: 'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
+      isVisible: true,
+    },
+    font: {
+      name: FONT_FAMILY_OPTIONS[0],
+      size: 'base',
+    },
+    animation: {
+      type: SLIDE_ANIMATION.Slide,
+    },
+    position: BANNER_POSITION.Bottom,
+    border: {
+      type: CORNER_OPTION.Light,
+    },
+    color: {
+      text: '#ffffff',
+      background: '#7f76b2',
+    },
+    thumbnail: {
+      value: 'default',
+    },
+  }
+}
 
 export const createDefaultWidgetProfile = (
   profileName: string,

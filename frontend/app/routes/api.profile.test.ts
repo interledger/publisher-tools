@@ -47,17 +47,31 @@ describe('api.profile action - HTML injection', () => {
   const bannerProfilePayload: BannerProfile = {
     $version: '1.0.0',
     $name: 'test-profile',
-    bannerTitleText: 'Fund me',
-    bannerDescriptionText: 'Support our work',
-    bannerDescriptionVisible: true,
-    bannerPosition: 'Top',
-    bannerSlideAnimation: 'Slide',
-    bannerBorder: 'Light',
-    bannerFontName: 'Arial',
-    bannerFontSize: '2xs',
-    bannerTextColor: '#000000',
-    bannerBackgroundColor: '#ffffff',
-    bannerThumbnail: 'thumbnail',
+    title: {
+      text: 'Fund me',
+    },
+    description: {
+      text: 'Support our work',
+      isVisible: true,
+    },
+    position: 'Top',
+    animation: {
+      type: 'Slide',
+    },
+    border: {
+      type: 'Light',
+    },
+    font: {
+      name: 'Arial',
+      size: '2xs',
+    },
+    color: {
+      text: '#000000',
+      background: '#ffffff',
+    },
+    thumbnail: {
+      value: 'default',
+    },
   }
   const widgetProfilePayload: WidgetProfile = {
     $version: '1.0.0',
@@ -155,7 +169,9 @@ describe('api.profile action - HTML injection', () => {
         tool: 'banner',
         profile: {
           ...bannerProfilePayload,
-          bannerTitleText: '<div onclick="stealData()">Click Here</div>',
+          title: {
+            text: '<div onclick="stealData()">Click Here</div>',
+          },
         },
       }),
     })
@@ -181,8 +197,10 @@ describe('api.profile action - HTML injection', () => {
         tool: 'banner',
         profile: {
           ...bannerProfilePayload,
-          bannerDescriptionText:
-            '&lt;iframe src=&quot;https://evil.com&quot;&gt;&lt;/iframe&gt;',
+          description: {
+            text: '&lt;iframe src=&quot;https://evil.com&quot;&gt;&lt;/iframe&gt;',
+            isVisible: true,
+          },
         },
       }),
     })
@@ -310,7 +328,10 @@ describe('api.profile action - HTML injection', () => {
         tool: 'banner',
         profile: {
           ...bannerProfilePayload,
-          bannerTextColor: '<img src=x onerror="stealCookies()">',
+          color: {
+            ...bannerProfilePayload.color,
+            text: '<img src=x onerror="stealCookies()">',
+          },
         },
       }),
     })

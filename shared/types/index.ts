@@ -165,21 +165,31 @@ export interface BaseToolProfile {
 }
 
 export interface BannerProfile extends BaseToolProfile {
-  // content
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-
-  // appearance
-  bannerFontName: FontFamilyKey
-  bannerFontSize: BannerFontSize
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+    isVisible: boolean
+  }
+  font: {
+    name: FontFamilyKey
+    size: BannerFontSize
+  }
+  animation: {
+    type: SlideAnimationType
+  }
+  position: BannerPositionKey
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+  }
+  thumbnail: {
+    value: string
+  }
 }
 
 export interface WidgetProfile extends BaseToolProfile {

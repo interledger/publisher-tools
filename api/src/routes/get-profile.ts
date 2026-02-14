@@ -10,7 +10,7 @@ import {
   TOOLS,
 } from '@shared/types'
 import type {
-  BannerConfig,
+  BaseToolProfile,
   ConfigVersions,
   ElementConfigType,
   Tool,
@@ -79,12 +79,32 @@ function convertToProfile<T extends Tool>(
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
   if (tool === 'banner') {
     return {
-      ...extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      ),
-      bannerFontSize: numberToBannerFontSize(profile.bannerFontSize),
-    }
+      title: {
+        text: profile.bannerTitleText,
+      },
+      description: {
+        text: profile.bannerDescriptionText,
+        isVisible: profile.bannerDescriptionVisible,
+      },
+      font: {
+        name: profile.bannerFontName,
+        size: numberToBannerFontSize(profile.bannerFontSize),
+      },
+      animation: {
+        type: profile.bannerSlideAnimation,
+      },
+      position: profile.bannerPosition,
+      border: {
+        type: profile.bannerBorder,
+      },
+      color: {
+        text: profile.bannerTextColor,
+        background: profile.bannerBackgroundColor,
+      },
+      thumbnail: {
+        value: profile.bannerThumbnail,
+      },
+    } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
   return {
     ...extract<WidgetConfig>(

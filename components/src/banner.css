@@ -1,8 +1,7 @@
 :host {
   display: block;
   font-family: var(--wm-font-family, system-ui, sans-serif);
-  --primary-color: var(--wm-primary-color, #7f76b2);
-  --background-color: var(--wm-background-color, #ffffff);
+  --background-color: var(--wm-background-color, #7f76b2);
   --text-color: var(--wm-text-color, #000000);
   --font-size: var(--wm-font-size, 16px);
   --border-radius: var(--wm-border-radius, 4px);
