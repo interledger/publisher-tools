@@ -74,7 +74,7 @@ export const WidgetPreview = ({
       style={{
         position: 'relative',
         width: '100%',
-        height: '100%',
+        height: '678px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',

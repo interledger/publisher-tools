@@ -71,7 +71,12 @@ function isContentProperty(key: string): boolean {
 export function legacySplitConfigProperties<T extends WidgetProfile>(
   config: T,
 ) {
-  const { $name: _versionName, ...rest } = config
+  const {
+    $name: _versionName,
+    $version: _version,
+    $modifiedAt: _modifiedAt,
+    ...rest
+  } = config
   const { content = [], appearance = [] } = groupBy(
     Object.entries(rest),
     ([key]) =>
@@ -84,6 +89,7 @@ export function legacySplitConfigProperties<T extends WidgetProfile>(
   }
 }
 
+// TODO: remove with versioning changes
 function legacyIsContentProperty(key: string): boolean {
   return key.endsWith('Text') || key.endsWith('Visible')
 }

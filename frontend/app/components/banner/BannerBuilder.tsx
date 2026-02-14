@@ -78,7 +78,9 @@ function ContentBuilder({ onRefresh }: Props) {
     >
       <TitleInput
         value={snap.title.text}
-        onChange={(value) => (profile.title.text = value)}
+        onChange={(value) => {
+          profile.title.text = value
+        }}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
         helpText={config.titleHelpText}
@@ -89,11 +91,13 @@ function ContentBuilder({ onRefresh }: Props) {
       <DescriptionInput
         label={config.messageLabel}
         value={snap.description.text}
-        onChange={(text) => (profile.description.text = text)}
+        onChange={(text) => {
+          profile.description.text = text
+        }}
         isVisible={snap.description.isVisible}
-        onVisibilityChange={(visible) =>
-          (profile.description.isVisible = visible)
-        }
+        onVisibilityChange={(visible) => {
+          profile.description.isVisible = visible
+        }}
         placeholder={config.messagePlaceholder}
         helpText={config.messageHelpText}
         maxLength={config.messageMaxLength}
@@ -143,7 +147,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
 
         <FontSizeInput
           value={snap.font.size}
-          onChange={(value) => (profile.font.size = value)}
+          onChange={(value) => {
+            profile.font.size = value
+          }}
           sizeMap={BANNER_FONT_SIZE_MAP}
         />
       </InputFieldset>
@@ -157,10 +163,12 @@ function AppearanceBuilder({ onRefresh }: Props) {
         <BannerColorsSelector
           backgroundColor={snap.color.background}
           textColor={snap.color.text}
-          onBackgroundColorChange={(color) =>
-            (profile.color.background = color)
-          }
-          onTextColorChange={(color) => (profile.color.text = color)}
+          onBackgroundColorChange={(color) => {
+            profile.color.background = color
+          }}
+          onTextColorChange={(color) => {
+            profile.color.text = color
+          }}
         />
       </InputFieldset>
 
@@ -172,7 +180,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
       >
         <CornerRadiusSelector
           value={snap.border.type}
-          onChange={(value) => (profile.border.type = value)}
+          onChange={(value) => {
+            profile.border.type = value
+          }}
         />
       </InputFieldset>
 
@@ -184,7 +194,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
       >
         <BannerPositionSelector
           value={snap.position}
-          onChange={(value) => (profile.position = value)}
+          onChange={(value) => {
+            profile.position = value
+          }}
         />
       </InputFieldset>
 
@@ -196,7 +208,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
       >
         <BannerAnimationSelector
           value={snap.animation.type}
-          onChange={(value) => (profile.animation.type = value)}
+          onChange={(value) => {
+            profile.animation.type = value
+          }}
         />
       </InputFieldset>
 
@@ -208,7 +222,9 @@ function AppearanceBuilder({ onRefresh }: Props) {
       >
         <BannerThumbnailSelector
           value={snap.thumbnail.value}
-          onChange={(value) => (profile.thumbnail.value = value)}
+          onChange={(value) => {
+            profile.thumbnail.value = value
+          }}
         />
       </InputFieldset>
     </BuilderAccordion>

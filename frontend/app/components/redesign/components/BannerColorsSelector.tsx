@@ -1,11 +1,11 @@
 import { ColorSelector } from '@/components'
-import type { Background } from '@shared/types'
+import type { Background, TextColor } from '@shared/types'
 
 export interface BannerColorsSelectorProps {
   backgroundColor?: Background
-  textColor?: string
+  textColor?: TextColor
   onBackgroundColorChange: (color: Background) => void
-  onTextColorChange: (color: string) => void
+  onTextColorChange: (color: TextColor) => void
 }
 
 export function BannerColorsSelector({

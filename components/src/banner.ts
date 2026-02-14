@@ -13,8 +13,9 @@ import type {
   BorderRadiusKey,
   BannerProfile,
 } from '@shared/types'
+import { getExtensionHref } from '@shared/utils/extension'
 import bannerStyles from './banner.css?raw'
-import { getWebMonetizationLinkHref, applyFontFamily } from './utils.js'
+import { applyFontFamily } from './utils.js'
 
 const DEFAULT_BANNER_TITLE = 'How to support?'
 const DEFAULT_BANNER_DESCRIPTION =
@@ -98,7 +99,6 @@ export class Banner extends LitElement {
       return html``
     }
 
-    const logo = defaultLogo
     const title = this.config.title.text || DEFAULT_BANNER_TITLE
     const description =
       this.config.description.text || DEFAULT_BANNER_DESCRIPTION
@@ -107,7 +107,7 @@ export class Banner extends LitElement {
       typeof this.config.thumbnail === 'undefined' || !!this.config.thumbnail
     const thumbnail = showThumbnail
       ? html`<img
-          src="${logo}"
+          src="${defaultLogo}"
           alt="Web Monetization Logo"
           class="banner-logo"
         />`
@@ -118,8 +118,6 @@ export class Banner extends LitElement {
       ? html`<p class="banner-description">${description}</p>`
       : null
 
-    const extensionLink = getWebMonetizationLinkHref(navigator.userAgent)
-
     return html`
       <div class="banner ${this.animationClass}">
         ${thumbnail}
@@ -129,7 +127,7 @@ export class Banner extends LitElement {
           ${descriptionElement}
           <a
             class="banner-link"
-            href="${extensionLink}"
+            href="${this.extensionUrl}"
             target="_blank"
             rel="noopener noreferrer"
             @click=${this.handleLinkClick}
@@ -155,6 +153,10 @@ export class Banner extends LitElement {
         </button>
       </div>
     `
+  }
+
+  get extensionUrl(): string {
+    return getExtensionHref('banner')
   }
 }
 
@@ -228,7 +230,7 @@ export class BannerController implements ReactiveController {
   applyPosition() {
     this.host.classList.remove('position-top', 'position-bottom')
 
-    const position = this.config.position || 'Bottom'
+    const position = this.config?.position || 'Bottom'
     if (position === 'Top') {
       this.host.classList.add('position-top')
     } else {

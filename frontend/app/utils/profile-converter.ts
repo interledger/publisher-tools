@@ -7,6 +7,7 @@ import type {
   Configuration,
   WidgetConfig,
   ToolProfile,
+  BaseToolProfile,
 } from '@shared/types'
 import {
   numberToBannerFontSize,
@@ -14,7 +15,6 @@ import {
   bannerFontSizeToNumber,
   widgetFontSizeToNumber,
 } from '@shared/types'
-import type { StableKey } from '~/stores/toolStore'
 
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
@@ -33,23 +33,39 @@ function convertToProfile<T extends Tool>(
 export function convertToConfigLegacy<T extends Tool>(
   walletAddress: string,
   profile: ToolProfile<T>,
-): ElementConfigType {
+): Partial<ElementConfigType> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { $name, $version, $modifiedAt, ...rest } = profile
+  if ('thumbnail' in profile) {
+    return {
+      bannerFontName: profile.font.name,
+      bannerTitleText: profile.title.text,
+      bannerDescriptionText: profile.description.text,
+      bannerDescriptionVisible: profile.description.isVisible,
+      bannerSlideAnimation: profile.animation.type,
+      bannerPosition: profile.position,
+      bannerBorder: profile.border.type,
+      bannerTextColor: profile.color.text,
+      bannerBackgroundColor: profile.color.background as string,
+      bannerThumbnail: profile.thumbnail.value,
+      ...getLegacyFontSize(profile),
+    }
+  }
   return {
     walletAddress,
     versionName: $name,
     ...rest,
     ...getLegacyFontSize(profile),
-  } as unknown as ElementConfigType
+  }
 }
 
 /** @legacy */
+// TODO: to be removed after the completion of versioned configurations
 export function convertToConfigsLegacy<T extends Tool>(
   walletAddress: string,
   profiles: ToolProfiles<T>,
-): Record<StableKey, Partial<ElementConfigType>> {
-  const configs: Record<string, ElementConfigType> = {}
+) {
+  const configs: Record<string, Partial<ElementConfigType>> = {}
 
   Object.entries(profiles ?? {}).forEach(([profileId, profile]) => {
     configs[profileId] = convertToConfigLegacy<T>(walletAddress, profile)
@@ -100,44 +116,45 @@ function getLegacyFontSize(profile: ToolProfile<Tool>) {
 }
 
 /** @legacy */
-function getToolProfile(profile: ElementConfigType, tool: Tool) {
-  switch (tool) {
-    case 'banner':
-      return {
-        title: {
-          text: profile.bannerTitleText,
-        },
-        description: {
-          text: profile.bannerDescriptionText,
-          isVisible: profile.bannerDescriptionVisible,
-        },
-        font: {
-          name: profile.bannerFontName,
-          size: numberToBannerFontSize(profile.bannerFontSize),
-        },
-        animation: {
-          type: profile.bannerSlideAnimation,
-        },
-        position: profile.bannerPosition,
-        border: {
-          type: profile.bannerBorder,
-        },
-        color: {
-          text: profile.bannerTextColor,
-          background: profile.bannerBackgroundColor,
-        },
-        thumbnail: {
-          value: profile.bannerThumbnail,
-        },
-      }
-    case 'widget':
-      return {
-        ...extract<WidgetConfig>(
-          profile,
-          (key) => key.startsWith('widget') || key.includes('Widget'),
-        ),
-        widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
-      }
+function getToolProfile(
+  profile: ElementConfigType,
+  tool: Tool,
+): Omit<ToolProfile<Tool>, keyof BaseToolProfile> {
+  if (tool === 'banner') {
+    return {
+      title: {
+        text: profile.bannerTitleText,
+      },
+      description: {
+        text: profile.bannerDescriptionText,
+        isVisible: profile.bannerDescriptionVisible,
+      },
+      font: {
+        name: profile.bannerFontName,
+        size: numberToBannerFontSize(profile.bannerFontSize),
+      },
+      animation: {
+        type: profile.bannerSlideAnimation,
+      },
+      position: profile.bannerPosition,
+      border: {
+        type: profile.bannerBorder,
+      },
+      color: {
+        text: profile.bannerTextColor,
+        background: profile.bannerBackgroundColor,
+      },
+      thumbnail: {
+        value: profile.bannerThumbnail,
+      },
+    } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
+  }
+  return {
+    ...extract<WidgetConfig>(
+      profile,
+      (key) => key.startsWith('widget') || key.includes('Widget'),
+    ),
+    widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
   }
 }
 

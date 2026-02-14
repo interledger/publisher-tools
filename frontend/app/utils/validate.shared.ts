@@ -45,7 +45,6 @@ export const buttonFieldsSchema = z.object({
   buttonDescriptionText: z.string().optional(),
 })
 
-/** @legacy */
 export const bannerFieldsSchema = z.object({
   title: z.object({
     text: z

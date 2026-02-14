@@ -90,17 +90,13 @@ export const actions = {
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
-    const snap = snapshots.get(toolState.activeTab)
-    if (!snap) {
+    const snapshot = snapshots.get(toolState.activeTab)
+    if (!snapshot) {
       throw new Error('No snapshot found for the profile')
     }
 
-    const { content, appearance } = splitProfileProperties(snap)
-    if (section === 'content') {
-      patchProxy(banner.profile, content)
-    } else {
-      patchProxy(banner.profile, appearance)
-    }
+    const { content, appearance } = splitProfileProperties(snapshot)
+    patchProxy(banner.profile, section === 'content' ? content : appearance)
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
