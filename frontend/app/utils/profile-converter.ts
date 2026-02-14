@@ -20,10 +20,11 @@ function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
 ): ToolProfile<T> {
+  const now = new Date().toISOString()
   return {
     $version: '0.0.1',
     $name: config.versionName,
-    $modifiedAt: '',
+    $modifiedAt: now,
     ...getToolProfile(config, tool),
   } as ToolProfile<T>
 }
@@ -92,10 +93,12 @@ export function convertToConfiguration<T extends Tool>(
   tool: T,
   walletAddress: string,
 ): Configuration {
+  const now = new Date().toISOString()
   return {
     $walletAddress: walletAddress,
-    $createdAt: '',
-    $modifiedAt: '',
+    $walletAddressId: walletAddress,
+    $createdAt: now,
+    $modifiedAt: now,
     [tool]: convertToProfiles<T>(configuration, tool),
   }
 }

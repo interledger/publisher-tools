@@ -193,12 +193,9 @@ export interface BannerProfile extends BaseToolProfile {
 }
 
 export interface WidgetProfile extends BaseToolProfile {
-  // content
   widgetTitleText: string
   widgetDescriptionText: string
   widgetDescriptionVisible: boolean
-
-  // appearance
   widgetFontName: FontFamilyKey
   widgetFontSize: WidgetFontSize
   widgetPosition: WidgetPositionKey

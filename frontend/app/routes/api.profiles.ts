@@ -2,7 +2,12 @@ import { data } from 'react-router'
 import z from 'zod'
 import { ConfigStorageService } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import type { ConfigVersions, Tool } from '@shared/types'
+import type {
+  Configuration,
+  ConfigVersions,
+  Tool,
+  ToolProfiles,
+} from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
@@ -45,8 +50,21 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const walletAddressId = normalizeWalletAddress(walletAddressData)
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
-    const legacy = await storage.getJson<ConfigVersions>(walletAddressId)
-    const profiles = convertToProfiles(legacy, tool)
+    let profiles: ToolProfiles<typeof tool> | null = null
+    try {
+      const config = await storage.getJson<Configuration>(walletAddressId)
+      profiles = config[tool]
+    } catch (error) {
+      const err = error as Error
+      if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+        throw error
+      }
+
+      // TODO: to be removed after the completion of versioned config migration
+      const legacy =
+        await storage.getLegacyJson<ConfigVersions>(walletAddressId)
+      profiles = convertToProfiles(legacy, tool)
+    }
 
     return data<GetProfilesResult<Tool>>(
       { profiles },

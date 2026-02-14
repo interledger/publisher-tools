@@ -1,6 +1,5 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
-import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
 import {
   type ConfigVersions,
@@ -16,7 +15,8 @@ import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
-import { sanitizeConfigFields as sanitizeProfileFields } from '~/utils/sanitize.server'
+import { convertToConfiguration } from '~/utils/profile-converter'
+import { sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
 import {
@@ -102,37 +102,35 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const now = new Date().toISOString()
 
     let config: Configuration | null = null
-    let configLegacy: ConfigVersions | null = null
     try {
-      configLegacy = await storage.getJson<ConfigVersions>(walletAddressId)
+      config = await storage.getJson<Configuration>(walletAddressId)
     } catch (e) {
       const err = e as Error
       if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
         throw e
       }
 
-      config = {
-        $walletAddress: walletAddress,
-        $walletAddressId: walletAddressId,
-        $createdAt: now,
-        $modifiedAt: now,
+      try {
+        // TODO: to be removed after the completion of versioned config migration
+        const legacy =
+          await storage.getLegacyJson<ConfigVersions>(walletAddressId)
+        config = convertToConfiguration(legacy, tool, walletAddressId)
+      } catch (e) {
+        const err = e as Error
+        if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+          throw e
+        }
+
+        config = {
+          $walletAddress: walletAddress,
+          $walletAddressId: walletAddressId,
+          $createdAt: now,
+          $modifiedAt: now,
+        }
       }
     }
 
-    // legacy
-    await storage.putJson<ConfigVersions>(walletAddressId, {
-      ...configLegacy,
-      [profileId]: {
-        ...getDefaultData(),
-        ...configLegacy?.[profileId],
-        ...sanitizedProfile,
-        walletAddress: walletAddressId,
-      },
-    })
-
-    //@ts-expect-error TO DO putJson config usage
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    config = {
+    await storage.putJson<Configuration>(walletAddressId, {
       ...config,
       $modifiedAt: now,
       [tool]: {
@@ -142,7 +140,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           $modifiedAt: now,
         },
       },
-    }
+    })
 
     return data<SaveResult>(
       { success: true },

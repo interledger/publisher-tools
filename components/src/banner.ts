@@ -195,7 +195,7 @@ export class BannerController implements ReactiveController {
 
     this.applyTheme(this.host)
 
-    if (updates.border) {
+    if (updates.border?.type) {
       this.applyBorderRadius(updates.border.type)
     }
 
@@ -230,7 +230,7 @@ export class BannerController implements ReactiveController {
   applyPosition() {
     this.host.classList.remove('position-top', 'position-bottom')
 
-    const position = this._config.position || 'Bottom'
+    const position = this.config?.position || 'Bottom'
     if (position === 'Top') {
       this.host.classList.add('position-top')
     } else {
@@ -250,19 +250,19 @@ export class BannerController implements ReactiveController {
 
   applyTheme(element: HTMLElement) {
     const { color, font } = this.config
-    if (color.background) {
+    if (color?.background) {
       element.style.setProperty(
         '--wm-background-color',
         color.background as string,
       )
     }
-    if (color.text) {
-      element.style.setProperty('--wm-text-color', color.text)
+    if (color?.text) {
+      element.style.setProperty('--wm-text-color', color.text as string)
     }
-    if (font.name) {
+    if (font?.name) {
       this.applyFontFamily(font.name)
     }
-    if (font.size) {
+    if (font?.size) {
       element.style.setProperty(
         '--wm-font-size',
         bannerFontSizeToNumber(font.size) + 'px',

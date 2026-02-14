@@ -11,6 +11,7 @@ import {
 } from '@shared/types'
 import type {
   BaseToolProfile,
+  Configuration,
   ConfigVersions,
   ElementConfigType,
   Tool,
@@ -42,9 +43,29 @@ app.get(
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {
-      const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const legacyProfile = fullConfig[profileId]
-      const profile = convertToProfile(legacyProfile, tool)
+      let profile: ToolProfile<typeof tool> | null = null
+      try {
+        const config = await storage.getJson<Configuration>(walletAddress)
+        profile = config[tool]?.[profileId] ?? null
+      } catch (e) {
+        const err = e as Error
+        if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+          throw e
+        }
+        // TODO: to be removed after the completion of versioned config migration
+        const legacy =
+          await storage.getLegacyJson<ConfigVersions>(walletAddress)
+        profile = convertToProfile(legacy[profileId], tool)
+      }
+
+      if (profile === null) {
+        const msg = 'No saved profile found for given wallet address'
+        throw createHTTPException(404, msg, {
+          message: 'Not found',
+          code: '404',
+        })
+      }
+
       return json<ToolProfile<typeof tool>>(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error

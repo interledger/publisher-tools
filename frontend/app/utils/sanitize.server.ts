@@ -5,12 +5,10 @@ import {
   type WidgetProfile,
   type Tool,
   type ToolProfile,
-  type ElementConfigType,
   TOOL_WIDGET,
   TOOL_BANNER,
 } from '@shared/types'
 import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
-import { convertToConfigLegacy } from './profile-converter'
 
 function sanitizeText(value: string): string {
   const decoded = he.decode(value)
@@ -53,31 +51,40 @@ function sanitizeHtmlField(value: string): string {
   return decodedSanitized
 }
 
-export const sanitizeConfigFields = <T extends Tool>(
-  config: ToolProfile<T>,
+export const sanitizeProfileFields = <T extends Tool>(
+  profile: ToolProfile<T>,
   tool: T,
-): Partial<ElementConfigType> => {
+): ToolProfile<T> => {
   if (tool === TOOL_WIDGET) {
-    const widget = config as WidgetProfile
+    const widget = profile as WidgetProfile
     return {
-      ...convertToConfigLegacy('', widget),
-      versionName: sanitizeText(widget.$name),
+      ...widget,
+      $name: sanitizeText(widget.$name),
       widgetTitleText: sanitizeText(widget.widgetTitleText),
       widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
       widgetButtonText: sanitizeText(widget.widgetButtonText),
       widgetTriggerIcon: sanitizeText(widget.widgetTriggerIcon),
-    }
+    } as ToolProfile<T>
   }
 
   if (tool === TOOL_BANNER) {
-    const banner = config as BannerProfile
+    const banner = profile as BannerProfile
     return {
-      ...convertToConfigLegacy('', banner),
-      versionName: sanitizeText(banner.$name),
-      bannerTitleText: sanitizeText(banner.title.text),
-      bannerDescriptionText: sanitizeHtmlField(banner.description.text),
-      bannerThumbnail: sanitizeText(banner.thumbnail.value),
-    }
+      ...banner,
+      $name: sanitizeText(banner.$name),
+      title: {
+        ...banner.title,
+        text: sanitizeText(banner.title.text),
+      },
+      description: {
+        ...banner.description,
+        text: sanitizeHtmlField(banner.description.text),
+      },
+      thumbnail: {
+        ...banner.thumbnail,
+        value: sanitizeText(banner.thumbnail.value),
+      },
+    } as ToolProfile<T>
   }
 
   throw new Error(`Unsupported tool type: ${tool}`)
