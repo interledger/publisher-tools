@@ -48,7 +48,7 @@ export const BannerPreview = ({
     loadBannerElement()
   }, [])
 
-  const bannerProfile = useMemo(() => {
+  const bannerConfig = useMemo(() => {
     return {
       ...profile,
       cdnUrl,
@@ -58,17 +58,17 @@ export const BannerPreview = ({
   useEffect(() => {
     if (bannerContainerRef.current && isLoaded) {
       if (bannerElementRef.current) {
-        bannerElementRef.current.profile = bannerProfile
+        bannerElementRef.current.config = bannerConfig
         return
       }
 
       const bannerElement = document.createElement('wm-banner') as BannerElement
-      bannerElement.profile = bannerProfile
+      bannerElement.config = bannerConfig
       bannerElementRef.current = bannerElement
 
       bannerContainerRef.current.appendChild(bannerElement)
     }
-  }, [bannerProfile, isLoaded])
+  }, [bannerConfig, isLoaded])
 
   if (!isLoaded) {
     return <div>Loading...</div>

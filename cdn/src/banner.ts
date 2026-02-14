@@ -34,7 +34,7 @@ function drawBanner(profile: BannerProfile) {
   }
 
   const bannerElement = document.createElement('wm-banner')
-  bannerElement.profile = {
+  bannerElement.config = {
     ...profile,
     cdnUrl: params.cdnUrl,
   }

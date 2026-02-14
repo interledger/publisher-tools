@@ -31,11 +31,11 @@ export class Banner extends LitElement {
   private configController = new BannerController(this)
 
   @property({ type: Object })
-  set profile(value: Props) {
+  set config(value: Props) {
     this.configController.updateConfig(value)
   }
-  get profile() {
-    return this.configController.profile
+  get config() {
+    return this.configController.config
   }
   @property({ type: Boolean }) isVisible = true
 
@@ -74,11 +74,11 @@ export class Banner extends LitElement {
 
     this.isDismissed = false
     this.isAnimating = true
-    const position = this.profile.position || 'Bottom'
+    const position = this.config.position || 'Bottom'
 
-    if (this.profile.animation.type === 'FadeIn') {
+    if (this.config.animation.type === 'FadeIn') {
       this.animationClass = 'fade-in-preview'
-    } else if (this.profile.animation.type === 'Slide') {
+    } else if (this.config.animation.type === 'Slide') {
       this.animationClass =
         position === 'Top' ? 'slide-down-preview' : 'slide-up-preview'
     } else {
@@ -99,12 +99,12 @@ export class Banner extends LitElement {
       return html``
     }
 
-    const title = this.profile.title.text || DEFAULT_BANNER_TITLE
+    const title = this.config.title.text || DEFAULT_BANNER_TITLE
     const description =
-      this.profile.description.text || DEFAULT_BANNER_DESCRIPTION
+      this.config.description.text || DEFAULT_BANNER_DESCRIPTION
 
     const showThumbnail =
-      typeof this.profile.thumbnail === 'undefined' || !!this.profile.thumbnail
+      typeof this.config.thumbnail === 'undefined' || !!this.config.thumbnail
     const thumbnail = showThumbnail
       ? html`<img
           src="${defaultLogo}"
@@ -113,7 +113,7 @@ export class Banner extends LitElement {
         />`
       : html``
 
-    const showDescription = this.profile.description.isVisible ?? true
+    const showDescription = this.config.description.isVisible ?? true
     const descriptionElement = showDescription
       ? html`<p class="banner-description">${description}</p>`
       : null
@@ -167,7 +167,7 @@ interface BannerState {
 
 export class BannerController implements ReactiveController {
   private host: ReactiveControllerHost & HTMLElement
-  private _profile!: Props
+  private _config!: Props
   private _state: BannerState = {
     isVisible: true,
     isDismissed: false,
@@ -183,15 +183,15 @@ export class BannerController implements ReactiveController {
   /** called when the host is disconnected from the DOM */
   hostDisconnected() {}
 
-  get profile(): Props {
-    return this._profile
+  get config(): Props {
+    return this._config
   }
 
   get state(): BannerState {
     return this._state
   }
   updateConfig(updates: Partial<Props>) {
-    this._profile = { ...this._profile, ...updates }
+    this._config = { ...this._config, ...updates }
 
     this.applyTheme(this.host)
 
@@ -230,7 +230,7 @@ export class BannerController implements ReactiveController {
   applyPosition() {
     this.host.classList.remove('position-top', 'position-bottom')
 
-    const position = this._profile.position || 'Bottom'
+    const position = this._config.position || 'Bottom'
     if (position === 'Top') {
       this.host.classList.add('position-top')
     } else {
@@ -244,12 +244,12 @@ export class BannerController implements ReactiveController {
    * @param fontName The name of the font family to apply.
    */
   private applyFontFamily(fontName: FontFamilyKey) {
-    const fontBaseUrl = new URL('/assets/fonts/', this.profile.cdnUrl).href
+    const fontBaseUrl = new URL('/assets/fonts/', this.config.cdnUrl).href
     applyFontFamily(this.host, fontName, 'banner', fontBaseUrl)
   }
 
   applyTheme(element: HTMLElement) {
-    const { color, font } = this.profile
+    const { color, font } = this.config
     if (color.background) {
       element.style.setProperty(
         '--wm-background-color',
