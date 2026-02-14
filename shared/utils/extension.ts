@@ -78,3 +78,10 @@ export function getExtensionHref(
   }
   return getExtensionUrl(browserId, utm).href
 }
+
+export function isExtensionInstalled(): boolean {
+  return (
+    'MonetizationEvent' in window &&
+    typeof window.MonetizationEvent !== 'undefined'
+  )
+}

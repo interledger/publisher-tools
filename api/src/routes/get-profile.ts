@@ -13,6 +13,7 @@ import type {
   BaseToolProfile,
   ConfigVersions,
   ElementConfigType,
+  OfferwallProfile,
   Tool,
   ToolProfile,
   WidgetConfig,
@@ -106,6 +107,21 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
     } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
+
+  // TODO(@DarianM): handle appropriately
+  if (tool === 'offerwall') {
+    return {
+      font: { name: 'Titillium Web' },
+      border: { type: 'Light' },
+      color: {
+        text: '#000000',
+        background: '#ffffff',
+        headline: '#000000',
+        theme: '#4ec6c0',
+      },
+    } as Omit<OfferwallProfile, '$version' | '$name' | '$modifiedAt'>
+  }
+
   return {
     ...extract<WidgetConfig>(
       profile,

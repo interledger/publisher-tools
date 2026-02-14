@@ -63,4 +63,5 @@ export function appendPaymentPointer(walletAddressUrl: string) {
   monetizationElement.rel = 'monetization'
   monetizationElement.href = walletAddressUrl
   document.head.appendChild(monetizationElement)
+  return monetizationElement
 }
