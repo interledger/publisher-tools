@@ -1,4 +1,4 @@
-import type { Tool, ToolProfile, WidgetProfile } from '@shared/types'
+import type { Tool, ToolProfile } from '@shared/types'
 import { groupBy } from '@shared/utils'
 
 type DeepPartial<T> = {
@@ -65,31 +65,4 @@ export function splitProfileProperties<T extends Tool>(
 
 function isContentProperty(key: string): boolean {
   return key.endsWith('title') || key.endsWith('description')
-}
-
-// TODO: remove with versioning changes
-export function legacySplitConfigProperties<T extends WidgetProfile>(
-  config: T,
-) {
-  const {
-    $name: _versionName,
-    $version: _version,
-    $modifiedAt: _modifiedAt,
-    ...rest
-  } = config
-  const { content = [], appearance = [] } = groupBy(
-    Object.entries(rest),
-    ([key]) =>
-      legacyIsContentProperty(String(key)) ? 'content' : 'appearance',
-  )
-
-  return {
-    content: Object.fromEntries(content) as Partial<T>,
-    appearance: Object.fromEntries(appearance) as Partial<T>,
-  }
-}
-
-// TODO: remove with versioning changes
-function legacyIsContentProperty(key: string): boolean {
-  return key.endsWith('Text') || key.endsWith('Visible')
 }

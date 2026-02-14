@@ -1,22 +1,22 @@
-import React from 'react'
 import { ColorSelector } from '@/components'
+import type { Background, TextColor } from '@shared/types'
 
 export interface WidgetColorsSelectorProps {
-  backgroundColor?: string
-  textColor?: string
-  buttonColor?: string
-  onBackgroundColorChange: (color: string) => void
-  onTextColorChange: (color: string) => void
-  onButtonColorChange: (color: string) => void
+  backgroundColor?: Background
+  textColor?: TextColor
+  themeColor?: Background
+  onBackgroundColorChange: (color: Background) => void
+  onTextColorChange: (color: TextColor) => void
+  onThemeColorChange: (color: Background) => void
 }
 
 export function WidgetColorsSelector({
   backgroundColor,
   textColor,
-  buttonColor,
+  themeColor,
   onBackgroundColorChange,
   onTextColorChange,
-  onButtonColorChange,
+  onThemeColorChange,
 }: WidgetColorsSelectorProps) {
   return (
     <div className="flex justify-between sm:flex-row flex-col gap-md">
@@ -31,9 +31,9 @@ export function WidgetColorsSelector({
         onChange={onTextColorChange}
       />
       <ColorSelector
-        label="Button"
-        value={buttonColor}
-        onChange={onButtonColorChange}
+        label="Theme"
+        value={themeColor}
+        onChange={onThemeColorChange}
       />
     </div>
   )

@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
-import type {
-  WidgetConfig,
-  PaymentWidget as WidgetComponent,
-} from '@tools/components'
+import type { PaymentWidget as WidgetComponent } from '@tools/components'
 import { useWidgetProfile } from '~/stores/widget-store'
 
 interface Props {
@@ -38,22 +35,8 @@ export const WidgetPreview = ({
       apiUrl: serviceUrls.api,
       cdnUrl: serviceUrls.cdn,
       receiverAddress: opWallet,
-      action: profile.widgetButtonText,
-      widgetTitleText: profile.widgetTitleText,
-      widgetDescriptionText: profile.widgetDescriptionText,
-      isWidgetDescriptionVisible: profile.widgetDescriptionVisible,
-      widgetTriggerIcon: profile.widgetTriggerIcon,
-      widgetPosition: profile.widgetPosition,
-      theme: {
-        primaryColor: profile.widgetButtonBackgroundColor,
-        backgroundColor: profile.widgetBackgroundColor,
-        textColor: profile.widgetTextColor,
-        fontSize: profile.widgetFontSize,
-        fontFamily: profile.widgetFontName,
-        widgetBorderRadius: profile.widgetButtonBorder,
-        widgetButtonBackgroundColor: profile.widgetTriggerBackgroundColor,
-      },
-    } as WidgetConfig
+      profile,
+    }
   }, [profile, serviceUrls, opWallet])
 
   useEffect(() => {
