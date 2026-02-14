@@ -200,7 +200,6 @@ export interface WidgetProfile extends BaseToolProfile {
     text: string
     isVisible: boolean
   }
-
   font: {
     name: FontFamilyKey
     size: WidgetFontSize

@@ -49,12 +49,23 @@ export function convertToConfigLegacy<T extends Tool>(
       ...getLegacyFontSize(profile),
     }
   }
-  return {
-    walletAddress,
-    versionName: $name,
-    ...rest,
-    ...getLegacyFontSize(profile),
+  if ('icon' in profile) {
+    return {
+      widgetFontName: profile.font.name,
+      widgetTitleText: profile.title.text,
+      widgetDescriptionText: profile.description.text,
+      widgetDescriptionVisible: profile.description.isVisible,
+      widgetPosition: profile.position,
+      widgetButtonBorder: profile.border.type,
+      widgetButtonText: profile.ctaPayButton.text,
+      widgetTextColor: profile.color.text,
+      widgetBackgroundColor: profile.color.background as string,
+      widgetButtonBackgroundColor: profile.color.theme as string,
+      ...getLegacyFontSize(profile),
+    }
   }
+
+  throw new Error(`Unsupported profile type`)
 }
 
 /** @legacy */
