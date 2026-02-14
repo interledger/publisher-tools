@@ -158,6 +158,21 @@ export const toolActions = {
         break
     }
   },
+  resetProfiles() {
+    const toolActionMap = {
+      [TOOL_BANNER]: bannerActions,
+      [TOOL_WIDGET]: widgetActions,
+    } as const
+
+    if (
+      toolState.currentToolType === TOOL_BANNER ||
+      toolState.currentToolType === TOOL_WIDGET
+    ) {
+      const actions = toolActionMap[toolState.currentToolType]
+      actions.resetProfiles()
+      actions.commitProfiles()
+    }
+  },
   /** legacy backwards compatibility */
   setConfigs: (
     fullConfigObject: Record<StableKey, Partial<ElementConfigType>> | null,
