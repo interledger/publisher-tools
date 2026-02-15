@@ -54,7 +54,7 @@
     "@shared/types": "workspace:^",
     "@tailwindcss/forms": "^0.5.11",
     "@types/he": "^1.2.3",
-    "@types/node": "^24.6.0",
+    "@types/node": "^24.10.13",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@types/sanitize-html": "^2.16.0",
