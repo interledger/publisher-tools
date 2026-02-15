@@ -246,8 +246,8 @@ importers:
         specifier: ^3.4.18
         version: 3.4.18(ts-node@10.9.2(@types/node@24.6.0)(typescript@5.9.3))
       valtio:
-        specifier: ^2.1.8
-        version: 2.1.8(@types/react@19.2.7)(react@19.2.1)
+        specifier: ^2.3.0
+        version: 2.3.0(@types/react@19.2.7)(react@19.2.1)
       zod:
         specifier: ^4.1.13
         version: 4.1.13
@@ -2614,6 +2614,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globals@14.0.0:
@@ -4064,8 +4065,8 @@ packages:
       typescript:
         optional: true
 
-  valtio@2.1.8:
-    resolution: {integrity: sha512-fjTPbJyKEmfVBZUOh3V0OtMHoFUGr4+4XpejjxhNJE/IS2l8rDbyJuzi3w/fZWBDyk7BJOpG+lmvTK5iiVhXuQ==}
+  valtio@2.3.0:
+    resolution: {integrity: sha512-1MfKNcmOIdBSatiJsYgw420n6jnD+jeoI0V+RkOQbCB0ElLh6GKUfPr0hc9uq/KBGeghivDEarRsKFFdSQQnKw==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -8296,7 +8297,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  valtio@2.1.8(@types/react@19.2.7)(react@19.2.1):
+  valtio@2.3.0(@types/react@19.2.7)(react@19.2.1):
     dependencies:
       proxy-compare: 3.0.1
     optionalDependencies:
