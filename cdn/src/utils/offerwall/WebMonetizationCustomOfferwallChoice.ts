@@ -21,6 +21,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     navigator.userAgent,
     navigator.vendor,
   )
+  #testMode: boolean
 
   #deps: OfferwallChoiceConstructorParams
 
@@ -33,6 +34,9 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
   constructor(deps: OfferwallChoiceConstructorParams) {
     this.#deps = deps
+
+    const cdnHost = new URL(deps.params.cdnUrl).hostname
+    this.#testMode = !cdnHost.startsWith('publisher-tools-cdn')
   }
 
   /**
@@ -329,7 +333,8 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     linkElem.addEventListener('monetization', listener, { signal })
   }
 
-  #isWithinAllowedTime(ts: number, allowedTime = 24 * 60 * 60 * 1000): boolean {
+  #isWithinAllowedTime(ts: number): boolean {
+    const allowedTime = this.#testMode ? 2 * 60 * 1000 : 24 * 60 * 60 * 1000
     return Date.now() - ts < allowedTime
   }
 }
