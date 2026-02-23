@@ -193,24 +193,33 @@ export interface BannerProfile extends BaseToolProfile {
 }
 
 export interface WidgetProfile extends BaseToolProfile {
-  // content
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-
-  // appearance
-  widgetFontName: FontFamilyKey
-  widgetFontSize: WidgetFontSize
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+    isVisible: boolean
+  }
+  font: {
+    name: FontFamilyKey
+    size: WidgetFontSize
+  }
+  position: WidgetPositionKey
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+    theme: Background
+  }
+  ctaPayButton: {
+    text: string
+  }
+  icon: {
+    value: string
+    color: Background
+  }
 }
 
 export interface OfferwallProfile extends BaseToolProfile {

@@ -62,10 +62,10 @@ export const sanitizeConfigFields = <T extends Tool>(
     return {
       ...convertToConfigLegacy('', widget),
       versionName: sanitizeText(widget.$name),
-      widgetTitleText: sanitizeText(widget.widgetTitleText),
-      widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
-      widgetButtonText: sanitizeText(widget.widgetButtonText),
-      widgetTriggerIcon: sanitizeText(widget.widgetTriggerIcon),
+      widgetTitleText: sanitizeText(widget.title.text),
+      widgetDescriptionText: sanitizeHtmlField(widget.description.text),
+      widgetButtonText: sanitizeText(widget.ctaPayButton.text),
+      widgetTriggerIcon: sanitizeText(widget.icon.value),
     }
   }
 

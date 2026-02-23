@@ -146,9 +146,9 @@ export class PaymentWidget extends LitElement {
   }
 
   private renderHomeView() {
-    const description =
-      this.config.widgetDescriptionText || DEFAULT_WIDGET_DESCRIPTION
-    const showDescription = this.config.isWidgetDescriptionVisible ?? true
+    const { profile } = this.configController.config
+    const description = profile?.description.text || DEFAULT_WIDGET_DESCRIPTION
+    const showDescription = profile?.description.isVisible ?? true
     const descriptionElement = showDescription
       ? html`<p>${description}</p>`
       : html`<div class="divider" />`
@@ -158,7 +158,7 @@ export class PaymentWidget extends LitElement {
         <div class="widget-header">
           <img src=${walletTotemIcon} alt="header wallet totem" />
           <p class="white-text">
-            ${this.config.widgetTitleText || 'Future of support'}
+            ${profile?.title.text || 'Future of support'}
           </p>
         </div>
         <button
@@ -198,7 +198,7 @@ export class PaymentWidget extends LitElement {
         >
           ${this.isSubmitting
             ? html`<div class="spinner"></div>`
-            : this.config.action || 'Support me'}
+            : profile?.ctaPayButton.text || 'Support me'}
         </button>
       </form>
     `
@@ -232,7 +232,7 @@ export class PaymentWidget extends LitElement {
     if (!this.config) {
       return html``
     }
-    const triggerIcon = this.config.widgetTriggerIcon || defaultTriggerIcon
+    const triggerIcon = this.config.profile?.icon.value || defaultTriggerIcon
 
     return html`
       <div
