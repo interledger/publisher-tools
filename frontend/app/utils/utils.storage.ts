@@ -34,7 +34,7 @@ export function patchProxy<T extends object>(
   }
 }
 
-export function omit<T extends Record<string, unknown>>(
+export function omit<T extends object>(
   obj: T,
   keys: readonly (keyof T | string)[] | Set<keyof T | string>,
 ): Partial<T> {

@@ -83,10 +83,12 @@ export const actions = {
     return await getToolProfiles(walletAddress, tool)
   },
   resetProfiles() {
+    bannerStoreUtils.removeProfilesFromStorage()
+
     PROFILE_IDS.forEach((id) => {
       const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
       snapshots.set(id, profile)
-      Object.assign(banner.profiles[id], profile)
+      patchProxy(banner.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
