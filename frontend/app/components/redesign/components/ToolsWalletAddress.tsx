@@ -11,12 +11,7 @@ import {
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import type { ElementErrors } from '~/lib/types'
-import { actions } from '~/stores/banner-store'
-import {
-  toolState,
-  toolActions,
-  createDefaultConfigs,
-} from '~/stores/toolStore'
+import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 
 interface ToolsWalletAddressProps {
@@ -75,9 +70,9 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     }
   }
 
+  //TODO: https://github.com/interledger/publisher-tools/pull/536#pullrequestreview-3755602901
   const handleDisconnect = () => {
-    actions.resetProfiles()
-    toolActions.setConfigs(createDefaultConfigs())
+    toolActions.resetProfiles()
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
     uiActions.focusWalletInput()

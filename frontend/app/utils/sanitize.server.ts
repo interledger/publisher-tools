@@ -60,10 +60,22 @@ export const sanitizeProfileFields = <T extends Tool>(
     return {
       ...widget,
       $name: sanitizeText(widget.$name),
-      widgetTitleText: sanitizeText(widget.widgetTitleText),
-      widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
-      widgetButtonText: sanitizeText(widget.widgetButtonText),
-      widgetTriggerIcon: sanitizeText(widget.widgetTriggerIcon),
+      title: {
+        ...widget.title,
+        text: sanitizeText(widget.title.text),
+      },
+      description: {
+        ...widget.description,
+        text: sanitizeHtmlField(widget.description.text),
+      },
+      ctaPayButton: {
+        ...widget.ctaPayButton,
+        text: sanitizeText(widget.ctaPayButton.text),
+      },
+      icon: {
+        ...widget.icon,
+        value: sanitizeText(widget.icon.value),
+      },
     } as ToolProfile<T>
   }
 

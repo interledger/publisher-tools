@@ -100,22 +100,33 @@ export const createDefaultWidgetProfile = (
   $version: '0.0.1',
   $name: profileName,
   $modifiedAt: '',
-  widgetFontName: FONT_FAMILY_OPTIONS[0],
-  widgetFontSize: 'base',
-  widgetPosition: WIDGET_POSITION.Right,
-  widgetTextColor: '#000000',
-  widgetBackgroundColor: '#ffffff',
-  widgetTriggerBackgroundColor: '#ffffff',
-  widgetButtonBackgroundColor: '#4ec6c0',
-  widgetButtonTextColor: '#000000',
-  widgetButtonBorder: CORNER_OPTION.Light,
-  widgetTitleText: 'Future of support',
-  widgetDescriptionText:
-    'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
-  widgetDescriptionVisible: true,
-  widgetDonateAmount: 1,
-  widgetButtonText: 'Support me',
-  widgetTriggerIcon: '',
+  title: {
+    text: 'Future of support',
+  },
+  description: {
+    text: 'Experience the new way to support our content. Activate Web Monetization in your browser and support our work as you browse. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!',
+    isVisible: true,
+  },
+  font: {
+    name: FONT_FAMILY_OPTIONS[0],
+    size: 'base',
+  },
+  position: WIDGET_POSITION.Right,
+  border: {
+    type: CORNER_OPTION.Light,
+  },
+  color: {
+    text: '#000000',
+    background: '#ffffff',
+    theme: '#4ec6c0',
+  },
+  ctaPayButton: {
+    text: 'Support me',
+  },
+  icon: {
+    value: '',
+    color: '#fff',
+  },
 })
 
 export const createDefaultOfferwallProfile = (

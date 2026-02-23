@@ -16,7 +16,6 @@ import type {
   ElementConfigType,
   Tool,
   ToolProfile,
-  WidgetConfig,
 } from '@shared/types'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
@@ -127,24 +126,37 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
     } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
-  return {
-    ...extract<WidgetConfig>(
-      profile,
-      (key) => key.startsWith('widget') || key.includes('Widget'),
-    ),
-    widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
+  if (tool === 'widget') {
+    return {
+      title: {
+        text: profile.widgetTitleText,
+      },
+      description: {
+        text: profile.widgetDescriptionText,
+        isVisible: profile.widgetDescriptionVisible,
+      },
+      font: {
+        name: profile.widgetFontName,
+        size: numberToWidgetFontSize(profile.widgetFontSize),
+      },
+      position: profile.widgetPosition,
+      border: {
+        type: profile.widgetButtonBorder,
+      },
+      color: {
+        text: profile.widgetTextColor,
+        background: profile.widgetBackgroundColor,
+        theme: profile.widgetButtonBackgroundColor,
+      },
+      ctaPayButton: {
+        text: profile.widgetButtonText,
+      },
+      icon: {
+        value: '',
+        color: profile.widgetTriggerBackgroundColor,
+      },
+    } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
   }
-}
 
-function extract<R, T = ElementConfigType, K = keyof T>(
-  obj: T,
-  filter: (key: K) => boolean,
-): R {
-  const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K),
-  )
-  if (!entries.length) {
-    throw new Error('No matching profile found')
-  }
-  return Object.fromEntries(entries) as R
+  throw new Error(`Unsupported tool type: ${tool}`)
 }
