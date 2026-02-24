@@ -56,16 +56,16 @@ function sanitizeHtmlField(value: string): string {
 export const sanitizeConfigFields = <T extends Tool>(
   config: ToolProfile<T>,
   tool: T,
-): ElementConfigType => {
+): Partial<ElementConfigType> => {
   if (tool === TOOL_WIDGET) {
     const widget = config as WidgetProfile
     return {
       ...convertToConfigLegacy('', widget),
       versionName: sanitizeText(widget.$name),
-      widgetTitleText: sanitizeText(widget.widgetTitleText),
-      widgetDescriptionText: sanitizeHtmlField(widget.widgetDescriptionText),
-      widgetButtonText: sanitizeText(widget.widgetButtonText),
-      widgetTriggerIcon: sanitizeText(widget.widgetTriggerIcon),
+      widgetTitleText: sanitizeText(widget.title.text),
+      widgetDescriptionText: sanitizeHtmlField(widget.description.text),
+      widgetButtonText: sanitizeText(widget.ctaPayButton.text),
+      widgetTriggerIcon: sanitizeText(widget.icon.value),
     }
   }
 
@@ -74,9 +74,9 @@ export const sanitizeConfigFields = <T extends Tool>(
     return {
       ...convertToConfigLegacy('', banner),
       versionName: sanitizeText(banner.$name),
-      bannerTitleText: sanitizeText(banner.bannerTitleText),
-      bannerDescriptionText: sanitizeHtmlField(banner.bannerDescriptionText),
-      bannerThumbnail: sanitizeText(banner.bannerThumbnail),
+      bannerTitleText: sanitizeText(banner.title.text),
+      bannerDescriptionText: sanitizeHtmlField(banner.description.text),
+      bannerThumbnail: sanitizeText(banner.thumbnail.value),
     }
   }
 

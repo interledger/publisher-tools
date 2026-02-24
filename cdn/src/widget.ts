@@ -17,27 +17,12 @@ fetchProfile(API_URL, 'widget', params)
 
 const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
   const element = document.createElement('wm-payment-widget')
-  const config = profile
-
   element.config = {
     apiUrl: API_URL,
     cdnUrl: params.cdnUrl,
     frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
     receiverAddress: walletAddressUrl,
-    action: config.widgetButtonText || 'Pay',
-    theme: {
-      primaryColor: config.widgetButtonBackgroundColor,
-      backgroundColor: config.widgetBackgroundColor,
-      textColor: config.widgetTextColor,
-      fontSize: config.widgetFontSize,
-      fontFamily: config.widgetFontName,
-      widgetBorderRadius: config.widgetButtonBorder,
-      widgetButtonBackgroundColor: config.widgetTriggerBackgroundColor,
-    },
-    widgetTitleText: config.widgetTitleText,
-    widgetDescriptionText: config.widgetDescriptionText,
-    isWidgetDescriptionVisible: config.widgetDescriptionVisible,
-    widgetPosition: config.widgetPosition,
+    profile,
   }
 
   element.style.position = 'fixed'

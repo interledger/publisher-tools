@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import type { BannerConfig, Banner as BannerElement } from '@tools/components'
+import type { Banner as BannerElement } from '@tools/components'
 import { useBannerProfile } from '~/stores/banner-store'
 export interface BannerHandle {
   triggerPreview: () => void
@@ -50,21 +50,9 @@ export const BannerPreview = ({
 
   const bannerConfig = useMemo(() => {
     return {
+      ...profile,
       cdnUrl,
-      bannerTitleText: profile.bannerTitleText,
-      bannerDescriptionText: profile.bannerDescriptionText,
-      isBannerDescriptionVisible: profile.bannerDescriptionVisible,
-      bannerPosition: profile.bannerPosition,
-      bannerBorderRadius: profile.bannerBorder,
-      bannerSlideAnimation: profile.bannerSlideAnimation,
-      bannerThumbnail: profile.bannerThumbnail,
-      theme: {
-        backgroundColor: profile.bannerBackgroundColor,
-        textColor: profile.bannerTextColor,
-        fontSize: profile.bannerFontSize,
-        fontFamily: profile.bannerFontName,
-      },
-    } as BannerConfig
+    }
   }, [profile, cdnUrl])
 
   useEffect(() => {

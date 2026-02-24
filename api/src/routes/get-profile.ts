@@ -10,13 +10,12 @@ import {
   TOOLS,
 } from '@shared/types'
 import type {
-  BannerConfig,
+  BaseToolProfile,
   ConfigVersions,
   ElementConfigType,
   OfferwallProfile,
   Tool,
   ToolProfile,
-  WidgetConfig,
 } from '@shared/types'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
@@ -78,16 +77,6 @@ function convertToProfile<T extends Tool>(
 
 /** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
-  if (tool === 'banner') {
-    return {
-      ...extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      ),
-      bannerFontSize: numberToBannerFontSize(profile.bannerFontSize),
-    }
-  }
-
   // TODO(@DarianM): handle appropriately
   if (tool === 'offerwall') {
     return {
@@ -101,25 +90,66 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
     } as Omit<OfferwallProfile, '$version' | '$name' | '$modifiedAt'>
   }
-
-  return {
-    ...extract<WidgetConfig>(
-      profile,
-      (key) => key.startsWith('widget') || key.includes('Widget'),
-    ),
-    widgetFontSize: numberToWidgetFontSize(profile.widgetFontSize),
+  if (tool === 'banner') {
+    return {
+      title: {
+        text: profile.bannerTitleText,
+      },
+      description: {
+        text: profile.bannerDescriptionText,
+        isVisible: profile.bannerDescriptionVisible,
+      },
+      font: {
+        name: profile.bannerFontName,
+        size: numberToBannerFontSize(profile.bannerFontSize),
+      },
+      animation: {
+        type: profile.bannerSlideAnimation,
+      },
+      position: profile.bannerPosition,
+      border: {
+        type: profile.bannerBorder,
+      },
+      color: {
+        text: profile.bannerTextColor,
+        background: profile.bannerBackgroundColor,
+      },
+      thumbnail: {
+        value: profile.bannerThumbnail,
+      },
+    } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
-}
-
-function extract<R, T = ElementConfigType, K = keyof T>(
-  obj: T,
-  filter: (key: K) => boolean,
-): R {
-  const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K),
-  )
-  if (!entries.length) {
-    throw new Error('No matching profile found')
+  if (tool === 'widget') {
+    return {
+      title: {
+        text: profile.widgetTitleText,
+      },
+      description: {
+        text: profile.widgetDescriptionText,
+        isVisible: profile.widgetDescriptionVisible,
+      },
+      font: {
+        name: profile.widgetFontName,
+        size: numberToWidgetFontSize(profile.widgetFontSize),
+      },
+      position: profile.widgetPosition,
+      border: {
+        type: profile.widgetButtonBorder,
+      },
+      color: {
+        text: profile.widgetTextColor,
+        background: profile.widgetBackgroundColor,
+        theme: profile.widgetButtonBackgroundColor,
+      },
+      ctaPayButton: {
+        text: profile.widgetButtonText,
+      },
+      icon: {
+        value: '',
+        color: profile.widgetTriggerBackgroundColor,
+      },
+    } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
   }
-  return Object.fromEntries(entries) as R
+
+  throw new Error(`Unsupported tool type: ${tool}`)
 }

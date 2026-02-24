@@ -165,42 +165,61 @@ export interface BaseToolProfile {
 }
 
 export interface BannerProfile extends BaseToolProfile {
-  // content
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-
-  // appearance
-  bannerFontName: FontFamilyKey
-  bannerFontSize: BannerFontSize
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+    isVisible: boolean
+  }
+  font: {
+    name: FontFamilyKey
+    size: BannerFontSize
+  }
+  animation: {
+    type: SlideAnimationType
+  }
+  position: BannerPositionKey
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+  }
+  thumbnail: {
+    value: string
+  }
 }
 
 export interface WidgetProfile extends BaseToolProfile {
-  // content
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-
-  // appearance
-  widgetFontName: FontFamilyKey
-  widgetFontSize: WidgetFontSize
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+    isVisible: boolean
+  }
+  font: {
+    name: FontFamilyKey
+    size: WidgetFontSize
+  }
+  position: WidgetPositionKey
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+    theme: Background
+  }
+  ctaPayButton: {
+    text: string
+  }
+  icon: {
+    value: string
+    color: Background
+  }
 }
 
 export interface OfferwallProfile extends BaseToolProfile {

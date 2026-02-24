@@ -47,36 +47,62 @@ describe('api.profile action - HTML injection', () => {
   const bannerProfilePayload: BannerProfile = {
     $version: '1.0.0',
     $name: 'test-profile',
-    bannerTitleText: 'Fund me',
-    bannerDescriptionText: 'Support our work',
-    bannerDescriptionVisible: true,
-    bannerPosition: 'Top',
-    bannerSlideAnimation: 'Slide',
-    bannerBorder: 'Light',
-    bannerFontName: 'Arial',
-    bannerFontSize: '2xs',
-    bannerTextColor: '#000000',
-    bannerBackgroundColor: '#ffffff',
-    bannerThumbnail: 'thumbnail',
+    title: {
+      text: 'Fund me',
+    },
+    description: {
+      text: 'Support our work',
+      isVisible: true,
+    },
+    position: 'Top',
+    animation: {
+      type: 'Slide',
+    },
+    border: {
+      type: 'Light',
+    },
+    font: {
+      name: 'Arial',
+      size: '2xs',
+    },
+    color: {
+      text: '#000000',
+      background: '#ffffff',
+    },
+    thumbnail: {
+      value: 'default',
+    },
   }
   const widgetProfilePayload: WidgetProfile = {
     $version: '1.0.0',
-    $name: 'clean-profile',
-    widgetTitleText: 'Support Our Work',
-    widgetDescriptionText: 'We appreciate your contributions to our project',
-    widgetDescriptionVisible: true,
-    widgetButtonText: 'Donate Now',
-    widgetPosition: 'Right',
-    widgetDonateAmount: 5,
-    widgetButtonBorder: 'Pill',
-    widgetFontName: 'Arial',
-    widgetFontSize: 'md',
-    widgetTextColor: '#000000',
-    widgetBackgroundColor: '#ffffff',
-    widgetButtonTextColor: '#ffffff',
-    widgetButtonBackgroundColor: '#000000',
-    widgetTriggerBackgroundColor: '#000000',
-    widgetTriggerIcon: 'heart',
+    $name: 'ilf-profile',
+    title: {
+      text: 'Support',
+    },
+    description: {
+      text: 'Web Monetization in your browser.',
+      isVisible: true,
+    },
+    position: 'Right',
+    border: {
+      type: 'Light',
+    },
+    font: {
+      name: 'Arial',
+      size: 'base',
+    },
+    color: {
+      text: '#000',
+      background: '#ffffff',
+      theme: '#4ec6c0',
+    },
+    ctaPayButton: {
+      text: 'Support Me',
+    },
+    icon: {
+      value: '/path/to/icon',
+      color: '#000',
+    },
   }
 
   beforeEach(() => {
@@ -102,7 +128,7 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetTitleText: '<script>alert("XSS")</script>',
+          title: { text: '<script>alert("XSS")</script>' },
         },
       }),
     })
@@ -128,8 +154,10 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetDescriptionText:
-            '<img src=x onerror="alert(\'XSS\')">Please support our work',
+          description: {
+            text: '<img src=x onerror="alert(\'XSS\')">Please support our work',
+            isVisible: false,
+          },
         },
       }),
     })
@@ -155,7 +183,9 @@ describe('api.profile action - HTML injection', () => {
         tool: 'banner',
         profile: {
           ...bannerProfilePayload,
-          bannerTitleText: '<div onclick="stealData()">Click Here</div>',
+          title: {
+            text: '<div onclick="stealData()">Click Here</div>',
+          },
         },
       }),
     })
@@ -181,8 +211,10 @@ describe('api.profile action - HTML injection', () => {
         tool: 'banner',
         profile: {
           ...bannerProfilePayload,
-          bannerDescriptionText:
-            '&lt;iframe src=&quot;https://evil.com&quot;&gt;&lt;/iframe&gt;',
+          description: {
+            text: '&lt;iframe src=&quot;https://evil.com&quot;&gt;&lt;/iframe&gt;',
+            isVisible: true,
+          },
         },
       }),
     })
@@ -208,7 +240,7 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetTitleText: '<b>Click Here</b>',
+          title: { text: '<b>Click Here</b>' },
         },
       }),
     })
@@ -286,7 +318,7 @@ describe('api.profile action - HTML injection', () => {
         tool: 'widget',
         profile: {
           ...widgetProfilePayload,
-          widgetBackgroundColor: '<script>alert("XSS")</script>',
+          color: { text: '<script>alert("XSS")</script>' },
         },
       }),
     })
@@ -310,7 +342,10 @@ describe('api.profile action - HTML injection', () => {
         tool: 'banner',
         profile: {
           ...bannerProfilePayload,
-          bannerTextColor: '<img src=x onerror="stealCookies()">',
+          color: {
+            ...bannerProfilePayload.color,
+            text: '<img src=x onerror="stealCookies()">',
+          },
         },
       }),
     })
