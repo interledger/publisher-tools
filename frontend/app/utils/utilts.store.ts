@@ -1,24 +1,17 @@
 import { deepEqual } from 'fast-equals'
 import { snapshot, subscribe } from 'valtio'
 import {
-  createDefaultBannerProfile,
-  createDefaultOfferwallProfile,
-  createDefaultWidgetProfile,
-} from '@shared/default-data'
-import {
+  type BaseToolProfile,
   type ProfileId,
   type Tool,
   type ToolProfile,
   type ToolProfiles,
-  DEFAULT_PROFILE_NAMES,
   PROFILE_IDS,
-  TOOL_BANNER,
-  TOOL_OFFERWALL,
-  TOOL_WIDGET,
 } from '@shared/types'
 import type { BannerStore } from '~/stores/banner-store'
 import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { WidgetStore } from '~/stores/widget-store'
+import { omit } from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore
 const STORAGE_PREFIX = 'wmt'
@@ -28,20 +21,6 @@ export function getStorageKeys(tool: Tool) {
     snapshotsStorageKey: `${STORAGE_PREFIX}-${tool}-snapshots`,
     getProfileStorageKey: (profileId: ProfileId) =>
       `${STORAGE_PREFIX}-${tool}-${profileId}`,
-  }
-}
-
-function getCreateDefaultProfile<T extends Tool>(tool: T) {
-  switch (tool) {
-    case TOOL_BANNER:
-      return createDefaultBannerProfile
-    case TOOL_WIDGET:
-      return createDefaultWidgetProfile
-    case TOOL_OFFERWALL:
-      return createDefaultOfferwallProfile
-
-    default:
-      throw new Error(`Unknown tool: ${tool}`)
   }
 }
 
@@ -56,7 +35,6 @@ export function createToolStoreUtils<T extends Tool>(
 ) {
   const { tool, store, snapshots } = config
   const { snapshotsStorageKey, getProfileStorageKey } = getStorageKeys(tool)
-  const createDefaultProfile = getCreateDefaultProfile(tool)
 
   function parseProfileFromStorage(
     profileId: ProfileId,
@@ -100,7 +78,8 @@ export function createToolStoreUtils<T extends Tool>(
       return false
     }
 
-    return !deepEqual(snap, baseline)
+    const keys: (keyof BaseToolProfile)[] = ['$version', '$modifiedAt']
+    return !deepEqual(omit(snap, keys), omit(baseline, keys))
   }
 
   function subscribeProfileToUpdates(id: ProfileId) {
@@ -166,10 +145,12 @@ export function createToolStoreUtils<T extends Tool>(
       return () => unsubscribes.forEach((s) => s())
     },
 
-    resetSnapshots() {
+    removeProfilesFromStorage() {
+      localStorage.removeItem(snapshotsStorageKey)
+
       PROFILE_IDS.forEach((id) => {
-        const profile = createDefaultProfile(DEFAULT_PROFILE_NAMES[id])
-        snapshots.set(id, profile as ToolProfile<T>)
+        const storageKey = getProfileStorageKey(id)
+        localStorage.removeItem(storageKey)
       })
     },
   }

@@ -82,10 +82,12 @@ export const actions = {
     return await getToolProfiles(walletAddress, tool)
   },
   resetProfiles() {
+    widgetStoreUtils.removeProfilesFromStorage()
+
     PROFILE_IDS.forEach((id) => {
       const profile = createDefaultWidgetProfile(DEFAULT_PROFILE_NAMES[id])
       snapshots.set(id, profile)
-      Object.assign(widget.profiles[id], profile)
+      patchProxy(widget.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
@@ -113,6 +115,7 @@ export const actions = {
   commitProfiles() {
     PROFILE_IDS.forEach((id) => {
       const profile = snapshot(widget.profiles[id])
+
       snapshots.set(id, profile)
       widget.profilesUpdate.delete(id)
     })
