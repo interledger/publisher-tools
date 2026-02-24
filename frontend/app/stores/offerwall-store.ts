@@ -85,10 +85,12 @@ export const actions = {
     return await getToolProfiles(walletAddress, tool)
   },
   resetProfiles() {
+    offerwallStoreUtils.removeProfilesFromStorage()
+
     PROFILE_IDS.forEach((id) => {
       const profile = createDefaultOfferwallProfile(DEFAULT_PROFILE_NAMES[id])
       snapshots.set(id, profile)
-      Object.assign(offerwall.profiles[id], profile)
+      patchProxy(offerwall.profiles[id], profile)
     })
   },
   resetProfileSection() {
