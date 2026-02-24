@@ -70,7 +70,6 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     }
   }
 
-  //TODO: https://github.com/interledger/publisher-tools/pull/536#pullrequestreview-3755602901
   const handleDisconnect = () => {
     toolActions.resetProfiles()
     toolActions.setWalletConnected(false)

@@ -13,6 +13,7 @@ import {
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
 import { actions as bannerActions } from '~/stores/banner-store'
+import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
 import { captureSnapshotsToStorage } from './banner-store'
@@ -159,18 +160,8 @@ export const toolActions = {
     }
   },
   resetProfiles() {
-    const toolActionMap = {
-      [TOOL_BANNER]: bannerActions,
-      [TOOL_WIDGET]: widgetActions,
-    } as const
-
-    if (
-      toolState.currentToolType === TOOL_BANNER ||
-      toolState.currentToolType === TOOL_WIDGET
-    ) {
-      const actions = toolActionMap[toolState.currentToolType]
+    for (const actions of [bannerActions, widgetActions, offerwallActions]) {
       actions.resetProfiles()
-      actions.commitProfiles()
     }
   },
   /** legacy backwards compatibility */
