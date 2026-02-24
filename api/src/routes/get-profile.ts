@@ -69,7 +69,7 @@ app.get(
     } catch (error) {
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
-        if (error.message.includes('404')) {
+        if (error.message.includes('404') || error.name === 'NoSuchKey') {
           const msg = 'No saved profile found for given wallet address'
           throw createHTTPException(404, msg, {
             message: 'Not found', // can include the S3 key here perhaps
