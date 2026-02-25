@@ -296,7 +296,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
   #waitForExtensionInstall(signal: AbortSignal) {
     const interval = 1000
-    const timeout = 3 * 60 * 1000
+    const timeout = this.#testMode ? 60 * 1000 : 3 * 60 * 1000
 
     return new Promise<void>((resolve, reject) => {
       let elapsed = 0
