@@ -2,12 +2,14 @@ import he from 'he'
 import sanitizeHtml from 'sanitize-html'
 import {
   type BannerProfile,
+  type OfferwallProfile,
   type WidgetProfile,
   type Tool,
   type ToolProfile,
   type ElementConfigType,
   TOOL_WIDGET,
   TOOL_BANNER,
+  TOOL_OFFERWALL,
 } from '@shared/types'
 import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import { convertToConfigLegacy } from './profile-converter'
@@ -77,6 +79,16 @@ export const sanitizeConfigFields = <T extends Tool>(
       bannerTitleText: sanitizeText(banner.title.text),
       bannerDescriptionText: sanitizeHtmlField(banner.description.text),
       bannerThumbnail: sanitizeText(banner.thumbnail.value),
+    }
+  }
+
+  if (tool === TOOL_OFFERWALL) {
+    const offerwall = config as OfferwallProfile
+    return {
+      offerwall: {
+        ...offerwall,
+        $name: sanitizeText(offerwall.$name),
+      },
     }
   }
 

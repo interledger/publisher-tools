@@ -7,6 +7,7 @@ import {
   PROFILE_IDS,
   type Configuration,
   TOOL_BANNER,
+  TOOL_OFFERWALL,
   TOOL_WIDGET,
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
@@ -21,6 +22,7 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
 import {
   BannerProfileSchema,
+  OfferwallProfileSchema,
   WidgetProfileSchema,
 } from '~/utils/validate.shared'
 
@@ -37,6 +39,10 @@ const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
   BaseApiSchema.extend({
     tool: z.literal(TOOL_WIDGET),
     profile: WidgetProfileSchema,
+  }),
+  BaseApiSchema.extend({
+    tool: z.literal(TOOL_OFFERWALL),
+    profile: OfferwallProfileSchema,
   }),
 ])
 

@@ -51,6 +51,8 @@ export interface ElementConfigType {
   widgetButtonBackgroundColor: string
   widgetTriggerBackgroundColor: string
   widgetTriggerIcon: string
+
+  offerwall?: OfferwallProfile
 }
 
 export const TOOL_BANNER = 'banner'

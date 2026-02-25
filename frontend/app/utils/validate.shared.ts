@@ -2,6 +2,7 @@ import z from 'zod'
 import type {
   BannerFontSize,
   BannerProfile,
+  OfferwallProfile,
   WidgetFontSize,
   WidgetProfile,
 } from '@shared/types'
@@ -131,3 +132,25 @@ export const WidgetProfileSchema = widgetFieldsSchema.extend({
   $version: versionSchema,
   $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<WidgetProfile>
+
+export const offerwallFieldsSchema = z.object({
+  font: z.object({
+    name: z.enum(FONT_FAMILY_OPTIONS, {
+      message: 'Choose a valid font family',
+    }),
+  }),
+  border: z.object({
+    type: z.enum(CORNER_OPTION),
+  }),
+  color: z.object({
+    text: hexColorSchema,
+    background: z.union([hexColorSchema]),
+    headline: hexColorSchema,
+    theme: z.union([hexColorSchema]),
+  }),
+})
+
+export const OfferwallProfileSchema = offerwallFieldsSchema.extend({
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
+}) satisfies z.ZodType<OfferwallProfile>
