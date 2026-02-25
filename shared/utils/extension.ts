@@ -78,3 +78,7 @@ export function getExtensionHref(
   }
   return getExtensionUrl(browserId, utm).href
 }
+
+export function isExtensionInstalled(): boolean {
+  return document.createElement('link').relList.supports('monetization')
+}
