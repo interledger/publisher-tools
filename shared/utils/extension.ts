@@ -80,8 +80,5 @@ export function getExtensionHref(
 }
 
 export function isExtensionInstalled(): boolean {
-  return (
-    'MonetizationEvent' in window &&
-    typeof window.MonetizationEvent !== 'undefined'
-  )
+  return document.createElement('link').relList.supports('monetization')
 }
