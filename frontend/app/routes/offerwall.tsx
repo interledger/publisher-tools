@@ -10,7 +10,7 @@ import { useSnapshot } from 'valtio'
 import { SVGSpinner } from '@/assets'
 import {
   BuilderBackground,
-  BuilderPresetTabs,
+  BuilderProfileTabs,
   Divider,
   HeadingCore,
   MobileStepsIndicator,
@@ -156,7 +156,7 @@ export default function Offerwall() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderPresetTabs
+                    <BuilderProfileTabs
                       idPrefix="profile"
                       options={offerwallSnap.profileTabs}
                       selectedId={snap.activeTab}
@@ -168,7 +168,7 @@ export default function Offerwall() {
                       <OfferwallBuilder
                         onRefresh={() => actions.resetProfileSection()}
                       />
-                    </BuilderPresetTabs>
+                    </BuilderProfileTabs>
 
                     <div
                       id="builder-actions"

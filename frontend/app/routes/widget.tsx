@@ -16,7 +16,7 @@ import {
   ToolsPrimaryButton,
   StepsIndicator,
   MobileStepsIndicator,
-  BuilderPresetTabs,
+  BuilderProfileTabs,
 } from '@/components'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
@@ -201,7 +201,7 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderPresetTabs
+                    <BuilderProfileTabs
                       idPrefix="profile"
                       options={widgetSnap.profileTabs}
                       selectedId={snap.activeTab}
@@ -215,7 +215,7 @@ export default function Widget() {
                           actions.resetProfileSection(section)
                         }
                       />
-                    </BuilderPresetTabs>
+                    </BuilderProfileTabs>
 
                     <div
                       id="builder-actions"

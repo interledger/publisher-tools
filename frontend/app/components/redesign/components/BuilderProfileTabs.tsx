@@ -12,7 +12,7 @@ interface Props<T extends string> {
   onRename: (label: string) => void
 }
 
-export const BuilderPresetTabs = <T extends string>({
+export const BuilderProfileTabs = <T extends string>({
   options,
   children,
   selectedId,

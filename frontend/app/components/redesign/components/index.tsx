@@ -16,7 +16,7 @@ export { OfferwallColorsSelector } from '~/components/offerwall/OfferwallColorsS
 export { Slider } from './Slider'
 export { PillRadioListItem } from './PillRadioListItem'
 export { PillTagButton } from './PillTagButton'
-export { BuilderPresetTabs } from './BuilderPresetTabs'
+export { BuilderProfileTabs } from './BuilderPresetTabs'
 export { ToolsPrimaryButton } from './ToolsPrimaryButton'
 export { ToolsSecondaryButton } from './ToolsSecondaryButton'
 export { GhostButton } from './GhostButton'
