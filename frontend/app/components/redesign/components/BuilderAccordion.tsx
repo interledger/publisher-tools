@@ -51,7 +51,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
       <summary
         className={cx(
           'flex gap-xs items-center cursor-pointer list-none',
-          'transition-all duration-300 ease-in-out',
+          'transition-all duration-300 ease-in-out outline-nav-link-hover',
           isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs',
         )}
       >

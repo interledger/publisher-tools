@@ -153,20 +153,14 @@ export const BuilderPresetTabs = <T extends string>({
         </div>
       </div>
 
-      {options.map((option) => (
-        <div
-          role="tabpanel"
-          className={cx(
-            'bg-interface-bg-container rounded-b-sm p-md flex-col gap-md w-full -mt-2',
-            option.id === activeTabId ? 'flex' : 'hidden',
-          )}
-          aria-labelledby={`${idPrefix}-tab-${option.id}`}
-          id={`${idPrefix}-tabpanel-${option.id}`}
-          key={`${idPrefix}-tabpanel-${option.id}`}
-        >
-          {option.id === activeTabId && children}
-        </div>
-      ))}
+      <div
+        role="tabpanel"
+        className="bg-interface-bg-container rounded-b-sm p-md flex flex-col gap-md w-full -mt-2"
+        aria-labelledby={`${idPrefix}-tab-${activeTabId}`}
+        id={`${idPrefix}-tabpanel-${activeTabId}`}
+      >
+        {children}
+      </div>
     </div>
   )
 }
