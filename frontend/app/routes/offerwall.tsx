@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   data,
   useLoaderData,
@@ -23,6 +23,7 @@ import HowItWorks from '~/components/offerwall/HowItWorks'
 import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
 import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -70,9 +71,9 @@ export default function Offerwall() {
   const snap = useSnapshot(toolState)
   const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
   const { OP_WALLET_ADDRESS } = useLoaderData<typeof loader>()
   usePathTracker()
 

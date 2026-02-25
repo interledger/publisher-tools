@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import {
   useLoaderData,
   useNavigate,
@@ -24,6 +24,7 @@ import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import {
   toolState,
   toolActions,
@@ -82,9 +83,9 @@ export default function Widget() {
   const widgetSnap = useSnapshot(widget)
   const navigate = useNavigate()
   const { save, saveLastAction } = useSaveProfile()
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
@@ -108,26 +109,6 @@ export default function Widget() {
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,
   })
-
-  const scrollToWalletAddress = () => {
-    if (!walletAddressRef.current) {
-      return
-    }
-    walletAddressRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-    })
-
-    walletAddressRef.current.style.transition = 'all 0.3s ease'
-    walletAddressRef.current.style.transform = 'scale(1.02)'
-
-    setTimeout(() => {
-      if (walletAddressRef.current) {
-        walletAddressRef.current.style.transform = 'scale(1)'
-      }
-    }, 500)
-  }
 
   const handleSave = async (action: 'save-success' | 'script') => {
     if (!snap.isWalletConnected) {
