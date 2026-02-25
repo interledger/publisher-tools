@@ -3,7 +3,8 @@
     "noEmit": true,
     "moduleResolution": "bundler",
     "module": "es2015",
-    "target": "es2020",
+    "strict": true,
+    "target": "es2022",
     "types": ["./@types/index.d.ts"],
     "paths": {
       "@c/*": ["../components/src/*"]

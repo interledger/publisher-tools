@@ -13,6 +13,7 @@ import type {
   BaseToolProfile,
   ConfigVersions,
   ElementConfigType,
+  OfferwallProfile,
   Tool,
   ToolProfile,
 } from '@shared/types'
@@ -76,6 +77,19 @@ function convertToProfile<T extends Tool>(
 
 /** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
+  // TODO(@DarianM): handle appropriately
+  if (tool === 'offerwall') {
+    return {
+      font: { name: 'Titillium Web' },
+      border: { type: 'Light' },
+      color: {
+        text: '#000000',
+        background: '#ffffff',
+        headline: '#000000',
+        theme: '#4ec6c0',
+      },
+    } as Omit<OfferwallProfile, '$version' | '$name' | '$modifiedAt'>
+  }
   if (tool === 'banner') {
     return {
       title: {
