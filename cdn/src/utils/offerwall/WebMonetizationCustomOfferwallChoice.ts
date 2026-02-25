@@ -120,6 +120,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     } catch (error) {
       console.error(error)
       onDoneResolver.resolve(false)
+      owElem.remove()
     }
 
     return onDoneResolver.promise
