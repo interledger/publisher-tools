@@ -4,10 +4,11 @@ import {
   ScriptDialog,
   GrantConfirmationDialog,
 } from '@/components'
-import { TOOL_BANNER, TOOL_WIDGET } from '@shared/types'
+import { TOOL_BANNER, TOOL_OFFERWALL, TOOL_WIDGET } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { actions as bannerActions } from '~/stores/banner-store'
+import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { toolState } from '~/stores/toolStore'
 import { actions as widgetActions } from '~/stores/widget-store'
 
@@ -17,6 +18,8 @@ function getToolActions() {
       return bannerActions
     case TOOL_WIDGET:
       return widgetActions
+    case TOOL_OFFERWALL:
+      return offerwallActions
     default:
       throw new Error(`Unsupported tool type: ${toolState.currentToolType}`)
   }

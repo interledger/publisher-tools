@@ -9,6 +9,7 @@ import {
   type ToolProfiles,
   TOOL_BANNER,
   TOOL_WIDGET,
+  TOOL_OFFERWALL,
 } from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
@@ -137,6 +138,10 @@ export const toolActions = {
         return (await bannerActions.getProfiles(TOOL_BANNER)) as ToolProfiles<T>
       case TOOL_WIDGET:
         return (await widgetActions.getProfiles(TOOL_WIDGET)) as ToolProfiles<T>
+      case TOOL_OFFERWALL:
+        return (await offerwallActions.getProfiles(
+          TOOL_OFFERWALL,
+        )) as ToolProfiles<T>
 
       default:
         break
@@ -153,6 +158,10 @@ export const toolActions = {
       case TOOL_WIDGET:
         widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
         widgetActions.commitProfiles()
+        break
+      case TOOL_OFFERWALL:
+        offerwallActions.setProfiles(profiles as ToolProfiles<'offerwall'>)
+        offerwallActions.commitProfiles()
         break
 
       default:

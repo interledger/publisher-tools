@@ -10,7 +10,7 @@ import {
   TOOL_OFFERWALL,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
-import { getToolProfiles } from '~/utils/profile-api'
+import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
@@ -102,8 +102,14 @@ export const actions = {
     patchProxy(offerwall.profile, snapshot)
   },
   async saveProfile(): Promise<SaveResult> {
-    //TODO
-    return { success: true }
+    const profile = snapshot(offerwall.profile)
+    const { walletAddress, activeTab } = toolState
+    return await saveToolProfile(
+      walletAddress,
+      TOOL_OFFERWALL,
+      profile,
+      activeTab,
+    )
   },
   commitProfile() {
     const profile = snapshot(offerwall.profile)
