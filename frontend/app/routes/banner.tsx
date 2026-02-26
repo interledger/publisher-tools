@@ -16,7 +16,7 @@ import {
   ToolsPrimaryButton,
   StepsIndicator,
   MobileStepsIndicator,
-  BuilderPresetTabs,
+  BuilderProfileTabs,
 } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
@@ -192,7 +192,7 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderPresetTabs
+                    <BuilderProfileTabs
                       idPrefix="profile"
                       options={bannerSnap.profileTabs}
                       selectedId={snap.activeTab}
@@ -206,7 +206,7 @@ export default function Banner() {
                           actions.resetProfileSection(section)
                         }
                       />
-                    </BuilderPresetTabs>
+                    </BuilderProfileTabs>
 
                     <div
                       id="builder-actions"
