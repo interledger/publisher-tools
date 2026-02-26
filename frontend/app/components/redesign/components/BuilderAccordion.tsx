@@ -74,7 +74,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         </GhostButton>
       )}
 
-      <div className="flex flex-col gap-lg mt-sm">{children}</div>
+      <div className="relative z-10 flex flex-col gap-lg mt-sm">{children}</div>
       {isOpen && (
         <>
           <Divider />
