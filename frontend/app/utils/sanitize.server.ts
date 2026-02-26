@@ -4,8 +4,8 @@ import {
   type BannerProfile,
   type OfferwallProfile,
   type WidgetProfile,
-  type Tool,
   type ToolProfile,
+  type Tool,
   TOOL_WIDGET,
   TOOL_BANNER,
   TOOL_OFFERWALL,
@@ -53,19 +53,12 @@ function sanitizeHtmlField(value: string): string {
   return decodedSanitized
 }
 
-export const sanitizeProfileFields = <T extends Tool>(
-  profile: ToolProfile<T>,
-  tool: T,
-): ToolProfile<T> => {
-  if (tool === TOOL_WIDGET) {
-    const widget = profile as WidgetProfile
+const sanitizers = {
+  [TOOL_WIDGET](widget: WidgetProfile): WidgetProfile {
     return {
       ...widget,
       $name: sanitizeText(widget.$name),
-      title: {
-        ...widget.title,
-        text: sanitizeText(widget.title.text),
-      },
+      title: { ...widget.title, text: sanitizeText(widget.title.text) },
       description: {
         ...widget.description,
         text: sanitizeHtmlField(widget.description.text),
@@ -74,22 +67,14 @@ export const sanitizeProfileFields = <T extends Tool>(
         ...widget.ctaPayButton,
         text: sanitizeText(widget.ctaPayButton.text),
       },
-      icon: {
-        ...widget.icon,
-        value: sanitizeText(widget.icon.value),
-      },
-    } as ToolProfile<T>
-  }
-
-  if (tool === TOOL_BANNER) {
-    const banner = profile as BannerProfile
+      icon: { ...widget.icon, value: sanitizeText(widget.icon.value) },
+    }
+  },
+  [TOOL_BANNER](banner: BannerProfile): BannerProfile {
     return {
       ...banner,
       $name: sanitizeText(banner.$name),
-      title: {
-        ...banner.title,
-        text: sanitizeText(banner.title.text),
-      },
+      title: { ...banner.title, text: sanitizeText(banner.title.text) },
       description: {
         ...banner.description,
         text: sanitizeHtmlField(banner.description.text),
@@ -98,18 +83,18 @@ export const sanitizeProfileFields = <T extends Tool>(
         ...banner.thumbnail,
         value: sanitizeText(banner.thumbnail.value),
       },
-    } as ToolProfile<T>
-  }
-
-  if (tool === TOOL_OFFERWALL) {
-    const offerwall = config as OfferwallProfile
-    return {
-      offerwall: {
-        ...offerwall,
-        $name: sanitizeText(offerwall.$name),
-      },
     }
-  }
+  },
+  [TOOL_OFFERWALL](offerwall: OfferwallProfile): OfferwallProfile {
+    return { ...offerwall, $name: sanitizeText(offerwall.$name) }
+  },
+} satisfies { [K in Tool]: (profile: ToolProfile<K>) => ToolProfile<K> }
 
-  throw new Error(`Unsupported tool type: ${tool}`)
+export function sanitizeProfileFields<T extends Tool>(
+  profile: ToolProfile<T>,
+  tool: T,
+): ToolProfile<T> {
+  return (sanitizers[tool] as (profile: ToolProfile<T>) => ToolProfile<T>)(
+    profile,
+  )
 }
