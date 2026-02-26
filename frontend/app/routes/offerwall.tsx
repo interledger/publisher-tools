@@ -93,6 +93,12 @@ export default function Offerwall() {
   }, [OP_WALLET_ADDRESS])
 
   const handleSave = async (action: 'save-success' | 'script') => {
+    if (!snap.isWalletConnected) {
+      toolActions.setConnectWalletStep('error')
+      scrollToWalletAddress()
+      return
+    }
+
     const isScript = action === 'script'
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
