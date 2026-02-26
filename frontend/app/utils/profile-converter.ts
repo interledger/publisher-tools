@@ -186,6 +186,9 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
     } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
   }
+  if (tool === 'offerwall') {
+    return profile.offerwall as ToolProfile<'offerwall'>
+  }
 
   throw new Error(`Unsupported tool type: ${tool}`)
 }

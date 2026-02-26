@@ -2,11 +2,13 @@ import he from 'he'
 import sanitizeHtml from 'sanitize-html'
 import {
   type BannerProfile,
+  type OfferwallProfile,
   type WidgetProfile,
   type Tool,
   type ToolProfile,
   TOOL_WIDGET,
   TOOL_BANNER,
+  TOOL_OFFERWALL,
 } from '@shared/types'
 import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 
@@ -97,6 +99,16 @@ export const sanitizeProfileFields = <T extends Tool>(
         value: sanitizeText(banner.thumbnail.value),
       },
     } as ToolProfile<T>
+  }
+
+  if (tool === TOOL_OFFERWALL) {
+    const offerwall = config as OfferwallProfile
+    return {
+      offerwall: {
+        ...offerwall,
+        $name: sanitizeText(offerwall.$name),
+      },
+    }
   }
 
   throw new Error(`Unsupported tool type: ${tool}`)
