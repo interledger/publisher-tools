@@ -3,6 +3,7 @@ import { ProfilesDialog, StatusDialog } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { banner } from '~/stores/banner-store'
+import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { widget } from '~/stores/widget-store'
 
@@ -15,6 +16,15 @@ function getLegacyOptions() {
       profiles: banner.profiles,
     }
   }
+
+  if (toolState.currentToolType === 'offerwall') {
+    return {
+      hasConflicts: offerwall.profilesUpdate.size > 0,
+      updates: [...offerwall.profilesUpdate],
+      profiles: offerwall.profiles,
+    }
+  }
+
   return {
     hasConflicts: widget.profilesUpdate.size > 0,
     updates: [...widget.profilesUpdate],

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   data,
   useLoaderData,
@@ -22,7 +22,10 @@ import {
 import HowItWorks from '~/components/offerwall/HowItWorks'
 import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
 import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
+import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
+import { useSaveProfile } from '~/hooks/useSaveProfile'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -53,9 +56,19 @@ export const meta: MetaFunction = () => {
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const { env } = context.cloudflare
   const session = await getSession(request.headers.get('Cookie'))
+  const grantResponse = session.get('grant-response')
+  const isGrantAccepted = session.get('is-grant-accepted')
+  const isGrantResponse = session.get('is-grant-response')
+
+  session.unset('grant-response')
+  session.unset('is-grant-accepted')
+  session.unset('is-grant-response')
 
   return data(
     {
+      grantResponse,
+      isGrantAccepted,
+      isGrantResponse,
       OP_WALLET_ADDRESS: env.OP_WALLET_ADDRESS,
     },
     {
@@ -70,10 +83,12 @@ export default function Offerwall() {
   const snap = useSnapshot(toolState)
   const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
+  const { save, saveLastAction } = useSaveProfile()
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
-  const { OP_WALLET_ADDRESS } = useLoaderData<typeof loader>()
+  const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
+    useLoaderData<typeof loader>()
   usePathTracker()
 
   useEffect(() => {
@@ -91,11 +106,26 @@ export default function Offerwall() {
     }
   }, [OP_WALLET_ADDRESS])
 
+  useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
+    onGrantSuccess: saveLastAction,
+  })
+
   const handleSave = async (action: 'save-success' | 'script') => {
+    if (!snap.isWalletConnected) {
+      toolActions.setConnectWalletStep('error')
+      scrollToWalletAddress()
+      return
+    }
+
     const isScript = action === 'script'
     const setLoading = isScript ? setIsLoadingScript : setIsLoading
 
-    setLoading(false)
+    setLoading(true)
+    try {
+      await save(action)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
