@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   data,
   useLoaderData,
@@ -25,6 +25,7 @@ import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -83,9 +84,9 @@ export default function Offerwall() {
   const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
   const { save, saveLastAction } = useSaveProfile()
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
@@ -112,7 +113,7 @@ export default function Offerwall() {
   const handleSave = async (action: 'save-success' | 'script') => {
     if (!snap.isWalletConnected) {
       toolActions.setConnectWalletStep('error')
-      // scrollToWalletAddress()
+      scrollToWalletAddress()
       return
     }
 
