@@ -14,35 +14,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  typecheck:
-    name: Typecheck
+  lint:
+    name: Link and Typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ./.github/workflows/setup
+      - run: pnpm format:check
+      - run: pnpm lint:check
       - run: pnpm typecheck
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Environment setup
-        uses: ./.github/workflows/setup
-      - name: Check lint
-        run: pnpm lint:check
-
-  format:
-    name: Format
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Environment setup
-        uses: ./.github/workflows/setup
-      - name: Check format
-        run: pnpm format:check
 
   test:
     name: Test
