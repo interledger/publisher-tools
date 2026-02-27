@@ -177,7 +177,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -217,7 +217,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -255,8 +255,8 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
       </div>
