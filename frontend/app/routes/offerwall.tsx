@@ -172,7 +172,7 @@ export default function Offerwall() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="drawer banner" />
+                  <ToolsWalletAddress toolName="offerwall experience" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
