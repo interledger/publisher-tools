@@ -51,7 +51,7 @@ export default function HowItWorks() {
         >
           How it works
         </Heading4>
-        <BodyStandard className="text-center xl:text-left xl:text-xl xl:leading-xl">
+        <BodyStandard className="text-center xl:text-left">
           If you have a Google Ad Manager account you can add Web Monetization
           to your Offerwall.
           <br />
