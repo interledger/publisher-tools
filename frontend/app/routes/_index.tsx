@@ -2,6 +2,7 @@ import type { MetaFunction } from 'react-router'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
+import SVGOfferwall from '~/assets/images/landing/illustration_offerwall.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
@@ -80,6 +81,22 @@ const interactionTools = [
     disabled: true,
   },
 ].filter((e) => !e.disabled)
+
+const integrationTools = [
+  {
+    title: 'Google Offerwall',
+    description:
+      'Customize the Web Monetization choice shown in Google Offerwall to help visitors support your site.',
+    tags: [
+      'Web Monetization',
+      'Visibility boost',
+      'Audience education',
+      'Engagement',
+    ],
+    icon: SVGOfferwall,
+    link: '/offerwall',
+  },
+]
 
 export const meta: MetaFunction = () => {
   const title = DEFAULT_TITLE
@@ -200,6 +217,45 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
+            <div className="w-[340px] opacity-0 max-xl:hidden" />
+          </ul>
+        </section>
+
+        <section
+          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          aria-labelledby="heading-integration-tools"
+        >
+          <Heading3
+            className="w-full max-xl:text-center"
+            id="heading-integration-tools"
+          >
+            Integration tools
+          </Heading3>
+
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+            Use integration tools to enable Web Monetization on your site
+            through supported platforms like Google Offerwall.
+          </p>
+
+          <ul
+            className="grid gap-lg w-full justify-items-center"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))',
+            }}
+          >
+            {integrationTools.map((tool, index) => (
+              <li key={index}>
+                <ToolCard
+                  title={tool.title}
+                  tags={tool.tags}
+                  icon={tool.icon}
+                  to={tool.link}
+                >
+                  {tool.description}
+                </ToolCard>
+              </li>
+            ))}
+            <div className="w-[340px] opacity-0 max-xl:hidden" />
             <div className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
