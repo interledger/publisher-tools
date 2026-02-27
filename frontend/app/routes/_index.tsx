@@ -5,6 +5,7 @@ import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generato
 import SVGOfferwall from '~/assets/images/landing/illustration_offerwall.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
+import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_plugin.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
 import { Heading1, Heading3 } from '~/components/redesign/Typography'
@@ -14,6 +15,8 @@ const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
 const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
 const DEFAULT_URL = 'https://webmonetization.org/tools'
 const SITE_NAME = 'Web Monetization'
+const WORDPRESS_PLUGIN_URL =
+  'https://wordpress.org/plugins/interledger-web-monetization-integration/'
 
 const setupTools = [
   {
@@ -95,6 +98,15 @@ const integrationTools = [
     ],
     icon: SVGOfferwall,
     link: '/offerwall',
+  },
+  {
+    title: 'WordPress plugin',
+    description:
+      'Enable Web Monetization on your WordPress site with a simple plugin and minimal setup.',
+    tags: ['Web Monetization', 'WordPress', 'Easy integration', 'Easy setup'],
+    icon: SVGWordpressPlugin,
+    link: WORDPRESS_PLUGIN_URL,
+    target: '_blank' as const,
   },
 ]
 
@@ -250,12 +262,12 @@ export default function Index() {
                   tags={tool.tags}
                   icon={tool.icon}
                   to={tool.link}
+                  target={tool.target}
                 >
                   {tool.description}
                 </ToolCard>
               </li>
             ))}
-            <li className="w-[340px] opacity-0 max-xl:hidden" />
             <li className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
