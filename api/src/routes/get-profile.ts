@@ -45,12 +45,13 @@ app.get(
       const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
       const legacyProfile = fullConfig[profileId]
       const profile = convertToProfile(legacyProfile, tool)
+      if (!profile) throw new Error('404')
       return json(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
         if (error.name === 'NoSuchKey' || error.message.includes('404')) {
-          console.warn(`[404] No profile found for ${walletAddress}. ${error}`)
+          console.warn(`[404] No profile found for ${walletAddress}.`)
           return json(getDefaultProfile(tool), 404)
         }
       }
