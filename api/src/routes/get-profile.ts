@@ -1,7 +1,10 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import { ConfigStorageService } from '@shared/config-storage-service'
+import {
+  ConfigStorageService,
+  ConfigStorageServiceError,
+} from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
 import {
   numberToBannerFontSize,
@@ -47,12 +50,17 @@ app.get(
       return json<ToolProfile<typeof tool>>(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
-      if (error instanceof Error) {
-        if (error.message.includes('404')) {
+      if (error instanceof ConfigStorageServiceError) {
+        if (error.code === 'not-found') {
           const msg = 'No saved profile found for given wallet address'
           throw createHTTPException(404, msg, {
-            message: 'Not found', // can include the S3 key here perhaps
+            message: 'Not found',
             code: '404',
+            cause: {
+              statusCode: error.statusCode,
+              code: error.code,
+              message: error.message,
+            },
           })
         }
       }
