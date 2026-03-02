@@ -2,6 +2,7 @@ import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { ConfigStorageService } from '@shared/config-storage-service'
+import { getDefaultProfile } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
 import {
   numberToBannerFontSize,
@@ -48,12 +49,9 @@ app.get(
     } catch (error) {
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
-        if (error.message.includes('404')) {
-          const msg = 'No saved profile found for given wallet address'
-          throw createHTTPException(404, msg, {
-            message: 'Not found', // can include the S3 key here perhaps
-            code: '404',
-          })
+        if (error.name === 'NoSuchKey' || error.message.includes('404')) {
+          console.warn(`[404] No profile found for ${walletAddress}. Returning default ${tool} profile.`)
+          return json<ToolProfile<typeof tool>>(getDefaultProfile(tool))
         }
       }
       throw createHTTPException(500, 'Config fetch error: ', error)
