@@ -16,7 +16,6 @@
     "@fontsource-variable/roboto": "^5.2.9",
     "@fontsource/cookie": "^5.2.7",
     "@fontsource/titillium-web": "^5.2.8",
-    "@shared/default-data": "workspace:^",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "@shared/utils": "workspace:^",
