@@ -130,7 +130,10 @@ export class OfferwallModal extends LitElement {
   #dialogRef: Ref<HTMLDialogElement> = createRef()
   #openDialog() {
     if (this.#controller.isPreviewMode) {
-      this.#dialogRef.value!.show()
+      const dialog = this.#dialogRef.value!
+      dialog.inert = true
+      dialog.show()
+      dialog.inert = false
       return
     }
     this.#dialogRef.value!.showModal()
