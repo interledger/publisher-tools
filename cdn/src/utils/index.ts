@@ -1,3 +1,4 @@
+import { getDefaultProfile } from '@shared/default-data'
 import type { Tool, ProfileId, ToolProfile } from '@shared/types'
 
 export function getScriptParams(tool: Tool) {
@@ -48,6 +49,9 @@ export async function fetchProfile<T extends Tool>(
   url.searchParams.set('id', params.profileId)
 
   const res = await fetch(url)
+  if (res.status === 404) {
+    return getDefaultProfile(tool) as ToolProfile<T>
+  }
   if (!res.ok) {
     throw new Error(
       `Failed to fetch config: HTTP ${res.status} ${res.statusText}`,

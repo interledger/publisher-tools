@@ -63,9 +63,6 @@ importers:
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
-      '@shared/default-data':
-        specifier: workspace:^
-        version: link:../shared/default-data
       '@shared/probabilistic-revenue-share':
         specifier: workspace:^
         version: link:../shared/probabilistic-revenue-share
@@ -115,6 +112,9 @@ importers:
       '@fontsource/titillium-web':
         specifier: ^5.2.8
         version: 5.2.8
+      '@shared/default-data':
+        specifier: workspace:^
+        version: link:../shared/default-data
       '@shared/defines':
         specifier: workspace:^
         version: link:../shared/defines
