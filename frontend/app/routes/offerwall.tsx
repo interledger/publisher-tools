@@ -1,55 +1,54 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import {
+  data,
   useLoaderData,
   useNavigate,
-  data,
-  type LoaderFunctionArgs,
   type MetaFunction,
+  type LoaderFunctionArgs,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { SVGSpinner } from '@/assets'
 import {
-  HeadingCore,
-  ToolsWalletAddress,
   BuilderBackground,
-  ToolsSecondaryButton,
-  ToolsPrimaryButton,
-  StepsIndicator,
+  BuilderProfileTabs,
+  Divider,
+  HeadingCore,
   MobileStepsIndicator,
-  BuilderPresetTabs,
+  StepsIndicator,
+  ToolsPrimaryButton,
+  ToolsSecondaryButton,
+  ToolsWalletAddress,
 } from '@/components'
-import { BannerBuilder } from '~/components/banner/BannerBuilder'
-import {
-  BannerPreview,
-  type BannerHandle,
-} from '~/components/banner/BannerPreview'
-import { useBodyClass } from '~/hooks/useBodyClass'
+import HowItWorks from '~/components/offerwall/HowItWorks'
+import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
+import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import {
   actions,
-  banner,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
+  offerwall,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
-} from '~/stores/banner-store'
+} from '~/stores/offerwall-store'
 import {
-  toolState,
-  toolActions,
-  persistState,
   loadState,
+  persistState,
+  toolActions,
+  toolState,
 } from '~/stores/toolStore'
-import { commitSession, getSession } from '~/utils/session.server.js'
+import { commitSession, getSession } from '~/utils/session.server'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Banner - Publisher Tools' },
+    { title: 'Offerwall - Publisher Tools' },
     {
       name: 'description',
       content:
-        'Create and customize a Web Monetization banner for your website. The banner informs visitors about Web Monetization and provides a call-to-action for extension installation.',
+        "Help your users who don't have Web Monetization enabled discover it and support your content.",
     },
   ]
 }
@@ -80,53 +79,36 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-export default function Banner() {
+export default function Offerwall() {
   const snap = useSnapshot(toolState)
-  const bannerSnap = useSnapshot(banner)
+  const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
   const { save, saveLastAction } = useSaveProfile()
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
-  const bannerRef = useRef<BannerHandle>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
-  useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    subscribeProfilesToUpdates()
+    const unsubscribeUpdates = subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
-    subscribeProfilesToStorage()
+    const unsubscribeStorage = subscribeProfilesToStorage()
     hydrateSnapshotsFromStorage()
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
+
+    return () => {
+      unsubscribeStorage()
+      unsubscribeUpdates()
+    }
   }, [OP_WALLET_ADDRESS])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,
   })
-
-  const scrollToWalletAddress = () => {
-    if (!walletAddressRef.current) {
-      return
-    }
-    walletAddressRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-    })
-
-    walletAddressRef.current.style.transition = 'all 0.3s ease'
-    walletAddressRef.current.style.transform = 'scale(1.02)'
-
-    setTimeout(() => {
-      if (walletAddressRef.current) {
-        walletAddressRef.current.style.transform = 'scale(1)'
-      }
-    }, 500)
-  }
 
   const handleSave = async (action: 'save-success' | 'script') => {
     if (!snap.isWalletConnected) {
@@ -146,23 +128,21 @@ export default function Banner() {
     }
   }
 
-  const handlePreviewClick = () => {
-    if (bannerRef.current) {
-      bannerRef.current.triggerPreview()
-    }
-  }
-
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
-            The drawer banner informs visitors who don&apos;t have the Web
-            Monetization extension active, with a call-to-action linking to the
-            extension or providing details about the options available.
-            <br />
-            It also adds your wallet address for your site to be monetized.
+          <HeadingCore
+            title="Offerwall experience"
+            onBackClick={() => navigate('/')}
+          >
+            The Offerwall experience helps visitors who don’t yet have Web
+            Monetization enabled discover it and support your content.
           </HeadingCore>
+          <HowItWorks />
+
+          <Divider className="!my-3xl" />
+
           <div className="flex flex-col min-h-[756px]">
             <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
               <div
@@ -192,7 +172,7 @@ export default function Banner() {
                     label="Connect"
                     status={snap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="drawer banner" />
+                  <ToolsWalletAddress toolName="offerwall experience" />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
@@ -206,26 +186,24 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderPresetTabs
+                    <BuilderProfileTabs
                       idPrefix="profile"
-                      options={bannerSnap.profileTabs}
+                      options={offerwallSnap.profileTabs}
                       selectedId={snap.activeTab}
                       onChange={(profileId) =>
                         toolActions.setActiveTab(profileId)
                       }
                       onRename={(name) => actions.setProfileName(name)}
                     >
-                      <BannerBuilder
-                        onRefresh={(section) =>
-                          actions.resetProfileSection(section)
-                        }
+                      <OfferwallBuilder
+                        onRefresh={() => actions.resetProfileSection()}
                       />
-                    </BuilderPresetTabs>
+                    </BuilderProfileTabs>
 
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                                           fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
                       <div
                         id="builder-actions-inner"
@@ -233,7 +211,7 @@ export default function Banner() {
                       >
                         <ToolsSecondaryButton
                           className="xl:w-[150px] xl:rounded-lg
-                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
+                                               w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={() => handleSave('save-success')}
                         >
@@ -248,7 +226,7 @@ export default function Banner() {
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
                           className="xl:w-[250px] xl:rounded-lg
-                                     w-full min-w-0 order-first xl:order-last"
+                                               w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={() => handleSave('script')}
                         >
@@ -271,8 +249,8 @@ export default function Banner() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground onPreviewClick={handlePreviewClick}>
-                      <BannerPreview ref={bannerRef} cdnUrl={snap.cdnUrl} />
+                    <BuilderBackground>
+                      <OfferwallPreview />
                     </BuilderBackground>
                   </div>
                 </div>

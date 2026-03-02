@@ -2,9 +2,20 @@ import { proxy, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { getDefaultData } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
-import type { ElementConfigType, ProfileId } from '@shared/types'
+import {
+  type ElementConfigType,
+  type Tool,
+  type ProfileId,
+  type ToolProfiles,
+  TOOL_BANNER,
+  TOOL_WIDGET,
+  TOOL_OFFERWALL,
+} from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
+import { actions as bannerActions } from '~/stores/banner-store'
+import { actions as offerwallActions } from '~/stores/offerwall-store'
+import { actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
 import { captureSnapshotsToStorage } from './banner-store'
 
@@ -17,13 +28,6 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'cdnUrl',
 ])
 
-export const TOOL_TYPES = [
-  'banner',
-  'banner-two',
-  'widget',
-  'button',
-  'unknown',
-] as const
 const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
 const DEFAULT_VERSION_NAMES = [
   'Default preset 1',
@@ -32,7 +36,6 @@ const DEFAULT_VERSION_NAMES = [
 ] as const
 
 export type StableKey = (typeof STABLE_KEYS)[number]
-export type ToolType = (typeof TOOL_TYPES)[number]
 
 interface SaveConfigResponse {
   grantRequired?: string
@@ -75,7 +78,7 @@ export const toolState = proxy({
   /** @deprecated */
   activeVersion: 'version1' as StableKey,
   activeTab: 'version1' as ProfileId,
-  currentToolType: 'unknown' as ToolType,
+  currentToolType: 'unknown' as Tool,
 
   /** always returns the active configuration */
   get currentConfig() {
@@ -129,6 +132,47 @@ export const toolActions = {
   setActiveTab(profileId: ProfileId) {
     toolState.activeTab = profileId
   },
+  async getToolProfiles<T extends Tool>(): Promise<ToolProfiles<T>> {
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        return (await bannerActions.getProfiles(TOOL_BANNER)) as ToolProfiles<T>
+      case TOOL_WIDGET:
+        return (await widgetActions.getProfiles(TOOL_WIDGET)) as ToolProfiles<T>
+      case TOOL_OFFERWALL:
+        return (await offerwallActions.getProfiles(
+          TOOL_OFFERWALL,
+        )) as ToolProfiles<T>
+
+      default:
+        break
+    }
+  },
+  setToolProfiles<T extends Tool>(profiles: ToolProfiles<T>) {
+    if (!profiles) return
+
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        bannerActions.setProfiles(profiles as ToolProfiles<'banner'>)
+        bannerActions.commitProfiles()
+        break
+      case TOOL_WIDGET:
+        widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
+        widgetActions.commitProfiles()
+        break
+      case TOOL_OFFERWALL:
+        offerwallActions.setProfiles(profiles as ToolProfiles<'offerwall'>)
+        offerwallActions.commitProfiles()
+        break
+
+      default:
+        break
+    }
+  },
+  resetProfiles() {
+    for (const actions of [bannerActions, widgetActions, offerwallActions]) {
+      actions.resetProfiles()
+    }
+  },
   /** legacy backwards compatibility */
   setConfigs: (
     fullConfigObject: Record<StableKey, Partial<ElementConfigType>> | null,
@@ -154,7 +198,7 @@ export const toolActions = {
     toolState.dirtyProfiles.clear()
   },
 
-  setCurrentToolType: (toolType: ToolType) => {
+  setCurrentToolType: (toolType: Tool) => {
     toolState.currentToolType = toolType
   },
 

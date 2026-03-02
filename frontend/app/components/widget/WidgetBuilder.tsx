@@ -9,7 +9,7 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZES } from '@shared/types'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZE_MAP } from '@shared/types'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
@@ -17,8 +17,8 @@ import {
   SVGText,
 } from '~/assets/svg'
 import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
-import { useCurrentConfig } from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
+import { useWidgetProfile } from '~/stores/widget-store'
 
 interface Props {
   onRefresh: (section: 'content' | 'appearance') => void
@@ -40,7 +40,6 @@ const config = {
   messageMaxLength: 300,
 
   showThumbnail: false,
-  fontSizeRange: WIDGET_FONT_SIZES,
 }
 
 export function WidgetBuilder({ onRefresh }: Props) {
@@ -55,7 +54,7 @@ export function WidgetBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfig({ sync: true })
+  const [snap, profile] = useWidgetProfile({ sync: true })
 
   return (
     <BuilderAccordion
@@ -74,8 +73,10 @@ function ContentBuilder({ onRefresh }: Props) {
       initialIsOpen={uiState.activeSection === 'content'}
     >
       <TitleInput
-        value={snap.widgetTitleText}
-        onChange={(value) => (profile.widgetTitleText = value)}
+        value={snap.title.text}
+        onChange={(value) => {
+          profile.title.text = value
+        }}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
         helpText={config.titleHelpText}
@@ -85,12 +86,14 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <DescriptionInput
         label={config.messageLabel}
-        value={snap.widgetDescriptionText}
-        onChange={(text) => (profile.widgetDescriptionText = text)}
-        isVisible={snap.widgetDescriptionVisible}
-        onVisibilityChange={(visible) =>
-          (profile.widgetDescriptionVisible = visible)
-        }
+        value={snap.description.text}
+        onChange={(text) => {
+          profile.description.text = text
+        }}
+        isVisible={snap.description.isVisible}
+        onVisibilityChange={(visible) => {
+          profile.description.isVisible = visible
+        }}
         placeholder={config.messagePlaceholder}
         helpText={config.messageHelpText}
         maxLength={config.messageMaxLength}
@@ -102,10 +105,10 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const uiActions = useUIActions()
-  const [snap, profile] = useCurrentConfig()
+  const [snap, profile] = useWidgetProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
-    (option) => option === snap.widgetFontName,
+    (option) => option === snap.font.name,
   )
 
   return (
@@ -130,7 +133,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           defaultValue={defaultFontIndex.toString()}
           onChange={(value) => {
             const fontName = FONT_FAMILY_OPTIONS[parseInt(value)]
-            profile.widgetFontName = fontName
+            profile.font.name = fontName
           }}
           options={FONT_FAMILY_OPTIONS.map((font, index) => ({
             label: font,
@@ -139,10 +142,11 @@ function AppearanceBuilder({ onRefresh }: Props) {
         />
 
         <FontSizeInput
-          value={snap.widgetFontSize}
-          onChange={(value) => (profile.widgetFontSize = value)}
-          min={config.fontSizeRange.min}
-          max={config.fontSizeRange.max}
+          value={snap.font.size}
+          onChange={(value) => {
+            profile.font.size = value
+          }}
+          sizeMap={WIDGET_FONT_SIZE_MAP}
         />
       </InputFieldset>
 
@@ -153,18 +157,18 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGColorPicker className="w-5 h-5" />}
       >
         <WidgetColorsSelector
-          backgroundColor={snap.widgetBackgroundColor}
-          onBackgroundColorChange={(color: string) =>
-            (profile.widgetBackgroundColor = color)
-          }
-          textColor={snap.widgetTextColor}
-          onTextColorChange={(color: string) =>
-            (profile.widgetTextColor = color)
-          }
-          buttonColor={snap.widgetButtonBackgroundColor}
-          onButtonColorChange={(color: string) =>
-            (profile.widgetButtonBackgroundColor = color)
-          }
+          backgroundColor={snap.color.background}
+          onBackgroundColorChange={(color) => {
+            profile.color.background = color
+          }}
+          textColor={snap.color.text}
+          onTextColorChange={(color) => {
+            profile.color.text = color
+          }}
+          themeColor={snap.color.theme}
+          onThemeColorChange={(color) => {
+            profile.color.theme = color
+          }}
         />
       </InputFieldset>
 
@@ -175,8 +179,10 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGRoundedCorner className="w-5 h-5" />}
       >
         <CornerRadiusSelector
-          value={snap.widgetButtonBorder}
-          onChange={(value) => (profile.widgetButtonBorder = value)}
+          value={snap.border.type}
+          onChange={(value) => {
+            profile.border.type = value
+          }}
         />
       </InputFieldset>
 
@@ -187,8 +193,10 @@ function AppearanceBuilder({ onRefresh }: Props) {
         icon={<SVGHeaderPosition className="w-5 h-5" />}
       >
         <WidgetPositionSelector
-          value={snap.widgetPosition}
-          onChange={(value) => (profile.widgetPosition = value)}
+          value={snap.position}
+          onChange={(value) => {
+            profile.position = value
+          }}
         />
       </InputFieldset>
     </BuilderAccordion>

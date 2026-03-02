@@ -5,7 +5,11 @@ import type {
   PendingGrant,
   WalletAddress,
 } from '@interledger/open-payments'
-import { WIDGET_POSITION, BORDER_RADIUS } from '@shared/types'
+import {
+  WIDGET_POSITION,
+  BORDER_RADIUS,
+  widgetFontSizeToNumber,
+} from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
 import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
@@ -113,10 +117,14 @@ export class WidgetController implements ReactiveController {
     )
   }
 
+  private applyTriggerBackgroundColor(color: string) {
+    this.host.style.setProperty('--wm-widget-trigger-bg-color', color)
+  }
+
   private applyPosition() {
     this.host.classList.remove('position-left', 'position-right')
 
-    const position = this._config.widgetPosition || WIDGET_POSITION.Right
+    const position = this._config.profile?.position || WIDGET_POSITION.Right
     if (position === WIDGET_POSITION.Left) {
       this.host.classList.add('position-left')
     } else {
@@ -130,38 +138,34 @@ export class WidgetController implements ReactiveController {
   }
 
   applyTheme(element: HTMLElement) {
-    const theme = this._config.theme
-    if (!theme) return
+    const { color, font, border, icon } = this._config.profile
 
-    if (theme.primaryColor) {
-      element.style.setProperty('--wm-primary-color', theme.primaryColor)
+    if (color.theme) {
+      element.style.setProperty('--wm-primary-color', color.theme as string)
     }
-    if (theme.backgroundColor) {
-      element.style.setProperty('--wm-background-color', theme.backgroundColor)
-    }
-    if (theme.textColor) {
-      element.style.setProperty('--wm-text-color', theme.textColor)
-    }
-    if (theme.fontFamily) {
-      this.applyFontFamily(theme.fontFamily)
-    }
-    if (theme.fontSize) {
-      element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
-    }
-    if (theme.widgetBorderRadius) {
+    if (color.background) {
       element.style.setProperty(
-        '--wm-widget-border-radius',
-        theme.widgetBorderRadius,
+        '--wm-background-color',
+        color.background as string,
       )
     }
-    if (theme.widgetBorderRadius) {
-      this.applyBorderRadius(theme.widgetBorderRadius)
+    if (color.text) {
+      element.style.setProperty('--wm-text-color', color.text)
     }
-    if (theme.widgetButtonBackgroundColor) {
+    if (font.name) {
+      this.applyFontFamily(font.name)
+    }
+    if (font.size) {
       element.style.setProperty(
-        '--wm-widget-trigger-bg-color',
-        theme.widgetButtonBackgroundColor,
+        '--wm-font-size',
+        `${widgetFontSizeToNumber(font.size)}px`,
       )
+    }
+    if (border.type) {
+      this.applyBorderRadius(border.type)
+    }
+    if (icon.color) {
+      this.applyTriggerBackgroundColor(icon.color as string)
     }
   }
 }

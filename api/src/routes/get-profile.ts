@@ -1,16 +1,23 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import { ConfigStorageService } from '@shared/config-storage-service'
+import {
+  ConfigStorageService,
+  ConfigStorageServiceError,
+} from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import { PROFILE_IDS, TOOLS } from '@shared/types'
+import {
+  numberToBannerFontSize,
+  numberToWidgetFontSize,
+  PROFILE_IDS,
+  TOOLS,
+} from '@shared/types'
 import type {
-  BannerConfig,
+  BaseToolProfile,
   ConfigVersions,
   ElementConfigType,
   Tool,
   ToolProfile,
-  WidgetConfig,
 } from '@shared/types'
 import { app } from '../app.js'
 import { createHTTPException } from '../utils/utils.js'
@@ -43,12 +50,17 @@ app.get(
       return json<ToolProfile<typeof tool>>(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
-      if (error instanceof Error) {
-        if (error.message.includes('404')) {
+      if (error instanceof ConfigStorageServiceError) {
+        if (error.code === 'not-found') {
           const msg = 'No saved profile found for given wallet address'
           throw createHTTPException(404, msg, {
-            message: 'Not found', // can include the S3 key here perhaps
+            message: 'Not found',
             code: '404',
+            cause: {
+              statusCode: error.statusCode,
+              code: error.code,
+              message: error.message,
+            },
           })
         }
       }
@@ -62,6 +74,10 @@ function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
 ): ToolProfile<T> {
+  if (tool === 'offerwall') {
+    return config.offerwall as ToolProfile<T>
+  }
+
   return {
     $version: '0.0.1',
     $name: config.versionName,
@@ -70,30 +86,68 @@ function convertToProfile<T extends Tool>(
   } as ToolProfile<T>
 }
 
+/** @legacy */
 function getToolProfile(profile: ElementConfigType, tool: Tool) {
-  switch (tool) {
-    case 'widget':
-      return extract<WidgetConfig>(
-        profile,
-        (key) => key.startsWith('widget') || key.includes('Widget'),
-      )
-    case 'banner':
-      return extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      )
+  if (tool === 'banner') {
+    return {
+      title: {
+        text: profile.bannerTitleText,
+      },
+      description: {
+        text: profile.bannerDescriptionText,
+        isVisible: profile.bannerDescriptionVisible,
+      },
+      font: {
+        name: profile.bannerFontName,
+        size: numberToBannerFontSize(profile.bannerFontSize),
+      },
+      animation: {
+        type: profile.bannerSlideAnimation,
+      },
+      position: profile.bannerPosition,
+      border: {
+        type: profile.bannerBorder,
+      },
+      color: {
+        text: profile.bannerTextColor,
+        background: profile.bannerBackgroundColor,
+      },
+      thumbnail: {
+        value: profile.bannerThumbnail,
+      },
+    } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
-}
+  if (tool === 'widget') {
+    return {
+      title: {
+        text: profile.widgetTitleText,
+      },
+      description: {
+        text: profile.widgetDescriptionText,
+        isVisible: profile.widgetDescriptionVisible,
+      },
+      font: {
+        name: profile.widgetFontName,
+        size: numberToWidgetFontSize(profile.widgetFontSize),
+      },
+      position: profile.widgetPosition,
+      border: {
+        type: profile.widgetButtonBorder,
+      },
+      color: {
+        text: profile.widgetTextColor,
+        background: profile.widgetBackgroundColor,
+        theme: profile.widgetButtonBackgroundColor,
+      },
+      ctaPayButton: {
+        text: profile.widgetButtonText,
+      },
+      icon: {
+        value: '',
+        color: profile.widgetTriggerBackgroundColor,
+      },
+    } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
+  }
 
-function extract<R, T = ElementConfigType, K = keyof T>(
-  obj: T,
-  filter: (key: K) => boolean,
-): R {
-  const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K),
-  )
-  if (!entries.length) {
-    throw new Error('No matching profile found')
-  }
-  return Object.fromEntries(entries) as R
+  throw new Error(`Unsupported tool type: ${tool}`)
 }

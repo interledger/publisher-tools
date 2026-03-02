@@ -11,19 +11,14 @@ import {
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import type { ElementErrors } from '~/lib/types'
-import { actions } from '~/stores/banner-store'
-import {
-  toolState,
-  toolActions,
-  createDefaultConfigs,
-} from '~/stores/toolStore'
+import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 
-interface ToolsWalletAddressProps {
-  toolName: 'drawer banner' | 'payment widget'
+interface Props {
+  toolName: 'drawer banner' | 'payment widget' | 'offerwall experience'
 }
 
-export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
+export const ToolsWalletAddress = ({ toolName }: Props) => {
   const snap = useSnapshot(toolState, { sync: true })
   const { connect } = useConnectWallet()
   const uiActions = useUIActions()
@@ -76,8 +71,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
   }
 
   const handleDisconnect = () => {
-    actions.resetProfiles()
-    toolActions.setConfigs(createDefaultConfigs())
+    toolActions.resetProfiles()
     toolActions.setWalletConnected(false)
     toolActions.setHasRemoteConfigs(false)
     uiActions.focusWalletInput()
@@ -116,7 +110,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     if (!snap.isWalletConnected) {
       return {
         message:
-          "If you're connecting your wallet address for the first time, you'll start with the default configuration. You can then customize and save your config as needed.",
+          "If you're connecting your wallet address for the first time, you'll start with the default profile. You can then customize and save your profile as needed.",
         type: 'info',
       }
     }
@@ -128,7 +122,7 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
     }
 
     return {
-      message: `We've loaded your configuration. Feel free to keep customizing your ${toolName} to fit your style.`,
+      message: `We've loaded your profiles. Feel free to keep customizing your ${toolName} to fit your style.`,
       type: 'success',
     }
   }
@@ -148,9 +142,9 @@ export const ToolsWalletAddress = ({ toolName }: ToolsWalletAddressProps) => {
             Wallet address
           </Heading5>
           <Tooltip label="Why do I need to connect my wallet?">
-            Your wallet is required in order for us to save this components
-            configuration for you, link it to the original author, and verify
-            ownership for future updates.
+            Connecting your wallet allows us to save your custom profiles, link
+            them to you as the original author, and verify ownership for future
+            updates.
             <br /> It also embeds the wallet address into your web page
             automatically, enabling Web Monetization on your behalf.
           </Tooltip>

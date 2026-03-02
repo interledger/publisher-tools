@@ -1,26 +1,42 @@
 import z from 'zod'
-import type { BannerProfile, WidgetProfile } from '@shared/types'
+import type {
+  BannerFontSize,
+  BannerProfile,
+  OfferwallProfile,
+  WidgetFontSize,
+  WidgetProfile,
+} from '@shared/types'
 import {
   CORNER_OPTION,
   BANNER_POSITION,
   WIDGET_POSITION,
   SLIDE_ANIMATION,
-  BANNER_FONT_SIZES,
-  WIDGET_FONT_SIZES,
   FONT_FAMILY_OPTIONS,
   BANNER_TITLE_MAX_LENGTH,
   BANNER_DESCRIPTION_MAX_LENGTH,
   WIDGET_TITLE_MAX_LENGTH,
   WIDGET_DESCRIPTION_MAX_LENGTH,
+  BANNER_FONT_SIZE_MAP,
+  WIDGET_FONT_SIZE_MAP,
 } from '@shared/types'
 
-const bannerFontSizeError = {
-  message: `Font size must be between ${BANNER_FONT_SIZES.min} and ${BANNER_FONT_SIZES.max}`,
-}
-const widgetFontSizeError = {
-  message: `Font size must be between ${WIDGET_FONT_SIZES.min} and ${WIDGET_FONT_SIZES.max}`,
-}
+const hexColorSchema = z
+  .string()
+  .min(4)
+  .regex(/^#?[0-9a-fA-F]{3,8}$/, { message: 'Invalid color format' })
 
+const versionSchema = z
+  .string()
+  .min(1)
+  .regex(/^[0-9]{1,2}\.[0-9]{1,3}\.[0-9]{1,4}$/, {
+    message: 'Invalid version format',
+  })
+
+const assetNameSchema = z
+  .string()
+  .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
+
+/** @deprecated */
 export const buttonFieldsSchema = z.object({
   buttonFontName: z.string().min(1, { message: 'Choose a font' }),
   buttonText: z.string().min(1, { message: 'Button label cannot be empty' }),
@@ -30,67 +46,111 @@ export const buttonFieldsSchema = z.object({
   buttonDescriptionText: z.string().optional(),
 })
 
-/** @legacy */
 export const bannerFieldsSchema = z.object({
-  bannerFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  bannerFontSize: z.coerce
-    .number()
-    .min(BANNER_FONT_SIZES.min, bannerFontSizeError)
-    .max(BANNER_FONT_SIZES.max, bannerFontSizeError),
-  bannerTitleText: z
-    .string()
-    .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
-  bannerDescriptionText: z.string().max(BANNER_DESCRIPTION_MAX_LENGTH, {
-    message: 'Description is too long',
+  title: z.object({
+    text: z
+      .string()
+      .max(BANNER_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
   }),
-  bannerDescriptionVisible: z.coerce.boolean(),
-  bannerTextColor: z.string().min(6),
-  bannerBackgroundColor: z.string().min(6),
-  bannerSlideAnimation: z.enum(SLIDE_ANIMATION),
-  bannerThumbnail: z.string(),
-  bannerPosition: z.enum(BANNER_POSITION),
-  bannerBorder: z.enum(CORNER_OPTION),
+  description: z.object({
+    text: z.string().max(BANNER_DESCRIPTION_MAX_LENGTH, {
+      message: 'Description is too long',
+    }),
+    isVisible: z.boolean(),
+  }),
+  font: z.object({
+    name: z.enum(FONT_FAMILY_OPTIONS, {
+      message: 'Choose a valid font family',
+    }),
+    size: z.enum(Object.keys(BANNER_FONT_SIZE_MAP) as BannerFontSize[], {
+      message: 'Select a valid font size',
+    }),
+  }),
+  animation: z.object({
+    type: z.enum(SLIDE_ANIMATION),
+  }),
+  position: z.enum(BANNER_POSITION),
+  border: z.object({
+    type: z.enum(CORNER_OPTION),
+  }),
+  color: z.object({
+    text: hexColorSchema,
+    background: z.union([hexColorSchema]),
+  }),
+  thumbnail: z.object({
+    value: assetNameSchema,
+  }),
 })
 
-export const BannerProfileSchema = z.object({
-  ...bannerFieldsSchema.shape,
-  $version: z.string(),
-  $name: z.string(),
+export const BannerProfileSchema = bannerFieldsSchema.extend({
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<BannerProfile>
 
-/** @legacy */
 export const widgetFieldsSchema = z.object({
-  widgetFontName: z.enum(FONT_FAMILY_OPTIONS, { message: 'Choose a font' }),
-  widgetFontSize: z.coerce
-    .number()
-    .min(WIDGET_FONT_SIZES.min, widgetFontSizeError)
-    .max(WIDGET_FONT_SIZES.max, widgetFontSizeError),
-  widgetTitleText: z
-    .string()
-    .min(1, { message: 'Title cannot be empty' })
-    .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
-  widgetDescriptionText: z.string().max(WIDGET_DESCRIPTION_MAX_LENGTH, {
-    message: 'Description is too long',
+  title: z.object({
+    text: z
+      .string()
+      .max(WIDGET_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
   }),
-  widgetDescriptionVisible: z.coerce.boolean(),
-  widgetPosition: z.enum(WIDGET_POSITION),
-  widgetDonateAmount: z.coerce
-    .number()
-    .min(0, { message: 'Donate amount must be positive' }),
-  widgetButtonText: z
-    .string()
-    .min(1, { message: 'Button text cannot be empty' }),
-  widgetButtonBorder: z.enum(CORNER_OPTION),
-  widgetButtonBackgroundColor: z.string().min(1),
-  widgetButtonTextColor: z.string().min(1),
-  widgetTextColor: z.string().min(1),
-  widgetBackgroundColor: z.string().min(1),
-  widgetTriggerBackgroundColor: z.string().min(1),
-  widgetTriggerIcon: z.string(),
+  description: z.object({
+    text: z.string().max(WIDGET_DESCRIPTION_MAX_LENGTH, {
+      message: 'Description is too long',
+    }),
+    isVisible: z.boolean(),
+  }),
+  font: z.object({
+    name: z.enum(FONT_FAMILY_OPTIONS, {
+      message: 'Choose a valid font family',
+    }),
+    size: z.enum(Object.keys(WIDGET_FONT_SIZE_MAP) as WidgetFontSize[], {
+      message: 'Select a valid font size',
+    }),
+  }),
+  position: z.enum(WIDGET_POSITION),
+  border: z.object({
+    type: z.enum(CORNER_OPTION),
+  }),
+  color: z.object({
+    text: hexColorSchema,
+    background: z.union([hexColorSchema]),
+    theme: hexColorSchema,
+  }),
+  ctaPayButton: z.object({
+    text: z
+      .string()
+      .min(1, { message: 'Button label cannot be empty' })
+      .max(30, { message: 'Button label is too long' }),
+  }),
+  icon: z.object({
+    value: assetNameSchema,
+    color: z.union([hexColorSchema]),
+  }),
 })
 
-export const WidgetProfileSchema = z.object({
-  ...widgetFieldsSchema.shape,
-  $version: z.string(),
-  $name: z.string(),
+export const WidgetProfileSchema = widgetFieldsSchema.extend({
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<WidgetProfile>
+
+export const offerwallFieldsSchema = z.object({
+  font: z.object({
+    name: z.enum(FONT_FAMILY_OPTIONS, {
+      message: 'Choose a valid font family',
+    }),
+  }),
+  border: z.object({
+    type: z.enum(CORNER_OPTION),
+  }),
+  color: z.object({
+    text: hexColorSchema,
+    background: z.union([hexColorSchema]),
+    headline: hexColorSchema,
+    theme: z.union([hexColorSchema]),
+  }),
+})
+
+export const OfferwallProfileSchema = offerwallFieldsSchema.extend({
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
+}) satisfies z.ZodType<OfferwallProfile>

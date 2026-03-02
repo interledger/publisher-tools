@@ -1,4 +1,4 @@
-import type { FontFamilyKey } from '@shared/types'
+import type { FontFamilyKey, Tool } from '@shared/types'
 import { FONT_MAP } from './constants'
 
 /**
@@ -10,7 +10,7 @@ import { FONT_MAP } from './constants'
 export const applyFontFamily = (
   element: HTMLElement,
   fontName: FontFamilyKey,
-  componentType: 'banner' | 'widget',
+  componentType: Tool,
   fontBaseUrl: string,
 ): void => {
   const fontLinkId = `wmt-font-family-${componentType}`
@@ -56,22 +56,16 @@ function getCustomFontData(fontName: FontFamilyKey, baseUrl: string) {
   }
 }
 
-/**
- * Gets the appropriate Web Monetization extension download link based on the user agent
- * @param userAgent - The user agent string from navigator.userAgent
- * @returns The download URL for the Web Monetization extension
- */
-export const getWebMonetizationLinkHref = (userAgent: string): string => {
-  if (userAgent.includes('Firefox')) {
-    return 'https://addons.mozilla.org/en-US/firefox/addon/web-monetization-extension/'
-  } else if (
-    userAgent.includes('Chrome') &&
-    !userAgent.includes('Edg') &&
-    !userAgent.includes('OPR')
-  ) {
-    return 'https://chromewebstore.google.com/detail/web-monetization/oiabcfomehhigdepbbclppomkhlknpii'
-  } else if (userAgent.includes('Edg')) {
-    return 'https://microsoftedge.microsoft.com/addons/detail/web-monetization/imjgemgmeoioefpmfefmffbboogighjl'
-  }
-  return 'https://webmonetization.org/'
+export function getContrastColor(colorStr: string) {
+  // Create a temporary element to let the browser normalize the color to RGB
+  const temp = document.createElement('div')
+  temp.style.color = colorStr
+  document.body.appendChild(temp)
+  const rgb = window.getComputedStyle(temp).color.match(/\d+/g)!.map(Number)
+  temp.remove()
+
+  const [r, g, b] = rgb
+  // YIQ formula
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000
+  return yiq >= 128 ? '#000000' : '#ffffff'
 }

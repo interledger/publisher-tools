@@ -5,11 +5,15 @@ import type {
   Tool,
   ElementConfigType,
   Configuration,
-  WidgetConfig,
-  BannerConfig,
   ToolProfile,
+  BaseToolProfile,
 } from '@shared/types'
-import type { StableKey } from '~/stores/toolStore'
+import {
+  numberToBannerFontSize,
+  numberToWidgetFontSize,
+  bannerFontSizeToNumber,
+  widgetFontSizeToNumber,
+} from '@shared/types'
 
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
@@ -24,23 +28,53 @@ function convertToProfile<T extends Tool>(
 }
 
 /** @legacy */
-function convertToConfigLegacy<T extends Tool>(
+export function convertToConfigLegacy<T extends Tool>(
   walletAddress: string,
   profile: ToolProfile<T>,
-): ElementConfigType {
-  return {
-    walletAddress,
-    versionName: profile.$name,
-    ...profile,
-  } as unknown as ElementConfigType
+): Partial<ElementConfigType> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { $name, $version, $modifiedAt, ...rest } = profile
+  if ('thumbnail' in profile) {
+    return {
+      bannerFontName: profile.font.name,
+      bannerTitleText: profile.title.text,
+      bannerDescriptionText: profile.description.text,
+      bannerDescriptionVisible: profile.description.isVisible,
+      bannerSlideAnimation: profile.animation.type,
+      bannerPosition: profile.position,
+      bannerBorder: profile.border.type,
+      bannerTextColor: profile.color.text,
+      bannerBackgroundColor: profile.color.background as string,
+      bannerThumbnail: profile.thumbnail.value,
+      ...getLegacyFontSize(profile),
+    }
+  }
+  if ('icon' in profile) {
+    return {
+      widgetFontName: profile.font.name,
+      widgetTitleText: profile.title.text,
+      widgetDescriptionText: profile.description.text,
+      widgetDescriptionVisible: profile.description.isVisible,
+      widgetPosition: profile.position,
+      widgetButtonBorder: profile.border.type,
+      widgetButtonText: profile.ctaPayButton.text,
+      widgetTextColor: profile.color.text,
+      widgetBackgroundColor: profile.color.background as string,
+      widgetButtonBackgroundColor: profile.color.theme as string,
+      ...getLegacyFontSize(profile),
+    }
+  }
+
+  throw new Error(`Unsupported profile type`)
 }
 
 /** @legacy */
+// TODO: to be removed after the completion of versioned configurations
 export function convertToConfigsLegacy<T extends Tool>(
   walletAddress: string,
   profiles: ToolProfiles<T>,
-): Record<StableKey, Partial<ElementConfigType>> {
-  const configs: Record<string, ElementConfigType> = {}
+) {
+  const configs: Record<string, Partial<ElementConfigType>> = {}
 
   Object.entries(profiles ?? {}).forEach(([profileId, profile]) => {
     configs[profileId] = convertToConfigLegacy<T>(walletAddress, profile)
@@ -77,31 +111,82 @@ export function convertToConfiguration<T extends Tool>(
 }
 
 /** @legacy */
-function getToolProfile(profile: ElementConfigType, tool: Tool) {
-  switch (tool) {
-    case 'widget':
-      return extract<WidgetConfig>(
-        profile,
-        (key) => key.startsWith('widget') || key.includes('Widget'),
-      )
-    case 'banner':
-      return extract<BannerConfig>(
-        profile,
-        (key) => key.startsWith('banner') || key.includes('Banner'),
-      )
+function getLegacyFontSize(profile: ToolProfile<Tool>) {
+  if ('thumbnail' in profile) {
+    return { bannerFontSize: bannerFontSizeToNumber(profile.font.size) }
   }
+  if ('icon' in profile) {
+    return { widgetFontSize: widgetFontSizeToNumber(profile.font.size) }
+  }
+
+  return {}
 }
 
 /** @legacy */
-function extract<R, T = ElementConfigType, K = keyof T>(
-  obj: T,
-  filter: (key: K) => boolean,
-): R {
-  const entries = Object.entries(obj as Record<string, unknown>).filter(
-    ([key]) => filter(key as K),
-  )
-  if (!entries.length) {
-    throw new Error('No matching profile found')
+function getToolProfile(profile: ElementConfigType, tool: Tool) {
+  if (tool === 'banner') {
+    return {
+      title: {
+        text: profile.bannerTitleText,
+      },
+      description: {
+        text: profile.bannerDescriptionText,
+        isVisible: profile.bannerDescriptionVisible,
+      },
+      font: {
+        name: profile.bannerFontName,
+        size: numberToBannerFontSize(profile.bannerFontSize),
+      },
+      animation: {
+        type: profile.bannerSlideAnimation,
+      },
+      position: profile.bannerPosition,
+      border: {
+        type: profile.bannerBorder,
+      },
+      color: {
+        text: profile.bannerTextColor,
+        background: profile.bannerBackgroundColor,
+      },
+      thumbnail: {
+        value: profile.bannerThumbnail,
+      },
+    } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
-  return Object.fromEntries(entries) as R
+  if (tool === 'widget') {
+    return {
+      title: {
+        text: profile.widgetTitleText,
+      },
+      description: {
+        text: profile.widgetDescriptionText,
+        isVisible: profile.widgetDescriptionVisible,
+      },
+      font: {
+        name: profile.widgetFontName,
+        size: numberToWidgetFontSize(profile.widgetFontSize),
+      },
+      position: profile.widgetPosition,
+      border: {
+        type: profile.widgetButtonBorder,
+      },
+      color: {
+        text: profile.widgetTextColor,
+        background: profile.widgetBackgroundColor,
+        theme: profile.widgetButtonBackgroundColor,
+      },
+      ctaPayButton: {
+        text: profile.widgetButtonText,
+      },
+      icon: {
+        value: '',
+        color: profile.widgetTriggerBackgroundColor,
+      },
+    } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
+  }
+  if (tool === 'offerwall') {
+    return profile.offerwall as ToolProfile<'offerwall'>
+  }
+
+  throw new Error(`Unsupported tool type: ${tool}`)
 }

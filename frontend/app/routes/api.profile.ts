@@ -7,10 +7,13 @@ import {
   PROFILE_IDS,
   type Configuration,
   TOOL_BANNER,
+  TOOL_OFFERWALL,
   TOOL_WIDGET,
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import type { ApiError } from '~/lib/helpers'
+import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
@@ -19,6 +22,7 @@ import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
 import {
   BannerProfileSchema,
+  OfferwallProfileSchema,
   WidgetProfileSchema,
 } from '~/utils/validate.shared'
 
@@ -35,6 +39,10 @@ const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
   BaseApiSchema.extend({
     tool: z.literal(TOOL_WIDGET),
     profile: WidgetProfileSchema,
+  }),
+  BaseApiSchema.extend({
+    tool: z.literal(TOOL_OFFERWALL),
+    profile: OfferwallProfileSchema,
   }),
 ])
 
@@ -56,10 +64,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
       return data<SaveResult>(
         {
           error: {
-            message: 'Validation failed',
+            message: 'Failed to save profile',
             cause: {
-              message: 'One or more fields failed validation',
-              errors: { field: z.prettifyError(parsed.error) },
+              message: INVALID_PAYLOAD_ERROR,
+              errors: { reason: z.prettifyError(parsed.error) },
             },
           },
         },
@@ -68,7 +76,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     const { walletAddress, profileId, tool, profile } = parsed.data
-    const sanitizedProfile = sanitizeProfileFields(profile)
+    const sanitizedProfile = sanitizeProfileFields(profile, tool)
 
     // TODO: use walletAddress from walletSchema after updating it to .transform()
     const walletAddressData = await getWalletAddress(walletAddress)
@@ -77,8 +85,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     if (!validForWallet || validForWallet !== walletAddressData.id) {
       const baseUrl = url.origin + APP_BASEPATH
-      //TODO: use `${tool}` not hardcoded 'banner-two' after versioning update
-      const redirectUrl = `${baseUrl}/api/grant/banner-two/`
+      const redirectUrl = `${baseUrl}/api/grant/${tool}/`
 
       const grant = await createInteractiveGrant(env, {
         walletAddress: walletAddressData,
@@ -123,9 +130,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
       ...configLegacy,
       [profileId]: {
         ...getDefaultData(),
+        ...configLegacy?.[profileId],
         ...sanitizedProfile,
         walletAddress: walletAddressId,
-        versionName: sanitizedProfile.$name,
       },
     })
 
@@ -151,14 +158,18 @@ export async function action({ request, context }: ActionFunctionArgs) {
       },
     )
   } catch (error) {
-    console.error('Save profile error: ', error)
+    const err = error as ApiError
     return data<SaveResult>(
       {
         error: {
-          message: `Failed to save profile: ${(error as Error).message}`,
+          message: 'Failed to save profile',
+          cause: {
+            message: `${err.message}`,
+            errors: { ...err?.cause },
+          },
         },
       },
-      { status: 500 },
+      { status: err?.status ?? 500 },
     )
   }
 }

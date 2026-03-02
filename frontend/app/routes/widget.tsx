@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import {
   useLoaderData,
   useNavigate,
@@ -16,22 +16,30 @@ import {
   ToolsPrimaryButton,
   StepsIndicator,
   MobileStepsIndicator,
+  BuilderProfileTabs,
 } from '@/components'
-import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
+import { useSaveProfile } from '~/hooks/useSaveProfile'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import {
   toolState,
   toolActions,
   persistState,
   loadState,
 } from '~/stores/toolStore'
+import {
+  actions,
+  widget,
+  hydrateProfilesFromStorage,
+  hydrateSnapshotsFromStorage,
+  subscribeProfilesToStorage,
+  subscribeProfilesToUpdates,
+} from '~/stores/widget-store'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
 
 export const meta: MetaFunction = () => {
   return [
@@ -72,44 +80,35 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
+  const widgetSnap = useSnapshot(widget)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveConfig()
+  const { save, saveLastAction } = useSaveProfile()
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
   usePathTracker()
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    const unsubscribeUpdates = subscribeProfilesToUpdates()
+    hydrateProfilesFromStorage()
+    const unsubscribeStorage = subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
+
     loadState(OP_WALLET_ADDRESS)
     persistState()
+
+    return () => {
+      unsubscribeStorage()
+      unsubscribeUpdates()
+    }
   }, [OP_WALLET_ADDRESS])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,
   })
-
-  const scrollToWalletAddress = () => {
-    if (!walletAddressRef.current) {
-      return
-    }
-    walletAddressRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-    })
-
-    walletAddressRef.current.style.transition = 'all 0.3s ease'
-    walletAddressRef.current.style.transform = 'scale(1.02)'
-
-    setTimeout(() => {
-      if (walletAddressRef.current) {
-        walletAddressRef.current.style.transform = 'scale(1)'
-      }
-    }, 500)
-  }
 
   const handleSave = async (action: 'save-success' | 'script') => {
     if (!snap.isWalletConnected) {
@@ -129,14 +128,6 @@ export default function Widget() {
     }
   }
 
-  const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
-    const { content, appearance } = splitConfigProperties(savedConfig)
-    Object.assign(
-      toolState.currentConfig,
-      section === 'content' ? content : appearance,
-    )
-  }
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -191,9 +182,21 @@ export default function Widget() {
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderTabs>
-                      <WidgetBuilder onRefresh={handleRefresh} />
-                    </BuilderTabs>
+                    <BuilderProfileTabs
+                      idPrefix="profile"
+                      options={widgetSnap.profileTabs}
+                      selectedId={snap.activeTab}
+                      onChange={(profileId) =>
+                        toolActions.setActiveTab(profileId)
+                      }
+                      onRename={(name) => actions.setProfileName(name)}
+                    >
+                      <WidgetBuilder
+                        onRefresh={(section) =>
+                          actions.resetProfileSection(section)
+                        }
+                      />
+                    </BuilderProfileTabs>
 
                     <div
                       id="builder-actions"

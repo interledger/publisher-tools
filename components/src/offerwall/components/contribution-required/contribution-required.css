@@ -1,0 +1,55 @@
+p,
+h1,
+h2 {
+  margin: 0;
+}
+
+wm-header {
+  margin-bottom: 0.5rem;
+}
+
+.container {
+  font-family: var(--font-family);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--background);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+  color: var(--heading-color);
+}
+
+.icon {
+  svg {
+    height: 6.25rem;
+  }
+}
+
+.cta-heading {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+  color: var(--heading-color);
+}
+
+.strong {
+  font-weight: 700;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.footer {
+  font-size: 0.875rem;
+}

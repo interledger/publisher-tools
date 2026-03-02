@@ -1,49 +1,34 @@
 import { useCallback } from 'react'
 import { ProfilesDialog, StatusDialog } from '@/components'
-import { type Tool, type ToolProfiles, TOOL_BANNER } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
-import { actions, banner } from '~/stores/banner-store'
+import { banner } from '~/stores/banner-store'
+import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
-import {
-  convertToConfigsLegacy,
-  convertToProfiles,
-} from '~/utils/profile-converter'
-
-async function getProfiles(): Promise<ToolProfiles<Tool>> {
-  if (toolState.currentToolType === 'banner-two') {
-    const profiles = await actions.getProfiles(TOOL_BANNER)
-    return profiles
-  }
-
-  return await actions.getProfiles(toolState.currentToolType as Tool)
-}
-
-function setProfiles(profiles: ToolProfiles<Tool>) {
-  if (toolState.currentToolType === 'banner-two') {
-    actions.setProfiles(profiles as ToolProfiles<'banner'>)
-    actions.commitProfiles()
-  } else {
-    const config = convertToConfigsLegacy(toolState.walletAddressId, profiles)
-    toolActions.setConfigs(config)
-  }
-}
+import { widget } from '~/stores/widget-store'
 
 function getLegacyOptions() {
-  if (toolState.currentToolType === 'banner-two') {
+  //TODO: refactor ProfilesDialog and remove legacy options
+  if (toolState.currentToolType === 'banner') {
     return {
       hasConflicts: banner.profilesUpdate.size > 0,
       updates: [...banner.profilesUpdate],
       profiles: banner.profiles,
     }
   }
+
+  if (toolState.currentToolType === 'offerwall') {
+    return {
+      hasConflicts: offerwall.profilesUpdate.size > 0,
+      updates: [...offerwall.profilesUpdate],
+      profiles: offerwall.profiles,
+    }
+  }
+
   return {
-    hasConflicts: toolState.dirtyProfiles.size > 0,
-    updates: [...toolState.dirtyProfiles],
-    profiles: convertToProfiles(
-      toolState.configurations,
-      toolState.currentToolType as Tool,
-    ),
+    hasConflicts: widget.profilesUpdate.size > 0,
+    updates: [...widget.profilesUpdate],
+    profiles: widget.profiles,
   }
 }
 
@@ -52,7 +37,7 @@ export const useConnectWallet = () => {
 
   const connect = useCallback(async (): Promise<void> => {
     try {
-      const fetchedProfiles = await getProfiles()
+      const fetchedProfiles = await toolActions.getToolProfiles()
       const options = getLegacyOptions()
       if (options.hasConflicts) {
         openDialog(
@@ -65,7 +50,7 @@ export const useConnectWallet = () => {
         return
       }
 
-      setProfiles(fetchedProfiles)
+      toolActions.setToolProfiles(fetchedProfiles)
       toolActions.setHasRemoteConfigs(true)
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {

@@ -206,6 +206,32 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   return validUrl
 }
 
+/**
+ * Polyfill for `Promise.withResolvers()`
+ */
+export function withResolvers<T>(): {
+  resolve: (value: T | PromiseLike<T>) => void
+  reject: (reason?: unknown) => void
+  promise: Promise<T>
+} {
+  let resolve
+  let reject
+  const promise = new Promise((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  // @ts-expect-error I know, I know
+  return { resolve, reject, promise }
+}
+
+export type UtmParams = {
+  utm_source: string
+  utm_medium: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+}
+
 export function urlWithParams(
   url: string | URL,
   params: Record<string, string>,
@@ -216,6 +242,23 @@ export function urlWithParams(
     result.searchParams.set(key, val)
   }
   return result
+}
+
+export function isValidDate(d: unknown): d is Date {
+  return d instanceof Date && !isNaN(d.valueOf())
+}
+
+export function isValidUrl(v: unknown): v is string {
+  if (typeof v !== 'string' || !v) return false
+
+  try {
+    const url = new URL(v)
+    if (url.protocol !== 'https:') return false
+    if (url.pathname.length <= 1) return false
+    return true
+  } catch {
+    return false
+  }
 }
 
 export function groupBy<T, K extends PropertyKey>(
