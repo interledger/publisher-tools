@@ -50,7 +50,9 @@ app.get(
       if (error instanceof HTTPException) throw error
       if (error instanceof Error) {
         if (error.name === 'NoSuchKey' || error.message.includes('404')) {
-          console.warn(`[404] No profile found for ${walletAddress}. Returning default ${tool} profile.`)
+          console.warn(
+            `[404] No profile found for ${walletAddress}. Returning default ${tool} profile.`,
+          )
           return json<ToolProfile<typeof tool>>(getDefaultProfile(tool))
         }
       }
