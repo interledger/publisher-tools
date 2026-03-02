@@ -1,7 +1,11 @@
 import type { OfferwallModal } from '@c/offerwall'
 import type { Controller } from '@c/offerwall/controller'
 import { applyFontFamily } from '@c/utils'
-import type { MonetizationEvent, OfferwallProfile } from '@shared/types'
+import {
+  BORDER_RADIUS,
+  type MonetizationEvent,
+  type OfferwallProfile,
+} from '@shared/types'
 import { isValidDate, isValidUrl, withResolvers } from '@shared/utils'
 import {
   getBrowserSupportForExtension,
@@ -342,15 +346,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
 // #region Utils
 function borderRadiusToNumber(border: OfferwallProfile['border']['type']) {
-  switch (border) {
-    case 'None':
-      return '0'
-    case 'Pill':
-      return '2rem'
-    case 'Light':
-    default:
-      return '1.5rem'
-  }
+  return BORDER_RADIUS[border] || BORDER_RADIUS.Light
 }
 
 async function isValidPayment(incomingPaymentUrl: string): Promise<boolean> {

@@ -51,7 +51,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
       <summary
         className={cx(
           'flex gap-xs items-center cursor-pointer list-none',
-          'transition-all duration-300 ease-in-out',
+          'transition-all duration-300 ease-in-out outline-nav-link-hover',
           isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs',
         )}
       >
@@ -74,7 +74,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         </GhostButton>
       )}
 
-      <div className="flex flex-col gap-lg mt-sm">{children}</div>
+      <div className="relative z-10 flex flex-col gap-lg mt-sm">{children}</div>
       {isOpen && (
         <>
           <Divider />

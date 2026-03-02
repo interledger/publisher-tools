@@ -13,6 +13,7 @@ import {
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useOfferwallProfile } from '~/stores/offerwall-store'
+import { toolActions } from '~/stores/toolStore'
 import { useUIActions, useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -41,15 +42,17 @@ function AppearanceBuilder({ onRefresh }: Props) {
       title="Appearance"
       isComplete={uiState.appearanceComplete}
       onToggle={(isOpen: boolean) => {
-        if (isOpen) {
+        if (!isOpen) {
           uiActions.setAppearanceComplete(true)
+          toolActions.setBuildCompleteStep('filled')
         }
       }}
       onRefresh={onRefresh}
       onDone={() => {
         uiActions.setAppearanceComplete(true)
+        toolActions.setBuildCompleteStep('filled')
       }}
-      initialIsOpen={uiState.activeSection === 'appearance'}
+      initialIsOpen
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
