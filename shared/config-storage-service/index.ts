@@ -31,10 +31,21 @@ export class ConfigStorageService {
     const response = await this.client.fetch(url)
 
     if (!response.ok) {
-      throw new Error(`S3 request failed with status: ${response.status}`)
+      const { status } = response
+      if (status === 404) {
+        const msg = 'File not found'
+        throw new ConfigStorageServiceError('not-found', status, msg)
+      }
+      const msg = 'S3 request failed'
+      throw new ConfigStorageServiceError('unknown', status, msg)
     }
 
-    return await response.json()
+    const json = await response.json()
+    if (typeof json !== 'object' || !json) {
+      const msg = 'Invalid JSON response from S3'
+      throw new ConfigStorageServiceError('not-found', response.status, msg)
+    }
+    return json as T
   }
 
   async putJson<T>(walletAddress: string, data: T): Promise<void> {
@@ -53,6 +64,17 @@ export class ConfigStorageService {
     if (!response.ok) {
       throw new Error(`Failed to upload to S3: ${response.status}`)
     }
+  }
+}
+
+export class ConfigStorageServiceError extends Error {
+  constructor(
+    public readonly code: 'not-found' | 'unknown',
+    public readonly statusCode: number,
+    message: string,
+  ) {
+    super(message)
+    this.name = 'ConfigStorageError'
   }
 }
 

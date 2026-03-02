@@ -1,8 +1,10 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import { ConfigStorageService } from '@shared/config-storage-service'
-import { getDefaultProfile } from '@shared/default-data'
+import {
+  ConfigStorageService,
+  ConfigStorageServiceError,
+} from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
 import {
   numberToBannerFontSize,
@@ -45,14 +47,27 @@ app.get(
       const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
       const legacyProfile = fullConfig[profileId]
       const profile = convertToProfile(legacyProfile, tool)
-      if (!profile) throw new Error('404')
+      if (!profile)
+        throw new ConfigStorageServiceError(
+          'not-found',
+          404,
+          `No profile found for tool profile ${profileId}`,
+        )
       return json(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
-      if (error instanceof Error) {
-        if (error.name === 'NoSuchKey' || error.message.includes('404')) {
-          console.warn(`[404] No profile found for ${walletAddress}.`)
-          return json(getDefaultProfile(tool), 404)
+      if (error instanceof ConfigStorageServiceError) {
+        if (error.code === 'not-found') {
+          const msg = 'No saved profile found for given wallet address'
+          throw createHTTPException(404, msg, {
+            message: 'Not found',
+            code: '404',
+            cause: {
+              statusCode: error.statusCode,
+              code: error.code,
+              message: error.message,
+            },
+          })
         }
       }
       throw createHTTPException(500, 'Config fetch error: ', error)
