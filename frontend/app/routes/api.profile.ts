@@ -1,5 +1,6 @@
 import { data, type ActionFunctionArgs } from 'react-router'
 import z from 'zod'
+import { isConfigStorageNotFoundError } from '@shared/config-storage-service'
 import { getDefaultData } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
 import {
@@ -112,8 +113,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     try {
       configLegacy = await storage.getJson<ConfigVersions>(walletAddressId)
     } catch (e) {
-      const err = e as Error
-      if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+      if (!isConfigStorageNotFoundError(e)) {
         throw e
       }
 
