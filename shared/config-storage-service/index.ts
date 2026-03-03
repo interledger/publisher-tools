@@ -67,6 +67,12 @@ export class ConfigStorageService {
   }
 }
 
+export const isConfigStorageNotFoundError = (
+  err: unknown,
+): err is ConfigStorageServiceError => {
+  return err instanceof ConfigStorageServiceError && err.code === 'not-found'
+}
+
 export class ConfigStorageServiceError extends Error {
   constructor(
     public readonly code: 'not-found' | 'unknown',
