@@ -48,10 +48,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
         }
       }}
       onRefresh={onRefresh}
-      onDone={() => {
-        uiActions.setAppearanceComplete(true)
-        toolActions.setBuildCompleteStep('filled')
-      }}
       initialIsOpen
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
