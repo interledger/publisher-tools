@@ -48,7 +48,7 @@ export async function fetchProfile<T extends Tool>(
   url.searchParams.set('id', params.profileId)
 
   const res = await fetch(url)
-  if (!res.ok) {
+  if (!res.ok && res.status !== 404) {
     throw new Error(
       `Failed to fetch config: HTTP ${res.status} ${res.statusText}`,
     )
