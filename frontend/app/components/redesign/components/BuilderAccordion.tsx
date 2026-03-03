@@ -8,7 +8,7 @@ import { GhostButton } from './GhostButton'
 interface BuilderAccordionProps {
   title: string
   onRefresh: () => void
-  onDone: () => void
+  onDone?: () => void
   isComplete?: boolean
   initialIsOpen?: boolean
   onToggle?: (isOpen: boolean) => void
@@ -30,11 +30,6 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
     const isOpen = e.currentTarget.open
     setIsOpen(isOpen)
     onToggle?.(isOpen)
-  }
-
-  const handleDoneClick = () => {
-    setIsOpen(false)
-    onDone()
   }
 
   return (
@@ -78,14 +73,19 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
       {isOpen && (
         <>
           <Divider />
-          <div className="flex justify-end">
-            <ToolsSecondaryButton
-              className="w-full xl:w-[140px]"
-              onClick={handleDoneClick}
-            >
-              Done
-            </ToolsSecondaryButton>
-          </div>
+          {onDone && (
+            <div className="flex justify-end">
+              <ToolsSecondaryButton
+                className="w-full xl:w-[140px]"
+                onClick={() => {
+                  setIsOpen(false)
+                  onDone()
+                }}
+              >
+                Done
+              </ToolsSecondaryButton>
+            </div>
+          )}
         </>
       )}
     </details>
