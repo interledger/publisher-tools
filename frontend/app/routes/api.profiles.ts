@@ -1,6 +1,9 @@
 import { data } from 'react-router'
 import z from 'zod'
-import { ConfigStorageService } from '@shared/config-storage-service'
+import {
+  ConfigStorageService,
+  isConfigStorageNotFoundError,
+} from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
 import type { ConfigVersions, Tool } from '@shared/types'
 import { TOOLS } from '@shared/types'
@@ -56,7 +59,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     )
   } catch (error) {
     const err = error as Error
-    if (err.name === 'NoSuchKey' || err.message.includes('404')) {
+    if (isConfigStorageNotFoundError(err)) {
       return data<GetProfilesResult<Tool>>(
         {
           error: { message: 'Configuration not found' },
