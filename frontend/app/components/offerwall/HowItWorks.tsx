@@ -53,10 +53,8 @@ export default function HowItWorks() {
         </Heading4>
         <BodyStandard className="text-center xl:text-left">
           If you have a Google Ad Manager account you can add Web Monetization
-          to your Offerwall.
-          <br />
-          Customize the user choice screen here, then copy the generated script
-          and add it to your website.
+          to your Offerwall. Customize the user choice screen here, then copy
+          the generated script and add it to your website.
         </BodyStandard>
       </header>
 
