@@ -18,7 +18,8 @@ export default function OfferwallPreview() {
   const snap = useSnapshot(toolState)
 
   const setCssVars = (elem: OfferwallModal, profile: OfferwallProfile) => {
-    applyFontFamily(elem, profile.font.name, TOOL_OFFERWALL, snap.cdnUrl)
+    const fontBaseUrl = new URL('/assets/fonts/', snap.cdnUrl).href
+    applyFontFamily(elem, profile.font.name, TOOL_OFFERWALL, fontBaseUrl)
 
     elem.style.setProperty(
       '--wm-border-radius',
