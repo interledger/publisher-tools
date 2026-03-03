@@ -76,19 +76,20 @@ export const ScriptDialog: React.FC = () => {
         </ToolsPrimaryButton>
       </div>
 
-      {snap.currentToolType !== TOOL_OFFERWALL && (
-        <p className="text-style-small-standard text-text-primary text-center">
-          View{' '}
-          <a
-            href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-600 underline hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-primary-focus rounded"
-          >
-            Documentation
-          </a>
-        </p>
-      )}
+      <p
+        hidden={snap.currentToolType === TOOL_OFFERWALL}
+        className="text-style-small-standard text-text-primary text-center"
+      >
+        View{' '}
+        <a
+          href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-600 underline hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-primary-focus rounded"
+        >
+          Documentation
+        </a>
+      </p>
     </BaseDialog>
   )
 }
