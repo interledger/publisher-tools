@@ -131,7 +131,7 @@ export default function Offerwall() {
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
-        <div className="w-full max-w-[1280px] px-md">
+        <div className="w-full max-w-[1280px]">
           <HeadingCore
             title="Offerwall experience"
             onBackClick={() => navigate('/')}
@@ -143,8 +143,7 @@ export default function Offerwall() {
 
           <Divider className="!my-3xl" />
 
-          <div className="flex flex-col min-h-[756px]">
-            <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
+          <div className="flex flex-col min-h-[756px] px-md xl:flex-row xl:items-start gap-lg">
               <div
                 id="steps-indicator"
                 className="hidden xl:block w-[60px] flex-shrink-0 pt-md"
@@ -255,7 +254,6 @@ export default function Offerwall() {
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
