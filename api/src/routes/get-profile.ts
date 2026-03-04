@@ -52,8 +52,7 @@ app.get(
         const config = await storage.getJson<Configuration>(walletAddress)
         profile = config[tool]?.[profileId] ?? null
       } catch (e) {
-        const err = e as Error
-        if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+        if (!isConfigStorageNotFoundError(e)) {
           throw e
         }
         // TODO: to be removed after the completion of versioned config migration

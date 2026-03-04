@@ -57,10 +57,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     try {
       const config = await storage.getJson<Configuration>(walletAddressId)
       profiles = config[tool]
-    } catch (error) {
-      const err = error as Error
-      if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
-        throw error
+    } catch (e) {
+      if (!isConfigStorageNotFoundError(e)) {
+        throw e
       }
 
       // TODO: to be removed after the completion of versioned config migration

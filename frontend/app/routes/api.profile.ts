@@ -122,8 +122,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           await storage.getLegacyJson<ConfigVersions>(walletAddressId)
         config = convertToConfiguration(legacy, tool, walletAddressId)
       } catch (e) {
-        const err = e as Error
-        if (err.name !== 'NoSuchKey' && !err.message.includes('404')) {
+        if (!isConfigStorageNotFoundError(e)) {
           throw e
         }
 
