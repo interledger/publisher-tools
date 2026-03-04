@@ -118,8 +118,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
       try {
         // TODO: to be removed after the completion of versioned config migration
-        const legacy =
-          await storage.getLegacyJson<ConfigVersions>(walletAddressId)
+        const legacy = await storage.getJson<ConfigVersions>(
+          walletAddressId,
+          true,
+        )
         config = convertToConfiguration(legacy, tool, walletAddressId)
       } catch (e) {
         if (!isConfigStorageNotFoundError(e)) {

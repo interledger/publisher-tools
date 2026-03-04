@@ -26,9 +26,12 @@ export class ConfigStorageService {
     this.client = ConfigStorageService.instance
   }
 
-  async getJson<T>(walletAddress: string): Promise<T> {
+  async getJson<T>(walletAddress: string, useLegacy = false): Promise<T> {
     const key = walletAddressToKey(walletAddress)
-    const url = new URL(`${this.prefix}/${key}`, this.endpoint)
+    const url = new URL(
+      `${useLegacy ? this.LEGACY_AWS_PREFIX : this.prefix}/${key}`,
+      this.endpoint,
+    )
 
     const response = await this.client.fetch(url)
 
@@ -48,20 +51,6 @@ export class ConfigStorageService {
       throw new ConfigStorageServiceError('not-found', response.status, msg)
     }
     return json as T
-  }
-
-  /** @legacy */
-  async getLegacyJson<T>(walletAddress: string): Promise<T> {
-    const key = walletAddressToKey(walletAddress)
-    const url = new URL(`${this.LEGACY_AWS_PREFIX}/${key}`, this.endpoint)
-
-    const response = await this.client.fetch(url)
-
-    if (!response.ok) {
-      throw new Error(`S3 request failed with status: ${response.status}`)
-    }
-
-    return await response.json()
   }
 
   async putJson<T>(walletAddress: string, data: T): Promise<void> {

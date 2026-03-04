@@ -56,8 +56,10 @@ app.get(
           throw e
         }
         // TODO: to be removed after the completion of versioned config migration
-        const legacy =
-          await storage.getLegacyJson<ConfigVersions>(walletAddress)
+        const legacy = await storage.getJson<ConfigVersions>(
+          walletAddress,
+          true,
+        )
         profile = convertToProfile(legacy[profileId], tool) ?? null
       }
 

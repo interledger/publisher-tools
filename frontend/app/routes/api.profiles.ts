@@ -63,8 +63,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       }
 
       // TODO: to be removed after the completion of versioned config migration
-      const legacy =
-        await storage.getLegacyJson<ConfigVersions>(walletAddressId)
+      const legacy = await storage.getJson<ConfigVersions>(
+        walletAddressId,
+        true,
+      )
       profiles = convertToProfiles(legacy, tool)
     }
 
