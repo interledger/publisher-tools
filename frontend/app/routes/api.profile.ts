@@ -109,6 +109,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const now = new Date().toISOString()
 
     let config: Configuration | null = null
+    let hasLegacy = false
     try {
       config = await storage.getJson<Configuration>(walletAddressId)
     } catch (e) {
@@ -122,6 +123,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           walletAddressId,
           true,
         )
+        hasLegacy = true
         config = convertToConfiguration(legacy, tool, walletAddressId)
       } catch (e) {
         if (!isConfigStorageNotFoundError(e)) {
@@ -148,6 +150,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
         },
       },
     })
+
+    if (hasLegacy) {
+      await storage.delete(walletAddressId, true)
+    }
 
     return data<SaveResult>(
       { success: true },

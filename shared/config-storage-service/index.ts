@@ -71,9 +71,9 @@ export class ConfigStorageService {
     }
   }
 
-  async delete(walletAddress: string): Promise<void> {
+  async delete(walletAddress: string, useLegacy = false): Promise<void> {
     const key = walletAddressToKey(walletAddress)
-    const prefix = this.prefix
+    const prefix = useLegacy ? this.LEGACY_AWS_PREFIX : this.prefix
     const url = new URL(`${prefix}/${key}`, this.endpoint)
 
     const res = await this.client.fetch(url, { method: 'DELETE' })
