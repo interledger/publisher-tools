@@ -3,6 +3,9 @@ export default {
     if (request.method === 'PUT') {
       return handlePut(request, env)
     }
+    if (request.method === 'DELETE') {
+      return handleDelete(request, env)
+    }
 
     const { pathname } = new URL(request.url)
     if (request.method === 'GET' && pathname === '/') {
@@ -45,4 +48,12 @@ async function handlePut(request: Request, env: Env) {
     ),
   })
   return Response.json(res)
+}
+
+async function handleDelete(request: Request, env: Env) {
+  const { pathname } = new URL(request.url)
+  const key = pathname.slice(1)
+
+  await env.STORAGE.delete(key)
+  return Response.json({ message: 'deleted' })
 }
