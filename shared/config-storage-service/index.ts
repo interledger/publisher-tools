@@ -65,6 +65,17 @@ export class ConfigStorageService {
       throw new Error(`Failed to upload to S3: ${response.status}`)
     }
   }
+
+  async delete(walletAddress: string): Promise<void> {
+    const key = walletAddressToKey(walletAddress)
+    const prefix = this.prefix
+    const url = new URL(`${prefix}/${key}`, this.endpoint)
+
+    const res = await this.client.fetch(url, { method: 'DELETE' })
+    if (!res.ok) {
+      throw new Error(`Failed to delete from S3: ${res.status}`)
+    }
+  }
 }
 
 export const isConfigStorageNotFoundError = (
