@@ -74,7 +74,7 @@ export default function HowItWorks() {
         />
         <Step
           image={step3}
-          description="Start receiving support as users choose to use WM"
+          description="Start receiving support as users choose to use Web Monetization"
         />
       </ol>
     </section>
