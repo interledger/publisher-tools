@@ -28,10 +28,8 @@ export class ConfigStorageService {
 
   async getJson<T>(walletAddress: string, useLegacy = false): Promise<T> {
     const key = walletAddressToKey(walletAddress)
-    const url = new URL(
-      `${useLegacy ? this.LEGACY_AWS_PREFIX : this.prefix}/${key}`,
-      this.endpoint,
-    )
+    const prefix = useLegacy ? this.LEGACY_AWS_PREFIX : this.prefix
+    const url = new URL(`${prefix}/${key}`, this.endpoint)
 
     const response = await this.client.fetch(url)
 
