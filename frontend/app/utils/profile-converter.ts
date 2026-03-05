@@ -15,7 +15,6 @@ import {
   widgetFontSizeToNumber,
 } from '@shared/types'
 
-/** Important NOTE: shared versionName between widget and banner tool goes away only after a save into new format or close of Phase 4 */
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
