@@ -16,6 +16,7 @@ import {
 } from '@shared/types'
 import type {
   BaseToolProfile,
+  Configuration,
   ConfigVersions,
   ElementConfigType,
   Tool,
@@ -46,9 +47,22 @@ app.get(
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {
-      const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const legacyProfile = fullConfig[profileId]
-      const profile = convertToProfile(legacyProfile, tool)
+      let profile: ToolProfile<typeof tool> | null = null
+      try {
+        const config = await storage.getJson<Configuration>(walletAddress)
+        profile = config[tool]?.[profileId] ?? null
+      } catch (e) {
+        if (!isConfigStorageNotFoundError(e)) {
+          throw e
+        }
+        // TODO: to be removed after the completion of versioned config migration
+        const legacy = await storage.getJson<ConfigVersions>(
+          walletAddress,
+          true,
+        )
+        profile = convertToProfile(legacy[profileId], tool) ?? null
+      }
+
       if (!profile)
         throw new ConfigStorageServiceError(
           'not-found',

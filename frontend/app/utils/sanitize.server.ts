@@ -4,15 +4,13 @@ import {
   type BannerProfile,
   type OfferwallProfile,
   type WidgetProfile,
-  type Tool,
   type ToolProfile,
-  type ElementConfigType,
+  type Tool,
   TOOL_WIDGET,
   TOOL_BANNER,
   TOOL_OFFERWALL,
 } from '@shared/types'
 import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
-import { convertToConfigLegacy } from './profile-converter'
 
 function sanitizeText(value: string): string {
   const decoded = he.decode(value)
@@ -55,42 +53,49 @@ function sanitizeHtmlField(value: string): string {
   return decodedSanitized
 }
 
-export const sanitizeConfigFields = <T extends Tool>(
-  config: ToolProfile<T>,
-  tool: T,
-): Partial<ElementConfigType> => {
-  if (tool === TOOL_WIDGET) {
-    const widget = config as WidgetProfile
+const sanitizers = {
+  [TOOL_WIDGET](widget: WidgetProfile): WidgetProfile {
     return {
-      ...convertToConfigLegacy('', widget),
-      versionName: sanitizeText(widget.$name),
-      widgetTitleText: sanitizeText(widget.title.text),
-      widgetDescriptionText: sanitizeHtmlField(widget.description.text),
-      widgetButtonText: sanitizeText(widget.ctaPayButton.text),
-      widgetTriggerIcon: sanitizeText(widget.icon.value),
+      ...widget,
+      $name: sanitizeText(widget.$name),
+      title: { ...widget.title, text: sanitizeText(widget.title.text) },
+      description: {
+        ...widget.description,
+        text: sanitizeHtmlField(widget.description.text),
+      },
+      ctaPayButton: {
+        ...widget.ctaPayButton,
+        text: sanitizeText(widget.ctaPayButton.text),
+      },
+      icon: { ...widget.icon, value: sanitizeText(widget.icon.value) },
     }
-  }
-
-  if (tool === TOOL_BANNER) {
-    const banner = config as BannerProfile
+  },
+  [TOOL_BANNER](banner: BannerProfile): BannerProfile {
     return {
-      ...convertToConfigLegacy('', banner),
-      versionName: sanitizeText(banner.$name),
-      bannerTitleText: sanitizeText(banner.title.text),
-      bannerDescriptionText: sanitizeHtmlField(banner.description.text),
-      bannerThumbnail: sanitizeText(banner.thumbnail.value),
-    }
-  }
-
-  if (tool === TOOL_OFFERWALL) {
-    const offerwall = config as OfferwallProfile
-    return {
-      offerwall: {
-        ...offerwall,
-        $name: sanitizeText(offerwall.$name),
+      ...banner,
+      $name: sanitizeText(banner.$name),
+      title: { ...banner.title, text: sanitizeText(banner.title.text) },
+      description: {
+        ...banner.description,
+        text: sanitizeHtmlField(banner.description.text),
+      },
+      thumbnail: {
+        ...banner.thumbnail,
+        value: sanitizeText(banner.thumbnail.value),
       },
     }
-  }
+  },
+  [TOOL_OFFERWALL](offerwall: OfferwallProfile): OfferwallProfile {
+    return { ...offerwall, $name: sanitizeText(offerwall.$name) }
+  },
+} satisfies { [K in Tool]: (profile: ToolProfile<K>) => ToolProfile<K> }
 
-  throw new Error(`Unsupported tool type: ${tool}`)
+export function sanitizeProfileFields<T extends Tool>(
+  profile: ToolProfile<T>,
+  tool: T,
+): ToolProfile<T> {
+  const sanitize = sanitizers[tool] as (
+    profile: ToolProfile<T>,
+  ) => ToolProfile<T>
+  return sanitize(profile)
 }
