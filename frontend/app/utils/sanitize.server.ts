@@ -94,7 +94,6 @@ export function sanitizeProfileFields<T extends Tool>(
   profile: ToolProfile<T>,
   tool: T,
 ): ToolProfile<T> {
-  return (sanitizers[tool] as (profile: ToolProfile<T>) => ToolProfile<T>)(
-    profile,
-  )
+  const sanitize = sanitizers[tool] as (profile: ToolProfile<T>) => ToolProfile<T>
+  return sanitize(profile)
 }
