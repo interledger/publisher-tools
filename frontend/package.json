@@ -33,7 +33,7 @@
     "he": "^1.2.0",
     "http-message-signatures": "^1.0.4",
     "httpbis-digest-headers": "^1.0.0",
-    "isbot": "^5.1.32",
+    "isbot": "^5.1.35",
     "react": "^19.2.1",
     "react-click-away-listener": "^2.4.0",
     "react-colorful": "^5.6.1",
