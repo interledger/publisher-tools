@@ -1,0 +1,26 @@
+{
+  "toolsWalletAddress": {
+    "heading": {
+      "message": "Wallet address"
+    },
+    "tooltip": {
+      "ariaLabel": "Why connect your wallet?",
+      "message": "Connecting your wallet allows us to save your custom profiles, link them to you as the original author, and verify ownership for future updates.",
+      "message_2": "It also enables Web Monetization on your behalf by embedding your wallet address into your web page automatically."
+    },
+    "errors": {
+      "fieldRequired": "This field is required",
+      "connectionError": "You have not connected your wallet address yet."
+    },
+    "status": {
+      "connect": "If you're connecting your wallet address for the first time, you'll start with the default profile. You can then customize and save your profile as needed.",
+      "no_saved_profiles": "There are no custom edits for the {{toolName}} correlated to this wallet address but you can start customizing when you want.",
+      "profiles_fetched": "We've loaded your profiles. Feel free to keep customizing your {{toolName}} to fit your style."
+    },
+    "button": {
+      "loadingLabel": "Connecting...",
+      "submitLabel": "Continue",
+      "disconnectAriaLabel": "Disconnect wallet"
+    }
+  }
+}
