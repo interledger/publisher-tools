@@ -40,7 +40,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      collapsible={false}
       isComplete={uiState.appearanceComplete}
       onToggle={(isOpen: boolean) => {
         if (!isOpen) {

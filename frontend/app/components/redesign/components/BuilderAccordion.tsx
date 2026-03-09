@@ -11,7 +11,6 @@ interface BuilderAccordionProps {
   onDone?: () => void
   isComplete?: boolean
   initialIsOpen?: boolean
-  collapsible?: boolean
   onToggle?: (isOpen: boolean) => void
   children: React.ReactNode
 }
@@ -20,7 +19,6 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
   title,
   isComplete = false,
   initialIsOpen = false,
-  collapsible = true,
   onToggle,
   onRefresh,
   onDone,
@@ -68,11 +66,9 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
               Back to default
             </GhostButton>
           )}
-          {collapsible && (
-            <SVGArrowCollapse
-              className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
-            />
-          )}
+          <SVGArrowCollapse
+            className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
+          />
         </div>
       </summary>
 
