@@ -10,6 +10,7 @@ import {
   TOOL_BANNER,
   TOOL_WIDGET,
   TOOL_OFFERWALL,
+  PROFILE_A,
 } from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { APP_BASEPATH } from '~/lib/constants'
@@ -77,7 +78,7 @@ export const toolState = proxy({
   dirtyProfiles: proxySet<StableKey>(),
   /** @deprecated */
   activeVersion: 'version1' as StableKey,
-  activeTab: 'version1' as ProfileId,
+  activeTab: PROFILE_A as ProfileId,
   currentToolType: 'unknown' as Tool,
 
   /** always returns the active configuration */

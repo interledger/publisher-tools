@@ -20,7 +20,7 @@ interface Props {
 
 export const ToolsWalletAddress = ({ toolName }: Props) => {
   const snap = useSnapshot(toolState, { sync: true })
-  const { connect } = useConnectWallet()
+  const { connect, disconnect } = useConnectWallet()
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
@@ -59,7 +59,6 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       toolActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-      toolActions.setWalletConnected(true)
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
@@ -68,13 +67,6 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleDisconnect = () => {
-    toolActions.resetProfiles()
-    toolActions.setWalletConnected(false)
-    toolActions.setHasRemoteConfigs(false)
-    uiActions.focusWalletInput()
   }
 
   const handleWalletAddressChange = (
@@ -168,7 +160,7 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={handleDisconnect}
+              onClick={disconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >
