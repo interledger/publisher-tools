@@ -21,11 +21,12 @@ import {
 import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSelector'
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
+import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { useBannerProfile } from '~/stores/banner-store'
-import { useUIActions, useUIState } from '~/stores/uiStore'
+import type { BuilderSection } from '~/stores/uiStore'
 
 interface Props {
-  onRefresh: (section: 'content' | 'appearance') => void
+  onRefresh: (section: BuilderSection) => void
 }
 
 const config = {
@@ -56,32 +57,19 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const uiState = useUIState()
-  const uiActions = useUIActions()
+  const { isComplete, isOpen, onClick, onToggle, onDone } =
+    useBuilderSectionHandlers('content')
   const [snap, profile] = useBannerProfile({ sync: true })
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={uiState.contentComplete}
-      isOpen={uiState.activeSection === 'content'}
-      onClick={(isOpen) => {
-        uiActions.setActiveSection(
-          isOpen ? 'content' : uiState.appearanceComplete ? null : 'appearance',
-        )
-      }}
-      onToggle={(e) => {
-        if (e.currentTarget.open) {
-          uiActions.setContentComplete(true)
-        }
-      }}
+      isComplete={isComplete}
+      isOpen={isOpen}
+      onClick={onClick}
+      onToggle={onToggle}
       onRefresh={() => onRefresh('content')}
-      onDone={() => {
-        uiActions.setActiveSection(
-          uiState.appearanceComplete ? null : 'appearance',
-        )
-        uiActions.setContentComplete(true)
-      }}
+      onDone={onDone}
     >
       <TitleInput
         value={snap.title.text}
@@ -114,8 +102,8 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const uiState = useUIState()
-  const uiActions = useUIActions()
+  const { isComplete, isOpen, onClick, onToggle, onDone } =
+    useBuilderSectionHandlers('appearance')
   const [snap, profile] = useBannerProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -125,23 +113,12 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={uiState.appearanceComplete}
-      isOpen={uiState.activeSection === 'appearance'}
-      onClick={(isOpen: boolean) => {
-        uiActions.setActiveSection(
-          isOpen ? 'appearance' : uiState.contentComplete ? null : 'content',
-        )
-      }}
-      onToggle={(e) => {
-        if (e.currentTarget.open) {
-          uiActions.setAppearanceComplete(true)
-        }
-      }}
+      isComplete={isComplete}
+      isOpen={isOpen}
+      onClick={onClick}
+      onToggle={onToggle}
       onRefresh={() => onRefresh('appearance')}
-      onDone={() => {
-        uiActions.setActiveSection(null)
-        uiActions.setAppearanceComplete(true)
-      }}
+      onDone={onDone}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
