@@ -1,49 +1,48 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
 import { ToolsSecondaryButton, Divider } from '@/components'
 import { Heading5 } from '@/typography'
 import { GhostButton } from './GhostButton'
 
-interface BuilderAccordionProps {
+interface Props {
   title: string
   onRefresh: () => void
   onDone?: () => void
   isComplete?: boolean
-  initialIsOpen?: boolean
-  onToggle?: (isOpen: boolean) => void
+  isOpen?: boolean
+  onClick?: (isOpen: boolean) => void
+  onToggle?: (e: React.SyntheticEvent<HTMLDetailsElement>) => void
   children: React.ReactNode
 }
 
-export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
+export const BuilderAccordion: React.FC<Props> = ({
   title,
   isComplete = false,
-  initialIsOpen = false,
-  onToggle,
+  isOpen = false,
+  onClick,
   onRefresh,
   onDone,
+  onToggle,
   children,
 }) => {
-  const [isOpen, setIsOpen] = useState(initialIsOpen)
-
-  const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
-    const isOpen = e.currentTarget.open
-    setIsOpen(isOpen)
-    onToggle?.(isOpen)
+  const handleSummaryClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    onClick?.(!isOpen)
   }
 
   return (
     <details
       open={isOpen}
-      name="builder-accordion"
       className={cx(
         'flex flex-col rounded-lg relative',
         'transition-transform duration-300 ease-in-out',
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main',
       )}
-      onToggle={handleToggle}
+      onToggle={onToggle}
     >
       <summary
+        onClick={handleSummaryClick}
         className={cx(
           'flex gap-xs items-center cursor-pointer list-none',
           'transition-all duration-300 ease-in-out outline-nav-link-hover',
@@ -77,10 +76,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
             <div className="flex justify-end">
               <ToolsSecondaryButton
                 className="w-full xl:w-[140px]"
-                onClick={() => {
-                  setIsOpen(false)
-                  onDone()
-                }}
+                onClick={onDone}
               >
                 Done
               </ToolsSecondaryButton>

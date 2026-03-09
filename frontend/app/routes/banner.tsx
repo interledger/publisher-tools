@@ -42,6 +42,7 @@ import {
   persistState,
   loadState,
 } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
 export const meta: MetaFunction = () => {
@@ -85,6 +86,7 @@ export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
   const navigate = useNavigate()
+  const uiActions = useUIActions()
   const { save, saveLastAction } = useSaveProfile()
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
@@ -96,6 +98,7 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    uiActions.setActiveSection('content')
     const unsubscribeUpdates = subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     const unsubscribeStorage = subscribeProfilesToStorage()

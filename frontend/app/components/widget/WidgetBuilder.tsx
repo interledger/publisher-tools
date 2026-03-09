@@ -60,17 +60,24 @@ function ContentBuilder({ onRefresh }: Props) {
     <BuilderAccordion
       title="Content"
       isComplete={uiState.contentComplete}
-      onToggle={(isOpen) => {
-        uiActions.setActiveSection(isOpen ? 'content' : null)
-        if (isOpen) {
+      isOpen={uiState.activeSection === 'content'}
+      onClick={(isOpen) => {
+        uiActions.setActiveSection(
+          isOpen ? 'content' : uiState.appearanceComplete ? null : 'appearance',
+        )
+      }}
+      onToggle={(e) => {
+        if (e.currentTarget.open) {
           uiActions.setContentComplete(true)
         }
       }}
       onRefresh={() => onRefresh('content')}
       onDone={() => {
+        uiActions.setActiveSection(
+          uiState.appearanceComplete ? null : 'appearance',
+        )
         uiActions.setContentComplete(true)
       }}
-      initialIsOpen={uiState.activeSection === 'content'}
     >
       <TitleInput
         value={snap.title.text}
@@ -115,17 +122,22 @@ function AppearanceBuilder({ onRefresh }: Props) {
     <BuilderAccordion
       title="Appearance"
       isComplete={uiState.appearanceComplete}
-      onToggle={(isOpen: boolean) => {
-        uiActions.setActiveSection(isOpen ? 'appearance' : null)
-        if (isOpen) {
+      isOpen={uiState.activeSection === 'appearance'}
+      onClick={(isOpen: boolean) => {
+        uiActions.setActiveSection(
+          isOpen ? 'appearance' : uiState.contentComplete ? null : 'content',
+        )
+      }}
+      onToggle={(e) => {
+        if (e.currentTarget.open) {
           uiActions.setAppearanceComplete(true)
         }
       }}
       onRefresh={() => onRefresh('appearance')}
       onDone={() => {
+        uiActions.setActiveSection(null)
         uiActions.setAppearanceComplete(true)
       }}
-      initialIsOpen={uiState.activeSection === 'appearance'}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
