@@ -29,7 +29,7 @@
     "autoprefixer": "^10.4.23",
     "class-variance-authority": "^0.7.1",
     "crypto-browserify": "^3.12.1",
-    "fast-equals": "^5.4.0",
+    "fast-equals": "^6.0.0",
     "he": "^1.2.0",
     "http-message-signatures": "^1.0.4",
     "httpbis-digest-headers": "^1.0.0",
