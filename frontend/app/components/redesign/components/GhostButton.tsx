@@ -3,14 +3,14 @@ import type { ButtonHTMLAttributes } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGRefresh } from '~/assets/svg'
 
-interface GhostButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   iconPosition?: 'left' | 'right' | 'none'
-  icon?: 'restore'
+  icon?: 'refresh'
   className?: string
 }
 
-export const GhostButton: React.FC<GhostButtonProps> = ({
+export const GhostButton: React.FC<Props> = ({
   children,
   iconPosition = 'right',
   icon,
@@ -34,7 +34,7 @@ export const GhostButton: React.FC<GhostButtonProps> = ({
       )}
       {...props}
     >
-      {icon === 'restore' && iconPosition === 'left' && (
+      {icon === 'refresh' && iconPosition === 'left' && (
         <SVGRefresh className="w-5 h-5" />
       )}
       <span className="relative z-10 flex items-center gap-inherit">

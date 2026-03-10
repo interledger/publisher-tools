@@ -58,7 +58,7 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
         <div className="flex gap-xs items-center">
           {isOpen && (
             <GhostButton
-              icon="restore"
+              icon="refresh"
               iconPosition="left"
               onClick={onRefresh}
               aria-label={`Reset ${title.toLowerCase()} to default`}
