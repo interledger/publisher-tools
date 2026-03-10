@@ -2,6 +2,7 @@ import { data } from 'react-router'
 import z from 'zod'
 import {
   ConfigStorageService,
+  ConfigStorageServiceError,
   isConfigStorageNotFoundError,
 } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
@@ -56,6 +57,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     let profiles: ToolProfiles<typeof tool> | null = null
     try {
       const config = await storage.getJson<Configuration>(walletAddressId)
+      // config can exist but not have tool specific profiles,
       profiles = config[tool]
     } catch (e) {
       if (!isConfigStorageNotFoundError(e)) {
@@ -68,6 +70,14 @@ export async function loader({ request, context }: Route.LoaderArgs) {
         true,
       )
       profiles = convertToProfiles(legacy, tool)
+    }
+
+    if (!profiles) {
+      throw new ConfigStorageServiceError(
+        'not-found',
+        404,
+        `No profiles found for ${tool}`,
+      )
     }
 
     return data<GetProfilesResult<Tool>>(
