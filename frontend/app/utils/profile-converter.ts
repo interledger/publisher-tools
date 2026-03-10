@@ -1,7 +1,6 @@
 import type {
   ConfigVersions,
   ToolProfiles,
-  ProfileId,
   Tool,
   ElementConfigType,
   Configuration,
@@ -9,6 +8,7 @@ import type {
   BaseToolProfile,
 } from '@shared/types'
 import {
+  TOOLS,
   numberToBannerFontSize,
   numberToWidgetFontSize,
   bannerFontSizeToNumber,
@@ -18,7 +18,14 @@ import {
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
-): ToolProfile<T> {
+): ToolProfile<T> | undefined {
+  // means there is no profile for the given tool/profileId
+  if (!config) return
+
+  if (tool === 'offerwall') {
+    return config.offerwall as ToolProfile<T>
+  }
+
   return {
     $version: '0.0.1',
     $name: config.versionName,
@@ -86,20 +93,20 @@ export function convertToConfigsLegacy<T extends Tool>(
 // TODO: to be removed after the completion of versioned configurations
 export function convertToProfiles<T extends Tool>(
   configuration: ConfigVersions,
-  _: T,
-): ToolProfiles<T> {
+  tool: T,
+): ToolProfiles<T> | undefined {
   const profiles: Record<string, ToolProfile<T>> = {}
 
   Object.entries(configuration).forEach(([profileId, config]) => {
-    profiles[profileId as ProfileId] = convertToProfile(config, _)
+    const profile = convertToProfile(config, tool)
+    if (profile) profiles[profileId] = profile
   })
 
-  return profiles
+  return Object.keys(profiles).length ? profiles : undefined
 }
 
-export function convertToConfiguration<T extends Tool>(
+export function convertToConfiguration(
   configuration: ConfigVersions,
-  tool: T,
   walletAddress: string,
 ): Configuration {
   const now = new Date().toISOString()
@@ -108,7 +115,9 @@ export function convertToConfiguration<T extends Tool>(
     $walletAddressId: walletAddress,
     $createdAt: now,
     $modifiedAt: now,
-    [tool]: convertToProfiles<T>(configuration, tool),
+    ...Object.fromEntries(
+      TOOLS.map((tool) => [tool, convertToProfiles(configuration, tool)]),
+    ),
   }
 }
 
@@ -185,9 +194,6 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         color: profile.widgetTriggerBackgroundColor,
       },
     } satisfies Omit<ToolProfile<'widget'>, keyof BaseToolProfile>
-  }
-  if (tool === 'offerwall') {
-    return profile.offerwall as ToolProfile<'offerwall'>
   }
 
   throw new Error(`Unsupported tool type: ${tool}`)
