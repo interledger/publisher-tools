@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGArrowCollapse, SVGGreenVector, SVGRefresh } from '@/assets'
+import { SVGArrowCollapse, SVGGreenVector } from '@/assets'
 import { ToolsSecondaryButton, Divider } from '@/components'
 import { Heading5 } from '@/typography'
 import { GhostButton } from './GhostButton'
@@ -45,29 +45,32 @@ export const BuilderAccordion: React.FC<BuilderAccordionProps> = ({
     >
       <summary
         className={cx(
-          'flex gap-xs items-center cursor-pointer list-none',
+          'flex items-center justify-between cursor-pointer list-none',
           'transition-all duration-300 ease-in-out outline-nav-link-hover',
-          isOpen ? 'px-2xs py-xs' : 'pl-md pr-2xs py-xs',
+          isOpen ? 'pr-2xs py-xs' : 'pl-md pr-2xs py-xs',
         )}
       >
-        {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
-        <Heading5>{title}</Heading5>
+        <div className="flex gap-xs items-center">
+          {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
+          <Heading5>{title}</Heading5>
+        </div>
 
-        <SVGArrowCollapse
-          className={cx('w-12 h-12 p-3.5 ml-auto', !isOpen && 'rotate-180')}
-        />
+        <div className="flex gap-xs items-center">
+          {isOpen && (
+            <GhostButton
+              icon="refresh"
+              iconPosition="left"
+              onClick={onRefresh}
+              aria-label={`Reset ${title.toLowerCase()} to default`}
+            >
+              Back to default
+            </GhostButton>
+          )}
+          <SVGArrowCollapse
+            className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
+          />
+        </div>
       </summary>
-
-      {isOpen && (
-        <GhostButton
-          type="button"
-          className="absolute top-2 right-14 w-12 h-12 z-10 p-0"
-          onClick={onRefresh}
-          aria-label={`Reset ${title.toLowerCase()} to default`}
-        >
-          <SVGRefresh className="w-6 h-6" />
-        </GhostButton>
-      )}
 
       <div className="relative z-10 flex flex-col gap-lg mt-sm">{children}</div>
       {isOpen && (
