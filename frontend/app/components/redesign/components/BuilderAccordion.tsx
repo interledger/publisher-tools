@@ -59,15 +59,20 @@ export const BuilderAccordion: React.FC<Props> = ({
             <GhostButton
               icon="refresh"
               iconPosition="left"
-              onClick={onRefresh}
+              onClick={(e) => {
+                e.stopPropagation()
+                onRefresh()
+              }}
               aria-label={`Reset ${title.toLowerCase()} to default`}
             >
               Back to default
             </GhostButton>
           )}
-          <SVGArrowCollapse
-            className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
-          />
+          {onDone && (
+            <SVGArrowCollapse
+              className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
+            />
+          )}
         </div>
       </summary>
 
