@@ -107,8 +107,8 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       '@fontsource-variable/roboto':
-        specifier: ^5.2.9
-        version: 5.2.9
+        specifier: ^5.2.10
+        version: 5.2.10
       '@fontsource/cookie':
         specifier: ^5.2.7
         version: 5.2.7
@@ -843,8 +843,8 @@ packages:
   '@fontsource-variable/open-sans@5.2.7':
     resolution: {integrity: sha512-wzCLm2STuekK9Fz58DiuBnk4GgJpvvVtAU85a4b06ACNG/UsVjQcCvkUd6R/ETlHfsaykCUZamLRvSXg4KtWuA==}
 
-  '@fontsource-variable/roboto@5.2.9':
-    resolution: {integrity: sha512-uH58g1An9Z4Efiviu0YuN8lvYf22TXidCx2++ZPpEegviaPaYQUwNbQZyr5lO2ae3pM07AolUabngLrlYtuzfA==}
+  '@fontsource-variable/roboto@5.2.10':
+    resolution: {integrity: sha512-LJ0iLg6aHbLzN515gyHzmdTqJzd9NlI95cCg1DW0F5G7KkFqRLBBKBbqEJx4nSu4aby3IKmw3ZH6Fe928IfaSQ==}
 
   '@fontsource/cookie@5.2.7':
     resolution: {integrity: sha512-jI772JjcXz5zjraPzM819udIFhxyeZf6UZL2UuodOsg6Yh9DMQoeGZ1fkHqMXivYpC0qi3qpiln++c87S4mRyA==}
@@ -2620,6 +2620,7 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   globals@14.0.0:
@@ -4781,7 +4782,7 @@ snapshots:
 
   '@fontsource-variable/open-sans@5.2.7': {}
 
-  '@fontsource-variable/roboto@5.2.9': {}
+  '@fontsource-variable/roboto@5.2.10': {}
 
   '@fontsource/cookie@5.2.7': {}
 
