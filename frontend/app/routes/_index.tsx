@@ -1,4 +1,5 @@
 import type { MetaFunction } from 'react-router'
+import { urlWithParams } from '@shared/utils'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
@@ -14,8 +15,14 @@ const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
 const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
 const DEFAULT_URL = 'https://webmonetization.org/tools'
 const SITE_NAME = 'Web Monetization'
-const WORDPRESS_PLUGIN_URL =
-  'https://wordpress.org/plugins/interledger-web-monetization-integration/?utm_source=publisher-tools&utm_campaign=wordpress-plugin'
+const WORDPRESS_PLUGIN_URL = urlWithParams(
+  'https://wordpress.org/plugins/interledger-web-monetization-integration/',
+  {
+    utm_source: 'webmonetization.org/tools',
+    utm_medium: 'integration_tools_list',
+    utm_campaign: 'publisher_tools',
+  },
+).href
 
 const setupTools = [
   {
