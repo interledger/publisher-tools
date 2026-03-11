@@ -131,4 +131,5 @@ export const {
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToUpdates,
+  hasLocalProfileEdits,
 } = bannerStoreUtils

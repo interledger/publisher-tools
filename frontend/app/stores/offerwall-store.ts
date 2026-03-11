@@ -137,4 +137,5 @@ export const {
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToUpdates,
+  hasLocalProfileEdits,
 } = offerwallStoreUtils

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { ProfilesDialog, StatusDialog } from '@/components'
-import { PROFILE_A } from '@shared/types'
+import { PROFILE_A, type Tool } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { banner } from '~/stores/banner-store'
@@ -88,13 +88,16 @@ export const useConnectWallet = () => {
     }
   }, [openDialog, resetWalletUIState])
 
-  const disconnect = useCallback(() => {
-    toolActions.resetProfiles()
-    toolActions.setWalletConnected(false)
-    toolActions.setHasRemoteConfigs(false)
-    resetWalletUIState()
-    uiActions.focusWalletInput()
-  }, [uiActions, resetWalletUIState])
+  const disconnect = useCallback(
+    (options?: { preserveTool?: Tool }) => {
+      toolActions.resetProfiles(options?.preserveTool)
+      toolActions.setWalletConnected(false)
+      toolActions.setHasRemoteConfigs(false)
+      resetWalletUIState()
+      uiActions.focusWalletInput()
+    },
+    [uiActions, resetWalletUIState],
+  )
 
   return { connect, disconnect }
 }

@@ -20,6 +20,7 @@ import {
 } from '@/components'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { useAutoReconnectProfiles } from '~/hooks/useAutoReconnectProfiles'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -108,6 +109,8 @@ export default function Widget() {
       unsubscribeUpdates()
     }
   }, [OP_WALLET_ADDRESS])
+
+  useAutoReconnectProfiles()
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,

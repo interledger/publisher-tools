@@ -22,6 +22,7 @@ import {
 import HowItWorks from '~/components/offerwall/HowItWorks'
 import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
 import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
+import { useAutoReconnectProfiles } from '~/hooks/useAutoReconnectProfiles'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -107,6 +108,8 @@ export default function Offerwall() {
       unsubscribeUpdates()
     }
   }, [OP_WALLET_ADDRESS])
+
+  useAutoReconnectProfiles()
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,

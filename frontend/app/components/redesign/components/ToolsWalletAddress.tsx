@@ -160,7 +160,7 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={disconnect}
+              onClick={() => disconnect()}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >

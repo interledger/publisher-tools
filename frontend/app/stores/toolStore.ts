@@ -169,10 +169,10 @@ export const toolActions = {
         break
     }
   },
-  resetProfiles() {
-    for (const actions of [bannerActions, widgetActions, offerwallActions]) {
-      actions.resetProfiles()
-    }
+  resetProfiles(except?: Tool) {
+    if (except !== TOOL_BANNER) bannerActions.resetProfiles()
+    if (except !== TOOL_WIDGET) widgetActions.resetProfiles()
+    if (except !== TOOL_OFFERWALL) offerwallActions.resetProfiles()
   },
   /** legacy backwards compatibility */
   setConfigs: (
