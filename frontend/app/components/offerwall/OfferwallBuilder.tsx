@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { subscribe } from 'valtio'
 import {
   Divider,
   ToolsDropdown,
@@ -14,7 +16,7 @@ import {
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useOfferwallProfile } from '~/stores/offerwall-store'
 import { toolActions } from '~/stores/toolStore'
-import { useUIActions, useUIState } from '~/stores/uiStore'
+import { useUIState } from '~/stores/uiStore'
 
 interface Props {
   onRefresh: () => void
@@ -30,25 +32,25 @@ export function OfferwallBuilder({ onRefresh }: Props) {
 
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
-  const uiActions = useUIActions()
   const [snap, profile] = useOfferwallProfile()
-
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
   )
+
+  useEffect(() => {
+    const unsubscribe = subscribe(profile, () => {
+      toolActions.setBuildCompleteStep('filled')
+    })
+
+    return unsubscribe
+  }, [])
 
   return (
     <BuilderAccordion
       title="Appearance"
       isComplete={uiState.appearanceComplete}
-      onToggle={(isOpen: boolean) => {
-        if (!isOpen) {
-          uiActions.setAppearanceComplete(true)
-          toolActions.setBuildCompleteStep('filled')
-        }
-      }}
       onRefresh={onRefresh}
-      initialIsOpen
+      isOpen
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown

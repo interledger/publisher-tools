@@ -122,7 +122,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
           walletAddressId,
           true,
         )
-        config = convertToConfiguration(legacy, tool, walletAddressId)
+        config = convertToConfiguration(legacy, walletAddressId)
       } catch (e) {
         if (!isConfigStorageNotFoundError(e)) {
           throw e

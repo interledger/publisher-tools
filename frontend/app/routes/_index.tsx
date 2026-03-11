@@ -1,9 +1,11 @@
 import type { MetaFunction } from 'react-router'
+import { urlWithParams } from '@shared/utils'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
+import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_plugin.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
 import { Heading1, Heading3 } from '~/components/redesign/Typography'
@@ -13,6 +15,14 @@ const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
 const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
 const DEFAULT_URL = 'https://webmonetization.org/tools'
 const SITE_NAME = 'Web Monetization'
+const WORDPRESS_PLUGIN_URL = urlWithParams(
+  'https://wordpress.org/plugins/interledger-web-monetization-integration/',
+  {
+    utm_source: 'webmonetization.org',
+    utm_medium: 'integration_tools_list',
+    utm_campaign: 'publisher_tools',
+  },
+).href
 
 const setupTools = [
   {
@@ -80,6 +90,18 @@ const interactionTools = [
     disabled: true,
   },
 ].filter((e) => !e.disabled)
+
+const integrationTools = [
+  {
+    title: 'WordPress plugin',
+    description:
+      'Enable Web Monetization on your WordPress site with a simple plugin and minimal setup.',
+    tags: ['Web Monetization', 'WordPress', 'Easy integration', 'Easy setup'],
+    icon: SVGWordpressPlugin,
+    link: WORDPRESS_PLUGIN_URL,
+    target: '_blank' as const,
+  },
+]
 
 export const meta: MetaFunction = () => {
   const title = DEFAULT_TITLE
@@ -160,7 +182,10 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
 
@@ -200,7 +225,53 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
+          </ul>
+        </section>
+
+        <section
+          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          aria-labelledby="heading-integration-tools"
+        >
+          <Heading3
+            className="w-full max-xl:text-center"
+            id="heading-integration-tools"
+          >
+            Integration tools
+          </Heading3>
+
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+            Use integration tools to enable Web Monetization on your site
+            through supported platforms like WordPress.
+          </p>
+
+          <ul
+            className="grid gap-lg w-full justify-items-center"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))',
+            }}
+          >
+            {integrationTools.map((tool, index) => (
+              <li key={index}>
+                <ToolCard
+                  title={tool.title}
+                  tags={tool.tags}
+                  icon={tool.icon}
+                  to={tool.link}
+                  target={tool.target}
+                >
+                  {tool.description}
+                </ToolCard>
+              </li>
+            ))}
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
       </div>

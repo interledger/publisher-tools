@@ -1,10 +1,12 @@
 import { useCallback } from 'react'
 import { ProfilesDialog, StatusDialog } from '@/components'
+import { PROFILE_A } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { banner } from '~/stores/banner-store'
 import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import { widget } from '~/stores/widget-store'
 
 function getLegacyOptions() {
@@ -34,6 +36,15 @@ function getLegacyOptions() {
 
 export const useConnectWallet = () => {
   const [openDialog, closeDialog] = useDialog()
+  const uiActions = useUIActions()
+
+  const resetWalletUIState = useCallback(() => {
+    toolActions.setActiveTab(PROFILE_A)
+    toolActions.setBuildCompleteStep('unfilled')
+    uiActions.setContentComplete(false)
+    uiActions.setAppearanceComplete(false)
+    uiActions.setActiveSection('content')
+  }, [uiActions])
 
   const connect = useCallback(async (): Promise<void> => {
     try {
@@ -52,6 +63,8 @@ export const useConnectWallet = () => {
 
       toolActions.setToolProfiles(fetchedProfiles)
       toolActions.setHasRemoteConfigs(true)
+      toolActions.setWalletConnected(true)
+      resetWalletUIState()
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
         toolActions.setHasRemoteConfigs(false)
@@ -73,7 +86,15 @@ export const useConnectWallet = () => {
       )
       throw err
     }
-  }, [openDialog])
+  }, [openDialog, resetWalletUIState])
 
-  return { connect }
+  const disconnect = useCallback(() => {
+    toolActions.resetProfiles()
+    toolActions.setWalletConnected(false)
+    toolActions.setHasRemoteConfigs(false)
+    resetWalletUIState()
+    uiActions.focusWalletInput()
+  }, [uiActions, resetWalletUIState])
+
+  return { connect, disconnect }
 }
