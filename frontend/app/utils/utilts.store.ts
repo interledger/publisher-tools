@@ -145,13 +145,6 @@ export function createToolStoreUtils<T extends Tool>(
       return () => unsubscribes.forEach((s) => s())
     },
 
-    hasLocalProfileEdits() {
-      return PROFILE_IDS.some((id) => {
-        const current = snapshot(store.profiles[id]) as ToolProfile<T>
-        return hasPendingUpdates(id, current)
-      })
-    },
-
     removeProfilesFromStorage() {
       localStorage.removeItem(snapshotsStorageKey)
 

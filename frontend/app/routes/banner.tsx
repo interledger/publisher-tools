@@ -23,7 +23,6 @@ import {
   BannerPreview,
   type BannerHandle,
 } from '~/components/banner/BannerPreview'
-import { useAutoReconnectProfiles } from '~/hooks/useAutoReconnectProfiles'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -113,8 +112,6 @@ export default function Banner() {
       unsubscribeUpdates()
     }
   }, [OP_WALLET_ADDRESS])
-
-  useAutoReconnectProfiles()
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,

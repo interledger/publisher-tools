@@ -131,5 +131,4 @@ export const {
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToUpdates,
-  hasLocalProfileEdits,
 } = widgetStoreUtils
