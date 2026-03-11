@@ -15,7 +15,7 @@ const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
 const DEFAULT_URL = 'https://webmonetization.org/tools'
 const SITE_NAME = 'Web Monetization'
 const WORDPRESS_PLUGIN_URL =
-  'https://wordpress.org/plugins/interledger-web-monetization-integration/'
+  'https://wordpress.org/plugins/interledger-web-monetization-integration/?utm_source=publisher-tools&utm_campaign=wordpress-plugin'
 
 const setupTools = [
   {
