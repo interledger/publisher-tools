@@ -18,7 +18,7 @@ const SITE_NAME = 'Web Monetization'
 const WORDPRESS_PLUGIN_URL = urlWithParams(
   'https://wordpress.org/plugins/interledger-web-monetization-integration/',
   {
-    utm_source: 'webmonetization.org/tools',
+    utm_source: 'webmonetization.org',
     utm_medium: 'integration_tools_list',
     utm_campaign: 'publisher_tools',
   },
