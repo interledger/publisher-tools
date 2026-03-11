@@ -182,7 +182,10 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li className="w-[340px] opacity-0 max-xl:hidden" />
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
 
