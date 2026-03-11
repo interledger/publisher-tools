@@ -13,8 +13,8 @@ export const GrantConfirmationDialog: React.FC<Props> = ({ grantRedirect }) => {
   const { walletAddress } = useSnapshot(toolState)
   return (
     <BaseDialog
-      className="pt-8 pb-4 px-4
-        flex flex-col items-center gap-4 w-full max-w-[544px]"
+      className="p-4 pt-8
+        flex flex-col items-center gap-4 w-full max-w-dialog"
     >
       <div className="text-center">
         <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>

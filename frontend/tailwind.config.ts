@@ -387,9 +387,12 @@ export default {
         '256': '72rem',
         '148': '42rem',
         '128': '36rem',
+        'dialog': '34rem',
         'md-old': '28rem',
       },
-
+      maxWidth: {
+        dialog: '34rem',
+      },
       padding: {
         '3xs': '2px',
         '2xs': '4px',
