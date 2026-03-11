@@ -18,21 +18,20 @@ export const StatusDialog: React.FC<Props> = ({
 }) => {
   return (
     <BaseDialog
-      className="p-8 pb-4
-        flex flex-col items-center gap-6 w-[426px]"
+      className="pt-8 pb-4 px-4
+        flex flex-col items-center gap-4 w-[544px]"
     >
-      <div className="flex items-center justify-center">
+      <div className="flex items-center gap-2">
         {status === 'error' || fieldErrors ? (
-          <SVGErrorVector className="w-[60px] h-[60px]" />
+          <SVGErrorVector className="w-[24px] h-[24px]" />
         ) : (
-          <SVGMarkSuccess className="w-[60px] h-[60px]" />
+          <SVGMarkSuccess className="w-[24px] h-[24px]" />
         )}
-      </div>
-      <div className="text-center">
-        <p className="text-base leading-md font-normal text-text-primary">
+        <p className="text-base leading-md font-bold text-text-primary">
           {message}
         </p>
       </div>
+
       {fieldErrors && Object.keys(fieldErrors).length && (
         <details className="self-start text-left">
           <ul className="list-disc ml-6 text-sm text-field-helpertext-default">
