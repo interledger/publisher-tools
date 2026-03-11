@@ -7,7 +7,7 @@ import step3 from '~/assets/images/offerwall/illustration_offerwall_step3.svg'
 const StepArrow = () => (
   // adapts length to the container
   <div
-    className="flex h-[56px] w-[56px] shrink-0 rotate-90 items-center self-center xl:h-auto xl:w-[187px] xl:rotate-0"
+    className="flex h-[56px] w-[56px] shrink-0 rotate-90 items-center self-center xl:h-auto xl:w-[180px] xl:rotate-0"
     aria-hidden="true"
   >
     <div className="size-[10px] shrink-0 rounded-full bg-[#9CD6CB]" />
@@ -41,7 +41,7 @@ const Step: React.FC<StepProps> = ({
 export default function HowItWorks() {
   return (
     <section
-      className="flex max-w-[1280px] flex-col gap-2xl rounded-md px-md"
+      className="flex flex-col gap-2xl rounded-md px-md"
       aria-labelledby="how-it-works-heading"
     >
       <header className="flex flex-col items-center gap-md xl:items-start">
@@ -51,12 +51,10 @@ export default function HowItWorks() {
         >
           How it works
         </Heading4>
-        <BodyStandard className="text-center xl:text-left xl:text-xl xl:leading-xl">
+        <BodyStandard className="text-center xl:text-left">
           If you have a Google Ad Manager account you can add Web Monetization
-          to your Offerwall.
-          <br />
-          Customize the user choice screen here, then copy the generated script
-          and add it to your website.
+          to your Offerwall. Customize the user choice screen here, then copy
+          the generated script and add it to your website.
         </BodyStandard>
       </header>
 
@@ -76,7 +74,7 @@ export default function HowItWorks() {
         />
         <Step
           image={step3}
-          description="Start receiving support as users choose to use WM"
+          description="Start receiving support as users choose to use Web Monetization"
         />
       </ol>
     </section>

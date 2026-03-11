@@ -6,11 +6,16 @@ import {
   SLIDE_ANIMATION,
   WIDGET_POSITION,
   FONT_FAMILY_OPTIONS,
+  TOOL_BANNER,
+  TOOL_WIDGET,
+  TOOL_OFFERWALL,
 } from '@shared/types'
 import type {
   BannerProfile,
   ElementConfigType,
   OfferwallProfile,
+  Tool,
+  ToolProfile,
   WidgetProfile,
 } from '@shared/types'
 
@@ -148,3 +153,17 @@ export const createDefaultOfferwallProfile = (
     theme: '#4ec6c0',
   },
 })
+
+export function getDefaultProfile(tool: Tool): ToolProfile<Tool> {
+  switch (tool) {
+    case TOOL_BANNER:
+      return createDefaultBannerProfile('Default')
+    case TOOL_WIDGET:
+      return createDefaultWidgetProfile('Default')
+    case TOOL_OFFERWALL:
+      return createDefaultOfferwallProfile('Default')
+
+    default:
+      throw new Error('Invalid tool type')
+  }
+}

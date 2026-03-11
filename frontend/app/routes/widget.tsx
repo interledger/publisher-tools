@@ -31,6 +31,7 @@ import {
   persistState,
   loadState,
 } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import {
   actions,
   widget,
@@ -82,6 +83,7 @@ export default function Widget() {
   const snap = useSnapshot(toolState)
   const widgetSnap = useSnapshot(widget)
   const navigate = useNavigate()
+  const uiActions = useUIActions()
   const { save, saveLastAction } = useSaveProfile()
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
@@ -92,6 +94,7 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    uiActions.setActiveSection('content')
     const unsubscribeUpdates = subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     const unsubscribeStorage = subscribeProfilesToStorage()

@@ -1,7 +1,12 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import { ConfigStorageService } from '@shared/config-storage-service'
+import {
+  ConfigStorageService,
+  ConfigStorageServiceError,
+  isConfigStorageNotFoundError,
+} from '@shared/config-storage-service'
+import { getDefaultProfile } from '@shared/default-data'
 import { AWS_PREFIX } from '@shared/defines'
 import {
   numberToBannerFontSize,
@@ -11,6 +16,7 @@ import {
 } from '@shared/types'
 import type {
   BaseToolProfile,
+  Configuration,
   ConfigVersions,
   ElementConfigType,
   Tool,
@@ -41,21 +47,36 @@ app.get(
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {
-      const fullConfig = await storage.getJson<ConfigVersions>(walletAddress)
-      const legacyProfile = fullConfig[profileId]
-      const profile = convertToProfile(legacyProfile, tool)
-      return json<ToolProfile<typeof tool>>(profile)
+      let profile: ToolProfile<typeof tool> | null = null
+      try {
+        const config = await storage.getJson<Configuration>(walletAddress)
+        profile = config[tool]?.[profileId] ?? null
+      } catch (e) {
+        if (!isConfigStorageNotFoundError(e)) {
+          throw e
+        }
+        // TODO: to be removed after the completion of versioned config migration
+        const legacy = await storage.getJson<ConfigVersions>(
+          walletAddress,
+          true,
+        )
+        profile = convertToProfile(legacy[profileId], tool) ?? null
+      }
+
+      if (!profile)
+        throw new ConfigStorageServiceError(
+          'not-found',
+          404,
+          `No profile found for tool profile ${profileId}`,
+        )
+
+      return json(profile)
     } catch (error) {
       if (error instanceof HTTPException) throw error
-      if (error instanceof Error) {
-        if (error.message.includes('404')) {
-          const msg = 'No saved profile found for given wallet address'
-          throw createHTTPException(404, msg, {
-            message: 'Not found', // can include the S3 key here perhaps
-            code: '404',
-          })
-        }
+      if (isConfigStorageNotFoundError(error)) {
+        return json(getDefaultProfile(tool), 404)
       }
+
       throw createHTTPException(500, 'Config fetch error: ', error)
     }
   },
@@ -65,7 +86,10 @@ app.get(
 function convertToProfile<T extends Tool>(
   config: ElementConfigType,
   tool: T,
-): ToolProfile<T> {
+): ToolProfile<T> | undefined {
+  // means there is no profile for the given tool/profileId
+  if (!config) return
+
   if (tool === 'offerwall') {
     return config.offerwall as ToolProfile<T>
   }
