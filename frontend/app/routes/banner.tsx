@@ -18,6 +18,7 @@ import {
   MobileStepsIndicator,
   BuilderProfileTabs,
 } from '@/components'
+import { SLIDE_ANIMATION } from '@shared/types'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
@@ -35,6 +36,7 @@ import {
   hydrateSnapshotsFromStorage,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
+  useBannerProfile,
 } from '~/stores/banner-store'
 import {
   toolState,
@@ -85,6 +87,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
+  const [profile] = useBannerProfile()
   const navigate = useNavigate()
   const uiActions = useUIActions()
   const { save, saveLastAction } = useSaveProfile()
@@ -141,6 +144,7 @@ export default function Banner() {
     }
   }
 
+  const isAnimationDisabled = profile.animation.type === SLIDE_ANIMATION.None
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -260,7 +264,10 @@ export default function Banner() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground onPreviewClick={handlePreviewClick}>
+                    <BuilderBackground
+                      onPreviewClick={handlePreviewClick}
+                      isAnimationDisabled={isAnimationDisabled}
+                    >
                       <BannerPreview ref={bannerRef} cdnUrl={snap.cdnUrl} />
                     </BuilderBackground>
                   </div>

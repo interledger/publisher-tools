@@ -68,6 +68,7 @@ export const useConnectWallet = () => {
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
         toolActions.setHasRemoteConfigs(false)
+        toolActions.setWalletConnected(true)
         return
       }
 
