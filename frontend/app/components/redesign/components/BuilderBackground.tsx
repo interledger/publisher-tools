@@ -1,8 +1,6 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
-import { SLIDE_ANIMATION } from '@shared/types'
-import { useBannerProfile } from '~/stores/banner-store'
 
 const DOT_PATTERN_SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
 
@@ -18,17 +16,15 @@ interface BuilderBackgroundProps {
   className?: string
   children?: React.ReactNode
   onPreviewClick?: () => void
+  isAnimationDisabled?: boolean
 }
 
 export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   className = '',
   children,
   onPreviewClick,
+  isAnimationDisabled = false,
 }) => {
-  const [bannerProfile] = useBannerProfile()
-  const isAnimationDisabled =
-    bannerProfile.animation.type === SLIDE_ANIMATION.None
-
   const createDotPattern = () => {
     return `data:image/svg+xml;base64,${btoa(DOT_PATTERN_SVG)}`
   }
