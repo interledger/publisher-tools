@@ -8,9 +8,9 @@ import {
 import type { Tool, ToolProfiles } from '@shared/types'
 import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
