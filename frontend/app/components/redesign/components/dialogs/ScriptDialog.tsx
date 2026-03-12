@@ -98,14 +98,14 @@ function getScriptAttributes(snapshot: {
   walletAddress: string
   walletAddressId: string
   currentToolType: string
-  activeVersion: string
+  activeTab: string
   cdnUrl: string
 }): ScriptAttribute[] {
   const {
     walletAddress,
     walletAddressId,
     currentToolType: tool,
-    activeVersion: profileId,
+    activeTab: profileId,
     cdnUrl,
   } = snapshot
 
