@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components'
-import { Heading5, BodyEmphasis } from '@/typography'
+import { Heading5, BodyEmphasis, BodyStandard } from '@/typography'
 import { toolState } from '~/stores/toolStore'
 import { BaseDialog } from './BaseDialog'
 
@@ -13,23 +13,27 @@ export const GrantConfirmationDialog: React.FC<Props> = ({ grantRedirect }) => {
   const { walletAddress } = useSnapshot(toolState)
   return (
     <BaseDialog
-      className="p-8 pb-4
-        flex flex-col items-center gap-6 w-full max-w-[442px]"
+      className="p-4 pt-8
+        flex flex-col items-center gap-4 w-full max-w-dialog"
     >
       <div className="text-center">
-        <Heading5>Please confirm you are owner of</Heading5>
+        <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>
         {walletAddress && (
           <div className="flex w-full justify-center text-center mt-2">
-            <BodyEmphasis>{walletAddress}</BodyEmphasis>
+            <BodyStandard className="!text-text-success">
+              {walletAddress}
+            </BodyStandard>
           </div>
         )}
       </div>
-      <div className="text-center">
-        <p className="text-base leading-md font-normal text-text-primary">
-          You will need to confirm a grant to prove that you are the owner of
-          the wallet address. <br /> No funds will be withdrawn from your
-          wallet.
-        </p>
+      <div className=" text-center">
+        <BodyStandard className="!text-field-helpertext-default">
+          The privacy and safety of your data is important to us. Please confirm
+          you own the wallet address shown above.
+        </BodyStandard>
+        <BodyEmphasis className="!text-field-helpertext-default">
+          No funds will be withdrawn from your wallet.
+        </BodyEmphasis>
       </div>
       <div className="w-full">
         <ToolsSecondaryButton
