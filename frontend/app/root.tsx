@@ -12,6 +12,7 @@ import {
 } from 'react-router'
 import { Header, Footer } from '@/components'
 import faviconSvg from '~/assets/images/favicon.svg?url'
+import { I18nProvider } from '~/i18n/context'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
@@ -27,13 +28,15 @@ export default function App() {
         <Links />
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
-        <UIProvider>
-          <Header />
-          <main className="flex-grow flex flex-col">
-            <Outlet />
-          </main>
-          <Footer />
-        </UIProvider>
+        <I18nProvider>
+          <UIProvider>
+            <Header />
+            <main className="flex-grow flex flex-col">
+              <Outlet />
+            </main>
+            <Footer />
+          </UIProvider>
+        </I18nProvider>
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>
