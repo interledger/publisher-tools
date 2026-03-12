@@ -36,6 +36,7 @@ import {
   hydrateSnapshotsFromStorage,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
+  useBannerProfile,
 } from '~/stores/banner-store'
 import {
   toolState,
@@ -85,7 +86,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
-  const { profile, profileTabs } = useSnapshot(banner)
+  const bannerSnap = useSnapshot(banner)
+  const [profile] = useBannerProfile()
   const navigate = useNavigate()
   const uiActions = useUIActions()
   const { save, saveLastAction } = useSaveProfile()
@@ -199,7 +201,7 @@ export default function Banner() {
 
                     <BuilderProfileTabs
                       idPrefix="profile"
-                      options={profileTabs}
+                      options={bannerSnap.profileTabs}
                       selectedId={snap.activeTab}
                       onChange={(profileId) =>
                         toolActions.setActiveTab(profileId)
