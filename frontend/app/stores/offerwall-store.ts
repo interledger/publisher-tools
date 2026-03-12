@@ -10,10 +10,18 @@ import {
   TOOL_OFFERWALL,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
+import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
+
+export const {
+  wallet: offerwallWallet,
+  load: loadOfferwallWallet,
+  persist: persistOfferwallWallet,
+  actions: offerwallWalletActions,
+} = createWalletStore(TOOL_OFFERWALL)
 
 export type OfferwallStore = ReturnType<typeof createOfferwallStore>
 
@@ -81,8 +89,7 @@ export const actions = {
   async getProfiles(
     tool: typeof TOOL_OFFERWALL,
   ): Promise<ToolProfiles<'offerwall'>> {
-    const { walletAddress } = toolState
-    return await getToolProfiles(walletAddress, tool)
+    return await getToolProfiles(offerwallWallet.walletAddress, tool)
   },
   resetProfiles() {
     offerwallStoreUtils.removeProfilesFromStorage()
@@ -103,12 +110,11 @@ export const actions = {
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(offerwall.profile)
-    const { walletAddress, activeTab } = toolState
     return await saveToolProfile(
-      walletAddress,
+      offerwallWallet.walletAddress,
       TOOL_OFFERWALL,
       profile,
-      activeTab,
+      toolState.activeTab,
     )
   },
   commitProfile() {

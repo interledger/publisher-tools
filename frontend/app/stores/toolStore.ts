@@ -9,18 +9,15 @@ import {
   TOOL_OFFERWALL,
   PROFILE_A,
 } from '@shared/types'
-import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
-import { captureSnapshotsToStorage } from './banner-store'
 
 const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
-  'buildStep',
   'opWallet',
   'cdnUrl',
 ])
@@ -42,16 +39,6 @@ export const toolState = proxy({
 
   // environment variables
   opWallet: '',
-
-  // wallet and connection state
-  walletAddress: '',
-  walletAddressId: '',
-  grantResponse: '',
-  isGrantAccepted: false,
-  isWalletConnected: false,
-  hasRemoteConfigs: false,
-  walletConnectStep: 'unfilled' as StepStatus,
-  buildStep: 'unfilled' as StepStatus,
 })
 
 export const toolActions = {
@@ -111,37 +98,6 @@ export const toolActions = {
     toolState.loadingState = state
   },
 
-  setWalletConnected: (connected: boolean) => {
-    toolState.isWalletConnected = connected
-    if (connected) {
-      toolState.walletConnectStep = 'filled'
-    } else {
-      toolState.walletConnectStep = 'unfilled'
-    }
-
-    captureSnapshotsToStorage()
-  },
-
-  setConnectWalletStep: (step: StepStatus) => {
-    toolState.walletConnectStep = step
-  },
-
-  setBuildCompleteStep: (step: StepStatus) => {
-    toolState.buildStep = step
-  },
-  setWalletAddress: (walletAddress: string) => {
-    toolState.walletAddress = walletAddress
-  },
-  setWalletAddressId: (walletAddressId: string) => {
-    toolState.walletAddressId = walletAddressId
-  },
-  setHasRemoteConfigs: (hasRemoteConfigs: boolean) => {
-    toolState.hasRemoteConfigs = hasRemoteConfigs
-  },
-  setGrantResponse: (grantResponse: string, isGrantAccepted: boolean) => {
-    toolState.grantResponse = grantResponse
-    toolState.isGrantAccepted = isGrantAccepted
-  },
 }
 
 /** Load from localStorage on init, remove storage if invalid */
@@ -158,8 +114,7 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         Object.keys(parsed).every((key) => key in toolState)
 
       if (validKeys) {
-        const loadedData = parsedStorageData(parsed)
-        Object.assign(toolState, loadedData)
+        Object.assign(toolState, omit(parsed, EXCLUDED_FROM_STORAGE))
       } else {
         throw new Error('saved configuration not valid')
       }
@@ -167,21 +122,14 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
   } catch {
     localStorage.removeItem(STORAGE_KEY)
   }
+
 }
 
 export function persistState() {
   subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(createStorageState(toolState)),
+      JSON.stringify(omit(toolState, EXCLUDED_FROM_STORAGE)),
     )
   })
-}
-
-function createStorageState(state: typeof toolState) {
-  return omit(state, EXCLUDED_FROM_STORAGE)
-}
-
-function parsedStorageData(parsed: Record<string, unknown>) {
-  return omit(parsed, EXCLUDED_FROM_STORAGE)
 }

@@ -10,6 +10,7 @@ import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
@@ -26,6 +27,7 @@ export const ProfilesDialog: React.FC<Props> = ({
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
   const [, closeDialog] = useDialog()
+  const [, walletActions] = useToolWallet()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
       return []
@@ -83,8 +85,8 @@ export const ProfilesDialog: React.FC<Props> = ({
   })
 
   const onAddWalletAddress = () => {
-    toolActions.setWalletConnected(false)
-    toolActions.setHasRemoteConfigs(false)
+    walletActions.setWalletConnected(false)
+    walletActions.setHasRemoteConfigs(false)
     uiActions.focusWalletInput()
     closeDialog()
   }
@@ -124,8 +126,8 @@ export const ProfilesDialog: React.FC<Props> = ({
       toolActions.setToolProfiles<Tool>(mergedProfiles)
       closeDialog()
 
-      toolActions.setHasRemoteConfigs(true)
-      toolActions.setWalletConnected(true)
+      walletActions.setHasRemoteConfigs(true)
+      walletActions.setWalletConnected(true)
     } catch (error) {
       console.error('Error overriding configurations:', error)
     } finally {

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
 import {
@@ -10,8 +9,8 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import type { ElementErrors } from '~/lib/types'
-import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 
 interface Props {
@@ -19,7 +18,7 @@ interface Props {
 }
 
 export const ToolsWalletAddress = ({ toolName }: Props) => {
-  const snap = useSnapshot(toolState, { sync: true })
+  const [snap, walletActions] = useToolWallet()
   const { connect, disconnect } = useConnectWallet()
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
@@ -57,7 +56,7 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
       )
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
-      toolActions.setWalletAddressId(walletAddressInfo.id)
+      walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
     } catch (error) {
       setError({
@@ -72,10 +71,10 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
   const handleWalletAddressChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    toolActions.setWalletAddress(e.target.value)
+    walletActions.setWalletAddress(e.target.value)
 
     if (snap.walletConnectStep !== 'unfilled') {
-      toolActions.setConnectWalletStep('unfilled')
+      walletActions.setConnectWalletStep('unfilled')
     }
     if (error) {
       setError(undefined)
