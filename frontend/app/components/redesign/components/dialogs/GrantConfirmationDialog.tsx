@@ -1,8 +1,7 @@
 import React from 'react'
-import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components'
 import { Heading5, BodyEmphasis } from '@/typography'
-import { toolState } from '~/stores/toolStore'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
@@ -10,7 +9,8 @@ interface Props {
 }
 
 export const GrantConfirmationDialog: React.FC<Props> = ({ grantRedirect }) => {
-  const { walletAddress } = useSnapshot(toolState)
+  const [walletSnap] = useToolWallet()
+  const { walletAddress } = walletSnap
   return (
     <BaseDialog
       className="p-8 pb-4

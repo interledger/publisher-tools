@@ -8,6 +8,7 @@ import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import { widget } from '~/stores/widget-store'
+import { useToolWallet } from './useToolWallet'
 
 function getLegacyOptions() {
   //TODO: refactor ProfilesDialog and remove legacy options
@@ -37,6 +38,7 @@ function getLegacyOptions() {
 export const useConnectWallet = () => {
   const [openDialog, closeDialog] = useDialog()
   const uiActions = useUIActions()
+  const [, walletActions] = useToolWallet()
 
   const resetWalletUIState = useCallback(() => {
     toolActions.setActiveTab(PROFILE_A)
@@ -62,13 +64,13 @@ export const useConnectWallet = () => {
       }
 
       toolActions.setToolProfiles(fetchedProfiles)
-      toolActions.setHasRemoteConfigs(true)
-      toolActions.setWalletConnected(true)
+      walletActions.setHasRemoteConfigs(true)
+      walletActions.setWalletConnected(true)
       resetWalletUIState()
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
-        toolActions.setHasRemoteConfigs(false)
-        toolActions.setWalletConnected(true)
+        walletActions.setHasRemoteConfigs(false)
+        walletActions.setWalletConnected(true)
         return
       }
 
@@ -87,15 +89,16 @@ export const useConnectWallet = () => {
       )
       throw err
     }
-  }, [openDialog, resetWalletUIState])
+  }, [openDialog, resetWalletUIState, walletActions])
 
   const disconnect = useCallback(() => {
-    toolActions.resetProfiles()
-    toolActions.setWalletConnected(false)
-    toolActions.setHasRemoteConfigs(false)
+    toolActions.resetToolProfiles()
+    walletActions.setWalletConnected(false)
+    walletActions.setHasRemoteConfigs(false)
+    walletActions.clearWalletStorage()
     resetWalletUIState()
     uiActions.focusWalletInput()
-  }, [uiActions, resetWalletUIState])
+  }, [uiActions, resetWalletUIState, walletActions])
 
   return { connect, disconnect }
 }

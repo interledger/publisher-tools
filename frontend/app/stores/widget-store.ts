@@ -10,10 +10,18 @@ import {
   TOOL_WIDGET,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
+import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
+
+export const {
+  wallet: widgetWallet,
+  load: loadWidgetWallet,
+  persist: persistWidgetWallet,
+  actions: widgetWalletActions,
+} = createWalletStore(TOOL_WIDGET)
 
 export type WidgetStore = ReturnType<typeof createWidgetStore>
 
@@ -78,8 +86,7 @@ export const actions = {
     })
   },
   async getProfiles(tool: typeof TOOL_WIDGET): Promise<ToolProfiles<'widget'>> {
-    const { walletAddress } = toolState
-    return await getToolProfiles(walletAddress, tool)
+    return await getToolProfiles(widgetWallet.walletAddress, tool)
   },
   resetProfiles() {
     widgetStoreUtils.removeProfilesFromStorage()
@@ -101,8 +108,12 @@ export const actions = {
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(widget.profile)
-    const { walletAddress, activeTab } = toolState
-    return await saveToolProfile(walletAddress, TOOL_WIDGET, profile, activeTab)
+    return await saveToolProfile(
+      widgetWallet.walletAddress,
+      TOOL_WIDGET,
+      profile,
+      toolState.activeTab,
+    )
   },
   commitProfile() {
     const profile = snapshot(widget.profile)

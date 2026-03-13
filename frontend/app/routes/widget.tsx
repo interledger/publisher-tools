@@ -25,6 +25,7 @@ import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import {
   toolState,
   toolActions,
@@ -37,6 +38,8 @@ import {
   widget,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
+  loadWidgetWallet,
+  persistWidgetWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
 } from '~/stores/widget-store'
@@ -81,6 +84,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
+  const [walletSnap, walletActions] = useToolWallet()
   const widgetSnap = useSnapshot(widget)
   const navigate = useNavigate()
   const uiActions = useUIActions()
@@ -102,6 +106,8 @@ export default function Widget() {
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
+    loadWidgetWallet()
+    persistWidgetWallet()
 
     return () => {
       unsubscribeStorage()
@@ -114,8 +120,8 @@ export default function Widget() {
   })
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
-      toolActions.setConnectWalletStep('error')
+    if (!walletSnap.isWalletConnected) {
+      walletActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
     }
@@ -154,7 +160,7 @@ export default function Widget() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep,
+                      status: walletSnap.walletConnectStep,
                     },
                     {
                       number: 2,
@@ -170,7 +176,7 @@ export default function Widget() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={walletSnap.walletConnectStep}
                   />
                   <ToolsWalletAddress toolName="payment widget" />
                 </div>
