@@ -86,9 +86,20 @@ export const toolActions = {
         break
     }
   },
-  resetProfiles() {
-    for (const actions of [bannerActions, widgetActions, offerwallActions]) {
-      actions.resetProfiles()
+  resetToolProfiles() {
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        bannerActions.resetProfiles()
+        break
+      case TOOL_WIDGET:
+        widgetActions.resetProfiles()
+        break
+      case TOOL_OFFERWALL:
+        offerwallActions.resetProfiles()
+        break
+
+      default:
+        break
     }
   },
   setCurrentToolType: (toolType: Tool) => {

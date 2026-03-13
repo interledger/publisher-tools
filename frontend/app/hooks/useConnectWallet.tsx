@@ -92,7 +92,7 @@ export const useConnectWallet = () => {
   }, [openDialog, resetWalletUIState, walletActions])
 
   const disconnect = useCallback(() => {
-    toolActions.resetProfiles() // should reset tool specific profiles only.
+    toolActions.resetToolProfiles()
     walletActions.setWalletConnected(false)
     walletActions.setHasRemoteConfigs(false)
     resetWalletUIState()
