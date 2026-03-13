@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import type { ReactNode } from 'react'
 import { DialogProvider } from '@/components'
-import { toolActions } from './toolStore'
+import { toolActions } from '~/stores/toolStore'
 
 export type BuilderSection = 'content' | 'appearance'
 
