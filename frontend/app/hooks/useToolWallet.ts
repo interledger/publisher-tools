@@ -9,8 +9,10 @@ import {
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 import { widgetWallet, widgetWalletActions } from '~/stores/widget-store'
 
-function getWalletStore(pathname: string): [WalletStore, WalletActions] {
+function getWalletStore(): [WalletStore, WalletActions] {
+  const { pathname } = useLocation()
   const tool = pathname.split('/')[1]
+
   switch (tool) {
     case TOOL_WIDGET:
       return [widgetWallet, widgetWalletActions]
@@ -27,8 +29,7 @@ function getWalletStore(pathname: string): [WalletStore, WalletActions] {
 export function useToolWallet(options?: {
   sync: boolean
 }): [WalletStore, WalletActions] {
-  const { pathname } = useLocation()
-  const [walletProxy, actions] = getWalletStore(pathname)
+  const [walletProxy, actions] = getWalletStore()
   const snap = useSnapshot(walletProxy, options)
   return [snap, actions]
 }
