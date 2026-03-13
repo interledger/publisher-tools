@@ -12,8 +12,6 @@ function createWalletState() {
   return {
     walletAddress: '',
     walletAddressId: '',
-    grantResponse: '',
-    isGrantAccepted: false,
     isWalletConnected: false,
     hasRemoteConfigs: false,
     walletConnectStep: 'unfilled' as StepStatus,
@@ -37,10 +35,6 @@ function createWalletActions(wallet: WalletStore) {
     },
     setHasRemoteConfigs(has: boolean) {
       wallet.hasRemoteConfigs = has
-    },
-    setGrantResponse(response: string, accepted: boolean) {
-      wallet.grantResponse = response
-      wallet.isGrantAccepted = accepted
     },
   }
 }
