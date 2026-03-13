@@ -95,6 +95,7 @@ export const useConnectWallet = () => {
     toolActions.resetToolProfiles()
     walletActions.setWalletConnected(false)
     walletActions.setHasRemoteConfigs(false)
+    walletActions.clearWalletStorage()
     resetWalletUIState()
     uiActions.focusWalletInput()
   }, [uiActions, resetWalletUIState, walletActions])

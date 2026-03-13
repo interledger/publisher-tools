@@ -18,7 +18,7 @@ function createWalletState() {
   }
 }
 
-function createWalletActions(wallet: WalletStore) {
+function createWalletActions(wallet: WalletStore, storageKey: string) {
   return {
     setWalletConnected(connected: boolean) {
       wallet.isWalletConnected = connected
@@ -36,6 +36,9 @@ function createWalletActions(wallet: WalletStore) {
     setHasRemoteConfigs(has: boolean) {
       wallet.hasRemoteConfigs = has
     },
+    clearWalletStorage() {
+      localStorage.removeItem(storageKey)
+    },
   }
 }
 
@@ -44,7 +47,7 @@ export type WalletActions = ReturnType<typeof createWalletActions>
 export function createWalletStore(tool: Tool) {
   const wallet = proxy(createWalletState())
   const storageKey = getStorageKey(tool)
-  const actions = createWalletActions(wallet)
+  const actions = createWalletActions(wallet, storageKey)
 
   function load() {
     try {
