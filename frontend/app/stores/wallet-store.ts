@@ -1,8 +1,8 @@
 import { proxy, snapshot, subscribe } from 'valtio'
 import type { Tool } from '@shared/types'
+import type { StepStatus } from './toolStore'
 
 export type WalletStore = ReturnType<typeof createWalletState>
-type StepStatus = 'unfilled' | 'filled' | 'error'
 
 function getStorageKey(tool: Tool) {
   return `wallet-store:${tool}`

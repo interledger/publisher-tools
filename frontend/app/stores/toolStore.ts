@@ -9,7 +9,6 @@ import {
   TOOL_OFFERWALL,
   PROFILE_A,
 } from '@shared/types'
-import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
@@ -23,6 +22,8 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'opWallet',
   'cdnUrl',
 ])
+
+export type StepStatus = 'unfilled' | 'filled' | 'error'
 
 export const toolState = proxy({
   activeTab: PROFILE_A as ProfileId,
