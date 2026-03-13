@@ -53,7 +53,17 @@ export function createWalletStore(tool: Tool) {
     try {
       const saved = localStorage.getItem(storageKey)
       if (!saved) return
-      const parsed = JSON.parse(saved) as Partial<WalletStore> // validations?
+
+      const isValid = (parsed: WalletStore) =>
+        typeof parsed === 'object' &&
+        Object.keys(parsed).every((key) => key in parsed)
+
+      const parsed = JSON.parse(saved)
+      if (!isValid(parsed)) {
+        localStorage.removeItem(storageKey)
+        return
+      }
+
       Object.assign(wallet, parsed)
     } catch {
       localStorage.removeItem(storageKey)
