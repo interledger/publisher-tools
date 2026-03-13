@@ -167,7 +167,7 @@ export default function Offerwall() {
                     {
                       number: 2,
                       label: 'Build',
-                      status: walletSnap.buildStep,
+                      status: snap.buildStep,
                     },
                   ]}
                 />
@@ -191,7 +191,7 @@ export default function Offerwall() {
                     <MobileStepsIndicator
                       number={2}
                       label="Build"
-                      status={walletSnap.buildStep}
+                      status={snap.buildStep}
                     />
 
                     <BuilderProfileTabs

@@ -42,11 +42,11 @@ export const useConnectWallet = () => {
 
   const resetWalletUIState = useCallback(() => {
     toolActions.setActiveTab(PROFILE_A)
-    walletActions.setBuildCompleteStep('unfilled')
+    toolActions.setBuildCompleteStep('unfilled')
     uiActions.setContentComplete(false)
     uiActions.setAppearanceComplete(false)
     uiActions.setActiveSection('content')
-  }, [uiActions, walletActions])
+  }, [uiActions])
 
   const connect = useCallback(async (): Promise<void> => {
     try {

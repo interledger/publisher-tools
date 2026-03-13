@@ -14,8 +14,8 @@ import {
   FONT_FAMILY_OPTIONS,
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import { useOfferwallProfile } from '~/stores/offerwall-store'
+import { toolActions } from '~/stores/toolStore'
 import { useUIState } from '~/stores/uiStore'
 
 interface Props {
@@ -33,14 +33,13 @@ export function OfferwallBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const uiState = useUIState()
   const [snap, profile] = useOfferwallProfile()
-  const [, walletActions] = useToolWallet()
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
   )
 
   useEffect(() => {
     const unsubscribe = subscribe(profile, () => {
-      walletActions.setBuildCompleteStep('filled')
+      toolActions.setBuildCompleteStep('filled')
     })
 
     return unsubscribe

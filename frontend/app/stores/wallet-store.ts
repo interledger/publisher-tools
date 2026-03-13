@@ -17,7 +17,6 @@ function createWalletState() {
     isWalletConnected: false,
     hasRemoteConfigs: false,
     walletConnectStep: 'unfilled' as StepStatus,
-    buildStep: 'unfilled' as StepStatus,
   }
 }
 
@@ -29,9 +28,6 @@ function createWalletActions(wallet: WalletStore) {
     },
     setConnectWalletStep(step: StepStatus) {
       wallet.walletConnectStep = step
-    },
-    setBuildCompleteStep(step: StepStatus) {
-      wallet.buildStep = step
     },
     setWalletAddress(address: string) {
       wallet.walletAddress = address
@@ -60,7 +56,7 @@ export function createWalletStore(tool: Tool) {
     try {
       const saved = localStorage.getItem(storageKey)
       if (!saved) return
-      const parsed = JSON.parse(saved) as Partial<WalletStore>
+      const parsed = JSON.parse(saved) as Partial<WalletStore> // validations?
       Object.assign(wallet, parsed)
     } catch {
       localStorage.removeItem(storageKey)

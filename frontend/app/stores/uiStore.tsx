@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import type { ReactNode } from 'react'
 import { DialogProvider } from '@/components'
-import { useToolWallet } from '~/hooks/useToolWallet'
+import { toolActions } from './toolStore'
 
 export type BuilderSection = 'content' | 'appearance'
 
@@ -47,7 +47,6 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [activeSection, setActiveSection] =
     useState<UIState['activeSection']>(null)
   const buildStepComplete = contentComplete && appearanceComplete
-  const [, walletActions] = useToolWallet()
 
   useEffect(() => {
     if (shouldFocusWallet && walletInputRef.current) {
@@ -57,8 +56,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   }, [shouldFocusWallet])
 
   useEffect(() => {
-    walletActions.setBuildCompleteStep(buildStepComplete ? 'filled' : 'unfilled')
-  }, [buildStepComplete, walletActions])
+    toolActions.setBuildCompleteStep(buildStepComplete ? 'filled' : 'unfilled')
+  }, [buildStepComplete])
 
   const focusWalletInput = useCallback(() => {
     setShouldFocusWallet(true)

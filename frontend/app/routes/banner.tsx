@@ -178,7 +178,7 @@ export default function Banner() {
                     {
                       number: 2,
                       label: 'Build',
-                      status: walletSnap.buildStep,
+                      status: snap.buildStep,
                     },
                   ]}
                 />
@@ -202,7 +202,7 @@ export default function Banner() {
                     <MobileStepsIndicator
                       number={2}
                       label="Build"
-                      status={walletSnap.buildStep}
+                      status={snap.buildStep}
                     />
 
                     <BuilderProfileTabs

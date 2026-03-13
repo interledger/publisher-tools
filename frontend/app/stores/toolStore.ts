@@ -9,6 +9,7 @@ import {
   TOOL_OFFERWALL,
   PROFILE_A,
 } from '@shared/types'
+import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
@@ -18,6 +19,7 @@ const STORAGE_KEY = 'valtio-store'
 
 const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'currentToolType',
+  'buildStep',
   'opWallet',
   'cdnUrl',
 ])
@@ -39,6 +41,9 @@ export const toolState = proxy({
 
   // environment variables
   opWallet: '',
+
+  // customization steps state
+  buildStep: 'unfilled' as StepStatus,
 })
 
 export const toolActions = {
@@ -98,6 +103,9 @@ export const toolActions = {
     toolState.loadingState = state
   },
 
+  setBuildCompleteStep(step: StepStatus) {
+    toolState.buildStep = step
+  },
 }
 
 /** Load from localStorage on init, remove storage if invalid */
@@ -122,7 +130,6 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
   } catch {
     localStorage.removeItem(STORAGE_KEY)
   }
-
 }
 
 export function persistState() {
