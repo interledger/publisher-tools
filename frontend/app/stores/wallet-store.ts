@@ -60,8 +60,7 @@ export function createWalletStore(tool: Tool) {
 
       const parsed = JSON.parse(saved)
       if (!isValid(parsed)) {
-        localStorage.removeItem(storageKey)
-        return
+        throw new Error('Failed to parse')
       }
 
       Object.assign(wallet, parsed)
