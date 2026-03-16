@@ -10,6 +10,7 @@ import { ApiError } from '~/lib/helpers'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { toolState } from '~/stores/toolStore'
+import type { WalletStore } from '~/stores/wallet-store'
 import { actions as widgetActions } from '~/stores/widget-store'
 
 function getToolActions() {
@@ -25,7 +26,7 @@ function getToolActions() {
   }
 }
 
-export const useSaveProfile = () => {
+export const useSaveProfile = (wallet: WalletStore) => {
   const [openDialog, closeDialog] = useDialog()
 
   const save = useCallback(
@@ -37,7 +38,10 @@ export const useSaveProfile = () => {
 
         if (result.grantRedirect) {
           openDialog(
-            <GrantConfirmationDialog grantRedirect={result.grantRedirect} />,
+            <GrantConfirmationDialog
+              walletAddress={wallet.walletAddress}
+              grantRedirect={result.grantRedirect}
+            />,
           )
           return
         }
@@ -46,7 +50,7 @@ export const useSaveProfile = () => {
           actions.commitProfile()
 
           if (action === 'script') {
-            openDialog(<ScriptDialog />)
+            openDialog(<ScriptDialog wallet={wallet} />)
           } else {
             openDialog(<StatusDialog onDone={closeDialog} />)
           }

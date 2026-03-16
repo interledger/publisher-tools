@@ -10,10 +10,18 @@ import {
   TOOL_BANNER,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
+import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
+
+export const {
+  wallet: bannerWallet,
+  load: loadBannerWallet,
+  persist: persistBannerWallet,
+  actions: bannerWalletActions,
+} = createWalletStore(TOOL_BANNER)
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 
@@ -79,8 +87,7 @@ export const actions = {
     })
   },
   async getProfiles(tool: typeof TOOL_BANNER): Promise<ToolProfiles<'banner'>> {
-    const { walletAddress } = toolState
-    return await getToolProfiles(walletAddress, tool)
+    return await getToolProfiles(bannerWallet.walletAddress, tool)
   },
   resetProfiles() {
     bannerStoreUtils.removeProfilesFromStorage()
@@ -102,8 +109,12 @@ export const actions = {
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
-    const { walletAddress, activeTab } = toolState
-    return await saveToolProfile(walletAddress, TOOL_BANNER, profile, activeTab)
+    return await saveToolProfile(
+      bannerWallet.walletAddress,
+      TOOL_BANNER,
+      profile,
+      toolState.activeTab,
+    )
   },
   commitProfile() {
     const profile = snapshot(banner.profile)
