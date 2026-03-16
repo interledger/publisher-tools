@@ -5,7 +5,7 @@ import type { StepStatus } from './toolStore'
 export type WalletStore = ReturnType<typeof createWalletState>
 
 function getStorageKey(tool: Tool) {
-  return `wallet-store:${tool}`
+  return `wmt-${tool}-wallet`
 }
 
 function createWalletState() {
