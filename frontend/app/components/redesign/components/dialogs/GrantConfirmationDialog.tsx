@@ -1,16 +1,17 @@
 import React from 'react'
-import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components'
 import { Heading5, BodyEmphasis } from '@/typography'
-import { toolState } from '~/stores/toolStore'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
+  walletAddress: string
   grantRedirect: string
 }
 
-export const GrantConfirmationDialog: React.FC<Props> = ({ grantRedirect }) => {
-  const { walletAddress } = useSnapshot(toolState)
+export const GrantConfirmationDialog: React.FC<Props> = ({
+  walletAddress,
+  grantRedirect,
+}) => {
   return (
     <BaseDialog
       className="p-8 pb-4

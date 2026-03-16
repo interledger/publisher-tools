@@ -1,10 +1,13 @@
 import { useCallback } from 'react'
 import { ProfilesDialog, StatusDialog } from '@/components'
+import { PROFILE_A } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { ApiError } from '~/lib/helpers'
 import { banner } from '~/stores/banner-store'
 import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
+import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 import { widget } from '~/stores/widget-store'
 
 function getLegacyOptions() {
@@ -32,8 +35,20 @@ function getLegacyOptions() {
   }
 }
 
-export const useConnectWallet = () => {
+export const useConnectWallet = (
+  wallet: WalletStore,
+  walletActions: WalletActions,
+) => {
   const [openDialog, closeDialog] = useDialog()
+  const uiActions = useUIActions()
+
+  const resetWalletUIState = useCallback(() => {
+    toolActions.setActiveTab(PROFILE_A)
+    toolActions.setBuildCompleteStep('unfilled')
+    uiActions.setContentComplete(false)
+    uiActions.setAppearanceComplete(false)
+    uiActions.setActiveSection('content')
+  }, [uiActions])
 
   const connect = useCallback(async (): Promise<void> => {
     try {
@@ -42,6 +57,7 @@ export const useConnectWallet = () => {
       if (options.hasConflicts) {
         openDialog(
           <ProfilesDialog
+            walletActions={walletActions}
             fetchedConfigs={fetchedProfiles}
             currentLocalConfigs={options.profiles}
             modifiedVersions={options.updates}
@@ -51,10 +67,13 @@ export const useConnectWallet = () => {
       }
 
       toolActions.setToolProfiles(fetchedProfiles)
-      toolActions.setHasRemoteConfigs(true)
+      walletActions.setHasRemoteConfigs(true)
+      walletActions.setWalletConnected(true)
+      resetWalletUIState()
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
-        toolActions.setHasRemoteConfigs(false)
+        walletActions.setHasRemoteConfigs(false)
+        walletActions.setWalletConnected(true)
         return
       }
 
@@ -73,7 +92,16 @@ export const useConnectWallet = () => {
       )
       throw err
     }
-  }, [openDialog])
+  }, [openDialog, resetWalletUIState, walletActions])
 
-  return { connect }
+  const disconnect = useCallback(() => {
+    toolActions.resetToolProfiles()
+    walletActions.setWalletConnected(false)
+    walletActions.setHasRemoteConfigs(false)
+    walletActions.clearWalletStorage()
+    resetWalletUIState()
+    uiActions.focusWalletInput()
+  }, [uiActions, resetWalletUIState, walletActions])
+
+  return { connect, disconnect }
 }

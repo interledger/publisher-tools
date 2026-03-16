@@ -25,19 +25,25 @@ import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import {
   toolState,
   toolActions,
   persistState,
   loadState,
 } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import {
   actions,
   widget,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
+  loadWidgetWallet,
+  persistWidgetWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
+  widgetWallet,
+  widgetWalletActions,
 } from '~/stores/widget-store'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
@@ -82,7 +88,12 @@ export default function Widget() {
   const snap = useSnapshot(toolState)
   const widgetSnap = useSnapshot(widget)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveProfile()
+  const uiActions = useUIActions()
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: widgetWallet,
+    actions: widgetWalletActions,
+  })
+  const { save, saveLastAction } = useSaveProfile(widgetWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -92,6 +103,7 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    uiActions.setActiveSection('content')
     const unsubscribeUpdates = subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     const unsubscribeStorage = subscribeProfilesToStorage()
@@ -99,6 +111,8 @@ export default function Widget() {
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
+    loadWidgetWallet()
+    persistWidgetWallet()
 
     return () => {
       unsubscribeStorage()
@@ -111,8 +125,8 @@ export default function Widget() {
   })
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
-      toolActions.setConnectWalletStep('error')
+    if (!walletSnap.isWalletConnected) {
+      walletActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
     }
@@ -151,7 +165,7 @@ export default function Widget() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep,
+                      status: walletSnap.walletConnectStep,
                     },
                     {
                       number: 2,
@@ -167,9 +181,13 @@ export default function Widget() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="payment widget" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="payment widget"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
