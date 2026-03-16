@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton } from '@/components'
-import { Heading5, BodyEmphasis, BodyStandard } from '@/typography'
+import { BodyEmphasis, BodyStandard } from '@/typography'
 import { toolState } from '~/stores/toolStore'
 import { BaseDialog } from './BaseDialog'
 
@@ -14,7 +14,7 @@ export const GrantConfirmationDialog: React.FC<Props> = ({ grantRedirect }) => {
   return (
     <BaseDialog
       className="p-4 pt-8
-        flex flex-col items-center gap-4 w-full max-w-dialog"
+        flex flex-col items-center gap-4 w-full lg:w-[34rem]"
     >
       <div className="text-center">
         <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>
