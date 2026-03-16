@@ -2,7 +2,6 @@ import React from 'react'
 import { useSnapshot } from 'valtio'
 import { SVGMarkStatusSmall, SVGTooltip } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
-import { TOOL_OFFERWALL } from '@shared/types'
 import { toWalletAddressUrl } from '@shared/utils'
 import { toolState } from '~/stores/toolStore'
 import { BaseDialog } from './BaseDialog'
@@ -76,19 +75,17 @@ export const ScriptDialog: React.FC = () => {
         </ToolsPrimaryButton>
       </div>
 
-      {snap.currentToolType !== TOOL_OFFERWALL && (
-        <p className="text-style-small-standard text-text-primary text-center">
-          View{' '}
-          <a
-            href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-600 underline hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-primary-focus rounded"
-          >
-            Documentation
-          </a>
-        </p>
-      )}
+      <p className="text-style-small-standard text-text-primary text-center">
+        View{' '}
+        <a
+          href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
+          target="_blank"
+          rel="noreferrer"
+          className="text-blue-600 underline hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-primary-focus rounded"
+        >
+          Documentation
+        </a>
+      </p>
     </BaseDialog>
   )
 }
