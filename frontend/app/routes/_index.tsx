@@ -3,6 +3,7 @@ import { urlWithParams } from '@shared/utils'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
+import SVGOfferwall from '~/assets/images/landing/illustration_offerwall.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
 import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_plugin.svg?url'
@@ -92,6 +93,19 @@ const interactionTools = [
 ].filter((e) => !e.disabled)
 
 const integrationTools = [
+  {
+    title: 'Google Offerwall',
+    description:
+      'Customize the Web Monetization choice shown in Google Offerwall to help visitors support your site.',
+    tags: [
+      'Web Monetization',
+      'Visibility boost',
+      'Audience education',
+      'Engagement',
+    ],
+    icon: SVGOfferwall,
+    link: '/offerwall',
+  },
   {
     title: 'WordPress plugin',
     description:
@@ -242,7 +256,7 @@ export default function Index() {
 
           <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Use integration tools to enable Web Monetization on your site
-            through supported platforms like WordPress.
+            through supported platforms like Google and WordPress.
           </p>
 
           <ul
@@ -264,10 +278,6 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li
-              aria-hidden="true"
-              className="w-[340px] opacity-0 max-xl:hidden"
-            />
             <li
               aria-hidden="true"
               className="w-[340px] opacity-0 max-xl:hidden"

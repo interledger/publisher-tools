@@ -27,11 +27,16 @@ import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import {
   actions,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
+  loadOfferwallWallet,
   offerwall,
+  offerwallWallet,
+  offerwallWalletActions,
+  persistOfferwallWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
 } from '~/stores/offerwall-store'
@@ -82,9 +87,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Offerwall() {
   const snap = useSnapshot(toolState)
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: offerwallWallet,
+    actions: offerwallWalletActions,
+  })
   const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveProfile()
+  const { save, saveLastAction } = useSaveProfile(offerwallWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -101,6 +110,8 @@ export default function Offerwall() {
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
+    loadOfferwallWallet()
+    persistOfferwallWallet()
 
     return () => {
       unsubscribeStorage()
@@ -113,8 +124,8 @@ export default function Offerwall() {
   })
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
-      toolActions.setConnectWalletStep('error')
+    if (!walletSnap.isWalletConnected) {
+      walletActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
     }
@@ -156,7 +167,7 @@ export default function Offerwall() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep,
+                      status: walletSnap.walletConnectStep,
                     },
                     {
                       number: 2,
@@ -172,9 +183,13 @@ export default function Offerwall() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="offerwall experience" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="offerwall experience"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

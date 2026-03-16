@@ -9,12 +9,10 @@ import {
   TOOL_OFFERWALL,
   PROFILE_A,
 } from '@shared/types'
-import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
-import { captureSnapshotsToStorage } from './banner-store'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -24,6 +22,8 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'opWallet',
   'cdnUrl',
 ])
+
+export type StepStatus = 'unfilled' | 'filled' | 'error'
 
 export const toolState = proxy({
   activeTab: PROFILE_A as ProfileId,
@@ -43,14 +43,7 @@ export const toolState = proxy({
   // environment variables
   opWallet: '',
 
-  // wallet and connection state
-  walletAddress: '',
-  walletAddressId: '',
-  grantResponse: '',
-  isGrantAccepted: false,
-  isWalletConnected: false,
-  hasRemoteConfigs: false,
-  walletConnectStep: 'unfilled' as StepStatus,
+  // customization steps state
   buildStep: 'unfilled' as StepStatus,
 })
 
@@ -94,9 +87,20 @@ export const toolActions = {
         break
     }
   },
-  resetProfiles() {
-    for (const actions of [bannerActions, widgetActions, offerwallActions]) {
-      actions.resetProfiles()
+  resetToolProfiles() {
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        bannerActions.resetProfiles()
+        break
+      case TOOL_WIDGET:
+        widgetActions.resetProfiles()
+        break
+      case TOOL_OFFERWALL:
+        offerwallActions.resetProfiles()
+        break
+
+      default:
+        break
     }
   },
   setCurrentToolType: (toolType: Tool) => {
@@ -111,36 +115,8 @@ export const toolActions = {
     toolState.loadingState = state
   },
 
-  setWalletConnected: (connected: boolean) => {
-    toolState.isWalletConnected = connected
-    if (connected) {
-      toolState.walletConnectStep = 'filled'
-    } else {
-      toolState.walletConnectStep = 'unfilled'
-    }
-
-    captureSnapshotsToStorage()
-  },
-
-  setConnectWalletStep: (step: StepStatus) => {
-    toolState.walletConnectStep = step
-  },
-
-  setBuildCompleteStep: (step: StepStatus) => {
+  setBuildCompleteStep(step: StepStatus) {
     toolState.buildStep = step
-  },
-  setWalletAddress: (walletAddress: string) => {
-    toolState.walletAddress = walletAddress
-  },
-  setWalletAddressId: (walletAddressId: string) => {
-    toolState.walletAddressId = walletAddressId
-  },
-  setHasRemoteConfigs: (hasRemoteConfigs: boolean) => {
-    toolState.hasRemoteConfigs = hasRemoteConfigs
-  },
-  setGrantResponse: (grantResponse: string, isGrantAccepted: boolean) => {
-    toolState.grantResponse = grantResponse
-    toolState.isGrantAccepted = isGrantAccepted
   },
 }
 
@@ -158,8 +134,7 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
         Object.keys(parsed).every((key) => key in toolState)
 
       if (validKeys) {
-        const loadedData = parsedStorageData(parsed)
-        Object.assign(toolState, loadedData)
+        Object.assign(toolState, omit(parsed, EXCLUDED_FROM_STORAGE))
       } else {
         throw new Error('saved configuration not valid')
       }
@@ -173,15 +148,7 @@ export function persistState() {
   subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(createStorageState(toolState)),
+      JSON.stringify(omit(toolState, EXCLUDED_FROM_STORAGE)),
     )
   })
-}
-
-function createStorageState(state: typeof toolState) {
-  return omit(state, EXCLUDED_FROM_STORAGE)
-}
-
-function parsedStorageData(parsed: Record<string, unknown>) {
-  return omit(parsed, EXCLUDED_FROM_STORAGE)
 }

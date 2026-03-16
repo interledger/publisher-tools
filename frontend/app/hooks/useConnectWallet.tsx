@@ -7,6 +7,7 @@ import { banner } from '~/stores/banner-store'
 import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 import { widget } from '~/stores/widget-store'
 
 function getLegacyOptions() {
@@ -34,7 +35,10 @@ function getLegacyOptions() {
   }
 }
 
-export const useConnectWallet = () => {
+export const useConnectWallet = (
+  wallet: WalletStore,
+  walletActions: WalletActions,
+) => {
   const [openDialog, closeDialog] = useDialog()
   const uiActions = useUIActions()
 
@@ -53,6 +57,7 @@ export const useConnectWallet = () => {
       if (options.hasConflicts) {
         openDialog(
           <ProfilesDialog
+            walletActions={walletActions}
             fetchedConfigs={fetchedProfiles}
             currentLocalConfigs={options.profiles}
             modifiedVersions={options.updates}
@@ -62,13 +67,13 @@ export const useConnectWallet = () => {
       }
 
       toolActions.setToolProfiles(fetchedProfiles)
-      toolActions.setHasRemoteConfigs(true)
-      toolActions.setWalletConnected(true)
+      walletActions.setHasRemoteConfigs(true)
+      walletActions.setWalletConnected(true)
       resetWalletUIState()
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
-        toolActions.setHasRemoteConfigs(false)
-        toolActions.setWalletConnected(true)
+        walletActions.setHasRemoteConfigs(false)
+        walletActions.setWalletConnected(true)
         return
       }
 
@@ -87,15 +92,16 @@ export const useConnectWallet = () => {
       )
       throw err
     }
-  }, [openDialog, resetWalletUIState])
+  }, [openDialog, resetWalletUIState, walletActions])
 
   const disconnect = useCallback(() => {
-    toolActions.resetProfiles()
-    toolActions.setWalletConnected(false)
-    toolActions.setHasRemoteConfigs(false)
+    toolActions.resetToolProfiles()
+    walletActions.setWalletConnected(false)
+    walletActions.setHasRemoteConfigs(false)
+    walletActions.clearWalletStorage()
     resetWalletUIState()
     uiActions.focusWalletInput()
-  }, [uiActions, resetWalletUIState])
+  }, [uiActions, resetWalletUIState, walletActions])
 
   return { connect, disconnect }
 }

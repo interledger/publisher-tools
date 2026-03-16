@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
-import { useSnapshot } from 'valtio'
 import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
 import {
@@ -11,16 +10,21 @@ import {
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import type { ElementErrors } from '~/lib/types'
-import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
 interface Props {
+  store: WalletStore
+  walletActions: WalletActions
   toolName: 'drawer banner' | 'payment widget' | 'offerwall experience'
 }
 
-export const ToolsWalletAddress = ({ toolName }: Props) => {
-  const snap = useSnapshot(toolState, { sync: true })
-  const { connect, disconnect } = useConnectWallet()
+export const ToolsWalletAddress = ({
+  store: snap,
+  walletActions,
+  toolName,
+}: Props) => {
+  const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
@@ -57,7 +61,7 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
       )
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
-      toolActions.setWalletAddressId(walletAddressInfo.id)
+      walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
     } catch (error) {
       setError({
@@ -72,10 +76,10 @@ export const ToolsWalletAddress = ({ toolName }: Props) => {
   const handleWalletAddressChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    toolActions.setWalletAddress(e.target.value)
+    walletActions.setWalletAddress(e.target.value)
 
     if (snap.walletConnectStep !== 'unfilled') {
-      toolActions.setConnectWalletStep('unfilled')
+      walletActions.setConnectWalletStep('unfilled')
     }
     if (error) {
       setError(undefined)

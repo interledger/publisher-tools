@@ -29,11 +29,16 @@ import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
+import { useToolWallet } from '~/hooks/useToolWallet'
 import {
   actions,
   banner,
+  bannerWallet,
+  bannerWalletActions,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
+  loadBannerWallet,
+  persistBannerWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
   useBannerProfile,
@@ -86,11 +91,15 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: bannerWallet,
+    actions: bannerWalletActions,
+  })
   const bannerSnap = useSnapshot(banner)
   const [profile] = useBannerProfile()
   const navigate = useNavigate()
   const uiActions = useUIActions()
-  const { save, saveLastAction } = useSaveProfile()
+  const { save, saveLastAction } = useSaveProfile(bannerWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -109,6 +118,8 @@ export default function Banner() {
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
+    loadBannerWallet()
+    persistBannerWallet()
 
     return () => {
       unsubscribeStorage()
@@ -121,8 +132,8 @@ export default function Banner() {
   })
 
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
-      toolActions.setConnectWalletStep('error')
+    if (!walletSnap.isWalletConnected) {
+      walletActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
     }
@@ -167,7 +178,7 @@ export default function Banner() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep,
+                      status: walletSnap.walletConnectStep,
                     },
                     {
                       number: 2,
@@ -183,9 +194,13 @@ export default function Banner() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="drawer banner" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="drawer banner"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
