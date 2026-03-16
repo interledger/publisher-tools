@@ -2,7 +2,6 @@ import React from 'react'
 import { useSnapshot } from 'valtio'
 import { SVGMarkStatusSmall, SVGTooltip } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
-import { TOOL_OFFERWALL } from '@shared/types'
 import { toWalletAddressUrl } from '@shared/utils'
 import { toolState } from '~/stores/toolStore'
 import type { WalletStore } from '~/stores/wallet-store'
@@ -87,10 +86,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
         </ToolsPrimaryButton>
       </div>
 
-      <p
-        hidden={snap.currentToolType === TOOL_OFFERWALL}
-        className="text-style-small-standard text-text-primary text-center"
-      >
+      <p className="text-style-small-standard text-text-primary text-center">
         View{' '}
         <a
           href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
