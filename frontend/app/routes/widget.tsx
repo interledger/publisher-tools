@@ -42,6 +42,8 @@ import {
   persistWidgetWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
+  widgetWallet,
+  widgetWalletActions,
 } from '~/stores/widget-store'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
@@ -84,11 +86,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Widget() {
   const snap = useSnapshot(toolState)
-  const [walletSnap, walletActions] = useToolWallet()
   const widgetSnap = useSnapshot(widget)
   const navigate = useNavigate()
   const uiActions = useUIActions()
-  const { save, saveLastAction } = useSaveProfile()
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: widgetWallet,
+    actions: widgetWalletActions,
+  })
+  const { save, saveLastAction } = useSaveProfile(widgetWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -178,7 +183,11 @@ export default function Widget() {
                     label="Connect"
                     status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="payment widget" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="payment widget"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

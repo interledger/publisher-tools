@@ -16,12 +16,20 @@ import { patchProxy } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
 
-export const {
+const {
   wallet: offerwallWallet,
   load: loadOfferwallWallet,
   persist: persistOfferwallWallet,
   actions: offerwallWalletActions,
 } = createWalletStore(TOOL_OFFERWALL)
+
+export {
+  offerwallWallet,
+  offerwallWalletActions,
+  offerwallStoreUtils,
+  loadOfferwallWallet,
+  persistOfferwallWallet,
+}
 
 export type OfferwallStore = ReturnType<typeof createOfferwallStore>
 

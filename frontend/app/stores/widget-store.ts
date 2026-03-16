@@ -16,12 +16,19 @@ import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
 
-export const {
+const {
   wallet: widgetWallet,
   load: loadWidgetWallet,
   persist: persistWidgetWallet,
   actions: widgetWalletActions,
 } = createWalletStore(TOOL_WIDGET)
+
+export {
+  widgetWallet,
+  widgetWalletActions,
+  loadWidgetWallet,
+  persistWidgetWallet,
+}
 
 export type WidgetStore = ReturnType<typeof createWidgetStore>
 

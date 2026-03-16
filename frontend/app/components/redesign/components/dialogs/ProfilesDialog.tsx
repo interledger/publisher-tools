@@ -8,18 +8,20 @@ import {
 import type { Tool, ToolProfiles } from '@shared/types'
 import { PROFILE_IDS } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import { toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import type { WalletActions } from '~/stores/wallet-store'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
+  walletActions: WalletActions
   fetchedConfigs?: ToolProfiles<Tool>
   currentLocalConfigs?: ToolProfiles<Tool>
   modifiedVersions?: readonly string[]
 }
 
 export const ProfilesDialog: React.FC<Props> = ({
+  walletActions,
   fetchedConfigs,
   currentLocalConfigs,
   modifiedVersions = [],
@@ -27,7 +29,6 @@ export const ProfilesDialog: React.FC<Props> = ({
   const [isOverriding, setIsOverriding] = useState(false)
   const uiActions = useUIActions()
   const [, closeDialog] = useDialog()
-  const [, walletActions] = useToolWallet()
   const generatedConfigs = React.useMemo(() => {
     if (!fetchedConfigs || !currentLocalConfigs) {
       return []

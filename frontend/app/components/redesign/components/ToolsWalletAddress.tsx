@@ -9,17 +9,22 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import type { ElementErrors } from '~/lib/types'
 import { useUIActions } from '~/stores/uiStore'
+import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
 interface Props {
+  store: WalletStore
+  walletActions: WalletActions
   toolName: 'drawer banner' | 'payment widget' | 'offerwall experience'
 }
 
-export const ToolsWalletAddress = ({ toolName }: Props) => {
-  const [snap, walletActions] = useToolWallet()
-  const { connect, disconnect } = useConnectWallet()
+export const ToolsWalletAddress = ({
+  store: snap,
+  walletActions,
+  toolName,
+}: Props) => {
+  const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)

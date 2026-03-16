@@ -16,12 +16,19 @@ import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
 
-export const {
+const {
   wallet: bannerWallet,
   load: loadBannerWallet,
   persist: persistBannerWallet,
   actions: bannerWalletActions,
 } = createWalletStore(TOOL_BANNER)
+
+export {
+  bannerWallet,
+  bannerWalletActions,
+  loadBannerWallet,
+  persistBannerWallet,
+}
 
 export type BannerStore = ReturnType<typeof createBannerStore>
 

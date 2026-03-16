@@ -34,6 +34,8 @@ import {
   hydrateSnapshotsFromStorage,
   loadOfferwallWallet,
   offerwall,
+  offerwallWallet,
+  offerwallWalletActions,
   persistOfferwallWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
@@ -85,10 +87,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Offerwall() {
   const snap = useSnapshot(toolState)
-  const [walletSnap, walletActions] = useToolWallet()
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: offerwallWallet,
+    actions: offerwallWalletActions,
+  })
   const offerwallSnap = useSnapshot(offerwall)
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveProfile()
+  const { save, saveLastAction } = useSaveProfile(offerwallWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -180,7 +185,11 @@ export default function Offerwall() {
                     label="Connect"
                     status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="offerwall experience" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="offerwall experience"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">

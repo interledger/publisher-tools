@@ -7,8 +7,8 @@ import { banner } from '~/stores/banner-store'
 import { offerwall } from '~/stores/offerwall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
+import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 import { widget } from '~/stores/widget-store'
-import { useToolWallet } from './useToolWallet'
 
 function getLegacyOptions() {
   //TODO: refactor ProfilesDialog and remove legacy options
@@ -35,10 +35,12 @@ function getLegacyOptions() {
   }
 }
 
-export const useConnectWallet = () => {
+export const useConnectWallet = (
+  wallet: WalletStore,
+  walletActions: WalletActions,
+) => {
   const [openDialog, closeDialog] = useDialog()
   const uiActions = useUIActions()
-  const [, walletActions] = useToolWallet()
 
   const resetWalletUIState = useCallback(() => {
     toolActions.setActiveTab(PROFILE_A)
@@ -55,6 +57,7 @@ export const useConnectWallet = () => {
       if (options.hasConflicts) {
         openDialog(
           <ProfilesDialog
+            walletActions={walletActions}
             fetchedConfigs={fetchedProfiles}
             currentLocalConfigs={options.profiles}
             modifiedVersions={options.updates}

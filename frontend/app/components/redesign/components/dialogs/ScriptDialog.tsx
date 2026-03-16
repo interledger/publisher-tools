@@ -4,8 +4,8 @@ import { SVGMarkStatusSmall, SVGTooltip } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
 import { TOOL_OFFERWALL } from '@shared/types'
 import { toWalletAddressUrl } from '@shared/utils'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import { toolState } from '~/stores/toolStore'
+import type { WalletStore } from '~/stores/wallet-store'
 import { BaseDialog } from './BaseDialog'
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 
@@ -14,12 +14,15 @@ interface ScriptAttribute {
   value: string
 }
 
-export const ScriptDialog: React.FC = () => {
+interface Props {
+  wallet: WalletStore
+}
+
+export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
   const snap = useSnapshot(toolState)
-  const [walletSnap] = useToolWallet()
   const attributes = getScriptAttributes({
-    walletAddress: walletSnap.walletAddress,
-    walletAddressId: walletSnap.walletAddressId,
+    walletAddress: wallet.walletAddress,
+    walletAddressId: wallet.walletAddressId,
     currentToolType: snap.currentToolType,
     activeTab: snap.activeTab,
     cdnUrl: snap.cdnUrl,

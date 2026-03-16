@@ -33,6 +33,8 @@ import { useToolWallet } from '~/hooks/useToolWallet'
 import {
   actions,
   banner,
+  bannerWallet,
+  bannerWalletActions,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
   loadBannerWallet,
@@ -89,12 +91,15 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
-  const [walletSnap, walletActions] = useToolWallet()
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: bannerWallet,
+    actions: bannerWalletActions,
+  })
   const bannerSnap = useSnapshot(banner)
   const [profile] = useBannerProfile()
   const navigate = useNavigate()
   const uiActions = useUIActions()
-  const { save, saveLastAction } = useSaveProfile()
+  const { save, saveLastAction } = useSaveProfile(bannerWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -191,7 +196,11 @@ export default function Banner() {
                     label="Connect"
                     status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="drawer banner" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="drawer banner"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
