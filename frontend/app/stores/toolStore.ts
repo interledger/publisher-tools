@@ -1,9 +1,6 @@
-import { proxy, subscribe, useSnapshot } from 'valtio'
-import { proxySet } from 'valtio/utils'
-import { getDefaultData } from '@shared/default-data'
+import { proxy, subscribe } from 'valtio'
 import { API_URL, CDN_URL } from '@shared/defines'
 import {
-  type ElementConfigType,
   type Tool,
   type ProfileId,
   type ToolProfiles,
@@ -13,7 +10,6 @@ import {
   PROFILE_A,
 } from '@shared/types'
 import type { StepStatus } from '~/components/redesign/components/StepsIndicator'
-import { APP_BASEPATH } from '~/lib/constants'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
@@ -29,62 +25,9 @@ const EXCLUDED_FROM_STORAGE = new Set<keyof typeof toolState>([
   'cdnUrl',
 ])
 
-const STABLE_KEYS = ['version1', 'version2', 'version3'] as const
-const DEFAULT_VERSION_NAMES = [
-  'Default preset 1',
-  'Default preset 2',
-  'Default preset 3',
-] as const
-
-export type StableKey = (typeof STABLE_KEYS)[number]
-
-interface SaveConfigResponse {
-  grantRequired?: string
-  intent?: string
-  error?: string
-  [key: string]: unknown
-}
-
-const createDefaultConfig = (versionName: string): ElementConfigType => ({
-  ...getDefaultData(),
-  versionName,
-})
-
-/** @deprecated */
-export const createDefaultConfigs = (): Record<
-  StableKey,
-  ElementConfigType
-> => {
-  return STABLE_KEYS.reduce(
-    (configs, key, index) => {
-      configs[key] = createDefaultConfig(DEFAULT_VERSION_NAMES[index])
-      return configs
-    },
-    {} as Record<StableKey, ElementConfigType>,
-  )
-}
-
 export const toolState = proxy({
-  configurations: createDefaultConfigs(),
-  /*
-   * savedConfigurations: baseline configs.
-   * tracks the configurations that are saved persistently,
-   * used to compare against local modifications.
-   */
-  savedConfigurations: createDefaultConfigs(),
-  /*
-   * dirtyProfiles: tracks the configurations that are modified locally.
-   */
-  dirtyProfiles: proxySet<StableKey>(),
-  /** @deprecated */
-  activeVersion: 'version1' as StableKey,
   activeTab: PROFILE_A as ProfileId,
   currentToolType: 'unknown' as Tool,
-
-  /** always returns the active configuration */
-  get currentConfig() {
-    return this.configurations[this.activeVersion]
-  },
 
   // UI state
   lastSaveAction: 'save-success' as 'save-success' | 'script',
@@ -111,25 +54,7 @@ export const toolState = proxy({
   buildStep: 'unfilled' as StepStatus,
 })
 
-subscribe(toolState, () => {
-  updateChangesTracking(toolState.activeVersion)
-})
-
-export function useCurrentConfig(options?: {
-  sync: boolean
-}): [ElementConfigType, ElementConfigType] {
-  // https://github.com/pmndrs/valtio/issues/132
-  const snapshot = useSnapshot(toolState, options).currentConfig
-  return [snapshot, toolState.currentConfig]
-}
-
 export const toolActions = {
-  get versionOptions() {
-    return STABLE_KEYS.map((key) => ({
-      stableKey: key,
-      versionName: toolState.configurations[key].versionName,
-    }))
-  },
   setActiveTab(profileId: ProfileId) {
     toolState.activeTab = profileId
   },
@@ -174,31 +99,6 @@ export const toolActions = {
       actions.resetProfiles()
     }
   },
-  /** legacy backwards compatibility */
-  setConfigs: (
-    fullConfigObject: Record<StableKey, Partial<ElementConfigType>> | null,
-  ) => {
-    const newFullConfig: Record<StableKey, ElementConfigType> =
-      createDefaultConfigs()
-
-    STABLE_KEYS.forEach((profileId) => {
-      if (!fullConfigObject || !fullConfigObject[profileId]) {
-        return
-      }
-
-      newFullConfig[profileId] = {
-        ...newFullConfig[profileId],
-        ...fullConfigObject[profileId],
-      }
-
-      toolState.configurations[profileId] = { ...newFullConfig[profileId] }
-
-      toolState.savedConfigurations[profileId] = { ...newFullConfig[profileId] }
-    })
-
-    toolState.dirtyProfiles.clear()
-  },
-
   setCurrentToolType: (toolType: Tool) => {
     toolState.currentToolType = toolType
   },
@@ -238,108 +138,10 @@ export const toolActions = {
   setHasRemoteConfigs: (hasRemoteConfigs: boolean) => {
     toolState.hasRemoteConfigs = hasRemoteConfigs
   },
-
-  /**
-   * Checks if any local changes have been made to the configurations.
-   */
-  hasCustomEdits: (): boolean => toolState.dirtyProfiles.size > 0,
-  saveConfig: async () => {
-    if (!toolState.walletAddress) {
-      throw new Error('Wallet address is missing')
-    }
-
-    toolState.isSubmitting = true
-    try {
-      const configToSave = {
-        ...toolState.currentConfig,
-        walletAddress: toolState.walletAddress,
-      }
-
-      const formData = new FormData()
-
-      Object.entries(configToSave).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && key !== 'walletAddress') {
-          formData.append(key, String(value))
-        }
-      })
-
-      formData.append('walletAddress', toolState.walletAddress)
-      formData.append('version', toolState.activeVersion)
-
-      const updatedFullConfig = {
-        ...toolState.configurations,
-        [toolState.activeVersion]: configToSave,
-      }
-
-      formData.append('fullconfig', JSON.stringify(updatedFullConfig))
-      formData.append('intent', 'update')
-
-      const baseUrl = location.origin + APP_BASEPATH
-      const url = new URL(`${baseUrl}/api/config/${toolState.currentToolType}`)
-      const response = await fetch(url, {
-        method: 'PUT',
-        body: formData,
-      })
-      if (!response.ok) {
-        const details = await response.json()
-        throw new Error(`Save request failed with status: ${response.status}`, {
-          cause: { details },
-        })
-      }
-
-      const data = (await response.json()) as SaveConfigResponse
-      if (data?.grantRequired) {
-        return { success: false, data }
-      }
-
-      STABLE_KEYS.forEach((profileId) => {
-        toolState.savedConfigurations[profileId] = {
-          ...toolState.configurations[profileId],
-        }
-      })
-      toolState.dirtyProfiles.clear()
-
-      return { success: true, data }
-    } catch (error) {
-      console.error('Save error:', error)
-      throw error
-    } finally {
-      toolState.isSubmitting = false
-    }
-  },
-
   setGrantResponse: (grantResponse: string, isGrantAccepted: boolean) => {
     toolState.grantResponse = grantResponse
     toolState.isGrantAccepted = isGrantAccepted
   },
-
-  handleTabSelect: (profileId: StableKey) => {
-    toolState.activeVersion = profileId
-  },
-
-  handleVersionNameChange: (newName: string) => {
-    toolState.currentConfig.versionName = newName
-  },
-}
-
-function isConfigModified(profileId: StableKey): boolean {
-  const currentConfig = toolState.configurations[profileId]
-  const savedConfig = toolState.savedConfigurations[profileId]
-
-  if (!currentConfig || !savedConfig) {
-    return false
-  }
-
-  return JSON.stringify(currentConfig) !== JSON.stringify(savedConfig)
-}
-
-function updateChangesTracking(profileId: StableKey) {
-  const isModified = isConfigModified(profileId)
-  if (isModified) {
-    toolState.dirtyProfiles.add(profileId)
-  } else {
-    toolState.dirtyProfiles.delete(profileId)
-  }
 }
 
 /** Load from localStorage on init, remove storage if invalid */
@@ -377,21 +179,9 @@ export function persistState() {
 }
 
 function createStorageState(state: typeof toolState) {
-  const omitted = omit(state, EXCLUDED_FROM_STORAGE)
-
-  return {
-    ...omitted,
-    dirtyProfiles: Array.from(state.dirtyProfiles),
-  }
+  return omit(state, EXCLUDED_FROM_STORAGE)
 }
 
 function parsedStorageData(parsed: Record<string, unknown>) {
-  const omitted = omit(parsed, EXCLUDED_FROM_STORAGE)
-
-  return {
-    ...omitted,
-    dirtyProfiles: proxySet<StableKey>(
-      Array.isArray(parsed.dirtyProfiles) ? parsed.dirtyProfiles : [],
-    ),
-  }
+  return omit(parsed, EXCLUDED_FROM_STORAGE)
 }
