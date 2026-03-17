@@ -1,8 +1,17 @@
 import { data } from 'react-router'
 import z from 'zod'
-import { ConfigStorageService } from '@shared/config-storage-service'
+import {
+  ConfigStorageService,
+  ConfigStorageServiceError,
+  isConfigStorageNotFoundError,
+} from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import type { ConfigVersions, Tool } from '@shared/types'
+import type {
+  Configuration,
+  ConfigVersions,
+  Tool,
+  ToolProfiles,
+} from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
@@ -45,8 +54,31 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const walletAddressId = normalizeWalletAddress(walletAddressData)
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
-    const legacy = await storage.getJson<ConfigVersions>(walletAddressId)
-    const profiles = convertToProfiles(legacy, tool)
+    let profiles: ToolProfiles<typeof tool> | null = null
+    try {
+      const config = await storage.getJson<Configuration>(walletAddressId)
+      // config can exist but not have tool specific profiles,
+      profiles = config[tool]
+    } catch (e) {
+      if (!isConfigStorageNotFoundError(e)) {
+        throw e
+      }
+
+      // TODO: to be removed after the completion of versioned config migration
+      const legacy = await storage.getJson<ConfigVersions>(
+        walletAddressId,
+        true,
+      )
+      profiles = convertToProfiles(legacy, tool)
+    }
+
+    if (!profiles) {
+      throw new ConfigStorageServiceError(
+        'not-found',
+        404,
+        `No profiles found for ${tool}`,
+      )
+    }
 
     return data<GetProfilesResult<Tool>>(
       { profiles },
@@ -56,7 +88,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     )
   } catch (error) {
     const err = error as Error
-    if (err.name === 'NoSuchKey' || err.message.includes('404')) {
+    if (isConfigStorageNotFoundError(err)) {
       return data<GetProfilesResult<Tool>>(
         {
           error: { message: 'Configuration not found' },

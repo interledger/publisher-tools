@@ -75,11 +75,7 @@
     }
   }
 
-  details[name='builder-accordion']:not([open]) > div {
-    display: none;
-  }
-
-  details[name='builder-accordion'][open] > div {
+  details[open] > div {
     display: flex;
     animation: accordion-open 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }

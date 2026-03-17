@@ -61,7 +61,10 @@ export const TOOL_OFFERWALL = 'offerwall'
 export const TOOLS = [TOOL_BANNER, TOOL_WIDGET, TOOL_OFFERWALL] as const
 export type Tool = (typeof TOOLS)[number]
 
-export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
+export const PROFILE_A = 'version1'
+export const PROFILE_B = 'version2'
+export const PROFILE_C = 'version3'
+export const PROFILE_IDS = [PROFILE_A, PROFILE_B, PROFILE_C] as const
 export type ProfileId = (typeof PROFILE_IDS)[number]
 
 export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {

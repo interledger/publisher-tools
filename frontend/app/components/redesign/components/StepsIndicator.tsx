@@ -1,7 +1,7 @@
 import React from 'react'
 import { SVGGreenVector, SVGErrorVector } from '~/assets/svg'
+import type { StepStatus } from '~/stores/toolStore'
 
-export type StepStatus = 'unfilled' | 'filled' | 'error'
 type TextPosition = 'top' | 'bottom'
 
 interface StepProps {

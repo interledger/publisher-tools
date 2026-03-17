@@ -55,3 +55,17 @@ function getCustomFontData(fontName: FontFamilyKey, baseUrl: string) {
     }
   }
 }
+
+export function getContrastColor(colorStr: string) {
+  // Create a temporary element to let the browser normalize the color to RGB
+  const temp = document.createElement('div')
+  temp.style.color = colorStr
+  document.body.appendChild(temp)
+  const rgb = window.getComputedStyle(temp).color.match(/\d+/g)!.map(Number)
+  temp.remove()
+
+  const [r, g, b] = rgb
+  // YIQ formula
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000
+  return yiq >= 128 ? '#000000' : '#ffffff'
+}

@@ -17,11 +17,12 @@ import {
   SVGText,
 } from '~/assets/svg'
 import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
-import { useUIActions, useUIState } from '~/stores/uiStore'
+import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import type { BuilderSection } from '~/stores/uiStore'
 import { useWidgetProfile } from '~/stores/widget-store'
 
 interface Props {
-  onRefresh: (section: 'content' | 'appearance') => void
+  onRefresh: (section: BuilderSection) => void
 }
 
 const config = {
@@ -52,25 +53,19 @@ export function WidgetBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const uiState = useUIState()
-  const uiActions = useUIActions()
+  const { isComplete, isOpen, onClick, onToggle, onDone } =
+    useBuilderSectionHandlers('content')
   const [snap, profile] = useWidgetProfile({ sync: true })
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={uiState.contentComplete}
-      onToggle={(isOpen) => {
-        uiActions.setActiveSection(isOpen ? 'content' : null)
-        if (isOpen) {
-          uiActions.setContentComplete(true)
-        }
-      }}
+      isComplete={isComplete}
+      isOpen={isOpen}
+      onClick={onClick}
+      onToggle={onToggle}
       onRefresh={() => onRefresh('content')}
-      onDone={() => {
-        uiActions.setContentComplete(true)
-      }}
-      initialIsOpen={uiState.activeSection === 'content'}
+      onDone={onDone}
     >
       <TitleInput
         value={snap.title.text}
@@ -103,8 +98,8 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const uiState = useUIState()
-  const uiActions = useUIActions()
+  const { isComplete, isOpen, onClick, onToggle, onDone } =
+    useBuilderSectionHandlers('appearance')
   const [snap, profile] = useWidgetProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -114,18 +109,12 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={uiState.appearanceComplete}
-      onToggle={(isOpen: boolean) => {
-        uiActions.setActiveSection(isOpen ? 'appearance' : null)
-        if (isOpen) {
-          uiActions.setAppearanceComplete(true)
-        }
-      }}
+      isComplete={isComplete}
+      isOpen={isOpen}
+      onClick={onClick}
+      onToggle={onToggle}
       onRefresh={() => onRefresh('appearance')}
-      onDone={() => {
-        uiActions.setAppearanceComplete(true)
-      }}
-      initialIsOpen={uiState.activeSection === 'appearance'}
+      onDone={onDone}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
