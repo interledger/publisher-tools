@@ -20,6 +20,8 @@ const BUTTON_CTA = 'Install the Web Monetization Extension'
 export class InstallRequired extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
+  #contrastObserver: MutationObserver | undefined
+
   constructor() {
     super()
   }
@@ -32,6 +34,27 @@ export class InstallRequired extends LitElement {
     if (!customElements.get('wm-header')) {
       customElements.define('wm-header', WebMonetizationHeader)
     }
+  }
+
+  firstUpdated(): void {
+    this.#updateContrastColor()
+
+    const rootNode = this.getRootNode()
+    if (rootNode instanceof ShadowRoot) {
+      const observer = new MutationObserver(() => {
+        requestAnimationFrame(() => this.#updateContrastColor())
+      })
+      observer.observe(rootNode.host, {
+        attributes: true,
+        attributeFilter: ['style'],
+      })
+      this.#contrastObserver = observer
+    }
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    this.#contrastObserver?.disconnect()
   }
 
   render() {
@@ -90,15 +113,20 @@ export class InstallRequired extends LitElement {
     `
   }
 
-  firstUpdated(): void {
-    if (!CSS.supports('color: contrast-color(black)')) {
-      const el = this.renderRoot.querySelector<HTMLAnchorElement>('a.button')!
-      el.style.color = getContrastColor(getComputedStyle(el).backgroundColor)
-    }
-  }
-
   get extensionUrl(): string {
     return getExtensionHref('offerwall')
+  }
+
+  #updateContrastColor(): void {
+    const button = this.shadowRoot?.querySelector(
+      '.button',
+    ) as HTMLElement | null
+    if (!button) return
+    const bgColor = getComputedStyle(button).backgroundColor
+    this.style.setProperty(
+      '--fallback-contrast-color',
+      getContrastColor(bgColor),
+    )
   }
 
   #onExtensionLinkClick = (ev: MouseEvent) => {
