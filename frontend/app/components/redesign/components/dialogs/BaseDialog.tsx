@@ -9,7 +9,11 @@ interface Props {
   dialogClassName?: string
 }
 
-export const BaseDialog: React.FC<Props> = ({ children, className, dialogClassName }) => {
+export const BaseDialog: React.FC<Props> = ({
+  children,
+  className,
+  dialogClassName,
+}) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [, closeDialog] = useDialog()
 
@@ -33,7 +37,7 @@ export const BaseDialog: React.FC<Props> = ({ children, className, dialogClassNa
     <dialog
       ref={dialogRef}
       className={cx(
-        "bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl max-w-[34rem] w-[calc(100%-2rem)]",
+        'bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl max-w-[34rem] w-[calc(100%-2rem)]',
         dialogClassName,
       )}
     >

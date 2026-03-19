@@ -138,7 +138,7 @@ export const ProfilesDialog: React.FC<Props> = ({
 
   return (
     <BaseDialog
-    dialogClassName='w-[32rem] max-w-none'
+      dialogClassName="w-[32rem] max-w-none"
       className="pt-4xl pb-md px-0
         flex flex-col items-center gap-lg"
     >
