@@ -6,14 +6,9 @@ import { useDialog } from '~/hooks/useDialog'
 interface Props {
   children: React.ReactNode
   className?: string
-  dialogClassName?: string
 }
 
-export const BaseDialog: React.FC<Props> = ({
-  children,
-  className,
-  dialogClassName,
-}) => {
+export const BaseDialog: React.FC<Props> = ({ children, className }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [, closeDialog] = useDialog()
 
@@ -37,25 +32,18 @@ export const BaseDialog: React.FC<Props> = ({
     <dialog
       ref={dialogRef}
       className={cx(
-        'bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl',
-        dialogClassName,
+        'relative bg-interface-bg-container border border-interface-edge-container rounded-lg shadow-2xl backdrop:bg-[#8995a7]/65',
+        className,
       )}
     >
-      <div
-        className={cx(
-          'bg-interface-bg-container border border-interface-edge-container rounded-lg',
-          className,
-        )}
+      <button
+        onClick={closeDialog}
+        className="absolute top-3 right-3 w-6 h-6 hover:bg-secondary-hover-surface transition-colors z-30"
+        aria-label="Close dialog"
       >
-        <button
-          onClick={closeDialog}
-          className="absolute top-3 right-3 w-6 h-6 hover:bg-secondary-hover-surface transition-colors z-30"
-          aria-label="Close dialog"
-        >
-          <SVGClose className="w-6 h-6" />
-        </button>
-        {children}
-      </div>
+        <SVGClose className="w-6 h-6" />
+      </button>
+      {children}
     </dialog>
   )
 }
