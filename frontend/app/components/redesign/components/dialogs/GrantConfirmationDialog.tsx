@@ -1,7 +1,6 @@
 import React from 'react'
 import { ToolsSecondaryButton } from '@/components'
 import { BodyEmphasis, BodyStandard } from '@/typography'
-import { toolState } from '~/stores/toolStore'
 import { BaseDialog } from './BaseDialog'
 
 interface Props {
@@ -16,7 +15,7 @@ export const GrantConfirmationDialog: React.FC<Props> = ({
   return (
     <BaseDialog
       className="p-4 pt-8
-        flex flex-col items-center gap-4 w-full lg:w-[34rem]"
+        flex flex-col items-center gap-4 w-full md:w-[34rem]"
     >
       <div className="text-center">
         <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>
