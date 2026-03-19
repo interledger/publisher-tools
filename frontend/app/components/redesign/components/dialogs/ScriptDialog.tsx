@@ -32,7 +32,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
 
   return (
     <BaseDialog
-      className="pt-xl px-md pb-md flex flex-col items-center gap-md w-full max-w-[544px]"
+      className="pt-xl px-md pb-md flex flex-col items-center gap-md"
       aria-labelledby="script-dialog-title"
     >
       <div className="flex gap-xs items-center justify-center">

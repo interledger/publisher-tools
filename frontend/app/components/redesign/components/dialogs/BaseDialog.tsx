@@ -6,9 +6,10 @@ import { useDialog } from '~/hooks/useDialog'
 interface Props {
   children: React.ReactNode
   className?: string
+  dialogClassName?: string
 }
 
-export const BaseDialog: React.FC<Props> = ({ children, className }) => {
+export const BaseDialog: React.FC<Props> = ({ children, className, dialogClassName }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [, closeDialog] = useDialog()
 
@@ -31,7 +32,10 @@ export const BaseDialog: React.FC<Props> = ({ children, className }) => {
   return (
     <dialog
       ref={dialogRef}
-      className="bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl"
+      className={cx(
+        "bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl max-w-[34rem] w-[calc(100%-2rem)]",
+        dialogClassName,
+      )}
     >
       <div
         className={cx(
