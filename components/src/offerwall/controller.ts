@@ -9,12 +9,10 @@ export interface Controller {
    * render it in a way so it can be embedded in editor's preview interface.
    */
   isPreviewMode?: boolean
+}
 
-  // TODO: add all handlers to controller only, instead of using the element
-  // instance. The element instance should have `setController` as the only
-  // public method.
-  //
-  // requestScreenChange(screen: Screen): void
+export interface Actions {
+  setScreen(screen: Screen): void
 }
 
 export const NO_OP_CONTROLLER: Controller = {
