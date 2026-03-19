@@ -61,7 +61,13 @@ h2 {
   border-radius: var(--Radius-Moderate-rounding);
 
   background: var(--accent-color);
-  color: var(--fallback-contrast-color, white);
+  color: contrast-color(var(--accent-color));
+}
+
+@supports not (color: contrast-color(black)) {
+  .steps .button {
+    color: var(--fallback-contrast-color, white);
+  }
 }
 
 .step-icon {
