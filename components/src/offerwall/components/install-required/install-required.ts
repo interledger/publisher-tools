@@ -37,6 +37,8 @@ export class InstallRequired extends LitElement {
   }
 
   firstUpdated(): void {
+    if (CSS.supports('color: contrast-color(black)')) return
+
     this.#updateContrastColor()
 
     const rootNode = this.getRootNode()
@@ -123,7 +125,7 @@ export class InstallRequired extends LitElement {
     ) as HTMLElement | null
     if (!button) return
     const bgColor = getComputedStyle(button).backgroundColor
-    this.style.setProperty(
+    button.style.setProperty(
       '--fallback-contrast-color',
       getContrastColor(bgColor),
     )
