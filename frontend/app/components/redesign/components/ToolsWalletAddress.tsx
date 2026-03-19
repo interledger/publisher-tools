@@ -9,6 +9,7 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
+import { useTranslation } from '~/i18n/useTranslation'
 import type { ElementErrors } from '~/lib/types'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
@@ -24,6 +25,7 @@ export const ToolsWalletAddress = ({
   walletActions,
   toolName,
 }: Props) => {
+  const { t } = useTranslation()
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const [error, setError] = useState<ElementErrors>()
@@ -47,7 +49,9 @@ export const ToolsWalletAddress = ({
   const handleContinue = async () => {
     if (!snap.walletAddress.trim()) {
       setError({
-        fieldErrors: { walletAddress: ['This field is required'] },
+        fieldErrors: {
+          walletAddress: [t('toolsWalletAddress__errors__fieldRequired')],
+        },
         message: [],
       })
       return
@@ -99,26 +103,27 @@ export const ToolsWalletAddress = ({
   } => {
     if (snap.walletConnectStep === 'error') {
       return {
-        message: 'You have not connected your wallet address yet.',
+        message: t('toolsWalletAddress__errors__connectionError'),
         type: 'error',
       }
     }
     if (!snap.isWalletConnected) {
       return {
-        message:
-          "If you're connecting your wallet address for the first time, you'll start with the default profile. You can then customize and save your profile as needed.",
+        message: t('toolsWalletAddress__status__connect'),
         type: 'info',
       }
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: `There are no custom edits for the ${toolName} correlated to this wallet address but you can start customizing when you want.`,
+        message: t('toolsWalletAddress__status__no_saved_profiles', {
+          toolName,
+        }),
         type: 'success',
       }
     }
 
     return {
-      message: `We've loaded your profiles. Feel free to keep customizing your ${toolName} to fit your style.`,
+      message: t('toolsWalletAddress__status__profiles_fetched', { toolName }),
       type: 'success',
     }
   }
@@ -135,14 +140,11 @@ export const ToolsWalletAddress = ({
       <div className="items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
           <Heading5 htmlFor="wallet-address-url" as="label">
-            Wallet address
+            {t('toolsWalletAddress__heading__message')}
           </Heading5>
-          <Tooltip label="Why do I need to connect my wallet?">
-            Connecting your wallet allows us to save your custom profiles, link
-            them to you as the original author, and verify ownership for future
-            updates.
-            <br /> It also embeds the wallet address into your web page
-            automatically, enabling Web Monetization on your behalf.
+          <Tooltip label={t('toolsWalletAddress__tooltip__ariaLabel')}>
+            {t('toolsWalletAddress__tooltip__message')}
+            <br /> {t('toolsWalletAddress__tooltip__message_2')}
           </Tooltip>
         </div>
         <div className="flex items-start gap-3 w-full pt-md">
@@ -166,7 +168,7 @@ export const ToolsWalletAddress = ({
             <button
               onClick={disconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
-              aria-label="Disconnect wallet"
+              aria-label={t('toolsWalletAddress__button__disconnectAriaLabel')}
             >
               <SVGRefresh className="w-5 h-5 text-purple-500" />
             </button>
@@ -196,7 +198,11 @@ export const ToolsWalletAddress = ({
           >
             <div className="flex items-center justify-center gap-2">
               {isLoading && <SVGSpinner className="w-4 h-4" />}
-              <span>{isLoading ? 'Connecting...' : 'Continue'}</span>
+              <span>
+                {isLoading
+                  ? t('toolsWalletAddress__button__loadingLabel')
+                  : t('toolsWalletAddress__button__submitLabel')}
+              </span>
             </div>
           </ToolsSecondaryButton>
         )}
