@@ -137,10 +137,7 @@ export const ProfilesDialog: React.FC<Props> = ({
   }
 
   return (
-    <BaseDialog
-      className="pt-4xl pb-md px-0
-        flex flex-col items-center gap-lg w-[514px]"
-    >
+    <BaseDialog className="pt-4xl pb-md px-0 flex flex-col items-center gap-lg max-w-[32.125rem] w-[calc(100%-2rem)]">
       <div className="px-md w-full text-center">
         <div className="text-style-body-standard space-y-2xs">
           <p>We found previous edits correlated to this wallet address.</p>
