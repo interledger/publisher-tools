@@ -14,13 +14,14 @@ export const GrantConfirmationDialog: React.FC<Props> = ({
 }) => {
   return (
     <BaseDialog
+      dialogClassName="max-w-[34rem] w-[calc(100%-2rem)]"
       className="p-4 pt-8
         flex flex-col items-center gap-md"
     >
       <div className="text-center">
         <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>
         {walletAddress && (
-          <div className="flex w-full justify-center text-center mt-2">
+          <div className="flex justify-center text-center mt-2">
             <BodyStandard className="!text-text-success">
               {walletAddress}
             </BodyStandard>

@@ -18,6 +18,7 @@ export const StatusDialog: React.FC<Props> = ({
 }) => {
   return (
     <BaseDialog
+      dialogClassName="max-w-[34rem] w-[calc(100%-2rem)]"
       className="p-4 pt-8
         flex flex-col items-center gap-md"
     >

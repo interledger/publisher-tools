@@ -37,7 +37,7 @@ export const BaseDialog: React.FC<Props> = ({
     <dialog
       ref={dialogRef}
       className={cx(
-        'bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl max-w-[34rem] w-[calc(100%-2rem)]',
+        'bg-transparent backdrop:bg-[#8995a7]/65 shadow-2xl',
         dialogClassName,
       )}
     >

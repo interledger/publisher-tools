@@ -32,6 +32,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
 
   return (
     <BaseDialog
+      dialogClassName="max-w-[34rem] w-[calc(100%-2rem)]"
       className="pt-xl px-md pb-md flex flex-col items-center gap-md"
       aria-labelledby="script-dialog-title"
     >
