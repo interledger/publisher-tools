@@ -1,5 +1,5 @@
 import type { OfferwallModal } from '@c/offerwall'
-import type { Controller } from '@c/offerwall/controller'
+import type { Actions } from '@c/offerwall/controller'
 import { applyFontFamily } from '@c/utils'
 import {
   BORDER_RADIUS,
@@ -95,7 +95,9 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
     const abortController = new AbortController()
     const onDoneResolver = withResolvers<boolean>()
-    const controller: Controller = {
+
+    const owElem = document.createElement(elementName) as OfferwallModal
+    const actions = owElem.setController({
       onExtensionLinkClick() {
         // can start tracking
       },
@@ -106,10 +108,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
       onDone() {
         onDoneResolver.resolve(true)
       },
-    }
-
-    const owElem = document.createElement(elementName) as OfferwallModal
-    owElem.setController(controller)
+    })
 
     // in case initialize() wasn't called
     this.#configPromise ??= fetchConfig(params)
@@ -119,7 +118,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     document.body.appendChild(owElem)
 
     try {
-      await this.#runBusinessLogic(owElem, abortController.signal)
+      await this.#runBusinessLogic(actions, abortController.signal)
       onDoneResolver.resolve(true)
     } catch (error) {
       console.error(error)
@@ -157,7 +156,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
    *   to give access.
    * - If either of above was within allowed time, give access.
    */
-  #runBusinessLogic = async (elem: OfferwallModal, signal: AbortSignal) => {
+  #runBusinessLogic = async (actions: Actions, signal: AbortSignal) => {
     const { linkElem } = this.#deps
     const wasExtensionInstalledAtStart = isExtensionInstalled()
 
@@ -167,11 +166,11 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
       this.#isWithinAllowedTime(lastEvent.timestamp) &&
       isExtensionInstalled()
     ) {
-      return elem.setScreen('all-set')
+      return actions.setScreen('all-set')
     }
 
     if (wasExtensionInstalledAtStart) {
-      elem.setScreen('contribution-required')
+      actions.setScreen('contribution-required')
       while (true) {
         if (!this.#monetizationEventResolver) {
           // if not initialized
@@ -189,7 +188,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
           this.#isForSameWalletAddress(event.paymentPointer) &&
           (await isValidPayment(event.incomingPayment))
         ) {
-          elem.setScreen('all-set')
+          actions.setScreen('all-set')
           this.#setLastEvent({
             type: 'monetization',
             timestamp: Date.now(),
@@ -211,7 +210,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
       }
     } else {
       await this.#waitForExtensionInstall(signal)
-      elem.setScreen('all-set')
+      actions.setScreen('all-set')
       this.#setLastEvent({ type: 'install', timestamp: Date.now() })
     }
   }
