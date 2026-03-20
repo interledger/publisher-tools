@@ -43,9 +43,7 @@ export class InstallRequired extends LitElement {
 
     const rootNode = this.getRootNode()
     if (rootNode instanceof ShadowRoot) {
-      const observer = new MutationObserver(() => {
-        requestAnimationFrame(() => this.#updateContrastColor())
-      })
+      const observer = new MutationObserver(() => this.#updateContrastColor())
       observer.observe(rootNode.host, {
         attributes: true,
         attributeFilter: ['style'],
@@ -120,9 +118,7 @@ export class InstallRequired extends LitElement {
   }
 
   #updateContrastColor(): void {
-    const button = this.shadowRoot?.querySelector(
-      '.button',
-    ) as HTMLElement | null
+    const button = this.renderRoot.querySelector<HTMLElement>('a.button')
     if (!button) return
     const bgColor = getComputedStyle(button).backgroundColor
     button.style.setProperty(
