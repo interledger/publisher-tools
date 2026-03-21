@@ -16,9 +16,11 @@ const STEP_1 = `You'll need a Web Monetization compatible wallet to use with the
 const STEP_2 = `Install the Web Monetization extension from your browser's web store. This includes getting and/or connecting to your wallet.`
 const STEP_3 = `All set! You can control how and when to support us from the extension settings.`
 const BUTTON_CTA = 'Install the Web Monetization Extension'
-
+const SUPPORTS_CONTRAST_COLOR = CSS.supports('color: contrast-color(black)')
 export class InstallRequired extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
+
+  #contrastObserver: MutationObserver | undefined
 
   constructor() {
     super()
@@ -32,6 +34,21 @@ export class InstallRequired extends LitElement {
     if (!customElements.get('wm-header')) {
       customElements.define('wm-header', WebMonetizationHeader)
     }
+
+    if (!SUPPORTS_CONTRAST_COLOR) {
+      this.#setupObserver()
+    }
+  }
+
+  firstUpdated(): void {
+    if (SUPPORTS_CONTRAST_COLOR) return
+    this.#updateContrastColor()
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    this.#contrastObserver?.disconnect()
+    this.#contrastObserver = undefined
   }
 
   render() {
@@ -90,15 +107,34 @@ export class InstallRequired extends LitElement {
     `
   }
 
-  firstUpdated(): void {
-    if (!CSS.supports('color: contrast-color(black)')) {
-      const el = this.renderRoot.querySelector<HTMLAnchorElement>('a.button')!
-      el.style.color = getContrastColor(getComputedStyle(el).backgroundColor)
+  get extensionUrl(): string {
+    return getExtensionHref('offerwall')
+  }
+
+  #setupObserver(): void {
+    if (this.#contrastObserver) return
+
+    const rootNode = this.getRootNode()
+    if (rootNode instanceof ShadowRoot) {
+      this.#contrastObserver = new MutationObserver(() =>
+        this.#updateContrastColor(),
+      )
+      this.#contrastObserver.observe(rootNode.host, {
+        attributes: true,
+        attributeFilter: ['style'],
+      })
     }
   }
 
-  get extensionUrl(): string {
-    return getExtensionHref('offerwall')
+  #updateContrastColor(): void {
+    const button = this.renderRoot.querySelector<HTMLElement>('a.button')
+    if (!button) return
+
+    const bgColor = getComputedStyle(button).backgroundColor
+    button.style.setProperty(
+      '--fallback-contrast-color',
+      getContrastColor(bgColor),
+    )
   }
 
   #onExtensionLinkClick = (ev: MouseEvent) => {
