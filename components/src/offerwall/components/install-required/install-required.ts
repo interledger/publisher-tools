@@ -36,7 +36,7 @@ export class InstallRequired extends LitElement {
     }
 
     if (!SUPPORTS_CONTRAST_COLOR) {
-      this.#setupObserver()
+      this.#handleButtonContrastColor()
     }
   }
 
@@ -48,7 +48,6 @@ export class InstallRequired extends LitElement {
   disconnectedCallback(): void {
     super.disconnectedCallback()
     this.#contrastObserver?.disconnect()
-    this.#contrastObserver = undefined
   }
 
   render() {
@@ -111,7 +110,7 @@ export class InstallRequired extends LitElement {
     return getExtensionHref('offerwall')
   }
 
-  #setupObserver(): void {
+  #handleButtonContrastColor(): void {
     if (this.#contrastObserver) return
 
     const rootNode = this.getRootNode()
