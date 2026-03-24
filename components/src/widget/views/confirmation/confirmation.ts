@@ -8,7 +8,7 @@ import type {
   PendingGrant,
 } from '@interledger/open-payments'
 import confirmationCss from './confirmation.css?raw'
-import '../../components/dots-loader.js'
+import '@c/shared/components/dots-loader.js'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 

@@ -10,7 +10,7 @@ import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
-import './components/dots-loader.js'
+import '@c/shared/components/dots-loader.js'
 import './views/confirmation/confirmation.js'
 import './views/interaction/interaction.js'
 
