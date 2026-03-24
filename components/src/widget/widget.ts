@@ -10,6 +10,7 @@ import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
+import './components/dots-loader.js'
 import './views/confirmation/confirmation.js'
 import './views/interaction/interaction.js'
 
@@ -197,7 +198,7 @@ export class PaymentWidget extends LitElement {
           ?disabled=${this.isSubmitting}
         >
           ${this.isSubmitting
-            ? html`<div class="spinner"></div>`
+            ? html`<wm-dots-loader></wm-dots-loader>`
             : profile?.ctaPayButton.text || 'Support me'}
         </button>
       </form>

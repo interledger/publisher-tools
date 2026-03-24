@@ -122,7 +122,11 @@
   line-height: var(--Font-Line-Height-md, 24px);
 }
 
-.preset-btn:hover,
+.preset-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
 .preset-btn.selected {
   background: var(--primary-color);
   color: var(--Colors-white, #ffffff);
@@ -169,8 +173,12 @@
   gap: 10px;
   align-self: stretch;
   border-radius: 8px;
-  border: 1px solid var(--Colors-green-200, #abe4df);
-  background: var(--Colors-mint-50, #f2fbf9);
+  border: 1px solid var(--primary-color, #abe4df);
+  background: color-mix(
+    in srgb,
+    var(--primary-color, #f2fbf9) 25%,
+    transparent
+  );
   min-height: 80px;
 }
 
@@ -202,7 +210,11 @@
 }
 
 .summary-value {
-  color: var(--primary-color);
+  color: color-mix(
+    in srgb,
+    var(--Text-paragraph-standard, #363636) 80%,
+    transparent
+  );
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
@@ -285,25 +297,6 @@
   opacity: 0.6;
 }
 
-.loader {
-  border: 3px solid #d4d5d6;
-  border-radius: 50%;
-  border-bottom: 3px solid var(--primary-color);
-  border-top: 3px solid var(--primary-color);
-  width: 20px;
-  height: 20px;
-  animation: spin 1.5s ease-in-out infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .empty-state {
   text-align: center;
   color: var(--Text-paragraph-standard, #363636);
@@ -332,7 +325,7 @@
   border-radius: var(--Radius-Moderate-rounding, 8px);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
-  font-weight: var(--Font-Weight-Regular, 400);
+  font-weight: var(--Font-Weight-Bold, 700);
   line-height: var(--Font-Line-Height-sm, 20px);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -362,6 +355,11 @@
   align-self: stretch;
 }
 
+.form-wallet-address > .amount-error {
+  align-self: center;
+  color: var(--Colors-red-500, #ef4444);
+}
+
 .form-label {
   display: flex;
   justify-content: flex-start;
@@ -382,6 +380,7 @@
 
 .form-input.with-currency {
   padding-left: calc(var(--Font-Size-text-base) + 2rem);
+  border: 2px solid var(--Colors-silver-300, #c9c9c9);
 }
 
 .form-input,
@@ -390,7 +389,7 @@
   height: 48px;
   padding: var(--Spacings-md, 12px);
   border: 1px solid var(--Colors-silver-300, #c9c9c9);
-  border-radius: var(--Radius-Moderate-rounding, 8px);
+  border-radius: var(--Radius-Moderate-rounding, 0.75rem);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
@@ -423,6 +422,15 @@
 .form-input:read-only {
   background-color: #f9fafb;
   color: var(--Colors-silver-700, #7b7b7b);
+}
+
+.form-input.amount-error {
+  border-color: var(--Colors-red-500, #ef4444);
+}
+
+.form-input.amount-error:focus {
+  border-color: var(--Colors-red-500, #ef4444);
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 10%, transparent 90%);
 }
 
 @media (max-width: 480px) {

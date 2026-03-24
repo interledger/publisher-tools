@@ -9,7 +9,10 @@ import {
   PaymentStatusParamSchema,
 } from '../schemas/payment.js'
 import type { PaymentStatus } from '../types'
-import { OpenPaymentsService } from '../utils/open-payments.js'
+import {
+  OpenPaymentsService,
+  isNonPositiveAmountError,
+} from '../utils/open-payments.js'
 import { createHTTPException, waitWithAbort } from '../utils/utils'
 
 app.post(
@@ -30,6 +33,15 @@ app.post(
 
       return json(result)
     } catch (error) {
+      if (isNonPositiveAmountError(error)) {
+        return json(
+          {
+            error: 'NON_POSITIVE_AMOUNT',
+            minSendAmount: error.details?.minSendAmount,
+          },
+          400,
+        )
+      }
       throw createHTTPException(500, 'Payment quote creation error: ', error)
     }
   },
