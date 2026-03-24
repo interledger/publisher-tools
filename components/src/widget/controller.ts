@@ -12,7 +12,7 @@ import {
 } from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
-import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
+import type { WidgetConfig } from './types'
 
 export interface WidgetState {
   walletAddress: WalletAddress
@@ -61,52 +61,6 @@ export class WidgetController implements ReactiveController {
   updateState(updates: Partial<WidgetState>) {
     this._state = { ...this._state, ...updates }
     this.host.requestUpdate()
-  }
-
-  getCurrencySymbol(assetCode: string): string {
-    const isISO4217Code = (code: string): boolean => {
-      return code.length === 3
-    }
-
-    if (!isISO4217Code(assetCode)) {
-      return assetCode.toUpperCase()
-    }
-    return new Intl.NumberFormat('en-US', {
-      currency: assetCode,
-      style: 'currency',
-      currencyDisplay: 'symbol',
-      maximumFractionDigits: 0,
-      minimumFractionDigits: 0,
-    })
-      .format(0)
-      .replace(/0/g, '')
-      .trim()
-  }
-
-  getFormattedAmount = (args: FormatAmountArgs): FormattedAmount => {
-    const { value, assetCode, assetScale } = args
-    const formatterWithCurrency = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: assetCode,
-      maximumFractionDigits: assetScale,
-      minimumFractionDigits: assetScale,
-    })
-    const formatter = new Intl.NumberFormat('en-US', {
-      maximumFractionDigits: assetScale,
-      minimumFractionDigits: assetScale,
-    })
-
-    const amount = Number(formatter.format(Number(`${value}e-${assetScale}`)))
-    const amountWithCurrency = formatterWithCurrency.format(
-      Number(`${value}e-${assetScale}`),
-    )
-    const symbol = this.getCurrencySymbol(assetCode)
-
-    return {
-      amount,
-      amountWithCurrency,
-      symbol,
-    }
   }
 
   private applyBorderRadius(borderRadius: BorderRadiusKey) {
