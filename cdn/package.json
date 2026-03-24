@@ -23,7 +23,7 @@
     "directory-tree": "^3.6.0",
     "esbuild": "0.27.0",
     "esbuild-plugin-copy": "^2.1.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "wrangler": "^4.59.2"
   }
 }
