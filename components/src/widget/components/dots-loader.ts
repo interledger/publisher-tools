@@ -50,7 +50,7 @@ export class DotsLoader extends LitElement {
         getContrastColor(theme) === '#ffffff'
           ? 'rgba(255, 255, 255, 0.75)'
           : 'rgba(0, 0, 0, 0.75)'
-      this.shadowRoot!.querySelectorAll('span').forEach((span) => {
+      this.renderRoot.querySelectorAll('span').forEach((span) => {
         span.style.backgroundColor = color
       })
     }
