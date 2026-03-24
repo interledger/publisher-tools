@@ -64,12 +64,6 @@ h2 {
   color: contrast-color(var(--accent-color));
 }
 
-@supports not (color: contrast-color(black)) {
-  .steps .button {
-    color: var(--fallback-contrast-color, white);
-  }
-}
-
 .step-icon {
   padding: 0.35rem;
   color: var(--accent-color);

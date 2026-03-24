@@ -35,14 +35,11 @@ export class InstallRequired extends LitElement {
       customElements.define('wm-header', WebMonetizationHeader)
     }
 
-    if (!SUPPORTS_CONTRAST_COLOR) {
-      this.#handleButtonContrastColor()
-    }
+    this.#handleButtonContrastColor()
   }
 
   firstUpdated(): void {
-    if (SUPPORTS_CONTRAST_COLOR) return
-    this.#updateContrastColor()
+    this.#handleButtonContrastColor()
   }
 
   disconnectedCallback(): void {
@@ -111,6 +108,7 @@ export class InstallRequired extends LitElement {
   }
 
   #handleButtonContrastColor(): void {
+    if (SUPPORTS_CONTRAST_COLOR) return
     if (this.#contrastObserver) return
 
     const rootNode = this.getRootNode()
@@ -130,10 +128,7 @@ export class InstallRequired extends LitElement {
     if (!button) return
 
     const bgColor = getComputedStyle(button).backgroundColor
-    button.style.setProperty(
-      '--fallback-contrast-color',
-      getContrastColor(bgColor),
-    )
+    button.style.color = getContrastColor(bgColor)
   }
 
   #onExtensionLinkClick = (ev: MouseEvent) => {
