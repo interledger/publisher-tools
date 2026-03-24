@@ -38,10 +38,6 @@ export class InstallRequired extends LitElement {
     this.#handleButtonContrastColor()
   }
 
-  firstUpdated(): void {
-    this.#handleButtonContrastColor()
-  }
-
   disconnectedCallback(): void {
     super.disconnectedCallback()
     this.#contrastObserver?.disconnect()
