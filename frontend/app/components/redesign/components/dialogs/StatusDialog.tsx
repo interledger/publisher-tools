@@ -17,7 +17,7 @@ export const StatusDialog: React.FC<Props> = ({
   status,
 }) => {
   return (
-    <BaseDialog className="p-4 pt-8 flex flex-col items-center gap-md max-w-[34rem] w-[calc(100%-2rem)]">
+    <BaseDialog className="p-md pt-xl flex flex-col items-center gap-md">
       <div className="flex items-center gap-2">
         {status === 'error' || fieldErrors ? (
           <SVGErrorVector className="size-6" />

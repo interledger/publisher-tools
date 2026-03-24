@@ -13,7 +13,7 @@ export const GrantConfirmationDialog: React.FC<Props> = ({
   grantRedirect,
 }) => {
   return (
-    <BaseDialog className="p-4 pt-8 flex flex-col items-center gap-md max-w-[34rem] w-[calc(100%-2rem)]">
+    <BaseDialog className="p-md pt-xl flex flex-col items-center gap-md">
       <div className="text-center">
         <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>
         {walletAddress && (
