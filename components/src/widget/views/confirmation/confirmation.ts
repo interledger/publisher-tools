@@ -1,6 +1,7 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
+import { DotsLoader } from '@c/shared/components/dots-loader'
 import type {
   Quote,
   Grant,
@@ -8,7 +9,6 @@ import type {
   PendingGrant,
 } from '@interledger/open-payments'
 import confirmationCss from './confirmation.css?raw'
-import '@c/shared/components/dots-loader.js'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 
@@ -32,6 +32,9 @@ export class PaymentConfirmation extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
+    if (!customElements.get('wm-dots-loader')) {
+      customElements.define('wm-dots-loader', DotsLoader)
+    }
     this.updateComplete.then(() => {
       const input =
         this.shadowRoot?.querySelector<HTMLInputElement>('#amount-input')

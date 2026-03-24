@@ -5,12 +5,12 @@ import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import closeButtonIcon from '@c/assets/wm_close_button.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
+import { DotsLoader } from '@c/shared/components/dots-loader.js'
 import type { WalletAddress } from '@interledger/open-payments'
 import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
 import widgetStyles from './widget.css?raw'
-import '@c/shared/components/dots-loader.js'
 import './views/confirmation/confirmation.js'
 import './views/interaction/interaction.js'
 
@@ -36,6 +36,13 @@ export class PaymentWidget extends LitElement {
   @state() private isSubmitting: boolean = false
 
   static styles = unsafeCSS(widgetStyles)
+
+  connectedCallback(): void {
+    super.connectedCallback()
+    if (!customElements.get('wm-dots-loader')) {
+      customElements.define('wm-dots-loader', DotsLoader)
+    }
+  }
 
   private async handleSubmit(e: Event) {
     e.preventDefault()

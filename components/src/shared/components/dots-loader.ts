@@ -62,4 +62,3 @@ export class DotsLoader extends LitElement {
   }
 }
 
-customElements.define('wm-dots-loader', DotsLoader)
