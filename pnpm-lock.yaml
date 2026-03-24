@@ -55,8 +55,8 @@ importers:
         specifier: ^7.1.3
         version: 7.1.3
       '@noble/ed25519':
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.0.1
+        version: 3.0.1
       '@paralleldrive/cuid2':
         specifier: ^2.3.1
         version: 2.3.1
@@ -177,8 +177,8 @@ importers:
         specifier: ^7.1.3
         version: 7.1.3
       '@noble/ed25519':
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.0.1
+        version: 3.0.1
       '@paralleldrive/cuid2':
         specifier: ^2.3.1
         version: 2.3.1
@@ -1177,8 +1177,8 @@ packages:
   '@mjackson/node-fetch-server@0.2.0':
     resolution: {integrity: sha512-EMlH1e30yzmTpGLQjlFmaDAjyOeZhng1/XCd7DExR8PNAnG/G1tyruZxEoUe11ClnwGhGrtsdnyyUx1frSzjng==}
 
-  '@noble/ed25519@3.0.0':
-    resolution: {integrity: sha512-QyteqMNm0GLqfa5SoYbSC3+Pvykwpn95Zgth4MFVSMKBB75ELl9tX1LAVsN4c3HXOrakHsF2gL4zWDAYCcsnzg==}
+  '@noble/ed25519@3.0.1':
+    resolution: {integrity: sha512-t/T8LuK0ym8ALQudCCQCtrRdMSxBnRgHXw+wg+YsSlE6d+on7sX3flqlSJ2mOs9xEuchM36kj9SuX5MG7pXQMA==}
 
   '@noble/hashes@1.6.1':
     resolution: {integrity: sha512-pq5D8h10hHBjyqX+cfBm0i8JUXJ0UhczFc4r74zbuT9XgewFo2E3J1cOaGtdZynILNmQ685YWGzGE1Zv6io50w==}
@@ -5128,7 +5128,7 @@ snapshots:
 
   '@mjackson/node-fetch-server@0.2.0': {}
 
-  '@noble/ed25519@3.0.0': {}
+  '@noble/ed25519@3.0.1': {}
 
   '@noble/hashes@1.6.1': {}
 
