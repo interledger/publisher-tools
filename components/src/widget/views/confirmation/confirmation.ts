@@ -174,9 +174,7 @@ export class PaymentConfirmation extends LitElement {
     }
 
     const payment = (await response.json()) as PaymentResponse
-    const {
-      quote: { debitAmount, receiveAmount },
-    } = payment
+    const { debitAmount, receiveAmount } = payment.quote
     this.formattedDebitAmount = getFormattedAmount(
       debitAmount.value,
       debitAmount.assetCode,
