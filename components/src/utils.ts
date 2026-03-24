@@ -1,4 +1,4 @@
-import type { WalletAddress } from '@interledger/open-payments/dist/types'
+import type { WalletAddress } from '@interledger/open-payments'
 import type { FontFamilyKey, Tool } from '@shared/types'
 import { FONT_MAP } from './constants'
 
