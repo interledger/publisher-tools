@@ -13,6 +13,7 @@ export class DotsLoader extends LitElement {
       width: 8px;
       height: 8px;
       border-radius: 50%;
+      background-color: var(--Colors-silver-800, #676767);
       background-color: color-mix(
         in srgb,
         contrast-color(var(--primary-color, white)) 55%,
