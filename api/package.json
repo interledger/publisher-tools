@@ -22,7 +22,7 @@
     "@shared/default-data": "workspace:^",
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
-    "hono": "^4.12.7",
+    "hono": "^4.12.9",
     "http-message-signatures": "^1.0.4",
     "httpbis-digest-headers": "^1.0.0",
     "zod": "^4.1.13"
