@@ -122,7 +122,10 @@
   line-height: var(--Font-Line-Height-md, 24px);
 }
 
-.preset-btn:hover,
+.preset-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
 .preset-btn.selected {
   background: var(--primary-color);
   color: var(--Colors-white, #ffffff);
@@ -169,8 +172,12 @@
   gap: 10px;
   align-self: stretch;
   border-radius: 8px;
-  border: 1px solid var(--Colors-green-200, #abe4df);
-  background: var(--Colors-mint-50, #f2fbf9);
+  border: 1px solid var(--primary-color, #abe4df);
+  background: color-mix(
+    in srgb,
+    var(--primary-color, #f2fbf9) 25%,
+    transparent
+  );
   min-height: 80px;
 }
 
@@ -202,7 +209,11 @@
 }
 
 .summary-value {
-  color: var(--primary-color);
+  color: color-mix(
+    in srgb,
+    var(--Text-paragraph-standard, #363636) 80%,
+    transparent
+  );
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
@@ -332,7 +343,7 @@
   border-radius: var(--Radius-Moderate-rounding, 8px);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
-  font-weight: var(--Font-Weight-Regular, 400);
+  font-weight: var(--Font-Weight-Bold, 700);
   line-height: var(--Font-Line-Height-sm, 20px);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -382,6 +393,7 @@
 
 .form-input.with-currency {
   padding-left: calc(var(--Font-Size-text-base) + 2rem);
+  border: 2px solid var(--Colors-silver-300, #c9c9c9);
 }
 
 .form-input,
@@ -390,7 +402,7 @@
   height: 48px;
   padding: var(--Spacings-md, 12px);
   border: 1px solid var(--Colors-silver-300, #c9c9c9);
-  border-radius: var(--Radius-Moderate-rounding, 8px);
+  border-radius: var(--Radius-Moderate-rounding, 0.75rem);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;

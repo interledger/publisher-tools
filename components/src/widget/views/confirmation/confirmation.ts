@@ -8,6 +8,7 @@ import type {
   PendingGrant,
 } from '@interledger/open-payments'
 import confirmationCss from './confirmation.css?raw'
+import '../../components/dots-loader.js'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 
@@ -399,8 +400,7 @@ export class PaymentConfirmation extends LitElement {
       return html`
         <div class="payment-details">
           <div class="loading-state">
-            <span class="loader"></span>
-            <span>Loading payment details...</span>
+            <wm-dots-loader></wm-dots-loader>
           </div>
         </div>
       `
