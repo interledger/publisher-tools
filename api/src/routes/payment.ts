@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator'
 import { APP_URL } from '@shared/defines'
-import { KV_PAYMENTS_PREFIX } from '@shared/types'
+import { KV_PAYMENTS_PREFIX, PAYMENT_ERROR } from '@shared/types'
 import { app } from '../app.js'
 import {
   PaymentQuoteSchema,
@@ -36,7 +36,7 @@ app.post(
       if (isNonPositiveAmountError(error)) {
         return json(
           {
-            error: 'NON_POSITIVE_AMOUNT',
+            error: PAYMENT_ERROR.NON_POSITIVE_AMOUNT,
             minSendAmount: error.details?.minSendAmount,
           },
           400,
