@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
+import { getCurrencySymbol, getFormattedAmount } from '@c/utils'
 import type {
   Quote,
   Grant,
@@ -182,19 +183,18 @@ export class PaymentConfirmation extends LitElement {
     }
 
     const payment = (await response.json()) as PaymentResponse
-    const { quote } = payment
+    const { debitAmount, receiveAmount } = payment.quote
+    this.formattedDebitAmount = getFormattedAmount(
+      debitAmount.value,
+      debitAmount.assetCode,
+      debitAmount.assetScale,
+    ).amountWithCurrency
 
-    this.formattedDebitAmount = this.configController.getFormattedAmount({
-      value: quote.debitAmount.value,
-      assetCode: quote.debitAmount.assetCode,
-      assetScale: quote.debitAmount.assetScale,
-    }).amountWithCurrency
-
-    this.formattedReceiveAmount = this.configController.getFormattedAmount({
-      value: quote.receiveAmount.value,
-      assetCode: quote.receiveAmount.assetCode,
-      assetScale: quote.receiveAmount.assetScale,
-    }).amountWithCurrency
+    this.formattedReceiveAmount = getFormattedAmount(
+      receiveAmount.value,
+      receiveAmount.assetCode,
+      receiveAmount.assetScale,
+    ).amountWithCurrency
 
     this.configController.updateState({ ...payment })
   }
@@ -206,7 +206,7 @@ export class PaymentConfirmation extends LitElement {
   }): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currencySymbol = this.configController.getCurrencySymbol(
+        const currencySymbol = getCurrencySymbol(
           this.configController.state.walletAddress.assetCode,
         )
         this.formattedDebitAmount = `${currencySymbol}${paymentData.amount.toString()}`
@@ -319,7 +319,7 @@ export class PaymentConfirmation extends LitElement {
     const {
       walletAddress: { assetCode },
     } = this.configController.state
-    const currencySymbol = this.configController.getCurrencySymbol(assetCode)
+    const currencySymbol = getCurrencySymbol(assetCode)
 
     return html`
       <div class="confirmation-container">
