@@ -1,6 +1,7 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
+import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
 import type {
   Quote,
@@ -35,6 +36,10 @@ export class PaymentConfirmation extends LitElement {
     if (!customElements.get('wm-dots-loader')) {
       customElements.define('wm-dots-loader', DotsLoader)
     }
+    if (!customElements.get('wm-close-btn')) {
+      customElements.define('wm-close-btn', CloseBtn)
+    }
+
     this.updateComplete.then(() => {
       const input =
         this.shadowRoot?.querySelector<HTMLInputElement>('#amount-input')
@@ -328,14 +333,10 @@ export class PaymentConfirmation extends LitElement {
             </svg>
             <span>back</span>
           </button>
-          <button class="close-button" @click=${this.closeWidget}>
-            <svg fill="none" viewBox="0 0 20 20">
-              <path
-                fill="var(--wm-primary-color, #8075B3)"
-                d="m5.332 15.257-.59-.59L9.41 10 4.742 5.333l.59-.59L10 9.41l4.666-4.667.59.59L10.59 10l4.666 4.667-.59.59L10 10.59l-4.667 4.667Z"
-              />
-            </svg>
-          </button>
+          <wm-close-btn
+            @close=${this.closeWidget}
+            .color=${this.configController.config.profile.color.theme}
+          ></wm-close-btn>
         </div>
 
         <div class="widget-body">

@@ -2,10 +2,10 @@ import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { ApiErrorResponse } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
-import closeButtonIcon from '@c/assets/wm_close_button.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
-import { DotsLoader } from '@c/shared/components/dots-loader.js'
+import { CloseBtn } from '@c/shared/components/close-btn'
+import { DotsLoader } from '@c/shared/components/dots-loader'
 import type { WalletAddress } from '@interledger/open-payments'
 import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
@@ -41,6 +41,9 @@ export class PaymentWidget extends LitElement {
     super.connectedCallback()
     if (!customElements.get('wm-dots-loader')) {
       customElements.define('wm-dots-loader', DotsLoader)
+    }
+    if (!customElements.get('wm-close-btn')) {
+      customElements.define('wm-close-btn', CloseBtn)
     }
   }
 
@@ -169,18 +172,17 @@ export class PaymentWidget extends LitElement {
             ${profile?.title.text || 'Future of support'}
           </p>
         </div>
-        <button
-          class="close-button"
-          @click=${this.toggleWidget}
-          aria-label="Close widget"
-        >
-          <img src=${closeButtonIcon} alt="close widget" />
-        </button>
+
+        <wm-close-btn
+          @close=${this.toggleWidget}
+          .color=${profile.color.background}
+        ></wm-close-btn>
       </div>
 
       <form class="payment-form widget-body" @submit=${this.handleSubmit}>
+        ${descriptionElement}
+
         <div class="form-wallet-address">
-          ${descriptionElement}
           <label class="form-label">
             Pay from
             <span class="red-text"> * </span>

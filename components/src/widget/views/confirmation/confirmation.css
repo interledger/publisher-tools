@@ -45,25 +45,6 @@
   color: var(--Colors-white, #ffffff);
 }
 
-.close-button {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  aspect-ratio: 1/1;
-  background: none;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s ease;
-}
-
-.close-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
 .confirmation-buttons-header {
   color: var(--primary-color, #7469a8);
   font-family: var(--Font-Family-Inter, Inter);
@@ -112,9 +93,10 @@
   align-items: center;
   gap: 10px;
   border-radius: 100px;
-  border: 1px solid var(--Colors-silver-300, #c9c9c9);
-  background: var(--Colors-white, #ffffff);
-  color: var(--Colors-silver-700, #7b7b7b);
+  border: 1px solid var(--text-color, #c9c9c9);
+
+  background: var(--background-color, #f2fbf9);
+  color: var(--Text-paragraph-standard, #7b7b7b);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
@@ -123,14 +105,16 @@
 }
 
 .preset-btn:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+  background: #0000002f;
 }
+
 .preset-btn.selected {
-  background: var(--primary-color);
-  color: var(--Colors-white, #ffffff);
-  opacity: 0.9;
-  border: 1px solid var(--primary-color);
+  background: color-mix(
+    in srgb,
+    var(--primary-color, #f2fbf9) 45%,
+    transparent
+  );
+  border: 1px solid var(--primary-color, #5b5380);
 }
 
 .widget-body p,
@@ -175,7 +159,7 @@
   border: 1px solid var(--primary-color, #abe4df);
   background: color-mix(
     in srgb,
-    var(--primary-color, #f2fbf9) 25%,
+    var(--primary-color, #f2fbf9) 20%,
     transparent
   );
   min-height: 80px;
@@ -209,13 +193,9 @@
 }
 
 .summary-value {
-  color: color-mix(
-    in srgb,
-    var(--Text-paragraph-standard, #363636) 80%,
-    transparent
-  );
+  color: var(--primary-color, #363636);
   font-family: var(--Font-Family-Inter, Inter);
-  font-size: var(--Font-Size-text-base, 16px);
+  font-size: 16px;
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
   line-height: var(--Font-Line-Height-md, 24px);
@@ -343,7 +323,7 @@
   border-radius: var(--Radius-Moderate-rounding, 8px);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-sm, 14px);
-  font-weight: var(--Font-Weight-Bold, 700);
+  font-weight: var(--Font-Weight-Regular, 400);
   line-height: var(--Font-Line-Height-sm, 20px);
   cursor: pointer;
   transition: all 0.2s ease;

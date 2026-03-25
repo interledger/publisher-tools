@@ -44,13 +44,8 @@ export class DotsLoader extends LitElement {
 
   firstUpdated(): void {
     if (!CSS.supports('color: contrast-color(black)')) {
-      const theme = getComputedStyle(this)
-        .getPropertyValue('--primary-color')
-        .trim()
-      const color =
-        getContrastColor(theme) === '#ffffff'
-          ? 'rgba(255, 255, 255, 0.75)'
-          : 'rgba(0, 0, 0, 0.75)'
+      const theme = getComputedStyle(this).getPropertyValue('--primary-color')
+      const color = getContrastColor(theme)
       this.renderRoot.querySelectorAll('span').forEach((span) => {
         span.style.backgroundColor = color
       })
@@ -61,4 +56,3 @@ export class DotsLoader extends LitElement {
     return html`<span></span><span></span><span></span>`
   }
 }
-
