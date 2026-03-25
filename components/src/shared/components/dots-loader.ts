@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit'
-import { getContrastColor } from '@c/utils'
 
 export class DotsLoader extends LitElement {
   static styles = css`
@@ -14,12 +13,7 @@ export class DotsLoader extends LitElement {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background-color: var(--Colors-silver-800, #676767);
-      background-color: color-mix(
-        in srgb,
-        contrast-color(var(--primary-color, white)) 75%,
-        transparent
-      );
+      background-color: oklch(from var(--primary-color) round(1.21 - L) 0 0);
       animation: circles-bounce 500ms infinite ease-in alternate;
     }
 
@@ -44,16 +38,6 @@ export class DotsLoader extends LitElement {
       }
     }
   `
-
-  firstUpdated(): void {
-    if (!CSS.supports('color: contrast-color(black)')) {
-      const theme = getComputedStyle(this).getPropertyValue('--primary-color')
-      const color = getContrastColor(theme)
-      this.renderRoot.querySelectorAll('span').forEach((span) => {
-        span.style.backgroundColor = color
-      })
-    }
-  }
 
   render() {
     return html`<span></span><span></span><span></span><span></span>`
