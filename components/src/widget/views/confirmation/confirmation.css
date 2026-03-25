@@ -275,7 +275,6 @@
   justify-content: center;
   gap: var(--Spacings-sm, 8px);
   color: var(--Text-paragraph-standard, #363636);
-  opacity: 0.6;
 }
 
 .loader {
