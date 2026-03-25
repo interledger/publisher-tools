@@ -209,20 +209,21 @@ export class PaymentConfirmation extends LitElement {
     if (!response.ok) {
       this.amountError =
         'Failed to create payment. Please try a different amount.'
-      if (
-        response.status === 400 &&
-        data.error === 'NON_POSITIVE_AMOUNT' &&
-        data.minSendAmount?.value
-      ) {
-        // Rafiki v1.2.0-beta and later include `minSendAmount` with error
-        const {
-          minSendAmount: { value, assetScale },
-        } = data
-        this.amountError = this.validateAmount(
-          paymentData.amount * 10 ** assetScale,
-          Number(value),
-        )
-        this.#minSendAmount = data.minSendAmount
+      if (response.status === 400 && data.error === 'NON_POSITIVE_AMOUNT') {
+        if (data.minSendAmount?.value) {
+          // Rafiki v1.2.0-beta and later include `minSendAmount` with error
+          const {
+            minSendAmount: { value, assetScale },
+          } = data
+          this.amountError = this.validateAmount(
+            paymentData.amount * 10 ** assetScale,
+            Number(value),
+          )
+          this.#minSendAmount = data.minSendAmount
+        } else {
+          this.amountError =
+            'The amount is too small. Please enter a higher amount.' // TODO: i18n
+        }
       }
 
       return
