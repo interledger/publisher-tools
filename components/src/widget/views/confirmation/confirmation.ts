@@ -413,10 +413,14 @@ export class PaymentConfirmation extends LitElement {
                 @keydown=${this.handleKeyDown}
                 autocomplete="off"
                 spellcheck="false"
+                aria-invalid=${!!this.amountError}
+                aria-describedby=${this.amountError ? 'amount-error' : nothing}
               />
             </div>
             ${this.amountError
-              ? html`<p class="amount-error">${this.amountError}</p>`
+              ? html`<p id="amount-error" class="amount-error" role="alert">
+                  ${this.amountError}
+                </p>`
               : nothing}
           </div>
 
