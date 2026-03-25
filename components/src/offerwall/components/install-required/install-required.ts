@@ -6,7 +6,6 @@ import iconWallet from '@c/assets/icon_wallet.svg?raw'
 import iconClose from '@c/assets/icon_x_close.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
 import { WebMonetizationHeader } from '@c/shared/web-monetization-header'
-import { getContrastColor } from '@c/utils'
 import { getExtensionHref } from '@shared/utils/extension'
 import styles from './install-required.css?raw'
 import styleTokens from '../../vars.css?raw'
@@ -20,8 +19,6 @@ const BUTTON_CTA = 'Install the Web Monetization Extension'
 export class InstallRequired extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
-  #contrastObserver: MutationObserver | undefined
-
   constructor() {
     super()
   }
@@ -34,12 +31,6 @@ export class InstallRequired extends LitElement {
     if (!customElements.get('wm-header')) {
       customElements.define('wm-header', WebMonetizationHeader)
     }
-    this.#handleButtonContrastColor()
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.#contrastObserver?.disconnect()
   }
 
   render() {
@@ -100,31 +91,6 @@ export class InstallRequired extends LitElement {
 
   get extensionUrl(): string {
     return getExtensionHref('offerwall')
-  }
-
-  #handleButtonContrastColor(): void {
-    if (CSS.supports('color: contrast-color(black)')) return
-    if (this.#contrastObserver) return
-
-    this.#updateContrastColor()
-    const rootNode = this.getRootNode()
-    if (rootNode instanceof ShadowRoot) {
-      this.#contrastObserver = new MutationObserver(() =>
-        this.#updateContrastColor(),
-      )
-      this.#contrastObserver.observe(rootNode.host, {
-        attributes: true,
-        attributeFilter: ['style'],
-      })
-    }
-  }
-
-  #updateContrastColor(): void {
-    const button = this.renderRoot.querySelector<HTMLElement>('a.button')
-    if (!button) return
-
-    const bgColor = getComputedStyle(button).backgroundColor
-    button.style.color = getContrastColor(bgColor)
   }
 
   #onExtensionLinkClick = (ev: MouseEvent) => {

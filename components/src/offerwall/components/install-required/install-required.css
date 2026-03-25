@@ -61,7 +61,8 @@ h2 {
   border-radius: var(--Radius-Moderate-rounding);
 
   background: var(--accent-color);
-  color: contrast-color(var(--accent-color));
+  color: white;
+  color: oklch(from var(--accent-color) round(1.21 - L) 0 0);
 }
 
 .step-icon {
