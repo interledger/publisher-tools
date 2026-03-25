@@ -174,12 +174,9 @@ export class PaymentConfirmation extends LitElement {
       return 'Contribute a valid amount to continue.' // TODO: i18n
     }
     if (val < minToScale) {
-      const { assetCode, assetScale } =
-        this.configController.state.walletAddress
       const { amountWithCurrency } = getFormattedAmount(
         minToScale,
-        assetCode,
-        assetScale,
+        this.configController.state.walletAddress,
       )
       return `A minimum amount of ${amountWithCurrency} is required.`
     }
@@ -236,14 +233,12 @@ export class PaymentConfirmation extends LitElement {
     } = data
     this.formattedDebitAmount = getFormattedAmount(
       debitAmount.value,
-      debitAmount.assetCode,
-      debitAmount.assetScale,
+      debitAmount,
     ).amountWithCurrency
 
     this.formattedReceiveAmount = getFormattedAmount(
       receiveAmount.value,
-      receiveAmount.assetCode,
-      receiveAmount.assetScale,
+      receiveAmount,
     ).amountWithCurrency
 
     this.configController.updateState({ ...data })
