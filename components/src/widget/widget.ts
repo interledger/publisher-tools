@@ -206,9 +206,7 @@ export class PaymentWidget extends LitElement {
           type="submit"
           ?disabled=${this.isSubmitting}
         >
-          ${this.isSubmitting
-            ? html`<wm-dots-loader></wm-dots-loader>`
-            : profile?.ctaPayButton.text || 'Support me'}
+          ${html`<wm-dots-loader></wm-dots-loader>`}
         </button>
       </form>
     `

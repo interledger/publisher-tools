@@ -6,7 +6,8 @@ export class DotsLoader extends LitElement {
     :host {
       display: inline-flex;
       gap: 6px;
-      align-items: center;
+      align-items: flex-end;
+      height: 20px;
     }
 
     span {
@@ -19,25 +20,27 @@ export class DotsLoader extends LitElement {
         contrast-color(var(--primary-color, white)) 55%,
         transparent
       );
-      animation: dot-flash 1.2s infinite ease-in-out;
+      animation: circles-bounce 500ms infinite ease-in alternate;
     }
 
     span:nth-child(2) {
-      animation-delay: 0.2s;
+      animation-delay: 150ms;
     }
 
     span:nth-child(3) {
-      animation-delay: 0.4s;
+      animation-delay: 300ms;
     }
 
-    @keyframes dot-flash {
-      0%,
-      80%,
-      100% {
-        opacity: 0.5;
+    span:nth-child(4) {
+      animation-delay: 450ms;
+    }
+
+    @keyframes circles-bounce {
+      0% {
+        transform: translateY(0);
       }
-      40% {
-        opacity: 1;
+      100% {
+        transform: translateY(-10px);
       }
     }
   `
@@ -53,6 +56,6 @@ export class DotsLoader extends LitElement {
   }
 
   render() {
-    return html`<span></span><span></span><span></span>`
+    return html`<span></span><span></span><span></span><span></span>`
   }
 }
