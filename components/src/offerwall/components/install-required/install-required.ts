@@ -16,7 +16,7 @@ const STEP_1 = `You'll need a Web Monetization compatible wallet to use with the
 const STEP_2 = `Install the Web Monetization extension from your browser's web store. This includes getting and/or connecting to your wallet.`
 const STEP_3 = `All set! You can control how and when to support us from the extension settings.`
 const BUTTON_CTA = 'Install the Web Monetization Extension'
-const SUPPORTS_CONTRAST_COLOR = CSS.supports('color: contrast-color(black)')
+
 export class InstallRequired extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
@@ -34,7 +34,6 @@ export class InstallRequired extends LitElement {
     if (!customElements.get('wm-header')) {
       customElements.define('wm-header', WebMonetizationHeader)
     }
-
     this.#handleButtonContrastColor()
   }
 
@@ -104,9 +103,10 @@ export class InstallRequired extends LitElement {
   }
 
   #handleButtonContrastColor(): void {
-    if (SUPPORTS_CONTRAST_COLOR) return
+    if (CSS.supports('color: contrast-color(black)')) return
     if (this.#contrastObserver) return
 
+    this.#updateContrastColor()
     const rootNode = this.getRootNode()
     if (rootNode instanceof ShadowRoot) {
       this.#contrastObserver = new MutationObserver(() =>
