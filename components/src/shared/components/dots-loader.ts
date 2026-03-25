@@ -34,7 +34,7 @@ export class DotsLoader extends LitElement {
       0%,
       80%,
       100% {
-        opacity: 0.2;
+        opacity: 0.5;
       }
       40% {
         opacity: 1;
