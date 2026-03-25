@@ -17,7 +17,7 @@ export class DotsLoader extends LitElement {
       background-color: var(--Colors-silver-800, #676767);
       background-color: color-mix(
         in srgb,
-        contrast-color(var(--primary-color, white)) 55%,
+        contrast-color(var(--primary-color, white)) 75%,
         transparent
       );
       animation: circles-bounce 500ms infinite ease-in alternate;
