@@ -1,6 +1,10 @@
 import { LitElement, html, css } from 'lit'
 
 export class DotsLoader extends LitElement {
+  /* background-color: oklch
+   * resolves to white or black based on --primary-color lightness.
+   * We use oklch instead of contrast-color() due to limited browser support for contrast-color (Safari/Firefox only as of 2026).
+   * Reference: https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
   static styles = css`
     :host {
       display: inline-flex;
