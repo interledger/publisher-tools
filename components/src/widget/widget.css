@@ -137,18 +137,37 @@ a:focus-visible {
 }
 .trigger {
   cursor: pointer;
-  background: var(--wm-widget-trigger-bg-color);
+  background: conic-gradient(
+    from 180deg,
+    #e8595a,
+    #f0a03a,
+    #56b7b5,
+    #7f76b2,
+    #e8595a
+  );
   width: var(--trigger-button-width);
   height: var(--trigger-button-height);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 1rem;
-  border: transparent;
+  border: none;
   border-radius: 50%;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
+  position: relative;
+  padding: 1.5px;
+  box-sizing: content-box;
+}
+
+.trigger::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 50%;
+  background: var(--wm-widget-trigger-bg-color);
+  z-index: 0;
 }
 
 .trigger:hover {
@@ -163,6 +182,8 @@ a:focus-visible {
 .trigger img {
   width: 2rem;
   transition: transform 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .trigger:hover img {
@@ -184,12 +205,6 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: var(--Spacings-sm);
-}
-
-.widget-header img {
-  width: 39px;
-  height: 32px;
-  aspect-ratio: 39/32;
 }
 
 .widget-header p {
@@ -221,7 +236,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: auto;
 
   background: var(--primary-color);
 }
@@ -252,7 +267,6 @@ a:focus-visible {
   padding: 0px var(--Spacings-2xl);
   flex: 1 1 auto;
   gap: var(--Spacings-lg);
-  justify-content: center;
 }
 
 .widget-body p {
@@ -291,6 +305,10 @@ a:focus-visible {
   width: 100%;
   height: 1px;
   margin: var(--Spacings-lg, 24px) 0;
+}
+
+.divider + .form-wallet-address {
+  margin-top: auto;
 }
 
 .form-label {
@@ -364,38 +382,6 @@ a:focus-visible {
   font-weight: var(--Font-Weight-Regular);
   line-height: var(--Font-Line-Height-sm);
   margin-top: 4px;
-  display: block;
-}
-
-.close-button {
-  color: var(--Colors-silver-700, #7b7b7b);
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  aspect-ratio: 1/1;
-}
-
-.close-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.close-button:active {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.close-button svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
   display: block;
 }
 

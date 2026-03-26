@@ -121,9 +121,9 @@ export const createDefaultWidgetProfile = (
     type: CORNER_OPTION.Light,
   },
   color: {
-    text: '#000000',
+    text: '#676767',
     background: '#ffffff',
-    theme: '#4ec6c0',
+    theme: '#56b7b5',
   },
   ctaPayButton: {
     text: 'Support me',
