@@ -13,7 +13,6 @@ import type {
 import { PAYMENT_ERROR } from '@shared/types'
 import type { PaymentError } from '@shared/types'
 import confirmationCss from './confirmation.css?raw'
-import '../../components/dots-loader.js'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 
