@@ -1,10 +1,6 @@
 import { LitElement, html, css } from 'lit'
 
 export class DotsLoader extends LitElement {
-  /* background-color: oklch
-   * resolves to white or black based on --primary-color lightness.
-   * We use oklch instead of contrast-color() due to limited browser support for contrast-color (Safari/Firefox only as of 2026).
-   * Reference: https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
   static styles = css`
     :host {
       display: inline-flex;
@@ -17,6 +13,10 @@ export class DotsLoader extends LitElement {
       width: 8px;
       height: 8px;
       border-radius: 50%;
+      /* Resolves to white or black based on --primary-color lightness.
+       * Uses oklch instead of contrast-color(). contrast-color is unsupported in Chrome,
+       * and has issues inside custom elements (shadow DOM) even where partially supported.
+       * Reference: https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
       background-color: oklch(from var(--primary-color) round(1.21 - L) 0 0);
       animation: circles-bounce 500ms infinite ease-in alternate;
     }
