@@ -27,7 +27,7 @@ Please read the [contribution guidelines](.github/contributing.md) before submit
 This is a monorepo containing several packages:
 
 - **`api/`** - Hono-based API server running on Cloudflare Workers. Used by tools embedded on websites to fetch their config, handle payments, and manage probabilistic revenue sharing.
-- **`frontend/`** - Remix-based React frontend application. Provides the configuration interface where publishers customize their Web Monetization tools (banners, widgets, link tags).
+- **`frontend/`** - React Router 7 (framework mode) React frontend. Provides the configuration interface where publishers customize their Web Monetization tools (banners, widgets, link tags).
 - **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
 - **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
 - **`shared/`** - Shared utilities and types
@@ -36,7 +36,7 @@ This is a monorepo containing several packages:
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 24+
-- [pnpm](https://pnpm.io/) 9.15.9+
+- [pnpm](https://pnpm.io/) 10.33+
 
 ## Installation
 
@@ -122,8 +122,8 @@ This will trigger the deploy workflow and create preview environments for the PR
 
 - **Runtime**: Cloudflare workers
 - **Development**: Node.js
-- **Package Manager**: pnpm 9.15.9
-- **Frontend**: React 19 with Remix framework
+- **Package Manager**: pnpm 10.33+
+- **Frontend**: React Router 7
 - **API**: Hono framework on Cloudflare Workers
 - **Components**: Lit web components
 - **Styling**: TailwindCSS
