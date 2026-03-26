@@ -311,7 +311,7 @@ export class OpenPaymentsService {
         },
       )
     } catch (error) {
-      if (isOpenPaymentsClientError(error)) throw error // Let the caller handle client errors (like non-positive amount)
+      if (isOpenPaymentsClientError(error)) throw error
       throw createHTTPException(
         500,
         `Could not create payment quote for receiver ${args.walletAddress.id}.`,
