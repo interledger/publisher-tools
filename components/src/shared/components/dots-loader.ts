@@ -41,6 +41,21 @@ export class DotsLoader extends LitElement {
         transform: translateY(-10px);
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      :host {
+        align-items: center;
+      }
+
+      span {
+        animation-name: circles-fade;
+      }
+
+      @keyframes circles-fade {
+        0% { opacity: 1; }
+        100% { opacity: 0.2; }
+      }
+    }
   `
 
   render() {
