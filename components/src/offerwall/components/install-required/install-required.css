@@ -61,6 +61,8 @@ h2 {
   border-radius: var(--Radius-Moderate-rounding);
 
   background: var(--accent-color);
+  /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
+     https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
   color: white;
   color: oklch(from var(--accent-color) round(1.21 - L) 0 0);
 }
