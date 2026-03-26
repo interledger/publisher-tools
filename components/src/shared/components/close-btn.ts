@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js'
 
 export class CloseBtn extends LitElement {
   @property({ type: String }) color: string = 'currentColor'
+  @property({ type: String }) label: string = 'Close window'
 
   static styles = css`
     button {
@@ -23,12 +24,8 @@ export class CloseBtn extends LitElement {
   `
 
   render() {
-    return html` <button
-      aria-label="Close window"
-      @click=${() =>
-        this.dispatchEvent(new CustomEvent('close', { bubbles: true }))}
-    >
-      <svg viewBox="0 0 20 20" fill="none">
+    return html` <button aria-label=${this.label}>
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
         <path
           d="M5.33219 15.2575L4.74219 14.6675L9.40885 10.0008L4.74219 5.33414L5.33219 4.74414L9.99885 9.41081L14.6655 4.74414L15.2555 5.33414L10.5889 10.0008L15.2555 14.6675L14.6655 15.2575L9.99885 10.5908L5.33219 15.2575Z"
           fill=${this.color}

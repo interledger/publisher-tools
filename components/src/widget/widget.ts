@@ -174,7 +174,7 @@ export class PaymentWidget extends LitElement {
         </div>
 
         <wm-close-btn
-          @close=${this.toggleWidget}
+          @click=${this.toggleWidget}
           .color=${profile.color.background}
         ></wm-close-btn>
       </div>

@@ -334,7 +334,7 @@ export class PaymentConfirmation extends LitElement {
             <span>back</span>
           </button>
           <wm-close-btn
-            @close=${this.closeWidget}
+            @click=${this.closeWidget}
             .color=${this.configController.config.profile.color.theme}
           ></wm-close-btn>
         </div>
