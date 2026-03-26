@@ -44,6 +44,13 @@ export class DotsLoader extends LitElement {
   `
 
   render() {
-    return html`<span></span><span></span><span></span><span></span>`
+    return html`
+      <span role="status" aria-label="Loading" style="display:contents">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </span>
+    `
   }
 }
