@@ -113,7 +113,7 @@ export const createDefaultWidgetProfile = (
     isVisible: true,
   },
   font: {
-    name: FONT_FAMILY_OPTIONS[4],
+    name: FONT_FAMILY_OPTIONS[0],
     size: 'base',
   },
   position: WIDGET_POSITION.Right,

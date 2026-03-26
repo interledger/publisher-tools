@@ -52,8 +52,12 @@ export class DotsLoader extends LitElement {
       }
 
       @keyframes circles-fade {
-        0% { opacity: 1; }
-        100% { opacity: 0.2; }
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.2;
+        }
       }
     }
   `
