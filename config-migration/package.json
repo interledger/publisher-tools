@@ -1,0 +1,30 @@
+{
+  "name": "@shared/config-migration",
+  "version": "1.0.0",
+  "description": "Migration service for converting legacy ConfigVersions format to new Configuration format",
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "migration",
+    "config",
+    "s3"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws4fetch": "^1.0.20"
+  },
+  "devDependencies": {
+    "@shared/types": "workspace:^",
+    "@types/node": "^24.6.0",
+    "@vitest/coverage-v8": "^3.0.0",
+    "typescript": "5.9.3",
+    "vitest": "^3.0.0"
+  }
+}
