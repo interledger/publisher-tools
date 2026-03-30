@@ -1,19 +1,28 @@
-import { LitElement, html, unsafeCSS } from 'lit'
+import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
+import { CloseBtn } from '@c/shared/components/close-btn'
+import { DotsLoader } from '@c/shared/components/dots-loader'
+import { getCurrencySymbol, getFormattedAmount } from '@c/utils'
 import type {
   Quote,
   Grant,
   WalletAddress,
   PendingGrant,
 } from '@interledger/open-payments'
+import { PAYMENT_ERROR } from '@shared/types'
+import type { PaymentError } from '@shared/types'
 import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
 import type { Amount } from '../../types'
 
-export interface PaymentResponse {
+const MIN_SEND_AMOUNT = 1 // 1 unit
+
+interface PaymentResponse {
   quote: Quote
   incomingPaymentGrant: Grant
+  error?: PaymentError
+  minSendAmount?: Amount
 }
 
 export class PaymentConfirmation extends LitElement {
@@ -24,13 +33,22 @@ export class PaymentConfirmation extends LitElement {
   @state() private inputAmount = ''
   @state() private isLoadingPreview = false
   @state() private debounceTimer: ReturnType<typeof setTimeout> | null = null
+  @state() private amountError: string | null = null
   @state() private formattedDebitAmount?: string
   @state() private formattedReceiveAmount?: string
+  #minSendAmount?: Amount
 
   static styles = unsafeCSS(confirmationCss)
 
   connectedCallback() {
     super.connectedCallback()
+    if (!customElements.get('wm-dots-loader')) {
+      customElements.define('wm-dots-loader', DotsLoader)
+    }
+    if (!customElements.get('wm-close-btn')) {
+      customElements.define('wm-close-btn', CloseBtn)
+    }
+
     this.updateComplete.then(() => {
       const input =
         this.shadowRoot?.querySelector<HTMLInputElement>('#amount-input')
@@ -44,28 +62,40 @@ export class PaymentConfirmation extends LitElement {
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer)
     }
-    this.isLoadingPreview = true
 
+    const amountToSend = Number(amount)
+
+    if (this.#minSendAmount) {
+      const { value, assetScale } = this.#minSendAmount
+      const minAmount = Number(value) / 10 ** assetScale
+
+      if (amountToSend < minAmount) {
+        const { assetScale } = this.configController.state.walletAddress
+        this.amountError = this.validateAmount(
+          amountToSend * 10 ** assetScale,
+          Number(value),
+        )
+        return
+      }
+    }
+
+    this.amountError = null
+    this.isLoadingPreview = true
     this.debounceTimer = setTimeout(() => {
-      const formatted = amount.replace(/,/g, '')
-      this.processPaymentForAmount(formatted)
+      this.processPaymentForAmount(amountToSend)
     }, 750)
   }
 
-  private async processPaymentForAmount(amount: string) {
-    if (!amount || amount === '0') {
-      this.requestUpdate()
-      return
-    }
-
+  private async processPaymentForAmount(amount: number) {
     const {
-      walletAddress: { id },
+      walletAddress: { id, assetScale },
     } = this.configController.state
+    const amountToSend = Math.max(amount, MIN_SEND_AMOUNT / 10 ** assetScale)
 
     const paymentData = {
       walletAddress: id,
       receiver: this.configController.config.receiverAddress,
-      amount: Number(amount),
+      amount: amountToSend,
     }
 
     if (this.isPreview) {
@@ -148,6 +178,22 @@ export class PaymentConfirmation extends LitElement {
     }
   }
 
+  validateAmount(amountToScale: number, minToScale: number): string | null {
+    const val = Number(amountToScale)
+    if (Number.isNaN(val)) {
+      return 'Contribute a valid amount to continue.' // TODO: i18n
+    }
+    if (val < minToScale) {
+      const { amountWithCurrency } = getFormattedAmount(
+        minToScale,
+        this.configController.state.walletAddress,
+      )
+      return `A minimum amount of ${amountWithCurrency} is required.`
+    }
+
+    return null
+  }
+
   private async getPaymentQuote(paymentData: {
     walletAddress: string
     receiver: string
@@ -168,26 +214,48 @@ export class PaymentConfirmation extends LitElement {
       } satisfies PaymentQuoteInput),
     })
 
+    const data = (await response.json()) as PaymentResponse
+
     if (!response.ok) {
-      throw new Error('Failed to fetch payment quote')
+      this.amountError =
+        'Failed to create payment. Please try a different amount.'
+      if (
+        response.status === 400 &&
+        data.error === PAYMENT_ERROR.NON_POSITIVE_AMOUNT
+      ) {
+        if (data.minSendAmount?.value) {
+          // Rafiki v1.2.0-beta and later include `minSendAmount` with error
+          const {
+            minSendAmount: { value, assetScale },
+          } = data
+          this.amountError = this.validateAmount(
+            paymentData.amount * 10 ** assetScale,
+            Number(value),
+          )
+          this.#minSendAmount = data.minSendAmount
+        } else {
+          this.amountError =
+            'The amount is too small. Please enter a higher amount.' // TODO: i18n
+        }
+      }
+
+      return
     }
 
-    const payment = (await response.json()) as PaymentResponse
-    const { quote } = payment
+    const {
+      quote: { debitAmount, receiveAmount },
+    } = data
+    this.formattedDebitAmount = getFormattedAmount(
+      debitAmount.value,
+      debitAmount,
+    ).amountWithCurrency
 
-    this.formattedDebitAmount = this.configController.getFormattedAmount({
-      value: quote.debitAmount.value,
-      assetCode: quote.debitAmount.assetCode,
-      assetScale: quote.debitAmount.assetScale,
-    }).amountWithCurrency
+    this.formattedReceiveAmount = getFormattedAmount(
+      receiveAmount.value,
+      receiveAmount,
+    ).amountWithCurrency
 
-    this.formattedReceiveAmount = this.configController.getFormattedAmount({
-      value: quote.receiveAmount.value,
-      assetCode: quote.receiveAmount.assetCode,
-      assetScale: quote.receiveAmount.assetScale,
-    }).amountWithCurrency
-
-    this.configController.updateState({ ...payment })
+    this.configController.updateState({ ...data })
   }
 
   private async previewPaymentQuote(paymentData: {
@@ -197,7 +265,7 @@ export class PaymentConfirmation extends LitElement {
   }): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currencySymbol = this.configController.getCurrencySymbol(
+        const currencySymbol = getCurrencySymbol(
           this.configController.state.walletAddress.assetCode,
         )
         this.formattedDebitAmount = `${currencySymbol}${paymentData.amount.toString()}`
@@ -310,7 +378,7 @@ export class PaymentConfirmation extends LitElement {
     const {
       walletAddress: { assetCode },
     } = this.configController.state
-    const currencySymbol = this.configController.getCurrencySymbol(assetCode)
+    const currencySymbol = getCurrencySymbol(assetCode)
 
     return html`
       <div class="confirmation-container">
@@ -324,14 +392,10 @@ export class PaymentConfirmation extends LitElement {
             </svg>
             <span>back</span>
           </button>
-          <button class="close-button" @click=${this.closeWidget}>
-            <svg fill="none" viewBox="0 0 20 20">
-              <path
-                fill="var(--wm-primary-color, #8075B3)"
-                d="m5.332 15.257-.59-.59L9.41 10 4.742 5.333l.59-.59L10 9.41l4.666-4.667.59.59L10.59 10l4.666 4.667-.59.59L10 10.59l-4.667 4.667Z"
-              />
-            </svg>
-          </button>
+          <wm-close-btn
+            @click=${this.closeWidget}
+            .color=${this.configController.config.profile.color.theme}
+          ></wm-close-btn>
         </div>
 
         <div class="widget-body">
@@ -342,7 +406,9 @@ export class PaymentConfirmation extends LitElement {
               <span class="currency-symbol">${currencySymbol}</span>
               <input
                 id="amount-input"
-                class="form-input with-currency"
+                class="form-input with-currency ${this.amountError
+                  ? 'amount-error'
+                  : ''}"
                 type="text"
                 inputmode="decimal"
                 placeholder="0"
@@ -352,8 +418,15 @@ export class PaymentConfirmation extends LitElement {
                 @keydown=${this.handleKeyDown}
                 autocomplete="off"
                 spellcheck="false"
+                aria-invalid=${!!this.amountError}
+                aria-describedby=${this.amountError ? 'amount-error' : nothing}
               />
             </div>
+            ${this.amountError
+              ? html`<p id="amount-error" class="amount-error" role="alert">
+                  ${this.amountError}
+                </p>`
+              : nothing}
           </div>
 
           <div class="preset-buttons">
@@ -399,22 +472,14 @@ export class PaymentConfirmation extends LitElement {
       return html`
         <div class="payment-details">
           <div class="loading-state">
-            <span class="loader"></span>
-            <span>Loading payment details...</span>
+            <wm-dots-loader></wm-dots-loader>
           </div>
         </div>
       `
     }
 
-    const { quote } = this.configController.state
-    if (!this.isPreview && !quote) {
-      return html`
-        <div class="payment-details failed">
-          <div class="loading-state">
-            Failed to load payment details. Please try again.
-          </div>
-        </div>
-      `
+    if (this.amountError) {
+      return nothing
     }
 
     return html`

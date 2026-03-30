@@ -6,7 +6,8 @@ import {
   ContributionRequired,
   InstallRequired,
 } from './components/index.js'
-import { NO_OP_CONTROLLER, type Controller, type Screen } from './controller.js'
+import { NO_OP_CONTROLLER } from './controller.js'
+import type { Actions, Controller, Screen } from './controller.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
@@ -30,15 +31,18 @@ export class OfferwallModal extends LitElement {
   }
 
   #controller: Controller = NO_OP_CONTROLLER
-  setController(controller: Controller) {
+  setController(controller: Controller): Actions {
     if (this.#controller !== NO_OP_CONTROLLER) {
       throw new Error('Controller already set')
     }
     this.#controller = controller
+    return {
+      setScreen: (screen: Screen) => this.#setScreen(screen),
+    }
   }
 
   @state() _screen: Screen = 'install-required'
-  setScreen(screen: Screen) {
+  #setScreen(screen: Screen) {
     if (!ALLOWED_SCREENS.includes(screen)) {
       throw new Error('Invalid screen')
     }

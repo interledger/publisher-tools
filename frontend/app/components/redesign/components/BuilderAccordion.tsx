@@ -64,8 +64,9 @@ export const BuilderAccordion: React.FC<Props> = ({
                 onRefresh()
               }}
               aria-label={`Reset ${title.toLowerCase()} to default`}
+              className="text-xs sm:text-sm gap-xs"
             >
-              Back to default
+              Reset changes
             </GhostButton>
           )}
           {onDone && (

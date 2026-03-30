@@ -1,3 +1,4 @@
+import type { WalletAddress } from '@interledger/open-payments'
 import type { FontFamilyKey, Tool } from '@shared/types'
 import { FONT_MAP } from './constants'
 
@@ -68,4 +69,52 @@ export function getContrastColor(colorStr: string) {
   // YIQ formula
   const yiq = (r * 299 + g * 587 + b * 114) / 1000
   return yiq >= 128 ? '#000000' : '#ffffff'
+}
+
+export function getCurrencySymbol(assetCode: string): string {
+  const isISO4217Code = (code: string): boolean => {
+    return code.length === 3
+  }
+
+  if (!isISO4217Code(assetCode)) {
+    return assetCode.toUpperCase()
+  }
+  return new Intl.NumberFormat('en-US', {
+    currency: assetCode,
+    style: 'currency',
+    currencyDisplay: 'symbol',
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+  })
+    .format(0)
+    .replace(/0/g, '')
+    .trim()
+}
+
+export function getFormattedAmount(
+  value: string | number,
+  { assetCode, assetScale }: Pick<WalletAddress, 'assetCode' | 'assetScale'>,
+) {
+  const formatterWithCurrency = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: assetCode,
+    maximumFractionDigits: assetScale,
+    minimumFractionDigits: assetScale,
+  })
+  const formatter = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: assetScale,
+    minimumFractionDigits: assetScale,
+  })
+
+  const amount = Number(formatter.format(Number(`${value}e-${assetScale}`)))
+  const amountWithCurrency = formatterWithCurrency.format(
+    Number(`${value}e-${assetScale}`),
+  )
+  const symbol = getCurrencySymbol(assetCode)
+
+  return {
+    amount,
+    amountWithCurrency,
+    symbol,
+  }
 }
