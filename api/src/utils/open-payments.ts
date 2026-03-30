@@ -6,7 +6,7 @@ import {
   type OutgoingPayment,
   type Quote,
   type Grant,
-  isFinalizedGrant,
+  isFinalizedGrantWithAccessToken,
   isPendingGrant,
   createAuthenticatedClient,
 } from '@interledger/open-payments'
@@ -171,6 +171,10 @@ export class OpenPaymentsService {
       receiverWallet.authServer,
     )
 
+    if (!isFinalizedGrantWithAccessToken(incomingPaymentGrant)) {
+      throw new Error('Expected incoming payment grant with access token')
+    }
+
     // create incoming payment without incoming amount
     const incomingPayment = await this.createIncomingPayment({
       accessToken: incomingPaymentGrant.access_token.value,
@@ -184,6 +188,10 @@ export class OpenPaymentsService {
 
     if (isPendingGrant(quoteGrant)) {
       throw new Error('Expected non-interactive grant')
+    }
+
+    if (!isFinalizedGrantWithAccessToken(quoteGrant)) {
+      throw new Error('Expected quote grant with access token')
     }
 
     const quote = await this.createPaymentQuote({
@@ -238,8 +246,8 @@ export class OpenPaymentsService {
       },
     )
 
-    if (!isFinalizedGrant(continuation)) {
-      throw new Error('Expected finalized grant.')
+    if (!isFinalizedGrantWithAccessToken(continuation)) {
+      throw new Error('Expected finalized grant with access token')
     }
 
     const outgoingPayment = await this.client!.outgoingPayment.create(
@@ -434,6 +442,9 @@ export class OpenPaymentsService {
     outgoingPaymentId: OutgoingPayment['id'],
     continuationAccessToken: string,
   ): Promise<CheckPaymentResult> {
+    if (!isFinalizedGrantWithAccessToken(incomingPaymentGrant)) {
+      throw new Error('Expected incoming payment grant with access token')
+    }
     let attempts = 0
     await sleep(OUTGOING_PAYMENT_POLLING_INITIAL_DELAY)
     while (++attempts <= OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS) {
