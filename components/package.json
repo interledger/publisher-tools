@@ -6,6 +6,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./widget": "./src/widget/index.ts",
+    "./offerwall": "./src/offerwall/index.ts",
     "./*": "./src/*.ts"
   },
   "dependencies": {
