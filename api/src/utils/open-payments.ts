@@ -1,4 +1,5 @@
 import {
+  OpenPaymentsClientError,
   type PendingGrant,
   type WalletAddress,
   type AuthenticatedClient,
@@ -9,6 +10,7 @@ import {
   isPendingGrant,
   createAuthenticatedClient,
 } from '@interledger/open-payments'
+import type { components as RSComponents } from '@interledger/open-payments/dist/openapi/generated/resource-server-types'
 import { createId } from '@paralleldrive/cuid2'
 import { getWalletAddress, urlWithParams } from '@shared/utils'
 import { createHeaders, sleep, createHTTPException } from './utils.js'
@@ -21,6 +23,7 @@ export interface Amount {
 }
 
 export type CreatePayment = { quote: Quote; incomingPaymentGrant: Grant }
+type AmountType = RSComponents['schemas']['amount']
 
 type CreateIncomingPaymentParams = {
   accessToken: string
@@ -308,6 +311,7 @@ export class OpenPaymentsService {
         },
       )
     } catch (error) {
+      if (isOpenPaymentsClientError(error)) throw error
       throw createHTTPException(
         500,
         `Could not create payment quote for receiver ${args.walletAddress.id}.`,
@@ -491,4 +495,20 @@ export class OpenPaymentsService {
 
     return { success: true }
   }
+}
+
+const isOpenPaymentsClientError = (error: unknown) =>
+  error instanceof OpenPaymentsClientError
+
+// happens during quoting only
+export const isNonPositiveAmountError = (
+  error: unknown,
+): error is OpenPaymentsClientError & {
+  details?: { minSendAmount?: AmountType }
+} => {
+  if (!isOpenPaymentsClientError(error)) return false
+  return (
+    error.status === 400 &&
+    error.description?.toLowerCase()?.includes('non-positive receive amount')
+  )
 }

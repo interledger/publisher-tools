@@ -1,6 +1,6 @@
 import { zValidator } from '@hono/zod-validator'
 import { APP_URL } from '@shared/defines'
-import { KV_PAYMENTS_PREFIX } from '@shared/types'
+import { KV_PAYMENTS_PREFIX, PAYMENT_ERROR } from '@shared/types'
 import { app } from '../app.js'
 import {
   PaymentQuoteSchema,
@@ -9,7 +9,10 @@ import {
   PaymentStatusParamSchema,
 } from '../schemas/payment.js'
 import type { PaymentStatus } from '../types'
-import { OpenPaymentsService } from '../utils/open-payments.js'
+import {
+  OpenPaymentsService,
+  isNonPositiveAmountError,
+} from '../utils/open-payments.js'
 import { createHTTPException, waitWithAbort } from '../utils/utils'
 
 app.post(
@@ -30,6 +33,15 @@ app.post(
 
       return json(result)
     } catch (error) {
+      if (isNonPositiveAmountError(error)) {
+        return json(
+          {
+            error: PAYMENT_ERROR.NON_POSITIVE_AMOUNT,
+            minSendAmount: error.details?.minSendAmount,
+          },
+          400,
+        )
+      }
       throw createHTTPException(500, 'Payment quote creation error: ', error)
     }
   },
