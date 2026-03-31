@@ -1,9 +1,9 @@
 {
   "name": "@shared/config-migration",
   "version": "1.0.0",
-  "description": "Migration service for converting legacy ConfigVersions format to new Configuration format",
+  "description": "Migration CLI for converting legacy ConfigVersions format to new Configuration format",
   "type": "module",
-  "main": "./index.ts",
+  "main": "./migrate-cli.ts",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -19,9 +19,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@shared/utils": "workspace:^",
-    "aws4fetch": "^1.0.20",
-    "fast-xml-parser": "^5.5.9"
+    "@migration/s3": "workspace:^",
+    "@shared/utils": "workspace:^"
   },
   "devDependencies": {
     "@shared/types": "workspace:^",

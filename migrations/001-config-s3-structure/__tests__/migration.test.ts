@@ -1,22 +1,26 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions, Configuration } from '@shared/types'
-import { convertToConfiguration } from '@shared/utils'
-import { ConfigMigrationService } from '../index'
+import { dryRun, migrateSingle } from '../migrate-cli'
 
-const mockFetch = vi.hoisted(() => vi.fn())
+const mockGetJson = vi.hoisted(() => vi.fn())
+const mockPutJson = vi.hoisted(() => vi.fn())
+const mockExistsInNewPrefix = vi.hoisted(() => vi.fn())
+const mockDeleteFromLegacy = vi.hoisted(() => vi.fn())
 
-vi.mock('aws4fetch', () => ({
-  AwsClient: vi.fn().mockImplementation(() => ({ fetch: mockFetch })),
+vi.mock('@migration/s3', () => ({
+  S3MigrationClient: vi.fn().mockImplementation(() => ({
+    getJson: mockGetJson,
+    putJson: mockPutJson,
+    existsInNewPrefix: mockExistsInNewPrefix,
+    deleteFromLegacy: mockDeleteFromLegacy,
+    listLegacyWallets: vi.fn(),
+  })),
+  LEGACY_PREFIX: '20250717-dev',
+  NEW_PREFIX: '20260305-dev',
 }))
 
-const mockSecrets = {
-  AWS_ACCESS_KEY_ID: 'test-access-key',
-  AWS_SECRET_ACCESS_KEY: 'test-secret-key',
-  AWS_S3_ENDPOINT: 'https://s3.example.com',
-}
-
-const LEGACY_AWS_PREFIX = '20250717-dev'
-const NEW_AWS_PREFIX = '20260305-dev'
+const WALLET = '$wallet.example.com'
 
 /** Full legacy profile — all banner + widget fields populated */
 const mockLegacyData: ConfigVersions = {
@@ -155,365 +159,187 @@ const mockNewConfiguration: Configuration = {
   },
 }
 
-// -- getJson / putJson ----------------------------------------------------
-
-describe('ConfigMigrationService - getJson / putJson', () => {
-  let service: ConfigMigrationService
-
-  beforeEach(() => {
-    vi.clearAllMocks()
-
-    service = new ConfigMigrationService(mockSecrets)
-  })
-
-  it('should successfully fetch and return legacy ConfigVersions data', async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: async () => mockLegacyData,
-    })
-
-    const result = await service.getJson('$wallet.example.com')
-
-    expect(result).toEqual(mockLegacyData)
-    expect(mockFetch).toHaveBeenCalledTimes(1)
-    expect(mockFetch.mock.calls[0][0].href).toContain(LEGACY_AWS_PREFIX)
-    expect(mockFetch.mock.calls[0][0].href).toContain('wallet.example.com.json')
-  })
-
-  it('should construct correct S3 URL with legacy prefix in getJson', async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: async () => mockLegacyData,
-    })
-
-    await service.getJson('https://wallet.example.com')
-
-    expect(mockFetch.mock.calls[0][0].href).toBe(
-      `${mockSecrets.AWS_S3_ENDPOINT}/${LEGACY_AWS_PREFIX}/wallet.example.com.json`,
-    )
-  })
-
-  it('should strip https:// prefix from wallet address in getJson', async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: async () => mockLegacyData,
-    })
-
-    await service.getJson('https://wallet.example.com')
-
-    const url = mockFetch.mock.calls[0][0].href
-    expect(url).toContain('wallet.example.com.json')
-    expect(url).not.toContain('https://wallet')
-  })
-
-  it('should throw NoSuchKey error on 404', async () => {
-    mockFetch.mockResolvedValueOnce({ ok: false, status: 404 })
-
-    try {
-      await service.getJson('$wallet.example.com')
-      expect.fail('Should have thrown')
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error)
-      expect((error as Error).message).toContain('404')
-      expect((error as Error).name).toBe('NoSuchKey')
-    }
-  })
-
-  it('should upload Configuration to new prefix with PUT', async () => {
-    mockFetch.mockResolvedValueOnce({ ok: true, status: 200 })
-
-    await service.putJson('$wallet.example.com', mockNewConfiguration)
-
-    expect(mockFetch).toHaveBeenCalledTimes(1)
-    const [url, opts] = mockFetch.mock.calls[0]
-    expect(url.href).toContain(NEW_AWS_PREFIX)
-    expect(url.href).toContain('wallet.example.com.json')
-    expect(opts.method).toBe('PUT')
-    expect(opts.headers['Content-Type']).toBe('application/json')
-  })
-
-  it('should construct correct S3 URL with new prefix in putJson', async () => {
-    mockFetch.mockResolvedValueOnce({ ok: true, status: 200 })
-
-    await service.putJson('https://wallet.example.com', mockNewConfiguration)
-
-    expect(mockFetch.mock.calls[0][0].href).toBe(
-      `${mockSecrets.AWS_S3_ENDPOINT}/${NEW_AWS_PREFIX}/wallet.example.com.json`,
-    )
-  })
-
-  it('should strip $ prefix from wallet address in putJson', async () => {
-    mockFetch.mockResolvedValueOnce({ ok: true, status: 200 })
-
-    await service.putJson('$wallet.example.com', mockNewConfiguration)
-
-    const url = mockFetch.mock.calls[0][0].href
-    expect(url).toContain('wallet.example.com.json')
-    expect(url).not.toContain('$')
-  })
+// fake instance — the mock above intercepts all method calls
+const s3 = new S3MigrationClient({
+  accessKeyId: '',
+  secretAccessKey: '',
+  bucket: '',
 })
 
-describe('ConfigMigrationService - migrate', () => {
-  let service: ConfigMigrationService
+// -- migrateSingle ------------------------------------------------------------
 
+describe('migrateSingle', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-
-    service = new ConfigMigrationService(mockSecrets)
   })
 
-  // -- happy path -----------------------------------------------------------
+  it('checks new prefix first, then gets legacy data, puts new, deletes legacy', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(mockLegacyData)
+    mockPutJson.mockResolvedValueOnce(undefined)
+    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
 
-  it('should HEAD new prefix, then GET legacy, PUT new, DELETE legacy', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request to check if already migrated
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // PUT request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
+    const result = await migrateSingle(s3, WALLET)
 
-    await service.migrate('$wallet.example.com', convertToConfiguration)
-
-    expect(mockFetch).toHaveBeenCalledTimes(4)
-    expect(mockFetch.mock.calls[0][0].href).toContain(NEW_AWS_PREFIX)
-    expect(mockFetch.mock.calls[0][1].method).toBe('HEAD')
-    expect(mockFetch.mock.calls[1][0].href).toContain(LEGACY_AWS_PREFIX)
-    expect(mockFetch.mock.calls[2][0].href).toContain(NEW_AWS_PREFIX)
-    expect(mockFetch.mock.calls[2][1].method).toBe('PUT')
-    expect(mockFetch.mock.calls[3][0].href).toContain(LEGACY_AWS_PREFIX)
-    expect(mockFetch.mock.calls[3][1].method).toBe('DELETE')
-  })
-
-  it('should call converter with legacy data and walletAddress', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // PUT request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
-
-    const converter = vi.fn(convertToConfiguration)
-    await service.migrate('$wallet.example.com', converter)
-
-    expect(converter).toHaveBeenCalledTimes(1)
-    expect(converter).toHaveBeenCalledWith(
-      mockLegacyData,
-      '$wallet.example.com',
+    expect(result).toBe(true)
+    expect(mockExistsInNewPrefix).toHaveBeenCalledWith(WALLET)
+    expect(mockGetJson).toHaveBeenCalledWith(WALLET)
+    expect(mockPutJson).toHaveBeenCalledWith(
+      WALLET,
+      expect.objectContaining({ $walletAddress: WALLET }),
     )
+    expect(mockDeleteFromLegacy).toHaveBeenCalledWith(WALLET)
   })
 
-  it('should preserve banner fields in the uploaded data', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // PUT request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
-
-    await service.migrate('$wallet.example.com', convertToConfiguration)
-
-    const body = JSON.parse(mockFetch.mock.calls[2][1].body)
-    const v1 = mockLegacyData.version1
-    expect(body.$walletAddress).toBe('$wallet.example.com')
-    expect(body.banner.version1.$name).toBe(v1.versionName)
-    expect(body.banner.version1.title.text).toBe(v1.bannerTitleText)
-    expect(body.banner.version1.description.text).toBe(v1.bannerDescriptionText)
-    expect(body.banner.version1.description.isVisible).toBe(
-      v1.bannerDescriptionVisible,
-    )
-    expect(body.banner.version1.color.text).toBe(v1.bannerTextColor)
-    expect(body.banner.version1.color.background).toBe(v1.bannerBackgroundColor)
-    expect(body.banner.version1.position).toBe(v1.bannerPosition)
-    expect(body.banner.version1.border.type).toBe(v1.bannerBorder)
-    expect(body.banner.version1.thumbnail.value).toBe(v1.bannerThumbnail)
-  })
-
-  it('should preserve widget fields in the uploaded data', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // PUT request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
-
-    await service.migrate('$wallet.example.com', convertToConfiguration)
-
-    const body = JSON.parse(mockFetch.mock.calls[2][1].body)
-    const v1 = mockLegacyData.version1
-    expect(body.widget.version1.title.text).toBe(v1.widgetTitleText)
-    expect(body.widget.version1.description.text).toBe(v1.widgetDescriptionText)
-    expect(body.widget.version1.description.isVisible).toBe(
-      v1.widgetDescriptionVisible,
-    )
-    expect(body.widget.version1.position).toBe(v1.widgetPosition)
-    expect(body.widget.version1.color.text).toBe(v1.widgetTextColor)
-    expect(body.widget.version1.color.background).toBe(v1.widgetBackgroundColor)
-  })
-
-  // -- full pipeline ----------------------------------------------------------
-
-  it('should produce the correct Configuration shape from legacy data', async () => {
+  it('produces the correct Configuration shape from legacy data', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-01-29T12:00:00.000Z'))
 
     try {
-      mockFetch
-        .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-        .mockResolvedValueOnce({
-          ok: true,
-          status: 200,
-          json: async () => mockLegacyData,
-        }) // GET request
-        .mockResolvedValueOnce({ ok: true, status: 200 }) // PUT request
-        .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
+      mockExistsInNewPrefix.mockResolvedValueOnce(false)
+      mockGetJson.mockResolvedValueOnce(mockLegacyData)
+      mockPutJson.mockResolvedValueOnce(undefined)
+      mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
 
-      await service.migrate('$wallet.example.com', convertToConfiguration)
+      await migrateSingle(s3, WALLET)
 
-      const body = JSON.parse(mockFetch.mock.calls[2][1].body)
-
-      expect(body).toEqual(mockNewConfiguration)
+      const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+      expect(uploaded).toEqual(mockNewConfiguration)
     } finally {
       vi.useRealTimers()
     }
   })
 
-  // -- multiple versions ----------------------------------------------------
+  it('preserves banner fields in the uploaded data', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(mockLegacyData)
+    mockPutJson.mockResolvedValueOnce(undefined)
+    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
 
-  it('should migrate all profile versions from a multi-version legacy config', async () => {
+    await migrateSingle(s3, WALLET)
+
+    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+    const banner = uploaded.banner!
+    const v1 = mockLegacyData.version1
+    expect(uploaded.$walletAddress).toBe(WALLET)
+    expect(banner.version1!.$name).toBe(v1.versionName)
+    expect(banner.version1!.title.text).toBe(v1.bannerTitleText)
+    expect(banner.version1!.description.text).toBe(v1.bannerDescriptionText)
+    expect(banner.version1!.description.isVisible).toBe(
+      v1.bannerDescriptionVisible,
+    )
+    expect(banner.version1!.color.text).toBe(v1.bannerTextColor)
+    expect(banner.version1!.color.background).toBe(v1.bannerBackgroundColor)
+    expect(banner.version1!.position).toBe(v1.bannerPosition)
+    expect(banner.version1!.border.type).toBe(v1.bannerBorder)
+    expect(banner.version1!.thumbnail.value).toBe(v1.bannerThumbnail)
+  })
+
+  it('preserves widget fields in the uploaded data', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(mockLegacyData)
+    mockPutJson.mockResolvedValueOnce(undefined)
+    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+
+    await migrateSingle(s3, WALLET)
+
+    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+    const widget = uploaded.widget!
+    const v1 = mockLegacyData.version1
+    expect(widget.version1!.title.text).toBe(v1.widgetTitleText)
+    expect(widget.version1!.description.text).toBe(v1.widgetDescriptionText)
+    expect(widget.version1!.description.isVisible).toBe(
+      v1.widgetDescriptionVisible,
+    )
+    expect(widget.version1!.position).toBe(v1.widgetPosition)
+    expect(widget.version1!.color.text).toBe(v1.widgetTextColor)
+    expect(widget.version1!.color.background).toBe(v1.widgetBackgroundColor)
+  })
+
+  it('migrates all profile versions from a multi-version legacy config', async () => {
     const multi: ConfigVersions = {
       version1: { ...mockLegacyData.version1, versionName: 'Profile 1' },
       version3: { ...mockLegacyData.version3, versionName: 'Profile 3' },
     }
 
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => multi,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // PUT request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(multi)
+    mockPutJson.mockResolvedValueOnce(undefined)
+    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
 
-    await service.migrate('$wallet.example.com', convertToConfiguration)
+    await migrateSingle(s3, WALLET)
 
-    const body = JSON.parse(mockFetch.mock.calls[2][1].body)
-    expect(Object.keys(body.banner)).toHaveLength(2)
-    expect(body.banner.version1.$name).toBe('Profile 1')
-    expect(body.widget.version3.$name).toBe('Profile 3')
+    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+    expect(Object.keys(uploaded.banner!)).toHaveLength(2)
+    expect(uploaded.banner!.version1!.$name).toBe('Profile 1')
+    expect(uploaded.widget!.version3!.$name).toBe('Profile 3')
   })
 
-  // -- already migrated -----------------------------------------------------
+  it('skips get/put and only deletes legacy when already in new prefix', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(true)
+    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
 
-  it('should skip migration and only delete legacy key if new prefix already has the key', async () => {
-    const converter = vi.fn(convertToConfiguration)
+    const result = await migrateSingle(s3, WALLET)
 
-    mockFetch
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // HEAD request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
-
-    await service.migrate('$wallet.example.com', converter)
-
-    expect(converter).not.toHaveBeenCalled()
-    expect(mockFetch).toHaveBeenCalledTimes(2)
-    expect(mockFetch.mock.calls[0][1].method).toBe('HEAD')
-    expect(mockFetch.mock.calls[1][0].href).toContain(LEGACY_AWS_PREFIX)
-    expect(mockFetch.mock.calls[1][1].method).toBe('DELETE')
+    expect(result).toBe(true)
+    expect(mockGetJson).not.toHaveBeenCalled()
+    expect(mockPutJson).not.toHaveBeenCalled()
+    expect(mockDeleteFromLegacy).toHaveBeenCalledWith(WALLET)
   })
 
-  it('should use the correct key URL when checking for an already-migrated wallet', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: true, status: 200 }) // HEAD request
-      .mockResolvedValueOnce({ ok: true, status: 204 }) // DELETE request
+  it('returns false and skips put/delete when getJson returns null', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(null)
 
-    await service.migrate('$wallet.example.com', convertToConfiguration)
+    const result = await migrateSingle(s3, WALLET)
 
-    expect(mockFetch.mock.calls[0][0].href).toBe(
-      `${mockSecrets.AWS_S3_ENDPOINT}/${NEW_AWS_PREFIX}/wallet.example.com.json`,
-    )
+    expect(result).toBe(false)
+    expect(mockPutJson).not.toHaveBeenCalled()
+    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
 
-  // -- error cases ----------------------------------------------------------
+  it('does not delete legacy when putJson fails', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(mockLegacyData)
+    mockPutJson.mockRejectedValueOnce(new Error('Upload failed'))
 
-  it('should not call putJson if getJson fails', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // GET request
+    await expect(migrateSingle(s3, WALLET)).rejects.toThrow('Upload failed')
 
-    await expect(
-      service.migrate('$wallet.example.com', convertToConfiguration),
-    ).rejects.toThrow('404')
+    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
+  })
+})
 
-    expect(mockFetch).toHaveBeenCalledTimes(2)
+// -- dryRun -------------------------------------------------------------------
+
+describe('dryRun', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('should not call putJson if converter throws', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
+  it('reads legacy data without writing or deleting anything', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
-    const converter = (): never => {
-      throw new Error('Conversion failed')
-    }
+    await dryRun(s3, WALLET)
 
-    await expect(
-      service.migrate('$wallet.example.com', converter),
-    ).rejects.toThrow('Conversion failed')
-
-    expect(mockFetch).toHaveBeenCalledTimes(2)
+    expect(mockPutJson).not.toHaveBeenCalled()
+    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
 
-  it('should throw if putJson fails', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: false, status: 500 }) // PUT request
+  it('skips getJson entirely when already migrated', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(true)
 
-    await expect(
-      service.migrate('$wallet.example.com', convertToConfiguration),
-    ).rejects.toThrow('Failed to upload to S3: 500')
+    await dryRun(s3, WALLET)
 
-    expect(mockFetch).toHaveBeenCalledTimes(3)
+    expect(mockGetJson).not.toHaveBeenCalled()
+    expect(mockPutJson).not.toHaveBeenCalled()
+    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
 
-  it('should not call delete if putJson fails', async () => {
-    mockFetch
-      .mockResolvedValueOnce({ ok: false, status: 404 }) // HEAD request
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockLegacyData,
-      }) // GET request
-      .mockResolvedValueOnce({ ok: false, status: 500 }) // PUT request
+  it('does not throw when getJson returns null', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(null)
 
-    await expect(
-      service.migrate('$wallet.example.com', convertToConfiguration),
-    ).rejects.toThrow()
-
-    expect(mockFetch).toHaveBeenCalledTimes(3)
-    expect(mockFetch.mock.calls[2][1].method).toBe('PUT')
+    await expect(dryRun(s3, WALLET)).resolves.toBeUndefined()
   })
 })
