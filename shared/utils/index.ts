@@ -275,3 +275,10 @@ export function groupBy<T, K extends PropertyKey>(
 
   return result
 }
+
+export {
+  convertToConfigLegacy,
+  convertToConfigsLegacy,
+  convertToProfiles,
+  convertToConfiguration,
+} from './profile-converter'

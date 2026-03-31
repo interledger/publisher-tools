@@ -1,15 +1,17 @@
+import { pathToFileURL } from 'node:url'
+import { convertToConfiguration } from '@shared/utils'
 import { ConfigMigrationService } from './index'
-import { convertToConfiguration } from '../frontend/app/utils/profile-converter'
 
 interface CliOptions {
   wallet?: string
-  batch?: string[]
+  batch: boolean
   dryRun: boolean
 }
 
 function parseArgs(): CliOptions {
   const args = process.argv.slice(2)
   const options: CliOptions = {
+    batch: false,
     dryRun: false,
   }
 
@@ -23,7 +25,7 @@ function parseArgs(): CliOptions {
         break
       case '--batch':
       case '-b':
-        options.batch = args[++i].split(',').map((w) => w.trim())
+        options.batch = true
         break
       case '--dry-run':
       case '-d':
@@ -46,26 +48,24 @@ function parseArgs(): CliOptions {
 
 function printHelp() {
   console.log(`
-Config Migration CLI Tool
-
 Usage:
   migrate-cli.ts [options]
 
 Options:
   --wallet, -w <address>        Migrate a single wallet address
-  --batch, -b <addresses>       Migrate multiple wallet addresses (comma-separated)
+  --batch, -b                   Migrate all wallets found in the legacy S3 prefix
   --dry-run, -d                 Preview migration without uploading data
   --help, -h                    Show this help message
 
 Examples:
   # Migrate a single wallet
-  pnpm tsx migrate-cli.ts --wallet "\\$wallet.example.com"
+  pnpm tsx migrate-cli.ts --wallet "https://ilp.interledger-test.dev/darianusd"
 
-  # Migrate multiple wallets
-  pnpm tsx migrate-cli.ts --batch "\\$wallet1.example.com,\\$wallet2.example.com"
+  # Migrate all wallets from the legacy prefix
+  pnpm tsx migrate-cli.ts --batch
 
-  # Dry run to preview changes
-  pnpm tsx migrate-cli.ts --dry-run --wallet "\\$wallet.example.com"
+  # Dry run to preview all wallets
+  pnpm tsx migrate-cli.ts --dry-run --batch
 `)
 }
 
@@ -74,14 +74,13 @@ function validateEnv() {
     'AWS_ACCESS_KEY_ID',
     'AWS_SECRET_ACCESS_KEY',
     'AWS_S3_ENDPOINT',
-    'AWS_PREFIX',
   ]
   const missing = required.filter((key) => !process.env[key])
 
   if (missing.length > 0) {
     console.error('Error: Missing required environment variables:')
     missing.forEach((key) => console.error(`  - ${key}`))
-    console.error('\nPlease set these environment variables and try again.')
+    console.error('\n Please set these environment variables and try again.')
     process.exit(1)
   }
 }
@@ -91,7 +90,6 @@ function setupService(): ConfigMigrationService {
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID!,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
     AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT!,
-    AWS_PREFIX: process.env.AWS_PREFIX!,
   }
 
   return new ConfigMigrationService(secrets)
@@ -101,32 +99,28 @@ async function dryRun(
   service: ConfigMigrationService,
   walletAddress: string,
 ): Promise<void> {
-  console.log(`\n[DRY RUN] Previewing migration for: ${walletAddress}`)
+  console.log(`\n [DRY RUN] Previewing migration for: ${walletAddress}`)
 
   try {
     const alreadyMigrated = await service.existsInNewPrefix(walletAddress)
 
     if (alreadyMigrated) {
-      console.log('⊘ Already migrated - would only delete legacy key')
+      console.log('! Already migrated - would only delete legacy key')
       return
     }
 
     const legacyData = await service.getJson(walletAddress)
-    console.log('\n✓ Legacy data found')
+    console.log('\n! Legacy data found')
     console.log('Legacy profile versions:', Object.keys(legacyData).join(', '))
 
     const newData = convertToConfiguration(legacyData, walletAddress)
-    console.log('\n✓ Conversion successful')
+    console.log('\n! Conversion successful !')
     console.log('New profile versions:', Object.keys(newData).join(', '))
-    console.log('\nPreview of converted data:')
-    console.log(JSON.stringify(newData, null, 2))
-
-    console.log('\n[DRY RUN] No data was uploaded or deleted')
   } catch (error) {
     if ((error as Error).name === 'NoSuchKey') {
-      console.log('⊘ No legacy data found - nothing to migrate')
+      console.log('-> No legacy data found - nothing to migrate')
     } else {
-      console.error('✗ Dry run failed:', (error as Error).message)
+      console.error('-> Dry run failed:', (error as Error).message)
       throw error
     }
   }
@@ -144,10 +138,10 @@ async function migrateSingle(
     return true
   } catch (error) {
     if ((error as Error).name === 'NoSuchKey') {
-      console.log('⊘ No legacy data found - skipping')
+      console.log('! No legacy data found - skipping')
       return false
     }
-    console.error('✗ Migration failed:', (error as Error).message)
+    console.error('x Migration failed:', (error as Error).message)
     throw error
   }
 }
@@ -187,8 +181,8 @@ async function migrateBatch(
   console.log('='.repeat(50))
   console.log(`Total wallets: ${wallets.length}`)
   console.log(`✓ Successful: ${results.successful}`)
-  console.log(`⊘ Skipped: ${results.skipped}`)
-  console.log(`✗ Failed: ${results.failed}`)
+  console.log(`! Skipped: ${results.skipped}`)
+  console.log(`x Failed: ${results.failed}`)
 
   if (results.errors.length > 0) {
     console.log('\nErrors:')
@@ -203,9 +197,11 @@ async function migrateBatch(
 }
 
 async function main() {
-  const options = parseArgs()
+  const { wallet, batch, dryRun: isDryRun } = parseArgs()
 
-  if (!options.wallet && !options.batch) {
+  const isBatch = batch || (!wallet && isDryRun)
+
+  if (!wallet && !isBatch) {
     console.error('Error: Either --wallet or --batch must be specified')
     printHelp()
     process.exit(1)
@@ -213,37 +209,42 @@ async function main() {
 
   validateEnv()
 
-  console.log('Config Migration CLI')
   console.log('='.repeat(50))
-  console.log(`Dry Run: ${options.dryRun ? 'Yes' : 'No'}`)
+  console.log(`Dry Run: ${isDryRun ? 'Yes' : 'No'}`)
   console.log('='.repeat(50))
 
   const service = setupService()
 
   try {
-    if (options.dryRun && options.wallet) {
-      await dryRun(service, options.wallet)
-    } else if (options.wallet) {
-      await migrateSingle(service, options.wallet)
-      console.log('\n✓ Migration complete')
-    } else if (options.batch) {
-      if (options.dryRun) {
-        for (const wallet of options.batch) {
-          await dryRun(service, wallet)
-        }
+    if (wallet) {
+      if (isDryRun) {
+        await dryRun(service, wallet)
+        console.log('\n [DRY RUN] No data was uploaded or deleted')
       } else {
-        await migrateBatch(service, options.batch)
-        console.log('\n✓ Batch migration complete')
+        await migrateSingle(service, wallet)
+        console.log('\n ✓ Migration complete')
+      }
+    } else {
+      const wallets = await service.listLegacyWallets()
+
+      if (wallets.length === 0) {
+        console.log('x No wallets found in legacy prefix')
+      } else if (isDryRun) {
+        for (const w of wallets) await dryRun(service, w)
+        console.log('\n[DRY RUN] No data was uploaded or deleted')
+      } else {
+        await migrateBatch(service, wallets)
+        console.log('\n ✓ Batch migration complete')
       }
     }
   } catch (error) {
-    console.error('\n✗ Migration failed:', error)
+    console.error('\n x Migration failed:', error)
     process.exit(1)
   }
 }
 
 // only run main CLI if this file executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error('Fatal error:', error)
     process.exit(1)

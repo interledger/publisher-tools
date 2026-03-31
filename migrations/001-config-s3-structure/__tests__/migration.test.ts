@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import type { ConfigVersions, Configuration } from '@shared/types'
-import { convertToConfiguration } from '../../frontend/app/utils/profile-converter'
+import { convertToConfiguration } from '@shared/utils'
 import { ConfigMigrationService } from '../index'
 
 const mockFetch = vi.hoisted(() => vi.fn())

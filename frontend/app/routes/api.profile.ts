@@ -10,14 +10,17 @@ import {
   TOOL_OFFERWALL,
   TOOL_WIDGET,
 } from '@shared/types'
-import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import {
+  getWalletAddress,
+  normalizeWalletAddress,
+  convertToConfiguration,
+} from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import type { ApiError } from '~/lib/helpers'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
-import { convertToConfiguration } from '~/utils/profile-converter'
 import { sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
