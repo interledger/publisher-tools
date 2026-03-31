@@ -93,8 +93,7 @@ export function getCurrencySymbol(assetCode: string): string {
 
 export function getFormattedAmount(
   value: string | number,
-  assetCode: WalletAddress['assetCode'],
-  assetScale: WalletAddress['assetScale'],
+  { assetCode, assetScale }: Pick<WalletAddress, 'assetCode' | 'assetScale'>,
 ) {
   const formatterWithCurrency = new Intl.NumberFormat('en-US', {
     style: 'currency',

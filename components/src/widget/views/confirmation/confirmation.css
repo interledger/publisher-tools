@@ -187,7 +187,6 @@
 }
 
 .summary-label {
-  color: var(--Text-paragraph-standard, #363636);
   font-size: var(--Font-Size-text-base, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -277,25 +276,6 @@
   color: var(--Text-paragraph-standard, #363636);
 }
 
-.loader {
-  border: 3px solid #d4d5d6;
-  border-radius: 50%;
-  border-bottom: 3px solid var(--primary-color);
-  border-top: 3px solid var(--primary-color);
-  width: 20px;
-  height: 20px;
-  animation: spin 1.5s ease-in-out infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 .empty-state {
   text-align: center;
   color: var(--Text-paragraph-standard, #363636);
@@ -352,6 +332,11 @@
   align-items: flex-start;
   gap: 4px;
   align-self: stretch;
+}
+
+.form-wallet-address > .amount-error {
+  align-self: center;
+  color: var(--Colors-red-500, #ef4444);
 }
 
 .form-label {
@@ -416,6 +401,15 @@
 .form-input:read-only {
   background-color: #f9fafb;
   color: var(--Colors-silver-700, #7b7b7b);
+}
+
+.form-input.amount-error {
+  border-color: var(--Colors-red-500, #ef4444);
+}
+
+.form-input.amount-error:focus {
+  border-color: var(--Colors-red-500, #ef4444);
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 10%, transparent 90%);
 }
 
 @media (max-width: 480px) {

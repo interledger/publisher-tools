@@ -5,7 +5,7 @@ import {
   type PendingGrant,
   type WalletAddress,
   type AuthenticatedClient,
-  isFinalizedGrant,
+  isFinalizedGrantWithAccessToken,
   isPendingGrant,
   createAuthenticatedClient,
 } from '@interledger/open-payments'
@@ -195,12 +195,11 @@ export async function isGrantValidAndAccepted(
     },
   )
 
-  if (!isFinalizedGrant(continuation)) {
+  if (!isFinalizedGrantWithAccessToken(continuation)) {
     return false
   }
 
-  // when continuation has access_token value it has been accepted by user
-  return continuation?.access_token?.value ? true : false
+  return !!continuation.access_token.value
 }
 
 async function createHeaders({
