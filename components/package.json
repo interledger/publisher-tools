@@ -6,10 +6,11 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./widget": "./src/widget/index.ts",
-    "./offerwall": "./src/offerwall/index.ts",
     "./*": "./src/*.ts"
   },
+  "sideEffects": [
+    "./src/**/*.css"
+  ],
   "dependencies": {
     "@shared/utils": "workspace:^",
     "lit": "^3.3.2"

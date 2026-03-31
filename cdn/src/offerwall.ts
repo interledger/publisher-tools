@@ -1,5 +1,5 @@
 import { API_URL } from '@shared/defines'
-import { OfferwallModal } from '@tools/components/offerwall'
+import { OfferwallModal } from '@tools/components'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 import {
   WebMonetizationCustomOfferwallChoice,
