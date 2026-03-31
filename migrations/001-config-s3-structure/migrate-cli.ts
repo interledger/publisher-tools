@@ -10,15 +10,10 @@ interface CliOptions {
 
 function parseArgs(): CliOptions {
   const args = process.argv.slice(2)
-  const options: CliOptions = {
-    batch: false,
-    dryRun: false,
-  }
+  const options: CliOptions = { batch: false, dryRun: false }
 
   for (let i = 0; i < args.length; i++) {
-    const arg = args[i]
-
-    switch (arg) {
+    switch (args[i]) {
       case '--wallet':
       case '-w':
         options.wallet = args[++i]
@@ -37,7 +32,7 @@ function parseArgs(): CliOptions {
         process.exit(0)
       // eslint-disable-next-line no-fallthrough
       default:
-        console.error(`Unknown option: ${arg}`)
+        console.error(`Unknown option: ${args[i]}`)
         printHelp()
         process.exit(1)
     }
@@ -198,7 +193,6 @@ async function migrateBatch(
 
 async function main() {
   const { wallet, batch, dryRun: isDryRun } = parseArgs()
-
   const isBatch = batch || (!wallet && isDryRun)
 
   if (!wallet && !isBatch) {
@@ -216,17 +210,14 @@ async function main() {
   const service = setupService()
 
   try {
-    if (wallet) {
-      if (isDryRun) {
-        await dryRun(service, wallet)
-        console.log('\n [DRY RUN] No data was uploaded or deleted')
-      } else {
-        await migrateSingle(service, wallet)
-        console.log('\n ✓ Migration complete')
-      }
+    if (wallet && isDryRun) {
+      await dryRun(service, wallet)
+      console.log('\n [DRY RUN] No data was uploaded or deleted')
+    } else if (wallet) {
+      await migrateSingle(service, wallet)
+      console.log('\n ✓ Migration complete')
     } else {
       const wallets = await service.listLegacyWallets()
-
       if (wallets.length === 0) {
         console.log('x No wallets found in legacy prefix')
       } else if (isDryRun) {
