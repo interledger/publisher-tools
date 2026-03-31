@@ -72,7 +72,7 @@ export class InstallRequired extends LitElement {
           <p class="semi-bold">
             <span
               >Find out more on
-              <a href="https://webmonetization.org"
+              <a href="https://webmonetization.org" target="_blank"
                 >webmonetization.org</a
               ></span
             >
