@@ -13,10 +13,10 @@ const mockSecrets = {
   AWS_ACCESS_KEY_ID: 'test-access-key',
   AWS_SECRET_ACCESS_KEY: 'test-secret-key',
   AWS_S3_ENDPOINT: 'https://s3.example.com',
-  AWS_PREFIX: '20260126-dev',
 }
 
 const LEGACY_AWS_PREFIX = '20250717-dev'
+const NEW_AWS_PREFIX = '20260305-dev'
 
 /** Full legacy profile — all banner + widget fields populated */
 const mockLegacyData: ConfigVersions = {
@@ -229,7 +229,7 @@ describe('ConfigMigrationService - getJson / putJson', () => {
 
     expect(mockFetch).toHaveBeenCalledTimes(1)
     const [url, opts] = mockFetch.mock.calls[0]
-    expect(url.href).toContain(mockSecrets.AWS_PREFIX)
+    expect(url.href).toContain(NEW_AWS_PREFIX)
     expect(url.href).toContain('wallet.example.com.json')
     expect(opts.method).toBe('PUT')
     expect(opts.headers['Content-Type']).toBe('application/json')
@@ -241,7 +241,7 @@ describe('ConfigMigrationService - getJson / putJson', () => {
     await service.putJson('https://wallet.example.com', mockNewConfiguration)
 
     expect(mockFetch.mock.calls[0][0].href).toBe(
-      `${mockSecrets.AWS_S3_ENDPOINT}/${mockSecrets.AWS_PREFIX}/wallet.example.com.json`,
+      `${mockSecrets.AWS_S3_ENDPOINT}/${NEW_AWS_PREFIX}/wallet.example.com.json`,
     )
   })
 
@@ -281,10 +281,10 @@ describe('ConfigMigrationService - migrate', () => {
     await service.migrate('$wallet.example.com', convertToConfiguration)
 
     expect(mockFetch).toHaveBeenCalledTimes(4)
-    expect(mockFetch.mock.calls[0][0].href).toContain(mockSecrets.AWS_PREFIX)
+    expect(mockFetch.mock.calls[0][0].href).toContain(NEW_AWS_PREFIX)
     expect(mockFetch.mock.calls[0][1].method).toBe('HEAD')
     expect(mockFetch.mock.calls[1][0].href).toContain(LEGACY_AWS_PREFIX)
-    expect(mockFetch.mock.calls[2][0].href).toContain(mockSecrets.AWS_PREFIX)
+    expect(mockFetch.mock.calls[2][0].href).toContain(NEW_AWS_PREFIX)
     expect(mockFetch.mock.calls[2][1].method).toBe('PUT')
     expect(mockFetch.mock.calls[3][0].href).toContain(LEGACY_AWS_PREFIX)
     expect(mockFetch.mock.calls[3][1].method).toBe('DELETE')
@@ -444,7 +444,7 @@ describe('ConfigMigrationService - migrate', () => {
     await service.migrate('$wallet.example.com', convertToConfiguration)
 
     expect(mockFetch.mock.calls[0][0].href).toBe(
-      `${mockSecrets.AWS_S3_ENDPOINT}/${mockSecrets.AWS_PREFIX}/wallet.example.com.json`,
+      `${mockSecrets.AWS_S3_ENDPOINT}/${NEW_AWS_PREFIX}/wallet.example.com.json`,
     )
   })
 
