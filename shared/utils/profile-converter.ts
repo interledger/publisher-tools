@@ -37,11 +37,9 @@ function convertToProfile<T extends Tool>(
 
 /** @legacy */
 export function convertToConfigLegacy<T extends Tool>(
-  walletAddress: string,
+  _walletAddress: string,
   profile: ToolProfile<T>,
 ): Partial<ElementConfigType> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { $name, $version, $modifiedAt, ...rest } = profile
   if ('thumbnail' in profile) {
     return {
       bannerFontName: profile.font.name,
