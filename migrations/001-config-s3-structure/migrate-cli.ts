@@ -11,17 +11,17 @@ export interface MigrationClient {
   deleteFromLegacy(walletAddress: string): Promise<void>
 }
 
-export function makeDryRunClient(real: MigrationClient): MigrationClient {
+export function makeDryRunClient(client: MigrationClient): MigrationClient {
   return {
-    getJson: (w) => real.getJson(w),
-    existsInNewPrefix: (w) => real.existsInNewPrefix(w),
-    listLegacyWallets: () => real.listLegacyWallets(),
+    getJson: (w) => client.getJson(w),
+    existsInNewPrefix: (w) => client.existsInNewPrefix(w),
+    listLegacyWallets: () => client.listLegacyWallets(),
     putJson: (w) => {
-      console.log(`  [DRY RUN] would putJson: ${w}`)
+      console.log(`[DRY RUN] would putJson: ${w}`)
       return Promise.resolve()
     },
     deleteFromLegacy: (w) => {
-      console.log(`  [DRY RUN] would deleteFromLegacy: ${w}`)
+      console.log(`[DRY RUN] would deleteFromLegacy: ${w}`)
       return Promise.resolve()
     },
   }
@@ -214,24 +214,32 @@ export async function main() {
   console.log(`Dry Run: ${isDryRun ? 'Yes' : 'No'}`)
   console.log('='.repeat(50))
 
-  const real = setupClient()
-  const s3: MigrationClient = isDryRun ? makeDryRunClient(real) : real
+  const client = setupClient()
+  const s3: MigrationClient = isDryRun ? makeDryRunClient(client) : client
 
   try {
     if (wallet) {
       await migrateSingle(s3, wallet)
-      console.log(isDryRun ? '\n [DRY RUN] No data was uploaded or deleted' : '\n ✓ Migration complete')
+      console.log(
+        isDryRun
+          ? '\n [DRY RUN] No data was uploaded or deleted'
+          : '\n ✓ Migration complete',
+      )
       return
     }
 
-    const wallets = await real.listLegacyWallets()
+    const wallets = await client.listLegacyWallets()
     if (wallets.length === 0) {
       console.log('x No wallets found in legacy prefix')
       return
     }
 
     await migrateBatch(s3, wallets)
-    console.log(isDryRun ? '\n [DRY RUN] No data was uploaded or deleted' : '\n ✓ Batch migration complete')
+    console.log(
+      isDryRun
+        ? '\n [DRY RUN] No data was uploaded or deleted'
+        : '\n ✓ Batch migration complete',
+    )
   } catch (error) {
     console.error('\n x Migration failed:', error)
     process.exit(1)
