@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions, Configuration } from '@shared/types'
-import { dryRun, migrateSingle } from '../migrate-cli'
+import { makeDryRunClient, migrateSingle } from '../migrate-cli'
 
 const mockGetJson = vi.hoisted(() => vi.fn())
 const mockPutJson = vi.hoisted(() => vi.fn())
@@ -309,37 +309,36 @@ describe('migrateSingle', () => {
   })
 })
 
-// -- dryRun -------------------------------------------------------------------
+// -- dry-run (via makeDryRunClient) -------------------------------------------
 
-describe('dryRun', () => {
+describe('migrateSingle (dry-run client)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('reads legacy data without writing or deleting anything', async () => {
+  it('never calls putJson or deleteFromLegacy on the real client', async () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
-    await dryRun(s3, WALLET)
+    await migrateSingle(makeDryRunClient(s3), WALLET)
 
     expect(mockPutJson).not.toHaveBeenCalled()
     expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
 
-  it('skips getJson entirely when already migrated', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(true)
+  it('still reads from the real client', async () => {
+    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
-    await dryRun(s3, WALLET)
+    await migrateSingle(makeDryRunClient(s3), WALLET)
 
-    expect(mockGetJson).not.toHaveBeenCalled()
-    expect(mockPutJson).not.toHaveBeenCalled()
-    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
+    expect(mockGetJson).toHaveBeenCalledWith(WALLET)
   })
 
   it('does not throw when getJson returns null', async () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(null)
 
-    await expect(dryRun(s3, WALLET)).resolves.toBeUndefined()
+    await expect(migrateSingle(makeDryRunClient(s3), WALLET)).resolves.toBe(false)
   })
 })
