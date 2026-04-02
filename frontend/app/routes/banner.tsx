@@ -18,7 +18,7 @@ import {
   MobileStepsIndicator,
   BuilderProfileTabs,
 } from '@/components'
-import { SLIDE_ANIMATION } from '@shared/types'
+import { SLIDE_ANIMATION, TOOL_BANNER } from '@shared/types'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
@@ -30,6 +30,7 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
+import { TrackProvider } from '~/lib/umami'
 import {
   actions,
   banner,
@@ -157,13 +158,14 @@ export default function Banner() {
 
   const isAnimationDisabled = profile.animation.type === SLIDE_ANIMATION.None
   return (
+    <TrackProvider tool={TOOL_BANNER}>
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
             The drawer banner informs visitors who don&apos;t have the Web
-            Monetization extension active, with a call-to-action linking to the
-            extension or providing details about the options available.
+            Monetization extension active, with a call-to-action linking to
+            the extension or providing details about the options available.
             <br />
             It also adds your wallet address for your site to be monetized.
           </HeadingCore>
@@ -233,7 +235,7 @@ export default function Banner() {
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                                fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
                       <div
                         id="builder-actions-inner"
@@ -241,7 +243,7 @@ export default function Banner() {
                       >
                         <ToolsSecondaryButton
                           className="xl:w-[150px] xl:rounded-lg
-                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
+                                    w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={() => handleSave('save-success')}
                         >
@@ -256,7 +258,7 @@ export default function Banner() {
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
                           className="xl:w-[250px] xl:rounded-lg
-                                     w-full min-w-0 order-first xl:order-last"
+                                    w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={() => handleSave('script')}
                         >
@@ -293,5 +295,6 @@ export default function Banner() {
         </div>
       </div>
     </div>
+    </TrackProvider>
   )
 }
