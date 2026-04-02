@@ -46,6 +46,8 @@ import {
   toolActions,
   toolState,
 } from '~/stores/toolStore'
+import { TrackProvider } from '~/lib/umami'
+import { TOOL_OFFERWALL } from '@shared/types'
 import { commitSession, getSession } from '~/utils/session.server'
 
 export const meta: MetaFunction = () => {
@@ -142,6 +144,7 @@ export default function Offerwall() {
   }
 
   return (
+    <TrackProvider tool={TOOL_OFFERWALL}>
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px]">
@@ -277,5 +280,6 @@ export default function Offerwall() {
         </div>
       </div>
     </div>
+    </TrackProvider>
   )
 }

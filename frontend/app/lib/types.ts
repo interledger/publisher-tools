@@ -63,6 +63,12 @@ export type ElementErrors = {
 }
 
 declare global {
+  interface Window {
+    umami?: {
+      track(eventName: string, eventData?: Record<string, unknown>): void
+    }
+  }
+
   interface Env {
     OP_KEY_ID: string
     OP_PRIVATE_KEY: string
@@ -73,5 +79,8 @@ declare global {
     AWS_S3_ENDPOINT: string
 
     PUBLISHER_TOOLS_KV: KVNamespace
+
+    UMAMI_HOST: string
+    UMAMI_WEBSITE_ID: string
   }
 }

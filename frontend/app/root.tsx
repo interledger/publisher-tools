@@ -6,9 +6,11 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
+  useLoaderData,
   isRouteErrorResponse,
   type LinksFunction,
   type MetaFunction,
+  type LoaderFunctionArgs,
 } from 'react-router'
 import { Header, Footer } from '@/components'
 import faviconSvg from '~/assets/images/favicon.svg?url'
@@ -17,7 +19,18 @@ import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
 
+export async function loader({ context }: LoaderFunctionArgs) {
+  const { env } = context.cloudflare
+  return {
+    CONFIG_UMAMI_HOST: env.UMAMI_HOST || '',
+    CONFIG_UMAMI_WEBSITE_ID: env.UMAMI_WEBSITE_ID || '',
+  }
+}
+
 export default function App() {
+  const { CONFIG_UMAMI_HOST, CONFIG_UMAMI_WEBSITE_ID } =
+    useLoaderData<typeof loader>()
+
   return (
     <html lang="en">
       <head>
@@ -25,6 +38,13 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {CONFIG_UMAMI_HOST && CONFIG_UMAMI_WEBSITE_ID && (
+          <script
+            defer
+            src={`${CONFIG_UMAMI_HOST}/script.js`}
+            data-website-id={CONFIG_UMAMI_WEBSITE_ID}
+          />
+        )}
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
         <UIProvider>
