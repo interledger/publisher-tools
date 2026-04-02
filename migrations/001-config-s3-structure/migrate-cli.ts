@@ -1,7 +1,74 @@
-import { pathToFileURL } from 'node:url'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { pathToFileURL, fileURLToPath } from 'node:url'
 import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions } from '@shared/types'
 import { convertToConfiguration } from '@shared/utils'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const LOG_FILE = join(__dirname, 'logs', 'migration-progress.json')
+
+interface LogData {
+  startedAt: string
+  processed: string[]
+}
+
+export class MigrationLog {
+  private processed: Set<string>
+  private startedAt: string
+
+  constructor(private dryRun: boolean) {
+    const data = this.load()
+    this.processed = new Set(data.processed)
+    this.startedAt = data.startedAt
+  }
+
+  private load(): LogData {
+    if (existsSync(LOG_FILE)) {
+      try {
+        const raw = readFileSync(LOG_FILE, 'utf-8')
+        const data = JSON.parse(raw) as LogData
+        console.log(
+          `→ Loaded log: ${data.processed.length} wallets already processed (since ${data.startedAt})`,
+        )
+        return data
+      } catch {
+        console.warn('! Could not read log file, starting fresh')
+      }
+    }
+    return { startedAt: new Date().toISOString(), processed: [] }
+  }
+
+  has(wallet: string): boolean {
+    return this.processed.has(wallet)
+  }
+
+  record(wallet: string): void {
+    if (this.dryRun) {
+      console.log(`[DRY RUN] would log: ${wallet}`)
+      return
+    }
+    this.processed.add(wallet)
+    this.flush()
+  }
+
+  private flush(): void {
+    mkdirSync(dirname(LOG_FILE), { recursive: true })
+    writeFileSync(
+      LOG_FILE,
+      JSON.stringify(
+        { startedAt: this.startedAt, processed: [...this.processed] },
+        null,
+        2,
+      ),
+      'utf-8',
+    )
+  }
+
+  get size(): number {
+    return this.processed.size
+  }
+}
 
 export interface MigrationClient {
   getJson<T>(walletAddress: string): Promise<T | null>
@@ -140,7 +207,7 @@ export async function migrateSingle(
     const newData = convertToConfiguration(legacyData, walletAddress)
     await s3.putJson(walletAddress, newData)
     await s3.deleteFromLegacy(walletAddress)
-    console.log('✓ Successfully migrated')
+
     return true
   } catch (error) {
     console.error('x Migration failed:', (error as Error).message)
@@ -151,8 +218,17 @@ export async function migrateSingle(
 async function migrateBatch(
   s3: MigrationClient,
   wallets: string[],
+  log: MigrationLog,
 ): Promise<void> {
+  const toProcess = wallets.filter((w) => !log.has(w))
+  const alreadyDone = wallets.length - toProcess.length
+
   console.log(`\nStarting batch migration for ${wallets.length} wallets...`)
+  if (alreadyDone > 0) {
+    console.log(
+      `→ Skipping ${alreadyDone} already-processed wallets (from log)`,
+    )
+  }
 
   const results = {
     successful: 0,
@@ -161,10 +237,11 @@ async function migrateBatch(
     errors: [] as { wallet: string; error: string }[],
   }
 
-  for (const wallet of wallets) {
+  for (const wallet of toProcess) {
     try {
       const migrated = await migrateSingle(s3, wallet)
       if (migrated) {
+        log.record(wallet)
         results.successful++
       } else {
         results.skipped++
@@ -203,7 +280,7 @@ export async function main() {
   const isBatch = batch || (!wallet && isDryRun)
 
   if (!wallet && !isBatch) {
-    console.error('Error: Either --wallet or --batch must be specified')
+    console.error('Note: Either --wallet or --batch must be specified')
     printHelp()
     process.exit(1)
   }
@@ -211,7 +288,7 @@ export async function main() {
   validateEnv()
 
   console.log('='.repeat(50))
-  console.log(`Dry Run: ${isDryRun ? 'Yes' : 'No'}`)
+  console.log(`[DRY RUN]: ${isDryRun ? 'Yes' : 'No'}`)
   console.log('='.repeat(50))
 
   const client = setupClient()
@@ -220,11 +297,7 @@ export async function main() {
   try {
     if (wallet) {
       await migrateSingle(s3, wallet)
-      console.log(
-        isDryRun
-          ? '\n [DRY RUN] No data was uploaded or deleted'
-          : '\n ✓ Migration complete',
-      )
+      console.log('\n ✓ Migration complete')
       return
     }
 
@@ -234,12 +307,9 @@ export async function main() {
       return
     }
 
-    await migrateBatch(s3, wallets)
-    console.log(
-      isDryRun
-        ? '\n [DRY RUN] No data was uploaded or deleted'
-        : '\n ✓ Batch migration complete',
-    )
+    const log = new MigrationLog(isDryRun)
+    await migrateBatch(s3, wallets, log)
+    console.log('\n ✓ Batch migration complete')
   } catch (error) {
     console.error('\n x Migration failed:', error)
     process.exit(1)
