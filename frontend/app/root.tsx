@@ -16,7 +16,7 @@ import {
 import { Header, Footer } from '@/components'
 import { TOOLS } from '@shared/types'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { TrackProvider } from '~/lib/umami'
+import { TelemetryProvider } from '~/lib/umami'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
@@ -55,9 +55,9 @@ export default function App() {
         <UIProvider>
           <Header />
           <main className="flex-grow flex flex-col">
-            <TrackProvider tool={tool}>
+            <TelemetryProvider tool={tool}>
               <Outlet />
-            </TrackProvider>
+            </TelemetryProvider>
           </main>
           <Footer />
         </UIProvider>

@@ -6,7 +6,7 @@ type TrackFn = (eventName: string, eventData?: Record<string, unknown>) => void
 
 const TrackContext = createContext<TrackFn>(() => {})
 
-export function TrackProvider({
+export function TelemetryProvider({
   tool,
   children,
 }: {
@@ -22,6 +22,6 @@ export function TrackProvider({
   return <TrackContext.Provider value={track}>{children}</TrackContext.Provider>
 }
 
-export function useTrack(): TrackFn {
+export function useTrackEvent(): TrackFn {
   return useContext(TrackContext)
 }

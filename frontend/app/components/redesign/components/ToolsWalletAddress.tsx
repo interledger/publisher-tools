@@ -10,7 +10,7 @@ import {
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import type { ElementErrors } from '~/lib/types'
-import { useTrack } from '~/lib/umami'
+import { useTrackEvent } from '~/lib/umami'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
@@ -27,7 +27,7 @@ export const ToolsWalletAddress = ({
 }: Props) => {
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
-  const track = useTrack()
+  const track = useTrackEvent()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
