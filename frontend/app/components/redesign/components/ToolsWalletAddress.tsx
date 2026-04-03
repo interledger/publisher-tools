@@ -27,7 +27,7 @@ export const ToolsWalletAddress = ({
 }: Props) => {
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
-  const event = useTrackEvent()
+  const trackEvent = useTrackEvent()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -65,7 +65,7 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-      event('wallet_connected')
+      trackEvent('wallet_connected')
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },

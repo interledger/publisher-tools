@@ -23,7 +23,7 @@ export const ToolCard = ({
   target,
   className = '',
 }: ToolCardProps) => {
-  const track = useTrackEvent()
+  const trackEvent = useTrackEvent()
   const id = useId()
   const linkContent = title
   const linkClasses =
@@ -31,7 +31,7 @@ export const ToolCard = ({
   const isExternalLink = target !== undefined
 
   const handleClick = () => {
-    track('click_card_tool', { link: to })
+    trackEvent('click_card_tool', { link: to })
   }
 
   return (
