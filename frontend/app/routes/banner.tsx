@@ -162,8 +162,8 @@ export default function Banner() {
         <div className="w-full max-w-[1280px] px-md">
           <HeadingCore title="Banner" onBackClick={() => navigate('/')}>
             The drawer banner informs visitors who don&apos;t have the Web
-            Monetization extension active, with a call-to-action linking to
-            the extension or providing details about the options available.
+            Monetization extension active, with a call-to-action linking to the
+            extension or providing details about the options available.
             <br />
             It also adds your wallet address for your site to be monetized.
           </HeadingCore>
