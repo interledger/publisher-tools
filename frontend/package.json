@@ -6,7 +6,7 @@
   "scripts": {
     "build": "react-router build",
     "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
-    "dev": "node --env-file=.dev.vars node_modules/@react-router/dev/bin.js dev --port 3000",
+    "dev": "react-router dev --port 3000",
     "preview": "pnpm run build && wrangler dev",
     "deploy": "wrangler deploy",
     "test": "vitest run",

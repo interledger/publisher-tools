@@ -5,6 +5,12 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 import { reactRouter } from '@react-router/dev/vite'
 import { APP_BASEPATH } from './app/lib/constants.js'
 
+try {
+  process.loadEnvFile('.dev.vars')
+} catch {
+  // do nothing.
+}
+
 export default defineConfig(({ mode, isSsrBuild }) => ({
   define: {
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),

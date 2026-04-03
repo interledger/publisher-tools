@@ -79,8 +79,5 @@ declare global {
     AWS_S3_ENDPOINT: string
 
     PUBLISHER_TOOLS_KV: KVNamespace
-
-    UMAMI_HOST: string
-    UMAMI_WEBSITE_ID: string
   }
 }
