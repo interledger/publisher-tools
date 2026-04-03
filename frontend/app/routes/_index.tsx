@@ -138,7 +138,7 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Index() {
-  const track = useTrackEvent()
+  const event = useTrackEvent()
 
   return (
     <div className="bg-interface-bg-main min-h-screen flex flex-col gap-2xl items-center pt-5xl pb-xl px-0">
@@ -189,7 +189,7 @@ export default function Index() {
             {setupTools.map((tool, index) => (
               <li
                 key={index}
-                onClick={() => track('click_card_tool', { link: tool.link })}
+                onClick={() => event('click_card_tool', { link: tool.link })}
               >
                 <ToolCard
                   title={tool.title}
@@ -236,7 +236,7 @@ export default function Index() {
             {interactionTools.map((tool, index) => (
               <li
                 key={index}
-                onClick={() => track('click_card_tool', { link: tool.link })}
+                onClick={() => event('click_card_tool', { link: tool.link })}
               >
                 <ToolCard
                   title={tool.title}
@@ -277,7 +277,7 @@ export default function Index() {
             {integrationTools.map((tool, index) => (
               <li
                 key={index}
-                onClick={() => track('click_card_tool', { link: tool.link })}
+                onClick={() => event('click_card_tool', { link: tool.link })}
               >
                 <ToolCard
                   title={tool.title}
