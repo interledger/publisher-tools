@@ -10,6 +10,7 @@ import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_p
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
 import { Heading1, Heading3 } from '~/components/redesign/Typography'
+import { useTrackEvent } from '~/lib/umami'
 
 const DEFAULT_TITLE = 'Publisher Tools'
 const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
@@ -137,6 +138,8 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Index() {
+  const track = useTrackEvent()
+
   return (
     <div className="bg-interface-bg-main min-h-screen flex flex-col gap-2xl items-center pt-5xl pb-xl px-0">
       <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-[1280px]">
@@ -184,7 +187,10 @@ export default function Index() {
             }}
           >
             {setupTools.map((tool, index) => (
-              <li key={index}>
+              <li
+                key={index}
+                onClick={() => track('click_card_tool', { link: tool.link })}
+              >
                 <ToolCard
                   title={tool.title}
                   tags={tool.tags}
@@ -228,7 +234,10 @@ export default function Index() {
             }}
           >
             {interactionTools.map((tool, index) => (
-              <li key={index}>
+              <li
+                key={index}
+                onClick={() => track('click_card_tool', { link: tool.link })}
+              >
                 <ToolCard
                   title={tool.title}
                   tags={tool.tags}
@@ -266,7 +275,10 @@ export default function Index() {
             }}
           >
             {integrationTools.map((tool, index) => (
-              <li key={index}>
+              <li
+                key={index}
+                onClick={() => track('click_card_tool', { link: tool.link })}
+              >
                 <ToolCard
                   title={tool.title}
                   tags={tool.tags}
