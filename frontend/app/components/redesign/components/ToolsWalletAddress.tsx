@@ -65,7 +65,7 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-      track('wallet_connected', { wallet_address: snap.walletAddress })
+      track('wallet_connected')
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
