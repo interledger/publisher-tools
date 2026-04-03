@@ -10,12 +10,12 @@ export function TrackProvider({
   tool,
   children,
 }: {
-  tool: Tool
+  tool?: Tool
   children: ReactNode
 }) {
   const track = useCallback(
     (eventName: string, eventData?: Record<string, unknown>) => {
-      window.umami?.track(eventName, { tool, ...eventData })
+      window.umami?.track(eventName, tool ? { tool, ...eventData } : eventData)
     },
     [tool],
   )

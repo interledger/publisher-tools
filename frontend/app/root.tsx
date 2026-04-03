@@ -7,13 +7,16 @@ import {
   ScrollRestoration,
   useRouteError,
   useLoaderData,
+  useLocation,
   isRouteErrorResponse,
   type LinksFunction,
   type MetaFunction,
   type LoaderFunctionArgs,
 } from 'react-router'
 import { Header, Footer } from '@/components'
+import { TOOLS } from '@shared/types'
 import faviconSvg from '~/assets/images/favicon.svg?url'
+import { TrackProvider } from '~/lib/umami'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
@@ -30,6 +33,8 @@ export async function loader({ context }: LoaderFunctionArgs) {
 export default function App() {
   const { CONFIG_UMAMI_HOST, CONFIG_UMAMI_WEBSITE_ID } =
     useLoaderData<typeof loader>()
+  const { pathname } = useLocation()
+  const tool = TOOLS.find((t) => pathname.startsWith(`/${t}`))
 
   return (
     <html lang="en">
@@ -50,7 +55,9 @@ export default function App() {
         <UIProvider>
           <Header />
           <main className="flex-grow flex flex-col">
-            <Outlet />
+            <TrackProvider tool={tool}>
+              <Outlet />
+            </TrackProvider>
           </main>
           <Footer />
         </UIProvider>

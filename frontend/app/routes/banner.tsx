@@ -18,7 +18,7 @@ import {
   MobileStepsIndicator,
   BuilderProfileTabs,
 } from '@/components'
-import { SLIDE_ANIMATION, TOOL_BANNER } from '@shared/types'
+import { SLIDE_ANIMATION } from '@shared/types'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
@@ -30,7 +30,6 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
-import { TrackProvider } from '~/lib/umami'
 import {
   actions,
   banner,
@@ -158,7 +157,6 @@ export default function Banner() {
 
   const isAnimationDisabled = profile.animation.type === SLIDE_ANIMATION.None
   return (
-    <TrackProvider tool={TOOL_BANNER}>
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
@@ -295,6 +293,5 @@ export default function Banner() {
         </div>
       </div>
     </div>
-    </TrackProvider>
   )
 }

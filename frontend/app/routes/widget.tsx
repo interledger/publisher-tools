@@ -45,8 +45,6 @@ import {
   widgetWallet,
   widgetWalletActions,
 } from '~/stores/widget-store'
-import { TrackProvider } from '~/lib/umami'
-import { TOOL_WIDGET } from '@shared/types'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
 export const meta: MetaFunction = () => {
@@ -145,7 +143,6 @@ export default function Widget() {
   }
 
   return (
-    <TrackProvider tool={TOOL_WIDGET}>
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px] px-md">
@@ -282,6 +279,5 @@ export default function Widget() {
         </div>
       </div>
     </div>
-    </TrackProvider>
   )
 }
