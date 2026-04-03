@@ -16,7 +16,7 @@ services:
   umami:
     image: ghcr.io/umami-software/umami:postgresql-latest
     ports:
-      - '3001:3000'
+      - '8082:3000'
     environment:
       DATABASE_URL: postgresql://umami:umami_local_password@umami-db:5432/umami
       APP_SECRET: local_dev_secret

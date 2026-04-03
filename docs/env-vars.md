@@ -20,7 +20,7 @@ Then, edit the `.dev.vars` file to set the required values as described below.
 | `AWS_ACCESS_KEY_ID`     | AWS access key for S3. Not used in local dev.    | `ABCDEFGHIJKLMN12OPQR`                       |
 | `AWS_SECRET_ACCESS_KEY` | AWS secret key for S3. Not used in local dev.    | `ab1cD/2e/fGhIJ11kL13mN0pQrS45tu6V7w8X9yZ`   |
 | `AWS_S3_ENDPOINT`       | The endpoint for the S3-compatible storage.      | `http://localhost:8081`                      |
-| `UMAMI_HOST`            | URL of your Umami instance.                      | `http://localhost:3001`                      |
+| `UMAMI_HOST`            | URL of your Umami instance.                      | `http://localhost:8082`                      |
 | `UMAMI_WEBSITE_ID`      | Website ID from the Umami dashboard.             | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`       |
 
 ## Detailed Configuration
@@ -134,10 +134,10 @@ For local dev, start the Umami instance first:
 cd localenv/umami && docker compose up -d
 ```
 
-Then log in at `http://localhost:3001` (default credentials: `admin` / `umami`), go to Settings → Websites → Add website, and copy the **Website ID**.
+Then log in at `http://localhost:8082` (default credentials: `admin` / `umami`), go to Settings → Websites → Add website, and copy the **Website ID**.
 
 ```
-UMAMI_HOST="http://localhost:3001"
+UMAMI_HOST="http://localhost:8082"
 UMAMI_WEBSITE_ID="<your-website-id>"
 ```
 
