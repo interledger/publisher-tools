@@ -1,6 +1,5 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 interface LogData {
   startedAt: string
@@ -9,7 +8,7 @@ interface LogData {
   failed: { wallet: string; error: string }[]
 }
 
-const LOG_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'logs')
+const LOG_DIR = join(import.meta.dirname, '..', 'logs')
 
 function runTimestamp(): string {
   const iso = new Date().toISOString()
