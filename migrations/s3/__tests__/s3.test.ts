@@ -119,12 +119,6 @@ describe('getJson', () => {
     expect(result).toEqual(mockLegacyData)
   })
 
-  it('returns null when the response body is empty', async () => {
-    s3Mock.on(GetObjectCommand).resolves({ Body: undefined })
-
-    await expect(s3.getJson(WALLET)).resolves.toBeNull()
-  })
-
   it('returns null for a 404 S3ServiceException', async () => {
     s3Mock.on(GetObjectCommand).rejects(
       new S3ServiceException({

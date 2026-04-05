@@ -1,74 +1,8 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { pathToFileURL, fileURLToPath } from 'node:url'
+import { pathToFileURL } from 'node:url'
 import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions } from '@shared/types'
 import { convertToConfiguration } from '@shared/utils'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const LOG_FILE = join(__dirname, 'logs', 'migration-progress.json')
-
-interface LogData {
-  startedAt: string
-  processed: string[]
-}
-
-export class MigrationLog {
-  private processed: Set<string>
-  private startedAt: string
-
-  constructor(private dryRun: boolean) {
-    const data = this.load()
-    this.processed = new Set(data.processed)
-    this.startedAt = data.startedAt
-  }
-
-  private load(): LogData {
-    if (existsSync(LOG_FILE)) {
-      try {
-        const raw = readFileSync(LOG_FILE, 'utf-8')
-        const data = JSON.parse(raw) as LogData
-        console.log(
-          `→ Loaded log: ${data.processed.length} wallets already processed (since ${data.startedAt})`,
-        )
-        return data
-      } catch {
-        console.warn('! Could not read log file, starting fresh')
-      }
-    }
-    return { startedAt: new Date().toISOString(), processed: [] }
-  }
-
-  has(wallet: string): boolean {
-    return this.processed.has(wallet)
-  }
-
-  record(wallet: string): void {
-    if (this.dryRun) {
-      console.log(`[DRY RUN] would log: ${wallet}`)
-      return
-    }
-    this.processed.add(wallet)
-    this.flush()
-  }
-
-  private flush(): void {
-    mkdirSync(dirname(LOG_FILE), { recursive: true })
-    writeFileSync(
-      LOG_FILE,
-      JSON.stringify(
-        { startedAt: this.startedAt, processed: [...this.processed] },
-        null,
-        2,
-      ),
-      'utf-8',
-    )
-  }
-
-  get size(): number {
-    return this.processed.size
-  }
-}
+import { MigrationLog } from './migration-log'
 
 export interface MigrationClient {
   getJson<T>(walletAddress: string): Promise<T | null>
@@ -78,15 +12,12 @@ export interface MigrationClient {
   deleteFromLegacy(walletAddress: string): Promise<void>
 }
 
-export function makeDryRunClient(client: MigrationClient): MigrationClient {
+export function createDryRunClient(client: MigrationClient): MigrationClient {
   return {
     getJson: (w) => client.getJson(w),
     existsInNewPrefix: (w) => client.existsInNewPrefix(w),
     listLegacyWallets: () => client.listLegacyWallets(),
-    putJson: (w) => {
-      console.log(`[DRY RUN] would putJson: ${w}`)
-      return Promise.resolve()
-    },
+    putJson: () => Promise.resolve(),
     deleteFromLegacy: (w) => {
       console.log(`[DRY RUN] would deleteFromLegacy: ${w}`)
       return Promise.resolve()
@@ -165,6 +96,7 @@ function validateEnv() {
     'AWS_ACCESS_KEY_ID',
     'AWS_SECRET_ACCESS_KEY',
     'AWS_S3_BUCKET',
+    'AWS_S3_REGION',
   ]
   const missing = required.filter((key) => !process.env[key])
 
@@ -181,7 +113,7 @@ export function setupClient(): S3MigrationClient {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
     bucket: process.env.AWS_S3_BUCKET!,
-    region: process.env.AWS_S3_REGION,
+    region: process.env.AWS_S3_REGION!,
     endpoint: process.env.AWS_S3_ENDPOINT,
   })
 }
@@ -190,13 +122,10 @@ export async function migrateSingle(
   s3: MigrationClient,
   walletAddress: string,
 ): Promise<boolean> {
-  console.log(`\nMigrating: ${walletAddress}`)
-
   try {
     if (await s3.existsInNewPrefix(walletAddress)) {
       await s3.deleteFromLegacy(walletAddress)
-      console.log('✓ Already in new prefix, deleted legacy key')
-      return true
+      return false
     }
 
     const legacyData = await s3.getJson<ConfigVersions>(walletAddress)
@@ -206,7 +135,6 @@ export async function migrateSingle(
     }
     const newData = convertToConfiguration(legacyData, walletAddress)
     await s3.putJson(walletAddress, newData)
-    await s3.deleteFromLegacy(walletAddress)
 
     return true
   } catch (error) {
@@ -217,65 +145,34 @@ export async function migrateSingle(
 
 async function migrateBatch(
   s3: MigrationClient,
-  wallets: string[],
-  log: MigrationLog,
+  isDryRun: boolean,
 ): Promise<void> {
-  const toProcess = wallets.filter((w) => !log.has(w))
-  const alreadyDone = wallets.length - toProcess.length
+  const wallets = await s3.listLegacyWallets()
+  if (wallets.length === 0) {
+    console.log('x No wallets found in legacy prefix')
+    return
+  }
 
+  const log = new MigrationLog(isDryRun)
   console.log(`\nStarting batch migration for ${wallets.length} wallets...`)
-  if (alreadyDone > 0) {
-    console.log(
-      `→ Skipping ${alreadyDone} already-processed wallets (from log)`,
-    )
-  }
 
-  const results = {
-    successful: 0,
-    failed: 0,
-    skipped: 0,
-    errors: [] as { wallet: string; error: string }[],
-  }
-
-  for (const wallet of toProcess) {
+  for (const wallet of wallets) {
     try {
       const migrated = await migrateSingle(s3, wallet)
       if (migrated) {
-        log.record(wallet)
-        results.successful++
+        log.recordSuccess(wallet)
       } else {
-        results.skipped++
+        log.recordSkipped(wallet)
       }
     } catch (error) {
-      results.failed++
-      results.errors.push({
-        wallet,
-        error: (error as Error).message,
-      })
+      log.recordFailure(wallet, (error as Error).message)
     }
   }
 
-  console.log('\n' + '='.repeat(50))
-  console.log('Migration Summary')
-  console.log('='.repeat(50))
-  console.log(`Total wallets: ${wallets.length}`)
-  console.log(`✓ Successful: ${results.successful}`)
-  console.log(`! Skipped: ${results.skipped}`)
-  console.log(`x Failed: ${results.failed}`)
-
-  if (results.errors.length > 0) {
-    console.log('\nErrors:')
-    results.errors.forEach(({ wallet, error }) => {
-      console.log(`  ${wallet}: ${error}`)
-    })
-  }
-
-  if (results.failed > 0) {
-    process.exit(1)
-  }
+  log.save()
 }
 
-export async function main() {
+async function main() {
   const { wallet, batch, dryRun: isDryRun } = parseArgs()
   const isBatch = batch || (!wallet && isDryRun)
 
@@ -292,7 +189,7 @@ export async function main() {
   console.log('='.repeat(50))
 
   const client = setupClient()
-  const s3: MigrationClient = isDryRun ? makeDryRunClient(client) : client
+  const s3: MigrationClient = isDryRun ? createDryRunClient(client) : client
 
   try {
     if (wallet) {
@@ -301,14 +198,7 @@ export async function main() {
       return
     }
 
-    const wallets = await client.listLegacyWallets()
-    if (wallets.length === 0) {
-      console.log('x No wallets found in legacy prefix')
-      return
-    }
-
-    const log = new MigrationLog(isDryRun)
-    await migrateBatch(s3, wallets, log)
+    await migrateBatch(s3, isDryRun)
     console.log('\n ✓ Batch migration complete')
   } catch (error) {
     console.error('\n x Migration failed:', error)
@@ -323,5 +213,3 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     process.exit(1)
   })
 }
-
-export { main as default }

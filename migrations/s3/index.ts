@@ -35,7 +35,7 @@ export class S3MigrationClient {
     this.bucket = config.bucket
 
     this.client = new S3Client({
-      region: config.region ?? 'us-east-1',
+      region: config.region,
       credentials: {
         accessKeyId: config.accessKeyId,
         secretAccessKey: config.secretAccessKey,

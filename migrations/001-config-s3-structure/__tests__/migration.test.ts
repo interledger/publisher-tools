@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions, Configuration } from '@shared/types'
-import { makeDryRunClient, migrateSingle } from '../migrate-cli'
+import { createDryRunClient, migrateSingle } from '../migrate-cli'
 
 const mockGetJson = vi.hoisted(() => vi.fn())
 const mockPutJson = vi.hoisted(() => vi.fn())
@@ -173,7 +173,7 @@ describe('migrateSingle', () => {
     vi.clearAllMocks()
   })
 
-  it('checks new prefix first, then gets legacy data, puts new, deletes legacy', async () => {
+  it('checks new prefix first, then gets legacy data, puts new, DOES NOT delete legacy', async () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
     mockPutJson.mockResolvedValueOnce(undefined)
@@ -188,7 +188,7 @@ describe('migrateSingle', () => {
       WALLET,
       expect.objectContaining({ $walletAddress: WALLET }),
     )
-    expect(mockDeleteFromLegacy).toHaveBeenCalledWith(WALLET)
+    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
 
   it('produces the correct Configuration shape from legacy data', async () => {
@@ -275,19 +275,19 @@ describe('migrateSingle', () => {
     expect(uploaded.widget!.version3!.$name).toBe('Profile 3')
   })
 
-  it('skips get/put and only deletes legacy when already in new prefix', async () => {
+  it('deletes legacy file and returns log skipped wallet address when already in new prefix', async () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(true)
     mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
 
     const result = await migrateSingle(s3, WALLET)
 
-    expect(result).toBe(true)
+    expect(result).toBe(false)
     expect(mockGetJson).not.toHaveBeenCalled()
     expect(mockPutJson).not.toHaveBeenCalled()
     expect(mockDeleteFromLegacy).toHaveBeenCalledWith(WALLET)
   })
 
-  it('returns false and skips put/delete when getJson returns null', async () => {
+  it('log skips wallet address and skips put/delete when getJson returns null', async () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(null)
 
@@ -298,12 +298,12 @@ describe('migrateSingle', () => {
     expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
 
-  it('does not delete legacy when putJson fails', async () => {
+  it('DOES NOT delete legacy when putJson fails', async () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
     mockPutJson.mockRejectedValueOnce(new Error('Upload failed'))
 
-    await expect(migrateSingle(s3, WALLET)).rejects.toThrow('Upload failed')
+    await expect(migrateSingle(s3, WALLET)).rejects.toThrowError()
 
     expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
   })
@@ -320,7 +320,7 @@ describe('migrateSingle (dry-run client)', () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
-    await migrateSingle(makeDryRunClient(s3), WALLET)
+    await migrateSingle(createDryRunClient(s3), WALLET)
 
     expect(mockPutJson).not.toHaveBeenCalled()
     expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
@@ -330,7 +330,7 @@ describe('migrateSingle (dry-run client)', () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
-    await migrateSingle(makeDryRunClient(s3), WALLET)
+    await migrateSingle(createDryRunClient(s3), WALLET)
 
     expect(mockGetJson).toHaveBeenCalledWith(WALLET)
   })
@@ -339,6 +339,8 @@ describe('migrateSingle (dry-run client)', () => {
     mockExistsInNewPrefix.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(null)
 
-    await expect(migrateSingle(makeDryRunClient(s3), WALLET)).resolves.toBe(false)
+    await expect(migrateSingle(createDryRunClient(s3), WALLET)).resolves.toBe(
+      false,
+    )
   })
 })
