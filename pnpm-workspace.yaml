@@ -5,7 +5,6 @@ packages:
   - 'components'
   - 'shared/*'
   - 'localenv/*'
-  - 'migrations/*'
 
 onlyBuiltDependencies:
   - '@actions/github-script'
