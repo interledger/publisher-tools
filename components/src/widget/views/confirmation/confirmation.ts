@@ -513,4 +513,3 @@ export class PaymentConfirmation extends LitElement {
     `
   }
 }
-customElements.define('wm-payment-confirmation', PaymentConfirmation)

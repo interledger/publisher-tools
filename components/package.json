@@ -8,6 +8,9 @@
     ".": "./src/index.ts",
     "./*": "./src/*.ts"
   },
+  "sideEffects": [
+    "./src/**/*.css"
+  ],
   "dependencies": {
     "@shared/utils": "workspace:^",
     "lit": "^3.3.2"

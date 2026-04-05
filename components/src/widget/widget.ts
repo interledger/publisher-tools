@@ -10,9 +10,16 @@ import type { WalletAddress } from '@interledger/open-payments'
 import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
+import { PaymentConfirmation } from './views/confirmation/confirmation'
+import { PaymentInteraction } from './views/interaction/interaction'
 import widgetStyles from './widget.css?raw'
-import './views/confirmation/confirmation.js'
-import './views/interaction/interaction.js'
+
+const COMPONENTS = {
+  'wm-payment-confirmation': PaymentConfirmation,
+  'wm-payment-interaction': PaymentInteraction,
+  'wm-dots-loader': DotsLoader,
+  'wm-close-btn': CloseBtn,
+}
 
 const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
@@ -39,11 +46,10 @@ export class PaymentWidget extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    if (!customElements.get('wm-dots-loader')) {
-      customElements.define('wm-dots-loader', DotsLoader)
-    }
-    if (!customElements.get('wm-close-btn')) {
-      customElements.define('wm-close-btn', CloseBtn)
+    for (const [name, elConstructor] of Object.entries(COMPONENTS)) {
+      if (!customElements.get(name)) {
+        customElements.define(name, elConstructor)
+      }
     }
   }
 
