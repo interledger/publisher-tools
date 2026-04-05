@@ -1,4 +1,3 @@
-import { pathToFileURL } from 'node:url'
 import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions } from '@shared/types'
 import { convertToConfiguration } from '@shared/utils'
@@ -207,7 +206,7 @@ async function main() {
 }
 
 // only run main CLI if this file executed directly
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (import.meta.main) {
   main().catch((error) => {
     console.error('Fatal error:', error)
     process.exit(1)
