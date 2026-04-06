@@ -6,14 +6,12 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteError,
-  useLocation,
   isRouteErrorResponse,
   type LinksFunction,
   type MetaFunction,
 } from 'react-router'
 import { Header, Footer } from '@/components'
 import { UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
-import { TOOLS } from '@shared/types'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { TelemetryProvider } from '~/lib/umami'
 import { UIProvider } from '~/stores/uiStore'
@@ -22,9 +20,6 @@ import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
 
 export default function App() {
-  const { pathname } = useLocation()
-  const tool = TOOLS.find((t) => pathname.startsWith(`/${t}`))
-
   return (
     <html lang="en">
       <head>
@@ -44,7 +39,7 @@ export default function App() {
         <UIProvider>
           <Header />
           <main className="flex-grow flex flex-col">
-            <TelemetryProvider tool={tool}>
+            <TelemetryProvider>
               <Outlet />
             </TelemetryProvider>
           </main>
