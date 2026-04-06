@@ -131,7 +131,7 @@ Optional. If unset, the analytics script is silently skipped.
 For local dev, start the Umami instance first:
 
 ```sh
-cd localenv/umami && docker compose up -d
+cd localenv/analytics && docker compose up -d
 ```
 
 Then log in at `http://localhost:8082` (default credentials: `admin` / `umami`), go to Settings → Websites → Add website, and copy the **Website ID**.
