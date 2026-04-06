@@ -3,7 +3,10 @@ import type { ReactNode } from 'react'
 import { useLocation } from 'react-router'
 import { TOOLS } from '@shared/types'
 
-type TrackFn = (eventName: string, eventData?: Record<string, unknown>) => void
+type TrackFn = (
+  eventName: string,
+  eventData?: Record<string, string | number | boolean | null>,
+) => void
 
 const TrackContext = createContext<TrackFn>(() => {})
 
@@ -12,7 +15,10 @@ export function TelemetryProvider({ children }: { children: ReactNode }) {
   const tool = TOOLS.find((t) => pathname.startsWith(`/${t}`))
 
   const track = useCallback(
-    (eventName: string, eventData?: Record<string, unknown>) => {
+    (
+      eventName: string,
+      eventData?: Record<string, string | number | boolean | null>,
+    ) => {
       window.umami?.track(eventName, tool ? { tool, ...eventData } : eventData)
     },
     [tool],
