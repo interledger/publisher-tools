@@ -14,11 +14,8 @@ export function TelemetryProvider({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
   const tool = TOOLS.find((t) => pathname.startsWith(`/${t}`))
 
-  const track = useCallback(
-    (
-      eventName: string,
-      eventData?: Record<string, string | number | boolean | null>,
-    ) => {
+  const track = useCallback<TrackFn>(
+    (eventName, eventData) => {
       window.umami?.track(eventName, tool ? { tool, ...eventData } : eventData)
     },
     [tool],
