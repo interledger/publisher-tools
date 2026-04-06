@@ -2,7 +2,7 @@ import React, { useId } from 'react'
 import { Link } from 'react-router'
 import { PillTag } from '@/components'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
-import { useTrackEvent } from '~/lib/umami'
+import { useTrackEvent } from '~/lib/analytics'
 
 export type ToolCardProps = {
   children?: React.ReactNode

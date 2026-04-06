@@ -9,8 +9,8 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
+import { useTrackEvent } from '~/lib/analytics'
 import type { ElementErrors } from '~/lib/types'
-import { useTrackEvent } from '~/lib/umami'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 

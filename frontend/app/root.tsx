@@ -13,7 +13,7 @@ import {
 import { Header, Footer } from '@/components'
 import { UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { TelemetryProvider } from '~/lib/umami'
+import { TelemetryProvider } from '~/lib/analytics'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
