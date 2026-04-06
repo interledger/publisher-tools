@@ -11,7 +11,7 @@ import {
   type MetaFunction,
 } from 'react-router'
 import { Header, Footer } from '@/components'
-import { UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
+import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { TelemetryProvider } from '~/lib/analytics'
 import { UIProvider } from '~/stores/uiStore'
@@ -32,6 +32,10 @@ export default function App() {
             defer
             src={`${UMAMI_HOST}/script.js`}
             data-website-id={UMAMI_WEBSITE_ID}
+            data-domains={[
+              new URL(APP_URL.production).hostname,
+              new URL(APP_URL.development).hostname,
+            ].join(',')}
           />
         )}
       </head>
