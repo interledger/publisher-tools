@@ -20,6 +20,12 @@ import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
 
 export default function App() {
+  const domain = new URL(
+    process.env.NODE_ENV === 'development'
+      ? APP_URL.development
+      : APP_URL.production,
+  ).hostname
+
   return (
     <html lang="en">
       <head>
@@ -32,10 +38,7 @@ export default function App() {
             defer
             src={`${UMAMI_HOST}/script.js`}
             data-website-id={UMAMI_WEBSITE_ID}
-            data-domains={[
-              new URL(APP_URL.production).hostname,
-              new URL(APP_URL.development).hostname,
-            ].join(',')}
+            data-domains={domain}
           />
         )}
       </head>
