@@ -1,4 +1,4 @@
-import { LitElement, html, unsafeCSS } from 'lit'
+import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type {
   PaymentStatusSuccess,
@@ -11,6 +11,23 @@ import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
 import interactionStyles from './interaction.css?raw'
 import type { WidgetController } from '../../controller'
+
+type ButtonAction = {
+  label: string
+  buttonClass: 'primary-button' | 'empty-button'
+  handler: () => void
+}
+
+type InteractionView = {
+  titleClass: 'authorizing' | 'complete' | 'failed'
+  title: string
+  image: {
+    src: string
+    alt: string
+  }
+  button?: ButtonAction
+  description?: string
+}
 
 function isInteractionSuccess(
   params: PaymentStatus,
@@ -243,108 +260,99 @@ export class PaymentInteraction extends LitElement {
     }, 3000)
   }
 
-  private renderAuthorizingView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
+  private resolveInteractionView(): InteractionView {
+    switch (this.currentView) {
+      case 'processing':
+        return {
+          titleClass: 'authorizing',
+          title: 'Verifying payment',
+          description: 'Checking payment status',
+          image: {
+            src: loadingIcon,
+            alt: 'Payment verification in progress',
+          },
+        }
 
-        <div class="interaction-body">
-          <div class="title authorizing">Authorizing payment</div>
-          <div class="description">
-            Please complete the authorization in the opened tab
-          </div>
-          <img
-            src=${loadingIcon}
-            width="122"
-            height="200"
-            alt="Payment authorization in progress"
-          />
-        </div>
-
-        <button class="button-container empty-button" @click=${this.cancel}>
-          Cancel payment
-        </button>
-      </div>
-    `
+      case 'success':
+        return {
+          titleClass: 'complete',
+          title: 'Payment complete!',
+          description: 'Your payment has been processed successfully',
+          image: {
+            src: successIcon,
+            alt: 'Payment successful',
+          },
+          button: {
+            label: 'Done',
+            buttonClass: 'primary-button',
+            handler: this.goBack,
+          },
+        }
+      case 'failed':
+        return {
+          titleClass: 'failed',
+          title: this.errorMessage,
+          image: {
+            src: failedIcon,
+            alt: 'Payment failed',
+          },
+          button: {
+            label: 'Cancel payment',
+            buttonClass: 'empty-button',
+            handler: this.cancel,
+          },
+        }
+      case 'authorizing':
+        return {
+          titleClass: 'authorizing',
+          title: 'Authorizing payment',
+          description: 'Please complete the authorization in the opened tab',
+          image: {
+            src: loadingIcon,
+            alt: 'Payment authorization in progress',
+          },
+          button: {
+            label: 'Cancel payment',
+            buttonClass: 'empty-button',
+            handler: this.cancel,
+          },
+        }
+    }
   }
 
-  private renderProcessingView() {
+  private renderInteractionView(view: InteractionView) {
     return html`
       <div class="interaction-container">
         <div class="empty-header"></div>
 
         <div class="interaction-body">
-          <div class="title authorizing">Verifying payment</div>
-          <div class="description">Checking payment status</div>
+          <div class="title ${view.titleClass}">${view.title}</div>
+          ${view.description
+            ? html`<div class="description">${view.description}</div>`
+            : nothing}
           <img
-            src=${loadingIcon}
+            src=${view.image.src}
             width="122"
             height="200"
-            alt="Payment verification in progress"
-          />
-        </div>
-      </div>
-    `
-  }
-
-  private renderSuccessView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
-
-        <div class="interaction-body">
-          <div class="title complete">Payment complete!</div>
-          <div class="description">
-            Your payment has been processed successfully
-          </div>
-          <img
-            src=${successIcon}
-            width="122"
-            height="200"
-            alt="Payment successful"
+            alt=${view.image.alt}
           />
         </div>
 
-        <button class="button-container primary-button" @click=${this.goBack}>
-          Done
-        </button>
-      </div>
-    `
-  }
-
-  private renderFailedView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
-
-        <div class="interaction-body">
-          <div class="title failed">${this.errorMessage}</div>
-          <img
-            src=${failedIcon}
-            width="122"
-            height="200"
-            alt="Payment failed"
-          />
-        </div>
-
-        <button class="button-container empty-button" @click=${this.cancel}>
-          Cancel payment
-        </button>
+        ${view.button
+          ? html`
+              <button
+                class="button-container ${view.button.buttonClass}"
+                @click=${view.button.handler}
+              >
+                ${view.button.label}
+              </button>
+            `
+          : nothing}
       </div>
     `
   }
 
   render() {
-    switch (this.currentView) {
-      case 'processing':
-        return this.renderProcessingView()
-      case 'success':
-        return this.renderSuccessView()
-      case 'failed':
-        return this.renderFailedView()
-      case 'authorizing':
-      default:
-        return this.renderAuthorizingView()
-    }
+    return this.renderInteractionView(this.resolveInteractionView())
   }
 }
