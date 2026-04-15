@@ -1,6 +1,7 @@
 import React, { useId } from 'react'
 import { Link } from 'react-router'
 import { PillTag } from '@/components'
+import { TOOLS_EVENTS } from '@shared/analytics-events'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
 import { useTrackEvent } from '~/lib/analytics'
 
@@ -31,7 +32,7 @@ export const ToolCard = ({
   const isExternalLink = target !== undefined
 
   const handleClick = () => {
-    trackEvent('click_card_tool', { link: to })
+    trackEvent(TOOLS_EVENTS.CLICK_CARD_TOOL, { link: to })
   }
 
   return (

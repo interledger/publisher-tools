@@ -23,6 +23,7 @@
     "@shared/config-storage-service": "workspace:^",
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
+    "@shared/analytics-events": "workspace:^",
     "@tailwindcss/postcss": "^4.2.1",
     "@tools/components": "workspace:*",
     "@typescript-eslint/parser": "^8.44.1",

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
+import { TOOLS_EVENTS } from '@shared/analytics-events'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -65,7 +66,7 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-      trackEvent('wallet_connected')
+      trackEvent(TOOLS_EVENTS.WALLET_CONNECTED)
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
@@ -74,6 +75,11 @@ export const ToolsWalletAddress = ({
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleDisconnect = () => {
+    trackEvent(TOOLS_EVENTS.WALLET_DISCONNECTED)
+    disconnect()
   }
 
   const handleWalletAddressChange = (
@@ -167,7 +173,7 @@ export const ToolsWalletAddress = ({
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={disconnect}
+              onClick={handleDisconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label="Disconnect wallet"
             >

@@ -60,6 +60,9 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
+      '@shared/analytics-events':
+        specifier: workspace:^
+        version: link:../shared/analytics-events
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
@@ -185,6 +188,9 @@ importers:
       '@react-router/cloudflare':
         specifier: ^7.11.0
         version: 7.11.0(@cloudflare/workers-types@4.20251011.0)(react-router@7.12.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(typescript@5.9.3)
+      '@shared/analytics-events':
+        specifier: workspace:^
+        version: link:../shared/analytics-events
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
@@ -322,6 +328,8 @@ importers:
         specifier: ^4.59.2
         version: 4.59.2(@cloudflare/workers-types@4.20251011.0)
 
+  localenv/analytics: {}
+
   localenv/s3:
     devDependencies:
       typescript:
@@ -330,6 +338,8 @@ importers:
       wrangler:
         specifier: ^4.59.2
         version: 4.59.2(@cloudflare/workers-types@4.20251011.0)
+
+  shared/analytics-events: {}
 
   shared/config-storage-service:
     dependencies:

@@ -2,10 +2,12 @@ import { useState, useCallback } from 'react'
 import { SVGSpinner } from '@/assets'
 import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
+import { TOOLS_EVENTS } from '@shared/analytics-events'
 import {
   validateAndConfirmPointer,
   WalletAddressFormatError,
 } from '@shared/utils/index'
+import { useTrackEvent } from '~/lib/analytics'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
@@ -24,6 +26,7 @@ export const LinkTagGenerator = () => {
   const [error, setError] = useState('')
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const trackEvent = useTrackEvent()
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -36,6 +39,7 @@ export const LinkTagGenerator = () => {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
+        trackEvent(TOOLS_EVENTS.GENERATED_TAG, { tag_type: 'link_tag' })
       } catch (err) {
         const message =
           err instanceof WalletAddressFormatError
@@ -47,7 +51,7 @@ export const LinkTagGenerator = () => {
         setIsLoading(false)
       }
     },
-    [pointerInput],
+    [pointerInput, trackEvent],
   )
 
   const handleOnChange = useCallback(
