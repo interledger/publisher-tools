@@ -15,8 +15,12 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
   define: {
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL),
-    BUILD_UMAMI_HOST: JSON.stringify(process.env.UMAMI_HOST),
-    BUILD_UMAMI_WEBSITE_ID: JSON.stringify(process.env.UMAMI_WEBSITE_ID),
+    BUILD_UMAMI_HOST: JSON.stringify(
+      process.env.BUILD_UMAMI_HOST || process.env.UMAMI_HOST,
+    ),
+    BUILD_UMAMI_WEBSITE_ID: JSON.stringify(
+      process.env.BUILD_UMAMI_WEBSITE_ID || process.env.UMAMI_WEBSITE_ID,
+    ),
   },
   plugins: [
     cloudflare({
