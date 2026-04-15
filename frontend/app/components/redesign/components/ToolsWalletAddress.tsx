@@ -9,6 +9,7 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
+import { useTrackEvent } from '~/lib/analytics'
 import type { ElementErrors } from '~/lib/types'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
@@ -26,6 +27,7 @@ export const ToolsWalletAddress = ({
 }: Props) => {
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
+  const trackEvent = useTrackEvent()
   const [error, setError] = useState<ElementErrors>()
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -63,6 +65,7 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
+      trackEvent('wallet_connected')
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },

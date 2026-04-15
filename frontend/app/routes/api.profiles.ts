@@ -13,11 +13,8 @@ import type {
   ToolProfiles,
 } from '@shared/types'
 import { TOOLS } from '@shared/types'
-import {
-  getWalletAddress,
-  normalizeWalletAddress,
-  convertToProfiles,
-} from '@shared/utils'
+import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { convertToProfiles } from '@shared/utils/profile-converter'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
 import { walletSchema } from '~/utils/validate.server'

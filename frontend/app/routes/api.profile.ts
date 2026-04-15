@@ -10,11 +10,8 @@ import {
   TOOL_OFFERWALL,
   TOOL_WIDGET,
 } from '@shared/types'
-import {
-  getWalletAddress,
-  normalizeWalletAddress,
-  convertToConfiguration,
-} from '@shared/utils'
+import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { convertToConfiguration } from '@shared/utils/profile-converter'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import type { ApiError } from '~/lib/helpers'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'

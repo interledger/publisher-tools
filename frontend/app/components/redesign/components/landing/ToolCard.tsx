@@ -2,6 +2,7 @@ import React, { useId } from 'react'
 import { Link } from 'react-router'
 import { PillTag } from '@/components'
 import arrowOutwardIcon from '~/assets/images/landing/arrow-outward.svg'
+import { useTrackEvent } from '~/lib/analytics'
 
 export type ToolCardProps = {
   children?: React.ReactNode
@@ -22,11 +23,16 @@ export const ToolCard = ({
   target,
   className = '',
 }: ToolCardProps) => {
+  const trackEvent = useTrackEvent()
   const id = useId()
   const linkContent = title
   const linkClasses =
     'font-bold text-xl leading-normal text-text-primary after:absolute after:inset-0 after:z-10'
   const isExternalLink = target !== undefined
+
+  const handleClick = () => {
+    trackEvent('click_card_tool', { link: to })
+  }
 
   return (
     <article
@@ -44,11 +50,12 @@ export const ToolCard = ({
               target={target}
               rel={target === '_blank' ? 'noreferrer' : undefined}
               className={linkClasses}
+              onClick={handleClick}
             >
               {linkContent}
             </a>
           ) : (
-            <Link to={to} className={linkClasses}>
+            <Link to={to} className={linkClasses} onClick={handleClick}>
               {linkContent}
             </Link>
           )}

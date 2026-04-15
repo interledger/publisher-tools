@@ -275,5 +275,3 @@ export function groupBy<T, K extends PropertyKey>(
 
   return result
 }
-
-export { convertToProfiles, convertToConfiguration } from './profile-converter'

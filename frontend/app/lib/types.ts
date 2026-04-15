@@ -63,6 +63,12 @@ export type ElementErrors = {
 }
 
 declare global {
+  interface Window {
+    umami?: {
+      track(eventName: string, eventData?: Record<string, unknown>): void
+    }
+  }
+
   interface Env {
     OP_KEY_ID: string
     OP_PRIVATE_KEY: string
