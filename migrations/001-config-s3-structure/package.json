@@ -9,7 +9,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "migrate": "tsx --env-file=../../.dev.vars migrate-cli.ts"
+    "migrate": "node --env-file=../../.dev.vars migrate-cli.ts"
   },
   "keywords": [],
   "author": "",
