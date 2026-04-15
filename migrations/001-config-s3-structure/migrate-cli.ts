@@ -1,24 +1,27 @@
 import { S3MigrationClient } from '@migration/s3'
 import type { ConfigVersions } from '@shared/types'
-import { convertToConfiguration } from '@shared/utils'
+import { convertToConfiguration } from '@shared/utils/profile-converter'
 import { MigrationLog } from './migration-log'
 
+const LEGACY_PREFIX = '20250717-dev'
+const NEW_PREFIX = '20260305-dev'
+
 export interface MigrationClient {
-  getJson<T>(walletAddress: string): Promise<T | null>
-  putJson<T>(walletAddress: string, data: T): Promise<void>
-  listLegacyWallets(): Promise<string[]>
-  existsInNewPrefix(walletAddress: string): Promise<boolean>
-  deleteFromLegacy(walletAddress: string): Promise<void>
+  getJson<T>(prefix: string, walletAddress: string): Promise<T | null>
+  putJson<T>(prefix: string, walletAddress: string, data: T): Promise<void>
+  listByPrefix(prefix: string): Promise<string[]>
+  existsAt(prefix: string, walletAddress: string): Promise<boolean>
+  deleteAt(prefix: string, walletAddress: string): Promise<void>
 }
 
 export function createDryRunClient(client: MigrationClient): MigrationClient {
   return {
-    getJson: (w) => client.getJson(w),
-    existsInNewPrefix: (w) => client.existsInNewPrefix(w),
-    listLegacyWallets: () => client.listLegacyWallets(),
+    getJson: (prefix, w) => client.getJson(prefix, w),
+    existsAt: (prefix, w) => client.existsAt(prefix, w),
+    listByPrefix: (prefix) => client.listByPrefix(prefix),
     putJson: () => Promise.resolve(),
-    deleteFromLegacy: (w) => {
-      console.log(`[DRY RUN] would deleteFromLegacy: ${w}`)
+    deleteAt: (prefix, w) => {
+      console.log(`[DRY RUN] would deleteAt: ${prefix}/${w}`)
       return Promise.resolve()
     },
   }
@@ -77,16 +80,16 @@ Options:
 
 Examples:
   # Migrate a single wallet
-  pnpm tsx migrate-cli.ts --wallet "https://ilp.interledger-test.dev/darianusd"
+  node migrate-cli.ts --wallet "https://ilp.interledger-test.dev/darianusd"
 
   # Migrate all wallets from the legacy prefix
-  pnpm tsx migrate-cli.ts --batch
+  node migrate-cli.ts --batch
 
   # Dry run a single wallet
-  pnpm tsx migrate-cli.ts --wallet "https://ilp.interledger-test.dev/darianusd" --dry-run
+  node migrate-cli.ts --wallet "https://ilp.interledger-test.dev/darianusd" --dry-run
 
   # Dry run all wallets (--dry-run without --wallet implies batch)
-  pnpm tsx migrate-cli.ts --dry-run
+  node migrate-cli.ts --dry-run
 `)
 }
 
@@ -122,18 +125,21 @@ export async function migrateSingle(
   walletAddress: string,
 ): Promise<boolean> {
   try {
-    if (await s3.existsInNewPrefix(walletAddress)) {
-      await s3.deleteFromLegacy(walletAddress)
+    if (await s3.existsAt(NEW_PREFIX, walletAddress)) {
+      await s3.deleteAt(LEGACY_PREFIX, walletAddress)
       return false
     }
 
-    const legacyData = await s3.getJson<ConfigVersions>(walletAddress)
+    const legacyData = await s3.getJson<ConfigVersions>(
+      LEGACY_PREFIX,
+      walletAddress,
+    )
     if (!legacyData) {
       console.log('! No legacy data found - skipping')
       return false
     }
     const newData = convertToConfiguration(legacyData, walletAddress)
-    await s3.putJson(walletAddress, newData)
+    await s3.putJson(NEW_PREFIX, walletAddress, newData)
 
     return true
   } catch (error) {
@@ -146,7 +152,7 @@ async function migrateBatch(
   s3: MigrationClient,
   isDryRun: boolean,
 ): Promise<void> {
-  const wallets = await s3.listLegacyWallets()
+  const wallets = await s3.listByPrefix(LEGACY_PREFIX)
   if (wallets.length === 0) {
     console.log('x No wallets found in legacy prefix')
     return
@@ -169,6 +175,9 @@ async function migrateBatch(
   }
 
   log.save()
+  if (log.hasFailed) {
+    process.exit(1)
+  }
 }
 
 async function main() {

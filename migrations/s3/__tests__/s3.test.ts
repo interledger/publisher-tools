@@ -10,12 +10,14 @@ import {
   S3ServiceException,
 } from '@aws-sdk/client-s3'
 import type { ConfigVersions } from '@shared/types'
-import { S3MigrationClient, LEGACY_PREFIX, NEW_PREFIX } from '../index'
+import { S3MigrationClient } from '../index'
 
 const s3Mock = mockClient(S3Client)
 
 const BUCKET = 'test-bucket'
 const WALLET = '$wallet.example.com'
+const LEGACY_PREFIX = 'legacy-prefix'
+const NEW_PREFIX = 'new-prefix'
 
 const mockConfig = {
   accessKeyId: 'test-key',
@@ -79,10 +81,10 @@ beforeEach(() => {
 // -- getJson ------------------------------------------------------------------
 
 describe('getJson', () => {
-  it('uses the legacy prefix in the key', async () => {
+  it('uses the given prefix in the key', async () => {
     s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
 
-    await s3.getJson(WALLET)
+    await s3.getJson(LEGACY_PREFIX, WALLET)
 
     const [call] = s3Mock.commandCalls(GetObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)
@@ -94,7 +96,7 @@ describe('getJson', () => {
   it('strips https:// from wallet address in the key', async () => {
     s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
 
-    await s3.getJson('https://wallet.example.com')
+    await s3.getJson(LEGACY_PREFIX, 'https://wallet.example.com')
 
     const [call] = s3Mock.commandCalls(GetObjectCommand)
     expect(call!.args[0].input.Key).toBe(
@@ -105,7 +107,7 @@ describe('getJson', () => {
   it('strips $ from wallet address in the key', async () => {
     s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
 
-    await s3.getJson(WALLET)
+    await s3.getJson(LEGACY_PREFIX, WALLET)
 
     const [call] = s3Mock.commandCalls(GetObjectCommand)
     expect(call!.args[0].input.Key).not.toContain('$')
@@ -114,7 +116,7 @@ describe('getJson', () => {
   it('returns parsed JSON from the response body', async () => {
     s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
 
-    const result = await s3.getJson<ConfigVersions>(WALLET)
+    const result = await s3.getJson<ConfigVersions>(LEGACY_PREFIX, WALLET)
 
     expect(result).toEqual(mockLegacyData)
   })
@@ -128,17 +130,17 @@ describe('getJson', () => {
       }),
     )
 
-    await expect(s3.getJson(WALLET)).resolves.toBeNull()
+    await expect(s3.getJson(LEGACY_PREFIX, WALLET)).resolves.toBeNull()
   })
 })
 
 // -- putJson ------------------------------------------------------------------
 
 describe('putJson', () => {
-  it('uses the new prefix in the key', async () => {
+  it('uses the given prefix in the key', async () => {
     s3Mock.on(PutObjectCommand).resolves({})
 
-    await s3.putJson(WALLET, mockLegacyData)
+    await s3.putJson(NEW_PREFIX, WALLET, mockLegacyData)
 
     const [call] = s3Mock.commandCalls(PutObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)
@@ -148,13 +150,13 @@ describe('putJson', () => {
   })
 })
 
-// -- listLegacyWallets --------------------------------------------------------
+// -- listByPrefix -------------------------------------------------------------
 
-describe('listLegacyWallets', () => {
-  it('uses the legacy prefix', async () => {
+describe('listByPrefix', () => {
+  it('uses the given prefix', async () => {
     s3Mock.on(ListObjectsV2Command).resolves({ Contents: [] })
 
-    await s3.listLegacyWallets()
+    await s3.listByPrefix(LEGACY_PREFIX)
 
     const [call] = s3Mock.commandCalls(ListObjectsV2Command)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)
@@ -169,7 +171,7 @@ describe('listLegacyWallets', () => {
       ],
     })
 
-    const result = await s3.listLegacyWallets()
+    const result = await s3.listByPrefix(LEGACY_PREFIX)
 
     expect(result).toEqual([
       'https://wallet.example.com',
@@ -179,13 +181,13 @@ describe('listLegacyWallets', () => {
 
   it('returns empty array when no objects exist', async () => {
     s3Mock.on(ListObjectsV2Command).resolves({ Contents: [] })
-    expect(await s3.listLegacyWallets()).toEqual([])
+    expect(await s3.listByPrefix(LEGACY_PREFIX)).toEqual([])
   })
 })
 
-// -- existsInNewPrefix --------------------------------------------------------
+// -- existsAt -----------------------------------------------------------------
 
-describe('existsInNewPrefix', () => {
+describe('existsAt', () => {
   it('returns false for a 404 S3ServiceException', async () => {
     s3Mock.on(HeadObjectCommand).rejects(
       new S3ServiceException({
@@ -194,13 +196,13 @@ describe('existsInNewPrefix', () => {
         $metadata: { httpStatusCode: 404 },
       }),
     )
-    expect(await s3.existsInNewPrefix(WALLET)).toBe(false)
+    expect(await s3.existsAt(NEW_PREFIX, WALLET)).toBe(false)
   })
 
-  it('checks the new prefix key', async () => {
+  it('checks the given prefix key', async () => {
     s3Mock.on(HeadObjectCommand).resolves({})
 
-    await s3.existsInNewPrefix(WALLET)
+    await s3.existsAt(NEW_PREFIX, WALLET)
 
     const [call] = s3Mock.commandCalls(HeadObjectCommand)
     expect(call!.args[0].input.Key).toBe(
@@ -209,13 +211,13 @@ describe('existsInNewPrefix', () => {
   })
 })
 
-// -- deleteFromLegacy ---------------------------------------------------------
+// -- deleteAt -----------------------------------------------------------------
 
-describe('deleteFromLegacy', () => {
-  it('uses the legacy prefix in the key', async () => {
+describe('deleteAt', () => {
+  it('uses the given prefix in the key', async () => {
     s3Mock.on(DeleteObjectCommand).resolves({})
 
-    await s3.deleteFromLegacy(WALLET)
+    await s3.deleteAt(LEGACY_PREFIX, WALLET)
 
     const [call] = s3Mock.commandCalls(DeleteObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)

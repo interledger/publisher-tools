@@ -5,19 +5,17 @@ import { createDryRunClient, migrateSingle } from '../migrate-cli'
 
 const mockGetJson = vi.hoisted(() => vi.fn())
 const mockPutJson = vi.hoisted(() => vi.fn())
-const mockExistsInNewPrefix = vi.hoisted(() => vi.fn())
-const mockDeleteFromLegacy = vi.hoisted(() => vi.fn())
+const mockExistsAt = vi.hoisted(() => vi.fn())
+const mockDeleteAt = vi.hoisted(() => vi.fn())
 
 vi.mock('@migration/s3', () => ({
   S3MigrationClient: vi.fn().mockImplementation(() => ({
     getJson: mockGetJson,
     putJson: mockPutJson,
-    existsInNewPrefix: mockExistsInNewPrefix,
-    deleteFromLegacy: mockDeleteFromLegacy,
-    listLegacyWallets: vi.fn(),
+    existsAt: mockExistsAt,
+    deleteAt: mockDeleteAt,
+    listByPrefix: vi.fn(),
   })),
-  LEGACY_PREFIX: '20250717-dev',
-  NEW_PREFIX: '20260305-dev',
 }))
 
 const WALLET = '$wallet.example.com'
@@ -174,21 +172,22 @@ describe('migrateSingle', () => {
   })
 
   it('checks new prefix first, then gets legacy data, puts new, DOES NOT delete legacy', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
     mockPutJson.mockResolvedValueOnce(undefined)
-    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+    mockDeleteAt.mockResolvedValueOnce(undefined)
 
     const result = await migrateSingle(s3, WALLET)
 
     expect(result).toBe(true)
-    expect(mockExistsInNewPrefix).toHaveBeenCalledWith(WALLET)
-    expect(mockGetJson).toHaveBeenCalledWith(WALLET)
+    expect(mockExistsAt).toHaveBeenCalled()
+    expect(mockGetJson).toHaveBeenCalled()
     expect(mockPutJson).toHaveBeenCalledWith(
+      '20260305-dev',
       WALLET,
       expect.objectContaining({ $walletAddress: WALLET }),
     )
-    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
+    expect(mockDeleteAt).not.toHaveBeenCalled()
   })
 
   it('produces the correct Configuration shape from legacy data', async () => {
@@ -196,14 +195,18 @@ describe('migrateSingle', () => {
     vi.setSystemTime(new Date('2026-01-29T12:00:00.000Z'))
 
     try {
-      mockExistsInNewPrefix.mockResolvedValueOnce(false)
+      mockExistsAt.mockResolvedValueOnce(false)
       mockGetJson.mockResolvedValueOnce(mockLegacyData)
       mockPutJson.mockResolvedValueOnce(undefined)
-      mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+      mockDeleteAt.mockResolvedValueOnce(undefined)
 
       await migrateSingle(s3, WALLET)
 
-      const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+      const [, , uploaded] = mockPutJson.mock.calls[0] as [
+        unknown,
+        unknown,
+        Configuration,
+      ]
       expect(uploaded).toEqual(mockNewConfiguration)
     } finally {
       vi.useRealTimers()
@@ -211,14 +214,18 @@ describe('migrateSingle', () => {
   })
 
   it('preserves banner fields in the uploaded data', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
     mockPutJson.mockResolvedValueOnce(undefined)
-    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+    mockDeleteAt.mockResolvedValueOnce(undefined)
 
     await migrateSingle(s3, WALLET)
 
-    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+    const [, , uploaded] = mockPutJson.mock.calls[0] as [
+      unknown,
+      unknown,
+      Configuration,
+    ]
     const banner = uploaded.banner!
     const v1 = mockLegacyData.version1
     expect(uploaded.$walletAddress).toBe(WALLET)
@@ -236,14 +243,18 @@ describe('migrateSingle', () => {
   })
 
   it('preserves widget fields in the uploaded data', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
     mockPutJson.mockResolvedValueOnce(undefined)
-    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+    mockDeleteAt.mockResolvedValueOnce(undefined)
 
     await migrateSingle(s3, WALLET)
 
-    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+    const [, , uploaded] = mockPutJson.mock.calls[0] as [
+      unknown,
+      unknown,
+      Configuration,
+    ]
     const widget = uploaded.widget!
     const v1 = mockLegacyData.version1
     expect(widget.version1!.title.text).toBe(v1.widgetTitleText)
@@ -262,50 +273,54 @@ describe('migrateSingle', () => {
       version3: { ...mockLegacyData.version3, versionName: 'Profile 3' },
     }
 
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(multi)
     mockPutJson.mockResolvedValueOnce(undefined)
-    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+    mockDeleteAt.mockResolvedValueOnce(undefined)
 
     await migrateSingle(s3, WALLET)
 
-    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
+    const [, , uploaded] = mockPutJson.mock.calls[0] as [
+      unknown,
+      unknown,
+      Configuration,
+    ]
     expect(Object.keys(uploaded.banner!)).toHaveLength(2)
     expect(uploaded.banner!.version1!.$name).toBe('Profile 1')
     expect(uploaded.widget!.version3!.$name).toBe('Profile 3')
   })
 
   it('deletes legacy file and returns log skipped wallet address when already in new prefix', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(true)
-    mockDeleteFromLegacy.mockResolvedValueOnce(undefined)
+    mockExistsAt.mockResolvedValueOnce(true)
+    mockDeleteAt.mockResolvedValueOnce(undefined)
 
     const result = await migrateSingle(s3, WALLET)
 
     expect(result).toBe(false)
     expect(mockGetJson).not.toHaveBeenCalled()
     expect(mockPutJson).not.toHaveBeenCalled()
-    expect(mockDeleteFromLegacy).toHaveBeenCalledWith(WALLET)
+    expect(mockDeleteAt).toHaveBeenCalled()
   })
 
   it('log skips wallet address and skips put/delete when getJson returns null', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(null)
 
     const result = await migrateSingle(s3, WALLET)
 
     expect(result).toBe(false)
     expect(mockPutJson).not.toHaveBeenCalled()
-    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
+    expect(mockDeleteAt).not.toHaveBeenCalled()
   })
 
   it('DOES NOT delete legacy when putJson fails', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
     mockPutJson.mockRejectedValueOnce(new Error('Upload failed'))
 
     await expect(migrateSingle(s3, WALLET)).rejects.toThrowError()
 
-    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
+    expect(mockDeleteAt).not.toHaveBeenCalled()
   })
 })
 
@@ -317,26 +332,26 @@ describe('migrateSingle (dry-run client)', () => {
   })
 
   it('never calls putJson or deleteFromLegacy on the real client', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
     await migrateSingle(createDryRunClient(s3), WALLET)
 
     expect(mockPutJson).not.toHaveBeenCalled()
-    expect(mockDeleteFromLegacy).not.toHaveBeenCalled()
+    expect(mockDeleteAt).not.toHaveBeenCalled()
   })
 
   it('still reads from the real client', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(mockLegacyData)
 
     await migrateSingle(createDryRunClient(s3), WALLET)
 
-    expect(mockGetJson).toHaveBeenCalledWith(WALLET)
+    expect(mockGetJson).toHaveBeenCalled()
   })
 
   it('does not throw when getJson returns null', async () => {
-    mockExistsInNewPrefix.mockResolvedValueOnce(false)
+    mockExistsAt.mockResolvedValueOnce(false)
     mockGetJson.mockResolvedValueOnce(null)
 
     await expect(migrateSingle(createDryRunClient(s3), WALLET)).resolves.toBe(

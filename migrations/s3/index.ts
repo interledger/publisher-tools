@@ -8,9 +8,6 @@ import {
   S3ServiceException,
 } from '@aws-sdk/client-s3'
 
-export const LEGACY_PREFIX = '20250717-dev'
-export const NEW_PREFIX = '20260305-dev'
-
 export interface S3Config {
   accessKeyId: string
   secretAccessKey: string
@@ -51,8 +48,8 @@ export class S3MigrationClient {
     return `${prefix}/${walletAddressToKey(walletAddress)}`
   }
 
-  async getJson<T>(walletAddress: string): Promise<T | null> {
-    const key = this.buildKey(LEGACY_PREFIX, walletAddress)
+  async getJson<T>(prefix: string, walletAddress: string): Promise<T | null> {
+    const key = this.buildKey(prefix, walletAddress)
 
     try {
       const res = await this.client.send(
@@ -77,8 +74,8 @@ export class S3MigrationClient {
     }
   }
 
-  async putJson<T>(walletAddress: string, data: T): Promise<void> {
-    const key = this.buildKey(NEW_PREFIX, walletAddress)
+  async putJson<T>(prefix: string, walletAddress: string, data: T): Promise<void> {
+    const key = this.buildKey(prefix, walletAddress)
 
     await this.client.send(
       new PutObjectCommand({
@@ -90,7 +87,7 @@ export class S3MigrationClient {
     )
   }
 
-  async listLegacyWallets(): Promise<string[]> {
+  async listByPrefix(prefix: string): Promise<string[]> {
     const keys: string[] = []
     let continuationToken: string | undefined
 
@@ -98,7 +95,7 @@ export class S3MigrationClient {
       const res = await this.client.send(
         new ListObjectsV2Command({
           Bucket: this.bucket,
-          Prefix: `${LEGACY_PREFIX}/`,
+          Prefix: `${prefix}/`,
           ContinuationToken: continuationToken,
         }),
       )
@@ -113,8 +110,8 @@ export class S3MigrationClient {
     return keys.map(keyToWalletAddress)
   }
 
-  async existsInNewPrefix(walletAddress: string): Promise<boolean> {
-    const key = this.buildKey(NEW_PREFIX, walletAddress)
+  async existsAt(prefix: string, walletAddress: string): Promise<boolean> {
+    const key = this.buildKey(prefix, walletAddress)
 
     try {
       await this.client.send(
@@ -135,8 +132,8 @@ export class S3MigrationClient {
     }
   }
 
-  async deleteFromLegacy(walletAddress: string): Promise<void> {
-    const key = this.buildKey(LEGACY_PREFIX, walletAddress)
+  async deleteAt(prefix: string, walletAddress: string): Promise<void> {
+    const key = this.buildKey(prefix, walletAddress)
 
     await this.client.send(
       new DeleteObjectCommand({
