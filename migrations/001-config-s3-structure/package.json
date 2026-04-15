@@ -1,7 +1,7 @@
 {
-  "name": "@shared/config-migration",
+  "name": "@migration/config",
   "version": "1.0.0",
-  "description": "Migration CLI for converting legacy ConfigVersions format to new Configuration format",
+  "description": "Migration CLI for converting legacy format to a new structure in S3",
   "type": "module",
   "main": "./migrate-cli.ts",
   "scripts": {
@@ -11,11 +11,7 @@
     "typecheck": "tsc --noEmit",
     "migrate": "tsx --env-file=../../.dev.vars migrate-cli.ts"
   },
-  "keywords": [
-    "migration",
-    "config",
-    "s3"
-  ],
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
