@@ -26,21 +26,20 @@ function convertToProfile<T extends Tool>(
     return config.offerwall as ToolProfile<T>
   }
 
+  const now = new Date().toISOString()
   return {
     $version: '0.0.1',
     $name: config.versionName,
-    $modifiedAt: '',
+    $modifiedAt: now,
     ...getToolProfile(config, tool),
   } as ToolProfile<T>
 }
 
 /** @legacy */
 export function convertToConfigLegacy<T extends Tool>(
-  walletAddress: string,
+  _walletAddress: string,
   profile: ToolProfile<T>,
 ): Partial<ElementConfigType> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { $name, $version, $modifiedAt, ...rest } = profile
   if ('thumbnail' in profile) {
     return {
       bannerFontName: profile.font.name,
