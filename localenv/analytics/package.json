@@ -1,0 +1,9 @@
+{
+  "name": "localenv-analytics",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose up -d",
+    "down": "docker compose down"
+  }
+}

@@ -14,9 +14,9 @@ import type {
 } from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { convertToProfiles } from '@shared/utils/profile-converter'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
-import { convertToProfiles } from '~/utils/profile-converter'
 import { walletSchema } from '~/utils/validate.server'
 import type { Route } from './+types/api.profiles'
 

@@ -170,6 +170,8 @@ jobs:
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
           stagingUrl: ${{ vars.APP_STAGING_URL }}
           productionUrl: ${{ vars.APP_PRODUCTION_URL }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
