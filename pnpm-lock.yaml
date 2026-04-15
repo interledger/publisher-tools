@@ -60,9 +60,6 @@ importers:
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
-      '@shared/analytics-events':
-        specifier: workspace:^
-        version: link:../shared/analytics-events
       '@shared/config-storage-service':
         specifier: workspace:^
         version: link:../shared/config-storage-service
