@@ -89,7 +89,7 @@ export async function migrateSingle(
 
 async function migrateBatch(
   s3: MigrationClient,
-  isDryRun: boolean,
+  log: MigrationLog,
 ): Promise<void> {
   const wallets = (await s3.listByPrefix(LEGACY_PREFIX)).map(keyToWalletAddress)
   if (wallets.length === 0) {
@@ -97,24 +97,19 @@ async function migrateBatch(
     return
   }
 
-  const log = new MigrationLog(isDryRun)
   console.log(`\n Starting batch migration for ${wallets.length} wallets...`)
 
-  try {
-    for (const wallet of wallets) {
-      try {
-        const migrated = await migrateSingle(s3, wallet)
-        if (migrated) {
-          log.recordSuccess(wallet)
-        } else {
-          log.recordSkipped(wallet)
-        }
-      } catch (error) {
-        log.recordFailure(wallet, (error as Error).message)
+  for (const wallet of wallets) {
+    try {
+      const migrated = await migrateSingle(s3, wallet)
+      if (migrated) {
+        log.recordSuccess(wallet)
+      } else {
+        log.recordSkipped(wallet)
       }
+    } catch (error) {
+      log.recordFailure(wallet, (error as Error).message)
     }
-  } finally {
-    log.save()
   }
 
   if (log.hasFailed) {
@@ -169,7 +164,8 @@ if (import.meta.main) {
             return
           }
 
-          await migrateBatch(s3, isDryRun)
+          const log = new MigrationLog(isDryRun)
+          await migrateBatch(s3, log).finally(() => log.save())
           console.log('\n ✓ Batch migration complete')
         } catch (error) {
           console.error('\n x Migration failed:', error)
