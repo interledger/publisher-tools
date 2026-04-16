@@ -3,19 +3,20 @@
   "version": "1.0.0",
   "description": "Migration CLI for converting legacy format to a new structure in S3",
   "type": "module",
-  "main": "./migrate-cli.ts",
+  "main": "./index.ts",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "migrate": "node --env-file=../../.dev.vars migrate-cli.ts"
+    "migrate": "node --env-file=../../.dev.vars index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@migration/s3": "workspace:^",
-    "@shared/utils": "workspace:^"
+    "@shared/utils": "workspace:^",
+    "sade": "^1.8.1"
   },
   "devDependencies": {
     "@shared/types": "workspace:^",
