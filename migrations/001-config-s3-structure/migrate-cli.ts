@@ -135,21 +135,21 @@ export async function migrateSingle(
   s3: MigrationClient,
   walletAddress: string,
 ): Promise<boolean> {
+  const key = walletAddressToKey(NEW_PREFIX, walletAddress)
+  const legacyKey = walletAddressToKey(LEGACY_PREFIX, walletAddress)
   try {
-    if (await s3.existsAt(walletAddressToKey(NEW_PREFIX, walletAddress))) {
-      await s3.deleteAt(walletAddressToKey(LEGACY_PREFIX, walletAddress))
+    if (await s3.existsAt(key)) {
+      await s3.deleteAt(legacyKey)
       return false
     }
 
-    const legacyData = await s3.getJson<ConfigVersions>(
-      walletAddressToKey(LEGACY_PREFIX, walletAddress),
-    )
+    const legacyData = await s3.getJson<ConfigVersions>(legacyKey)
     if (!legacyData) {
       console.log('! No legacy data found - skipping')
       return false
     }
     const newData = convertToConfiguration(legacyData, walletAddress)
-    await s3.putJson(walletAddressToKey(NEW_PREFIX, walletAddress), newData)
+    await s3.putJson(key, newData)
 
     return true
   } catch (error) {
