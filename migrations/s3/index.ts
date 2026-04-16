@@ -16,7 +16,15 @@ export interface S3Config {
   endpoint?: string
 }
 
-export class S3MigrationClient {
+export interface MigrationClient {
+  getJson<T>(key: string): Promise<T | null>
+  putJson<T>(key: string, data: T): Promise<void>
+  listByPrefix(prefix: string): Promise<string[]>
+  existsAt(key: string): Promise<boolean>
+  deleteAt(key: string): Promise<void>
+}
+
+export class S3MigrationClient implements MigrationClient {
   private readonly client: S3Client
   private readonly bucket: string
 

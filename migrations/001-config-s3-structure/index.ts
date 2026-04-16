@@ -1,5 +1,5 @@
 import sade from 'sade'
-import { S3MigrationClient } from '@migration/s3'
+import { S3MigrationClient, type MigrationClient } from '@migration/s3'
 import type { ConfigVersions } from '@shared/types'
 import { convertToConfiguration } from '@shared/utils/profile-converter'
 import { MigrationLog } from './migration-log'
@@ -18,13 +18,6 @@ function keyToWalletAddress(key: string): string {
   return `https://${key.replace(/^[^/]+\//, '').replace(/\.json$/, '')}`
 }
 
-export interface MigrationClient {
-  getJson<T>(key: string): Promise<T | null>
-  putJson<T>(key: string, data: T): Promise<void>
-  listByPrefix(prefix: string): Promise<string[]>
-  existsAt(key: string): Promise<boolean>
-  deleteAt(key: string): Promise<void>
-}
 
 export function createDryRunClient(client: MigrationClient): MigrationClient {
   console.log('\n [DRY RUN]')
