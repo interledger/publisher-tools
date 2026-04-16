@@ -82,7 +82,7 @@ export async function migrateSingle(
 
     return true
   } catch (error) {
-    console.error('\n x Migration failed:', (error as Error).message)
+    console.error(`\n x Migration failed for ${walletAddress}:`, (error as Error).message)
     throw error
   }
 }
