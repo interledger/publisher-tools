@@ -16,14 +16,6 @@ export interface S3Config {
   endpoint?: string
 }
 
-function walletAddressToKey(walletAddress: string): string {
-  return `${decodeURIComponent(walletAddress).replace('$', '').replace('https://', '')}.json`
-}
-
-function keyToWalletAddress(key: string): string {
-  return `https://${key.replace(/^[^/]+\//, '').replace(/\.json$/, '')}`
-}
-
 export class S3MigrationClient {
   private readonly client: S3Client
   private readonly bucket: string
@@ -44,39 +36,25 @@ export class S3MigrationClient {
     })
   }
 
-  private buildKey(prefix: string, walletAddress: string): string {
-    return `${prefix}/${walletAddressToKey(walletAddress)}`
-  }
-
-  async getJson<T>(prefix: string, walletAddress: string): Promise<T | null> {
-    const key = this.buildKey(prefix, walletAddress)
-
+  async getJson<T>(key: string): Promise<T | null> {
     try {
       const res = await this.client.send(
-        new GetObjectCommand({
-          Bucket: this.bucket,
-          Key: key,
-        }),
+        new GetObjectCommand({ Bucket: this.bucket, Key: key }),
       )
 
       const body = await res.Body?.transformToString()
-
       if (!body) return null
 
       return JSON.parse(body) as T
     } catch (err) {
       if (err instanceof S3ServiceException) {
-        if (err.$metadata?.httpStatusCode === 404) {
-          return null
-        }
+        if (err.$metadata?.httpStatusCode === 404) return null
       }
       throw err
     }
   }
 
-  async putJson<T>(prefix: string, walletAddress: string, data: T): Promise<void> {
-    const key = this.buildKey(prefix, walletAddress)
-
+  async putJson<T>(key: string, data: T): Promise<void> {
     await this.client.send(
       new PutObjectCommand({
         Bucket: this.bucket,
@@ -107,39 +85,26 @@ export class S3MigrationClient {
       continuationToken = res.NextContinuationToken
     } while (continuationToken)
 
-    return keys.map(keyToWalletAddress)
+    return keys
   }
 
-  async existsAt(prefix: string, walletAddress: string): Promise<boolean> {
-    const key = this.buildKey(prefix, walletAddress)
-
+  async existsAt(key: string): Promise<boolean> {
     try {
       await this.client.send(
-        new HeadObjectCommand({
-          Bucket: this.bucket,
-          Key: key,
-        }),
+        new HeadObjectCommand({ Bucket: this.bucket, Key: key }),
       )
       return true
     } catch (err) {
       if (err instanceof S3ServiceException) {
-        if (err.$metadata?.httpStatusCode === 404) {
-          return false
-        }
+        if (err.$metadata?.httpStatusCode === 404) return false
       }
-
       throw err
     }
   }
 
-  async deleteAt(prefix: string, walletAddress: string): Promise<void> {
-    const key = this.buildKey(prefix, walletAddress)
-
+  async deleteAt(key: string): Promise<void> {
     await this.client.send(
-      new DeleteObjectCommand({
-        Bucket: this.bucket,
-        Key: key,
-      }),
+      new DeleteObjectCommand({ Bucket: this.bucket, Key: key }),
     )
   }
 }

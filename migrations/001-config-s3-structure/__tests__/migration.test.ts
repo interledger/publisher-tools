@@ -178,13 +178,13 @@ describe('migrateSingle', () => {
     mockDeleteAt.mockResolvedValueOnce(undefined)
 
     const result = await migrateSingle(s3, WALLET)
+    const key = `20260305-dev/wallet.example.com.json`
 
     expect(result).toBe(true)
     expect(mockExistsAt).toHaveBeenCalled()
     expect(mockGetJson).toHaveBeenCalled()
     expect(mockPutJson).toHaveBeenCalledWith(
-      '20260305-dev',
-      WALLET,
+      key,
       expect.objectContaining({ $walletAddress: WALLET }),
     )
     expect(mockDeleteAt).not.toHaveBeenCalled()
@@ -202,11 +202,7 @@ describe('migrateSingle', () => {
 
       await migrateSingle(s3, WALLET)
 
-      const [, , uploaded] = mockPutJson.mock.calls[0] as [
-        unknown,
-        unknown,
-        Configuration,
-      ]
+      const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
       expect(uploaded).toEqual(mockNewConfiguration)
     } finally {
       vi.useRealTimers()
@@ -221,11 +217,7 @@ describe('migrateSingle', () => {
 
     await migrateSingle(s3, WALLET)
 
-    const [, , uploaded] = mockPutJson.mock.calls[0] as [
-      unknown,
-      unknown,
-      Configuration,
-    ]
+    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
     const banner = uploaded.banner!
     const v1 = mockLegacyData.version1
     expect(uploaded.$walletAddress).toBe(WALLET)
@@ -250,11 +242,7 @@ describe('migrateSingle', () => {
 
     await migrateSingle(s3, WALLET)
 
-    const [, , uploaded] = mockPutJson.mock.calls[0] as [
-      unknown,
-      unknown,
-      Configuration,
-    ]
+    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
     const widget = uploaded.widget!
     const v1 = mockLegacyData.version1
     expect(widget.version1!.title.text).toBe(v1.widgetTitleText)
@@ -280,11 +268,7 @@ describe('migrateSingle', () => {
 
     await migrateSingle(s3, WALLET)
 
-    const [, , uploaded] = mockPutJson.mock.calls[0] as [
-      unknown,
-      unknown,
-      Configuration,
-    ]
+    const [, uploaded] = mockPutJson.mock.calls[0] as [unknown, Configuration]
     expect(Object.keys(uploaded.banner!)).toHaveLength(2)
     expect(uploaded.banner!.version1!.$name).toBe('Profile 1')
     expect(uploaded.widget!.version3!.$name).toBe('Profile 3')

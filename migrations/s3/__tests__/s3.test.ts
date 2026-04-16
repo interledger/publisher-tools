@@ -15,7 +15,6 @@ import { S3MigrationClient } from '../index'
 const s3Mock = mockClient(S3Client)
 
 const BUCKET = 'test-bucket'
-const WALLET = '$wallet.example.com'
 const LEGACY_PREFIX = 'legacy-prefix'
 const NEW_PREFIX = 'new-prefix'
 
@@ -81,10 +80,10 @@ beforeEach(() => {
 // -- getJson ------------------------------------------------------------------
 
 describe('getJson', () => {
-  it('uses the given prefix in the key', async () => {
+  it('uses the given key', async () => {
     s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
 
-    await s3.getJson(LEGACY_PREFIX, WALLET)
+    await s3.getJson(`${LEGACY_PREFIX}/wallet.example.com.json`)
 
     const [call] = s3Mock.commandCalls(GetObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)
@@ -93,30 +92,12 @@ describe('getJson', () => {
     )
   })
 
-  it('strips https:// from wallet address in the key', async () => {
-    s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
-
-    await s3.getJson(LEGACY_PREFIX, 'https://wallet.example.com')
-
-    const [call] = s3Mock.commandCalls(GetObjectCommand)
-    expect(call!.args[0].input.Key).toBe(
-      `${LEGACY_PREFIX}/wallet.example.com.json`,
-    )
-  })
-
-  it('strips $ from wallet address in the key', async () => {
-    s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
-
-    await s3.getJson(LEGACY_PREFIX, WALLET)
-
-    const [call] = s3Mock.commandCalls(GetObjectCommand)
-    expect(call!.args[0].input.Key).not.toContain('$')
-  })
-
   it('returns parsed JSON from the response body', async () => {
     s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
 
-    const result = await s3.getJson<ConfigVersions>(LEGACY_PREFIX, WALLET)
+    const result = await s3.getJson<ConfigVersions>(
+      `${LEGACY_PREFIX}/wallet.example.com.json`,
+    )
 
     expect(result).toEqual(mockLegacyData)
   })
@@ -130,17 +111,19 @@ describe('getJson', () => {
       }),
     )
 
-    await expect(s3.getJson(LEGACY_PREFIX, WALLET)).resolves.toBeNull()
+    await expect(
+      s3.getJson(`${LEGACY_PREFIX}/wallet.example.com.json`),
+    ).resolves.toBeNull()
   })
 })
 
 // -- putJson ------------------------------------------------------------------
 
 describe('putJson', () => {
-  it('uses the given prefix in the key', async () => {
+  it('uses the given key', async () => {
     s3Mock.on(PutObjectCommand).resolves({})
 
-    await s3.putJson(NEW_PREFIX, WALLET, mockLegacyData)
+    await s3.putJson(`${NEW_PREFIX}/wallet.example.com.json`, mockLegacyData)
 
     const [call] = s3Mock.commandCalls(PutObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)
@@ -163,7 +146,7 @@ describe('listByPrefix', () => {
     expect(call!.args[0].input.Prefix).toBe(`${LEGACY_PREFIX}/`)
   })
 
-  it('converts S3 keys back to wallet addresses', async () => {
+  it('returns raw S3 keys', async () => {
     s3Mock.on(ListObjectsV2Command).resolves({
       Contents: [
         { Key: `${LEGACY_PREFIX}/wallet.example.com.json` },
@@ -174,8 +157,8 @@ describe('listByPrefix', () => {
     const result = await s3.listByPrefix(LEGACY_PREFIX)
 
     expect(result).toEqual([
-      'https://wallet.example.com',
-      'https://other.example.com',
+      `${LEGACY_PREFIX}/wallet.example.com.json`,
+      `${LEGACY_PREFIX}/other.example.com.json`,
     ])
   })
 
@@ -196,13 +179,15 @@ describe('existsAt', () => {
         $metadata: { httpStatusCode: 404 },
       }),
     )
-    expect(await s3.existsAt(NEW_PREFIX, WALLET)).toBe(false)
+    expect(await s3.existsAt(`${NEW_PREFIX}/wallet.example.com.json`)).toBe(
+      false,
+    )
   })
 
   it('checks the given prefix key', async () => {
     s3Mock.on(HeadObjectCommand).resolves({})
 
-    await s3.existsAt(NEW_PREFIX, WALLET)
+    await s3.existsAt(`${NEW_PREFIX}/wallet.example.com.json`)
 
     const [call] = s3Mock.commandCalls(HeadObjectCommand)
     expect(call!.args[0].input.Key).toBe(
@@ -214,10 +199,10 @@ describe('existsAt', () => {
 // -- deleteAt -----------------------------------------------------------------
 
 describe('deleteAt', () => {
-  it('uses the given prefix in the key', async () => {
+  it('uses the given key', async () => {
     s3Mock.on(DeleteObjectCommand).resolves({})
 
-    await s3.deleteAt(LEGACY_PREFIX, WALLET)
+    await s3.deleteAt(`${LEGACY_PREFIX}/wallet.example.com.json`)
 
     const [call] = s3Mock.commandCalls(DeleteObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)

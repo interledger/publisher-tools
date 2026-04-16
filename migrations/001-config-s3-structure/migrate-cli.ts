@@ -6,22 +6,33 @@ import { MigrationLog } from './migration-log'
 const LEGACY_PREFIX = '20250717-dev'
 const NEW_PREFIX = '20260305-dev'
 
+function walletAddressToKey(prefix: string, walletAddress: string): string {
+  const normalized = decodeURIComponent(walletAddress)
+    .replace('$', '')
+    .replace('https://', '')
+  return `${prefix}/${normalized}.json`
+}
+
+function keyToWalletAddress(key: string): string {
+  return `https://${key.replace(/^[^/]+\//, '').replace(/\.json$/, '')}`
+}
+
 export interface MigrationClient {
-  getJson<T>(prefix: string, walletAddress: string): Promise<T | null>
-  putJson<T>(prefix: string, walletAddress: string, data: T): Promise<void>
+  getJson<T>(key: string): Promise<T | null>
+  putJson<T>(key: string, data: T): Promise<void>
   listByPrefix(prefix: string): Promise<string[]>
-  existsAt(prefix: string, walletAddress: string): Promise<boolean>
-  deleteAt(prefix: string, walletAddress: string): Promise<void>
+  existsAt(key: string): Promise<boolean>
+  deleteAt(key: string): Promise<void>
 }
 
 export function createDryRunClient(client: MigrationClient): MigrationClient {
   return {
-    getJson: (prefix, w) => client.getJson(prefix, w),
-    existsAt: (prefix, w) => client.existsAt(prefix, w),
+    getJson: (key) => client.getJson(key),
+    existsAt: (key) => client.existsAt(key),
     listByPrefix: (prefix) => client.listByPrefix(prefix),
     putJson: () => Promise.resolve(),
-    deleteAt: (prefix, w) => {
-      console.log(`[DRY RUN] would deleteAt: ${prefix}/${w}`)
+    deleteAt: (key) => {
+      console.log(`[DRY RUN] would deleteAt: ${key}`)
       return Promise.resolve()
     },
   }
@@ -125,21 +136,20 @@ export async function migrateSingle(
   walletAddress: string,
 ): Promise<boolean> {
   try {
-    if (await s3.existsAt(NEW_PREFIX, walletAddress)) {
-      await s3.deleteAt(LEGACY_PREFIX, walletAddress)
+    if (await s3.existsAt(walletAddressToKey(NEW_PREFIX, walletAddress))) {
+      await s3.deleteAt(walletAddressToKey(LEGACY_PREFIX, walletAddress))
       return false
     }
 
     const legacyData = await s3.getJson<ConfigVersions>(
-      LEGACY_PREFIX,
-      walletAddress,
+      walletAddressToKey(LEGACY_PREFIX, walletAddress),
     )
     if (!legacyData) {
       console.log('! No legacy data found - skipping')
       return false
     }
     const newData = convertToConfiguration(legacyData, walletAddress)
-    await s3.putJson(NEW_PREFIX, walletAddress, newData)
+    await s3.putJson(walletAddressToKey(NEW_PREFIX, walletAddress), newData)
 
     return true
   } catch (error) {
@@ -152,7 +162,7 @@ async function migrateBatch(
   s3: MigrationClient,
   isDryRun: boolean,
 ): Promise<void> {
-  const wallets = await s3.listByPrefix(LEGACY_PREFIX)
+  const wallets = (await s3.listByPrefix(LEGACY_PREFIX)).map(keyToWalletAddress)
   if (wallets.length === 0) {
     console.log('x No wallets found in legacy prefix')
     return
