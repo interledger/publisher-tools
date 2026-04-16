@@ -7,7 +7,6 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "migrate": "node --env-file=../../.dev.vars migrate-cli.ts"
   },
@@ -20,9 +19,8 @@
   },
   "devDependencies": {
     "@shared/types": "workspace:^",
-    "@types/node": "^24.6.0",
-    "@vitest/coverage-v8": "^3.0.0",
+    "@types/node": "^25.6.0",
     "typescript": "5.9.3",
-    "vitest": "^3.0.0"
+    "vitest": "^4.1.4"
   }
 }

@@ -9,13 +9,15 @@ const mockExistsAt = vi.hoisted(() => vi.fn())
 const mockDeleteAt = vi.hoisted(() => vi.fn())
 
 vi.mock('@migration/s3', () => ({
-  S3MigrationClient: vi.fn().mockImplementation(() => ({
-    getJson: mockGetJson,
-    putJson: mockPutJson,
-    existsAt: mockExistsAt,
-    deleteAt: mockDeleteAt,
-    listByPrefix: vi.fn(),
-  })),
+  S3MigrationClient: vi.fn().mockImplementation(function () {
+    return {
+      getJson: mockGetJson,
+      putJson: mockPutJson,
+      existsAt: mockExistsAt,
+      deleteAt: mockDeleteAt,
+      listByPrefix: vi.fn(),
+    }
+  }),
 }))
 
 const WALLET = '$wallet.example.com'
