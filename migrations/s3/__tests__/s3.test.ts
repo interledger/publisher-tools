@@ -9,7 +9,6 @@ import {
   S3Client,
   S3ServiceException,
 } from '@aws-sdk/client-s3'
-import type { ConfigVersions } from '@shared/types'
 import { S3MigrationClient } from '../index'
 
 const s3Mock = mockClient(S3Client)
@@ -25,7 +24,8 @@ const mockConfig = {
   endpoint: 'https://s3.example.com',
 }
 
-const mockLegacyData: ConfigVersions = {
+function makeLegacyData() {
+  return {
   version1: {
     versionName: 'Default',
     walletAddress: '$wallet.example.com',
@@ -61,6 +61,7 @@ const mockLegacyData: ConfigVersions = {
     widgetTriggerBackgroundColor: '#007bff',
     widgetTriggerIcon: 'heart',
   },
+  }
 }
 
 function mockBody(data: unknown) {
@@ -81,7 +82,7 @@ beforeEach(() => {
 
 describe('getJson', () => {
   it('uses the given key', async () => {
-    s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
+    s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(makeLegacyData()) })
 
     await s3.getJson(`${LEGACY_PREFIX}/wallet.example.com.json`)
 
@@ -93,13 +94,11 @@ describe('getJson', () => {
   })
 
   it('returns parsed JSON from the response body', async () => {
-    s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(mockLegacyData) })
+    s3Mock.on(GetObjectCommand).resolves({ Body: mockBody(makeLegacyData()) })
 
-    const result = await s3.getJson<ConfigVersions>(
-      `${LEGACY_PREFIX}/wallet.example.com.json`,
-    )
+    const result = await s3.getJson(`${LEGACY_PREFIX}/wallet.example.com.json`)
 
-    expect(result).toEqual(mockLegacyData)
+    expect(result).toEqual(makeLegacyData())
   })
 
   it('returns null for a 404 S3ServiceException', async () => {
@@ -123,7 +122,7 @@ describe('putJson', () => {
   it('uses the given key', async () => {
     s3Mock.on(PutObjectCommand).resolves({})
 
-    await s3.putJson(`${NEW_PREFIX}/wallet.example.com.json`, mockLegacyData)
+    await s3.putJson(`${NEW_PREFIX}/wallet.example.com.json`, makeLegacyData())
 
     const [call] = s3Mock.commandCalls(PutObjectCommand)
     expect(call!.args[0].input.Bucket).toBe(BUCKET)
