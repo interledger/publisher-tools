@@ -282,9 +282,8 @@ describe('migrateSingle', () => {
     expect(uploaded.widget!.version3!.$name).toBe('Profile 3')
   })
 
-  it('deletes legacy file and returns log skipped wallet address when already in new prefix', async () => {
+  it('skips wallet when already exists in new prefix', async () => {
     mockExistsAt.mockResolvedValueOnce(true)
-    mockDeleteAt.mockResolvedValueOnce(undefined)
 
     const result = await migrateSingle(s3, WALLET)
 
@@ -292,7 +291,7 @@ describe('migrateSingle', () => {
     expect(mockExistsAt).toHaveBeenCalledWith(NEW_KEY)
     expect(mockGetJson).not.toHaveBeenCalled()
     expect(mockPutJson).not.toHaveBeenCalled()
-    expect(mockDeleteAt).toHaveBeenCalledWith(LEGACY_KEY)
+    expect(mockDeleteAt).not.toHaveBeenCalled()
   })
 
   it('log skips wallet address and skips put/delete when getJson returns null', async () => {
