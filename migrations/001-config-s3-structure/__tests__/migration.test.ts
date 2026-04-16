@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { S3MigrationClient } from '@migration/s3'
 import type { Configuration } from '@shared/types'
-import { createDryRunClient, migrateSingle } from '../migrate-cli'
+import { createDryRunClient, migrateSingle } from '../index'
 
 const mockGetJson = vi.hoisted(() => vi.fn())
 const mockPutJson = vi.hoisted(() => vi.fn())
