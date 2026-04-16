@@ -1,6 +1,5 @@
 import path from 'path'
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { cloudflare } from '@cloudflare/vite-plugin'
 import { reactRouter } from '@react-router/dev/vite'
 import { APP_BASEPATH } from './app/lib/constants.js'
@@ -29,7 +28,6 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
       },
     }),
     reactRouter(),
-    tsconfigPaths(),
   ],
   resolve: {
     alias: {
@@ -45,6 +43,7 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
       ...(mode === 'production' &&
         !isSsrBuild && { crypto: 'crypto-browserify' }),
     },
+    tsconfigPaths: true,
   },
   build: {
     assetsDir: `${APP_BASEPATH.replace(/^\//, '')}/assets`,
