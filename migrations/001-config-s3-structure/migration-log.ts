@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 
 interface LogData {
@@ -10,17 +10,8 @@ interface LogData {
 
 const LOG_DIR = join(import.meta.dirname, '..', 'logs')
 
-function runTimestamp(): string {
-  const iso = new Date().toISOString()
-  const date = iso.slice(0, 10).replace(/-/g, '.')
-  const time = iso.slice(11, 19).replace(/:/g, '')
-  return `${date}.${time}`
-}
-
-// example log filename: migration.2026.04.05.143022.json
 function logFilename(dryRun: boolean): string {
-  const ts = runTimestamp()
-  return `migration${dryRun ? '.dry-run' : ''}.${ts}.json`
+  return `migration${dryRun ? '.dry-run' : ''}.json`
 }
 
 export class MigrationLog {
@@ -50,6 +41,15 @@ export class MigrationLog {
     return this.failed.length > 0
   }
 
+  get cachedSuccessful(): Set<string> {
+    try {
+      const data = JSON.parse(readFileSync(this.logFile, 'utf-8')) as LogData
+      return new Set(data.successful)
+    } catch {
+      return new Set()
+    }
+  }
+
   private printSummary(): void {
     console.log('\n' + '='.repeat(50))
     console.log('Migration Summary')
@@ -69,6 +69,7 @@ export class MigrationLog {
   save(): void {
     this.printSummary()
 
+    // override existing log if present, to keep only the latest run's results
     mkdirSync(dirname(this.logFile), { recursive: true })
     const data: LogData = {
       startedAt: this.startedAt,

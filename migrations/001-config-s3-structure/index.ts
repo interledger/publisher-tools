@@ -18,18 +18,17 @@ function keyToWalletAddress(key: string): string {
   return `https://${key.replace(/^[^/]+\//, '').replace(/\.json$/, '')}`
 }
 
-
 export function createDryRunClient(client: MigrationClient): MigrationClient {
   console.log('\n [DRY RUN]')
   return {
     getJson: (key) => client.getJson(key),
-    existsAt: (key) => client.existsAt(key),
-    listByPrefix: (prefix) => client.listByPrefix(prefix),
     putJson: () => Promise.resolve(),
+    existsAt: (key) => client.existsAt(key),
     deleteAt: (key) => {
       console.log(`\n [DRY RUN] would deleteAt: ${key}`)
       return Promise.resolve()
     },
+    listByPrefix: (prefix) => client.listByPrefix(prefix),
   }
 }
 
@@ -68,13 +67,13 @@ export async function migrateSingle(
   const legacyKey = walletAddressToKey(LEGACY_PREFIX, walletAddress)
   try {
     if (await s3.existsAt(key)) {
-      await s3.deleteAt(legacyKey)
+      // skip if already exists in new location
       return false
     }
 
     const legacyData = await s3.getJson<ConfigVersions>(legacyKey)
     if (!legacyData) {
-      console.log('\n ! No legacy data found - skipping')
+      console.log(`\n ! No legacy data found - skipping ${walletAddress}`)
       return false
     }
     const newData = convertToConfiguration(legacyData, walletAddress)
@@ -82,7 +81,10 @@ export async function migrateSingle(
 
     return true
   } catch (error) {
-    console.error(`\n x Migration failed for ${walletAddress}:`, (error as Error).message)
+    console.error(
+      `\n x Migration failed for ${walletAddress}:`,
+      (error as Error).message,
+    )
     throw error
   }
 }
@@ -133,10 +135,21 @@ if (import.meta.main) {
         'batch': boolean
         'dry-run': boolean
       }) => {
-        const KNOWN_FLAGS = new Set(['_', '--', 'wallet', 'w', 'batch', 'b', 'dry-run', 'd'])
+        const KNOWN_FLAGS = new Set([
+          '_',
+          '--',
+          'wallet',
+          'w',
+          'batch',
+          'b',
+          'dry-run',
+          'd',
+        ])
         const unknown = Object.keys(opts).filter((k) => !KNOWN_FLAGS.has(k))
         if (unknown.length > 0) {
-          console.error(`Unknown flag(s): ${unknown.map((k) => `--${k}`).join(', ')}`)
+          console.error(
+            `Unknown flag(s): ${unknown.map((k) => `--${k}`).join(', ')}`,
+          )
           process.exit(1)
         }
 
