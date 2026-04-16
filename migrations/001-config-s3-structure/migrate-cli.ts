@@ -171,20 +171,23 @@ async function migrateBatch(
   const log = new MigrationLog(isDryRun)
   console.log(`\nStarting batch migration for ${wallets.length} wallets...`)
 
-  for (const wallet of wallets) {
-    try {
-      const migrated = await migrateSingle(s3, wallet)
-      if (migrated) {
-        log.recordSuccess(wallet)
-      } else {
-        log.recordSkipped(wallet)
+  try {
+    for (const wallet of wallets) {
+      try {
+        const migrated = await migrateSingle(s3, wallet)
+        if (migrated) {
+          log.recordSuccess(wallet)
+        } else {
+          log.recordSkipped(wallet)
+        }
+      } catch (error) {
+        log.recordFailure(wallet, (error as Error).message)
       }
-    } catch (error) {
-      log.recordFailure(wallet, (error as Error).message)
     }
+  } finally {
+    log.save()
   }
 
-  log.save()
   if (log.hasFailed) {
     process.exit(1)
   }
