@@ -135,24 +135,6 @@ if (import.meta.main) {
         'batch': boolean
         'dry-run': boolean
       }) => {
-        const KNOWN_FLAGS = new Set([
-          '_',
-          '--',
-          'wallet',
-          'w',
-          'batch',
-          'b',
-          'dry-run',
-          'd',
-        ])
-        const unknown = Object.keys(opts).filter((k) => !KNOWN_FLAGS.has(k))
-        if (unknown.length > 0) {
-          console.error(
-            `Unknown flag(s): ${unknown.map((k) => `--${k}`).join(', ')}`,
-          )
-          process.exit(1)
-        }
-
         const { wallet, batch } = opts
         const isDryRun = opts['dry-run']
         const isBatch = batch || (!wallet && isDryRun)
@@ -186,5 +168,10 @@ if (import.meta.main) {
         }
       },
     )
-    .parse(process.argv)
+    .parse(process.argv, {
+      unknown: (flag) => {
+        console.error(`Unknown flag: ${flag}`)
+        process.exit(1)
+      },
+    })
 }
