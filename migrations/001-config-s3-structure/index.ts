@@ -100,9 +100,10 @@ async function migrateBatch(
   }
 
   console.log(`\n Starting batch migration for ${wallets.length} wallets...`)
+  const migratedSuccessful = log.migratedSuccessful
 
   for (const wallet of wallets) {
-    if (log.migratedSuccessful.has(wallet)) {
+    if (migratedSuccessful.has(wallet)) {
       log.recordSkipped(wallet)
       continue
     }
