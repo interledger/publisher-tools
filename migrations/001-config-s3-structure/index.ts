@@ -102,6 +102,11 @@ async function migrateBatch(
   console.log(`\n Starting batch migration for ${wallets.length} wallets...`)
 
   for (const wallet of wallets) {
+    if (log.migratedSuccessful.has(wallet)) {
+      log.recordSkipped(wallet)
+      continue
+    }
+
     try {
       const migrated = await migrateSingle(s3, wallet)
       if (migrated) {

@@ -41,7 +41,7 @@ export class MigrationLog {
     return this.failed.length > 0
   }
 
-  get cachedSuccessful(): Set<string> {
+  get migratedSuccessful(): Set<string> {
     try {
       const data = JSON.parse(readFileSync(this.logFile, 'utf-8')) as LogData
       return new Set(data.successful)
