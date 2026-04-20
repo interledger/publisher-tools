@@ -26,21 +26,20 @@ function convertToProfile<T extends Tool>(
     return config.offerwall as ToolProfile<T>
   }
 
+  const now = new Date().toISOString()
   return {
     $version: '0.0.1',
     $name: config.versionName,
-    $modifiedAt: '',
+    $modifiedAt: now,
     ...getToolProfile(config, tool),
   } as ToolProfile<T>
 }
 
 /** @legacy */
 export function convertToConfigLegacy<T extends Tool>(
-  walletAddress: string,
+  _walletAddress: string,
   profile: ToolProfile<T>,
 ): Partial<ElementConfigType> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { $name, $version, $modifiedAt, ...rest } = profile
   if ('thumbnail' in profile) {
     return {
       bannerFontName: profile.font.name,
@@ -142,7 +141,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
       description: {
         text: profile.bannerDescriptionText,
-        isVisible: profile.bannerDescriptionVisible,
+        isVisible: profile.bannerDescriptionVisible || false,
       },
       font: {
         name: profile.bannerFontName,
@@ -160,7 +159,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         background: profile.bannerBackgroundColor,
       },
       thumbnail: {
-        value: profile.bannerThumbnail,
+        value: 'default',
       },
     } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
@@ -171,7 +170,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
       description: {
         text: profile.widgetDescriptionText,
-        isVisible: profile.widgetDescriptionVisible,
+        isVisible: profile.widgetDescriptionVisible || false,
       },
       font: {
         name: profile.widgetFontName,
