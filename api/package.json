@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "type": "module",
   "dependencies": {
     "@hono/zod-validator": "^0.7.6",
     "@interledger/open-payments": "^7.4.0",

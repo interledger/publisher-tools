@@ -18,8 +18,8 @@ app.get('/', (c) => {
     {
       status: 'ok',
       message: 'Publisher Tools API',
-      endpoints: routes,
       AWS_PREFIX,
+      endpoints: routes,
       timestamp: new Date().toISOString(),
     },
     200,
