@@ -6,15 +6,9 @@ import {
   isConfigStorageNotFoundError,
 } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
-import type {
-  Configuration,
-  ConfigVersions,
-  Tool,
-  ToolProfiles,
-} from '@shared/types'
+import type { Configuration, Tool } from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
-import { convertToProfiles } from '@shared/utils/profile-converter'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
 import { walletSchema } from '~/utils/validate.server'
@@ -54,23 +48,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const walletAddressId = normalizeWalletAddress(walletAddressData)
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
-    let profiles: ToolProfiles<typeof tool> | null = null
-    try {
-      const config = await storage.getJson<Configuration>(walletAddressId)
-      // config can exist but not have tool specific profiles,
-      profiles = config[tool]
-    } catch (e) {
-      if (!isConfigStorageNotFoundError(e)) {
-        throw e
-      }
-
-      // TODO: to be removed after the completion of versioned config migration
-      const legacy = await storage.getJson<ConfigVersions>(
-        walletAddressId,
-        true,
-      )
-      profiles = convertToProfiles(legacy, tool)
-    }
+    // config can exist but not have tool specific profiles
+    const profiles = (await storage.getJson<Configuration>(walletAddressId))[
+      tool
+    ]
 
     if (!profiles) {
       throw new ConfigStorageServiceError(

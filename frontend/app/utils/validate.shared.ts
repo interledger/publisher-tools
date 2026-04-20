@@ -36,16 +36,6 @@ const assetNameSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
 
-/** @deprecated */
-export const buttonFieldsSchema = z.object({
-  buttonFontName: z.string().min(1, { message: 'Choose a font' }),
-  buttonText: z.string().min(1, { message: 'Button label cannot be empty' }),
-  buttonBorder: z.enum(CORNER_OPTION),
-  buttonTextColor: z.string().min(6),
-  buttonBackgroundColor: z.string().min(6),
-  buttonDescriptionText: z.string().optional(),
-})
-
 export const bannerFieldsSchema = z.object({
   title: z.object({
     text: z
