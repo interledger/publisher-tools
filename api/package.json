@@ -4,10 +4,10 @@
   "scripts": {
     "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "wrangler dev --persist-to ../.wrangler",
-    "build": "wrangler deploy --dry-run --outdir dist",
+    "build": "exit 0",
     "preview": "wrangler dev",
     "typecheck": "tsc --noEmit",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy --define BUILD_AWS_PREFIX=\"$BUILD_AWS_PREFIX\""
   },
   "keywords": [],
   "author": "",
