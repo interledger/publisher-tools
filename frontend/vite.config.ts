@@ -14,6 +14,7 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
   define: {
     BUILD_CDN_URL: JSON.stringify(process.env.BUILD_CDN_URL),
     BUILD_API_URL: JSON.stringify(process.env.BUILD_API_URL),
+    BUILD_AWS_PREFIX: JSON.stringify(process.env.BUILD_AWS_PREFIX),
     BUILD_UMAMI_HOST: JSON.stringify(
       process.env.BUILD_UMAMI_HOST || process.env.UMAMI_HOST,
     ),
