@@ -127,7 +127,7 @@ async function migrateBatch(
 
 if (import.meta.main) {
   // only run main cli if this file executed directly
-  sade('migrate')
+  sade('migrate', true)
     .option('-w, --wallet <address>', 'Migrate a single wallet address')
     .option('-b, --batch', 'Migrate all wallets from the legacy S3 prefix')
     .option('-d, --dry-run', 'Preview migration without making changes')

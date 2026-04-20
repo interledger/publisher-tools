@@ -141,7 +141,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
       description: {
         text: profile.bannerDescriptionText,
-        isVisible: profile.bannerDescriptionVisible,
+        isVisible: profile.bannerDescriptionVisible || false,
       },
       font: {
         name: profile.bannerFontName,
@@ -159,7 +159,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
         background: profile.bannerBackgroundColor,
       },
       thumbnail: {
-        value: profile.bannerThumbnail,
+        value: 'default',
       },
     } satisfies Omit<ToolProfile<'banner'>, keyof BaseToolProfile>
   }
@@ -170,7 +170,7 @@ function getToolProfile(profile: ElementConfigType, tool: Tool) {
       },
       description: {
         text: profile.widgetDescriptionText,
-        isVisible: profile.widgetDescriptionVisible,
+        isVisible: profile.widgetDescriptionVisible || false,
       },
       font: {
         name: profile.widgetFontName,
