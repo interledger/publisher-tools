@@ -7,7 +7,7 @@
     "build": "exit 0",
     "preview": "wrangler dev",
     "typecheck": "tsc --noEmit",
-    "deploy": "wrangler deploy --define BUILD_AWS_PREFIX=\"$BUILD_AWS_PREFIX\""
+    "deploy": "wrangler deploy --define BUILD_AWS_PREFIX=\"\\\"$BUILD_AWS_PREFIX\\\"\""
   },
   "keywords": [],
   "author": "",
