@@ -49,9 +49,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     // config can exist but not have tool specific profiles
-    const profiles = (await storage.getJson<Configuration>(walletAddressId))[
-      tool
-    ]
+    const config = await storage.getJson<Configuration>(walletAddressId)
+    const profiles = config[tool]
 
     if (!profiles) {
       throw new ConfigStorageServiceError(
