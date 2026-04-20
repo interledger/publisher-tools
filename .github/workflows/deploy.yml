@@ -36,7 +36,7 @@ jobs:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
             await script.default({ core, context });
-
+      
       - uses: ./.github/workflows/setup
 
       - name: Install wrangler globally
