@@ -99,6 +99,12 @@ runs:
         accountId: ${{ inputs.accountId }}
         command: ${{ steps.command.outputs.command }}
         workingDirectory: ${{ inputs.name }}
+      env:
+        BUILD_API_URL: ${{ inputs.BUILD_API_URL }}
+        BUILD_CDN_URL: ${{ inputs.BUILD_CDN_URL }}
+        BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
+        BUILD_UMAMI_HOST: ${{ inputs.BUILD_UMAMI_HOST }}
+        BUILD_UMAMI_WEBSITE_ID: ${{ inputs.BUILD_UMAMI_WEBSITE_ID }}
 
     - name: Get deploy URL
       id: get-url
