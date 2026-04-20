@@ -12,3 +12,6 @@ kv_namespaces = [
 
 [dev]
 port = 8787
+
+[build]
+command = "pnpm build"

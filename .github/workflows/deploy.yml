@@ -36,7 +36,7 @@ jobs:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
             await script.default({ core, context });
-      
+
       - uses: ./.github/workflows/setup
 
       - name: Install wrangler globally
@@ -136,6 +136,7 @@ jobs:
           changed: ${{ steps.changes.outputs.api || steps.changes-review.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
+          build: 'pnpm -C api run build'
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           stagingUrl: ${{ vars.API_STAGING_URL }}
           productionUrl: ${{ vars.API_PRODUCTION_URL }}

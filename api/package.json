@@ -4,10 +4,10 @@
   "scripts": {
     "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "wrangler dev --persist-to ../.wrangler",
-    "build": "exit 0",
+    "build": "node build.ts",
     "preview": "wrangler dev",
     "typecheck": "tsc --noEmit",
-    "deploy": "wrangler deploy --define BUILD_AWS_PREFIX=\"\\\"$BUILD_AWS_PREFIX\\\"\""
+    "deploy": "wrangler deploy"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +32,7 @@
     "@cloudflare/workers-types": "^4.20251011.0",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
+    "esbuild": "0.27.0",
     "typescript": "5.9.3",
     "wrangler": "^4.83.0"
   }
