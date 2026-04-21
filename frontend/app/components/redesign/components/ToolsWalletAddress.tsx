@@ -10,7 +10,6 @@ import {
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import { useTrackEvent } from '~/lib/analytics'
-import type { ElementErrors } from '~/lib/types'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
@@ -28,7 +27,7 @@ export const ToolsWalletAddress = ({
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const trackEvent = useTrackEvent()
-  const [error, setError] = useState<ElementErrors>()
+  const [error, setError] = useState<{ walletAddress?: string[] }>()
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -48,10 +47,7 @@ export const ToolsWalletAddress = ({
 
   const handleContinue = async () => {
     if (!snap.walletAddress.trim()) {
-      setError({
-        fieldErrors: { walletAddress: ['This field is required'] },
-        message: [],
-      })
+      setError({ walletAddress: ['This field is required'] })
       return
     }
 
@@ -69,10 +65,7 @@ export const ToolsWalletAddress = ({
         wallet_provider: new URL(walletAddressInfo.id).hostname,
       })
     } catch (error) {
-      setError({
-        fieldErrors: { walletAddress: [(error as Error).message] },
-        message: [],
-      })
+      setError({ walletAddress: [(error as Error).message] })
     } finally {
       setIsLoading(false)
     }
@@ -169,7 +162,7 @@ export const ToolsWalletAddress = ({
               onChange={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
               readOnly={isLoading}
-              error={error?.fieldErrors.walletAddress}
+              error={error?.walletAddress}
             />
           </div>
           {snap.isWalletConnected && (
