@@ -117,21 +117,11 @@ export const actions = {
   },
   commitProfile() {
     const profile = snapshot(widget.profile)
-    const prev = snapshots.get(toolState.activeTab)
-    const changedFields = prev
-      ? Object.keys(profile).filter(
-          (k) =>
-            JSON.stringify(profile[k as keyof WidgetProfile]) !==
-            JSON.stringify(prev[k as keyof WidgetProfile]),
-        )
-      : Object.keys(profile)
     snapshots.set(toolState.activeTab, profile)
     widget.profilesUpdate.delete(toolState.activeTab)
 
     const snaps = Object.fromEntries(snapshots.entries())
     localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
-
-    return changedFields
   },
   commitProfiles() {
     PROFILE_IDS.forEach((id) => {
