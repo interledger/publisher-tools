@@ -31,7 +31,7 @@ export const ToolCard = ({
   const isExternalLink = target !== undefined
 
   const handleClick = () => {
-    trackEvent('tools_click_card_tool', { link: to })
+    trackEvent('click_card_tool', { link: to })
   }
 
   return (
