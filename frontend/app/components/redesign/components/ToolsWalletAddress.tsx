@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
-import { TOOLS_EVENTS } from '@shared/analytics-events'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -66,7 +65,9 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-      trackEvent(TOOLS_EVENTS.WALLET_CONNECTED)
+      trackEvent('tools_wallet_connected', {
+        wallet_provider: new URL(walletAddressInfo.authServer).hostname,
+      })
     } catch (error) {
       setError({
         fieldErrors: { walletAddress: [(error as Error).message] },
@@ -78,7 +79,7 @@ export const ToolsWalletAddress = ({
   }
 
   const handleDisconnect = () => {
-    trackEvent(TOOLS_EVENTS.WALLET_DISCONNECTED)
+    trackEvent('tools_wallet_disconnected')
     disconnect()
   }
 

@@ -4,7 +4,6 @@ import {
   ScriptDialog,
   GrantConfirmationDialog,
 } from '@/components'
-import { TOOLS_EVENTS } from '@shared/analytics-events'
 import { TOOL_BANNER, TOOL_OFFERWALL, TOOL_WIDGET } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
 import { useTrackEvent } from '~/lib/analytics'
@@ -51,13 +50,18 @@ export const useSaveProfile = (wallet: WalletStore) => {
 
         if (result.success) {
           actions.commitProfile()
-          trackEvent(TOOLS_EVENTS.SETTINGS_CHANGED)
-
+          trackEvent('tools_settings_changed', {
+            tool: toolState.currentToolType,
+          })
           if (action === 'script') {
-            trackEvent(TOOLS_EVENTS.SCRIPT_GENERATED)
+            trackEvent('tools_script_generated', {
+              tool: toolState.currentToolType,
+            })
             openDialog(<ScriptDialog wallet={wallet} />)
           } else {
-            trackEvent(TOOLS_EVENTS.PROFILE_SAVED)
+            trackEvent('tools_profile_saved', {
+              tool: toolState.currentToolType,
+            })
             openDialog(<StatusDialog onDone={closeDialog} />)
           }
         }
