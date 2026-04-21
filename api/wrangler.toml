@@ -1,6 +1,6 @@
 name = "publisher-tools-api"
-main = "src/index.ts"
-compatibility_date = "2024-09-23"
+main = "dist/index.js"
+compatibility_date = "2026-04-07"
 compatibility_flags = ["nodejs_compat"]
 
 workers_dev = true
@@ -12,3 +12,6 @@ kv_namespaces = [
 
 [dev]
 port = 8787
+
+[build]
+command = "pnpm -s build"
