@@ -8,8 +8,6 @@ interface Secrets {
 }
 
 export class ConfigStorageService {
-  /** TODO: to be removed after the completion of versioned config migration */
-  private readonly LEGACY_AWS_PREFIX = '20250717-dev'
   private static instance: AwsClient | null = null
   private client: AwsClient
   private prefix: string
@@ -26,10 +24,9 @@ export class ConfigStorageService {
     this.client = ConfigStorageService.instance
   }
 
-  async getJson<T>(walletAddress: string, useLegacy = false): Promise<T> {
+  async getJson<T>(walletAddress: string): Promise<T> {
     const key = walletAddressToKey(walletAddress)
-    const prefix = useLegacy ? this.LEGACY_AWS_PREFIX : this.prefix
-    const url = new URL(`${prefix}/${key}`, this.endpoint)
+    const url = new URL(`${this.prefix}/${key}`, this.endpoint)
 
     const response = await this.client.fetch(url)
 
@@ -69,10 +66,9 @@ export class ConfigStorageService {
     }
   }
 
-  async delete(walletAddress: string, useLegacy = false): Promise<void> {
+  async delete(walletAddress: string): Promise<void> {
     const key = walletAddressToKey(walletAddress)
-    const prefix = useLegacy ? this.LEGACY_AWS_PREFIX : this.prefix
-    const url = new URL(`${prefix}/${key}`, this.endpoint)
+    const url = new URL(`${this.prefix}/${key}`, this.endpoint)
 
     const res = await this.client.fetch(url, { method: 'DELETE' })
     if (!res.ok) {
