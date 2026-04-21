@@ -66,7 +66,7 @@ export const ToolsWalletAddress = ({
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
       trackEvent('tools_wallet_connected', {
-        wallet_provider: new URL(walletAddressInfo.authServer).hostname,
+        wallet_provider: new URL(walletAddressInfo.id).hostname,
       })
     } catch (error) {
       setError({
