@@ -1,10 +1,4 @@
-import type z from 'zod'
-import type { ElementConfigType, Tool, ToolProfiles } from '@shared/types'
-import type {
-  createBannerSchema,
-  createButtonSchema,
-  createWidgetSchema,
-} from '../utils/validate.server.js'
+import type { Tool, ToolProfiles } from '@shared/types'
 
 export type SaveResult = {
   success?: boolean
@@ -27,39 +21,6 @@ export type GetProfilesResult<T extends Tool> = {
       errors: Record<string, string>
     }
   }
-}
-
-export type SanitizedFields = Pick<
-  ElementConfigType,
-  | 'bannerTitleText'
-  | 'bannerDescriptionText'
-  | 'widgetTitleText'
-  | 'widgetDescriptionText'
-  | 'widgetButtonText'
-  | 'buttonText'
-  | 'buttonDescriptionText'
-  | 'walletAddress'
-  | 'tag'
->
-
-export type JSONError<T extends z.ZodTypeAny> = {
-  errors: z.ZodFlattenedError<z.infer<T>>
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Keys<T> = T extends any ? keyof T : never
-
-export type ZodFieldErrors<T extends z.ZodTypeAny> = {
-  [P in Keys<z.TypeOf<T>>]?: string[] | undefined
-}
-
-export type ElementErrors = {
-  fieldErrors: ZodFieldErrors<
-    | typeof createButtonSchema
-    | typeof createBannerSchema
-    | typeof createWidgetSchema
-  >
-  message: string[]
 }
 
 declare global {

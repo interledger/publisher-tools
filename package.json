@@ -34,11 +34,11 @@
     "typescript-eslint": "^8.52.0"
   },
   "resolutions": {
-    "esbuild": "^0.27.2"
+    "esbuild": "^0.28.0"
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "^4.59.2"
+      "wrangler": "^4.83.0"
     }
   },
   "engines": {

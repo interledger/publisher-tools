@@ -8,7 +8,7 @@ import type {
 import {
   WIDGET_POSITION,
   BORDER_RADIUS,
-  widgetFontSizeToNumber,
+  WIDGET_FONT_SIZE_MAP,
 } from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
@@ -112,7 +112,7 @@ export class WidgetController implements ReactiveController {
     if (font.size) {
       element.style.setProperty(
         '--wm-font-size',
-        `${widgetFontSizeToNumber(font.size)}px`,
+        `${WIDGET_FONT_SIZE_MAP[font.size]}px`,
       )
     }
     if (border.type) {
