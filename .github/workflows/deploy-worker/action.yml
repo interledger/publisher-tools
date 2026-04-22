@@ -19,12 +19,9 @@ inputs:
     required: false
     description: 'Skip actual deployment (only build/test for validation)'
     default: 'false'
-  stagingUrl:
+  origin:
     required: true
-    description: 'Staging URL Origin'
-  productionUrl:
-    required: true
-    description: 'Production URL Origin'
+    description: 'Default URL Origin when deploying to staging/production'
 
   # Authentication
   apiToken:
@@ -114,8 +111,7 @@ runs:
       # if not, set did-deploy='false', url=versioned-url=staging-url if mode=preview|staging; url=versioned-url=production-url if mode=production
       run: |
         DEPLOY_MODE='${{ inputs.mode }}'
-        STAGING_URL='${{ inputs.stagingUrl }}'
-        PRODUCTION_URL='${{ inputs.productionUrl }}'
+        URL_ORIGIN='${{ inputs.origin }}'
         DID_DEPLOY='${{ inputs.changed }}'
         DEPLOY_URL='${{ steps.deploy.outputs.deployment-url }}'
         DEPLOY_URL_ALIAS='${{ steps.deploy.outputs.deployment-alias-url }}'
@@ -129,10 +125,5 @@ runs:
           exit 0
         fi
 
-        case "$DEPLOY_MODE" in
-          preview)    VERSIONED_URL="$STAGING_URL" ;;
-          staging)    VERSIONED_URL="$STAGING_URL" ;;
-          production) VERSIONED_URL="$PRODUCTION_URL" ;;
-        esac
-        echo "versioned-url=$VERSIONED_URL" >> $GITHUB_OUTPUT
-        echo "url=$VERSIONED_URL" >> $GITHUB_OUTPUT
+        echo "versioned-url=$URL_ORIGIN" >> $GITHUB_OUTPUT
+        echo "url=$URL_ORIGIN" >> $GITHUB_OUTPUT
