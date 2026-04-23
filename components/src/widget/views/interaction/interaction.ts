@@ -260,7 +260,7 @@ export class PaymentInteraction extends LitElement {
     }, 3000)
   }
 
-  private resolveInteractionView(): InteractionView {
+  private get interactionView(): InteractionView {
     switch (this.currentView) {
       case 'processing':
         return {
@@ -320,39 +320,33 @@ export class PaymentInteraction extends LitElement {
     }
   }
 
-  private renderInteractionView(view: InteractionView) {
+  render() {
+    const { titleClass, title, description, image, button } =
+      this.interactionView
+
     return html`
       <div class="interaction-container">
         <div class="empty-header"></div>
 
         <div class="interaction-body">
-          <div class="title ${view.titleClass}">${view.title}</div>
-          ${view.description
-            ? html`<div class="description">${view.description}</div>`
+          <div class="title ${titleClass}">${title}</div>
+          ${description
+            ? html`<div class="description">${description}</div>`
             : nothing}
-          <img
-            src=${view.image.src}
-            width="122"
-            height="200"
-            alt=${view.image.alt}
-          />
+          <img src=${image.src} width="122" height="200" alt=${image.alt} />
         </div>
 
-        ${view.button
+        ${button
           ? html`
               <button
-                class="button-container ${view.button.buttonClass}"
-                @click=${view.button.handler}
+                class="button-container ${button.buttonClass}"
+                @click=${button.handler}
               >
-                ${view.button.label}
+                ${button.label}
               </button>
             `
           : nothing}
       </div>
     `
-  }
-
-  render() {
-    return this.renderInteractionView(this.resolveInteractionView())
   }
 }
