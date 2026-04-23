@@ -1,12 +1,12 @@
 import { API_URL } from '@shared/defines'
 import { OfferwallModal } from '@tools/components'
+import { injectUmami } from './lib/analytics'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 import {
   WebMonetizationCustomOfferwallChoice,
   type OfferwallChoiceConstructorParams,
   type GoogleOfcExtendedWindow,
 } from './utils/offerwall'
-import { injectUmami } from './lib/analytics'
 
 const NAME = 'wm-offerwall'
 customElements.define(NAME, OfferwallModal)
