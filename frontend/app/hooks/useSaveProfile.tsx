@@ -50,9 +50,6 @@ export const useSaveProfile = (wallet: WalletStore) => {
 
         if (result.success) {
           actions.commitProfile()
-          trackEvent('settings_changed', {
-            tool: toolState.currentToolType,
-          })
           if (action === 'script') {
             trackEvent('script_generated', {
               tool: toolState.currentToolType,

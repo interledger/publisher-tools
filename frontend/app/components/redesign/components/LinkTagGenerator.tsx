@@ -38,7 +38,10 @@ export const LinkTagGenerator = () => {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
-        trackEvent('generated_tag', { tag_type: 'link_tag' })
+        trackEvent('generated_tag', {
+          tag_type: 'link_tag',
+          wallet_provider: new URL(validatedPointer).hostname,
+        })
       } catch (err) {
         const message =
           err instanceof WalletAddressFormatError

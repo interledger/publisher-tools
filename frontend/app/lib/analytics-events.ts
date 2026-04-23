@@ -6,6 +6,5 @@ export type ToolsEventMap = {
   wallet_disconnected: undefined
   profile_saved: { tool: Tool }
   script_generated: { tool: Tool }
-  settings_changed: { tool: Tool }
-  generated_tag: { tag_type: 'link_tag' | 'revshare' }
+  generated_tag: { tag_type: 'link_tag'; wallet_provider: string }
 }
