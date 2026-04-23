@@ -153,6 +153,8 @@ jobs:
           build: 'pnpm -C cdn run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
           origin: ${{ vars.CDN_ORIGIN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

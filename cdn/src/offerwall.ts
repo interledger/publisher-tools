@@ -6,9 +6,11 @@ import {
   type OfferwallChoiceConstructorParams,
   type GoogleOfcExtendedWindow,
 } from './utils/offerwall'
+import { injectUmami } from './lib/analytics'
 
 const NAME = 'wm-offerwall'
 customElements.define(NAME, OfferwallModal)
+injectUmami()
 
 const params = getScriptParams('offerwall')
 const linkElem = appendPaymentPointer(params.walletAddress)

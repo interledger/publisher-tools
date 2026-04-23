@@ -62,7 +62,12 @@ export class Banner extends LitElement {
   }
 
   private handleLinkClick() {
-    // TODO: do anything other than open the link in a new tab, like analytics, showing some thank you message etc.
+    this.dispatchEvent(
+      new CustomEvent('click-extension-link', {
+        bubbles: true,
+        composed: true,
+      }),
+    )
   }
 
   /**
