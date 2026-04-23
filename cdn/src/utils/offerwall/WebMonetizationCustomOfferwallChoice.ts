@@ -21,7 +21,6 @@ import type {
 } from './types'
 import { trackEvent } from '../../lib/analytics'
 
-
 export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoice {
   #browserSupportKey = getBrowserSupportForExtension(
     navigator.userAgent,
