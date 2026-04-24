@@ -111,9 +111,7 @@ export const ToolsWalletAddress = ({
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: t('status.noSavedProfiles', {
-          toolName,
-        }),
+        message: t('status.noSavedProfiles', { toolName }),
         type: 'success',
       }
     }
