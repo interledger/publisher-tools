@@ -44,6 +44,7 @@ type QuoteGrantParams = {
 
 type CreateOutgoingPaymentParams = {
   walletAddress: WalletAddress
+  incomingPaymentId: string
   debitAmount: Amount
   receiveAmount?: Amount
   nonce?: string
@@ -209,6 +210,7 @@ export class OpenPaymentsService {
 
   async initializePayment(args: {
     walletAddress: WalletAddress
+    incomingPaymentId: string
     debitAmount: Amount
     receiveAmount: Amount
     redirectUrl: string
@@ -218,6 +220,7 @@ export class OpenPaymentsService {
 
     const outgoingPaymentGrant = await this.createOutgoingPaymentGrant({
       walletAddress: args.walletAddress,
+      incomingPaymentId: args.incomingPaymentId,
       debitAmount: args.debitAmount,
       receiveAmount: args.receiveAmount,
       nonce: clientNonce,
@@ -384,6 +387,7 @@ export class OpenPaymentsService {
   ): Promise<PendingGrant> {
     const {
       walletAddress,
+      incomingPaymentId,
       debitAmount,
       nonce,
       paymentId,
@@ -406,6 +410,7 @@ export class OpenPaymentsService {
                 type: 'outgoing-payment',
                 actions: ['create', 'read'],
                 limits: {
+                  receiver: incomingPaymentId,
                   debitAmount: debitAmount,
                 },
               },
