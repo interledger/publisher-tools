@@ -14,6 +14,7 @@ function interpolate(str: string, params: Params): string {
 export function useTranslation<NS extends Namespace>(ns: NS) {
   const translations = useI18n()
 
+  /** Translation result is plain text — safe in JSX, never pass to dangerouslySetInnerHTML or unsanitized href/src. */
   function t(key: NamespaceKey<NS>, params?: Params): string {
     const value = (translations[ns][key] as string) ?? key
     return params ? interpolate(value, params) : value
