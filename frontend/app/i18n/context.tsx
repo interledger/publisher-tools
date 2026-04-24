@@ -8,6 +8,7 @@ const locales = { en } as const
 export type Translations = typeof en
 
 const I18nContext = createContext<Translations>(locales.en)
+I18nContext.displayName = 'I18nContext'
 
 interface I18nProviderProps {
   locale?: Locale
