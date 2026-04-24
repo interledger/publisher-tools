@@ -25,7 +25,7 @@ export const ToolsWalletAddress = ({
   walletActions,
   toolName,
 }: Props) => {
-  const t = useTranslation()
+  const t = useTranslation('toolsWalletAddress')
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const trackEvent = useTrackEvent()
@@ -50,7 +50,7 @@ export const ToolsWalletAddress = ({
   const handleContinue = async () => {
     if (!snap.walletAddress.trim()) {
       setError({
-        walletAddress: [t('toolsWalletAddress__errors__fieldRequired')],
+        walletAddress: [t('errors.fieldRequired')],
       })
       return
     }
@@ -99,19 +99,19 @@ export const ToolsWalletAddress = ({
   } => {
     if (snap.walletConnectStep === 'error') {
       return {
-        message: t('toolsWalletAddress__errors__connectionError'),
+        message: t('errors.connectionError'),
         type: 'error',
       }
     }
     if (!snap.isWalletConnected) {
       return {
-        message: t('toolsWalletAddress__status__connect'),
+        message: t('status.connect'),
         type: 'info',
       }
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: t('toolsWalletAddress__status__noSavedProfiles', {
+        message: t('status.noSavedProfiles', {
           toolName,
         }),
         type: 'success',
@@ -119,7 +119,7 @@ export const ToolsWalletAddress = ({
     }
 
     return {
-      message: t('toolsWalletAddress__status__profilesFetched', { toolName }),
+      message: t('status.profilesFetched', { toolName }),
       type: 'success',
     }
   }
@@ -136,11 +136,11 @@ export const ToolsWalletAddress = ({
       <div className="items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
           <Heading5 htmlFor="wallet-address-url" as="label">
-            {t('toolsWalletAddress__heading__message')}
+            {t('heading.message')}
           </Heading5>
-          <Tooltip label={t('toolsWalletAddress__tooltip__ariaLabel')}>
-            {t('toolsWalletAddress__tooltip__message')}
-            <br /> {t('toolsWalletAddress__tooltip__message2')}
+          <Tooltip label={t('tooltip.ariaLabel')}>
+            {t('tooltip.message')}
+            <br /> {t('tooltip.message2')}
           </Tooltip>
         </div>
         <div className="flex items-start gap-3 w-full pt-md">
@@ -164,7 +164,7 @@ export const ToolsWalletAddress = ({
             <button
               onClick={disconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
-              aria-label={t('toolsWalletAddress__button__disconnectAriaLabel')}
+              aria-label={t('button.disconnectAriaLabel')}
             >
               <SVGRefresh className="w-5 h-5 text-purple-500" />
             </button>
@@ -196,8 +196,8 @@ export const ToolsWalletAddress = ({
               {isLoading && <SVGSpinner className="w-4 h-4" />}
               <span>
                 {isLoading
-                  ? t('toolsWalletAddress__button__loadingLabel')
-                  : t('toolsWalletAddress__button__submitLabel')}
+                  ? t('button.loadingLabel')
+                  : t('button.submitLabel')}
               </span>
             </div>
           </ToolsSecondaryButton>
