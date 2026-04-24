@@ -111,7 +111,7 @@ export const ToolsWalletAddress = ({
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: t('toolsWalletAddress__status__no_saved_profiles', {
+        message: t('toolsWalletAddress__status__noSavedProfiles', {
           toolName,
         }),
         type: 'success',
@@ -119,7 +119,7 @@ export const ToolsWalletAddress = ({
     }
 
     return {
-      message: t('toolsWalletAddress__status__profiles_fetched', { toolName }),
+      message: t('toolsWalletAddress__status__profilesFetched', { toolName }),
       type: 'success',
     }
   }
@@ -140,7 +140,7 @@ export const ToolsWalletAddress = ({
           </Heading5>
           <Tooltip label={t('toolsWalletAddress__tooltip__ariaLabel')}>
             {t('toolsWalletAddress__tooltip__message')}
-            <br /> {t('toolsWalletAddress__tooltip__message_2')}
+            <br /> {t('toolsWalletAddress__tooltip__message2')}
           </Tooltip>
         </div>
         <div className="flex items-start gap-3 w-full pt-md">
