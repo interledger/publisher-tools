@@ -1,4 +1,11 @@
 {
+  "general": {
+    "tools": "Tools"
+  },
+  "header": {
+    "nav.docs": "Documentation",
+    "nav.specification": "Specification"
+  },
   "toolsWalletAddress": {
     "heading.message": "Wallet address",
     "tooltip.ariaLabel": "Why connect your wallet?",
