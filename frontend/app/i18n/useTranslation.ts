@@ -38,5 +38,5 @@ export function useTranslation() {
     return params ? interpolate(value, params) : value
   }
 
-  return { t }
+  return t
 }

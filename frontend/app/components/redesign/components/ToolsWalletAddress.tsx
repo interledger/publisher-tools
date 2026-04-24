@@ -25,7 +25,7 @@ export const ToolsWalletAddress = ({
   walletActions,
   toolName,
 }: Props) => {
-  const { t } = useTranslation()
+  const t = useTranslation()
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const trackEvent = useTrackEvent()
