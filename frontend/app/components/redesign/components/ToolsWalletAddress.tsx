@@ -195,9 +195,7 @@ export const ToolsWalletAddress = ({
             <div className="flex items-center justify-center gap-2">
               {isLoading && <SVGSpinner className="w-4 h-4" />}
               <span>
-                {isLoading
-                  ? t('button.loadingLabel')
-                  : t('button.submitLabel')}
+                {isLoading ? t('button.loadingLabel') : t('button.submitLabel')}
               </span>
             </div>
           </ToolsSecondaryButton>
