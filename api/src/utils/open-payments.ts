@@ -1,14 +1,16 @@
 import {
+  OpenPaymentsClientError,
   type PendingGrant,
   type WalletAddress,
   type AuthenticatedClient,
   type OutgoingPayment,
   type Quote,
   type Grant,
-  isFinalizedGrant,
+  isFinalizedGrantWithAccessToken,
   isPendingGrant,
   createAuthenticatedClient,
 } from '@interledger/open-payments'
+import type { components as RSComponents } from '@interledger/open-payments/dist/openapi/generated/resource-server-types'
 import { createId } from '@paralleldrive/cuid2'
 import { getWalletAddress, urlWithParams } from '@shared/utils'
 import { createHeaders, sleep, createHTTPException } from './utils.js'
@@ -21,6 +23,7 @@ export interface Amount {
 }
 
 export type CreatePayment = { quote: Quote; incomingPaymentGrant: Grant }
+type AmountType = RSComponents['schemas']['amount']
 
 type CreateIncomingPaymentParams = {
   accessToken: string
@@ -168,6 +171,10 @@ export class OpenPaymentsService {
       receiverWallet.authServer,
     )
 
+    if (!isFinalizedGrantWithAccessToken(incomingPaymentGrant)) {
+      throw new Error('Expected incoming payment grant with access token')
+    }
+
     // create incoming payment without incoming amount
     const incomingPayment = await this.createIncomingPayment({
       accessToken: incomingPaymentGrant.access_token.value,
@@ -181,6 +188,10 @@ export class OpenPaymentsService {
 
     if (isPendingGrant(quoteGrant)) {
       throw new Error('Expected non-interactive grant')
+    }
+
+    if (!isFinalizedGrantWithAccessToken(quoteGrant)) {
+      throw new Error('Expected quote grant with access token')
     }
 
     const quote = await this.createPaymentQuote({
@@ -235,8 +246,8 @@ export class OpenPaymentsService {
       },
     )
 
-    if (!isFinalizedGrant(continuation)) {
-      throw new Error('Expected finalized grant.')
+    if (!isFinalizedGrantWithAccessToken(continuation)) {
+      throw new Error('Expected finalized grant with access token')
     }
 
     const outgoingPayment = await this.client!.outgoingPayment.create(
@@ -308,6 +319,7 @@ export class OpenPaymentsService {
         },
       )
     } catch (error) {
+      if (isOpenPaymentsClientError(error)) throw error
       throw createHTTPException(
         500,
         `Could not create payment quote for receiver ${args.walletAddress.id}.`,
@@ -430,6 +442,9 @@ export class OpenPaymentsService {
     outgoingPaymentId: OutgoingPayment['id'],
     continuationAccessToken: string,
   ): Promise<CheckPaymentResult> {
+    if (!isFinalizedGrantWithAccessToken(incomingPaymentGrant)) {
+      throw new Error('Expected incoming payment grant with access token')
+    }
     let attempts = 0
     await sleep(OUTGOING_PAYMENT_POLLING_INITIAL_DELAY)
     while (++attempts <= OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS) {
@@ -491,4 +506,20 @@ export class OpenPaymentsService {
 
     return { success: true }
   }
+}
+
+const isOpenPaymentsClientError = (error: unknown) =>
+  error instanceof OpenPaymentsClientError
+
+// happens during quoting only
+export const isNonPositiveAmountError = (
+  error: unknown,
+): error is OpenPaymentsClientError & {
+  details?: { minSendAmount?: AmountType }
+} => {
+  if (!isOpenPaymentsClientError(error)) return false
+  return (
+    error.status === 400 &&
+    error.description?.toLowerCase()?.includes('non-positive receive amount')
+  )
 }

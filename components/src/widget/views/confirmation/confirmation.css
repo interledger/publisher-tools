@@ -1,5 +1,7 @@
 :host {
   font-family: var(--wm-font-family, system-ui, sans-serif);
+  display: flex;
+  flex: 1;
 
   --primary-color: var(--wm-primary-color, #56b7b5);
   --background-color: var(--wm-background-color, #ffffff);
@@ -43,25 +45,6 @@
 
 .white-text {
   color: var(--Colors-white, #ffffff);
-}
-
-.close-button {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  aspect-ratio: 1/1;
-  background: none;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s ease;
-}
-
-.close-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .confirmation-buttons-header {
@@ -112,9 +95,10 @@
   align-items: center;
   gap: 10px;
   border-radius: 100px;
-  border: 1px solid var(--Colors-silver-300, #c9c9c9);
-  background: var(--Colors-white, #ffffff);
-  color: var(--Colors-silver-700, #7b7b7b);
+  border: 1px solid var(--text-color, #c9c9c9);
+
+  background: var(--background-color, #f2fbf9);
+  color: var(--Text-paragraph-standard, #7b7b7b);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
@@ -122,12 +106,17 @@
   line-height: var(--Font-Line-Height-md, 24px);
 }
 
-.preset-btn:hover,
+.preset-btn:hover {
+  background: #0000002f;
+}
+
 .preset-btn.selected {
-  background: var(--primary-color);
-  color: var(--Colors-white, #ffffff);
-  opacity: 0.9;
-  border: 1px solid var(--primary-color);
+  background: color-mix(
+    in srgb,
+    var(--primary-color, #f2fbf9) 45%,
+    transparent
+  );
+  border: 1px solid var(--primary-color, #5b5380);
 }
 
 .widget-body p,
@@ -169,8 +158,12 @@
   gap: 10px;
   align-self: stretch;
   border-radius: 8px;
-  border: 1px solid var(--Colors-green-200, #abe4df);
-  background: var(--Colors-mint-50, #f2fbf9);
+  border: 1px solid var(--primary-color, #abe4df);
+  background: color-mix(
+    in srgb,
+    var(--primary-color, #f2fbf9) 20%,
+    transparent
+  );
   min-height: 80px;
 }
 
@@ -194,7 +187,6 @@
 }
 
 .summary-label {
-  color: var(--Text-paragraph-standard, #363636);
   font-size: var(--Font-Size-text-base, 14px);
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
@@ -202,9 +194,9 @@
 }
 
 .summary-value {
-  color: var(--primary-color);
+  color: var(--primary-color, #363636);
   font-family: var(--Font-Family-Inter, Inter);
-  font-size: var(--Font-Size-text-base, 16px);
+  font-size: 16px;
   font-style: normal;
   font-weight: var(--Font-Weight-Bold, 700);
   line-height: var(--Font-Line-Height-md, 24px);
@@ -259,7 +251,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: auto;
 
   background: var(--primary-color);
 }
@@ -282,26 +274,6 @@
   justify-content: center;
   gap: var(--Spacings-sm, 8px);
   color: var(--Text-paragraph-standard, #363636);
-  opacity: 0.6;
-}
-
-.loader {
-  border: 3px solid #d4d5d6;
-  border-radius: 50%;
-  border-bottom: 3px solid var(--primary-color);
-  border-top: 3px solid var(--primary-color);
-  width: 20px;
-  height: 20px;
-  animation: spin 1.5s ease-in-out infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .empty-state {
@@ -362,6 +334,11 @@
   align-self: stretch;
 }
 
+.form-wallet-address > .amount-error {
+  align-self: center;
+  color: var(--Colors-red-500, #ef4444);
+}
+
 .form-label {
   display: flex;
   justify-content: flex-start;
@@ -382,6 +359,7 @@
 
 .form-input.with-currency {
   padding-left: calc(var(--Font-Size-text-base) + 2rem);
+  border: 2px solid var(--Colors-silver-300, #c9c9c9);
 }
 
 .form-input,
@@ -390,7 +368,7 @@
   height: 48px;
   padding: var(--Spacings-md, 12px);
   border: 1px solid var(--Colors-silver-300, #c9c9c9);
-  border-radius: var(--Radius-Moderate-rounding, 8px);
+  border-radius: var(--Radius-Moderate-rounding, 0.75rem);
   font-family: var(--Font-Family-Inter, Inter);
   font-size: var(--Font-Size-text-base, 16px);
   font-style: normal;
@@ -423,6 +401,15 @@
 .form-input:read-only {
   background-color: #f9fafb;
   color: var(--Colors-silver-700, #7b7b7b);
+}
+
+.form-input.amount-error {
+  border-color: var(--Colors-red-500, #ef4444);
+}
+
+.form-input.amount-error:focus {
+  border-color: var(--Colors-red-500, #ef4444);
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 10%, transparent 90%);
 }
 
 @media (max-width: 480px) {

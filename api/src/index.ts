@@ -1,3 +1,4 @@
+import { AWS_PREFIX } from '@shared/defines'
 import { app } from './app.js'
 
 import './routes/get-profile.js'
@@ -17,6 +18,7 @@ app.get('/', (c) => {
     {
       status: 'ok',
       message: 'Publisher Tools API',
+      AWS_PREFIX,
       endpoints: routes,
       timestamp: new Date().toISOString(),
     },

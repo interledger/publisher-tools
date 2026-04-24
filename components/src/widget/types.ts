@@ -23,6 +23,3 @@ export interface Amount {
   assetCode: string
   assetScale: number
 }
-export type FormatAmountArgs = Amount & {
-  value: string
-}

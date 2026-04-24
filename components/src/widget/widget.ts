@@ -2,16 +2,24 @@ import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { ApiErrorResponse } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
-import closeButtonIcon from '@c/assets/wm_close_button.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
+import { CloseBtn } from '@c/shared/components/close-btn'
+import { DotsLoader } from '@c/shared/components/dots-loader'
 import type { WalletAddress } from '@interledger/open-payments'
 import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import { WidgetController } from './controller'
 import type { WidgetConfig } from './types'
+import { PaymentConfirmation } from './views/confirmation/confirmation'
+import { PaymentInteraction } from './views/interaction/interaction'
 import widgetStyles from './widget.css?raw'
-import './views/confirmation/confirmation.js'
-import './views/interaction/interaction.js'
+
+const COMPONENTS = {
+  'wm-payment-confirmation': PaymentConfirmation,
+  'wm-payment-interaction': PaymentInteraction,
+  'wm-dots-loader': DotsLoader,
+  'wm-close-btn': CloseBtn,
+}
 
 const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
@@ -35,6 +43,15 @@ export class PaymentWidget extends LitElement {
   @state() private isSubmitting: boolean = false
 
   static styles = unsafeCSS(widgetStyles)
+
+  connectedCallback(): void {
+    super.connectedCallback()
+    for (const [name, elConstructor] of Object.entries(COMPONENTS)) {
+      if (!customElements.get(name)) {
+        customElements.define(name, elConstructor)
+      }
+    }
+  }
 
   private async handleSubmit(e: Event) {
     e.preventDefault()
@@ -161,18 +178,17 @@ export class PaymentWidget extends LitElement {
             ${profile?.title.text || 'Future of support'}
           </p>
         </div>
-        <button
-          class="close-button"
+
+        <wm-close-btn
           @click=${this.toggleWidget}
-          aria-label="Close widget"
-        >
-          <img src=${closeButtonIcon} alt="close widget" />
-        </button>
+          .color=${profile.color.background}
+        ></wm-close-btn>
       </div>
 
       <form class="payment-form widget-body" @submit=${this.handleSubmit}>
+        ${descriptionElement}
+
         <div class="form-wallet-address">
-          ${descriptionElement}
           <label class="form-label">
             Pay from
             <span class="red-text"> * </span>
@@ -197,7 +213,7 @@ export class PaymentWidget extends LitElement {
           ?disabled=${this.isSubmitting}
         >
           ${this.isSubmitting
-            ? html`<div class="spinner"></div>`
+            ? html`<wm-dots-loader></wm-dots-loader>`
             : profile?.ctaPayButton.text || 'Support me'}
         </button>
       </form>

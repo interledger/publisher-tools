@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@fontsource-variable/open-sans": "^5.2.7",
-    "@fontsource-variable/roboto": "^5.2.9",
+    "@fontsource-variable/roboto": "^5.2.10",
     "@fontsource/cookie": "^5.2.7",
     "@fontsource/titillium-web": "^5.2.8",
     "@shared/defines": "workspace:^",
@@ -21,9 +21,9 @@
     "@shared/utils": "workspace:^",
     "@tools/components": "workspace:*",
     "directory-tree": "^3.6.0",
-    "esbuild": "0.27.0",
+    "esbuild": "0.28.0",
     "esbuild-plugin-copy": "^2.1.1",
     "typescript": "^5.9.3",
-    "wrangler": "^4.59.2"
+    "wrangler": "^4.83.0"
   }
 }

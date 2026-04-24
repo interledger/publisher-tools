@@ -21,6 +21,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'release' && 'production' || 'staging' }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -36,7 +37,7 @@ jobs:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
             await script.default({ core, context });
-      
+
       - uses: ./.github/workflows/setup
 
       - name: Install wrangler globally
@@ -47,7 +48,7 @@ jobs:
           pnpm install -g "wrangler@${wrangler_version}"
 
       # https://github.com/dorny/paths-filter/issues/232
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         if: github.event_name != 'pull_request_review'
         id: changes
         with:
@@ -137,10 +138,9 @@ jobs:
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
-          stagingUrl: ${{ vars.API_STAGING_URL }}
-          productionUrl: ${{ vars.API_PRODUCTION_URL }}
+          origin: ${{ vars.API_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy CDN
         uses: ./.github/workflows/deploy-worker
@@ -153,10 +153,9 @@ jobs:
           build: 'pnpm -C cdn run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
-          stagingUrl: ${{ vars.CDN_STAGING_URL }}
-          productionUrl: ${{ vars.CDN_PRODUCTION_URL }}
+          origin: ${{ vars.CDN_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy Frontend
         uses: ./.github/workflows/deploy-worker
@@ -170,10 +169,11 @@ jobs:
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
-          stagingUrl: ${{ vars.APP_STAGING_URL }}
-          productionUrl: ${{ vars.APP_PRODUCTION_URL }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.APP_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       #endregion
 
       #region Summary

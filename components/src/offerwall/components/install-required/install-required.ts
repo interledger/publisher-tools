@@ -6,7 +6,6 @@ import iconWallet from '@c/assets/icon_wallet.svg?raw'
 import iconClose from '@c/assets/icon_x_close.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
 import { WebMonetizationHeader } from '@c/shared/web-monetization-header'
-import { getContrastColor } from '@c/utils'
 import { getExtensionHref } from '@shared/utils/extension'
 import styles from './install-required.css?raw'
 import styleTokens from '../../vars.css?raw'
@@ -73,7 +72,7 @@ export class InstallRequired extends LitElement {
           <p class="semi-bold">
             <span
               >Find out more on
-              <a href="https://webmonetization.org"
+              <a href="https://webmonetization.org" target="_blank"
                 >webmonetization.org</a
               ></span
             >
@@ -88,13 +87,6 @@ export class InstallRequired extends LitElement {
         </button>
       </div>
     `
-  }
-
-  firstUpdated(): void {
-    if (!CSS.supports('color: contrast-color(black)')) {
-      const el = this.renderRoot.querySelector<HTMLAnchorElement>('a.button')!
-      el.style.color = getContrastColor(getComputedStyle(el).backgroundColor)
-    }
   }
 
   get extensionUrl(): string {

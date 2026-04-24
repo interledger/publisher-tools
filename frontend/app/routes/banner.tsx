@@ -233,7 +233,7 @@ export default function Banner() {
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                                fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
                       <div
                         id="builder-actions-inner"
@@ -241,7 +241,7 @@ export default function Banner() {
                       >
                         <ToolsSecondaryButton
                           className="xl:w-[150px] xl:rounded-lg
-                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
+                                    w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={() => handleSave('save-success')}
                         >
@@ -256,7 +256,7 @@ export default function Banner() {
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
                           className="xl:w-[250px] xl:rounded-lg
-                                     w-full min-w-0 order-first xl:order-last"
+                                    w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={() => handleSave('script')}
                         >

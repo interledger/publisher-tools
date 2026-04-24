@@ -3,7 +3,6 @@ import z from 'zod'
 import { isConfigStorageNotFoundError } from '@shared/config-storage-service'
 import { AWS_PREFIX } from '@shared/defines'
 import {
-  type ConfigVersions,
   PROFILE_IDS,
   type Configuration,
   TOOL_BANNER,
@@ -17,7 +16,6 @@ import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
-import { convertToConfiguration } from '~/utils/profile-converter'
 import { sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
 import { walletSchema } from '~/utils/validate.server'
@@ -108,7 +106,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
     const now = new Date().toISOString()
 
-    let config: Configuration | null = null
+    let config: Configuration
     try {
       config = await storage.getJson<Configuration>(walletAddressId)
     } catch (e) {
@@ -116,24 +114,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
         throw e
       }
 
-      try {
-        // TODO: to be removed after the completion of versioned config migration
-        const legacy = await storage.getJson<ConfigVersions>(
-          walletAddressId,
-          true,
-        )
-        config = convertToConfiguration(legacy, walletAddressId)
-      } catch (e) {
-        if (!isConfigStorageNotFoundError(e)) {
-          throw e
-        }
-
-        config = {
-          $walletAddress: walletAddress,
-          $walletAddressId: walletAddressId,
-          $createdAt: now,
-          $modifiedAt: now,
-        }
+      config = {
+        $walletAddress: walletAddress,
+        $walletAddressId: walletAddressId,
+        $createdAt: now,
+        $modifiedAt: now,
       }
     }
 

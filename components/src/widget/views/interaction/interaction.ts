@@ -348,4 +348,3 @@ export class PaymentInteraction extends LitElement {
     }
   }
 }
-customElements.define('wm-payment-interaction', PaymentInteraction)

@@ -389,7 +389,6 @@ export default {
         '128': '36rem',
         'md-old': '28rem',
       },
-
       padding: {
         '3xs': '2px',
         '2xs': '4px',

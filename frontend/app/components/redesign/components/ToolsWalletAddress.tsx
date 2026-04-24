@@ -10,7 +10,7 @@ import {
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import { useTranslation } from '~/i18n/useTranslation'
-import type { ElementErrors } from '~/lib/types'
+import { useTrackEvent } from '~/lib/analytics'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
@@ -28,7 +28,8 @@ export const ToolsWalletAddress = ({
   const { t } = useTranslation()
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
-  const [error, setError] = useState<ElementErrors>()
+  const trackEvent = useTrackEvent()
+  const [error, setError] = useState<{ walletAddress?: string[] }>()
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -49,10 +50,7 @@ export const ToolsWalletAddress = ({
   const handleContinue = async () => {
     if (!snap.walletAddress.trim()) {
       setError({
-        fieldErrors: {
-          walletAddress: [t('toolsWalletAddress__errors__fieldRequired')],
-        },
-        message: [],
+        walletAddress: [t('toolsWalletAddress__errors__fieldRequired')],
       })
       return
     }
@@ -67,11 +65,9 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
+      trackEvent('wallet_connected')
     } catch (error) {
-      setError({
-        fieldErrors: { walletAddress: [(error as Error).message] },
-        message: [],
-      })
+      setError({ walletAddress: [(error as Error).message] })
     } finally {
       setIsLoading(false)
     }
@@ -161,7 +157,7 @@ export const ToolsWalletAddress = ({
               onChange={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
               readOnly={isLoading}
-              error={error?.fieldErrors.walletAddress}
+              error={error?.walletAddress}
             />
           </div>
           {snap.isWalletConnected && (

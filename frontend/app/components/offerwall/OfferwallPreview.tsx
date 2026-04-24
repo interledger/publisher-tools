@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSnapshot } from 'valtio'
 import type { OfferwallModal } from '@c/index'
-import type { Controller } from '@c/offerwall/controller'
 import { applyFontFamily } from '@c/utils'
 import {
   BORDER_RADIUS,
@@ -51,7 +50,7 @@ export default function OfferwallPreview() {
       }
 
       const el = document.querySelector<OfferwallModal>('wm-offerwall')!
-      const controller: Controller = {
+      const actions = el.setController({
         onModalClose: (ev) => {
           ev.preventDefault()
           console.log('onModalClose')
@@ -61,17 +60,16 @@ export default function OfferwallPreview() {
           console.log('onExtensionLinkClick')
           ev.preventDefault()
           setTimeout(() => {
-            el.setScreen('all-set')
+            actions.setScreen('all-set')
           }, 500)
         },
         onDone(ev) {
           console.log('onDone')
           ev.preventDefault()
-          el.setScreen('install-required')
+          actions.setScreen('install-required')
         },
         isPreviewMode: true,
-      }
-      el.setController(controller)
+      })
 
       setIsLoaded(true)
     }
