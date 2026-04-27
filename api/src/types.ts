@@ -1,10 +1,9 @@
-import type z from 'zod'
-import type {
-  PaymentFinalizeSchema,
-  PaymentGrantSchema,
-  PaymentQuoteSchema,
-  WalletAddressParamSchema,
-} from './schemas/payment.js'
+export type {
+  PaymentFinalizeInput,
+  PaymentGrantInput,
+  PaymentQuoteInput,
+  PaymentStatusParam,
+} from './routes/payment'
 
 export type ApiErrorResponse = {
   error: {
@@ -29,8 +28,3 @@ export type PaymentStatusRejected = {
 }
 
 export type PaymentStatus = PaymentStatusSuccess | PaymentStatusRejected
-
-export type PaymentQuoteInput = z.infer<typeof PaymentQuoteSchema>
-export type PaymentGrantInput = z.infer<typeof PaymentGrantSchema>
-export type PaymentFinalizeInput = z.infer<typeof PaymentFinalizeSchema>
-export type WalletAddressParams = z.infer<typeof WalletAddressParamSchema>
