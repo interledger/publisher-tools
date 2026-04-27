@@ -289,6 +289,7 @@ export class PaymentConfirmation extends LitElement {
       const { walletAddress, quote } = this.configController.state
       const { grant, paymentId } = await this.requestOutgoingGrant({
         walletAddress,
+        incomingPaymentId: quote.receiver,
         debitAmount: quote.debitAmount,
         receiveAmount: quote.receiveAmount,
       })
@@ -321,6 +322,7 @@ export class PaymentConfirmation extends LitElement {
 
   private async requestOutgoingGrant(paymentData: {
     walletAddress: WalletAddress
+    incomingPaymentId: string
     debitAmount: Amount
     receiveAmount: Amount
   }): Promise<{ grant: PendingGrant; paymentId: string }> {
@@ -335,6 +337,7 @@ export class PaymentConfirmation extends LitElement {
       },
       body: JSON.stringify({
         redirectUrl,
+        incomingPaymentId: paymentData.incomingPaymentId,
         walletAddress:
           paymentData.walletAddress as PaymentGrantInput['walletAddress'],
         debitAmount: paymentData.debitAmount,
