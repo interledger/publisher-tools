@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { SVGHamburgerIcon } from '@/assets'
 import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
+import { useTranslation } from '~/i18n/useTranslation'
 
 export const Header = () => {
+  const t = useTranslation('header')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -57,9 +59,9 @@ export const Header = () => {
           </a>
 
           <ul className="hidden md:flex gap-md list-none">
-            <NavDropdown title="Tools" />
-            <NavLink to="/docs">Documentation</NavLink>
-            <NavLink to="/specification">Specification</NavLink>
+            <NavDropdown title={t('tools')} />
+            <NavLink to="/docs">{t('nav.docs')}</NavLink>
+            <NavLink to="/specification">{t('nav.specification')}</NavLink>
           </ul>
 
           <GhostButton
