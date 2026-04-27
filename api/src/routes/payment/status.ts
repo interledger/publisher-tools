@@ -2,7 +2,6 @@ import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { KV_PAYMENTS_PREFIX } from '@shared/types'
 import { app } from '../../app'
-import type { PaymentStatus } from '../../types'
 import { createHTTPException, waitWithAbort } from '../../utils/utils'
 
 const PaymentStatusParamSchema = z.object({
@@ -50,3 +49,16 @@ app.get(
     }
   },
 )
+
+export type PaymentStatusSuccess = {
+  paymentId: string
+  hash: string
+  interact_ref: string
+}
+
+export type PaymentStatusRejected = {
+  paymentId: string
+  result: 'grant_rejected'
+}
+
+export type PaymentStatus = PaymentStatusSuccess | PaymentStatusRejected
