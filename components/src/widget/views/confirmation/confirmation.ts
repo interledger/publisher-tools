@@ -10,7 +10,6 @@ import type {
   WalletAddress,
   PendingGrant,
 } from '@interledger/open-payments'
-import { PAYMENT_ERROR } from '@shared/types'
 import type { PaymentError } from '@shared/types'
 import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
@@ -219,10 +218,7 @@ export class PaymentConfirmation extends LitElement {
     if (!response.ok) {
       this.amountError =
         'Failed to create payment. Please try a different amount.'
-      if (
-        response.status === 400 &&
-        data.error === PAYMENT_ERROR.NON_POSITIVE_AMOUNT
-      ) {
+      if (response.status === 400 && data.error === 'NON_POSITIVE_AMOUNT') {
         if (data.minSendAmount?.value) {
           // Rafiki v1.2.0-beta and later include `minSendAmount` with error
           const {
