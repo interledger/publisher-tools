@@ -52,8 +52,13 @@ app.post(
   zValidator('json', PaymentGrantSchema),
   async ({ req, json, env }) => {
     try {
-      const { walletAddress, debitAmount, receiveAmount, redirectUrl } =
-        req.valid('json')
+      const {
+        walletAddress,
+        incomingPaymentId,
+        debitAmount,
+        receiveAmount,
+        redirectUrl,
+      } = req.valid('json')
       if (!isAllowedRedirectUrl(redirectUrl)) {
         throw createHTTPException(400, 'Invalid redirect URL', {})
       }
@@ -61,6 +66,7 @@ app.post(
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.initializePayment({
         walletAddress,
+        incomingPaymentId,
         debitAmount,
         receiveAmount,
         redirectUrl,
