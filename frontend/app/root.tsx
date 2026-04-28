@@ -14,7 +14,6 @@ import { Header, Footer } from '@/components'
 import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import { I18nProvider } from '~/i18n/context'
-import { TelemetryProvider } from '~/lib/analytics'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
@@ -48,9 +47,7 @@ export default function App() {
           <UIProvider>
             <Header />
             <main className="flex-grow flex flex-col">
-              <TelemetryProvider>
-                <Outlet />
-              </TelemetryProvider>
+              <Outlet />
             </main>
             <Footer />
           </UIProvider>
