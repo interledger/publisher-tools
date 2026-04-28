@@ -10,7 +10,6 @@ import type {
   WalletAddress,
   PendingGrant,
 } from '@interledger/open-payments'
-import { PAYMENT_ERROR } from '@shared/types'
 import type { PaymentError } from '@shared/types'
 import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
@@ -219,10 +218,7 @@ export class PaymentConfirmation extends LitElement {
     if (!response.ok) {
       this.amountError =
         'Failed to create payment. Please try a different amount.'
-      if (
-        response.status === 400 &&
-        data.error === PAYMENT_ERROR.NON_POSITIVE_AMOUNT
-      ) {
+      if (response.status === 400 && data.error === 'NON_POSITIVE_AMOUNT') {
         if (data.minSendAmount?.value) {
           // Rafiki v1.2.0-beta and later include `minSendAmount` with error
           const {
@@ -289,6 +285,7 @@ export class PaymentConfirmation extends LitElement {
       const { walletAddress, quote } = this.configController.state
       const { grant, paymentId } = await this.requestOutgoingGrant({
         walletAddress,
+        incomingPaymentId: quote.receiver,
         debitAmount: quote.debitAmount,
         receiveAmount: quote.receiveAmount,
       })
@@ -321,6 +318,7 @@ export class PaymentConfirmation extends LitElement {
 
   private async requestOutgoingGrant(paymentData: {
     walletAddress: WalletAddress
+    incomingPaymentId: string
     debitAmount: Amount
     receiveAmount: Amount
   }): Promise<{ grant: PendingGrant; paymentId: string }> {
@@ -335,6 +333,7 @@ export class PaymentConfirmation extends LitElement {
       },
       body: JSON.stringify({
         redirectUrl,
+        incomingPaymentId: paymentData.incomingPaymentId,
         walletAddress:
           paymentData.walletAddress as PaymentGrantInput['walletAddress'],
         debitAmount: paymentData.debitAmount,

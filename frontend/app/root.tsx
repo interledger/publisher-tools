@@ -13,7 +13,7 @@ import {
 import { Header, Footer } from '@/components'
 import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { TelemetryProvider } from '~/lib/analytics'
+import { I18nProvider } from '~/i18n/context'
 import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
@@ -43,15 +43,15 @@ export default function App() {
         )}
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
-        <UIProvider>
-          <Header />
-          <main className="flex-grow flex flex-col">
-            <TelemetryProvider>
+        <I18nProvider>
+          <UIProvider>
+            <Header />
+            <main className="flex-grow flex flex-col">
               <Outlet />
-            </TelemetryProvider>
-          </main>
-          <Footer />
-        </UIProvider>
+            </main>
+            <Footer />
+          </UIProvider>
+        </I18nProvider>
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>
