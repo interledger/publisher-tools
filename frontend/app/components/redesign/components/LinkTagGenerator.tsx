@@ -6,6 +6,7 @@ import {
   validateAndConfirmPointer,
   WalletAddressFormatError,
 } from '@shared/utils/index'
+import { useTrackEvent } from '~/lib/analytics'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
@@ -24,6 +25,7 @@ export const LinkTagGenerator = () => {
   const [error, setError] = useState('')
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const trackEvent = useTrackEvent()
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -36,6 +38,9 @@ export const LinkTagGenerator = () => {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
+        trackEvent('link_tag_generated', {
+          wallet_provider: new URL(validatedPointer).hostname,
+        })
       } catch (err) {
         const message =
           err instanceof WalletAddressFormatError
@@ -47,7 +52,7 @@ export const LinkTagGenerator = () => {
         setIsLoading(false)
       }
     },
-    [pointerInput],
+    [pointerInput, trackEvent],
   )
 
   const handleOnChange = useCallback(

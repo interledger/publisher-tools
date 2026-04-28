@@ -65,12 +65,19 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-      trackEvent('wallet_connected')
+      trackEvent('wallet_connected', {
+        wallet_provider: new URL(walletAddressInfo.id).hostname,
+      })
     } catch (error) {
       setError({ walletAddress: [(error as Error).message] })
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleDisconnect = () => {
+    trackEvent('wallet_disconnected')
+    disconnect()
   }
 
   const handleWalletAddressChange = (
@@ -160,7 +167,7 @@ export const ToolsWalletAddress = ({
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={disconnect}
+              onClick={handleDisconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label={t('button.disconnectAriaLabel')}
             >

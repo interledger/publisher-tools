@@ -6,6 +6,7 @@ import {
 } from '@/components'
 import { TOOL_BANNER, TOOL_OFFERWALL, TOOL_WIDGET } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
+import { useTrackEvent } from '~/lib/analytics'
 import { ApiError } from '~/lib/helpers'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
@@ -28,6 +29,7 @@ function getToolActions() {
 
 export const useSaveProfile = (wallet: WalletStore) => {
   const [openDialog, closeDialog] = useDialog()
+  const trackEvent = useTrackEvent()
 
   const save = useCallback(
     async (action: 'save-success' | 'script'): Promise<void> => {
@@ -48,10 +50,13 @@ export const useSaveProfile = (wallet: WalletStore) => {
 
         if (result.success) {
           actions.commitProfile()
+          const tool = toolState.currentToolType
 
           if (action === 'script') {
+            trackEvent(`${tool}_script_generated`)
             openDialog(<ScriptDialog wallet={wallet} />)
           } else {
+            trackEvent(`${tool}_profile_saved`)
             openDialog(<StatusDialog onDone={closeDialog} />)
           }
         }
@@ -69,7 +74,7 @@ export const useSaveProfile = (wallet: WalletStore) => {
         )
       }
     },
-    [openDialog, closeDialog],
+    [openDialog, closeDialog, trackEvent],
   )
 
   const saveLastAction = useCallback(async (): Promise<void> => {
