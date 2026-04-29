@@ -1,4 +1,5 @@
 import './quote.js'
+import './quotes.js'
 import './grant.js'
 import './finalize.js'
 import './status.js'

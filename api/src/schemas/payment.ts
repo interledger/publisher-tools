@@ -6,6 +6,10 @@ export const AmountSchema = z.object({
   assetScale: z.number().int().min(0),
 })
 
+export const UserAmountSchema = z.coerce
+  .number()
+  .positive('Value must be a positive number')
+
 export const WalletAddressSchema = z
   .looseObject({
     id: z.string(),

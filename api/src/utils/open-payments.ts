@@ -12,15 +12,11 @@ import {
 } from '@interledger/open-payments'
 import type { components as RSComponents } from '@interledger/open-payments/dist/openapi/generated/resource-server-types'
 import { createId } from '@paralleldrive/cuid2'
-import { getWalletAddress, urlWithParams } from '@shared/utils'
+import type { Amount } from '@shared/types'
+import { getWalletAddress, toAmount, urlWithParams } from '@shared/utils'
 import { createHeaders, sleep, createHTTPException } from './utils.js'
 import type { Env } from '../app.js'
-
-export interface Amount {
-  value: string
-  assetCode: string
-  assetScale: number
-}
+import type { PaymentQuoteInput } from '../routes/payment/quotes.js'
 
 export type CreatePayment = { quote: Quote; incomingPaymentGrant: Grant }
 type AmountType = RSComponents['schemas']['amount']
@@ -124,6 +120,49 @@ export class OpenPaymentsService {
     })
   }
 
+  async paymentQuote({ sender, receiver, ...amt }: PaymentQuoteInput): Promise<{
+    debitAmount: Amount
+    receiveAmount: Amount
+    id: string
+  }> {
+    const debitAmount = amt.debitAmount
+      ? toAmount(amt.debitAmount, sender)
+      : undefined
+    const receiveAmount = amt.receiveAmount
+      ? toAmount(amt.receiveAmount, receiver)
+      : undefined
+
+    const [quoteGrant, incomingPaymentGrant] = await Promise.all([
+      this.createQuoteGrant(sender),
+      this.createIncomingPaymentGrant(receiver.authServer),
+    ])
+
+    const incomingPayment = await this.createIncomingPayment({
+      accessToken: incomingPaymentGrant.access_token.value,
+      walletAddress: receiver,
+    })
+
+    const quote = await this.client!.quote.create(
+      {
+        url: sender.resourceServer,
+        accessToken: quoteGrant.access_token.value,
+      },
+      {
+        method: 'ilp',
+        walletAddress: sender.id,
+        receiver: incomingPayment.id,
+        ...(debitAmount ? { debitAmount } : { receiveAmount }),
+      },
+    )
+
+    return {
+      debitAmount: quote.debitAmount,
+      receiveAmount: quote.receiveAmount,
+      id: quote.id,
+    }
+    // TODO: cleanup/expire things once done. we only cared about amounts for displaying
+  }
+
   async createPayment(args: {
     senderWalletAddress: string
     receiverWalletAddress: string
@@ -171,10 +210,6 @@ export class OpenPaymentsService {
     const incomingPaymentGrant = await this.createIncomingPaymentGrant(
       receiverWallet.authServer,
     )
-
-    if (!isFinalizedGrantWithAccessToken(incomingPaymentGrant)) {
-      throw new Error('Expected incoming payment grant with access token')
-    }
 
     // create incoming payment without incoming amount
     const incomingPayment = await this.createIncomingPayment({
@@ -278,10 +313,8 @@ export class OpenPaymentsService {
   }
 
   private async createIncomingPaymentGrant(urlAuthServer: string) {
-    const nonInteractiveGrant = await this.client!.grant.request(
-      {
-        url: urlAuthServer,
-      },
+    const grant = await this.client!.grant.request(
+      { url: urlAuthServer },
       {
         access_token: {
           access: [
@@ -294,11 +327,14 @@ export class OpenPaymentsService {
       },
     )
 
-    if (isPendingGrant(nonInteractiveGrant)) {
+    if (isPendingGrant(grant)) {
       throw new Error('Expected non-interactive grant')
     }
+    if (!isFinalizedGrantWithAccessToken(grant)) {
+      throw new Error('Expected incoming payment grant with access token')
+    }
 
-    return nonInteractiveGrant
+    return grant
   }
 
   private async createPaymentQuote(args: {
@@ -369,17 +405,25 @@ export class OpenPaymentsService {
 
   private async createQuoteGrant({ authServer }: QuoteGrantParams) {
     return await this.client!.grant.request(
-      {
-        url: authServer,
-      },
+      { url: authServer },
       {
         access_token: {
           access: [{ type: 'quote', actions: ['create', 'read'] }],
         },
       },
-    ).catch(() => {
-      throw new Error('Could not retrieve quote grant.')
-    })
+    )
+      .then((grant) => {
+        if (isPendingGrant(grant)) {
+          throw new Error('Expected non-interactive grant')
+        }
+        if (!isFinalizedGrantWithAccessToken(grant)) {
+          throw new Error('Expected quote grant with access token')
+        }
+        return grant
+      })
+      .catch((err) => {
+        throw new Error('Could not create quote grant.', { cause: err })
+      })
   }
 
   private async createOutgoingPaymentGrant(
