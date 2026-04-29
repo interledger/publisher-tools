@@ -2,7 +2,10 @@ import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import type { PaymentError } from '@shared/types'
 import { app } from '../../app.js'
-import { UserAmountSchema, WalletAddressSchema } from '../../schemas/payment.js'
+import {
+  DebitOrReceiveAmountSchema,
+  WalletAddressSchema,
+} from '../../schemas/payment.js'
 import {
   isNonPositiveAmountError,
   OpenPaymentsService,
@@ -14,24 +17,7 @@ const PaymentQuoteSchema = z
     sender: WalletAddressSchema,
     receiver: WalletAddressSchema,
   })
-  .and(
-    z.union(
-      [
-        z.object({
-          debitAmount: UserAmountSchema,
-          receiveAmount: z.never().optional(),
-        }),
-        z.object({
-          receiveAmount: UserAmountSchema,
-          debitAmount: z.never().optional(),
-        }),
-      ],
-      {
-        error:
-          'Must provide either `debitAmount` or `receiveAmount`, but not both',
-      },
-    ),
-  )
+  .and(DebitOrReceiveAmountSchema)
 
 export type PaymentQuoteInput = z.infer<typeof PaymentQuoteSchema>
 

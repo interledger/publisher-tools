@@ -10,6 +10,22 @@ export const UserAmountSchema = z.coerce
   .number()
   .positive('Value must be a positive number')
 
+export const DebitOrReceiveAmountSchema = z.union(
+  [
+    z.object({
+      debitAmount: UserAmountSchema,
+      receiveAmount: z.never().optional(),
+    }),
+    z.object({
+      receiveAmount: UserAmountSchema,
+      debitAmount: z.never().optional(),
+    }),
+  ],
+  {
+    error: 'Must provide either `debitAmount` or `receiveAmount`, but not both',
+  },
+)
+
 export const WalletAddressSchema = z
   .looseObject({
     id: z.string(),
