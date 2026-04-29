@@ -1,6 +1,8 @@
 import './quote.js'
 import './quotes.js'
 import './grant.js'
+import './initiate.js'
+import './redirect.js'
 import './finalize.js'
 import './status.js'
 

@@ -1,4 +1,5 @@
 import z from 'zod'
+import { isCuid } from '@paralleldrive/cuid2'
 
 export const AmountSchema = z.object({
   value: z.string(),
@@ -36,3 +37,7 @@ export const WalletAddressSchema = z
     resourceServer: z.string(),
   })
   .brand('WalletAddress')
+
+export const PaymentIdSchema = z
+  .string()
+  .refine(isCuid, { error: 'Invalid payment ID' })

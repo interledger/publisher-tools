@@ -1,7 +1,8 @@
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import { KV_PAYMENTS_PREFIX } from '@shared/types'
 import { app } from '../../app'
+import { OpenPaymentsService } from '../../utils/open-payments'
+import { getData, setData } from '../../utils/payments-kv'
 import { createHTTPException, waitWithAbort } from '../../utils/utils'
 
 const PaymentStatusParamSchema = z.object({
@@ -26,16 +27,40 @@ app.get(
       while (!signal.aborted) {
         await waitWithAbort(POLLING_INTERVAL, signal)
 
-        const status = await env.PUBLISHER_TOOLS_KV.get<PaymentStatus>(
-          KV_PAYMENTS_PREFIX + paymentId,
-          'json',
-        )
-
-        if (status) {
-          return json({
-            type: 'GRANT_INTERACTION',
-            ...status,
+        const status = await getData(env.PUBLISHER_TOOLS_KV, paymentId)
+        if (!status) {
+          throw createHTTPException(404, 'Payment not found', {
+            message: `The payment is either already complete, or never existed.`,
           })
+        }
+        if (status.status === 'PENDING') {
+          // The user hasn't accepted the grant yet
+          return json({ type: 'PENDING_GRANT_INTERACTION', ...status })
+        }
+        if (status.status === 'CREATED') {
+          // We created the payment, but amount not sent yet.
+          const openPayments = await OpenPaymentsService.getInstance(env)
+          const result = await openPayments.completePaymentProcess(
+            undefined,
+            undefined,
+            status.outgoingPaymentId,
+            status.outgoingPaymentGrantAccessToken,
+          )
+          await setData(
+            env.PUBLISHER_TOOLS_KV,
+            paymentId,
+            {
+              status: 'COMPLETE',
+              result: result.success ? 'success' : 'failure',
+              error: result.success ? undefined : result.error,
+            },
+            { expirationTtl: 3 * 60 /* 3 minutes */ },
+          )
+          return json({ type: 'OUTGOING_PAYMENT_CREATED', ...status })
+        }
+        if (status.status === 'COMPLETE') {
+          // Should stop polling at this stage. The KV entry will expire soon.
+          return json({ type: 'OUTGOING_PAYMENT_DONE', ...status })
         }
       }
 
