@@ -68,6 +68,8 @@ app.get(
             quoteId: data.quoteId,
             grantContinuation: data.grantContinuation,
             sender: data.sender,
+            metadata: data.metadata,
+            nonce: data.nonce,
             interactRef: queryParams.interact_ref,
             hash: queryParams.hash,
           })

@@ -16,7 +16,9 @@ export type PaymentKvData =
       quoteId: string
       redirectUrl: string
       grantContinuation: PendingGrant['continue']
+      nonce: string
       sender: WalletAddress
+      metadata: Record<string, unknown>
     }
   | {
       status: 'CREATED'

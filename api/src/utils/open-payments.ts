@@ -236,10 +236,12 @@ export class OpenPaymentsService {
     sender: WalletAddress
     quoteId: InitiatePaymentResult['quoteId']
     grantContinuation: InitiatePaymentResult['grantContinuation']
+    nonce: string
     interactRef: string
     hash: string
+    metadata: Record<string, unknown>
   }) {
-    const { grantContinuation, interactRef, quoteId, sender } = params
+    const { grantContinuation, interactRef, quoteId, sender, metadata } = params
 
     const grant = await this.client!.grant.continue(
       {
@@ -257,13 +259,7 @@ export class OpenPaymentsService {
         url: sender.resourceServer,
         accessToken: grant.access_token.value,
       },
-      {
-        walletAddress: sender.id,
-        quoteId,
-        // metadata: {
-        //   description: note,
-        // },
-      },
+      { walletAddress: sender.id, quoteId, metadata },
     )
 
     return {

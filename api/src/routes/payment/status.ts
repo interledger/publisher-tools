@@ -35,7 +35,7 @@ app.get(
         }
         if (status.status === 'PENDING') {
           // The user hasn't accepted the grant yet
-          return json({ type: 'PENDING_GRANT_INTERACTION', ...status })
+          return json({ type: 'PENDING_GRANT_INTERACTION' })
         }
         if (status.status === 'CREATED') {
           // We created the payment, but amount not sent yet.
@@ -56,11 +56,23 @@ app.get(
             },
             { expirationTtl: 3 * 60 /* 3 minutes */ },
           )
-          return json({ type: 'OUTGOING_PAYMENT_CREATED', ...status })
+          return json({
+            type: 'OUTGOING_PAYMENT_CREATED',
+            outgoingPaymentId: status.outgoingPaymentId,
+          })
         }
         if (status.status === 'COMPLETE') {
           // Should stop polling at this stage. The KV entry will expire soon.
-          return json({ type: 'OUTGOING_PAYMENT_DONE', ...status })
+          return json({
+            type: 'OUTGOING_PAYMENT_DONE',
+            result: status.result,
+            ...(status.error && {
+              error: {
+                code: status.error?.code,
+                message: status.error?.message,
+              },
+            }),
+          })
         }
       }
 

@@ -36,7 +36,7 @@ app.post(
       ).href
 
       const openPayments = await OpenPaymentsService.getInstance(env)
-      const { grantContinuation, ...result } =
+      const { grantContinuation, nonce, ...result } =
         await openPayments.paymentInitiate(params)
 
       // The `/payment/complete` endpoint will find details from the KV based on
@@ -51,6 +51,8 @@ app.post(
           redirectUrl: originalRedirectUrl,
           grantContinuation: grantContinuation,
           sender: params.sender,
+          metadata: { description: params.note },
+          nonce,
         },
         { expirationTtl: 10 * 60 /* 10 minutes */ },
       )
