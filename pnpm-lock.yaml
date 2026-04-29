@@ -76,8 +76,8 @@ importers:
         specifier: ^4.12.7
         version: 4.12.7
       http-message-signatures:
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^1.0.5
+        version: 1.0.5
       httpbis-digest-headers:
         specifier: ^1.0.0
         version: 1.0.0
@@ -222,8 +222,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       http-message-signatures:
-        specifier: ^1.0.4
-        version: 1.0.4
+        specifier: ^1.0.5
+        version: 1.0.5
       httpbis-digest-headers:
         specifier: ^1.0.0
         version: 1.0.0
@@ -2709,8 +2709,8 @@ packages:
   http-message-signatures@0.1.2:
     resolution: {integrity: sha512-gjJYDgFBy+xnlAs2G0gIWpiorCv9Xi7pIlOnnd91zHAK7BtkLxonmm/JAtd5e6CakOuW03IwEuJzj2YMy8lfWQ==}
 
-  http-message-signatures@1.0.4:
-    resolution: {integrity: sha512-gavCQWnxHFg0BVlKs6CmYK7hNSH1o0x0mHTC68yBAHYOYuTVXPv52mEE7QuT5TenfiagTdOa/zPJzen4lEX7Rg==}
+  http-message-signatures@1.0.5:
+    resolution: {integrity: sha512-3eO+JHsgVI1ilIzqdh8GdeLkEnpdqM8CIX+Q2gsMAqJZasj/TPKAHciuXYW87zySvPM3yudEG9sDMUhVFqkhTg==}
 
   httpbis-digest-headers@1.0.0:
     resolution: {integrity: sha512-RpaFuZD3tG8wtsvjDv1u7O8wAvfpAxS20F3CrFPZOMn+IBb7E7yiqlN5Tks4E5tBEnTdpMOD151rJsUv03sAIg==}
@@ -3875,9 +3875,9 @@ packages:
   structured-headers@0.5.0:
     resolution: {integrity: sha512-oLnmXSsjhud+LxRJpvokwP8ImEB2wTg8sg30buwfVViKMuluTv3BlOJHUX9VW9pJ2nQOxmx87Z0kB86O4cphag==}
 
-  structured-headers@1.0.1:
-    resolution: {integrity: sha512-QYBxdBtA4Tl5rFPuqmbmdrS9kbtren74RTJTcs0VSQNVV5iRhJD4QlYTLD0+81SBwUQctjEQzjTRI3WG4DzICA==}
-    engines: {node: '>= 14', npm: '>=6'}
+  structured-headers@2.0.2:
+    resolution: {integrity: sha512-IUul56vVHuMg2UxWhwDj9zVJE6ztYEQQkynr1FQ/NydPhivtk5+Qb2N1RS36owEFk2fNUriTguJ2R7htRObcdA==}
+    engines: {node: '>=18', npm: '>=6'}
 
   sucrase@3.35.0:
     resolution: {integrity: sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==}
@@ -4950,7 +4950,7 @@ snapshots:
 
   '@interledger/http-signature-utils@2.0.3':
     dependencies:
-      http-message-signatures: 1.0.4
+      http-message-signatures: 1.0.5
       httpbis-digest-headers: 1.0.0
       jose: 4.15.9
       uuid: 9.0.1
@@ -6825,9 +6825,9 @@ snapshots:
 
   http-message-signatures@0.1.2: {}
 
-  http-message-signatures@1.0.4:
+  http-message-signatures@1.0.5:
     dependencies:
-      structured-headers: 1.0.1
+      structured-headers: 2.0.2
 
   httpbis-digest-headers@1.0.0:
     dependencies:
@@ -8073,7 +8073,7 @@ snapshots:
 
   structured-headers@0.5.0: {}
 
-  structured-headers@1.0.1: {}
+  structured-headers@2.0.2: {}
 
   sucrase@3.35.0:
     dependencies:

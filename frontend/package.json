@@ -31,7 +31,7 @@
     "crypto-browserify": "^3.12.1",
     "fast-equals": "^6.0.0",
     "he": "^1.2.0",
-    "http-message-signatures": "^1.0.4",
+    "http-message-signatures": "^1.0.5",
     "httpbis-digest-headers": "^1.0.0",
     "isbot": "^5.1.36",
     "react": "^19.2.1",
