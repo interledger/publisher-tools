@@ -56,7 +56,11 @@ app.post(
         },
         { expirationTtl: 10 * 60 /* 10 minutes */ },
       )
-      return json(result)
+      return json({
+        paymentId: paymentId,
+        incomingPaymentId: result.incomingPaymentId,
+        grantRedirectUrl: result.grantRedirectUrl,
+      })
     } catch (error) {
       console.error(error)
       if (error instanceof HTTPException) throw error
