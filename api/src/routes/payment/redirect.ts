@@ -30,7 +30,7 @@ export type PaymentStatusRejected = z.infer<typeof PaymentStatusRejectedSchema>
 //
 // With this, the client doesn't need to trigger the payment manually - as soon
 // as grant is accepted, outgoing-payment will be created.
-app.post(
+app.get(
   '/payment/redirect/:paymentId',
   zValidator('param', z.object({ paymentId: PaymentIdSchema })),
   zValidator('query', PaymentStatusSchema),

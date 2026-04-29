@@ -30,7 +30,7 @@ app.post(
       const paymentId = createId()
       const originalRedirectUrl = params.redirectUrl
       params.redirectUrl = new URL(
-        `/payment/complete/${paymentId}`,
+        `/payment/redirect/${paymentId}`,
         req.url,
       ).href
 
