@@ -298,7 +298,7 @@ importers:
         specifier: ^2.16.0
         version: 2.16.0
       eslint:
-        specifier: ^9.39.2
+        specifier: ^9.39.4
         version: 9.39.4(jiti@2.6.1)
       postcss:
         specifier: ^8.5.6
