@@ -23,9 +23,7 @@ export type PaymentQuoteInput = z.infer<typeof PaymentQuoteSchema>
 
 app.post(
   '/payment/quotes',
-  zValidator('json', PaymentQuoteSchema, (res) => {
-    if (!res.success) throw res.error
-  }),
+  zValidator('json', PaymentQuoteSchema),
   async ({ req, json, env }) => {
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
