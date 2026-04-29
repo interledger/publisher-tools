@@ -1,3 +1,4 @@
+import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { createId } from '@paralleldrive/cuid2'
@@ -56,6 +57,7 @@ app.post(
       return json(result)
     } catch (error) {
       console.error(error)
+      if (error instanceof HTTPException) throw error
       throw createHTTPException(500, 'Payment initiate error: ', error)
     }
   },

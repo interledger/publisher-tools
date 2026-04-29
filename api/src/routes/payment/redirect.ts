@@ -1,3 +1,4 @@
+import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { urlWithParams } from '@shared/utils'
@@ -45,9 +46,11 @@ app.get(
         throw createHTTPException(404, 'Payment not found', {})
       }
       if (data.status !== 'PENDING') {
-        throw createHTTPException(500, 'Unexpected payment state', {
-          status: data.status,
-        })
+        throw createHTTPException(
+          500,
+          `Unexpected payment status: ${data.status}. Expected: PENDING`,
+          {},
+        )
       }
 
       if ('result' in queryParams && queryParams.result === 'grant_rejected') {
@@ -89,7 +92,8 @@ app.get(
       }
     } catch (error) {
       console.error(error)
-      throw createHTTPException(500, 'Payment initiate error: ', error)
+      if (error instanceof HTTPException) throw error
+      throw createHTTPException(500, 'Payment continue error', error)
     }
   },
 )
