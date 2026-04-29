@@ -1,21 +1,22 @@
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { app } from '../../app'
+import { PaymentIdSchema } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { getData, setData } from '../../utils/payments-kv'
 import { createHTTPException, waitWithAbort } from '../../utils/utils'
 
-const PaymentStatusParamSchema = z.object({
+const _PaymentStatusParamSchema = z.object({
   paymentId: z
     .string()
     .min(1, 'Payment ID is required')
     .max(100, 'Payment ID invalid'),
 })
-export type PaymentStatusParam = z.infer<typeof PaymentStatusParamSchema>
+export type PaymentStatusParam = z.infer<typeof _PaymentStatusParamSchema>
 
 app.get(
   '/payment/status/:paymentId',
-  zValidator('param', PaymentStatusParamSchema),
+  zValidator('param', z.object({ paymentId: PaymentIdSchema })),
   async ({ req, json, env }) => {
     const { paymentId } = req.param()
 
