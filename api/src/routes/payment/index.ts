@@ -2,9 +2,10 @@ import './quote.js'
 import './quotes.js'
 import './grant.js'
 import './initiate.js'
-import './redirect.js'
 import './finalize.js'
+import './redirect.js'
 import './status.js'
+import './status2.js'
 
 export type { PaymentQuoteInput } from './quote.js'
 export type {
