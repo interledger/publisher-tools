@@ -1,6 +1,5 @@
 import { API_URL } from '@shared/defines'
 import { OfferwallModal } from '@tools/components'
-import { injectUmami } from './lib/analytics'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 import {
   WebMonetizationCustomOfferwallChoice,
@@ -10,7 +9,6 @@ import {
 
 const NAME = 'wm-offerwall'
 customElements.define(NAME, OfferwallModal)
-injectUmami()
 
 const params = getScriptParams('offerwall')
 const linkElem = appendPaymentPointer(params.walletAddress)

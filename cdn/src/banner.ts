@@ -1,11 +1,10 @@
 import { API_URL } from '@shared/defines'
 import type { BannerProfile } from '@shared/types'
 import { Banner } from '@tools/components/banner'
-import { injectUmami, trackEvent } from './lib/analytics'
+import { trackEvent } from './lib/analytics'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
-injectUmami()
 
 const params = getScriptParams('banner')
 
