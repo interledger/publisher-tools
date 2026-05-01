@@ -1,19 +1,11 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import { app } from '../../app'
+import { app, type Env } from '../../app'
 import { PaymentIdSchema } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { getData, setData, type PaymentKvData } from '../../utils/payments-kv'
 import { createHTTPException } from '../../utils/utils'
-
-const _PaymentStatusParamSchema = z.object({
-  paymentId: z
-    .string()
-    .min(1, 'Payment ID is required')
-    .max(100, 'Payment ID invalid'),
-})
-export type PaymentStatusParam = z.infer<typeof _PaymentStatusParamSchema>
 
 app.get(
   '/payment/status/:paymentId',
@@ -23,80 +15,92 @@ app.get(
 
     try {
       const status = await getData(env.PUBLISHER_TOOLS_KV, paymentId)
-      return await handleStatus(status)
+      const result = await handleStatus(status, paymentId, env)
+      return json(result)
     } catch (error) {
       if (error instanceof HTTPException) throw error
       throw createHTTPException(404, 'Failed to retrieve data', error)
     }
-
-    async function handleStatus(data: PaymentKvData | null) {
-      if (!data) {
-        throw createHTTPException(404, 'Payment not found', {
-          message: 'The payment is either already complete, or never existed.',
-        })
-      }
-
-      if (data.status === 'PENDING') {
-        // The user hasn't accepted the grant yet
-        return json({ type: 'PENDING_GRANT_INTERACTION' })
-      }
-
-      if (data.status === 'GRANT_REJECTED') {
-        // The user rejected the grant
-        return json({ type: 'GRANT_REJECTED' })
-      }
-
-      if (data.status === 'CREATED') {
-        // We created the payment, but amount not sent yet.
-        const openPayments = await OpenPaymentsService.getInstance(env)
-        const result = await openPayments.completePaymentProcess(
-          undefined,
-          undefined,
-          data.outgoingPaymentId,
-          data.outgoingPaymentGrantAccessToken,
-        )
-        await setData(
-          env.PUBLISHER_TOOLS_KV,
-          paymentId,
-          {
-            status: 'COMPLETE',
-            result: result.success ? 'success' : 'failure',
-            error: result.success ? undefined : result.error,
-          },
-          { expirationTtl: 3 * 60 /* 3 minutes */ },
-        )
-        return json({
-          type: 'OUTGOING_PAYMENT_CREATED',
-          outgoingPaymentId: data.outgoingPaymentId,
-        })
-      }
-
-      if (data.status === 'COMPLETE') {
-        // Should stop polling at this stage. The KV entry will expire soon.
-        return json({
-          type: 'OUTGOING_PAYMENT_DONE',
-          result: data.result,
-          ...(data.error && {
-            error: {
-              code: data.error?.code,
-              message: data.error?.message,
-            },
-          }),
-        })
-      }
-    }
   },
 )
 
-export type PaymentStatusSuccess = {
-  paymentId: string
-  hash: string
-  interact_ref: string
+async function handleStatus(
+  data: PaymentKvData | null,
+  paymentId: string,
+  env: Env,
+): Promise<PaymentStatus> {
+  if (!data) {
+    throw createHTTPException(404, 'Payment not found', {
+      message: 'The payment is either already complete, or never existed.',
+    })
+  }
+
+  // The user hasn't accepted the grant yet
+  if (data.status === 'PENDING') {
+    return { type: 'PENDING_GRANT_INTERACTION' }
+  }
+
+  // The user rejected the grant
+  if (data.status === 'GRANT_REJECTED') {
+    return { type: 'GRANT_REJECTED' }
+  }
+
+  // We created the payment, but amount not sent yet.
+  if (data.status === 'CREATED') {
+    const openPayments = await OpenPaymentsService.getInstance(env)
+    const result = await openPayments.completePaymentProcess(
+      undefined,
+      undefined,
+      data.outgoingPaymentId,
+      data.outgoingPaymentGrantAccessToken,
+    )
+    await setData(
+      env.PUBLISHER_TOOLS_KV,
+      paymentId,
+      {
+        status: 'COMPLETE',
+        outgoingPaymentId: data.outgoingPaymentId,
+        result: result.success ? 'success' : 'failure',
+        error: result.success ? undefined : result.error,
+      },
+      { expirationTtl: 3 * 60 /* 3 minutes */ },
+    )
+    return {
+      type: 'OUTGOING_PAYMENT_CREATED',
+      outgoingPaymentId: data.outgoingPaymentId,
+    }
+  }
+
+  // Should stop polling at this stage. The KV entry will expire soon.
+  if (data.status === 'COMPLETE') {
+    return {
+      type: 'OUTGOING_PAYMENT_DONE',
+      outgoingPaymentId: data.outgoingPaymentId,
+      result: data.result,
+      ...(data.error && {
+        error: {
+          code: data.error?.code,
+          message: data.error?.message,
+        },
+      }),
+    }
+  }
+
+  throw createHTTPException(
+    500,
+    // @ts-expect-error this should never happen
+    `Unexpected payment status: ${data.status}.`,
+    {},
+  )
 }
 
-export type PaymentStatusRejected = {
-  paymentId: string
-  result: 'grant_rejected'
-}
-
-export type PaymentStatus = PaymentStatusSuccess | PaymentStatusRejected
+export type PaymentStatus =
+  | { type: 'PENDING_GRANT_INTERACTION' }
+  | { type: 'GRANT_REJECTED' }
+  | { type: 'OUTGOING_PAYMENT_CREATED'; outgoingPaymentId: string }
+  | {
+      type: 'OUTGOING_PAYMENT_DONE'
+      outgoingPaymentId: string
+      result: 'success' | 'failure'
+      error?: { code: string; message: string }
+    }

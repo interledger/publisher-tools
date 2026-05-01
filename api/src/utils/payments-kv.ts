@@ -34,6 +34,7 @@ export type PaymentKvData =
     }
   | {
       status: 'COMPLETE'
+      outgoingPaymentId: string
       result: 'success' | 'failure'
       error?: {
         code: string
