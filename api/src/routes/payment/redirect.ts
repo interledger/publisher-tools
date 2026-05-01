@@ -54,6 +54,12 @@ app.get(
       }
 
       if ('result' in queryParams && queryParams.result === 'grant_rejected') {
+        await setData(
+          env.PUBLISHER_TOOLS_KV,
+          paymentId,
+          { status: 'GRANT_REJECTED' },
+          { expirationTtl: 5 * 60 /* 5 minutes */ },
+        )
         return redirect(
           urlWithParams(data.redirectUrl, {
             paymentId,

@@ -21,6 +21,9 @@ export type PaymentKvData =
       metadata: Record<string, unknown>
     }
   | {
+      status: 'GRANT_REJECTED'
+    }
+  | {
       status: 'CREATED'
       // For polling of outgoing payment completion
       outgoingPaymentId: string
