@@ -1,4 +1,5 @@
 import type { WalletAddress } from '@interledger/open-payments'
+import type { Amount } from '@shared/types'
 
 export async function getWalletAddress(
   walletAddressUrl: string,
@@ -52,6 +53,20 @@ export function isWalletAddress(obj: unknown): obj is WalletAddress {
     o.resourceServer &&
     typeof o.resourceServer === 'string'
   )
+}
+
+export function toAmount(
+  /** @example "1.20", "1.5", 1.53, 10.535 */
+  value: string | number,
+  walletAddress: Pick<WalletAddress, 'assetScale' | 'assetCode'>,
+): Amount {
+  const val = typeof value === 'number' ? value : parseFloat(value)
+  const { assetScale, assetCode } = walletAddress
+  return {
+    value: BigInt((val * 10 ** assetScale).toFixed()).toString(),
+    assetCode: assetCode,
+    assetScale: assetScale,
+  }
 }
 
 // https://github.com/interledger/web-monetization-extension/blob/305b47c9f67ca604c79cfbfb083e5fcd1a579161/src/shared/helpers/wallet.ts#L13-L21

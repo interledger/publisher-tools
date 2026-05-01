@@ -232,3 +232,9 @@ export type UtmParams = {
   utm_content?: string
   utm_term?: string
 }
+
+export interface Amount {
+  value: string
+  assetCode: string
+  assetScale: number
+}
