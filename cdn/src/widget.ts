@@ -104,7 +104,7 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
       }
     },
     async *getStatus(paymentId, signal) {
-      const url = new URL(`/payment/status2/${paymentId}`, API_URL).href
+      const url = new URL(`/payment/status/${paymentId}`, API_URL).href
       while (true) {
         try {
           signal?.throwIfAborted()
