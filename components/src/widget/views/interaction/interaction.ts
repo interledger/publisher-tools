@@ -1,14 +1,10 @@
 import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type {
-  PaymentStatusSuccess,
-  PaymentStatus,
-  PaymentStatusRejected,
-} from 'publisher-tools-api'
-import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
+import type { PaymentStatus } from 'publisher-tools-api'
 import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
+import { sleep } from '@shared/utils'
 import interactionStyles from './interaction.css?raw'
 import type { WidgetController } from '../../controller'
 
@@ -27,18 +23,6 @@ type InteractionView = {
   }
   button?: ButtonAction
   description?: string
-}
-
-function isInteractionSuccess(
-  params: PaymentStatus,
-): params is PaymentStatusSuccess {
-  return 'interact_ref' in params
-}
-
-function isInteractionRejected(
-  params: PaymentStatus,
-): params is PaymentStatusRejected {
-  return 'result' in params && params.result === 'grant_rejected'
 }
 
 function isAbortSignalTimeout(ev: unknown) {
@@ -74,45 +58,24 @@ export class PaymentInteraction extends LitElement {
       this.previewInteractionCompleted()
       return
     }
-    const {
-      outgoingPaymentGrant: {
-        interact: { redirect },
-      },
-    } = this.configController.state
-    if (!redirect) return
-
-    window.open(redirect, '_blank')
-    this._boundHandleMessage = this.handleMessage.bind(this)
-    window.addEventListener('message', this._boundHandleMessage)
+    const { grantRedirectUrl } = this.configController.state
+    if (!grantRedirectUrl) {
+      throw new Error('Grant redirect URL not found')
+    }
+    window.open(grantRedirectUrl, '_blank')
 
     const POLLING_TIMEOUT = 25_000 * 5
     this.#pollingAbortController = new AbortController()
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
       this.#pollingAbortController?.abort(ev)
     })
-    this._startLongPolling(this.#pollingAbortController.signal)
+    this._pollPaymentCompletion(this.#pollingAbortController.signal)
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
     window.removeEventListener('message', this._boundHandleMessage)
     this._cancelPolling()
-  }
-
-  private handleMessage(event: MessageEvent) {
-    if (event.data?.type !== 'GRANT_INTERACTION') return
-
-    window.removeEventListener('message', this._boundHandleMessage)
-    const { data } = event
-    this._markPollingCompleted()
-
-    if (isInteractionSuccess(data)) {
-      void this.handleInteractionSuccess(data.interact_ref)
-    } else if (isInteractionRejected(data)) {
-      this.handleInteractionFail('Payment authorization rejected')
-    } else {
-      this.handleInteractionFail('Invalid payment response received')
-    }
   }
 
   private cancel() {
@@ -134,86 +97,62 @@ export class PaymentInteraction extends LitElement {
     )
   }
 
-  private async handleInteractionSuccess(interactRef: string) {
-    this.currentView = 'processing'
-    this.requestUpdate()
-
-    try {
-      const {
-        walletAddress,
-        outgoingPaymentGrant,
-        quote,
-        incomingPaymentGrant,
-        note,
-      } = this.configController.state
-      const { apiUrl } = this.configController.config
-      const url = new URL('/payment/finalize', apiUrl).href
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          walletAddress,
-          pendingGrant: outgoingPaymentGrant,
-          quote,
-          incomingPaymentGrant,
-          interactRef,
-          note,
-        }),
-      })
-
-      if (!response.ok) {
-        this.handleInteractionFail(
-          'Failed to process payment. Please try again',
-        )
-        return
-      }
-
-      const result = (await response.json()) as CheckPaymentResult
-
-      if (result.success === false) {
-        this.handleInteractionFail(
-          result.error?.message || 'Payment processing failed',
-        )
-        return
-      }
-
-      this.currentView = 'success'
-      this.requestUpdate()
-    } catch {
-      this.handleInteractionFail('There was an issue with your request')
-    }
-  }
-
   private handleInteractionFail(message: string) {
     this.currentView = 'failed'
     this.errorMessage = message
     this.requestUpdate()
   }
 
-  private async _startLongPolling(signal?: AbortSignal): Promise<void> {
+  private async _pollPaymentCompletion(signal?: AbortSignal) {
+    while (true) {
+      const res = await this._getAndHandleStatus(signal)
+      if (!res) return
+      if (res.type === 'PENDING_GRANT_INTERACTION') {
+        await sleep(3000)
+        continue
+      }
+      if (res.type === 'OUTGOING_PAYMENT_CREATED') {
+        this.currentView = 'processing'
+        this.requestUpdate()
+        await sleep(1500)
+        continue
+      }
+      if (res.type === 'OUTGOING_PAYMENT_DONE') {
+        this.currentView = 'success'
+        this.requestUpdate()
+        this._markPollingCompleted()
+        return
+      }
+      if (res.type === 'GRANT_REJECTED') {
+        this.handleInteractionFail('Payment authorization rejected')
+        this._markPollingCompleted()
+        return
+      }
+
+      this.handleInteractionFail('Invalid payment response received')
+      this._markPollingCompleted()
+      return
+    }
+  }
+
+  private async _getAndHandleStatus(
+    signal?: AbortSignal,
+  ): Promise<PaymentStatus | void> {
     if (this.#interactionCompleted) return
 
     const { paymentId } = this.configController.state
     const { apiUrl } = this.configController.config
-    const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
+    const url = new URL(`/payment/status2/${paymentId}`, apiUrl).href
 
     signal?.throwIfAborted()
     try {
       const res = await fetch(url, { signal })
-      if (res.ok) {
-        const data = (await res.json()) as PaymentStatus
-        if (isInteractionSuccess(data)) {
-          void this.handleInteractionSuccess(data.interact_ref)
-        } else if (isInteractionRejected(data)) {
-          this.handleInteractionFail('Payment authorization rejected')
-        } else {
-          this.handleInteractionFail('Invalid payment response received')
-        }
-        return //success
+      if (!res.ok) {
+        this._markPollingFailed('Failed to check payment status')
+        return
       }
+      const data = await res.json()
+      return data as PaymentStatus
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
         // don't handle errors if the request was aborted, another method succeeded

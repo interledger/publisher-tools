@@ -22,6 +22,12 @@ const PaymentInitiateSchema = z
   .and(DebitOrReceiveAmountSchema)
 export type PaymentInitiateInput = z.infer<typeof PaymentInitiateSchema>
 
+export type PaymentInitiateResult = {
+  paymentId: string
+  incomingPaymentId: string
+  grantRedirectUrl: string
+}
+
 app.post(
   '/payment/initiate',
   zValidator('json', PaymentInitiateSchema),
@@ -60,7 +66,7 @@ app.post(
         paymentId: paymentId,
         incomingPaymentId: result.incomingPaymentId,
         grantRedirectUrl: result.grantRedirectUrl,
-      })
+      } satisfies PaymentInitiateResult)
     } catch (error) {
       console.error(error)
       if (error instanceof HTTPException) throw error

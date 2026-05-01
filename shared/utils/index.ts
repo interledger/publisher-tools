@@ -239,6 +239,10 @@ export function withResolvers<T>(): {
   return { resolve, reject, promise }
 }
 
+export function sleep(delay: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, delay))
+}
+
 export type UtmParams = {
   utm_source: string
   utm_medium: string

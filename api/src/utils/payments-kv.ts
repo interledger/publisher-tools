@@ -56,5 +56,6 @@ export async function setData(
   data: PaymentKvData,
   options?: KVNamespacePutOptions,
 ) {
+  console.log(`Setting for ${paymentId}: ${data.status}`)
   await kv.put(getKey(paymentId), JSON.stringify(data), options)
 }

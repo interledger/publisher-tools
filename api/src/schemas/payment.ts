@@ -27,16 +27,14 @@ export const DebitOrReceiveAmountSchema = z.union(
   },
 )
 
-export const WalletAddressSchema = z
-  .looseObject({
-    id: z.string(),
-    publicName: z.string().optional(),
-    assetCode: z.string(),
-    assetScale: z.number().int().min(0),
-    authServer: z.string(),
-    resourceServer: z.string(),
-  })
-  .brand('WalletAddress')
+export const WalletAddressSchema = z.looseObject({
+  id: z.string(),
+  publicName: z.string().optional(),
+  assetCode: z.string(),
+  assetScale: z.number().int().min(0),
+  authServer: z.string(),
+  resourceServer: z.string(),
+})
 
 export const PaymentIdSchema = z
   .string()
