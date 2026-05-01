@@ -61,7 +61,10 @@ export const WidgetPreview = ({
             receiveAmount: { value: amount, currency: receiver.assetCode },
           }
         },
-        initiatePayment(request) {},
+        async initiatePayment() {
+          await sleep(500)
+          return { grantRedirectUrl: '', paymentId: 'PAYMENT-ID' }
+        },
         waitForCompletion(paymentId) {},
       })
     }

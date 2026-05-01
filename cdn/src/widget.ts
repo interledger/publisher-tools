@@ -1,5 +1,7 @@
 import type {
   ApiErrorResponse,
+  PaymentInitiateInput,
+  PaymentInitiateResult,
   PaymentQuoteInput,
   PaymentQuoteResult,
   WalletAddressInfo,
@@ -23,6 +25,7 @@ fetchProfile(API_URL, 'widget', params)
   .catch((error) => console.error(error))
 
 const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
+  const frontendUrl = new URL('/tools/', getFrontendUrlOrigin()).href
   const element = document.createElement('wm-payment-widget')
   element.setController({
     async getWallet(walletAddressUrl) {
@@ -69,13 +72,37 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
         }
       }
     },
-    async initiatePayment(request) {},
+    async initiatePayment({ sender, receiver, amount, note }) {
+      const url = new URL('/payment/initiate', API_URL).href
+      const body: PaymentInitiateInput = {
+        sender,
+        receiver,
+        debitAmount: Number(amount),
+        note,
+        redirectUrl: new URL('payment-confirmation', frontendUrl).href,
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) {
+        throw new Error(
+          `Failed to initiate payment. HTTP ${res.status} (${res.statusText})`,
+        )
+      }
+      const json: PaymentInitiateResult = await res.json()
+      return {
+        grantRedirectUrl: json.grantRedirectUrl,
+        paymentId: json.paymentId,
+      }
+    },
     async waitForCompletion(paymentId) {},
   })
   element.config = {
     apiUrl: API_URL,
     cdnUrl: params.cdnUrl,
-    frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
+    frontendUrl,
     receiverAddress: walletAddressUrl,
     profile,
   }

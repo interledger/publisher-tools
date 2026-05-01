@@ -1,10 +1,6 @@
 import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type {
-  PaymentInitiateInput,
-  PaymentInitiateResult,
-  WalletAddressInfo,
-} from 'publisher-tools-api'
+import type { WalletAddressInfo } from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
 import { getCurrencySymbol, getFormattedAmount } from '@c/utils'
@@ -13,7 +9,6 @@ import {
   type Controller,
   type WidgetController,
 } from '@c/widget/controller'
-import type { WalletAddress } from '@interledger/open-payments'
 import type { Amount } from '@shared/types'
 import { toAmount } from '@shared/utils'
 import confirmationCss from './confirmation.css?raw'
@@ -233,32 +228,27 @@ export class PaymentConfirmation extends LitElement {
 
   private onPaymentConfirmed = () => {
     this.isPreparingPayment = true
-    if (this.isPreview) {
-      this.previewPaymentConfirmed()
-      return
-    }
-
     this.handlePaymentConfirmed()
   }
 
   private async handlePaymentConfirmed() {
     try {
       const {
-        walletAddress,
+        walletAddress: sender,
         receiver,
         amount,
         note = '',
       } = this.configController.state
-      const { grantRedirectUrl, paymentId } = await this.initiatePayment({
-        sender: walletAddress,
+      const res = await this.#controller.initiatePayment({
+        sender,
         receiver,
         amount,
         note,
       })
 
       this.configController.updateState({
-        grantRedirectUrl,
-        paymentId,
+        grantRedirectUrl: res.grantRedirectUrl,
+        paymentId: res.paymentId,
         note: this.note,
       })
 
@@ -282,42 +272,6 @@ export class PaymentConfirmation extends LitElement {
         composed: true,
       }),
     )
-  }
-
-  private async initiatePayment({
-    sender,
-    receiver,
-    amount,
-    note,
-  }: {
-    sender: WalletAddress
-    receiver: WalletAddress
-    amount: number
-    note: string
-  }): Promise<PaymentInitiateResult> {
-    const { apiUrl, frontendUrl } = this.configController.config
-    const url = new URL('/payment/initiate', apiUrl).href
-    const redirectUrl = new URL('payment-confirmation', frontendUrl).href
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sender,
-        receiver,
-        debitAmount: amount,
-        note,
-        redirectUrl,
-      } satisfies PaymentInitiateInput),
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to request outgoing payment grant')
-    }
-
-    return await response.json()
   }
 
   private goBack() {

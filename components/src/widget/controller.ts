@@ -29,36 +29,23 @@ type WalletAddressUrl = string
 /** The amount sender wants to send (like "1.05"), does not include fees */
 type UserAmount = number | PaymentCurrencyAmount['value']
 
-export interface QuoteInput {
+interface QuoteInput {
   sender: WalletAddressInfo
   receiver: WalletAddressInfo
   amount: UserAmount
 }
-
-export type QuoteResult =
+type QuoteResult =
   | { debitAmount: PaymentCurrencyAmount; receiveAmount: PaymentCurrencyAmount }
   | { error: string; minSendAmount?: PaymentCurrencyAmount }
 
-export interface InitiatePaymentInput {
+interface InitiatePaymentInput {
   sender: WalletAddressInfo
   receiver: WalletAddressInfo
   amount: UserAmount
   note: string
 }
-// `/initiate` endpoints does following:
-//  - for the receiver, creates incoming payment grant, an incoming payment, and
-//    a quote (that'll be used in create outgoing payment request) for the
-//    payment
-//  - for the sender, it creates the outgoing payment grant
-
-export interface InitiatePaymentResult {
-  // for polling payment completion
+interface InitiatePaymentResult {
   paymentId: string
-  // for outgoing-payment request
-  quoteId: string
-  // for any events for customer use
-  incomingPaymentId: string
-  // authentication
   grantRedirectUrl: PendingGrant['interact']['redirect']
 }
 
