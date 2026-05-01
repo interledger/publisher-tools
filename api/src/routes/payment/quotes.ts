@@ -28,7 +28,10 @@ app.post(
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.paymentQuote(req.valid('json'))
-      return json(result)
+      return json({
+        debitAmount: result.debitAmount,
+        receiveAmount: result.receiveAmount,
+      })
     } catch (error) {
       if (isNonPositiveAmountError(error)) {
         return json(

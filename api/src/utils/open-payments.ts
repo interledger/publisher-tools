@@ -6,6 +6,7 @@ import {
   type OutgoingPayment,
   type Quote,
   type Grant,
+  type GrantContinuation,
   isFinalizedGrantWithAccessToken,
   isPendingGrant,
   createAuthenticatedClient,
@@ -58,20 +59,6 @@ function hasCancellationReason(outgoingPayment: OutgoingPayment): boolean {
     typeof outgoingPayment.metadata === 'object' &&
     'cancellationReason' in outgoingPayment.metadata
   )
-}
-
-export interface InitiatePaymentResult {
-  /** for polling payment completion */
-  paymentId: string
-  /** for outgoing-payment request */
-  quoteId: string
-  /** for any events for customer use */
-  incomingPaymentId: string
-  /** authentication */
-  grantRedirectUrl: PendingGrant['interact']['redirect']
-  /** post-authentication */
-  grantContinuation: PendingGrant['continue']
-  nonce: string
 }
 
 export class OpenPaymentsService {
@@ -135,11 +122,7 @@ export class OpenPaymentsService {
     })
   }
 
-  async paymentQuote({ sender, receiver, ...amt }: PaymentQuoteInput): Promise<{
-    debitAmount: Amount
-    receiveAmount: Amount
-    id: string
-  }> {
+  async paymentQuote({ sender, receiver, ...amt }: PaymentQuoteInput) {
     const debitAmount = amt.debitAmount
       ? toAmount(amt.debitAmount, sender)
       : undefined
@@ -178,9 +161,7 @@ export class OpenPaymentsService {
     // TODO: cleanup/expire things once done. we only cared about amounts for displaying
   }
 
-  async paymentInitiate(
-    params: PaymentInitiateInput,
-  ): Promise<Omit<InitiatePaymentResult, 'paymentId'>> {
+  async paymentInitiate(params: PaymentInitiateInput) {
     const { sender, receiver, note, redirectUrl, ...amt } = params
     const debitAmount = amt.debitAmount
       ? toAmount(amt.debitAmount, sender)
@@ -234,8 +215,8 @@ export class OpenPaymentsService {
 
   async paymentComplete(params: {
     sender: WalletAddress
-    quoteId: InitiatePaymentResult['quoteId']
-    grantContinuation: InitiatePaymentResult['grantContinuation']
+    quoteId: string
+    grantContinuation: GrantContinuation['continue']
     nonce: string
     interactRef: string
     hash: string
