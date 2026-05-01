@@ -1,11 +1,6 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
 import type { WalletAddressInfo } from 'publisher-tools-api'
-import type {
-  Grant,
-  Quote,
-  PendingGrant,
-  WalletAddress,
-} from '@interledger/open-payments'
+import type { Grant, Quote, PendingGrant } from '@interledger/open-payments'
 import {
   WIDGET_POSITION,
   BORDER_RADIUS,
@@ -17,8 +12,8 @@ import type { WidgetConfig } from './types'
 
 export interface WidgetState {
   /** sender wallet address */
-  walletAddress: WalletAddress
-  receiver: WalletAddress
+  walletAddress: WalletAddressInfo
+  receiver: WalletAddressInfo
   amount: number
   incomingPaymentGrant: Grant
   quote: Quote
@@ -32,7 +27,7 @@ export interface WidgetState {
 
 type WalletAddressUrl = string
 /** The amount sender wants to send (like "1.05"), does not include fees */
-type UserAmount = PaymentCurrencyAmount['value']
+type UserAmount = number | PaymentCurrencyAmount['value']
 
 export interface QuoteInput {
   sender: WalletAddressInfo
@@ -40,10 +35,9 @@ export interface QuoteInput {
   amount: UserAmount
 }
 
-export interface QuoteResult {
-  debitAmount: PaymentCurrencyAmount
-  receiveAmount: PaymentCurrencyAmount
-}
+export type QuoteResult =
+  | { debitAmount: PaymentCurrencyAmount; receiveAmount: PaymentCurrencyAmount }
+  | { error: string; minSendAmount?: PaymentCurrencyAmount }
 
 export interface InitiatePaymentInput {
   sender: WalletAddressInfo
@@ -90,6 +84,7 @@ export const NO_OP_CONTROLLER: Controller = {
     })
   },
   fetchQuote({ amount, sender, receiver }) {
+    amount = String(amount)
     const debitAmount = { value: amount, currency: sender.assetCode }
     const receiveAmount = { value: amount, currency: receiver.assetCode }
     return Promise.resolve({ debitAmount, receiveAmount })

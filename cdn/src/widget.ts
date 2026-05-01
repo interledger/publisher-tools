@@ -1,9 +1,14 @@
-import type { ApiErrorResponse, WalletAddressInfo } from 'publisher-tools-api'
+import type {
+  ApiErrorResponse,
+  PaymentQuoteInput,
+  PaymentQuoteResult,
+  WalletAddressInfo,
+} from 'publisher-tools-api'
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetProfile } from '@shared/types'
+import { checkHrefFormat, fromAmount, toWalletAddressUrl } from '@shared/utils'
 import { PaymentWidget } from '@tools/components'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
-import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)
 
@@ -33,7 +38,37 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
       }
       return data as WalletAddressInfo
     },
-    async fetchQuote(request) {},
+    async fetchQuote({ sender, receiver, amount }) {
+      const url = new URL('/payment/quotes', API_URL)
+      const body: PaymentQuoteInput = {
+        sender,
+        receiver,
+        debitAmount: Number(amount),
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const json: PaymentQuoteResult = await res.json()
+      if (res.ok && 'receiveAmount' in json) {
+        const debitAmount = fromAmount(json.debitAmount)
+        const receiveAmount = fromAmount(json.receiveAmount)
+        return { debitAmount, receiveAmount }
+      }
+
+      if (res.status === 400 && 'error' in json) {
+        const { error, minSendAmount } = json
+        return {
+          error,
+          ...(minSendAmount && { minSendAmount: fromAmount(minSendAmount) }),
+        }
+      } else {
+        return {
+          error: 'Failed to create payment. Please try a different amount.',
+        }
+      }
+    },
     async initiatePayment(request) {},
     async waitForCompletion(paymentId) {},
   })

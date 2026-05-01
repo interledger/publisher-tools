@@ -1,13 +1,11 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { ApiErrorResponse } from 'publisher-tools-api'
+import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
-import type { WalletAddress } from '@interledger/open-payments'
-import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 import {
   type Controller,
   NO_OP_CONTROLLER,
@@ -29,14 +27,14 @@ const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 
 export class PaymentWidget extends LitElement {
-  #receiver!: Promise<WalletAddress>
+  #receiver!: Promise<WalletAddressInfo>
   private configController = new WidgetController(this)
 
   @property({ type: Object })
   set config(value: Partial<WidgetConfig>) {
     this.configController.updateConfig(value)
     if (value.receiverAddress && !this.#receiver) {
-      this.#receiver = this.getWalletInfo(value.receiverAddress)
+      this.#receiver = this.#controller.getWallet(value.receiverAddress)
     }
   }
 
@@ -97,20 +95,6 @@ export class PaymentWidget extends LitElement {
     } finally {
       this.isSubmitting = false
     }
-  }
-
-  private async getWalletInfo(walletAddressUrl: string) {
-    const { apiUrl } = this.configController.config
-    const url = new URL('/wallet', apiUrl)
-    url.searchParams.set('walletAddress', walletAddressUrl)
-
-    const response = await fetch(url)
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error((data as ApiErrorResponse).error?.message)
-    }
-    return data as WalletAddress
   }
 
   private toggleWidget() {
@@ -218,6 +202,7 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-confirmation
         .configController=${this.configController}
+        .controller=${this.#controller}
         .note=${this.config.note || ''}
         .isPreview=${this.isPreview}
         @back=${this.navigateToHome}

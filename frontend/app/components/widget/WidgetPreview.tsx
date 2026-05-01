@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { sleep } from '@shared/utils'
 import type { PaymentWidget as WidgetComponent } from '@tools/components'
 import { useWidgetProfile } from '~/stores/widget-store'
 
@@ -52,7 +53,14 @@ export const WidgetPreview = ({
           resourceServer: 'https://ilp.dev',
           publicName: 'Wallet (Preview)',
         }),
-        fetchQuote(request) {},
+        async fetchQuote({ sender, receiver, amount }) {
+          await sleep(500)
+          amount = String(amount)
+          return {
+            debitAmount: { value: amount, currency: sender.assetCode },
+            receiveAmount: { value: amount, currency: receiver.assetCode },
+          }
+        },
         initiatePayment(request) {},
         waitForCompletion(paymentId) {},
       })
