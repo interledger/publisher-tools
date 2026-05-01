@@ -4,11 +4,17 @@ import type {
   PaymentInitiateResult,
   PaymentQuoteInput,
   PaymentQuoteResult,
+  PaymentStatus,
   WalletAddressInfo,
 } from 'publisher-tools-api'
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetProfile } from '@shared/types'
-import { checkHrefFormat, fromAmount, toWalletAddressUrl } from '@shared/utils'
+import {
+  checkHrefFormat,
+  fromAmount,
+  sleep,
+  toWalletAddressUrl,
+} from '@shared/utils'
 import { PaymentWidget } from '@tools/components'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
@@ -97,7 +103,42 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
         paymentId: json.paymentId,
       }
     },
-    async waitForCompletion(paymentId) {},
+    async *getStatus(paymentId, signal) {
+      const url = new URL(`/payment/status2/${paymentId}`, API_URL).href
+      while (true) {
+        try {
+          signal?.throwIfAborted()
+          const res = await fetch(url, { signal })
+          if (!res.ok) {
+            throw new Error('Failed to check payment status: ' + res.statusText)
+          }
+
+          const status: PaymentStatus = await res.json()
+          yield status
+
+          if (status.type === 'PENDING_GRANT_INTERACTION') {
+            await sleep(3000)
+          } else if (status.type === 'OUTGOING_PAYMENT_CREATED') {
+            await sleep(1500)
+          } else if (
+            status.type === 'OUTGOING_PAYMENT_DONE' ||
+            status.type === 'GRANT_REJECTED'
+          ) {
+            break
+          } else {
+            throw new Error('Unknown payment status: ' + JSON.stringify(status))
+          }
+        } catch (err) {
+          if (err instanceof Error && err.name === 'AbortError') {
+            break
+          } else if (isAbortSignalTimeout(err) || isTimeoutError(err)) {
+            throw new Error('Payment authorization timed out')
+          } else {
+            throw new Error('Failed to check payment status', { cause: err })
+          }
+        }
+      }
+    },
   })
   element.config = {
     apiUrl: API_URL,
@@ -131,4 +172,16 @@ function getFrontendUrlOrigin() {
   }
 
   return APP_URL.staging
+}
+
+function isAbortSignalTimeout(ev: unknown) {
+  return (
+    ev instanceof Event &&
+    ev.target instanceof AbortSignal &&
+    isTimeoutError(ev.target.reason)
+  )
+}
+
+function isTimeoutError(err: unknown) {
+  return err instanceof DOMException && err.name === 'TimeoutError'
 }

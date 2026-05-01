@@ -1,5 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
-import type { WalletAddressInfo } from 'publisher-tools-api'
+import type { PaymentStatus, WalletAddressInfo } from 'publisher-tools-api'
 import type { Grant, Quote, PendingGrant } from '@interledger/open-payments'
 import {
   WIDGET_POSITION,
@@ -53,7 +53,10 @@ export interface Controller {
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   fetchQuote(request: QuoteInput): Promise<QuoteResult>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
-  waitForCompletion(paymentId: string): Promise<void>
+  getStatus(
+    paymentId: string,
+    signal?: AbortSignal,
+  ): AsyncGenerator<PaymentStatus>
 
   isPreviewMode?: boolean
 }
@@ -84,7 +87,13 @@ export const NO_OP_CONTROLLER: Controller = {
       grantRedirectUrl: 'https://example.com/redirect',
     })
   },
-  waitForCompletion: () => Promise.resolve(),
+  async *getStatus() {
+    yield {
+      type: 'OUTGOING_PAYMENT_DONE',
+      outgoingPaymentId: '',
+      result: 'success',
+    }
+  },
 }
 
 export interface Actions {

@@ -63,9 +63,23 @@ export const WidgetPreview = ({
         },
         async initiatePayment() {
           await sleep(500)
-          return { grantRedirectUrl: '', paymentId: 'PAYMENT-ID' }
+          return {
+            grantRedirectUrl: 'https://example.com',
+            paymentId: 'PAYMENT-ID',
+          }
         },
-        waitForCompletion(paymentId) {},
+        async *getStatus() {
+          const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
+          yield { type: 'PENDING_GRANT_INTERACTION' }
+          await sleep(2000)
+          yield { type: 'OUTGOING_PAYMENT_CREATED', outgoingPaymentId }
+          await sleep(2000)
+          yield {
+            type: 'OUTGOING_PAYMENT_DONE',
+            result: 'success',
+            outgoingPaymentId,
+          }
+        },
       })
     }
   }, [widgetRef.current, isLoaded])

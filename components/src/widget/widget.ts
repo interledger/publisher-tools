@@ -62,6 +62,7 @@ export class PaymentWidget extends LitElement {
 
   #controller = NO_OP_CONTROLLER
   setController(controller: Controller) {
+    if (this.#controller === controller) return
     if (this.#controller !== NO_OP_CONTROLLER) {
       throw new Error('controller is already set')
     }
@@ -216,6 +217,7 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-interaction
         .configController=${this.configController}
+        .controller=${this.#controller}
         .isPreview=${this.isPreview}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}

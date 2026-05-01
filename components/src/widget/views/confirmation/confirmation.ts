@@ -264,16 +264,6 @@ export class PaymentConfirmation extends LitElement {
     }
   }
 
-  private previewPaymentConfirmed() {
-    this.isPreparingPayment = false
-    this.dispatchEvent(
-      new CustomEvent('payment-confirmed', {
-        bubbles: true,
-        composed: true,
-      }),
-    )
-  }
-
   private goBack() {
     this.dispatchEvent(
       new CustomEvent('back', {
