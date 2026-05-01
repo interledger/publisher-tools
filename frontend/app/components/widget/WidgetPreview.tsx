@@ -41,47 +41,46 @@ export const WidgetPreview = ({
   }, [profile, serviceUrls, opWallet])
 
   useEffect(() => {
-    if (widgetRef.current && isLoaded) {
-      widgetRef.current.setController({
-        isPreviewMode: true,
-        getWallet: async () => ({
-          $url: 'https://ilp.dev/mock-wallet',
-          id: 'https://ilp.dev/mock-wallet',
-          assetCode: 'USD',
-          assetScale: 2,
-          authServer: 'https://auth.interledger.cards',
-          resourceServer: 'https://ilp.dev',
-          publicName: 'Wallet (Preview)',
-        }),
-        async fetchQuote({ sender, receiver, amount }) {
-          await sleep(500)
-          amount = String(amount)
-          return {
-            debitAmount: { value: amount, currency: sender.assetCode },
-            receiveAmount: { value: amount, currency: receiver.assetCode },
-          }
-        },
-        async initiatePayment() {
-          await sleep(500)
-          return {
-            grantRedirectUrl: 'https://example.com',
-            paymentId: 'PAYMENT-ID',
-          }
-        },
-        async *getStatus() {
-          const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
-          yield { type: 'PENDING_GRANT_INTERACTION' }
-          await sleep(2000)
-          yield { type: 'OUTGOING_PAYMENT_CREATED', outgoingPaymentId }
-          await sleep(2000)
-          yield {
-            type: 'OUTGOING_PAYMENT_DONE',
-            result: 'success',
-            outgoingPaymentId,
-          }
-        },
-      })
-    }
+    if (!isLoaded) return
+    widgetRef.current?.setController({
+      isPreviewMode: true,
+      getWallet: async () => ({
+        $url: 'https://ilp.dev/mock-wallet',
+        id: 'https://ilp.dev/mock-wallet',
+        assetCode: 'USD',
+        assetScale: 2,
+        authServer: 'https://auth.interledger.cards',
+        resourceServer: 'https://ilp.dev',
+        publicName: 'Wallet (Preview)',
+      }),
+      async fetchQuote({ sender, receiver, amount }) {
+        await sleep(500)
+        amount = String(amount)
+        return {
+          debitAmount: { value: amount, currency: sender.assetCode },
+          receiveAmount: { value: amount, currency: receiver.assetCode },
+        }
+      },
+      async initiatePayment() {
+        await sleep(500)
+        return {
+          grantRedirectUrl: 'https://example.com',
+          paymentId: 'PAYMENT-ID',
+        }
+      },
+      async *getStatus() {
+        const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
+        yield { type: 'PENDING_GRANT_INTERACTION' }
+        await sleep(2000)
+        yield { type: 'OUTGOING_PAYMENT_CREATED', outgoingPaymentId }
+        await sleep(2000)
+        yield {
+          type: 'OUTGOING_PAYMENT_DONE',
+          result: 'success',
+          outgoingPaymentId,
+        }
+      },
+    })
   }, [widgetRef.current, isLoaded])
 
   useEffect(() => {
