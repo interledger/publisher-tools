@@ -139,6 +139,9 @@ importers:
       esbuild-plugin-copy:
         specifier: ^2.1.1
         version: 2.1.1(esbuild@0.28.0)
+      publisher-tools-api:
+        specifier: workspace:^
+        version: link:../api
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

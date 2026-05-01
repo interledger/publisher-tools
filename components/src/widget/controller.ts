@@ -1,5 +1,11 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
-import type { Grant, Quote, WalletAddress } from '@interledger/open-payments'
+import type { WalletAddressInfo } from 'publisher-tools-api'
+import type {
+  Grant,
+  Quote,
+  PendingGrant,
+  WalletAddress,
+} from '@interledger/open-payments'
 import {
   WIDGET_POSITION,
   BORDER_RADIUS,
@@ -22,6 +28,85 @@ export interface WidgetState {
   receiveAmount: string
   receiverPublicName?: string
   note?: string
+}
+
+type WalletAddressUrl = string
+/** The amount sender wants to send (like "1.05"), does not include fees */
+type UserAmount = PaymentCurrencyAmount['value']
+
+export interface QuoteInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: UserAmount
+}
+
+export interface QuoteResult {
+  debitAmount: PaymentCurrencyAmount
+  receiveAmount: PaymentCurrencyAmount
+}
+
+export interface InitiatePaymentInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: UserAmount
+  note: string
+}
+// `/initiate` endpoints does following:
+//  - for the receiver, creates incoming payment grant, an incoming payment, and
+//    a quote (that'll be used in create outgoing payment request) for the
+//    payment
+//  - for the sender, it creates the outgoing payment grant
+
+export interface InitiatePaymentResult {
+  // for polling payment completion
+  paymentId: string
+  // for outgoing-payment request
+  quoteId: string
+  // for any events for customer use
+  incomingPaymentId: string
+  // authentication
+  grantRedirectUrl: PendingGrant['interact']['redirect']
+}
+
+export interface Controller {
+  getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
+  fetchQuote(request: QuoteInput): Promise<QuoteResult>
+  initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
+  waitForCompletion(paymentId: string): Promise<void>
+
+  isPreviewMode?: boolean
+}
+
+export const NO_OP_CONTROLLER: Controller = {
+  getWallet(walletAddressUrl) {
+    return Promise.resolve({
+      $url: walletAddressUrl,
+      id: walletAddressUrl,
+      assetCode: 'USD',
+      assetScale: 2,
+      authServer: 'https://auth.example.com',
+      resourceServer: 'https://resource.example.com',
+      publicName: 'a',
+    })
+  },
+  fetchQuote({ amount, sender, receiver }) {
+    const debitAmount = { value: amount, currency: sender.assetCode }
+    const receiveAmount = { value: amount, currency: receiver.assetCode }
+    return Promise.resolve({ debitAmount, receiveAmount })
+  },
+  initiatePayment() {
+    return Promise.resolve({
+      paymentId: 'payment-id',
+      quoteId: 'quote-id',
+      incomingPaymentId: 'incoming-payment-id',
+      grantRedirectUrl: 'https://example.com/redirect',
+    })
+  },
+  waitForCompletion: () => Promise.resolve(),
+}
+
+export interface Actions {
+  setScreen(screen: unknown): void
 }
 
 export class WidgetController implements ReactiveController {

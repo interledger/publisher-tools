@@ -1,7 +1,9 @@
+import type { ApiErrorResponse, WalletAddressInfo } from 'publisher-tools-api'
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetProfile } from '@shared/types'
 import { PaymentWidget } from '@tools/components'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
+import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)
 
@@ -17,6 +19,24 @@ fetchProfile(API_URL, 'widget', params)
 
 const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
   const element = document.createElement('wm-payment-widget')
+  element.setController({
+    async getWallet(walletAddressUrl) {
+      walletAddressUrl = checkHrefFormat(toWalletAddressUrl(walletAddressUrl))
+
+      const url = new URL('/wallet', API_URL)
+      url.searchParams.set('walletAddress', walletAddressUrl)
+
+      const response = await fetch(url)
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error((data as ApiErrorResponse).error?.message)
+      }
+      return data as WalletAddressInfo
+    },
+    async fetchQuote(request) {},
+    async initiatePayment(request) {},
+    async waitForCompletion(paymentId) {},
+  })
   element.config = {
     apiUrl: API_URL,
     cdnUrl: params.cdnUrl,

@@ -41,6 +41,26 @@ export const WidgetPreview = ({
 
   useEffect(() => {
     if (widgetRef.current && isLoaded) {
+      widgetRef.current.setController({
+        isPreviewMode: true,
+        getWallet: async () => ({
+          $url: 'https://ilp.dev/mock-wallet',
+          id: 'https://ilp.dev/mock-wallet',
+          assetCode: 'USD',
+          assetScale: 2,
+          authServer: 'https://auth.interledger.cards',
+          resourceServer: 'https://ilp.dev',
+          publicName: 'Wallet (Preview)',
+        }),
+        fetchQuote(request) {},
+        initiatePayment(request) {},
+        waitForCompletion(paymentId) {},
+      })
+    }
+  }, [widgetRef.current, isLoaded])
+
+  useEffect(() => {
+    if (widgetRef.current && isLoaded) {
       const widget = widgetRef.current
       widget.config = widgetConfig
       widget.isPreview = true
