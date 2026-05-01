@@ -18,7 +18,6 @@ const MIN_SEND_AMOUNT = 1 // 1 unit
 export class PaymentConfirmation extends LitElement {
   @property({ type: Object }) configController!: WidgetController
   @property({ type: String }) note = ''
-  @property({ type: Boolean }) isPreview?: boolean = false
 
   @state() private inputAmount = ''
   @state() private isLoadingPreview = false

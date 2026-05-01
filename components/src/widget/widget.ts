@@ -43,7 +43,6 @@ export class PaymentWidget extends LitElement {
   }
 
   @property({ type: Boolean }) isOpen = false
-  @property({ type: Boolean }) isPreview?: boolean = false
 
   @state() private currentView: string = 'home'
   @state() private walletAddressError: string = ''
@@ -205,7 +204,6 @@ export class PaymentWidget extends LitElement {
         .configController=${this.configController}
         .controller=${this.#controller}
         .note=${this.config.note || ''}
-        .isPreview=${this.isPreview}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
@@ -218,7 +216,6 @@ export class PaymentWidget extends LitElement {
       <wm-payment-interaction
         .configController=${this.configController}
         .controller=${this.#controller}
-        .isPreview=${this.isPreview}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
       ></wm-payment-interaction>
@@ -229,11 +226,12 @@ export class PaymentWidget extends LitElement {
     if (!this.config) {
       return html``
     }
+    const isPreview = !!this.#controller.isPreviewMode
     const triggerIcon = this.config.profile?.icon.value || defaultTriggerIcon
 
     return html`
       <div
-        class="content ${this.isOpen ? 'open' : 'closed'} ${this.isPreview
+        class="content ${this.isOpen ? 'open' : 'closed'} ${isPreview
           ? 'preview-mode'
           : ''}"
       >
