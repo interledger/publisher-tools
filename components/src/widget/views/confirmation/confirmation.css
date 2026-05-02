@@ -69,13 +69,6 @@
   flex: 1 1 auto;
 }
 
-.preset-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin: var(--Spacings-lg, 24px) 0 var(--Spacings-lg, 24px) 0;
-}
-
 .enter-amount-description {
   color: var(--Text-paragraph-standard, #363636);
   font-family: var(--Font-Family-Inter, Inter);
@@ -83,40 +76,6 @@
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
   line-height: var(--Font-Line-Height-sm, 20px);
-}
-
-.preset-btn {
-  display: flex;
-  width: calc(var(--Font-Size-text-base) + 2.75rem);
-  height: calc(var(--Font-Size-text-base) + 2.75rem);
-  cursor: pointer;
-  padding: 16px 12px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 100px;
-  border: 1px solid var(--text-color, #c9c9c9);
-
-  background: var(--background-color, #f2fbf9);
-  color: var(--Text-paragraph-standard, #7b7b7b);
-  font-family: var(--Font-Family-Inter, Inter);
-  font-size: var(--Font-Size-text-base, 16px);
-  font-style: normal;
-  font-weight: var(--Font-Weight-Bold, 700);
-  line-height: var(--Font-Line-Height-md, 24px);
-}
-
-.preset-btn:hover {
-  background: #0000002f;
-}
-
-.preset-btn.selected {
-  background: color-mix(
-    in srgb,
-    var(--primary-color, #f2fbf9) 45%,
-    transparent
-  );
-  border: 1px solid var(--primary-color, #5b5380);
 }
 
 .widget-body p,
@@ -134,19 +93,6 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-}
-
-.currency-symbol {
-  position: absolute;
-  left: var(--Spacings-md, 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--Text-paragraph-standard, #363636);
-  font-family: var(--Font-Family-Inter, Inter);
-  font-size: var(--Font-Size-text-base, 16px);
-  font-weight: var(--Font-Weight-Regular, 400);
-  pointer-events: none;
-  z-index: 1;
 }
 
 .payment-details {
@@ -350,16 +296,6 @@
   font-style: normal;
   font-weight: var(--Font-Weight-Regular, 400);
   line-height: var(--Font-Line-Height-xs, 16px);
-}
-
-.amount-input-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.form-input.with-currency {
-  padding-left: calc(var(--Font-Size-text-base) + 2rem);
-  border: 2px solid var(--Colors-silver-300, #c9c9c9);
 }
 
 .form-input,
