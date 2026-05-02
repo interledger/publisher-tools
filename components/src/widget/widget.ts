@@ -12,12 +12,12 @@ import {
   WidgetController,
 } from './controller'
 import type { WidgetConfig } from './types'
-import { PaymentConfirmation } from './views/confirmation/confirmation'
+import { PaymentInitiate } from './views/confirmation/confirmation'
 import { PaymentWaiting } from './views/interaction/interaction'
 import widgetStyles from './widget.css?raw'
 
 const COMPONENTS = {
-  'wm-payment-confirmation': PaymentConfirmation,
+  'wm-payment-initiate': PaymentInitiate,
   'wm-payment-waiting': PaymentWaiting,
   'wm-dots-loader': DotsLoader,
   'wm-close-btn': CloseBtn,
@@ -200,14 +200,14 @@ export class PaymentWidget extends LitElement {
 
   private renderConfirmationView() {
     return html`
-      <wm-payment-confirmation
+      <wm-payment-initiate
         .configController=${this.configController}
         .controller=${this.#controller}
         .note=${this.config.note || ''}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
-      ></wm-payment-confirmation>
+      ></wm-payment-initiate>
     `
   }
 

@@ -14,7 +14,7 @@ import { fromAmount, toAmount } from '@shared/utils'
 import confirmationCss from './confirmation.css?raw'
 import { type AmountChangeEventDetail, PaymentAmount } from '../amount/amount'
 
-export class PaymentConfirmation extends LitElement {
+export class PaymentInitiate extends LitElement {
   @property({ type: Object }) configController!: WidgetController
   @property({ type: String }) note = ''
 
