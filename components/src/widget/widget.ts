@@ -44,7 +44,7 @@ export class PaymentWidget extends LitElement {
 
   @property({ type: Boolean }) isOpen = false
 
-  @state() private currentView: string = 'home'
+  @state() private currentView: 'home' | 'initiate' | 'waiting' = 'home'
   @state() private walletAddressError: string = ''
   @state() private isSubmitting: boolean = false
 
@@ -85,7 +85,7 @@ export class PaymentWidget extends LitElement {
         receiver: await this.#receiver,
       })
       this.walletAddressError = ''
-      this.currentView = 'confirmation'
+      this.currentView = 'initiate'
     } catch (error) {
       if (error instanceof Error) {
         this.walletAddressError = error.message
@@ -110,7 +110,7 @@ export class PaymentWidget extends LitElement {
   }
 
   private handleInteractionCancelled() {
-    this.currentView = 'confirmation'
+    this.currentView = 'initiate'
   }
 
   private handleInputChange() {
@@ -123,17 +123,17 @@ export class PaymentWidget extends LitElement {
     switch (this.currentView) {
       case 'home':
         return this.renderHomeView()
-      case 'confirmation':
-        return this.renderConfirmationView()
-      case 'interact':
-        return this.renderInteractionView()
+      case 'initiate':
+        return this.renderInitiateView()
+      case 'waiting':
+        return this.renderWaitingView()
       default:
         return this.renderHomeView()
     }
   }
 
   private navigateToInteraction() {
-    this.currentView = 'interact'
+    this.currentView = 'waiting'
   }
 
   private navigateToHome() {
@@ -198,7 +198,7 @@ export class PaymentWidget extends LitElement {
     `
   }
 
-  private renderConfirmationView() {
+  private renderInitiateView() {
     return html`
       <wm-payment-initiate
         .configController=${this.configController}
@@ -211,7 +211,7 @@ export class PaymentWidget extends LitElement {
     `
   }
 
-  private renderInteractionView() {
+  private renderWaitingView() {
     const { paymentId, grantRedirectUrl } = this.configController.state
     return html`
       <wm-payment-waiting
@@ -244,11 +244,7 @@ export class PaymentWidget extends LitElement {
           <div class="powered-by">
             Powered by
             <a href="https://webmonetization.org" target="_blank">
-              <img
-                src=${interledgerLogoIcon}
-                height="24px"
-                alt="Interledger logo"
-              />
+              <img src=${interledgerLogoIcon} height="24px" alt="Interledger" />
             </a>
           </div>
         </div>
@@ -256,10 +252,11 @@ export class PaymentWidget extends LitElement {
 
       <button
         class="trigger"
+        type="button"
         @click=${this.toggleWidget}
         aria-label="Toggle payment widget"
       >
-        <img src="${triggerIcon}" alt="widget trigger" />
+        <img src="${triggerIcon}" alt="" />
       </button>
     `
   }
