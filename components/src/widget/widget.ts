@@ -13,12 +13,12 @@ import {
 } from './controller'
 import type { WidgetConfig } from './types'
 import { PaymentConfirmation } from './views/confirmation/confirmation'
-import { PaymentInteraction } from './views/interaction/interaction'
+import { PaymentWaiting } from './views/interaction/interaction'
 import widgetStyles from './widget.css?raw'
 
 const COMPONENTS = {
   'wm-payment-confirmation': PaymentConfirmation,
-  'wm-payment-interaction': PaymentInteraction,
+  'wm-payment-waiting': PaymentWaiting,
   'wm-dots-loader': DotsLoader,
   'wm-close-btn': CloseBtn,
 }
@@ -212,13 +212,15 @@ export class PaymentWidget extends LitElement {
   }
 
   private renderInteractionView() {
+    const { paymentId, grantRedirectUrl } = this.configController.state
     return html`
-      <wm-payment-interaction
-        .configController=${this.configController}
+      <wm-payment-waiting
+        .paymentId=${paymentId}
+        .grantRedirectUrl=${grantRedirectUrl}
         .controller=${this.#controller}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
-      ></wm-payment-interaction>
+      ></wm-payment-waiting>
     `
   }
 
