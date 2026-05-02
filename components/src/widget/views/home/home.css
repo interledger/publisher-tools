@@ -1,0 +1,187 @@
+.widget-header-container {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  height: 64px;
+  padding: var(--Spacings-md) var(--Spacings-2xl);
+  background-color: var(--primary-color);
+  justify-content: space-between;
+  align-items: center;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  gap: var(--Spacings-sm);
+}
+
+.widget-header p {
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-lg);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Bold);
+  line-height: var(--Font-Line-Height-lg);
+  margin: 0;
+}
+
+.white-text {
+  color: var(--Colors-white);
+}
+
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--Spacings-lg);
+}
+
+.payment-form.widget-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0px var(--Spacings-2xl);
+  flex: 1 1 auto;
+  gap: var(--Spacings-lg);
+}
+
+.primary-button {
+  width: 100%;
+  height: 44px;
+  padding: var(--Spacings-sm) var(--Spacings-md);
+  color: var(--wm-button-text-color);
+  border: none;
+  border-radius: var(--widget-border-radius);
+  font-family: var(--Font-Family-Inter);
+  font-weight: var(--Font-Weight-Regular);
+  font-size: var(--Font-Size-text-sm);
+  line-height: var(--Font-Line-Height-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+
+  background: var(--primary-color);
+}
+
+.primary-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary-color) 85%, black 15%);
+
+  filter: brightness(0.85);
+}
+
+@supports (background: color-mix(in srgb, red, blue)) {
+  .primary-button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--primary-color) 85%, black 15%);
+    filter: none;
+  }
+}
+
+.primary-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .widget-header-container {
+    padding: var(--Spacings-xs) var(--Spacings-md);
+  }
+
+  .payment-form.widget-body {
+    padding: 0px var(--Spacings-md);
+  }
+}
+
+.form-label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2px;
+  color: var(--Text-paragraph-standard);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-xs);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-xs);
+}
+
+.form-input {
+  width: 100%;
+  height: 48px;
+  padding: var(--Spacings-md);
+  border: 1px solid var(--Colors-silver-300, #c9c9c9);
+  border-radius: var(--Radius-Moderate-rounding, 8px);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-base);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-md);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+  color: var(--Text-paragraph-standard);
+  background-color: var(--Colors-white);
+}
+
+.form-input::placeholder {
+  color: var(--Text-fields-placeholder-default);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-base);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-md);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--Button-Primary-color-default);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--Button-Primary-color-default) 10%, transparent 90%);
+}
+
+.form-input:read-only {
+  background-color: #f9fafb;
+  color: var(--Text-fields-placeholder-default);
+}
+
+.form-input[aria-invalid='true'] {
+  border-color: var(--Colors-red-600);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--Colors-red-600) 10%, transparent 90%);
+}
+
+.form-input[aria-invalid='true']:focus {
+  border-color: var(--Colors-red-600);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--Colors-red-600) 10%, transparent 90%);
+}
+
+.error-message {
+  color: var(--Colors-red-600);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-sm);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-sm);
+  margin-top: 4px;
+  display: block;
+}
+
+.form-wallet-address {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  margin: var(--Spacings-lg, 24px) 0;
+}
+
+.divider + .form-wallet-address {
+  margin-top: auto;
+}
