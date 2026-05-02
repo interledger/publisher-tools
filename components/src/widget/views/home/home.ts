@@ -18,7 +18,7 @@ const COMPONENTS = {
 
 export interface SubmitEventDetail {
   walletAddress: string
-  onComplete: () => void
+  onComplete: (error?: string) => void
 }
 
 export class HomeView extends LitElement {
@@ -27,7 +27,6 @@ export class HomeView extends LitElement {
   @property({ type: String }) description = DEFAULT_DESCRIPTION
   @property({ type: Boolean }) showDescription = true
   @property({ type: String }) backgroundColor = '#fff'
-  @property({ type: String }) externalError = ''
 
   @state() private _walletAddress = ''
   @state() private _error = ''
@@ -59,8 +58,9 @@ export class HomeView extends LitElement {
       new CustomEvent<SubmitEventDetail>('submit', {
         detail: {
           walletAddress,
-          onComplete: () => {
+          onComplete: (error) => {
             this._isSubmitting = false
+            this._error = error ?? ''
           },
         },
       }),
@@ -68,13 +68,11 @@ export class HomeView extends LitElement {
   }
 
   private onInput() {
-    this.externalError = ''
     this._error = ''
   }
 
   render() {
-    const displayError = this.externalError || this._error
-    const hasError = !!displayError
+    const hasError = !!this._error
 
     const descriptionElement = this.showDescription
       ? html`<p>${this.description ?? DEFAULT_DESCRIPTION}</p>`
@@ -120,7 +118,7 @@ export class HomeView extends LitElement {
             role="alert"
             aria-live="polite"
           >
-            ${displayError}
+            ${this._error}
           </div>
         </div>
 

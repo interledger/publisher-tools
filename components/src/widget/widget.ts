@@ -39,7 +39,6 @@ export class PaymentWidget extends LitElement {
   @property({ type: Boolean }) isOpen = false
 
   @state() private currentView: 'home' | 'initiate' | 'waiting' = 'home'
-  @state() private walletAddressError: string = ''
 
   static styles = unsafeCSS(styles)
 
@@ -71,20 +70,18 @@ export class PaymentWidget extends LitElement {
         walletAddress: walletInfo,
         receiver: await this.#receiver,
       })
-      this.walletAddressError = ''
       this.currentView = 'initiate'
     } catch (error) {
-      if (error instanceof Error) {
-        this.walletAddressError = error.message
-      } else {
-        this.walletAddressError = 'Network error. Please try again.'
-      }
+      return error instanceof Error
+        ? error.message
+        : 'Network error. Please try again.'
     }
   }
 
   private async onSubmit(ev: CustomEvent<SubmitEventDetail>) {
     const { walletAddress, onComplete } = ev.detail
-    await this._handleSubmit(walletAddress).finally(onComplete)
+    const error = await this._handleSubmit(walletAddress)
+    onComplete(error)
   }
 
   private toggleWidget() {
@@ -135,7 +132,6 @@ export class PaymentWidget extends LitElement {
         .backgroundColor=${profile.color.background}
         @close=${this.toggleWidget}
         @submit=${this.onSubmit}
-        .externalError=${this.walletAddressError}
       ></wm-payment-home>
     `
   }
