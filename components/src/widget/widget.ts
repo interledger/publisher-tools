@@ -1,6 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { ApiErrorResponse } from 'publisher-tools-api'
+import type { ApiErrorResponse, WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
@@ -25,12 +25,17 @@ const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 
 export class PaymentWidget extends LitElement {
+  #receiver!: Promise<WalletAddress>
   private configController = new WidgetController(this)
 
   @property({ type: Object })
   set config(value: Partial<WidgetConfig>) {
     this.configController.updateConfig(value)
+    if (value.receiverAddress && !this.#receiver) {
+      this.#receiver = this.getWalletInfo(value.receiverAddress)
+    }
   }
+
   get config() {
     return this.configController.config
   }
@@ -73,23 +78,14 @@ export class PaymentWidget extends LitElement {
     }
 
     try {
-      const { apiUrl } = this.configController.config
       const walletAddressUrl = checkHrefFormat(
         toWalletAddressUrl(walletAddress),
       )
 
-      const url = new URL('/wallet', apiUrl)
-      url.searchParams.set('walletAddress', walletAddressUrl)
-
-      const response = await fetch(url)
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error((data as ApiErrorResponse).error?.message)
-      }
-
+      const data = await this.getWalletInfo(walletAddressUrl)
       this.configController.updateState({
-        walletAddress: data as WalletAddress,
+        walletAddress: data,
+        receiver: await this.#receiver,
       })
 
       this.walletAddressError = ''
@@ -103,6 +99,20 @@ export class PaymentWidget extends LitElement {
     } finally {
       this.isSubmitting = false
     }
+  }
+
+  private async getWalletInfo(walletAddressUrl: string) {
+    const { apiUrl } = this.configController.config
+    const url = new URL('/wallet', apiUrl)
+    url.searchParams.set('walletAddress', walletAddressUrl)
+
+    const response = await fetch(url)
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error((data as ApiErrorResponse).error?.message)
+    }
+    return data as WalletAddressInfo
   }
 
   private toggleWidget() {

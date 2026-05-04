@@ -1,28 +1,20 @@
 import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { PaymentGrantInput, PaymentQuoteInput } from 'publisher-tools-api'
+import type {
+  PaymentQuoteInput,
+  PaymentQuoteResult,
+  PaymentInitiateInput,
+  PaymentInitiateResult,
+} from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
 import { getCurrencySymbol, getFormattedAmount } from '@c/utils'
-import type {
-  Quote,
-  Grant,
-  WalletAddress,
-  PendingGrant,
-} from '@interledger/open-payments'
-import type { PaymentError } from '@shared/types'
+import type { WalletAddress } from '@interledger/open-payments'
+import type { Amount } from '@shared/types'
 import confirmationCss from './confirmation.css?raw'
 import type { WidgetController } from '../../controller'
-import type { Amount } from '../../types'
 
 const MIN_SEND_AMOUNT = 1 // 1 unit
-
-interface PaymentResponse {
-  quote: Quote
-  incomingPaymentGrant: Grant
-  error?: PaymentError
-  minSendAmount?: Amount
-}
 
 export class PaymentConfirmation extends LitElement {
   @property({ type: Object }) configController!: WidgetController
@@ -31,6 +23,7 @@ export class PaymentConfirmation extends LitElement {
 
   @state() private inputAmount = ''
   @state() private isLoadingPreview = false
+  @state() private isPreparingPayment = false
   @state() private debounceTimer: ReturnType<typeof setTimeout> | null = null
   @state() private amountError: string | null = null
   @state() private formattedDebitAmount?: string
@@ -86,14 +79,14 @@ export class PaymentConfirmation extends LitElement {
   }
 
   private async processPaymentForAmount(amount: number) {
-    const {
-      walletAddress: { id, assetScale },
-    } = this.configController.state
+    const { walletAddress, receiver } = this.configController.state
+    const assetScale = walletAddress.assetScale
     const amountToSend = Math.max(amount, MIN_SEND_AMOUNT / 10 ** assetScale)
+    this.configController.updateState({ amount: amountToSend })
 
     const paymentData = {
-      walletAddress: id,
-      receiver: this.configController.config.receiverAddress,
+      sender: walletAddress,
+      receiver: receiver,
       amount: amountToSend,
     }
 
@@ -193,39 +186,46 @@ export class PaymentConfirmation extends LitElement {
     return null
   }
 
-  private async getPaymentQuote(paymentData: {
-    walletAddress: string
-    receiver: string
+  private async getPaymentQuote({
+    sender,
+    receiver,
+    amount,
+  }: {
+    sender: WalletAddress
+    receiver: WalletAddress
     amount: number
   }): Promise<void> {
     const { apiUrl } = this.configController.config
-    const url = new URL(`/payment/quote`, apiUrl)
+    const url = new URL(`/payment/quotes`, apiUrl)
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        senderWalletAddress: paymentData.walletAddress,
-        receiverWalletAddress: paymentData.receiver,
-        amount: paymentData.amount,
-        note: this.note,
+        sender,
+        receiver,
+        debitAmount: amount,
       } satisfies PaymentQuoteInput),
     })
 
-    const data = (await response.json()) as PaymentResponse
+    const data = (await response.json()) as PaymentQuoteResult
 
-    if (!response.ok) {
+    if (!response.ok || !('debitAmount' in data)) {
       this.amountError =
         'Failed to create payment. Please try a different amount.'
-      if (response.status === 400 && data.error === 'NON_POSITIVE_AMOUNT') {
+      if (
+        response.status === 400 &&
+        'error' in data &&
+        data.error === 'NON_POSITIVE_AMOUNT'
+      ) {
         if (data.minSendAmount?.value) {
           // Rafiki v1.2.0-beta and later include `minSendAmount` with error
           const {
             minSendAmount: { value, assetScale },
           } = data
           this.amountError = this.validateAmount(
-            paymentData.amount * 10 ** assetScale,
+            amount * 10 ** assetScale,
             Number(value),
           )
           this.#minSendAmount = data.minSendAmount
@@ -238,9 +238,7 @@ export class PaymentConfirmation extends LitElement {
       return
     }
 
-    const {
-      quote: { debitAmount, receiveAmount },
-    } = data
+    const { debitAmount, receiveAmount } = data
     this.formattedDebitAmount = getFormattedAmount(
       debitAmount.value,
       debitAmount,
@@ -250,15 +248,11 @@ export class PaymentConfirmation extends LitElement {
       receiveAmount.value,
       receiveAmount,
     ).amountWithCurrency
-
-    this.configController.updateState({ ...data })
   }
 
-  private async previewPaymentQuote(paymentData: {
-    walletAddress: string
-    receiver: string
-    amount: number
-  }): Promise<void> {
+  private async previewPaymentQuote(
+    paymentData: Parameters<typeof this.getPaymentQuote>[0],
+  ): Promise<void> {
     return new Promise((resolve) => {
       setTimeout(() => {
         const currencySymbol = getCurrencySymbol(
@@ -272,6 +266,7 @@ export class PaymentConfirmation extends LitElement {
   }
 
   private onPaymentConfirmed = () => {
+    this.isPreparingPayment = true
     if (this.isPreview) {
       this.previewPaymentConfirmed()
       return
@@ -282,20 +277,21 @@ export class PaymentConfirmation extends LitElement {
 
   private async handlePaymentConfirmed() {
     try {
-      const { walletAddress, quote } = this.configController.state
-      const { grant, paymentId } = await this.requestOutgoingGrant({
-        walletAddress,
-        incomingPaymentId: quote.receiver,
-        debitAmount: quote.debitAmount,
-        receiveAmount: quote.receiveAmount,
+      const { walletAddress, receiver, amount } = this.configController.state
+      const { grantRedirectUrl, paymentId } = await this.initiatePayment({
+        sender: walletAddress,
+        receiver,
+        amount,
+        note: this.note,
       })
 
       this.configController.updateState({
-        outgoingPaymentGrant: grant,
+        grantRedirectUrl,
         paymentId,
         note: this.note,
       })
 
+      this.isPreparingPayment = false
       this.dispatchEvent(
         new CustomEvent('payment-confirmed', {
           bubbles: true,
@@ -308,6 +304,7 @@ export class PaymentConfirmation extends LitElement {
   }
 
   private previewPaymentConfirmed() {
+    this.isPreparingPayment = false
     this.dispatchEvent(
       new CustomEvent('payment-confirmed', {
         bubbles: true,
@@ -316,14 +313,19 @@ export class PaymentConfirmation extends LitElement {
     )
   }
 
-  private async requestOutgoingGrant(paymentData: {
-    walletAddress: WalletAddress
-    incomingPaymentId: string
-    debitAmount: Amount
-    receiveAmount: Amount
-  }): Promise<{ grant: PendingGrant; paymentId: string }> {
+  private async initiatePayment({
+    sender,
+    receiver,
+    amount,
+    note,
+  }: {
+    sender: WalletAddress
+    receiver: WalletAddress
+    amount: number
+    note: string
+  }): Promise<PaymentInitiateResult> {
     const { apiUrl, frontendUrl } = this.configController.config
-    const url = new URL('/payment/grant', apiUrl).href
+    const url = new URL('/payment/initiate', apiUrl).href
     const redirectUrl = new URL('payment-confirmation', frontendUrl).href
 
     const response = await fetch(url, {
@@ -332,13 +334,12 @@ export class PaymentConfirmation extends LitElement {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        sender,
+        receiver,
+        debitAmount: amount,
+        note,
         redirectUrl,
-        incomingPaymentId: paymentData.incomingPaymentId,
-        walletAddress:
-          paymentData.walletAddress as PaymentGrantInput['walletAddress'],
-        debitAmount: paymentData.debitAmount,
-        receiveAmount: paymentData.receiveAmount,
-      } satisfies PaymentGrantInput),
+      } satisfies PaymentInitiateInput),
     })
 
     if (!response.ok) {
@@ -506,8 +507,15 @@ export class PaymentConfirmation extends LitElement {
         />
       </div>
 
-      <button class="primary-button" @click=${this.onPaymentConfirmed}>
-        Confirm Payment
+      <button
+        class="primary-button"
+        type="button"
+        @click=${this.onPaymentConfirmed}
+        ?disabled=${this.isPreparingPayment}
+      >
+        ${this.isPreparingPayment
+          ? html`<wm-dots-loader></wm-dots-loader>`
+          : 'Confirm Payment'}
       </button>
     `
   }

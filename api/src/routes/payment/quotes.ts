@@ -1,6 +1,6 @@
 import z from 'zod'
 import { zValidator } from '@hono/zod-validator'
-import type { PaymentError } from '@shared/types'
+import type { Amount, PaymentError } from '@shared/types'
 import { app } from '../../app.js'
 import {
   DebitOrReceiveAmountSchema,
@@ -31,14 +31,14 @@ app.post(
       return json({
         debitAmount: result.debitAmount,
         receiveAmount: result.receiveAmount,
-      })
+      } satisfies PaymentQuoteResult)
     } catch (error) {
       if (isNonPositiveAmountError(error)) {
         return json(
           {
             error: 'NON_POSITIVE_AMOUNT' satisfies PaymentError,
             minSendAmount: error.details?.minSendAmount,
-          },
+          } satisfies PaymentQuoteResult,
           400,
         )
       }
@@ -47,3 +47,7 @@ app.post(
     }
   },
 )
+
+export type PaymentQuoteResult =
+  | { debitAmount: Amount; receiveAmount: Amount }
+  | { error: PaymentError; minSendAmount?: Amount }

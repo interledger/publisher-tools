@@ -1,11 +1,10 @@
+export type { WalletAddressInfo } from './routes/wallet'
 export type {
-  PaymentFinalizeInput,
-  PaymentGrantInput,
   PaymentQuoteInput,
-  PaymentStatusParam,
+  PaymentQuoteResult,
+  PaymentInitiateInput,
+  PaymentInitiateResult,
   PaymentStatus,
-  PaymentStatusRejected,
-  PaymentStatusSuccess,
 } from './routes/payment'
 
 export type ApiErrorResponse = {

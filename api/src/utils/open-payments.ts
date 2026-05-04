@@ -14,8 +14,8 @@ import {
 import type { components as RSComponents } from '@interledger/open-payments/dist/openapi/generated/resource-server-types'
 import { createId } from '@paralleldrive/cuid2'
 import type { Amount } from '@shared/types'
-import { getWalletAddress, toAmount, urlWithParams } from '@shared/utils'
-import { createHeaders, sleep, createHTTPException } from './utils.js'
+import { getWalletAddress, toAmount, sleep, urlWithParams } from '@shared/utils'
+import { createHeaders, createHTTPException } from './utils.js'
 import type { Env } from '../app.js'
 import type { PaymentInitiateInput } from '../routes/payment/initiate.js'
 import type { PaymentQuoteInput } from '../routes/payment/quotes.js'
@@ -27,6 +27,7 @@ type CreateIncomingPaymentParams = {
   accessToken: string
   walletAddress: WalletAddress
   note?: string
+  expiresIn?: number
 }
 
 export type CheckPaymentResult =
@@ -138,6 +139,8 @@ export class OpenPaymentsService {
     const incomingPayment = await this.createIncomingPayment({
       accessToken: incomingPaymentGrant.access_token.value,
       walletAddress: receiver,
+      expiresIn: 15 * 1000,
+      note: 'Quote via Publisher Tools',
     })
 
     const quote = await this.client!.quote.create(
@@ -153,12 +156,13 @@ export class OpenPaymentsService {
       },
     )
 
+    void this.revokeIncomingPaymentGrant(incomingPaymentGrant).catch(() => {})
+
     return {
       debitAmount: quote.debitAmount,
       receiveAmount: quote.receiveAmount,
       id: quote.id,
     }
-    // TODO: cleanup/expire things once done. we only cared about amounts for displaying
   }
 
   async paymentInitiate(params: PaymentInitiateInput) {
@@ -464,6 +468,7 @@ export class OpenPaymentsService {
     accessToken,
     walletAddress,
     note,
+    expiresIn = 6 * 60 * 1000,
   }: CreateIncomingPaymentParams) {
     try {
       // create incoming payment without amount
@@ -473,7 +478,7 @@ export class OpenPaymentsService {
           accessToken: accessToken,
         },
         {
-          expiresAt: new Date(Date.now() + 6 * 60 * 1000).toISOString(),
+          expiresAt: new Date(Date.now() + expiresIn).toISOString(),
           walletAddress: walletAddress.id,
           metadata: {
             description: note,

@@ -1,10 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
-import type {
-  Grant,
-  Quote,
-  PendingGrant,
-  WalletAddress,
-} from '@interledger/open-payments'
+import type { Grant, Quote, WalletAddress } from '@interledger/open-payments'
 import {
   WIDGET_POSITION,
   BORDER_RADIUS,
@@ -15,10 +10,13 @@ import { applyFontFamily } from '../utils.js'
 import type { WidgetConfig } from './types'
 
 export interface WidgetState {
+  /** sender wallet address */
   walletAddress: WalletAddress
+  receiver: WalletAddress
+  amount: number
   incomingPaymentGrant: Grant
   quote: Quote
-  outgoingPaymentGrant: PendingGrant
+  grantRedirectUrl: string
   paymentId: string
   debitAmount: string
   receiveAmount: string

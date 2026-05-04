@@ -2,7 +2,7 @@ import type {
   PaymentStatus,
   PaymentStatusRejected,
   PaymentStatusSuccess,
-} from 'publisher-tools-api'
+} from 'publisher-tools-api/src/routes/payment/status'
 import z from 'zod'
 import {
   checkHrefFormat,
