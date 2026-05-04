@@ -277,17 +277,12 @@ export class PaymentConfirmation extends LitElement {
 
   private async handlePaymentConfirmed() {
     try {
-      const {
-        walletAddress,
-        receiver,
-        amount,
-        note = '',
-      } = this.configController.state
+      const { walletAddress, receiver, amount } = this.configController.state
       const { grantRedirectUrl, paymentId } = await this.initiatePayment({
         sender: walletAddress,
         receiver,
         amount,
-        note,
+        note: this.note,
       })
 
       this.configController.updateState({
