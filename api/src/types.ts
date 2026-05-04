@@ -1,3 +1,4 @@
+export type { WalletAddressInfo } from './routes/wallet'
 export type {
   PaymentQuoteInput,
   PaymentQuoteResult,

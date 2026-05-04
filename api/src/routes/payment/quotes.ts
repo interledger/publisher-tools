@@ -50,4 +50,4 @@ app.post(
 
 export type PaymentQuoteResult =
   | { debitAmount: Amount; receiveAmount: Amount }
-  | { error: string; minSendAmount?: Amount }
+  | { error: PaymentError; minSendAmount?: Amount }

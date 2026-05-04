@@ -1,6 +1,6 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { ApiErrorResponse } from 'publisher-tools-api'
+import type { ApiErrorResponse, WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
@@ -112,7 +112,7 @@ export class PaymentWidget extends LitElement {
     if (!response.ok) {
       throw new Error((data as ApiErrorResponse).error?.message)
     }
-    return data as WalletAddress
+    return data as WalletAddressInfo
   }
 
   private toggleWidget() {
