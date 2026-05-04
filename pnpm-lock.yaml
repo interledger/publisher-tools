@@ -50,7 +50,7 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.7.6
-        version: 0.7.6(hono@4.12.7)(zod@4.1.13)
+        version: 0.7.6(hono@4.12.7)(zod@4.4.3)
       '@interledger/open-payments':
         specifier: ^7.4.0
         version: 7.4.0
@@ -82,8 +82,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       zod:
-        specifier: ^4.1.13
-        version: 4.1.13
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20251011.0
@@ -258,8 +258,8 @@ importers:
         specifier: ^2.3.1
         version: 2.3.1(@types/react@19.2.7)(react@19.2.1)
       zod:
-        specifier: ^4.1.13
-        version: 4.1.13
+        specifier: ^4.4.3
+        version: 4.4.3
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.32.3
@@ -4105,6 +4105,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -4369,8 +4370,8 @@ packages:
   youch@4.1.0-beta.10:
     resolution: {integrity: sha512-rLfVLB4FgQneDr0dv1oddCVZmKjcJ6yX6mS4pU82Mq/Dt9a3cLZQ62pDBL4AUO+uVrCvtWz3ZFUL2HFAFJ/BXQ==}
 
-  zod@4.1.13:
-    resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
 
 snapshots:
 
@@ -4836,10 +4837,10 @@ snapshots:
 
   '@fontsource/titillium-web@5.2.8': {}
 
-  '@hono/zod-validator@0.7.6(hono@4.12.7)(zod@4.1.13)':
+  '@hono/zod-validator@0.7.6(hono@4.12.7)(zod@4.4.3)':
     dependencies:
       hono: 4.12.7
-      zod: 4.1.13
+      zod: 4.4.3
 
   '@humanfs/core@0.19.1': {}
 
@@ -8557,4 +8558,4 @@ snapshots:
       cookie: 1.1.1
       youch-core: 0.3.3
 
-  zod@4.1.13: {}
+  zod@4.4.3: {}
