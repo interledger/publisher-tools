@@ -28,17 +28,17 @@
     "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
-    "globals": "^17.0.0",
-    "prettier": "^3.8.1",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.52.0"
+    "typescript-eslint": "^8.59.1"
   },
   "resolutions": {
     "esbuild": "^0.28.0"
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "^4.83.0"
+      "wrangler": "^4.87.0"
     }
   },
   "engines": {
@@ -48,5 +48,5 @@
     "node": ">=24.0.0"
   },
   "private": true,
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.2"
 }
