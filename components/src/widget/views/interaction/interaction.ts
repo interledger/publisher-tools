@@ -118,9 +118,14 @@ export class PaymentInteraction extends LitElement {
         continue
       }
       if (res.type === 'OUTGOING_PAYMENT_DONE') {
-        this.currentView = 'success'
-        this.requestUpdate()
+        if (res.result === 'success') {
+          this.currentView = 'success'
+        } else {
+          this.currentView = 'failed'
+          this.errorMessage = res.error?.message || 'Payment failed'
+        }
         this._markPollingCompleted()
+        this.requestUpdate()
         return
       }
       if (res.type === 'GRANT_REJECTED') {
