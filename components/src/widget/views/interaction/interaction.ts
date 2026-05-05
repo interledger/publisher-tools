@@ -84,7 +84,12 @@ export class PaymentInteraction extends LitElement {
         if (status.type === 'OUTGOING_PAYMENT_CREATED') {
           this.currentView = 'processing'
         } else if (status.type === 'OUTGOING_PAYMENT_DONE') {
-          this.currentView = 'success'
+          if (status.result === 'success') {
+            this.currentView = 'success'
+          } else {
+            this.currentView = 'failed'
+            this.errorMessage = status.error?.message || 'Payment failed'
+          }
         } else if (status.type === 'PENDING_GRANT_INTERACTION') {
           this.currentView = 'authorizing'
         } else if (status.type === 'GRANT_REJECTED') {
