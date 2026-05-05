@@ -9,7 +9,8 @@ import {
 } from '@shared/utils'
 import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
-import type { ElementErrors } from '~/lib/types'
+import { useTranslation } from '~/i18n/useTranslation'
+import { useTrackEvent } from '~/lib/analytics'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
@@ -24,9 +25,11 @@ export const ToolsWalletAddress = ({
   walletActions,
   toolName,
 }: Props) => {
+  const t = useTranslation('toolsWalletAddress')
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
-  const [error, setError] = useState<ElementErrors>()
+  const trackEvent = useTrackEvent()
+  const [error, setError] = useState<{ walletAddress?: string[] }>()
   const [isLoading, setIsLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -47,8 +50,7 @@ export const ToolsWalletAddress = ({
   const handleContinue = async () => {
     if (!snap.walletAddress.trim()) {
       setError({
-        fieldErrors: { walletAddress: ['This field is required'] },
-        message: [],
+        walletAddress: [t('errors.fieldRequired')],
       })
       return
     }
@@ -63,14 +65,19 @@ export const ToolsWalletAddress = ({
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
       await connect()
-    } catch (error) {
-      setError({
-        fieldErrors: { walletAddress: [(error as Error).message] },
-        message: [],
+      trackEvent('wallet_connected', {
+        wallet_provider: new URL(walletAddressInfo.id).hostname,
       })
+    } catch (error) {
+      setError({ walletAddress: [(error as Error).message] })
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleDisconnect = () => {
+    trackEvent('wallet_disconnected')
+    disconnect()
   }
 
   const handleWalletAddressChange = (
@@ -99,26 +106,25 @@ export const ToolsWalletAddress = ({
   } => {
     if (snap.walletConnectStep === 'error') {
       return {
-        message: 'You have not connected your wallet address yet.',
+        message: t('errors.connectionError'),
         type: 'error',
       }
     }
     if (!snap.isWalletConnected) {
       return {
-        message:
-          "If you're connecting your wallet address for the first time, you'll start with the default profile. You can then customize and save your profile as needed.",
+        message: t('status.connect'),
         type: 'info',
       }
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: `There are no custom edits for the ${toolName} correlated to this wallet address but you can start customizing when you want.`,
+        message: t('status.noSavedProfiles', { toolName }),
         type: 'success',
       }
     }
 
     return {
-      message: `We've loaded your profiles. Feel free to keep customizing your ${toolName} to fit your style.`,
+      message: t('status.profilesFetched', { toolName }),
       type: 'success',
     }
   }
@@ -135,14 +141,11 @@ export const ToolsWalletAddress = ({
       <div className="items-start gap-md w-full xl:flex-1 xl:grow">
         <div className="inline-flex items-center gap-xs">
           <Heading5 htmlFor="wallet-address-url" as="label">
-            Wallet address
+            {t('heading.message')}
           </Heading5>
-          <Tooltip label="Why do I need to connect my wallet?">
-            Connecting your wallet allows us to save your custom profiles, link
-            them to you as the original author, and verify ownership for future
-            updates.
-            <br /> It also embeds the wallet address into your web page
-            automatically, enabling Web Monetization on your behalf.
+          <Tooltip label={t('tooltip.ariaLabel')}>
+            {t('tooltip.message')}
+            <br /> {t('tooltip.message2')}
           </Tooltip>
         </div>
         <div className="flex items-start gap-3 w-full pt-md">
@@ -159,14 +162,14 @@ export const ToolsWalletAddress = ({
               onChange={handleWalletAddressChange}
               disabled={snap.isWalletConnected}
               readOnly={isLoading}
-              error={error?.fieldErrors.walletAddress}
+              error={error?.walletAddress}
             />
           </div>
           {snap.isWalletConnected && (
             <button
-              onClick={disconnect}
+              onClick={handleDisconnect}
               className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
-              aria-label="Disconnect wallet"
+              aria-label={t('button.disconnectAriaLabel')}
             >
               <SVGRefresh className="w-5 h-5 text-purple-500" />
             </button>
@@ -196,7 +199,9 @@ export const ToolsWalletAddress = ({
           >
             <div className="flex items-center justify-center gap-2">
               {isLoading && <SVGSpinner className="w-4 h-4" />}
-              <span>{isLoading ? 'Connecting...' : 'Continue'}</span>
+              <span>
+                {isLoading ? t('button.loadingLabel') : t('button.submitLabel')}
+              </span>
             </div>
           </ToolsSecondaryButton>
         )}

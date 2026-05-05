@@ -1,24 +1,22 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
-import type {
-  Grant,
-  Quote,
-  PendingGrant,
-  WalletAddress,
-} from '@interledger/open-payments'
+import type { Grant, Quote, WalletAddress } from '@interledger/open-payments'
 import {
   WIDGET_POSITION,
   BORDER_RADIUS,
-  widgetFontSizeToNumber,
+  WIDGET_FONT_SIZE_MAP,
 } from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
 import type { WidgetConfig } from './types'
 
 export interface WidgetState {
+  /** sender wallet address */
   walletAddress: WalletAddress
+  receiver: WalletAddress
+  amount: number
   incomingPaymentGrant: Grant
   quote: Quote
-  outgoingPaymentGrant: PendingGrant
+  grantRedirectUrl: string
   paymentId: string
   debitAmount: string
   receiveAmount: string
@@ -112,7 +110,7 @@ export class WidgetController implements ReactiveController {
     if (font.size) {
       element.style.setProperty(
         '--wm-font-size',
-        `${widgetFontSizeToNumber(font.size)}px`,
+        `${WIDGET_FONT_SIZE_MAP[font.size]}px`,
       )
     }
     if (border.type) {

@@ -58,6 +58,20 @@
       }
     },
     {
+      "label": "Run Analytics",
+      "type": "shell",
+      "command": "pnpm analytics:dev",
+      "hide": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "instancePolicy": "terminateOldest"
+      },
+      "presentation": {
+        "revealProblems": "onProblem",
+        "group": "localenv"
+      }
+    },
+    {
       "label": "Dev",
       "icon": {
         "id": "run-all"
@@ -78,7 +92,13 @@
         "reveal": "always",
         "showReuseMessage": true
       },
-      "dependsOn": ["Run Local S3", "Run CDN", "Run API", "Run Editor UI"]
+      "dependsOn": [
+        "Run Local S3",
+        "Run CDN",
+        "Run API",
+        "Run Editor UI",
+        "Run Analytics"
+      ]
     }
   ]
 }

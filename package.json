@@ -16,7 +16,9 @@
     "lint": "eslint . --fix --cache --cache-location 'node_modules/.cache/eslintcache'",
     "lint:check": "eslint . --cache --cache-location 'node_modules/.cache/eslintcache'",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "analytics:dev": "pnpm -C localenv/analytics dev",
+    "analytics:down": "pnpm -C localenv/analytics down"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -32,11 +34,11 @@
     "typescript-eslint": "^8.52.0"
   },
   "resolutions": {
-    "esbuild": "^0.27.2"
+    "esbuild": "^0.28.0"
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "^4.59.2"
+      "wrangler": "^4.83.0"
     }
   },
   "engines": {
