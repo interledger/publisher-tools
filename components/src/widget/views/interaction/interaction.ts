@@ -90,10 +90,10 @@ export class PaymentInteraction extends LitElement {
             this.currentView = 'failed'
             this.errorMessage = status.error?.message || 'Payment failed'
           }
-        } else if (status.type === 'PENDING_GRANT_INTERACTION') {
-          this.currentView = 'authorizing'
         } else if (status.type === 'GRANT_REJECTED') {
           this.handleInteractionFail('Payment authorization rejected')
+        } else if (status.type === 'PENDING_GRANT_INTERACTION') {
+          this.currentView = 'authorizing'
         }
         this.requestUpdate()
       }
