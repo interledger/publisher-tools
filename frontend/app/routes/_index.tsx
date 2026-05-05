@@ -71,7 +71,7 @@ const interactionTools = [
   },
   {
     title: 'Widget',
-    description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
+    description: `Add a floating icon to your site so visitors can support you instantly with a one-time contribution. Simple, flexible, no extension required.`,
     tags: [
       'Web Monetization',
       'One time support',
