@@ -1,5 +1,20 @@
+import type {
+  ApiErrorResponse,
+  PaymentInitiateInput,
+  PaymentInitiateResult,
+  PaymentQuoteInput,
+  PaymentQuoteResult,
+  PaymentStatus,
+  WalletAddressInfo,
+} from 'publisher-tools-api'
 import { API_URL, APP_URL } from '@shared/defines'
 import type { WidgetProfile } from '@shared/types'
+import {
+  checkHrefFormat,
+  fromAmount,
+  sleep,
+  toWalletAddressUrl,
+} from '@shared/utils'
 import { PaymentWidget } from '@tools/components'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
@@ -16,11 +31,119 @@ fetchProfile(API_URL, 'widget', params)
   .catch((error) => console.error(error))
 
 const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
+  const frontendUrl = new URL('/tools/', getFrontendUrlOrigin()).href
   const element = document.createElement('wm-payment-widget')
+  element.setController({
+    async getWallet(walletAddressUrl) {
+      walletAddressUrl = checkHrefFormat(toWalletAddressUrl(walletAddressUrl))
+
+      const url = new URL('/wallet', API_URL)
+      url.searchParams.set('walletAddress', walletAddressUrl)
+
+      const response = await fetch(url)
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error((data as ApiErrorResponse).error?.message)
+      }
+      return data as WalletAddressInfo
+    },
+    async fetchQuote({ sender, receiver, amount }) {
+      const url = new URL('/payment/quotes', API_URL)
+      const body: PaymentQuoteInput = {
+        sender,
+        receiver,
+        debitAmount: Number(amount),
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const json: PaymentQuoteResult = await res.json()
+      if (res.ok && 'receiveAmount' in json) {
+        const debitAmount = fromAmount(json.debitAmount)
+        const receiveAmount = fromAmount(json.receiveAmount)
+        return { debitAmount, receiveAmount }
+      }
+
+      if (res.status === 400 && 'error' in json) {
+        const { error, minSendAmount } = json
+        return {
+          error,
+          ...(minSendAmount && { minSendAmount: fromAmount(minSendAmount) }),
+        }
+      } else {
+        return {
+          error: 'Failed to create payment. Please try a different amount.',
+        }
+      }
+    },
+    async initiatePayment({ sender, receiver, amount, note }) {
+      const url = new URL('/payment/initiate', API_URL).href
+      const body: PaymentInitiateInput = {
+        sender,
+        receiver,
+        debitAmount: Number(amount),
+        note,
+        redirectUrl: new URL('payment-confirmation', frontendUrl).href,
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok) {
+        throw new Error(
+          `Failed to initiate payment. HTTP ${res.status} (${res.statusText})`,
+        )
+      }
+      const json: PaymentInitiateResult = await res.json()
+      return {
+        grantRedirectUrl: json.grantRedirectUrl,
+        paymentId: json.paymentId,
+      }
+    },
+    async *getStatus(paymentId, signal) {
+      const url = new URL(`/payment/status2/${paymentId}`, API_URL).href
+      while (true) {
+        try {
+          signal?.throwIfAborted()
+          const res = await fetch(url, { signal })
+          if (!res.ok) {
+            throw new Error('Failed to check payment status: ' + res.statusText)
+          }
+
+          const status: PaymentStatus = await res.json()
+          yield status
+
+          if (status.type === 'PENDING_GRANT_INTERACTION') {
+            await sleep(3000)
+          } else if (status.type === 'OUTGOING_PAYMENT_CREATED') {
+            await sleep(1500)
+          } else if (
+            status.type === 'OUTGOING_PAYMENT_DONE' ||
+            status.type === 'GRANT_REJECTED'
+          ) {
+            break
+          } else {
+            throw new Error('Unknown payment status: ' + JSON.stringify(status))
+          }
+        } catch (err) {
+          if (err instanceof Error && err.name === 'AbortError') {
+            break
+          } else if (isAbortSignalTimeout(err) || isTimeoutError(err)) {
+            throw new Error('Payment authorization timed out')
+          } else {
+            throw new Error('Failed to check payment status', { cause: err })
+          }
+        }
+      }
+    },
+  })
   element.config = {
     apiUrl: API_URL,
     cdnUrl: params.cdnUrl,
-    frontendUrl: new URL('/tools/', getFrontendUrlOrigin()).href,
+    frontendUrl,
     receiverAddress: walletAddressUrl,
     profile,
   }
@@ -49,4 +172,16 @@ function getFrontendUrlOrigin() {
   }
 
   return APP_URL.staging
+}
+
+function isAbortSignalTimeout(ev: unknown) {
+  return (
+    ev instanceof Event &&
+    ev.target instanceof AbortSignal &&
+    isTimeoutError(ev.target.reason)
+  )
+}
+
+function isTimeoutError(err: unknown) {
+  return err instanceof DOMException && err.name === 'TimeoutError'
 }

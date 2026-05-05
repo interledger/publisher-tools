@@ -69,6 +69,12 @@ export function toAmount(
   }
 }
 
+export function fromAmount(amount: Amount): PaymentCurrencyAmount {
+  const { assetScale, assetCode } = amount
+  const value = Number(amount.value) / 10 ** assetScale
+  return { currency: assetCode, value: value.toFixed(assetScale) }
+}
+
 // https://github.com/interledger/web-monetization-extension/blob/305b47c9f67ca604c79cfbfb083e5fcd1a579161/src/shared/helpers/wallet.ts#L13-L21
 export function toWalletAddressUrl(s: string): string {
   if (s.startsWith('https://')) return s

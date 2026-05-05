@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { NO_OP_CONTROLLER } from '@c/widget/controller'
+import { sleep } from '@shared/utils'
 import type { PaymentWidget as WidgetComponent } from '@tools/components'
 import { useWidgetProfile } from '~/stores/widget-store'
 
@@ -40,10 +42,37 @@ export const WidgetPreview = ({
   }, [profile, serviceUrls, opWallet])
 
   useEffect(() => {
+    if (!isLoaded) return
+    widgetRef.current?.setController({
+      isPreviewMode: true,
+      getWallet: NO_OP_CONTROLLER.getWallet,
+      async fetchQuote(request) {
+        await sleep(500)
+        return NO_OP_CONTROLLER.fetchQuote(request)
+      },
+      async initiatePayment(request) {
+        await sleep(500)
+        return NO_OP_CONTROLLER.initiatePayment(request)
+      },
+      async *getStatus() {
+        const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
+        yield { type: 'PENDING_GRANT_INTERACTION' }
+        await sleep(2000)
+        yield { type: 'OUTGOING_PAYMENT_CREATED', outgoingPaymentId }
+        await sleep(2000)
+        yield {
+          type: 'OUTGOING_PAYMENT_DONE',
+          result: 'success',
+          outgoingPaymentId,
+        }
+      },
+    })
+  }, [widgetRef.current, isLoaded])
+
+  useEffect(() => {
     if (widgetRef.current && isLoaded) {
       const widget = widgetRef.current
       widget.config = widgetConfig
-      widget.isPreview = true
       widget.isOpen = true
     }
   }, [widgetConfig, isLoaded])
