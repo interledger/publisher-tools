@@ -23,14 +23,14 @@
     "@shared/default-data": "workspace:^",
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
-    "hono": "^4.12.16",
+    "hono": "^4.12.17",
     "http-message-signatures": "^1.0.5",
     "httpbis-digest-headers": "^1.0.0",
     "zod": "^4.4.3"
   },
   "types": "./src/types.ts",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260504.1",
+    "@cloudflare/workers-types": "^4.20260505.1",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "esbuild": "0.28.0",
