@@ -70,7 +70,7 @@ export const NO_OP_CONTROLLER: Controller = {
       assetScale: 2,
       authServer: 'https://auth.example.com',
       resourceServer: 'https://resource.example.com',
-      publicName: 'a',
+      publicName: 'Wallet (Preview)',
     })
   },
   fetchQuote({ amount, sender, receiver }) {
@@ -82,8 +82,6 @@ export const NO_OP_CONTROLLER: Controller = {
   initiatePayment() {
     return Promise.resolve({
       paymentId: 'payment-id',
-      quoteId: 'quote-id',
-      incomingPaymentId: 'incoming-payment-id',
       grantRedirectUrl: 'https://example.com/redirect',
     })
   },

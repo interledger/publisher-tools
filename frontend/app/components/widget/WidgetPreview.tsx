@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { NO_OP_CONTROLLER } from '@c/widget/controller'
 import { sleep } from '@shared/utils'
 import type { PaymentWidget as WidgetComponent } from '@tools/components'
 import { useWidgetProfile } from '~/stores/widget-store'
@@ -44,29 +45,14 @@ export const WidgetPreview = ({
     if (!isLoaded) return
     widgetRef.current?.setController({
       isPreviewMode: true,
-      getWallet: async () => ({
-        $url: 'https://ilp.dev/mock-wallet',
-        id: 'https://ilp.dev/mock-wallet',
-        assetCode: 'USD',
-        assetScale: 2,
-        authServer: 'https://auth.interledger.cards',
-        resourceServer: 'https://ilp.dev',
-        publicName: 'Wallet (Preview)',
-      }),
-      async fetchQuote({ sender, receiver, amount }) {
+      getWallet: NO_OP_CONTROLLER.getWallet,
+      async fetchQuote(request) {
         await sleep(500)
-        amount = String(amount)
-        return {
-          debitAmount: { value: amount, currency: sender.assetCode },
-          receiveAmount: { value: amount, currency: receiver.assetCode },
-        }
+        return NO_OP_CONTROLLER.fetchQuote(request)
       },
-      async initiatePayment() {
+      async initiatePayment(request) {
         await sleep(500)
-        return {
-          grantRedirectUrl: 'https://example.com',
-          paymentId: 'PAYMENT-ID',
-        }
+        return NO_OP_CONTROLLER.initiatePayment(request)
       },
       async *getStatus() {
         const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
