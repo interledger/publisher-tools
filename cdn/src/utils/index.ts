@@ -1,4 +1,6 @@
+import type { ApiErrorResponse, WalletAddressInfo } from 'publisher-tools-api'
 import type { Tool, ProfileId, ToolProfile } from '@shared/types'
+import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
@@ -9,7 +11,7 @@ export function getScriptParams(tool: Tool) {
   }
   const cdnUrl = new URL(script.src).origin
 
-  const { walletAddress, walletAddressId, tag } = script.dataset
+  const { walletAddress, walletAddressId, tag, ...rest } = script.dataset
 
   if (!walletAddress) {
     throw new Error(`Missing data-wallet-address for ${tool}.js script`)
@@ -35,7 +37,13 @@ export function getScriptParams(tool: Tool) {
     throw new Error(`Missing data-tag for ${tool}.js script`)
   }
 
-  return { walletAddress, walletAddressId, profileId: tag as ProfileId, cdnUrl }
+  return {
+    walletAddress,
+    walletAddressId,
+    profileId: tag as ProfileId,
+    cdnUrl,
+    otherAttributes: rest,
+  }
 }
 
 export async function fetchProfile<T extends Tool>(
@@ -56,6 +64,23 @@ export async function fetchProfile<T extends Tool>(
 
   const json = await res.json()
   return json as ToolProfile<T>
+}
+
+export async function getWallet(
+  apiUrl: string,
+  walletAddressUrl: string,
+): Promise<WalletAddressInfo> {
+  walletAddressUrl = checkHrefFormat(toWalletAddressUrl(walletAddressUrl))
+
+  const url = new URL('/wallet', apiUrl)
+  url.searchParams.set('walletAddress', walletAddressUrl)
+
+  const response = await fetch(url)
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error((data as ApiErrorResponse).error?.message)
+  }
+  return data as WalletAddressInfo
 }
 
 export function appendPaymentPointer(walletAddressUrl: string) {

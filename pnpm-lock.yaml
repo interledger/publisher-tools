@@ -161,6 +161,9 @@ importers:
       '@interledger/open-payments':
         specifier: ^7.4.0
         version: 7.4.0
+      '@shared/default-data':
+        specifier: workspace:^
+        version: link:../shared/default-data
       '@shared/types':
         specifier: workspace:^
         version: link:../shared/types

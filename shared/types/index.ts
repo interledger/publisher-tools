@@ -1,7 +1,13 @@
 export const TOOL_BANNER = 'banner'
 export const TOOL_WIDGET = 'widget'
+export const TOOL_PAYWALL = 'paywall'
 export const TOOL_OFFERWALL = 'offerwall'
-export const TOOLS = [TOOL_BANNER, TOOL_WIDGET, TOOL_OFFERWALL] as const
+export const TOOLS = [
+  TOOL_BANNER,
+  TOOL_WIDGET,
+  TOOL_PAYWALL,
+  TOOL_OFFERWALL,
+] as const
 export type Tool = (typeof TOOLS)[number]
 
 export const PROFILE_A = 'version1'
@@ -27,6 +33,9 @@ export interface Configuration {
   widget?: {
     [presetId in ProfileId]?: WidgetProfile
   }
+  paywall?: {
+    [presetId in ProfileId]?: PaywallProfile
+  }
   offerwall?: {
     [presetId in ProfileId]?: OfferwallProfile
   }
@@ -37,6 +46,7 @@ export type ToolProfiles<T extends Tool> = Configuration[T]
 export type ToolProfile<T extends Tool> = {
   banner: BannerProfile
   widget: WidgetProfile
+  paywall: PaywallProfile
   offerwall: OfferwallProfile
 }[T]
 
@@ -136,6 +146,8 @@ export interface WidgetProfile extends BaseToolProfile {
     color: Background
   }
 }
+
+export interface PaywallProfile extends BaseToolProfile {}
 
 export interface OfferwallProfile extends BaseToolProfile {
   font: {

@@ -5,40 +5,45 @@ import type {
   PaymentQuoteResult,
   PaymentStatus,
 } from 'publisher-tools-api'
-import { API_URL, APP_URL } from '@shared/defines'
-import type { WidgetProfile } from '@shared/types'
+import { API_URL } from '@shared/defines'
 import { fromAmount, sleep } from '@shared/utils'
-import { PaymentWidget } from '@tools/components'
-import {
-  appendPaymentPointer,
-  fetchProfile,
-  getScriptParams,
-  getWallet,
-} from './utils'
+import { Paywall } from '@tools/components'
+import { fetchProfile, getScriptParams, getWallet } from './utils'
 
-customElements.define('wm-payment-widget', PaymentWidget)
+const NAME = 'wm-paywall'
+customElements.define(NAME, Paywall)
 
-const params = getScriptParams('widget')
+const params = getScriptParams('paywall')
 
-appendPaymentPointer(params.walletAddress)
-fetchProfile(API_URL, 'widget', params)
-  .then((profile) => {
-    const el = drawWidget(params.walletAddress, profile)
-    document.body.appendChild(el)
+drawPaywall()
+function drawPaywall() {
+  const price = params.otherAttributes.price?.trim()
+  if (!price) throw new Error('Missing data-price attribute on script')
+  if (!/^\d+(\.\d+)?$/.test(price)) {
+    throw new Error(`Invalid data-price="${price}"`)
+  }
+
+  const element = document.createElement('wm-paywall')
+  element.setBaseConfig({
+    receiverWalletAddressUrl: params.walletAddress,
+    price,
   })
-  .catch((error) => console.error(error))
 
-const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
-  const frontendUrl = new URL('/tools/', getFrontendUrlOrigin()).href
-  const element = document.createElement('wm-payment-widget')
   element.setController({
+    fetchConfig: () => fetchProfile(API_URL, 'paywall', params),
+    async checkEntitlement() {
+      return 'no-access' // TODO: create and call API
+    },
+    async saveEntitlement() {
+      // TODO: create and call API
+    },
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
     async fetchQuote({ sender, receiver, amount }) {
       const url = new URL('/payment/quotes', API_URL)
       const body: PaymentQuoteInput = {
         sender,
         receiver,
-        debitAmount: Number(amount),
+        receiveAmount: Number(amount),
       }
       const res = await fetch(url, {
         method: 'POST',
@@ -69,9 +74,9 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
       const body: PaymentInitiateInput = {
         sender,
         receiver,
-        debitAmount: Number(amount),
+        receiveAmount: Number(amount),
         note,
-        redirectUrl: new URL('payment-confirmation', frontendUrl).href,
+        redirectUrl: window.location.href,
       }
       const res = await fetch(url, {
         method: 'POST',
@@ -126,38 +131,8 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
       }
     },
   })
-  element.config = {
-    apiUrl: API_URL,
-    cdnUrl: params.cdnUrl,
-    frontendUrl,
-    receiverAddress: walletAddressUrl,
-    profile,
-  }
 
-  element.style.position = 'fixed'
-  element.style.bottom = '20px'
-  element.style.right = '20px'
-  element.style.left = '20px'
-  element.style.zIndex = '9999'
-
-  return element
-}
-
-// We've a cyclic dependency between CDN and frontend URLs, so we infer it
-// from the API instead to avoid this conflict during deployment.
-function getFrontendUrlOrigin() {
-  if (API_URL.includes('api.webmonetization.org')) {
-    return APP_URL.production
-  }
-
-  if (
-    API_URL.startsWith('http://localhost') ||
-    API_URL.startsWith('http://127.0.0.1')
-  ) {
-    return APP_URL.development
-  }
-
-  return APP_URL.staging
+  document.body.appendChild(element)
 }
 
 function isAbortSignalTimeout(ev: unknown) {
