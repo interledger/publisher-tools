@@ -21,7 +21,8 @@ app.use('*', async (c, next) => {
   await next()
   if (c.res.status !== 400) return
 
-  const data = await c.res.clone().json()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any = await c.res.clone().json()
   if (data?.error?.name === 'ZodError' && data.error.message?.startsWith('[')) {
     c.res = c.json(
       {
