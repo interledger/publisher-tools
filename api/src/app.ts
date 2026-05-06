@@ -17,6 +17,22 @@ export type Env = {
 
 export const app = new Hono<{ Bindings: Env }>()
 
+app.use('*', async (c, next) => {
+  await next()
+  if (c.res.status !== 400) return
+
+  const data = await c.res.clone().json()
+  if (data?.error?.name === 'ZodError' && data.error.message?.startsWith('[')) {
+    c.res = c.json(
+      {
+        ...data,
+        error: { ...data.error, message: JSON.parse(data.error.message) },
+      },
+      c.res.status,
+    )
+  }
+})
+
 app.use(
   '*',
   cors({
