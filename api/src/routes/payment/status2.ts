@@ -8,7 +8,7 @@ import { getData, setData, type PaymentKvData } from '../../utils/payments-kv'
 import { createHTTPException } from '../../utils/utils'
 
 app.get(
-  '/payment/status2/:paymentId',
+  '/payment/status/:paymentId',
   zValidator('param', z.object({ paymentId: PaymentIdSchema })),
   async ({ req, json, env }) => {
     const { paymentId } = req.param()
@@ -48,9 +48,7 @@ async function handleStatus(
   // We created the payment, but amount not sent yet.
   if (data.status === 'CREATED') {
     const openPayments = await OpenPaymentsService.getInstance(env)
-    const result = await openPayments.completePaymentProcess(
-      undefined,
-      undefined,
+    const result = await openPayments.pollOutgoingPayment(
       data.outgoingPaymentId,
       data.outgoingPaymentGrantAccessToken,
     )
