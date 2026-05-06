@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
+import { NO_OP_CONTROLLER } from '@c/widget/controller'
+import { sleep } from '@shared/utils'
 import type { PaymentWidget as WidgetComponent } from '@tools/components'
 import { useWidgetProfile } from '~/stores/widget-store'
 
@@ -16,18 +18,46 @@ export const WidgetPreview = ({
   const widgetRef = useRef<WidgetComponent>(null)
 
   useEffect(() => {
-    const loadWidgetElement = async () => {
-      if (!customElements.get('wm-payment-widget')) {
+    const name = 'wm-payment-widget'
+    const load = async () => {
+      if (!customElements.get(name)) {
         // dynamic import - ensure component only runs on the client side and not on SSR
         const { PaymentWidget } = await import('@tools/components/widget/index')
-        if (!customElements.get('wm-payment-widget')) {
-          customElements.define('wm-payment-widget', PaymentWidget)
+        if (!customElements.get(name)) {
+          customElements.define(name, PaymentWidget)
         }
       }
+
+      const el = document.querySelector(name)!
+      el.setController({
+        isPreviewMode: true,
+        getWallet: NO_OP_CONTROLLER.getWallet,
+        async fetchQuote(request) {
+          await sleep(500)
+          return NO_OP_CONTROLLER.fetchQuote(request)
+        },
+        async initiatePayment(request) {
+          await sleep(500)
+          return NO_OP_CONTROLLER.initiatePayment(request)
+        },
+        async *getStatus() {
+          const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
+          yield { type: 'PENDING_GRANT_INTERACTION' }
+          await sleep(2000)
+          yield { type: 'OUTGOING_PAYMENT_CREATED', outgoingPaymentId }
+          await sleep(2000)
+          yield {
+            type: 'OUTGOING_PAYMENT_DONE',
+            result: 'success',
+            outgoingPaymentId,
+          }
+        },
+      })
+
       setIsLoaded(true)
     }
 
-    loadWidgetElement()
+    load()
   }, [])
 
   const widgetConfig = useMemo(() => {
@@ -43,14 +73,9 @@ export const WidgetPreview = ({
     if (widgetRef.current && isLoaded) {
       const widget = widgetRef.current
       widget.config = widgetConfig
-      widget.isPreview = true
       widget.isOpen = true
     }
   }, [widgetConfig, isLoaded])
-
-  if (!isLoaded) {
-    return <div>Loading widget...</div>
-  }
 
   return (
     <div

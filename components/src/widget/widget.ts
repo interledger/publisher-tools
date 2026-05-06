@@ -1,14 +1,16 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { ApiErrorResponse } from 'publisher-tools-api'
+import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
-import type { WalletAddress } from '@interledger/open-payments'
-import { checkHrefFormat, toWalletAddressUrl } from '@shared/utils'
-import { WidgetController } from './controller'
+import {
+  type Controller,
+  NO_OP_CONTROLLER,
+  WidgetController,
+} from './controller'
 import type { WidgetConfig } from './types'
 import { PaymentConfirmation } from './views/confirmation/confirmation'
 import { PaymentInteraction } from './views/interaction/interaction'
@@ -25,18 +27,22 @@ const DEFAULT_WIDGET_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 
 export class PaymentWidget extends LitElement {
+  #receiver!: Promise<WalletAddressInfo>
   private configController = new WidgetController(this)
 
   @property({ type: Object })
   set config(value: Partial<WidgetConfig>) {
     this.configController.updateConfig(value)
+    if (value.receiverAddress && !this.#receiver) {
+      this.#receiver = this.#controller.getWallet(value.receiverAddress)
+    }
   }
+
   get config() {
     return this.configController.config
   }
 
   @property({ type: Boolean }) isOpen = false
-  @property({ type: Boolean }) isPreview?: boolean = false
 
   @state() private currentView: string = 'home'
   @state() private walletAddressError: string = ''
@@ -53,6 +59,15 @@ export class PaymentWidget extends LitElement {
     }
   }
 
+  #controller = NO_OP_CONTROLLER
+  setController(controller: Controller) {
+    if (this.#controller === controller) return
+    if (this.#controller !== NO_OP_CONTROLLER) {
+      throw new Error('controller is already set')
+    }
+    this.#controller = controller
+  }
+
   private async handleSubmit(e: Event) {
     e.preventDefault()
     this.isSubmitting = true
@@ -60,38 +75,15 @@ export class PaymentWidget extends LitElement {
     const formData = new FormData(e.target as HTMLFormElement)
     const walletAddress = String(formData.get('walletAddress') ?? '')
 
-    if (this.isPreview && !walletAddress) {
-      this.previewWalletAddress()
-      this.isSubmitting = false
-      return
-    }
-
-    if (!walletAddress.trim()) {
-      this.walletAddressError = 'Please fill out your wallet address.'
-      this.isSubmitting = false
-      return
-    }
-
     try {
-      const { apiUrl } = this.configController.config
-      const walletAddressUrl = checkHrefFormat(
-        toWalletAddressUrl(walletAddress),
-      )
-
-      const url = new URL('/wallet', apiUrl)
-      url.searchParams.set('walletAddress', walletAddressUrl)
-
-      const response = await fetch(url)
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error((data as ApiErrorResponse).error?.message)
+      if (!walletAddress.trim() && !this.#controller.isPreviewMode) {
+        throw new Error('Please fill out your wallet address.')
       }
-
+      const walletInfo = await this.#controller.getWallet(walletAddress)
       this.configController.updateState({
-        walletAddress: data as WalletAddress,
+        walletAddress: walletInfo,
+        receiver: await this.#receiver,
       })
-
       this.walletAddressError = ''
       this.currentView = 'confirmation'
     } catch (error) {
@@ -146,20 +138,6 @@ export class PaymentWidget extends LitElement {
 
   private navigateToHome() {
     this.currentView = 'home'
-  }
-
-  private previewWalletAddress() {
-    this.configController.updateState({
-      walletAddress: {
-        id: 'https://ilp.dev/mock-wallet',
-        assetCode: 'USD',
-        assetScale: 2,
-        authServer: 'https://auth.interledger.cards',
-        resourceServer: 'https://ilp.dev',
-        publicName: 'Wallet (Preview)',
-      },
-    })
-    this.currentView = 'confirmation'
   }
 
   private renderHomeView() {
@@ -224,8 +202,8 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-confirmation
         .configController=${this.configController}
+        .controller=${this.#controller}
         .note=${this.config.note || ''}
-        .isPreview=${this.isPreview}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
@@ -237,7 +215,7 @@ export class PaymentWidget extends LitElement {
     return html`
       <wm-payment-interaction
         .configController=${this.configController}
-        .isPreview=${this.isPreview}
+        .controller=${this.#controller}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
       ></wm-payment-interaction>
@@ -248,11 +226,12 @@ export class PaymentWidget extends LitElement {
     if (!this.config) {
       return html``
     }
+    const isPreview = !!this.#controller.isPreviewMode
     const triggerIcon = this.config.profile?.icon.value || defaultTriggerIcon
 
     return html`
       <div
-        class="content ${this.isOpen ? 'open' : 'closed'} ${this.isPreview
+        class="content ${this.isOpen ? 'open' : 'closed'} ${isPreview
           ? 'preview-mode'
           : ''}"
       >

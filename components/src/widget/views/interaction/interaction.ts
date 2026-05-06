@@ -1,16 +1,14 @@
 import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type {
-  PaymentStatusSuccess,
-  PaymentStatus,
-  PaymentStatusRejected,
-} from 'publisher-tools-api'
-import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
 import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
+import {
+  NO_OP_CONTROLLER,
+  type Controller,
+  type WidgetController,
+} from '@c/widget/controller'
 import interactionStyles from './interaction.css?raw'
-import type { WidgetController } from '../../controller'
 
 type ButtonAction = {
   label: string
@@ -29,36 +27,11 @@ type InteractionView = {
   description?: string
 }
 
-function isInteractionSuccess(
-  params: PaymentStatus,
-): params is PaymentStatusSuccess {
-  return 'interact_ref' in params
-}
-
-function isInteractionRejected(
-  params: PaymentStatus,
-): params is PaymentStatusRejected {
-  return 'result' in params && params.result === 'grant_rejected'
-}
-
-function isAbortSignalTimeout(ev: unknown) {
-  return (
-    ev instanceof Event &&
-    ev.target instanceof AbortSignal &&
-    isTimeoutError(ev.target.reason)
-  )
-}
-
-function isTimeoutError(err: unknown) {
-  return err instanceof DOMException && err.name === 'TimeoutError'
-}
-
 export class PaymentInteraction extends LitElement {
-  private _boundHandleMessage: (event: MessageEvent) => void = () => {}
   #pollingAbortController: AbortController | null = null
   #interactionCompleted = false
+
   @property({ type: Object }) configController!: WidgetController
-  @property({ type: Boolean }) isPreview?: boolean = false
   @state() private currentView:
     | 'authorizing'
     | 'processing'
@@ -70,48 +43,65 @@ export class PaymentInteraction extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    if (this.isPreview) {
-      this.previewInteractionCompleted()
-      return
+    const { grantRedirectUrl, paymentId } = this.configController.state
+    if (!grantRedirectUrl) {
+      throw new Error('Grant redirect URL not found')
     }
-    const {
-      outgoingPaymentGrant: {
-        interact: { redirect },
-      },
-    } = this.configController.state
-    if (!redirect) return
-
-    window.open(redirect, '_blank')
-    this._boundHandleMessage = this.handleMessage.bind(this)
-    window.addEventListener('message', this._boundHandleMessage)
+    if (!this.#controller.isPreviewMode) {
+      window.open(grantRedirectUrl, '_blank')
+    }
 
     const POLLING_TIMEOUT = 25_000 * 5
     this.#pollingAbortController = new AbortController()
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
       this.#pollingAbortController?.abort(ev)
     })
-    this._startLongPolling(this.#pollingAbortController.signal)
+    void this.waitForCompletion(paymentId)
+  }
+
+  #controller = NO_OP_CONTROLLER
+  @property({ type: Object, attribute: false })
+  set controller(controller: Controller) {
+    if (this.#controller === controller) return
+    if (this.#controller !== NO_OP_CONTROLLER) {
+      throw new Error('controller is already set')
+    }
+    this.#controller = controller
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener('message', this._boundHandleMessage)
     this._cancelPolling()
   }
 
-  private handleMessage(event: MessageEvent) {
-    if (event.data?.type !== 'GRANT_INTERACTION') return
-
-    window.removeEventListener('message', this._boundHandleMessage)
-    const { data } = event
-    this._markPollingCompleted()
-
-    if (isInteractionSuccess(data)) {
-      void this.handleInteractionSuccess(data.interact_ref)
-    } else if (isInteractionRejected(data)) {
-      this.handleInteractionFail('Payment authorization rejected')
-    } else {
-      this.handleInteractionFail('Invalid payment response received')
+  private async waitForCompletion(paymentId: string) {
+    console.log(this.#controller?.getStatus)
+    try {
+      for await (const status of this.#controller.getStatus(
+        paymentId,
+        this.#pollingAbortController?.signal,
+      )) {
+        if (status.type === 'OUTGOING_PAYMENT_CREATED') {
+          this.currentView = 'processing'
+        } else if (status.type === 'OUTGOING_PAYMENT_DONE') {
+          if (status.result === 'success') {
+            this.currentView = 'success'
+          } else {
+            this.currentView = 'failed'
+            this.errorMessage = status.error?.message || 'Payment failed'
+          }
+        } else if (status.type === 'GRANT_REJECTED') {
+          this.handleInteractionFail('Payment authorization rejected')
+        } else if (status.type === 'PENDING_GRANT_INTERACTION') {
+          this.currentView = 'authorizing'
+        }
+        this.requestUpdate()
+      }
+      this._markPollingCompleted()
+    } catch (err) {
+      const error = err as Error
+      this.handleInteractionFail(error.message)
+      this._markPollingFailed(error.message)
     }
   }
 
@@ -134,99 +124,10 @@ export class PaymentInteraction extends LitElement {
     )
   }
 
-  private async handleInteractionSuccess(interactRef: string) {
-    this.currentView = 'processing'
-    this.requestUpdate()
-
-    try {
-      const {
-        walletAddress,
-        outgoingPaymentGrant,
-        quote,
-        incomingPaymentGrant,
-        note,
-      } = this.configController.state
-      const { apiUrl } = this.configController.config
-      const url = new URL('/payment/finalize', apiUrl).href
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          walletAddress,
-          pendingGrant: outgoingPaymentGrant,
-          quote,
-          incomingPaymentGrant,
-          interactRef,
-          note,
-        }),
-      })
-
-      if (!response.ok) {
-        this.handleInteractionFail(
-          'Failed to process payment. Please try again',
-        )
-        return
-      }
-
-      const result = (await response.json()) as CheckPaymentResult
-
-      if (result.success === false) {
-        this.handleInteractionFail(
-          result.error?.message || 'Payment processing failed',
-        )
-        return
-      }
-
-      this.currentView = 'success'
-      this.requestUpdate()
-    } catch {
-      this.handleInteractionFail('There was an issue with your request')
-    }
-  }
-
   private handleInteractionFail(message: string) {
     this.currentView = 'failed'
     this.errorMessage = message
     this.requestUpdate()
-  }
-
-  private async _startLongPolling(signal?: AbortSignal): Promise<void> {
-    if (this.#interactionCompleted) return
-
-    const { paymentId } = this.configController.state
-    const { apiUrl } = this.configController.config
-    const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
-
-    signal?.throwIfAborted()
-    try {
-      const res = await fetch(url, { signal })
-      if (res.ok) {
-        const data = (await res.json()) as PaymentStatus
-        if (isInteractionSuccess(data)) {
-          void this.handleInteractionSuccess(data.interact_ref)
-        } else if (isInteractionRejected(data)) {
-          this.handleInteractionFail('Payment authorization rejected')
-        } else {
-          this.handleInteractionFail('Invalid payment response received')
-        }
-        return //success
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        // don't handle errors if the request was aborted, another method succeeded
-        return
-      }
-      if (isAbortSignalTimeout(error) || isTimeoutError(error)) {
-        this._markPollingFailed('Payment authorization timed out')
-        return
-      }
-
-      this._markPollingFailed('Failed to check payment status')
-      throw error
-    }
   }
 
   private _markPollingCompleted() {
@@ -251,13 +152,6 @@ export class PaymentInteraction extends LitElement {
       this.#pollingAbortController.abort()
       this.#pollingAbortController = null
     }
-  }
-
-  private previewInteractionCompleted() {
-    setTimeout(() => {
-      this.currentView = 'success'
-      this.requestUpdate()
-    }, 3000)
   }
 
   private get interactionView(): InteractionView {
