@@ -1,15 +1,14 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import { app, type Env } from '../../app'
 import { PaymentIdSchema } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { getData, setData, type PaymentKvData } from '../../utils/payments-kv'
-import { createHTTPException } from '../../utils/utils'
+import { createHTTPException, validate } from '../../utils/utils'
 
 app.get(
   '/payment/status/:paymentId',
-  zValidator('param', z.object({ paymentId: PaymentIdSchema })),
+  validate('param', z.object({ paymentId: PaymentIdSchema })),
   async ({ req, json, env }) => {
     const { paymentId } = req.param()
 
