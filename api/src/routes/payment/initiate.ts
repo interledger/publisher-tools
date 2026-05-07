@@ -1,6 +1,5 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import { createId } from '@paralleldrive/cuid2'
 import { app } from '../../app'
 import {
@@ -9,7 +8,7 @@ import {
 } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { setData } from '../../utils/payments-kv'
-import { createHTTPException } from '../../utils/utils'
+import { createHTTPException, validate } from '../../utils/utils'
 
 const PaymentInitiateSchema = z
   .object({
@@ -30,7 +29,7 @@ export type PaymentInitiateResult = {
 
 app.post(
   '/payment/initiate',
-  zValidator('json', PaymentInitiateSchema),
+  validate('json', PaymentInitiateSchema),
   async ({ req, json, env }) => {
     try {
       const params = req.valid('json')

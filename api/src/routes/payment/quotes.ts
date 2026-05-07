@@ -1,5 +1,4 @@
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import type { Amount, PaymentError } from '@shared/types'
 import { app } from '../../app.js'
 import {
@@ -10,7 +9,7 @@ import {
   isNonPositiveAmountError,
   OpenPaymentsService,
 } from '../../utils/open-payments.js'
-import { createHTTPException } from '../../utils/utils.js'
+import { createHTTPException, validate } from '../../utils/utils.js'
 
 const PaymentQuoteSchema = z
   .object({
@@ -23,7 +22,7 @@ export type PaymentQuoteInput = z.infer<typeof PaymentQuoteSchema>
 
 app.post(
   '/payment/quotes',
-  zValidator('json', PaymentQuoteSchema),
+  validate('json', PaymentQuoteSchema),
   async ({ req, json, env }) => {
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
