@@ -24,6 +24,16 @@
   margin: 0;
 }
 
+.widget-body p {
+  align-self: stretch;
+  color: var(--Text-paragraph-standard);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-base);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-sm);
+}
+
 .white-text {
   color: var(--Colors-white);
 }

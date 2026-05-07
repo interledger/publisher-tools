@@ -4,7 +4,6 @@ import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
 import styles from './home.css?raw'
-import stylesBase from '../../widget.css?raw'
 
 const DEFAULT_TITLE = 'Future of support'
 const DEFAULT_DESCRIPTION =
@@ -32,7 +31,7 @@ export class HomeView extends LitElement {
   @state() private _error = ''
   @state() private _isSubmitting = false
 
-  static styles = [unsafeCSS(stylesBase), unsafeCSS(styles)]
+  static styles = unsafeCSS(styles)
 
   connectedCallback(): void {
     super.connectedCallback()
