@@ -54,7 +54,8 @@ app.post(
         }),
       })
     } catch (err) {
-      console.error('umami forward failed', { name: event.payload.name }, err)    }
+      console.error('umami forward failed', { name: event.payload.name }, err)
+    }
 
     return body(null, 204)
   },
