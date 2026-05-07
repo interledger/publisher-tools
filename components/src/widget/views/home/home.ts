@@ -4,7 +4,6 @@ import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
 import styles from './home.css?raw'
-import stylesBase from '../../widget.css?raw'
 
 const DEFAULT_TITLE = 'Future of support'
 const DEFAULT_DESCRIPTION =
@@ -32,7 +31,7 @@ export class HomeView extends LitElement {
   @state() private _error = ''
   @state() private _isSubmitting = false
 
-  static styles = [unsafeCSS(stylesBase), unsafeCSS(styles)]
+  static styles = unsafeCSS(styles)
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -75,7 +74,7 @@ export class HomeView extends LitElement {
     const hasError = !!this._error
 
     const descriptionElement = this.showDescription
-      ? html`<p>${this.description ?? DEFAULT_DESCRIPTION}</p>`
+      ? html`<p>${this.description || DEFAULT_DESCRIPTION}</p>`
       : html`<div class="divider" />`
 
     return html`
@@ -112,12 +111,7 @@ export class HomeView extends LitElement {
             aria-describedby=${hasError ? 'wallet-error' : ''}
           />
 
-          <div
-            id="wallet-error"
-            class="error-message"
-            role="alert"
-            aria-live="polite"
-          >
+          <div id="wallet-error" class="error-message" role="alert">
             ${this._error}
           </div>
         </div>

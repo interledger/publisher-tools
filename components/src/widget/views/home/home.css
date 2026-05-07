@@ -1,3 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .widget-header-container {
   display: flex;
   width: 100%;
@@ -22,6 +29,16 @@
   font-weight: var(--Font-Weight-Bold);
   line-height: var(--Font-Line-Height-lg);
   margin: 0;
+}
+
+.widget-body p {
+  align-self: stretch;
+  color: var(--Text-paragraph-standard);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-base);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-sm);
 }
 
 .white-text {

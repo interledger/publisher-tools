@@ -1,5 +1,4 @@
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import type { WalletAddress } from '@interledger/open-payments'
 import {
   getWalletAddress,
@@ -8,7 +7,7 @@ import {
   WalletAddressFormatError,
 } from '@shared/utils'
 import { app } from '../app.js'
-import { createHTTPException } from '../utils/utils.js'
+import { createHTTPException, validate } from '../utils/utils.js'
 
 const walletAddressSchema = z.object({
   walletAddress: z.url('Wallet address must be a valid URL'),
@@ -20,7 +19,7 @@ export interface WalletAddressInfo extends WalletAddress {
 
 app.get(
   '/wallet',
-  zValidator('query', walletAddressSchema),
+  validate('query', walletAddressSchema),
   async ({ req, json }) => {
     const { walletAddress } = req.valid('query')
 
