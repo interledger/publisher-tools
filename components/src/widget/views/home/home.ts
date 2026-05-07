@@ -111,12 +111,7 @@ export class HomeView extends LitElement {
             aria-describedby=${hasError ? 'wallet-error' : ''}
           />
 
-          <div
-            id="wallet-error"
-            class="error-message"
-            role="alert"
-            aria-live="polite"
-          >
+          <div id="wallet-error" class="error-message" role="alert">
             ${this._error}
           </div>
         </div>
