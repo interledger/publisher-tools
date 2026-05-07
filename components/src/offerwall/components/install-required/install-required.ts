@@ -96,6 +96,7 @@ export class InstallRequired extends LitElement {
   #onExtensionLinkClick = (ev: MouseEvent) => {
     const event = new CustomEvent('click-extension-link', {
       cancelable: true,
+      detail: { link: this.extensionUrl },
     })
     this.dispatchEvent(event)
     if (event.defaultPrevented) {

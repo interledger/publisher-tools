@@ -15,6 +15,7 @@ export type Env = {
   PUBLISHER_TOOLS_KV: KVNamespace
   UMAMI_HOST?: string
   UMAMI_WEBSITE_ID?: string
+  UMAMI_HOSTNAME?: string
 }
 
 export const app = new Hono<{ Bindings: Env }>()

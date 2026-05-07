@@ -40,8 +40,9 @@ function drawBanner(profile: BannerProfile) {
     cdnUrl: params.cdnUrl,
   }
 
-  bannerElement.addEventListener('click-extension-link', () => {
-    trackEvent('click_link_banner')
+  bannerElement.addEventListener('click-extension-link', (e) => {
+    const { link } = (e as CustomEvent<{ link: string }>).detail
+    trackEvent({ name: 'embed.click_link_banner', data: { link } })
   })
 
   const position = profile.position ? profile.position.toLowerCase() : 'bottom'

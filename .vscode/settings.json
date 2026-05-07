@@ -1,4 +1,4 @@
 {
-  "prettier.trailingComma": "none",
-  "prettier.semi": false
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
 }

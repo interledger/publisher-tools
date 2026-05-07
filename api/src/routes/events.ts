@@ -1,41 +1,61 @@
 import z from 'zod'
+import { zValidator } from '@hono/zod-validator'
 import { app } from '../app.js'
 
+const payloadSchema = z.union([
+  z.object({
+    name: z.literal('embed.click_link_banner'),
+    url: z.string(),
+    data: z.object({ link: z.string() }).optional(),
+  }),
+  z.object({
+    name: z.literal('embed.click_link_offerwall'),
+    url: z.string(),
+    data: z.object({ link: z.string() }).optional(),
+  }),
+])
+
 const eventSchema = z.object({
-  name: z.enum(['click_link_banner', 'click_link_offerwall']),
+  type: z.literal('event'),
+  payload: payloadSchema,
 })
 
-const HOSTNAME = 'localhost' // replace with Umami site domain for staging/prod
+export type TrackFn = z.infer<typeof payloadSchema>
 
-app.post('/events', async ({ req, env, body }) => {
-  let event
-  try {
-    event = eventSchema.parse(JSON.parse(await req.text()))
-  } catch {
-    return body(null, 400)
-  }
+app.post(
+  '/events',
+  zValidator('json', eventSchema),
+  async ({ req, env, body }) => {
+    if (!env.UMAMI_HOST || !env.UMAMI_WEBSITE_ID || !env.UMAMI_HOSTNAME) {
+      return body(null, 204)
+    }
 
-  try {
-    await fetch(`${env.UMAMI_HOST}/api/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': req.header('user-agent') ?? '',
-        'X-Forwarded-For': req.header('cf-connecting-ip') ?? '', // do we need this?
-      },
-      body: JSON.stringify({
-        type: 'event',
-        payload: {
-          website: env.UMAMI_WEBSITE_ID,
-          hostname: HOSTNAME,
-          url: '/',
-          name: event.name,
-        },
-      }),
-    })
-  } catch (err) {
-    console.error('umami forward failed', err)
-  }
+    const event = req.valid('json')
 
-  return body(null, 204)
-})
+    const headers = new Headers({ 'content-type': 'application/json' })
+    for (const h of ['user-agent', 'accept-language', 'referer']) {
+      const v = req.header(h)
+      if (v) headers.set(h, v)
+    }
+    const ip = req.header('cf-connecting-ip')
+    if (ip) headers.set('x-forwarded-for', ip)
+
+    try {
+      await fetch(`${env.UMAMI_HOST}/api/send`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          ...event,
+          payload: {
+            ...event.payload,
+            website: env.UMAMI_WEBSITE_ID,
+            hostname: env.UMAMI_HOSTNAME,
+          },
+        }),
+      })
+    } catch (err) {
+      console.error('umami forward failed', { name: event.payload.name }, err)    }
+
+    return body(null, 204)
+  },
+)
