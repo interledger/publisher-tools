@@ -74,7 +74,7 @@ export class HomeView extends LitElement {
     const hasError = !!this._error
 
     const descriptionElement = this.showDescription
-      ? html`<p>${this.description ?? DEFAULT_DESCRIPTION}</p>`
+      ? html`<p>${this.description || DEFAULT_DESCRIPTION}</p>`
       : html`<div class="divider" />`
 
     return html`
