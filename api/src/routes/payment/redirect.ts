@@ -1,12 +1,11 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import { urlWithParams } from '@shared/utils'
 import { app } from '../../app'
 import { PaymentIdSchema } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { getData, setData } from '../../utils/payments-kv'
-import { createHTTPException } from '../../utils/utils'
+import { createHTTPException, validate } from '../../utils/utils'
 
 export const PaymentStatusSuccessSchema = z.object({
   hash: z.string().min(1, 'Hash is required'),
@@ -33,8 +32,8 @@ export type PaymentStatusRejected = z.infer<typeof PaymentStatusRejectedSchema>
 // as grant is accepted, outgoing-payment will be created.
 app.get(
   '/payment/redirect/:paymentId',
-  zValidator('param', z.object({ paymentId: PaymentIdSchema })),
-  zValidator('query', PaymentStatusSchema),
+  validate('param', z.object({ paymentId: PaymentIdSchema })),
+  validate('query', PaymentStatusSchema),
   async ({ req, redirect, env }) => {
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
