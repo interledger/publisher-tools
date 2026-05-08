@@ -9,7 +9,10 @@
 }
 
 fieldset {
-  border: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .preset-buttons {
@@ -66,7 +69,7 @@ fieldset {
   z-index: 1;
 }
 
-.form-amount {
+.form-input {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -74,9 +77,8 @@ fieldset {
   align-self: stretch;
 }
 
-.form-amount > [aria-invalid='true'] {
-  align-self: center;
-  color: var(--Colors-red-500, #ef4444);
+.form-input[aria-invalid='true'] {
+  border-color: var(--Colors-red-500, #ef4444);
 }
 
 .form-label {
@@ -95,9 +97,19 @@ fieldset {
 .amount-input-wrapper {
   position: relative;
   width: 100%;
+  margin-top: 4px;
 }
 
 .form-input.with-currency {
   padding-left: calc(var(--Font-Size-text-base) + 2rem);
-  border: 2px solid var(--Colors-silver-300, #c9c9c9);
+  border-width: 2px;
+}
+
+.amount-error {
+  color: var(--Colors-red-500, #ef4444);
+  font-family: var(--Font-Family-Inter, Inter);
+  font-size: var(--Font-Size-text-sm, 14px);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular, 400);
+  line-height: var(--Font-Line-Height-sm, 20px);
 }

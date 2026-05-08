@@ -6,20 +6,19 @@ import stylesBase from '../confirmation/confirmation.css?raw'
 
 export interface AmountChangeEventDetail {
   amount: number
+  onComplete: (error?: string | null) => void
 }
 
 export class PaymentAmount extends LitElement {
   #debounceTimer: ReturnType<typeof setTimeout> | null = null
 
   @property({ type: String }) currency = 'USD'
-  @property({ type: Number }) minSendAmount = 0.5
   @property({ type: Array }) presets: number[] = [1, 5, 10]
   @property({ type: Number }) value = 0
-  @property({ type: String }) externalError = ''
 
   @query('input') private _inputEl!: HTMLInputElement
 
-  @state() private _internalError: string | null = null
+  @state() private _errorMsg: string | null = null
 
   static styles = [unsafeCSS(stylesBase), unsafeCSS(styles)]
 
@@ -48,21 +47,12 @@ export class PaymentAmount extends LitElement {
 
     this.value = newValue
 
-    if (newValue <= 0 || newValue < this.minSendAmount) {
-      if (this.minSendAmount) {
-        this._internalError = `Please enter an amount greater than ${getCurrencySymbol(this.currency)}${this.minSendAmount}`
-      } else {
-        this._internalError = `Please enter a higher amount.`
-      }
-      return
-    }
-
-    this._internalError = null
+    this._errorMsg = null
     this._processUpdate()
   }
 
   private _handlePresetClick(presetAmount: number) {
-    this._internalError = null
+    this._errorMsg = null
     this.value = presetAmount
     this._processUpdate(true)
   }
@@ -78,15 +68,17 @@ export class PaymentAmount extends LitElement {
   private onChange(amount: number) {
     this.dispatchEvent(
       new CustomEvent<AmountChangeEventDetail>('change', {
-        detail: { amount },
+        detail: {
+          amount,
+          onComplete: (error) => (this._errorMsg = error || null),
+        },
       }),
     )
   }
 
   render() {
     const currencySymbol = getCurrencySymbol(this.currency)
-    const displayError = this.externalError || this._internalError
-    const hasError = !!displayError
+    const hasError = !!this._errorMsg
 
     return html`
       <fieldset>
@@ -115,9 +107,8 @@ export class PaymentAmount extends LitElement {
           id="amount-error"
           class="amount-error"
           role="alert"
-          aria-live="polite"
         >
-          ${hasError ? displayError : nothing}
+          ${hasError ? this._errorMsg : nothing}
         </p>
       </div>
 

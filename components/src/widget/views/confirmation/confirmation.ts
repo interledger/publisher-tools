@@ -9,8 +9,7 @@ import {
   type Controller,
   type WidgetController,
 } from '@c/widget/controller'
-import type { Amount } from '@shared/types'
-import { fromAmount, toAmount } from '@shared/utils'
+import { toAmount } from '@shared/utils'
 import confirmationCss from './confirmation.css?raw'
 import { type AmountChangeEventDetail, PaymentAmount } from '../amount/amount'
 
@@ -24,7 +23,7 @@ export class PaymentInitiate extends LitElement {
   @state() private amountError: string | null = null
   @state() private formattedDebitAmount?: string
   @state() private formattedReceiveAmount?: string
-  #minSendAmount?: Amount
+  #minSendAmount?: number
 
   static styles = unsafeCSS(confirmationCss)
 
@@ -52,20 +51,39 @@ export class PaymentInitiate extends LitElement {
   }
 
   private onAmountChange(ev: CustomEvent<AmountChangeEventDetail>) {
-    const amount = ev.detail.amount
+    this.amountError = null
+    const { amount, onComplete } = ev.detail
     const { walletAddress: sender, receiver } = this.configController.state
 
     const formatted = this.formatAmount(String(amount))
     this.inputAmount = formatted
 
     this.configController.updateState({ amount })
+
+    if (amount <= 0 || (this.#minSendAmount && amount < this.#minSendAmount)) {
+      if (this.#minSendAmount) {
+        const minSendAmount = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: sender.assetCode,
+        }).format(amount)
+        this.amountError = `Please enter an amount greater than ${minSendAmount}`
+      } else {
+        this.amountError = `Please enter a higher amount.`
+      }
+      onComplete(this.amountError)
+      return
+    }
+
     this.isLoadingPreview = true
     this.requestUpdate()
 
-    void this.getPaymentQuote({ sender, receiver, amount }).then(() => {
-      this.isLoadingPreview = false
-      this.requestUpdate()
-    })
+    void this.getPaymentQuote({ sender, receiver, amount })
+      .then(() => onComplete(this.amountError))
+      .catch((error) => onComplete((error as Error).message))
+      .finally(() => {
+        this.isLoadingPreview = false
+        this.requestUpdate()
+      })
   }
 
   private handleNoteInput(e: Event) {
@@ -130,7 +148,7 @@ export class PaymentInitiate extends LitElement {
         }
         const value = data.minSendAmount.value
         // Rafiki v1.2.0-beta and later include `minSendAmount` with error
-        this.#minSendAmount = toAmount(value, sender)
+        this.#minSendAmount = Number(toAmount(value, sender).value)
         // TODO: in validateAmount, remove concept of assetScale
         this.amountError = this.validateAmount(
           Number(amount) * 10 ** sender.assetScale,
@@ -240,10 +258,6 @@ export class PaymentInitiate extends LitElement {
         <div class="widget-body">
           <wm-amount
             .currency=${assetCode}
-            .externalError=${this.amountError}
-            .minSendAmount=${this.#minSendAmount
-              ? Number(fromAmount(this.#minSendAmount).value)
-              : 0.01}
             @change=${this.onAmountChange}
           ></wm-amount>
 
