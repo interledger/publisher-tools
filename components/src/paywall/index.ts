@@ -1,24 +1,11 @@
+/* eslint-disable no-unused-private-class-members */
 import { html, LitElement, nothing, unsafeCSS } from 'lit'
 import { state } from 'lit/decorators.js'
-import { createRef, ref, type Ref } from 'lit/directives/ref.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
-// import {
-//   AllSet,
-//   ContributionRequired,
-//   InstallRequired,
-// } from './components/index.js'
-// import { NO_OP_CONTROLLER } from './controller.js'
-// import type { Actions, Controller, Screen } from './controller.js'
 import { type Controller, NO_OP_CONTROLLER } from '@c/paywall/controller'
 import type { PaywallProfile } from '@shared/types'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
-
-const COMPONENTS = {
-  // 'wm-offerwall-install-required': InstallRequired,
-  // 'wm-offerwall-all-set': AllSet,
-  // 'wm-offerwall-contribution-required': ContributionRequired,
-}
 
 export class Paywall extends LitElement {
   #config_!: Promise<PaywallProfile>
@@ -31,11 +18,6 @@ export class Paywall extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    for (const [name, elConstructor] of Object.entries(COMPONENTS)) {
-      if (!customElements.get(name)) {
-        customElements.define(name, elConstructor)
-      }
-    }
 
     if (!this.#baseConfig) {
       throw new Error('setBaseConfig() before mount')

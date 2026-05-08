@@ -3,11 +3,13 @@ import sanitizeHtml from 'sanitize-html'
 import {
   type BannerProfile,
   type OfferwallProfile,
+  type PaywallProfile,
   type WidgetProfile,
   type ToolProfile,
   type Tool,
   TOOL_WIDGET,
   TOOL_BANNER,
+  TOOL_PAYWALL,
   TOOL_OFFERWALL,
 } from '@shared/types'
 import { ApiError, INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
@@ -87,6 +89,9 @@ const sanitizers = {
   },
   [TOOL_OFFERWALL](offerwall: OfferwallProfile): OfferwallProfile {
     return { ...offerwall, $name: sanitizeText(offerwall.$name) }
+  },
+  [TOOL_PAYWALL](paywall: PaywallProfile): PaywallProfile {
+    return { ...paywall, $name: sanitizeText(paywall.$name) }
   },
 } satisfies { [K in Tool]: (profile: ToolProfile<K>) => ToolProfile<K> }
 
