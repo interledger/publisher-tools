@@ -9,15 +9,15 @@ import {
   WidgetController,
 } from './controller'
 import type { WidgetConfig } from './types'
-import { PaymentConfirmation } from './views/confirmation/confirmation'
+import { PaymentInitiate } from './views/confirmation/confirmation'
 import { HomeView, type SubmitEventDetail } from './views/home/home'
-import { PaymentInteraction } from './views/interaction/interaction'
+import { PaymentWaiting } from './views/interaction/interaction'
 import styles from './widget.css?raw'
 
 const COMPONENTS = {
   'wm-payment-home': HomeView,
-  'wm-payment-confirmation': PaymentConfirmation,
-  'wm-payment-interaction': PaymentInteraction,
+  'wm-payment-initiate': PaymentInitiate,
+  'wm-payment-waiting': PaymentWaiting,
 }
 
 export class PaymentWidget extends LitElement {
@@ -38,7 +38,7 @@ export class PaymentWidget extends LitElement {
 
   @property({ type: Boolean }) isOpen = false
 
-  @state() private currentView: 'home' | 'confirmation' | 'interact' = 'home'
+  @state() private currentView: 'home' | 'initiate' | 'waiting' = 'home'
 
   static styles = unsafeCSS(styles)
 
@@ -70,7 +70,7 @@ export class PaymentWidget extends LitElement {
         walletAddress: walletInfo,
         receiver: await this.#receiver,
       })
-      this.currentView = 'confirmation'
+      this.currentView = 'initiate'
     } catch (error) {
       return error instanceof Error
         ? error.message
@@ -97,24 +97,24 @@ export class PaymentWidget extends LitElement {
   }
 
   private handleInteractionCancelled() {
-    this.currentView = 'confirmation'
+    this.currentView = 'initiate'
   }
 
   private renderCurrentView() {
     switch (this.currentView) {
       case 'home':
         return this.renderHomeView()
-      case 'confirmation':
-        return this.renderConfirmationView()
-      case 'interact':
-        return this.renderInteractionView()
+      case 'initiate':
+        return this.renderInitiateView()
+      case 'waiting':
+        return this.renderWaitingView()
       default:
         return this.renderHomeView()
     }
   }
 
   private navigateToInteraction() {
-    this.currentView = 'interact'
+    this.currentView = 'waiting'
   }
 
   private navigateToHome() {
@@ -136,27 +136,29 @@ export class PaymentWidget extends LitElement {
     `
   }
 
-  private renderConfirmationView() {
+  private renderInitiateView() {
     return html`
-      <wm-payment-confirmation
+      <wm-payment-initiate
         .configController=${this.configController}
         .controller=${this.#controller}
         .note=${this.config.note || ''}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
-      ></wm-payment-confirmation>
+      ></wm-payment-initiate>
     `
   }
 
-  private renderInteractionView() {
+  private renderWaitingView() {
+    const { paymentId, grantRedirectUrl } = this.configController.state
     return html`
-      <wm-payment-interaction
-        .configController=${this.configController}
+      <wm-payment-waiting
+        .paymentId=${paymentId}
+        .grantRedirectUrl=${grantRedirectUrl}
         .controller=${this.#controller}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
-      ></wm-payment-interaction>
+      ></wm-payment-waiting>
     `
   }
 
