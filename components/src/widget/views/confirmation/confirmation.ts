@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
-import { getCurrencySymbol, getFormattedAmount } from '@c/utils'
+import { getFormattedAmount } from '@c/utils'
 import {
   NO_OP_CONTROLLER,
   type Controller,
@@ -13,7 +13,7 @@ import { toAmount } from '@shared/utils'
 import confirmationCss from './confirmation.css?raw'
 import { type AmountChangeEventDetail, PaymentAmount } from '../amount/amount'
 
-export class PaymentConfirmation extends LitElement {
+export class PaymentInitiate extends LitElement {
   @property({ type: Object }) configController!: WidgetController
   @property({ type: String }) note = ''
 
@@ -183,13 +183,12 @@ export class PaymentConfirmation extends LitElement {
         walletAddress: sender,
         receiver,
         amount,
-        note = '',
       } = this.configController.state
       const res = await this.#controller.initiatePayment({
         sender,
         receiver,
         amount,
-        note,
+        note: this.note,
       })
 
       this.configController.updateState({
