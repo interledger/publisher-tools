@@ -183,13 +183,12 @@ export class PaymentInitiate extends LitElement {
         walletAddress: sender,
         receiver,
         amount,
-        note = '',
       } = this.configController.state
       const res = await this.#controller.initiatePayment({
         sender,
         receiver,
         amount,
-        note,
+        note: this.note,
       })
 
       this.configController.updateState({
