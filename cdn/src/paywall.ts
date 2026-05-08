@@ -1,14 +1,14 @@
-import type {
-  PaymentInitiateInput,
-  PaymentInitiateResult,
-  PaymentQuoteInput,
-  PaymentQuoteResult,
-  PaymentStatus,
-} from 'publisher-tools-api'
+import type { PaymentStatus } from 'publisher-tools-api'
 import { API_URL } from '@shared/defines'
-import { fromAmount, sleep } from '@shared/utils'
+import { sleep } from '@shared/utils'
 import { Paywall } from '@tools/components'
-import { fetchProfile, getScriptParams, getWallet } from './utils'
+import {
+  fetchProfile,
+  fetchQuote,
+  getScriptParams,
+  getWallet,
+  initiatePayment,
+} from './utils'
 
 const NAME = 'wm-paywall'
 customElements.define(NAME, Paywall)
@@ -38,61 +38,20 @@ function drawPaywall() {
       // TODO: create and call API
     },
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
-    async fetchQuote({ sender, receiver, amount }) {
-      const url = new URL('/payment/quotes', API_URL)
-      const body: PaymentQuoteInput = {
-        sender,
-        receiver,
-        receiveAmount: Number(amount),
-      }
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-      const json: PaymentQuoteResult = await res.json()
-      if (res.ok && 'receiveAmount' in json) {
-        const debitAmount = fromAmount(json.debitAmount)
-        const receiveAmount = fromAmount(json.receiveAmount)
-        return { debitAmount, receiveAmount }
-      }
-
-      if (res.status === 400 && 'error' in json) {
-        const { error, minSendAmount } = json
-        return {
-          error,
-          ...(minSendAmount && { minSendAmount: fromAmount(minSendAmount) }),
-        }
-      } else {
-        return {
-          error: 'Failed to create payment. Please try a different amount.',
-        }
-      }
+    fetchQuote({ sender, receiver, amount }) {
+      const receiveAmount = Number(amount)
+      return fetchQuote(API_URL, { sender, receiver, receiveAmount })
     },
     async initiatePayment({ sender, receiver, amount, note }) {
-      const url = new URL('/payment/initiate', API_URL).href
-      const body: PaymentInitiateInput = {
+      const receiveAmount = Number(amount)
+      const redirectUrl = window.location.href
+      return initiatePayment(API_URL, {
         sender,
         receiver,
-        receiveAmount: Number(amount),
+        receiveAmount,
         note,
-        redirectUrl: window.location.href,
-      }
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        redirectUrl,
       })
-      if (!res.ok) {
-        throw new Error(
-          `Failed to initiate payment. HTTP ${res.status} (${res.statusText})`,
-        )
-      }
-      const json: PaymentInitiateResult = await res.json()
-      return {
-        grantRedirectUrl: json.grantRedirectUrl,
-        paymentId: json.paymentId,
-      }
     },
     async *getStatus(paymentId, signal) {
       const url = new URL(`/payment/status/${paymentId}`, API_URL).href
