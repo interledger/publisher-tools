@@ -36,15 +36,6 @@ export class Paywall extends LitElement {
     )
   }
 
-  #price = ''
-  setPrice(price: string) {
-    if (this.#price === '' || this.#controller.isPreviewMode) {
-      this.#price = price
-    } else {
-      throw new Error('Price is already set')
-    }
-  }
-
   #controller = NO_OP_CONTROLLER
   setController(controller: Controller) {
     if (this.#controller === controller) return
@@ -52,6 +43,15 @@ export class Paywall extends LitElement {
       throw new Error('controller is already set')
     }
     this.#controller = controller
+  }
+
+  #price = ''
+  setPrice(price: string) {
+    if (this.#price === '' || this.#controller.isPreviewMode) {
+      this.#price = price
+    } else {
+      throw new Error('Price is already set')
+    }
   }
 
   render() {
