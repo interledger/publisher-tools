@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import directoryTree from 'directory-tree'
-import { build } from 'esbuild'
+import { build, transform } from 'esbuild'
 import { copy } from 'esbuild-plugin-copy'
 
 const isDev = process.env.npm_lifecycle_script?.includes('--watch')
@@ -71,7 +71,15 @@ function rawPlugin() {
         return { path: resolvedPath, namespace }
       })
       build.onLoad({ filter, namespace }, async (args) => {
-        const contents = await readFile(args.path.replace(filter, ''))
+        const filepath = args.path.replace(filter, '')
+        const contents = await readFile(filepath)
+        if (filepath.endsWith('.css')) {
+          const { code, warnings } = await transform(contents, {
+            loader: 'css',
+            minify: true,
+          })
+          return { contents: code, loader: 'text', warnings }
+        }
         return { contents, loader: 'text' }
       })
     },
