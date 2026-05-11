@@ -7,10 +7,12 @@ import {
   TOOL_BANNER,
   TOOL_WIDGET,
   TOOL_OFFERWALL,
+  TOOL_PAYWALL,
 } from '@shared/types'
 import type {
   BannerProfile,
   OfferwallProfile,
+  PaywallProfile,
   Tool,
   ToolProfile,
   WidgetProfile,
@@ -87,6 +89,16 @@ export const createDefaultWidgetProfile = (
   },
 })
 
+export const createDefaultPaywallProfile = (
+  profileName: string,
+): PaywallProfile => {
+  return {
+    $version: '0.0.1',
+    $name: profileName,
+    $modifiedAt: '',
+  }
+}
+
 export const createDefaultOfferwallProfile = (
   profileName: string,
 ): OfferwallProfile => ({
@@ -113,6 +125,8 @@ export function getDefaultProfile(tool: Tool): ToolProfile<Tool> {
       return createDefaultBannerProfile('Default')
     case TOOL_WIDGET:
       return createDefaultWidgetProfile('Default')
+    case TOOL_PAYWALL:
+      return createDefaultPaywallProfile('Default')
     case TOOL_OFFERWALL:
       return createDefaultOfferwallProfile('Default')
 

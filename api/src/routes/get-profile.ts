@@ -31,6 +31,10 @@ app.get(
     const { tool } = req.valid('param')
     const { wa: walletAddress, id: profileId } = req.valid('query')
 
+    if (tool === 'paywall') {
+      return json(getDefaultProfile('paywall'))
+    }
+
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 
     try {

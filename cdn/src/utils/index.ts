@@ -18,7 +18,7 @@ export function getScriptParams(tool: Tool) {
   }
   const cdnUrl = new URL(script.src).origin
 
-  const { walletAddress, walletAddressId, tag } = script.dataset
+  const { walletAddress, walletAddressId, tag, ...rest } = script.dataset
 
   if (!walletAddress) {
     throw new Error(`Missing data-wallet-address for ${tool}.js script`)
@@ -44,7 +44,13 @@ export function getScriptParams(tool: Tool) {
     throw new Error(`Missing data-tag for ${tool}.js script`)
   }
 
-  return { walletAddress, walletAddressId, profileId: tag as ProfileId, cdnUrl }
+  return {
+    walletAddress,
+    walletAddressId,
+    profileId: tag as ProfileId,
+    cdnUrl,
+    otherAttributes: rest,
+  }
 }
 
 export async function fetchProfile<T extends Tool>(

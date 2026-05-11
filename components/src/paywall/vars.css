@@ -1,0 +1,26 @@
+:host {
+  --font-family: var(--wm-font-family, system-ui, sans-serif);
+  --background: var(--wm-background, #ffffff);
+  --heading-color: var(--wm-heading-color, #363636);
+  --text-color: var(--wm-text-color, #6b6e76);
+  --accent-color: var(--wm-accent-color, #56b7b5);
+  --border-radius: var(--wm-border-radius, 1rem);
+
+  --Paddings-lg: 1.5rem;
+  --Paddings-sm: 0.75rem;
+  --Spacings-lg: 1.5rem;
+  --Spacings-xs: 0.5rem;
+  --Radius-Moderate-rounding: 0.5rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
