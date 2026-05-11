@@ -20,12 +20,13 @@ export interface WalletAddressInfo extends WalletAddress {
 app.get(
   '/wallet',
   validate('query', walletAddressSchema),
-  async ({ req, json }) => {
+  async ({ req, json, header }) => {
     const { walletAddress } = req.valid('query')
 
     try {
       const walletAddressInfo = await getWalletAddress(walletAddress)
 
+      header('Cache-Control', 'public, max-age=10800')
       return json({
         ...walletAddressInfo,
         $url: toWalletAddressUrl(walletAddress),
