@@ -19,11 +19,11 @@ export class Paywall extends LitElement {
   connectedCallback(): void {
     super.connectedCallback()
 
-    if (!this.#baseConfig) {
-      throw new Error('setBaseConfig() before mount')
-    }
     if (this.#controller === NO_OP_CONTROLLER) {
       throw new Error('setController() before mount')
+    }
+    if (!this.#price) {
+      throw new Error('Price is not set')
     }
 
     this.#config_ = this.#controller.fetchConfig().then((conf) => {
@@ -32,16 +32,17 @@ export class Paywall extends LitElement {
       return Promise.resolve(conf)
     })
     this.#receiver = this.#controller.getWallet(
-      this.#baseConfig.receiverWalletAddressUrl,
+      this.#controller.receiverWalletAddressUrl,
     )
   }
 
-  #baseConfig!: BaseConfig
-  setBaseConfig(baseConfig: BaseConfig) {
-    if (this.#baseConfig) {
-      throw new Error('setBaseConfig already called')
+  #price = ''
+  setPrice(price: string) {
+    if (this.#price === '' || this.#controller.isPreviewMode) {
+      this.#price = price
+    } else {
+      throw new Error('Price is already set')
     }
-    this.#baseConfig = { ...baseConfig }
   }
 
   #controller = NO_OP_CONTROLLER
@@ -58,9 +59,4 @@ export class Paywall extends LitElement {
 
     return html`<pre>${JSON.stringify(this.#config)}</pre>`
   }
-}
-
-interface BaseConfig {
-  receiverWalletAddressUrl: string
-  price: string
 }

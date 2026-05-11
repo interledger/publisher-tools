@@ -24,12 +24,9 @@ function drawPaywall() {
   }
 
   const element = document.createElement('wm-paywall')
-  element.setBaseConfig({
-    receiverWalletAddressUrl: params.walletAddress,
-    price,
-  })
-
+  element.setPrice(price)
   element.setController({
+    receiverWalletAddressUrl: params.walletAddress,
     fetchConfig: () => fetchProfile(API_URL, 'paywall', params),
     async checkEntitlement() {
       return 'no-access' // TODO: create and call API

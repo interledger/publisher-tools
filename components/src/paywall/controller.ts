@@ -30,6 +30,8 @@ interface InitiatePaymentResult {
 type Entitlement = 'no-access' | 'auth-required' | 'has-access'
 
 export interface Controller {
+  receiverWalletAddressUrl: string
+
   fetchConfig(): Promise<PaywallProfile>
 
   /** Check if given wallet address is entitled to access */
@@ -56,6 +58,7 @@ export interface Controller {
 }
 
 export const NO_OP_CONTROLLER: Controller = {
+  receiverWalletAddressUrl: 'https://example.com/pay',
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
   checkEntitlement: () => Promise.resolve('no-access'),
   saveEntitlement: () => Promise.resolve(),
