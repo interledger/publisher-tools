@@ -104,7 +104,9 @@ export class Banner extends LitElement {
       this.config.description.text || DEFAULT_BANNER_DESCRIPTION
 
     const showThumbnail =
-      typeof this.config.thumbnail === 'undefined' || !!this.config.thumbnail
+      typeof this.config.thumbnail === 'undefined' ||
+      !!this.config.thumbnail.value
+
     const thumbnail = showThumbnail
       ? html`<img
           src="${defaultLogo}"
