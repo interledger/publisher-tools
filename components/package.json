@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@interledger/open-payments": "^7.4.0",
+    "@shared/default-data": "workspace:^",
     "@shared/types": "workspace:^",
     "@shared/utils": "workspace:^",
     "publisher-tools-api": "workspace:^",

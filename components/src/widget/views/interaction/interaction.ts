@@ -3,12 +3,8 @@ import { property, state } from 'lit/decorators.js'
 import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
-import {
-  NO_OP_CONTROLLER,
-  type Controller,
-  type WidgetController,
-} from '@c/widget/controller'
-import interactionStyles from './interaction.css?raw'
+import { NO_OP_CONTROLLER, type Controller } from '@c/widget/controller'
+import styles from './interaction.css?raw'
 
 type ButtonAction = {
   label: string
@@ -27,11 +23,10 @@ type InteractionView = {
   description?: string
 }
 
-export class PaymentInteraction extends LitElement {
+export class PaymentWaiting extends LitElement {
   #pollingAbortController: AbortController | null = null
   #interactionCompleted = false
 
-  @property({ type: Object }) configController!: WidgetController
   @state() private currentView:
     | 'authorizing'
     | 'processing'
@@ -39,16 +34,19 @@ export class PaymentInteraction extends LitElement {
     | 'failed' = 'authorizing'
   @state() private errorMessage = ''
 
-  static styles = unsafeCSS(interactionStyles)
+  @property({ type: String, attribute: false }) private paymentId = ''
+  @property({ type: String, attribute: false }) private grantRedirectUrl = ''
+
+  static styles = unsafeCSS(styles)
 
   connectedCallback() {
     super.connectedCallback()
-    const { grantRedirectUrl, paymentId } = this.configController.state
-    if (!grantRedirectUrl) {
+
+    if (!this.grantRedirectUrl) {
       throw new Error('Grant redirect URL not found')
     }
     if (!this.#controller.isPreviewMode) {
-      window.open(grantRedirectUrl, '_blank')
+      window.open(this.grantRedirectUrl, '_blank')
     }
 
     const POLLING_TIMEOUT = 25_000 * 5
@@ -56,7 +54,7 @@ export class PaymentInteraction extends LitElement {
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
       this.#pollingAbortController?.abort(ev)
     })
-    void this.waitForCompletion(paymentId)
+    void this.waitForCompletion(this.paymentId)
   }
 
   #controller = NO_OP_CONTROLLER
@@ -75,7 +73,6 @@ export class PaymentInteraction extends LitElement {
   }
 
   private async waitForCompletion(paymentId: string) {
-    console.log(this.#controller?.getStatus)
     try {
       for await (const status of this.#controller.getStatus(
         paymentId,

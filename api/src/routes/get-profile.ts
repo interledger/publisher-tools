@@ -1,6 +1,5 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import {
   ConfigStorageService,
   ConfigStorageServiceError,
@@ -11,17 +10,17 @@ import { AWS_PREFIX } from '@shared/defines'
 import { PROFILE_IDS, TOOLS } from '@shared/types'
 import type { Configuration } from '@shared/types'
 import { app } from '../app.js'
-import { createHTTPException } from '../utils/utils.js'
+import { createHTTPException, validate } from '../utils/utils.js'
 
 app.get(
   '/profile/:tool',
-  zValidator(
+  validate(
     'param',
     z.object({
       tool: z.enum(TOOLS),
     }),
   ),
-  zValidator(
+  validate(
     'query',
     z.object({
       wa: z.url(),
@@ -31,6 +30,10 @@ app.get(
   async ({ req, json, env }) => {
     const { tool } = req.valid('param')
     const { wa: walletAddress, id: profileId } = req.valid('query')
+
+    if (tool === 'paywall') {
+      return json(getDefaultProfile('paywall'))
+    }
 
     const storage = new ConfigStorageService({ ...env, AWS_PREFIX })
 

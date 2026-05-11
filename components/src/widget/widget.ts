@@ -3,28 +3,22 @@ import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
-import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
-import { CloseBtn } from '@c/shared/components/close-btn'
-import { DotsLoader } from '@c/shared/components/dots-loader'
 import {
   type Controller,
   NO_OP_CONTROLLER,
   WidgetController,
 } from './controller'
 import type { WidgetConfig } from './types'
-import { PaymentConfirmation } from './views/confirmation/confirmation'
-import { PaymentInteraction } from './views/interaction/interaction'
-import widgetStyles from './widget.css?raw'
+import { PaymentInitiate } from './views/confirmation/confirmation'
+import { HomeView, type SubmitEventDetail } from './views/home/home'
+import { PaymentWaiting } from './views/interaction/interaction'
+import styles from './widget.css?raw'
 
 const COMPONENTS = {
-  'wm-payment-confirmation': PaymentConfirmation,
-  'wm-payment-interaction': PaymentInteraction,
-  'wm-dots-loader': DotsLoader,
-  'wm-close-btn': CloseBtn,
+  'wm-payment-home': HomeView,
+  'wm-payment-initiate': PaymentInitiate,
+  'wm-payment-waiting': PaymentWaiting,
 }
-
-const DEFAULT_WIDGET_DESCRIPTION =
-  'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 
 export class PaymentWidget extends LitElement {
   #receiver!: Promise<WalletAddressInfo>
@@ -44,11 +38,9 @@ export class PaymentWidget extends LitElement {
 
   @property({ type: Boolean }) isOpen = false
 
-  @state() private currentView: string = 'home'
-  @state() private walletAddressError: string = ''
-  @state() private isSubmitting: boolean = false
+  @state() private currentView: 'home' | 'initiate' | 'waiting' = 'home'
 
-  static styles = unsafeCSS(widgetStyles)
+  static styles = unsafeCSS(styles)
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -68,13 +60,7 @@ export class PaymentWidget extends LitElement {
     this.#controller = controller
   }
 
-  private async handleSubmit(e: Event) {
-    e.preventDefault()
-    this.isSubmitting = true
-
-    const formData = new FormData(e.target as HTMLFormElement)
-    const walletAddress = String(formData.get('walletAddress') ?? '')
-
+  private async _handleSubmit(walletAddress: string) {
     try {
       if (!walletAddress.trim() && !this.#controller.isPreviewMode) {
         throw new Error('Please fill out your wallet address.')
@@ -84,17 +70,18 @@ export class PaymentWidget extends LitElement {
         walletAddress: walletInfo,
         receiver: await this.#receiver,
       })
-      this.walletAddressError = ''
-      this.currentView = 'confirmation'
+      this.currentView = 'initiate'
     } catch (error) {
-      if (error instanceof Error) {
-        this.walletAddressError = error.message
-      } else {
-        this.walletAddressError = 'Network error. Please try again.'
-      }
-    } finally {
-      this.isSubmitting = false
+      return error instanceof Error
+        ? error.message
+        : 'Network error. Please try again.'
     }
+  }
+
+  private async onSubmit(ev: CustomEvent<SubmitEventDetail>) {
+    const { walletAddress, onComplete } = ev.detail
+    const error = await this._handleSubmit(walletAddress)
+    onComplete(error)
   }
 
   private toggleWidget() {
@@ -110,30 +97,24 @@ export class PaymentWidget extends LitElement {
   }
 
   private handleInteractionCancelled() {
-    this.currentView = 'confirmation'
-  }
-
-  private handleInputChange() {
-    if (this.walletAddressError) {
-      this.walletAddressError = ''
-    }
+    this.currentView = 'initiate'
   }
 
   private renderCurrentView() {
     switch (this.currentView) {
       case 'home':
         return this.renderHomeView()
-      case 'confirmation':
-        return this.renderConfirmationView()
-      case 'interact':
-        return this.renderInteractionView()
+      case 'initiate':
+        return this.renderInitiateView()
+      case 'waiting':
+        return this.renderWaitingView()
       default:
         return this.renderHomeView()
     }
   }
 
   private navigateToInteraction() {
-    this.currentView = 'interact'
+    this.currentView = 'waiting'
   }
 
   private navigateToHome() {
@@ -142,83 +123,42 @@ export class PaymentWidget extends LitElement {
 
   private renderHomeView() {
     const { profile } = this.configController.config
-    const description = profile?.description.text || DEFAULT_WIDGET_DESCRIPTION
-    const showDescription = profile?.description.isVisible ?? true
-    const descriptionElement = showDescription
-      ? html`<p>${description}</p>`
-      : html`<div class="divider" />`
-
     return html`
-      <div class="widget-header-container">
-        <div class="widget-header">
-          <img src=${walletTotemIcon} alt="header wallet totem" />
-          <p class="white-text">
-            ${profile?.title.text || 'Future of support'}
-          </p>
-        </div>
-
-        <wm-close-btn
-          @click=${this.toggleWidget}
-          .color=${profile.color.background}
-        ></wm-close-btn>
-      </div>
-
-      <form class="payment-form widget-body" @submit=${this.handleSubmit}>
-        ${descriptionElement}
-
-        <div class="form-wallet-address">
-          <label class="form-label">
-            Pay from
-            <span class="red-text"> * </span>
-          </label>
-
-          <input
-            class="form-input ${this.walletAddressError ? 'error' : ''}"
-            type="text"
-            name="walletAddress"
-            placeholder="Enter your wallet address"
-            @input=${this.handleInputChange}
-          />
-
-          ${this.walletAddressError
-            ? html`<div class="error-message">${this.walletAddressError}</div>`
-            : ''}
-        </div>
-
-        <button
-          class="primary-button"
-          type="submit"
-          ?disabled=${this.isSubmitting}
-        >
-          ${this.isSubmitting
-            ? html`<wm-dots-loader></wm-dots-loader>`
-            : profile?.ctaPayButton.text || 'Support me'}
-        </button>
-      </form>
+      <wm-payment-home
+        .title=${profile.title.text}
+        .description=${profile.description.text}
+        .ctaText=${profile.ctaPayButton.text}
+        .showDescription=${profile.description.isVisible}
+        .backgroundColor=${profile.color.background}
+        @close=${this.toggleWidget}
+        @submit=${this.onSubmit}
+      ></wm-payment-home>
     `
   }
 
-  private renderConfirmationView() {
+  private renderInitiateView() {
     return html`
-      <wm-payment-confirmation
+      <wm-payment-initiate
         .configController=${this.configController}
         .controller=${this.#controller}
         .note=${this.config.note || ''}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
-      ></wm-payment-confirmation>
+      ></wm-payment-initiate>
     `
   }
 
-  private renderInteractionView() {
+  private renderWaitingView() {
+    const { paymentId, grantRedirectUrl } = this.configController.state
     return html`
-      <wm-payment-interaction
-        .configController=${this.configController}
+      <wm-payment-waiting
+        .paymentId=${paymentId}
+        .grantRedirectUrl=${grantRedirectUrl}
         .controller=${this.#controller}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
-      ></wm-payment-interaction>
+      ></wm-payment-waiting>
     `
   }
 
@@ -242,11 +182,7 @@ export class PaymentWidget extends LitElement {
           <div class="powered-by">
             Powered by
             <a href="https://webmonetization.org" target="_blank">
-              <img
-                src=${interledgerLogoIcon}
-                height="24px"
-                alt="Interledger logo"
-              />
+              <img src=${interledgerLogoIcon} height="24px" alt="Interledger" />
             </a>
           </div>
         </div>
@@ -254,10 +190,11 @@ export class PaymentWidget extends LitElement {
 
       <button
         class="trigger"
+        type="button"
         @click=${this.toggleWidget}
         aria-label="Toggle payment widget"
       >
-        <img src="${triggerIcon}" alt="widget trigger" />
+        <img src="${triggerIcon}" alt="" />
       </button>
     `
   }
