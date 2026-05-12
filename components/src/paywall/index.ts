@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-private-class-members */
 import { html, LitElement, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { WalletAddressInfo } from 'publisher-tools-api'
 import { type Controller, NO_OP_CONTROLLER } from '@c/paywall/controller'
 import { registerComponents } from '@c/utils.js'
 import {
@@ -15,16 +13,8 @@ import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
 export class Paywall extends LitElement {
-  #config_!: Promise<PaywallProfile>
   #config!: PaywallProfile
-
-  #receiver!: Promise<WalletAddressInfo>
-
-  #entitlement_!: ReturnType<Controller['checkEntitlement']>
   #entitlement!: Awaited<ReturnType<Controller['checkEntitlement']>>
-
-  // Used to find delay in showing paywall
-  #connectedAt!: ReturnType<(typeof Date)['now']>
 
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
@@ -37,32 +27,28 @@ export class Paywall extends LitElement {
     if (this.#controller === NO_OP_CONTROLLER) {
       throw new Error('setController() before mount')
     }
-    if (!this.#price) {
-      throw new Error('Price is not set')
-    }
 
-    this.#connectedAt = Date.now()
     registerComponents({
       'wmt-paywall-home': PaywallHome,
     })
 
-    this.#receiver = this.#controller.getWallet(
-      this.#controller.receiverWalletAddressUrl,
-    )
+    void this.#init()
+  }
 
-    this.#config_ = this.#controller.fetchConfig().then(async (conf) => {
-      this.#config = conf
-      this.#price ||= conf.price.value
-      await this.showAfterDelay()
-      return conf
-    })
-    this.#entitlement_ = this.#controller.checkEntitlement('').then((res) => {
-      this.#entitlement = res
-      return Promise.resolve(res)
-    })
-    Promise.all([this.#config_, this.#entitlement_]).then(() => {
-      this._ready = true
-      this.setBaseStyles()
+  async #init() {
+    const connectedAt = Date.now()
+
+    const [config, entitlement] = await Promise.all([
+      this.#controller.fetchConfig(),
+      this.#controller.checkEntitlement(''),
+    ])
+
+    this.#config = config
+    this.#price ||= config.price.value
+    this.#entitlement = entitlement
+    this.setBaseStyles()
+    this._ready = true
+    void this.showAfterDelay(connectedAt).then(() => {
       this.hidden = false
     })
   }
@@ -101,9 +87,9 @@ export class Paywall extends LitElement {
   }
 
   @state() _delayComplete = false
-  private async showAfterDelay() {
+  private async showAfterDelay(connectedAt: number) {
     const delay = this.#config.behavior.delay.value * 1000
-    const elapsed = Date.now() - this.#connectedAt
+    const elapsed = Date.now() - connectedAt
     await sleep(delay - elapsed)
     this._delayComplete = true
   }
