@@ -3,17 +3,13 @@ import { property, state } from 'lit/decorators.js'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
+import { registerComponents } from '@c/utils'
 import styles from './home.css?raw'
 
 const DEFAULT_TITLE = 'Future of support'
 const DEFAULT_DESCRIPTION =
   'Experience the new way to support our content. Activate Web Monetization in your browser. Every visit helps us keep creating the content you love! You can also support us by a one time donation below!'
 const DEFAULT_CTA_TEXT = 'Support me'
-
-const COMPONENTS = {
-  'wm-dots-loader': DotsLoader,
-  'wm-close-btn': CloseBtn,
-}
 
 export interface SubmitEventDetail {
   walletAddress: string
@@ -35,11 +31,10 @@ export class HomeView extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    for (const [name, elConstructor] of Object.entries(COMPONENTS)) {
-      if (!customElements.get(name)) {
-        customElements.define(name, elConstructor)
-      }
-    }
+    registerComponents({
+      'wm-dots-loader': DotsLoader,
+      'wm-close-btn': CloseBtn,
+    })
   }
 
   private triggerClose() {
