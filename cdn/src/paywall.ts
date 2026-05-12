@@ -18,13 +18,12 @@ const params = getScriptParams('paywall')
 drawPaywall()
 function drawPaywall() {
   const price = params.otherAttributes.price?.trim()
-  if (!price) throw new Error('Missing data-price attribute on script')
-  if (!/^\d+(\.\d+)?$/.test(price)) {
+  if (price && !/^\d+(\.\d+)?$/.test(price)) {
     throw new Error(`Invalid data-price="${price}"`)
   }
 
   const element = document.createElement('wm-paywall')
-  element.setPrice(price)
+  if (price) element.setPrice(price)
   element.setController({
     receiverWalletAddressUrl: params.walletAddress,
     fetchConfig: () => fetchProfile(API_URL, 'paywall', params),

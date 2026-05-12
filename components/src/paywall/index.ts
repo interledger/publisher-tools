@@ -1,20 +1,16 @@
-/* eslint-disable no-unused-private-class-members */
 import { html, LitElement, nothing, unsafeCSS } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { WalletAddressInfo } from 'publisher-tools-api'
 import { type Controller, NO_OP_CONTROLLER } from '@c/paywall/controller'
-import type { PaywallProfile } from '@shared/types'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
 export class Paywall extends LitElement {
-  #config_!: Promise<PaywallProfile>
-  #config!: PaywallProfile
-  #receiver!: Promise<WalletAddressInfo>
+  #config!: Awaited<ReturnType<Controller['fetchConfig']>>
+  #entitlement!: Awaited<ReturnType<Controller['checkEntitlement']>>
 
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
-  @state() _configReady = false
+  @state() _ready = false
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -22,18 +18,19 @@ export class Paywall extends LitElement {
     if (this.#controller === NO_OP_CONTROLLER) {
       throw new Error('setController() before mount')
     }
-    if (!this.#price) {
-      throw new Error('Price is not set')
-    }
 
-    this.#config_ = this.#controller.fetchConfig().then((conf) => {
-      this.#config = conf
-      this._configReady = true
-      return Promise.resolve(conf)
-    })
-    this.#receiver = this.#controller.getWallet(
-      this.#controller.receiverWalletAddressUrl,
-    )
+    void this.#init()
+  }
+
+  async #init() {
+    const [config, entitlement] = await Promise.all([
+      this.#controller.fetchConfig(),
+      this.#controller.checkEntitlement(''),
+    ])
+
+    this.#config = config
+    this.#entitlement = entitlement
+    this._ready = true
   }
 
   #controller = NO_OP_CONTROLLER
@@ -55,7 +52,8 @@ export class Paywall extends LitElement {
   }
 
   render() {
-    if (!this._configReady) return nothing
+    if (!this._ready) return nothing
+    if (this.#entitlement === 'has-access') return nothing
 
     return html`<pre>${JSON.stringify(this.#config)}</pre>`
   }
