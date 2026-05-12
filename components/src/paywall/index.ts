@@ -13,7 +13,7 @@ import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
 export class Paywall extends LitElement {
-  #config!: PaywallProfile
+  #config!: Awaited<ReturnType<Controller['fetchConfig']>>
   #entitlement!: Awaited<ReturnType<Controller['checkEntitlement']>>
 
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
