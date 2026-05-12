@@ -42,7 +42,10 @@ inputs:
     description: 'AWS_PREFIX used for config storage'
     required: true
   BUILD_UMAMI_HOST:
-    description: 'Umami analytics host URL'
+    description: 'Umami analytics host URL (frontend tracker script)'
+    required: false
+  BUILD_UMAMI_API_HOST:
+    description: 'Umami analytics host URL (server-to-server forward target)'
     required: false
   BUILD_UMAMI_WEBSITE_ID:
     description: 'Umami analytics website ID'
@@ -72,6 +75,7 @@ runs:
         BUILD_CDN_URL: ${{ inputs.BUILD_CDN_URL }}
         BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
         BUILD_UMAMI_HOST: ${{ inputs.BUILD_UMAMI_HOST }}
+        BUILD_UMAMI_API_HOST: ${{ inputs.BUILD_UMAMI_API_HOST }}
         BUILD_UMAMI_WEBSITE_ID: ${{ inputs.BUILD_UMAMI_WEBSITE_ID }}
 
     - name: Get worker deploy command
@@ -102,6 +106,7 @@ runs:
         BUILD_CDN_URL: ${{ inputs.BUILD_CDN_URL }}
         BUILD_AWS_PREFIX: ${{ inputs.BUILD_AWS_PREFIX }}
         BUILD_UMAMI_HOST: ${{ inputs.BUILD_UMAMI_HOST }}
+        BUILD_UMAMI_API_HOST: ${{ inputs.BUILD_UMAMI_API_HOST }}
         BUILD_UMAMI_WEBSITE_ID: ${{ inputs.BUILD_UMAMI_WEBSITE_ID }}
 
     - name: Get deploy URL

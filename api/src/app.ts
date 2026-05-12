@@ -13,9 +13,6 @@ export type Env = {
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
   PUBLISHER_TOOLS_KV: KVNamespace
-  UMAMI_HOST?: string
-  UMAMI_WEBSITE_ID?: string
-  UMAMI_HOSTNAME?: string
 }
 
 export const app = new Hono<{ Bindings: Env }>()

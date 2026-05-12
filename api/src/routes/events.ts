@@ -1,16 +1,23 @@
 import z from 'zod'
+import { UMAMI_API_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import { app } from '../app.js'
 
 const payloadSchema = z.union([
   z.object({
     name: z.literal('embed.click_link_banner'),
     url: z.string(),
-    data: z.object({ link: z.string() }).optional(),
+    data: z.object({
+      hostname: z.string(),
+      link: z.string().optional(),
+    }),
   }),
   z.object({
     name: z.literal('embed.click_link_offerwall'),
     url: z.string(),
-    data: z.object({ link: z.string() }).optional(),
+    data: z.object({
+      hostname: z.string(),
+      link: z.string().optional(),
+    }),
   }),
 ])
 
@@ -21,7 +28,7 @@ const eventSchema = z.object({
 
 export type TrackPayload = z.infer<typeof payloadSchema>
 
-app.post('/events', async ({ req, env, body }) => {
+app.post('/events', async ({ req, body }) => {
   let event: z.infer<typeof eventSchema>
   try {
     event = z.parse(eventSchema, await req.json())
@@ -29,7 +36,7 @@ app.post('/events', async ({ req, env, body }) => {
     return body(null, 400)
   }
 
-  if (!env.UMAMI_HOST || !env.UMAMI_WEBSITE_ID || !env.UMAMI_HOSTNAME) {
+  if (!UMAMI_API_HOST || !UMAMI_WEBSITE_ID) {
     return body(null, 204)
   }
 
@@ -42,15 +49,14 @@ app.post('/events', async ({ req, env, body }) => {
   if (ip) headers.set('x-forwarded-for', ip)
 
   try {
-    await fetch(`${env.UMAMI_HOST}/api/send`, {
+    await fetch(`${UMAMI_API_HOST}/api/send`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
         ...event,
         payload: {
           ...event.payload,
-          website: env.UMAMI_WEBSITE_ID,
-          hostname: env.UMAMI_HOSTNAME,
+          website: UMAMI_WEBSITE_ID,
         },
       }),
     })
