@@ -300,3 +300,23 @@ export function groupBy<T, K extends PropertyKey>(
 
   return result
 }
+
+export function formatCurrency(amount: PaymentCurrencyAmount): string
+export function formatCurrency(value: string | number, currency: string): string
+export function formatCurrency(
+  arg0: PaymentCurrencyAmount | string | number,
+  arg1?: string,
+): string {
+  let value: number
+  let currency: string
+  if (typeof arg0 === 'object' && arg0 !== null) {
+    currency = arg0.currency
+    value = Number.parseFloat(arg0.value)
+  } else {
+    currency = arg1 as string
+    value = typeof arg0 === 'string' ? parseFloat(arg0) : arg0
+  }
+
+  const fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency })
+  return fmt.format(value)
+}

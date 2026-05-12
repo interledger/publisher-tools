@@ -3,13 +3,12 @@ import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
-import { getFormattedAmount } from '@c/utils'
 import {
   NO_OP_CONTROLLER,
   type Controller,
   type WidgetController,
 } from '@c/widget/controller'
-import { toAmount } from '@shared/utils'
+import { formatCurrency, toAmount } from '@shared/utils'
 import confirmationCss from './confirmation.css?raw'
 import { type AmountChangeEventDetail, PaymentAmount } from '../amount/amount'
 
@@ -62,10 +61,7 @@ export class PaymentInitiate extends LitElement {
 
     if (amount <= 0 || (this.#minSendAmount && amount < this.#minSendAmount)) {
       if (this.#minSendAmount) {
-        const minSendAmount = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: sender.assetCode,
-        }).format(amount)
+        const minSendAmount = formatCurrency(amount, sender.assetCode)
         this.amountError = `Please enter an amount greater than ${minSendAmount}`
       } else {
         this.amountError = `Please enter a higher amount.`
@@ -121,9 +117,9 @@ export class PaymentInitiate extends LitElement {
       return 'Contribute a valid amount to continue.' // TODO: i18n
     }
     if (val < minToScale) {
-      const { amountWithCurrency } = getFormattedAmount(
+      const amountWithCurrency = formatCurrency(
         minToScale,
-        this.configController.state.walletAddress,
+        this.configController.state.walletAddress.assetCode,
       )
       return `A minimum amount of ${amountWithCurrency} is required.`
     }
@@ -162,14 +158,8 @@ export class PaymentInitiate extends LitElement {
       throw new Error('Unexpected: invalid data format')
     }
     const { debitAmount, receiveAmount } = data
-    this.formattedDebitAmount = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: debitAmount.currency,
-    }).format(Number(debitAmount.value))
-    this.formattedReceiveAmount = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: receiveAmount.currency,
-    }).format(Number(receiveAmount.value))
+    this.formattedDebitAmount = formatCurrency(debitAmount)
+    this.formattedReceiveAmount = formatCurrency(receiveAmount)
   }
 
   private onPaymentConfirmed = () => {
