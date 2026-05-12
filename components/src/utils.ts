@@ -71,6 +71,16 @@ export function getContrastColor(colorStr: string) {
   return yiq >= 128 ? '#000000' : '#ffffff'
 }
 
+export function registerComponents(
+  components: Record<string, CustomElementConstructor>,
+) {
+  for (const [name, elConstructor] of Object.entries(components)) {
+    if (!customElements.get(name)) {
+      customElements.define(name, elConstructor)
+    }
+  }
+}
+
 export function getCurrencySymbol(assetCode: string): string {
   const isISO4217Code = (code: string): boolean => {
     return code.length === 3
@@ -89,6 +99,26 @@ export function getCurrencySymbol(assetCode: string): string {
     .format(0)
     .replace(/0/g, '')
     .trim()
+}
+
+export function formatCurrency(amount: PaymentCurrencyAmount): string
+export function formatCurrency(value: string | number, currency: string): string
+export function formatCurrency(
+  arg0: PaymentCurrencyAmount | string | number,
+  arg1?: string,
+): string {
+  let value: number
+  let currency: string
+  if (typeof arg0 === 'object' && arg0 !== null) {
+    currency = arg0.currency
+    value = Number.parseFloat(arg0.value)
+  } else {
+    currency = arg1 as string
+    value = typeof arg0 === 'string' ? parseFloat(arg0) : arg0
+  }
+
+  const fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency })
+  return fmt.format(value)
 }
 
 export function getFormattedAmount(
