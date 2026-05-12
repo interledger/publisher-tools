@@ -64,8 +64,6 @@ export class Banner extends LitElement {
   private handleLinkClick() {
     this.dispatchEvent(
       new CustomEvent('click-extension-link', {
-        bubbles: true,
-        composed: true,
         detail: { link: this.extensionUrl },
       }),
     )
