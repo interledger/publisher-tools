@@ -1,7 +1,7 @@
 import { html, LitElement, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { type Controller, NO_OP_CONTROLLER } from '@c/paywall/controller'
-import { registerComponents } from '@c/utils.js'
+import { applyFontFamily, registerComponents } from '@c/utils.js'
 import {
   BORDER_RADIUS,
   PAYWALL_FONT_SIZE_MAP,
@@ -102,7 +102,8 @@ export class Paywall extends LitElement {
       behavior: { coverage },
     } = this.#config
 
-    this.style.setProperty('--wmt-font-family', font.name)
+    const fontBaseUrl = new URL('/assets/fonts/', this.#controller.cdnUrl).href
+    applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
     this.style.setProperty('--wmt-font-size', getBaseFontSize(font.size))
     this.style.setProperty('--wmt-height', `${coverage.value}vh`)
     this.style.setProperty('--wmt-background', colors.background as string)
