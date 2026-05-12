@@ -1,6 +1,7 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { state } from 'lit/decorators.js'
 import { createRef, ref, type Ref } from 'lit/directives/ref.js'
+import { registerComponents } from '@c/utils.js'
 import {
   AllSet,
   ContributionRequired,
@@ -10,12 +11,6 @@ import { NO_OP_CONTROLLER } from './controller.js'
 import type { Actions, Controller, Screen } from './controller.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
-
-const COMPONENTS = {
-  'wm-offerwall-install-required': InstallRequired,
-  'wm-offerwall-all-set': AllSet,
-  'wm-offerwall-contribution-required': ContributionRequired,
-}
 
 const ALLOWED_SCREENS: Screen[] = [
   'install-required',
@@ -58,11 +53,11 @@ export class OfferwallModal extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    for (const [name, elConstructor] of Object.entries(COMPONENTS)) {
-      if (!customElements.get(name)) {
-        customElements.define(name, elConstructor)
-      }
-    }
+    registerComponents({
+      'wm-offerwall-install-required': InstallRequired,
+      'wm-offerwall-all-set': AllSet,
+      'wm-offerwall-contribution-required': ContributionRequired,
+    })
   }
 
   firstUpdated() {

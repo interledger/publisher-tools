@@ -6,6 +6,7 @@ import iconWallet from '@c/assets/icon_wallet.svg?raw'
 import iconClose from '@c/assets/icon_x_close.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
 import { WebMonetizationHeader } from '@c/shared/web-monetization-header'
+import { registerComponents } from '@c/utils'
 import { getExtensionHref } from '@shared/utils/extension'
 import styles from './install-required.css?raw'
 import styleTokens from '../../vars.css?raw'
@@ -25,12 +26,10 @@ export class InstallRequired extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    if (!customElements.get('powered-by-interledger')) {
-      customElements.define('powered-by-interledger', PoweredByInterledger)
-    }
-    if (!customElements.get('wm-header')) {
-      customElements.define('wm-header', WebMonetizationHeader)
-    }
+    registerComponents({
+      'powered-by-interledger': PoweredByInterledger,
+      'wm-header': WebMonetizationHeader,
+    })
   }
 
   render() {

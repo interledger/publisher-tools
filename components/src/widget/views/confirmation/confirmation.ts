@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/components/close-btn'
 import { DotsLoader } from '@c/shared/components/dots-loader'
+import { registerComponents } from '@c/utils'
 import {
   NO_OP_CONTROLLER,
   type Controller,
@@ -28,15 +29,11 @@ export class PaymentInitiate extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    if (!customElements.get('wm-dots-loader')) {
-      customElements.define('wm-dots-loader', DotsLoader)
-    }
-    if (!customElements.get('wm-close-btn')) {
-      customElements.define('wm-close-btn', CloseBtn)
-    }
-    if (!customElements.get('wm-amount')) {
-      customElements.define('wm-amount', PaymentAmount)
-    }
+    registerComponents({
+      'wm-dots-loader': DotsLoader,
+      'wm-close-btn': CloseBtn,
+      'wm-amount': PaymentAmount,
+    })
   }
 
   #controller = NO_OP_CONTROLLER
