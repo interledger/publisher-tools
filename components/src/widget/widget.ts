@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
+import { registerComponents } from '@c/utils'
 import {
   type Controller,
   NO_OP_CONTROLLER,
@@ -13,12 +14,6 @@ import { PaymentInitiate } from './views/confirmation/confirmation'
 import { HomeView, type SubmitEventDetail } from './views/home/home'
 import { PaymentWaiting } from './views/interaction/interaction'
 import styles from './widget.css?raw'
-
-const COMPONENTS = {
-  'wm-payment-home': HomeView,
-  'wm-payment-initiate': PaymentInitiate,
-  'wm-payment-waiting': PaymentWaiting,
-}
 
 export class PaymentWidget extends LitElement {
   #receiver!: Promise<WalletAddressInfo>
@@ -44,11 +39,11 @@ export class PaymentWidget extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    for (const [name, elConstructor] of Object.entries(COMPONENTS)) {
-      if (!customElements.get(name)) {
-        customElements.define(name, elConstructor)
-      }
-    }
+    registerComponents({
+      'wm-payment-home': HomeView,
+      'wm-payment-initiate': PaymentInitiate,
+      'wm-payment-waiting': PaymentWaiting,
+    })
   }
 
   #controller = NO_OP_CONTROLLER
