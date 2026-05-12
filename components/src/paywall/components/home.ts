@@ -1,7 +1,7 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { property } from 'lit/decorators.js'
-import { formatCurrency } from '@c/utils'
 import { createDefaultPaywallProfile } from '@shared/default-data'
+import { formatCurrency } from '@shared/utils'
 import styles from './home.css?raw'
 import styleTokens from '../vars.css?raw'
 
