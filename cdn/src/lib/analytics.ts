@@ -1,7 +1,7 @@
-import type { TrackFn } from 'publisher-tools-api'
+import type { TrackPayload } from 'publisher-tools-api'
 import { API_URL } from '@shared/defines'
 
-type TrackArgs = Omit<TrackFn, 'url'>
+type TrackArgs = Omit<TrackPayload, 'url'>
 
 export function trackEvent(event: TrackArgs): void {
   if (!API_URL) return
