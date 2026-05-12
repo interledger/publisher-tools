@@ -100,7 +100,7 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     const owElem = document.createElement(elementName) as OfferwallModal
     const actions = owElem.setController({
       onExtensionLinkClick(e) {
-        const { link } = (e as CustomEvent<{ link: string }>).detail
+        const { link } = e.detail
         trackEvent({
           name: 'embed.click_link_offerwall',
           data: { link },
