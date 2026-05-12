@@ -1,25 +1,27 @@
 import type { TrackPayload } from 'publisher-tools-api'
 import { API_URL } from '@shared/defines'
+import type { Tool } from '@shared/types'
 
 type TrackArgs = {
-  name: TrackPayload['name']
+  name: string
   data?: Omit<TrackPayload['data'], 'hostname'>
 }
 
-export function trackEvent({ name, data }: TrackArgs): void {
-  if (!API_URL) return
-  // assumes all event names follow 'embed.click_link_<source>'
-  const url = `/embed/${name.replace('embed.click_link_', '')}`
+export function trackEventFactory(tool: Tool) {
   const hostname = window.location.hostname
-  // text/plain to avoid CORS preflight on sendBeacon (body is JSON)
-  const blob = new Blob(
-    [
+
+  return ({ name, data }: TrackArgs): void => {
+    if (!API_URL) return
+    navigator.sendBeacon?.(
+      `${API_URL}/events`,
       JSON.stringify({
         type: 'event',
-        payload: { name, url, data: { hostname, ...data } },
+        payload: {
+          name: `embed.${tool}.${name}`,
+          url: `/embed/${tool}`,
+          data: { hostname, ...data },
+        },
       }),
-    ],
-    { type: 'text/plain' },
-  )
-  navigator.sendBeacon?.(`${API_URL}/events`, blob)
+    )
+  }
 }

@@ -2,24 +2,14 @@ import z from 'zod'
 import { UMAMI_API_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import { app } from '../app.js'
 
-const payloadSchema = z.union([
-  z.object({
-    name: z.literal('embed.click_link_banner'),
-    url: z.string(),
-    data: z.object({
-      hostname: z.string(),
-      link: z.string().optional(),
-    }),
+const payloadSchema = z.object({
+  name: z.string().startsWith('embed.'),
+  url: z.string(),
+  data: z.object({
+    hostname: z.string(),
+    link: z.string().optional(),
   }),
-  z.object({
-    name: z.literal('embed.click_link_offerwall'),
-    url: z.string(),
-    data: z.object({
-      hostname: z.string(),
-      link: z.string().optional(),
-    }),
-  }),
-])
+})
 
 const eventSchema = z.object({
   type: z.literal('event'),
