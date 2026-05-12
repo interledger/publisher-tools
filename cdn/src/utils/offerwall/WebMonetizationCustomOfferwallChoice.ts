@@ -102,7 +102,10 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
     const owElem = document.createElement(elementName) as OfferwallModal
     const actions = owElem.setController({
       onExtensionLinkClick(e) {
-        trackEvent({ name: 'click_extension_link', data: { link: e.detail.link } })
+        trackEvent({
+          name: 'click_extension_link',
+          data: { link: e.detail.link },
+        })
       },
       onModalClose() {
         abortController.abort('modal closed by user')
