@@ -30,13 +30,26 @@ app.post('/events', async ({ req, body }) => {
     return body(null, 204)
   }
 
+  // https://docs.umami.is/docs/enable-cloudflare-headers
+  const passthrough = [
+    'user-agent',
+    'accept-language',
+    'referer',
+    'cf-connecting-ip',
+    'cf-ipcountry',
+    'cf-ipcity',
+    'cf-region',
+    'cf-postal-code',
+    'cf-continent',
+    'cf-latitude',
+    'cf-longitude',
+    'cf-timezone',
+  ]
   const headers = new Headers({ 'content-type': 'application/json' })
-  for (const h of ['user-agent', 'accept-language', 'referer']) {
+  for (const h of passthrough) {
     const v = req.header(h)
     if (v) headers.set(h, v)
   }
-  const ip = req.header('cf-connecting-ip')
-  if (ip) headers.set('x-forwarded-for', ip)
 
   try {
     await fetch(`${UMAMI_API_HOST}/api/send`, {
