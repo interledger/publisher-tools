@@ -71,6 +71,16 @@ export function getContrastColor(colorStr: string) {
   return yiq >= 128 ? '#000000' : '#ffffff'
 }
 
+export function registerComponents(
+  components: Record<string, CustomElementConstructor>,
+) {
+  for (const [name, elConstructor] of Object.entries(components)) {
+    if (!customElements.get(name)) {
+      customElements.define(name, elConstructor)
+    }
+  }
+}
+
 export function getCurrencySymbol(assetCode: string): string {
   const isISO4217Code = (code: string): boolean => {
     return code.length === 3
