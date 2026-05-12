@@ -1,47 +1,32 @@
-import { LitElement, html, unsafeCSS } from 'lit'
+import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type {
-  PaymentStatusSuccess,
-  PaymentStatus,
-  PaymentStatusRejected,
-} from 'publisher-tools-api'
-import type { CheckPaymentResult } from 'publisher-tools-api/src/utils/open-payments'
 import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
-import interactionStyles from './interaction.css?raw'
-import type { WidgetController } from '../../controller'
+import { NO_OP_CONTROLLER, type Controller } from '@c/widget/controller'
+import styles from './interaction.css?raw'
 
-function isInteractionSuccess(
-  params: PaymentStatus,
-): params is PaymentStatusSuccess {
-  return 'interact_ref' in params
+type ButtonAction = {
+  label: string
+  buttonClass: 'primary-button' | 'empty-button'
+  handler: () => void
 }
 
-function isInteractionRejected(
-  params: PaymentStatus,
-): params is PaymentStatusRejected {
-  return 'result' in params && params.result === 'grant_rejected'
+type InteractionView = {
+  titleClass: 'authorizing' | 'complete' | 'failed'
+  title: string
+  image: {
+    src: string
+    alt: string
+  }
+  button?: ButtonAction
+  description?: string
 }
 
-function isAbortSignalTimeout(ev: unknown) {
-  return (
-    ev instanceof Event &&
-    ev.target instanceof AbortSignal &&
-    isTimeoutError(ev.target.reason)
-  )
-}
-
-function isTimeoutError(err: unknown) {
-  return err instanceof DOMException && err.name === 'TimeoutError'
-}
-
-export class PaymentInteraction extends LitElement {
-  private _boundHandleMessage: (event: MessageEvent) => void = () => {}
+export class PaymentWaiting extends LitElement {
   #pollingAbortController: AbortController | null = null
   #interactionCompleted = false
-  @property({ type: Object }) configController!: WidgetController
-  @property({ type: Boolean }) isPreview?: boolean = false
+
   @state() private currentView:
     | 'authorizing'
     | 'processing'
@@ -49,52 +34,71 @@ export class PaymentInteraction extends LitElement {
     | 'failed' = 'authorizing'
   @state() private errorMessage = ''
 
-  static styles = unsafeCSS(interactionStyles)
+  @property({ type: String, attribute: false }) private paymentId = ''
+  @property({ type: String, attribute: false }) private grantRedirectUrl = ''
+
+  static styles = unsafeCSS(styles)
 
   connectedCallback() {
     super.connectedCallback()
-    if (this.isPreview) {
-      this.previewInteractionCompleted()
-      return
-    }
-    const {
-      outgoingPaymentGrant: {
-        interact: { redirect },
-      },
-    } = this.configController.state
-    if (!redirect) return
 
-    window.open(redirect, '_blank')
-    this._boundHandleMessage = this.handleMessage.bind(this)
-    window.addEventListener('message', this._boundHandleMessage)
+    if (!this.grantRedirectUrl) {
+      throw new Error('Grant redirect URL not found')
+    }
+    if (!this.#controller.isPreviewMode) {
+      window.open(this.grantRedirectUrl, '_blank')
+    }
 
     const POLLING_TIMEOUT = 25_000 * 5
     this.#pollingAbortController = new AbortController()
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
       this.#pollingAbortController?.abort(ev)
     })
-    this._startLongPolling(this.#pollingAbortController.signal)
+    void this.waitForCompletion(this.paymentId)
+  }
+
+  #controller = NO_OP_CONTROLLER
+  @property({ type: Object, attribute: false })
+  set controller(controller: Controller) {
+    if (this.#controller === controller) return
+    if (this.#controller !== NO_OP_CONTROLLER) {
+      throw new Error('controller is already set')
+    }
+    this.#controller = controller
   }
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener('message', this._boundHandleMessage)
     this._cancelPolling()
   }
 
-  private handleMessage(event: MessageEvent) {
-    if (event.data?.type !== 'GRANT_INTERACTION') return
-
-    window.removeEventListener('message', this._boundHandleMessage)
-    const { data } = event
-    this._markPollingCompleted()
-
-    if (isInteractionSuccess(data)) {
-      void this.handleInteractionSuccess(data.interact_ref)
-    } else if (isInteractionRejected(data)) {
-      this.handleInteractionFail('Payment authorization rejected')
-    } else {
-      this.handleInteractionFail('Invalid payment response received')
+  private async waitForCompletion(paymentId: string) {
+    try {
+      for await (const status of this.#controller.getStatus(
+        paymentId,
+        this.#pollingAbortController?.signal,
+      )) {
+        if (status.type === 'OUTGOING_PAYMENT_CREATED') {
+          this.currentView = 'processing'
+        } else if (status.type === 'OUTGOING_PAYMENT_DONE') {
+          if (status.result === 'success') {
+            this.currentView = 'success'
+          } else {
+            this.currentView = 'failed'
+            this.errorMessage = status.error?.message || 'Payment failed'
+          }
+        } else if (status.type === 'GRANT_REJECTED') {
+          this.handleInteractionFail('Payment authorization rejected')
+        } else if (status.type === 'PENDING_GRANT_INTERACTION') {
+          this.currentView = 'authorizing'
+        }
+        this.requestUpdate()
+      }
+      this._markPollingCompleted()
+    } catch (err) {
+      const error = err as Error
+      this.handleInteractionFail(error.message)
+      this._markPollingFailed(error.message)
     }
   }
 
@@ -117,99 +121,10 @@ export class PaymentInteraction extends LitElement {
     )
   }
 
-  private async handleInteractionSuccess(interactRef: string) {
-    this.currentView = 'processing'
-    this.requestUpdate()
-
-    try {
-      const {
-        walletAddress,
-        outgoingPaymentGrant,
-        quote,
-        incomingPaymentGrant,
-        note,
-      } = this.configController.state
-      const { apiUrl } = this.configController.config
-      const url = new URL('/payment/finalize', apiUrl).href
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          walletAddress,
-          pendingGrant: outgoingPaymentGrant,
-          quote,
-          incomingPaymentGrant,
-          interactRef,
-          note,
-        }),
-      })
-
-      if (!response.ok) {
-        this.handleInteractionFail(
-          'Failed to process payment. Please try again',
-        )
-        return
-      }
-
-      const result = (await response.json()) as CheckPaymentResult
-
-      if (result.success === false) {
-        this.handleInteractionFail(
-          result.error?.message || 'Payment processing failed',
-        )
-        return
-      }
-
-      this.currentView = 'success'
-      this.requestUpdate()
-    } catch {
-      this.handleInteractionFail('There was an issue with your request')
-    }
-  }
-
   private handleInteractionFail(message: string) {
     this.currentView = 'failed'
     this.errorMessage = message
     this.requestUpdate()
-  }
-
-  private async _startLongPolling(signal?: AbortSignal): Promise<void> {
-    if (this.#interactionCompleted) return
-
-    const { paymentId } = this.configController.state
-    const { apiUrl } = this.configController.config
-    const url = new URL(`/payment/status/${paymentId}`, apiUrl).href
-
-    signal?.throwIfAborted()
-    try {
-      const res = await fetch(url, { signal })
-      if (res.ok) {
-        const data = (await res.json()) as PaymentStatus
-        if (isInteractionSuccess(data)) {
-          void this.handleInteractionSuccess(data.interact_ref)
-        } else if (isInteractionRejected(data)) {
-          this.handleInteractionFail('Payment authorization rejected')
-        } else {
-          this.handleInteractionFail('Invalid payment response received')
-        }
-        return //success
-      }
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        // don't handle errors if the request was aborted, another method succeeded
-        return
-      }
-      if (isAbortSignalTimeout(error) || isTimeoutError(error)) {
-        this._markPollingFailed('Payment authorization timed out')
-        return
-      }
-
-      this._markPollingFailed('Failed to check payment status')
-      throw error
-    }
   }
 
   private _markPollingCompleted() {
@@ -236,115 +151,93 @@ export class PaymentInteraction extends LitElement {
     }
   }
 
-  private previewInteractionCompleted() {
-    setTimeout(() => {
-      this.currentView = 'success'
-      this.requestUpdate()
-    }, 3000)
-  }
+  private get interactionView(): InteractionView {
+    switch (this.currentView) {
+      case 'processing':
+        return {
+          titleClass: 'authorizing',
+          title: 'Verifying payment',
+          description: 'Checking payment status',
+          image: {
+            src: loadingIcon,
+            alt: 'Payment verification in progress',
+          },
+        }
 
-  private renderAuthorizingView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
-
-        <div class="interaction-body">
-          <div class="title authorizing">Authorizing payment</div>
-          <div class="description">
-            Please complete the authorization in the opened tab
-          </div>
-          <img
-            src=${loadingIcon}
-            width="122"
-            height="200"
-            alt="Payment authorization in progress"
-          />
-        </div>
-
-        <button class="button-container empty-button" @click=${this.cancel}>
-          Cancel payment
-        </button>
-      </div>
-    `
-  }
-
-  private renderProcessingView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
-
-        <div class="interaction-body">
-          <div class="title authorizing">Verifying payment</div>
-          <div class="description">Checking payment status</div>
-          <img
-            src=${loadingIcon}
-            width="122"
-            height="200"
-            alt="Payment verification in progress"
-          />
-        </div>
-      </div>
-    `
-  }
-
-  private renderSuccessView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
-
-        <div class="interaction-body">
-          <div class="title complete">Payment complete!</div>
-          <div class="description">
-            Your payment has been processed successfully
-          </div>
-          <img
-            src=${successIcon}
-            width="122"
-            height="200"
-            alt="Payment successful"
-          />
-        </div>
-
-        <button class="button-container primary-button" @click=${this.goBack}>
-          Done
-        </button>
-      </div>
-    `
-  }
-
-  private renderFailedView() {
-    return html`
-      <div class="interaction-container">
-        <div class="empty-header"></div>
-
-        <div class="interaction-body">
-          <div class="title failed">${this.errorMessage}</div>
-          <img
-            src=${failedIcon}
-            width="122"
-            height="200"
-            alt="Payment failed"
-          />
-        </div>
-
-        <button class="button-container empty-button" @click=${this.cancel}>
-          Cancel payment
-        </button>
-      </div>
-    `
+      case 'success':
+        return {
+          titleClass: 'complete',
+          title: 'Payment complete!',
+          description: 'Your payment has been processed successfully',
+          image: {
+            src: successIcon,
+            alt: 'Payment successful',
+          },
+          button: {
+            label: 'Done',
+            buttonClass: 'primary-button',
+            handler: this.goBack,
+          },
+        }
+      case 'failed':
+        return {
+          titleClass: 'failed',
+          title: this.errorMessage,
+          image: {
+            src: failedIcon,
+            alt: 'Payment failed',
+          },
+          button: {
+            label: 'Cancel payment',
+            buttonClass: 'empty-button',
+            handler: this.cancel,
+          },
+        }
+      case 'authorizing':
+        return {
+          titleClass: 'authorizing',
+          title: 'Authorizing payment',
+          description: 'Please complete the authorization in the opened tab',
+          image: {
+            src: loadingIcon,
+            alt: 'Payment authorization in progress',
+          },
+          button: {
+            label: 'Cancel payment',
+            buttonClass: 'empty-button',
+            handler: this.cancel,
+          },
+        }
+    }
   }
 
   render() {
-    switch (this.currentView) {
-      case 'processing':
-        return this.renderProcessingView()
-      case 'success':
-        return this.renderSuccessView()
-      case 'failed':
-        return this.renderFailedView()
-      case 'authorizing':
-      default:
-        return this.renderAuthorizingView()
-    }
+    const { titleClass, title, description, image, button } =
+      this.interactionView
+
+    return html`
+      <div class="interaction-container">
+        <div class="empty-header"></div>
+
+        <div class="interaction-body">
+          <div class="title ${titleClass}">${title}</div>
+          ${description
+            ? html`<div class="description">${description}</div>`
+            : nothing}
+          <img src=${image.src} width="122" height="200" alt=${image.alt} />
+        </div>
+
+        ${button
+          ? html`
+              <button
+                class="button-container ${button.buttonClass}"
+                @click=${button.handler}
+              >
+                ${button.label}
+              </button>
+            `
+          : nothing}
+      </div>
+    `
   }
 }

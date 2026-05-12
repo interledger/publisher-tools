@@ -1,29 +1,101 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
-import type {
-  Grant,
-  Quote,
-  PendingGrant,
-  WalletAddress,
-} from '@interledger/open-payments'
+import type { PaymentStatus, WalletAddressInfo } from 'publisher-tools-api'
+import type { Grant, Quote, PendingGrant } from '@interledger/open-payments'
 import {
   WIDGET_POSITION,
   BORDER_RADIUS,
-  widgetFontSizeToNumber,
+  WIDGET_FONT_SIZE_MAP,
 } from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
 import type { WidgetConfig } from './types'
 
 export interface WidgetState {
-  walletAddress: WalletAddress
+  /** sender wallet address */
+  walletAddress: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: number
   incomingPaymentGrant: Grant
   quote: Quote
-  outgoingPaymentGrant: PendingGrant
+  grantRedirectUrl: string
   paymentId: string
   debitAmount: string
   receiveAmount: string
   receiverPublicName?: string
   note?: string
+}
+
+type WalletAddressUrl = string
+/** The amount sender wants to send (like "1.05"), does not include fees */
+type UserAmount = number | PaymentCurrencyAmount['value']
+
+interface QuoteInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: UserAmount
+}
+type QuoteResult =
+  | { debitAmount: PaymentCurrencyAmount; receiveAmount: PaymentCurrencyAmount }
+  | { error: string; minSendAmount?: PaymentCurrencyAmount }
+
+interface InitiatePaymentInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: UserAmount
+  note: string
+}
+interface InitiatePaymentResult {
+  paymentId: string
+  grantRedirectUrl: PendingGrant['interact']['redirect']
+}
+
+export interface Controller {
+  getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
+  fetchQuote(request: QuoteInput): Promise<QuoteResult>
+  initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
+  getStatus(
+    paymentId: string,
+    signal?: AbortSignal,
+  ): AsyncGenerator<PaymentStatus>
+
+  isPreviewMode?: boolean
+}
+
+export const NO_OP_CONTROLLER: Controller = {
+  getWallet(walletAddressUrl) {
+    return Promise.resolve({
+      $url: walletAddressUrl,
+      id: walletAddressUrl,
+      assetCode: 'USD',
+      assetScale: 2,
+      authServer: 'https://auth.example.com',
+      resourceServer: 'https://resource.example.com',
+      publicName: 'Wallet (Preview)',
+    })
+  },
+  fetchQuote({ amount, sender, receiver }) {
+    amount = String(amount)
+    const debitAmount = { value: amount, currency: sender.assetCode }
+    const receiveAmount = { value: amount, currency: receiver.assetCode }
+    return Promise.resolve({ debitAmount, receiveAmount })
+  },
+  initiatePayment() {
+    return Promise.resolve({
+      paymentId: 'payment-id',
+      grantRedirectUrl: 'https://example.com/redirect',
+    })
+  },
+  async *getStatus() {
+    yield {
+      type: 'OUTGOING_PAYMENT_DONE',
+      outgoingPaymentId: '',
+      result: 'success',
+    }
+  },
+}
+
+export interface Actions {
+  setScreen(screen: unknown): void
 }
 
 export class WidgetController implements ReactiveController {
@@ -112,7 +184,7 @@ export class WidgetController implements ReactiveController {
     if (font.size) {
       element.style.setProperty(
         '--wm-font-size',
-        `${widgetFontSizeToNumber(font.size)}px`,
+        `${WIDGET_FONT_SIZE_MAP[font.size]}px`,
       )
     }
     if (border.type) {

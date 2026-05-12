@@ -1,64 +1,13 @@
-/** @deprecated will be removed in future versions */
-export interface ConfigVersions {
-  [key: string]: ElementConfigType
-}
-
-/** @deprecated will be removed in future versions */
-export interface ElementConfigType {
-  // general config
-  /** the display name for this configuration version */
-  versionName: string
-  /** necessary when creating a new configuration */
-  tag?: string
-  /** added by user later, not part of "default" data. TODO: use correct types at all site to extend default data. */
-  walletAddress: string
-
-  // button specific
-  buttonFontName: string
-  buttonText: string
-  buttonBorder: CornerType
-  buttonTextColor: string
-  buttonBackgroundColor: string
-  buttonDescriptionText?: string
-
-  // banner specific
-  bannerFontName: FontFamilyKey
-  bannerFontSize: number
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
-
-  // widget specific
-  widgetFontName: FontFamilyKey
-  widgetFontSize: number
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
-
-  offerwall?: OfferwallProfile
-}
-
 export const TOOL_BANNER = 'banner'
 export const TOOL_WIDGET = 'widget'
+export const TOOL_PAYWALL = 'paywall'
 export const TOOL_OFFERWALL = 'offerwall'
-export const TOOLS = [TOOL_BANNER, TOOL_WIDGET, TOOL_OFFERWALL] as const
+export const TOOLS = [
+  TOOL_BANNER,
+  TOOL_WIDGET,
+  TOOL_PAYWALL,
+  TOOL_OFFERWALL,
+] as const
 export type Tool = (typeof TOOLS)[number]
 
 export const PROFILE_A = 'version1'
@@ -84,6 +33,9 @@ export interface Configuration {
   widget?: {
     [presetId in ProfileId]?: WidgetProfile
   }
+  paywall?: {
+    [presetId in ProfileId]?: PaywallProfile
+  }
   offerwall?: {
     [presetId in ProfileId]?: OfferwallProfile
   }
@@ -94,15 +46,9 @@ export type ToolProfiles<T extends Tool> = Configuration[T]
 export type ToolProfile<T extends Tool> = {
   banner: BannerProfile
   widget: WidgetProfile
+  paywall: PaywallProfile
   offerwall: OfferwallProfile
 }[T]
-
-function findFontSizeKey<T extends Record<string, number>>(
-  map: T,
-  value: number,
-): keyof T | undefined {
-  return (Object.keys(map) as (keyof T)[]).find((key) => map[key] === value)
-}
 
 export const BANNER_FONT_SIZE_MAP = {
   '2xs': 16,
@@ -118,19 +64,6 @@ export const BANNER_FONT_SIZE_MAP = {
 
 export type BannerFontSize = keyof typeof BANNER_FONT_SIZE_MAP
 
-export function bannerFontSizeToNumber(size: BannerFontSize): number {
-  return BANNER_FONT_SIZE_MAP[size]
-}
-
-// TODO: to be removed after the completion of versioned configurations
-export function numberToBannerFontSize(value: number): BannerFontSize {
-  const clamped = Math.max(
-    BANNER_FONT_SIZES.min,
-    Math.min(BANNER_FONT_SIZES.max, value),
-  )
-  return findFontSizeKey(BANNER_FONT_SIZE_MAP, clamped) ?? 'base'
-}
-
 export const WIDGET_FONT_SIZE_MAP = {
   xs: 14,
   sm: 15,
@@ -141,19 +74,6 @@ export const WIDGET_FONT_SIZE_MAP = {
 } as const
 
 export type WidgetFontSize = keyof typeof WIDGET_FONT_SIZE_MAP
-
-export function widgetFontSizeToNumber(size: WidgetFontSize): number {
-  return WIDGET_FONT_SIZE_MAP[size]
-}
-
-// TODO: to be removed after the completion of versioned configurations
-export function numberToWidgetFontSize(value: number): WidgetFontSize {
-  const clamped = Math.max(
-    WIDGET_FONT_SIZES.min,
-    Math.min(WIDGET_FONT_SIZES.max, value),
-  )
-  return findFontSizeKey(WIDGET_FONT_SIZE_MAP, clamped) ?? 'base'
-}
 
 export type FontSize = BannerFontSize | WidgetFontSize
 
@@ -227,6 +147,9 @@ export interface WidgetProfile extends BaseToolProfile {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface PaywallProfile extends BaseToolProfile {}
+
 export interface OfferwallProfile extends BaseToolProfile {
   font: {
     name: FontFamilyKey
@@ -242,12 +165,6 @@ export interface OfferwallProfile extends BaseToolProfile {
   }
 }
 
-type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
-/** @deprecated Use BannerProfile instead */
-export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
-/** @deprecated Use WidgetProfile instead */
-export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
-
 export declare class MonetizationEvent extends Event {
   amountSent: { value: string; currency: string }
   paymentPointer: string
@@ -256,10 +173,7 @@ export declare class MonetizationEvent extends Event {
 
 export const KV_PAYMENTS_PREFIX = 'payments/'
 
-export const PAYMENT_ERROR = {
-  NON_POSITIVE_AMOUNT: 'NON_POSITIVE_AMOUNT',
-} as const
-export type PaymentError = keyof typeof PAYMENT_ERROR
+export type PaymentError = 'NON_POSITIVE_AMOUNT'
 
 export const BANNER_TITLE_MAX_LENGTH = 60
 export const BANNER_DESCRIPTION_MAX_LENGTH = 300
@@ -330,4 +244,10 @@ export type UtmParams = {
   utm_campaign?: string
   utm_content?: string
   utm_term?: string
+}
+
+export interface Amount {
+  value: string
+  assetCode: string
+  assetScale: number
 }

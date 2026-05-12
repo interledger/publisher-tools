@@ -17,11 +17,12 @@
   },
   "devDependencies": {
     "@interledger/open-payments": "^7.4.0",
+    "@shared/default-data": "workspace:^",
     "@shared/types": "workspace:^",
     "@shared/utils": "workspace:^",
     "publisher-tools-api": "workspace:^",
     "typescript": "^5.9.3",
-    "vite": "^8.0.8"
+    "vite": "^8.0.10"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

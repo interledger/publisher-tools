@@ -21,9 +21,10 @@
     "@shared/utils": "workspace:^",
     "@tools/components": "workspace:*",
     "directory-tree": "^3.6.0",
-    "esbuild": "0.27.2",
+    "esbuild": "0.28.0",
     "esbuild-plugin-copy": "^2.1.1",
+    "publisher-tools-api": "workspace:^",
     "typescript": "^5.9.3",
-    "wrangler": "^4.83.0"
+    "wrangler": "^4.87.0"
   }
 }

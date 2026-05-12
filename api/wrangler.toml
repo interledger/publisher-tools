@@ -15,3 +15,11 @@ port = 8787
 
 [build]
 command = "pnpm -s build"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true

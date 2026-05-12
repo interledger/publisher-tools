@@ -7,7 +7,7 @@ import {
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import defaultLogo from '@c/assets/wm_logo_animated.svg?url'
-import { bannerFontSizeToNumber, BORDER_RADIUS } from '@shared/types'
+import { BANNER_FONT_SIZE_MAP, BORDER_RADIUS } from '@shared/types'
 import type {
   FontFamilyKey,
   BorderRadiusKey,
@@ -104,7 +104,9 @@ export class Banner extends LitElement {
       this.config.description.text || DEFAULT_BANNER_DESCRIPTION
 
     const showThumbnail =
-      typeof this.config.thumbnail === 'undefined' || !!this.config.thumbnail
+      typeof this.config.thumbnail === 'undefined' ||
+      !!this.config.thumbnail.value
+
     const thumbnail = showThumbnail
       ? html`<img
           src="${defaultLogo}"
@@ -265,7 +267,7 @@ export class BannerController implements ReactiveController {
     if (font.size) {
       element.style.setProperty(
         '--wm-font-size',
-        bannerFontSizeToNumber(font.size) + 'px',
+        `${BANNER_FONT_SIZE_MAP[font.size]}px`,
       )
     }
   }

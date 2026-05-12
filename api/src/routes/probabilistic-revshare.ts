@@ -1,16 +1,15 @@
 import { HTTPException } from 'hono/http-exception'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import z from 'zod'
-import { zValidator } from '@hono/zod-validator'
 import type { WalletAddress } from '@interledger/open-payments'
 import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
 import { app } from '../app.js'
-import { createHTTPException } from '../utils/utils'
+import { createHTTPException, validate } from '../utils/utils'
 
 app.get(
   '/revshare/:payload',
-  zValidator(
+  validate(
     'param',
     z.object({
       payload: z.base64url().max(50_000).min(20),

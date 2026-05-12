@@ -60,7 +60,7 @@
     {
       "label": "Run Analytics",
       "type": "shell",
-      "command": "pnpm analytics:start",
+      "command": "pnpm analytics:dev",
       "hide": true,
       "runOptions": {
         "instanceLimit": 1,
