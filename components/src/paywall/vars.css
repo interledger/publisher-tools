@@ -1,7 +1,7 @@
 :host {
   --font-family: var(--wm-font-family, system-ui, sans-serif);
   --background: var(--wmt-background, #ffffff);
-  --text-color: var(--wmt-color, #6b6e76);
+  --color: var(--wmt-color, #6b6e76);
   --theme: var(--wmt-theme, #56b7b5);
   --border-radius: var(--wmt-border-radius, 1rem);
 }
