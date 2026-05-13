@@ -1,5 +1,5 @@
 import z from 'zod'
-import { UMAMI_API_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
+import { UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import { app } from '../app.js'
 
 const payloadSchema = z.object({
@@ -26,7 +26,7 @@ app.post('/events', async ({ req, body }) => {
     return body(null, 400)
   }
 
-  if (!UMAMI_API_HOST || !UMAMI_WEBSITE_ID) {
+  if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) {
     return body(null, 204)
   }
 
@@ -52,7 +52,7 @@ app.post('/events', async ({ req, body }) => {
   }
 
   try {
-    await fetch(`${UMAMI_API_HOST}/api/send`, {
+    await fetch(`${UMAMI_HOST}/api/send`, {
       method: 'POST',
       headers,
       body: JSON.stringify({

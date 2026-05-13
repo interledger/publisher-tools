@@ -2,7 +2,6 @@ declare const BUILD_API_URL: string
 declare const BUILD_CDN_URL: string
 declare const BUILD_AWS_PREFIX: string
 declare const BUILD_UMAMI_HOST: string
-declare const BUILD_UMAMI_API_HOST: string
 declare const BUILD_UMAMI_WEBSITE_ID: string
 
 const DEV_API_URL = 'http://localhost:8787'
@@ -38,11 +37,6 @@ export const AWS_PREFIX =
 export const UMAMI_HOST =
   typeof BUILD_UMAMI_HOST === 'string' && BUILD_UMAMI_HOST
     ? BUILD_UMAMI_HOST
-    : undefined
-
-export const UMAMI_API_HOST =
-  typeof BUILD_UMAMI_API_HOST === 'string' && BUILD_UMAMI_API_HOST
-    ? BUILD_UMAMI_API_HOST
     : undefined
 
 export const UMAMI_WEBSITE_ID =

@@ -3,7 +3,7 @@ import { app } from '../app.js'
 import './events.js'
 
 vi.mock('@shared/defines', () => ({
-  UMAMI_API_HOST: 'http://umami.test',
+  UMAMI_HOST: 'http://umami.test',
   UMAMI_WEBSITE_ID: 'test-website-id',
 }))
 
