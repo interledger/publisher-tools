@@ -71,6 +71,7 @@ const widgetStoreUtils = createToolStoreUtils({
   tool: TOOL_WIDGET,
   store: widget,
   snapshots,
+  atomicPaths: new Set(['color.background', 'color.theme', 'icon.color']),
 })
 
 const { snapshotsStorageKey } = getStorageKeys(TOOL_WIDGET)
@@ -116,12 +117,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    const profile = snapshot(widget.profile)
-    snapshots.set(toolState.activeTab, profile)
-    widget.profilesUpdate.delete(toolState.activeTab)
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    return widgetStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     PROFILE_IDS.forEach((id) => {

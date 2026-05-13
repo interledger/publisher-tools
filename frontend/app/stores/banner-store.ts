@@ -72,6 +72,7 @@ const bannerStoreUtils = createToolStoreUtils({
   tool: TOOL_BANNER,
   store: banner,
   snapshots,
+  atomicPaths: new Set(['color.background']),
 })
 
 const { snapshotsStorageKey } = getStorageKeys(TOOL_BANNER)
@@ -117,12 +118,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    const profile = snapshot(banner.profile)
-    snapshots.set(toolState.activeTab, profile)
-    banner.profilesUpdate.delete(toolState.activeTab)
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    return bannerStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     PROFILE_IDS.forEach((id) => {

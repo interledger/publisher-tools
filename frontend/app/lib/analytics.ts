@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router'
 import { TOOLS, type Tool } from '@shared/types'
+import type { ChangedFields } from '~/utils/profile-diff'
 
 export type EventRegistry =
   | [event: 'click_card_tool', data: { link: string }]
@@ -8,6 +9,7 @@ export type EventRegistry =
   | [event: 'link_tag_generated', data: { wallet_provider: string }]
   | [event: `${Tool}_profile_saved`]
   | [event: `${Tool}_script_generated`]
+  | [event: `${Tool}_settings_changed`, data: ChangedFields]
 
 export type TrackFn = (...args: EventRegistry) => void
 

@@ -72,6 +72,7 @@ const offerwallStoreUtils = createToolStoreUtils({
   tool: TOOL_OFFERWALL,
   store: offerwall,
   snapshots,
+  atomicPaths: new Set(['color.background', 'color.theme']),
 })
 
 const { snapshotsStorageKey } = getStorageKeys(TOOL_OFFERWALL)
@@ -118,12 +119,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    const profile = snapshot(offerwall.profile)
-    snapshots.set(toolState.activeTab, profile)
-    offerwall.profilesUpdate.delete(toolState.activeTab)
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    return offerwallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     PROFILE_IDS.forEach((id) => {

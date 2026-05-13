@@ -11,6 +11,7 @@ import {
 import type { BannerStore } from '~/stores/banner-store'
 import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { WidgetStore } from '~/stores/widget-store'
+import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
 import { omit } from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore
@@ -28,12 +29,13 @@ interface ToolStoreConfig<T extends Tool> {
   tool: T
   store: Store
   snapshots: Map<ProfileId, ToolProfile<T>>
+  atomicPaths?: ReadonlySet<string>
 }
 
 export function createToolStoreUtils<T extends Tool>(
   config: ToolStoreConfig<T>,
 ) {
-  const { tool, store, snapshots } = config
+  const { tool, store, snapshots, atomicPaths } = config
   const { snapshotsStorageKey, getProfileStorageKey } = getStorageKeys(tool)
 
   function parseProfileFromStorage(
@@ -143,6 +145,19 @@ export function createToolStoreUtils<T extends Tool>(
     subscribeProfilesToUpdates() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToUpdates)
       return () => unsubscribes.forEach((s) => s())
+    },
+
+    commitActiveProfile(activeTab: ProfileId): ChangedFields {
+      const prev = snapshots.get(activeTab)
+      const current = snapshot(store.profile) as ToolProfile<T>
+      const changed = diffProfile(prev, current, atomicPaths)
+
+      snapshots.set(activeTab, current)
+      store.profilesUpdate.delete(activeTab)
+      const snaps = Object.fromEntries(snapshots.entries())
+      localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+
+      return changed
     },
 
     removeProfilesFromStorage() {
