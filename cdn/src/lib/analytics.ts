@@ -1,27 +1,22 @@
-import type { TrackPayload } from 'publisher-tools-api'
+import type { EventBody, EventPayload } from 'publisher-tools-api'
 import { API_URL } from '@shared/defines'
 import type { Tool } from '@shared/types'
 
-type TrackArgs = {
-  name: string
-  data?: Omit<TrackPayload['data'], 'hostname'>
-}
+type EventData = Omit<EventPayload['data'], 'hostname'>
 
 export function trackEventFactory(tool: Tool) {
   const hostname = window.location.hostname
 
-  return ({ name, data }: TrackArgs): void => {
+  return (name: string, data?: EventData): void => {
     if (!API_URL) return
-    navigator.sendBeacon?.(
-      `${API_URL}/events`,
-      JSON.stringify({
-        type: 'event',
-        payload: {
-          name: `embed.${tool}.${name}`,
-          url: `/embed/${tool}`,
-          data: { hostname, ...data },
-        },
-      }),
-    )
+    const body: EventBody = {
+      type: 'event',
+      payload: {
+        name: `embed.${tool}.${name}`,
+        url: `/embed/${tool}`,
+        data: { hostname, ...data },
+      },
+    }
+    navigator.sendBeacon?.(`${API_URL}/events`, JSON.stringify(body))
   }
 }

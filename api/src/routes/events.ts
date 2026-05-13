@@ -18,7 +18,8 @@ const eventSchema = z.object({
   payload: payloadSchema,
 })
 
-export type TrackPayload = z.infer<typeof payloadSchema>
+export type EventPayload = z.infer<typeof payloadSchema>
+export type EventBody = z.infer<typeof eventSchema>
 
 app.post('/events', async ({ req, body }) => {
   if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) {

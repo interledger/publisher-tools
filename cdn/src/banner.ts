@@ -43,7 +43,7 @@ function drawBanner(profile: BannerProfile) {
 
   bannerElement.addEventListener('click-extension-link', (e) => {
     const { link } = (e as CustomEvent<{ link: string }>).detail
-    trackEvent({ name: 'click_extension_link', data: { link } })
+    trackEvent('click_extension_link', { link })
   })
 
   const position = profile.position ? profile.position.toLowerCase() : 'bottom'
