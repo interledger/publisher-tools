@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { app } from '../app.js'
 import './events.js'
 
@@ -12,7 +12,11 @@ describe('POST /events', () => {
 
   beforeEach(() => {
     fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 200 }))
-    globalThis.fetch = fetchMock as unknown as typeof fetch
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   it('forwards a valid event to Umami and returns 204', async () => {

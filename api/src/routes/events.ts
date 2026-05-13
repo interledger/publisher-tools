@@ -3,11 +3,13 @@ import { UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import { app } from '../app.js'
 
 const payloadSchema = z.object({
+  /** Prefixed with `embed.` to separate from frontend events */
   name: z.string().startsWith('embed.'),
+  /** Umami "page" path, e.g. `/embed/banner` (groups events per tool) */
   url: z.string(),
-  data: z.object({
+  data: z.looseObject({
+    /** Publisher's domain from `window.location.hostname` (we can see which sites embed us) */
     hostname: z.string(),
-    link: z.string().optional(),
   }),
 })
 
@@ -19,15 +21,15 @@ const eventSchema = z.object({
 export type TrackPayload = z.infer<typeof payloadSchema>
 
 app.post('/events', async ({ req, body }) => {
+  if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) {
+    return body(null, 204)
+  }
+
   let event: z.infer<typeof eventSchema>
   try {
     event = z.parse(eventSchema, await req.json())
   } catch {
     return body(null, 400)
-  }
-
-  if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) {
-    return body(null, 204)
   }
 
   // https://docs.umami.is/docs/enable-cloudflare-headers
