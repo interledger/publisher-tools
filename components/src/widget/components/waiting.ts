@@ -4,7 +4,7 @@ import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
 import { NO_OP_CONTROLLER, type Controller } from '@c/widget/controller'
-import styles from './interaction.css?raw'
+import styles from './waiting.css?raw'
 
 type ButtonAction = {
   label: string
