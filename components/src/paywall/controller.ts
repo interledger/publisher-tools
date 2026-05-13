@@ -31,6 +31,7 @@ type Entitlement = 'no-access' | 'auth-required' | 'has-access'
 
 export interface Controller {
   receiverWalletAddressUrl: string
+  cdnUrl: string
 
   fetchConfig(): Promise<PaywallProfile>
 
@@ -58,6 +59,7 @@ export interface Controller {
 }
 
 export const NO_OP_CONTROLLER: Controller = {
+  cdnUrl: 'https://example.com',
   receiverWalletAddressUrl: 'https://example.com/pay',
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
   checkEntitlement: () => Promise.resolve('no-access'),

@@ -1,0 +1,58 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  font-size: 1.75em;
+}
+
+.description {
+  font-size: 1em;
+}
+
+.price {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius);
+  padding: 1em;
+  margin-top: auto;
+
+  span:first-child {
+    text-transform: uppercase;
+    font-size: 0.85em;
+    display: block;
+    margin-bottom: -0.1em;
+  }
+
+  span:last-child {
+    font-size: 2em;
+    font-weight: 600;
+  }
+}
+
+button {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  font-size: 1.25em;
+  border-radius: var(--border-radius);
+  background-color: var(--theme);
+  /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
+     https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
+  color: white;
+  color: oklch(from var(--theme) round(1.21 - L) 0 0);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.footer {
+  font-size: 0.6em;
+  margin-top: -1.25em;
+  text-align: center;
+}

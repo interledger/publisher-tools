@@ -9,7 +9,7 @@ import { WebMonetizationHeader } from '@c/shared/web-monetization-header'
 import { registerComponents } from '@c/utils'
 import { getExtensionHref } from '@shared/utils/extension'
 import styles from './install-required.css?raw'
-import styleTokens from '../../vars.css?raw'
+import styleTokens from '../vars.css?raw'
 
 const HEADER_TEXT = `Get the Web Monetization Extension to be able to support us`
 const STEP_1 = `You'll need a Web Monetization compatible wallet to use with the extension.`

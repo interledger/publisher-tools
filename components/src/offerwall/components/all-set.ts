@@ -1,13 +1,13 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
-import lockWithGradient from '@c/assets/lock_with_gradient.svg?raw'
+import iconCheck from '@c/assets/icon_check.svg?raw'
 import { PoweredByInterledger } from '@c/shared/powered-by-interledger'
 import { WebMonetizationHeader } from '@c/shared/web-monetization-header'
 import { registerComponents } from '@c/utils'
-import styles from './contribution-required.css?raw'
-import styleTokens from '../../vars.css?raw'
+import styles from './all-set.css?raw'
+import styleTokens from '../vars.css?raw'
 
-export class ContributionRequired extends LitElement {
+export class AllSet extends LitElement {
   static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
 
   connectedCallback(): void {
@@ -23,28 +23,34 @@ export class ContributionRequired extends LitElement {
       <div class="container">
         <wm-header></wm-header>
 
-        <h2>Oops!</h2>
+        <h2>You’re all set!</h2>
 
-        <span class="icon">${unsafeSVG(lockWithGradient)}</span>
+        <span class="icon">${unsafeSVG(iconCheck)}</span>
 
-        <p class="cta-heading">A small contribution unlocks great content</p>
-
+        <p>You're now supporting the content you love</p>
         <p>
-          Make a one-time or continuous contribution using the Web Monetization
-          extension to keep consuming and supporting this content.
+          Whether continuous or one time support, the extension allows you to
+          enjoy this content.
         </p>
 
-        <p class="strong footer">
+        <p class="strong">
           Find out more on
           <a href="https://webmonetization.org" target="_blank"
             >webmonetization.org</a
           >
         </p>
 
+        <button type="button" @click=${this.#onCloseButtonClick}>Close</button>
+
         <div class="footer">
           <powered-by-interledger></powered-by-interledger>
         </div>
       </div>
     `
+  }
+
+  #onCloseButtonClick = () => {
+    const event = new CustomEvent('all-set-done', { cancelable: true })
+    this.dispatchEvent(event)
   }
 }

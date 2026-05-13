@@ -75,7 +75,17 @@ export const WIDGET_FONT_SIZE_MAP = {
 
 export type WidgetFontSize = keyof typeof WIDGET_FONT_SIZE_MAP
 
-export type FontSize = BannerFontSize | WidgetFontSize
+export const PAYWALL_FONT_SIZE_MAP = {
+  xs: 14,
+  sm: 15,
+  md: 16,
+  base: 17,
+  lg: 18,
+  xl: 19,
+} as const
+export type PaywallFontSize = keyof typeof PAYWALL_FONT_SIZE_MAP
+
+export type FontSize = BannerFontSize | WidgetFontSize | PaywallFontSize
 
 export type HexString = string
 export type GradientCssString = string
@@ -147,8 +157,38 @@ export interface WidgetProfile extends BaseToolProfile {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PaywallProfile extends BaseToolProfile {}
+export interface PaywallProfile extends BaseToolProfile {
+  /** The default price, unless changed via `data-price` attribute */
+  price: PaymentCurrencyAmount
+  behavior: {
+    // The `enabled` flags are for forward compatibility
+    /** How much of the page the paywall covers? */
+    coverage: { value: 25 | 50 | 75 | 100; enabled: boolean }
+    /** Number of seconds to wait for paywall to appear */
+    delay: { value: number; enabled: boolean }
+  }
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+  }
+  ctaButton: {
+    text: string
+  }
+  font: {
+    name: FontFamilyKey
+    size: PaywallFontSize
+  }
+  colors: {
+    text: TextColor
+    background: Background
+    theme: Background
+  }
+  border: {
+    type: CornerType
+  }
+}
 
 export interface OfferwallProfile extends BaseToolProfile {
   font: {

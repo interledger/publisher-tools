@@ -26,6 +26,7 @@ function drawPaywall() {
   if (price) element.setPrice(price)
   element.setController({
     receiverWalletAddressUrl: params.walletAddress,
+    cdnUrl: params.cdnUrl,
     fetchConfig: () => fetchProfile(API_URL, 'paywall', params),
     async checkEntitlement() {
       return 'no-access' // TODO: create and call API

@@ -2,7 +2,7 @@ import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, query, state } from 'lit/decorators.js'
 import { getCurrencySymbol } from '@c/utils'
 import styles from './amount.css?raw'
-import stylesBase from '../confirmation/confirmation.css?raw'
+import stylesBase from './initiate.css?raw'
 
 export interface AmountChangeEventDetail {
   amount: number
