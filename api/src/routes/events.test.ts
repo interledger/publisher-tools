@@ -54,7 +54,7 @@ describe('POST /events', () => {
         type: 'event',
         payload: {
           name: 'click_extension_link',
-          url: '/x',
+          url: '/embed/banner',
           data: { hostname: 'example.com' },
         },
       }),
