@@ -1,8 +1,8 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import walletTotemIcon from '@c/assets/wm_wallet_totem.svg'
-import { CloseBtn } from '@c/shared/components/close-btn'
-import { DotsLoader } from '@c/shared/components/dots-loader'
+import { CloseBtn } from '@c/shared/close-btn'
+import { DotsLoader } from '@c/shared/dots-loader'
 import { registerComponents } from '@c/utils'
 import styles from './home.css?raw'
 

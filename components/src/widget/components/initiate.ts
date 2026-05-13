@@ -1,8 +1,8 @@
 import { LitElement, html, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
-import { CloseBtn } from '@c/shared/components/close-btn'
-import { DotsLoader } from '@c/shared/components/dots-loader'
+import { CloseBtn } from '@c/shared/close-btn'
+import { DotsLoader } from '@c/shared/dots-loader'
 import { registerComponents } from '@c/utils'
 import {
   NO_OP_CONTROLLER,
@@ -10,8 +10,8 @@ import {
   type WidgetController,
 } from '@c/widget/controller'
 import { formatCurrency, toAmount } from '@shared/utils'
-import confirmationCss from './confirmation.css?raw'
-import { type AmountChangeEventDetail, PaymentAmount } from '../amount/amount'
+import { type AmountChangeEventDetail, PaymentAmount } from './amount.js'
+import styles from './initiate.css?raw'
 
 export class PaymentInitiate extends LitElement {
   @property({ type: Object }) configController!: WidgetController
@@ -25,7 +25,7 @@ export class PaymentInitiate extends LitElement {
   @state() private formattedReceiveAmount?: string
   #minSendAmount?: number
 
-  static styles = unsafeCSS(confirmationCss)
+  static styles = unsafeCSS(styles)
 
   connectedCallback() {
     super.connectedCallback()
