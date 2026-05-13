@@ -1,5 +1,6 @@
 :host {
   --font-family: var(--wm-font-family, system-ui, sans-serif);
+  --font-size: var(--wmt-font-size, 16px);
   --background: var(--wmt-background, #ffffff);
   --color: var(--wmt-color, #6b6e76);
   --theme: var(--wmt-theme, #56b7b5);
