@@ -1,6 +1,10 @@
 import { html, LitElement, nothing, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { type Controller, NO_OP_CONTROLLER } from '@c/paywall/controller'
+import {
+  NO_OP_CONTROLLER,
+  type Controller,
+  type Screens,
+} from '@c/paywall/controller'
 import { applyFontFamily, registerComponents } from '@c/utils.js'
 import {
   BORDER_RADIUS,
@@ -8,6 +12,10 @@ import {
   type PaywallProfile,
 } from '@shared/types'
 import { sleep } from '@shared/utils'
+import {
+  PaywallWalletAddressForm,
+  type FormSubmitEventDetail,
+} from './components/form.js'
 import { PaywallHome } from './components/home.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
@@ -20,6 +28,7 @@ export class Paywall extends LitElement {
 
   @property({ type: Boolean, reflect: true }) hidden = true
   @state() _ready = false
+  @state() _screen: Screens = 'home'
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -30,6 +39,7 @@ export class Paywall extends LitElement {
 
     registerComponents({
       'wmt-paywall-home': PaywallHome,
+      'wmt-paywall-form': PaywallWalletAddressForm,
     })
 
     void this.#init()
@@ -78,12 +88,71 @@ export class Paywall extends LitElement {
 
     const { title, description, ctaButton, price } = this.#config
 
+    if (this._screen === 'form') {
+      return html`<wmt-paywall-form
+        .title=${title.text}
+        .description=${description.text}
+        .ctaButton=${ctaButton.text}
+        @submit=${this.#onSubmit}
+      ></wmt-paywall-form>`
+    }
+
     return html`<wmt-paywall-home
       .price=${{ value: this.#price, currency: price.currency }}
       .title=${title.text}
       .description=${description.text}
       .ctaButton=${ctaButton.text}
+      @payStart=${this.#onPayStart}
     ></wmt-paywall-home>`
+  }
+
+  async #onPayStart() {
+    this.#setScreen('form')
+    void this.#getReceiver() // pre-fetch
+  }
+
+  async #onSubmit(ev: CustomEvent<FormSubmitEventDetail>) {
+    const { walletAddress, onComplete } = ev.detail
+    try {
+      await this.#handleSubmit(walletAddress)
+      onComplete()
+    } catch (err) {
+      const error = err as Error
+      onComplete(error.message)
+    }
+  }
+
+  async #handleSubmit(walletAddress: string) {
+    const sender = await this.#controller.getWallet(walletAddress)
+    const receiver = await this.#getReceiver()
+
+    const result = await this.#controller.initiatePayment({
+      sender,
+      receiver,
+      amount: this.#price,
+      note: this.defaultNote,
+    })
+
+    if (!this.#controller.isPreviewMode) {
+      window.location.href = result.grantRedirectUrl
+    }
+  }
+
+  #receiver_!: ReturnType<Controller['getWallet']>
+  #getReceiver() {
+    if (!this.#receiver_) {
+      const walletAddress = this.#controller.receiverWalletAddressUrl
+      this.#receiver_ = this.#controller.getWallet(walletAddress)
+    }
+    return this.#receiver_
+  }
+
+  get defaultNote() {
+    return `Pay Per Article service`
+  }
+
+  #setScreen(screen: Screens) {
+    this._screen = screen
   }
 
   @state() _delayComplete = false
