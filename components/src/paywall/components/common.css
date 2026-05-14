@@ -1,0 +1,35 @@
+.title {
+  font-size: 1.75em;
+}
+
+.description {
+  font-size: 1em;
+}
+
+button {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+  font-size: 1.25em;
+  border-radius: var(--border-radius);
+  background-color: var(--theme);
+  /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
+     https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
+  color: white;
+  color: oklch(from var(--theme) round(1.21 - L) 0 0);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.footer {
+  font-size: 0.6em;
+  margin-top: -1.25em;
+  text-align: center;
+}

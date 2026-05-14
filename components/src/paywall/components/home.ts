@@ -1,14 +1,17 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { property } from 'lit/decorators.js'
-import { createDefaultPaywallProfile } from '@shared/default-data'
 import { formatCurrency } from '@shared/utils'
+import stylesCommon from './common.css?raw'
 import styles from './home.css?raw'
+import { DEFAULTS } from '../utils'
 import styleTokens from '../vars.css?raw'
 
-const DEFAULTS = createDefaultPaywallProfile('')
-
 export class PaywallHome extends LitElement {
-  static styles = [unsafeCSS(styleTokens), unsafeCSS(styles)]
+  static styles = [
+    unsafeCSS(styleTokens),
+    unsafeCSS(stylesCommon),
+    unsafeCSS(styles),
+  ]
 
   @property({ type: Object, attribute: false })
   price: PaymentCurrencyAmount = DEFAULTS.price
@@ -25,7 +28,7 @@ export class PaywallHome extends LitElement {
       <div class="price">
         <span>Unlock</span> <span>${formatCurrency(this.price)}</span>
       </div>
-      <button type="button">${this.ctaText}</button>
+      <button type="button" @click>${this.ctaText}</button>
       <p class="footer">Secured by Open Payments. No card needed</p>
     `
   }

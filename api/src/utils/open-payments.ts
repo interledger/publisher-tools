@@ -9,6 +9,7 @@ import {
   type OutgoingPayment,
   type Grant,
   type GrantContinuation,
+  type IncomingPayment,
 } from '@interledger/open-payments'
 import type { Amount } from '@shared/types'
 import { toAmount, sleep } from '@shared/utils'
@@ -102,18 +103,13 @@ export class OpenPaymentsService {
       note: 'Quote via Publisher Tools',
     })
 
-    const quote = await this.client.quote.create(
-      {
-        url: sender.resourceServer,
-        accessToken: quoteGrant.access_token.value,
-      },
-      {
-        method: 'ilp',
-        walletAddress: sender.id,
-        receiver: incomingPayment.id,
-        ...(debitAmount ? { debitAmount } : { receiveAmount }),
-      },
-    )
+    const quote = await this.createQuote({
+      sender,
+      incomingPayment,
+      accessToken: quoteGrant.access_token.value,
+      debitAmount,
+      receiveAmount,
+    })
 
     void this.revokeIncomingPaymentGrant(incomingPaymentGrant).catch(() => {})
 
@@ -145,18 +141,13 @@ export class OpenPaymentsService {
     // We already got the incoming payment, we don't need the grant anymore.
     void this.revokeIncomingPaymentGrant(incomingPaymentGrant).catch(() => {})
 
-    const quote = await this.client.quote.create(
-      {
-        url: sender.resourceServer,
-        accessToken: quoteGrant.access_token.value,
-      },
-      {
-        method: 'ilp',
-        walletAddress: sender.id,
-        receiver: incomingPayment.id,
-        ...(debitAmount ? { debitAmount } : { receiveAmount }),
-      },
-    )
+    const quote = await this.createQuote({
+      sender,
+      incomingPayment,
+      accessToken: quoteGrant.access_token.value,
+      debitAmount,
+      receiveAmount,
+    })
 
     const nonce = crypto.randomUUID()
     const grant = await this.createOutgoingPaymentGrant({
@@ -298,6 +289,43 @@ export class OpenPaymentsService {
       .catch((err) => {
         throw new Error('Could not create quote grant.', { cause: err })
       })
+  }
+
+  private async createQuote(params: {
+    sender: WalletAddress
+    accessToken: string
+    incomingPayment: IncomingPayment
+    debitAmount?: Amount
+    receiveAmount?: Amount
+  }) {
+    const { sender, accessToken, incomingPayment, debitAmount, receiveAmount } =
+      params
+    try {
+      const quote = await this.client.quote.create(
+        {
+          url: sender.resourceServer,
+          accessToken,
+        },
+        {
+          method: 'ilp',
+          walletAddress: sender.id,
+          receiver: incomingPayment.id,
+          ...(debitAmount ? { debitAmount } : { receiveAmount }),
+        },
+      )
+      return quote
+    } catch (error) {
+      if (error instanceof OpenPaymentsClientError) {
+        if (error.status === 500) {
+          throw new Error('Cannot send between give wallets at the moment', {
+            cause: error,
+          })
+        }
+      } else if (isNonPositiveAmountError(error)) {
+        throw new Error('Cannot send this amount', { cause: error })
+      }
+      throw error
+    }
   }
 
   private async createOutgoingPaymentGrant({

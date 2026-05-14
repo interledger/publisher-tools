@@ -35,20 +35,10 @@ function drawPaywall() {
       // TODO: create and call API
     },
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
-    fetchQuote({ sender, receiver, amount }) {
-      const receiveAmount = Number(amount)
-      return fetchQuote(API_URL, { sender, receiver, receiveAmount })
-    },
-    async initiatePayment({ sender, receiver, amount, note }) {
-      const receiveAmount = Number(amount)
+    fetchQuote: (request) => fetchQuote(API_URL, request),
+    async initiatePayment(request) {
       const redirectUrl = window.location.href
-      return initiatePayment(API_URL, {
-        sender,
-        receiver,
-        receiveAmount,
-        note,
-        redirectUrl,
-      })
+      return initiatePayment(API_URL, { ...request, redirectUrl })
     },
     async *getStatus(paymentId, signal) {
       const url = new URL(`/payment/status/${paymentId}`, API_URL).href

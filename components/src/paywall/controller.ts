@@ -4,13 +4,13 @@ import { createDefaultPaywallProfile } from '@shared/default-data'
 import type { PaywallProfile } from '@shared/types'
 
 type WalletAddressUrl = string
-/** The amount sender wants to send (like "1.05"), does not include fees */
-type UserAmount = number | PaymentCurrencyAmount['value']
+/** The amount sender wants to send (like 1.05), does not include fees */
+type UserAmount = number
 
 interface QuoteInput {
   sender: WalletAddressInfo
   receiver: WalletAddressInfo
-  amount: UserAmount
+  receiveAmount: UserAmount
 }
 type QuoteResult =
   | { debitAmount: PaymentCurrencyAmount; receiveAmount: PaymentCurrencyAmount }
@@ -19,7 +19,7 @@ type QuoteResult =
 interface InitiatePaymentInput {
   sender: WalletAddressInfo
   receiver: WalletAddressInfo
-  amount: UserAmount
+  receiveAmount: UserAmount
   note: string
 }
 interface InitiatePaymentResult {
@@ -28,6 +28,8 @@ interface InitiatePaymentResult {
 }
 
 type Entitlement = 'no-access' | 'auth-required' | 'has-access'
+
+export type Screens = 'home' | 'form'
 
 export interface Controller {
   receiverWalletAddressUrl: string
@@ -58,6 +60,10 @@ export interface Controller {
   isPreviewMode?: boolean
 }
 
+export interface Actions {
+  setScreen(screen: Screens): void
+}
+
 export const NO_OP_CONTROLLER: Controller = {
   cdnUrl: 'https://example.com',
   receiverWalletAddressUrl: 'https://example.com/pay',
@@ -75,10 +81,10 @@ export const NO_OP_CONTROLLER: Controller = {
       publicName: 'Wallet (Preview)',
     })
   },
-  fetchQuote({ amount, sender, receiver }) {
-    amount = String(amount)
-    const debitAmount = { value: amount, currency: sender.assetCode }
-    const receiveAmount = { value: amount, currency: receiver.assetCode }
+  fetchQuote({ receiveAmount: amount, sender, receiver }) {
+    const value = String(amount)
+    const debitAmount = { value: value, currency: sender.assetCode }
+    const receiveAmount = { value: value, currency: receiver.assetCode }
     return Promise.resolve({ debitAmount, receiveAmount })
   },
   initiatePayment() {
