@@ -20,7 +20,23 @@ interface InitiatePaymentResult {
 
 type Entitlement = 'no-access' | 'auth-required' | 'has-access'
 
-export type Screens = 'home' | 'form'
+export type View = {
+  home: undefined
+  form: { walletAddress?: string }
+  verify: { sender: WalletAddressInfo; paymentId: string }
+}
+
+export type ViewInfo = {
+  [K in keyof View]: { type: K; data: View[K] }
+}[keyof View]
+
+export interface Actions {
+  setScreen<K extends keyof View>(
+    ...args: View[K] extends undefined
+      ? [type: K, data?: View[K]]
+      : [type: K, data: View[K]]
+  ): void
+}
 
 export interface Controller {
   receiverWalletAddressUrl: string
@@ -29,16 +45,21 @@ export interface Controller {
   fetchConfig(): Promise<PaywallProfile>
 
   /** Check if given wallet address is entitled to access */
-  checkEntitlement(walletAddressUrl: WalletAddressUrl): Promise<Entitlement>
+  checkEntitlement(
+    walletAddress: WalletAddressUrl | WalletAddressInfo,
+  ): Promise<Entitlement>
   /** Store the entitlement after a successful payment in some backend */
   saveEntitlement(
-    walletAddressUrl: WalletAddressUrl,
+    walletAddress: WalletAddressUrl | WalletAddressInfo,
     details: {
       outgoingPaymentId: string
       incomingPaymentId: string
       paymentId: string
     },
   ): Promise<void>
+  validateWalletOwnership(
+    walletAddress: WalletAddressUrl | WalletAddressInfo,
+  ): never | Promise<never>
 
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
@@ -72,6 +93,9 @@ export const NO_OP_CONTROLLER: Controller = {
       paymentId: 'payment-id',
       grantRedirectUrl: 'https://example.com/redirect',
     })
+  },
+  validateWalletOwnership() {
+    throw new Error('Not implemented')
   },
   async *getStatus() {
     yield {

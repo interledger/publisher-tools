@@ -245,6 +245,10 @@ export function withResolvers<T>(): {
   return { resolve, reject, promise }
 }
 
+export function ensureEnd(str: string, suffix: string) {
+  return str.endsWith(suffix) ? str : str + suffix
+}
+
 export function sleep(delay: number): Promise<void> {
   return new Promise((r) => setTimeout(r, delay))
 }

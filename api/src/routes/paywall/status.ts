@@ -3,11 +3,12 @@ import z from 'zod'
 import { app, type Env } from '../../app'
 import { PaymentIdSchema } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
+import { setPaymentStatus } from '../../utils/payments-db'
 import { getData, setData, type PaymentKvData } from '../../utils/payments-kv'
 import { createHTTPException, validate } from '../../utils/utils'
 
 app.get(
-  '/payment/status/:paymentId',
+  '/paywall/status/:paymentId',
   validate('param', z.object({ paymentId: PaymentIdSchema })),
   async ({ req, json, env }) => {
     const { paymentId } = req.param()
@@ -66,6 +67,14 @@ async function handleStatus(
       },
       { expirationTtl: 3 * 60 /* 3 minutes */ },
     )
+    if (!result.success) {
+      if (result.error.code !== 'OUTGOING_PAYMENT_INCOMPLETE') {
+        await setPaymentStatus(env.PUBLISHER_TOOLS_DB, paymentId, 'failed')
+      } else {
+        // we can try check again later, but can delete (mark as failed) if
+        // payment is too old and not complete
+      }
+    }
     return {
       type: 'OUTGOING_PAYMENT_CREATED',
       outgoingPaymentId: data.outgoingPaymentId,
@@ -74,6 +83,7 @@ async function handleStatus(
 
   // Should stop polling at this stage. The KV entry will expire soon.
   if (data.status === 'COMPLETE') {
+    await setPaymentStatus(env.PUBLISHER_TOOLS_DB, paymentId, 'complete')
     return {
       type: 'OUTGOING_PAYMENT_DONE',
       outgoingPaymentId: data.outgoingPaymentId,

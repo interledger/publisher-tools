@@ -9,6 +9,7 @@ import {
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { setData } from '../../utils/payments-kv'
 import { createHTTPException, validate } from '../../utils/utils'
+import { toAmount } from '@shared/utils'
 
 const PaymentInitiateSchema = z
   .object({
@@ -41,7 +42,7 @@ app.post(
       ).href
 
       const openPayments = await OpenPaymentsService.getInstance(env)
-      const { grantContinuation, nonce, ...result } =
+      const { grantContinuation, nonce, incomingPaymentId, ...result } =
         await openPayments.paymentInitiate(params)
 
       // The `/payment/complete` endpoint will find details from the KV based on
@@ -53,9 +54,14 @@ app.post(
         {
           status: 'PENDING',
           quoteId: result.quoteId,
+          incomingPaymentId,
           redirectUrl: originalRedirectUrl,
           grantContinuation: grantContinuation,
           sender: params.sender,
+          receiver: params.receiver,
+          amount: params.debitAmount
+            ? toAmount(params.debitAmount, params.sender)
+            : toAmount(params.receiveAmount!, params.receiver),
           metadata: { description: params.note },
           nonce,
         },
@@ -63,7 +69,7 @@ app.post(
       )
       return json({
         paymentId: paymentId,
-        incomingPaymentId: result.incomingPaymentId,
+        incomingPaymentId,
         grantRedirectUrl: result.grantRedirectUrl,
       } satisfies PaymentInitiateResult)
     } catch (error) {

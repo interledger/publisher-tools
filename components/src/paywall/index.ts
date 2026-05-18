@@ -3,7 +3,9 @@ import { property, state } from 'lit/decorators.js'
 import {
   NO_OP_CONTROLLER,
   type Controller,
-  type Screens,
+  type Actions,
+  type View,
+  type ViewInfo,
 } from '@c/paywall/controller'
 import { applyFontFamily, registerComponents } from '@c/utils.js'
 import {
@@ -17,6 +19,7 @@ import {
   type FormSubmitEventDetail,
 } from './components/form.js'
 import { PaywallHome } from './components/home.js'
+import { PaywallVerify } from './components/verify.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
@@ -28,7 +31,7 @@ export class Paywall extends LitElement {
 
   @property({ type: Boolean, reflect: true }) hidden = true
   @state() _ready = false
-  @state() _screen: Screens = 'home'
+  @state() _screen: ViewInfo = { type: 'home', data: undefined }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -40,6 +43,7 @@ export class Paywall extends LitElement {
     registerComponents({
       'wmt-paywall-home': PaywallHome,
       'wmt-paywall-form': PaywallWalletAddressForm,
+      'wmt-paywall-verify': PaywallVerify,
     })
 
     void this.#init()
@@ -64,12 +68,17 @@ export class Paywall extends LitElement {
   }
 
   #controller = NO_OP_CONTROLLER
-  setController(controller: Controller) {
+  setController(controller: Controller): Actions {
+    // @ts-expect-error We want to return action first time only, ideally.
     if (this.#controller === controller) return
     if (this.#controller !== NO_OP_CONTROLLER) {
       throw new Error('controller is already set')
     }
     this.#controller = controller
+    return {
+      // @ts-expect-error weird
+      setScreen: (...args) => this.#setScreen(...args),
+    }
   }
 
   #price = ''
@@ -88,13 +97,21 @@ export class Paywall extends LitElement {
 
     const { title, description, ctaButton, price } = this.#config
 
-    if (this._screen === 'form') {
+    if (this._screen.type === 'form') {
       return html`<wmt-paywall-form
         .title=${title.text}
         .description=${description.text}
         .ctaButton=${ctaButton.text}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
+    }
+
+    if (this._screen.type === 'verify') {
+      return html`<wmt-paywall-verify
+        .title=${title.text}
+        .description=${description.text}
+        .sender=${this._screen.data.sender}
+      ></wmt-paywall-verify>`
     }
 
     return html`<wmt-paywall-home
@@ -107,7 +124,7 @@ export class Paywall extends LitElement {
   }
 
   async #onPayStart() {
-    this.#setScreen('form')
+    this.#setScreen('form', {})
     void this.#getReceiver() // pre-fetch
   }
 
@@ -126,16 +143,17 @@ export class Paywall extends LitElement {
     const sender = await this.#controller.getWallet(walletAddress)
     const receiver = await this.#getReceiver()
 
-    const result = await this.#controller.initiatePayment({
+    const status = await this.#controller.checkEntitlement(sender)
+    if (status === 'auth-required') {
+      await this.#controller.validateWalletOwnership(sender)
+    }
+
+    await this.#controller.initiatePayment({
       sender,
       receiver,
       amount: this.#price,
       note: this.defaultNote,
     })
-
-    if (!this.#controller.isPreviewMode) {
-      window.location.href = result.grantRedirectUrl
-    }
   }
 
   #receiver_!: ReturnType<Controller['getWallet']>
@@ -151,8 +169,12 @@ export class Paywall extends LitElement {
     return `Pay Per Article service`
   }
 
-  #setScreen(screen: Screens) {
-    this._screen = screen
+  #setScreen<K extends keyof View>(view: K, data: View[K]) {
+    this._screen = { type: view, data } as ViewInfo
+
+    if (view === 'verify' && data && 'sender' in data) {
+      this.#controller.checkEntitlement(data.sender.id)
+    }
   }
 
   @state() _delayComplete = false
