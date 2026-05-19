@@ -71,7 +71,6 @@ const widgetStoreUtils = createToolStoreUtils({
   tool: TOOL_WIDGET,
   store: widget,
   snapshots,
-  atomicPaths: new Set(['color.background', 'color.theme', 'icon.color']),
 })
 
 export const actions = {

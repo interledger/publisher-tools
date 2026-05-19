@@ -72,7 +72,6 @@ const offerwallStoreUtils = createToolStoreUtils({
   tool: TOOL_OFFERWALL,
   store: offerwall,
   snapshots,
-  atomicPaths: new Set(['color.background', 'color.theme']),
 })
 
 export const actions = {

@@ -29,13 +29,12 @@ interface ToolStoreConfig<T extends Tool> {
   tool: T
   store: Store
   snapshots: Map<ProfileId, ToolProfile<T>>
-  atomicPaths?: ReadonlySet<string>
 }
 
 export function createToolStoreUtils<T extends Tool>(
   config: ToolStoreConfig<T>,
 ) {
-  const { tool, store, snapshots, atomicPaths } = config
+  const { tool, store, snapshots } = config
   const { snapshotsStorageKey, getProfileStorageKey } = getStorageKeys(tool)
 
   function parseProfileFromStorage(
@@ -150,7 +149,7 @@ export function createToolStoreUtils<T extends Tool>(
     commitActiveProfile(activeTab: ProfileId): ChangedFields {
       const prev = snapshots.get(activeTab)
       const current = snapshot(store.profiles[activeTab]) as ToolProfile<T>
-      const changed = diffProfile(prev, current, atomicPaths)
+      const changed = diffProfile(prev, current)
 
       snapshots.set(activeTab, current)
       store.profilesUpdate.delete(activeTab)

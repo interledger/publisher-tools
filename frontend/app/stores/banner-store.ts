@@ -72,7 +72,6 @@ const bannerStoreUtils = createToolStoreUtils({
   tool: TOOL_BANNER,
   store: banner,
   snapshots,
-  atomicPaths: new Set(['color.background']),
 })
 
 export const actions = {

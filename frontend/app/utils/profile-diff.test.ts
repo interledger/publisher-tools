@@ -33,37 +33,6 @@ describe('diffProfile', () => {
     expect(diffProfile(prev, curr)).toEqual({ 'field.$name': 10 })
   })
 
-  it('treats atomicPaths as opaque via deepEqual', () => {
-    const prev = {
-      color: { background: { gradient: 'linear-gradient(red, blue)' } },
-    }
-    const curr = {
-      color: { background: { gradient: 'linear-gradient(red, green)' } },
-    }
-    const atomic = new Set(['color.background'])
-    expect(diffProfile(prev, curr, atomic)).toEqual({
-      'field.color.background': true,
-    })
-  })
-
-  it('does not emit unchanged atomic paths', () => {
-    const prev = {
-      color: { background: { gradient: 'linear-gradient(red, blue)' } },
-    }
-    const curr = {
-      color: { background: { gradient: 'linear-gradient(red, blue)' } },
-    }
-    expect(diffProfile(prev, curr, new Set(['color.background']))).toEqual({})
-  })
-
-  it('emits true (not length) for atomic string values', () => {
-    const prev = { color: { background: '#fff' } }
-    const curr = { color: { background: '#000' } }
-    expect(diffProfile(prev, curr, new Set(['color.background']))).toEqual({
-      'field.color.background': true,
-    })
-  })
-
   it('emits all current fields when prev is undefined', () => {
     const curr = { title: { text: 'hi' }, description: { isVisible: true } }
     expect(diffProfile(undefined, curr)).toEqual({
