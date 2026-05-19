@@ -24,7 +24,7 @@
     "esbuild": "0.28.0",
     "esbuild-plugin-copy": "^2.1.1",
     "publisher-tools-api": "workspace:^",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "wrangler": "^4.87.0"
   }
 }
