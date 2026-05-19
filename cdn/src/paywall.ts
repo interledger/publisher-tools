@@ -1,4 +1,7 @@
-import type { PaymentStatus, WalletAddressInfo } from 'publisher-tools-api'
+import type {
+  PaywallPaymentStatus,
+  WalletAddressInfo,
+} from 'publisher-tools-api'
 import { API_URL } from '@shared/defines'
 import { ensureEnd, sleep, urlWithParams } from '@shared/utils'
 import { Paywall } from '@tools/components'
@@ -61,16 +64,16 @@ function drawPaywall() {
       return result
     },
     async *getStatus(paymentId, signal) {
-      const url = new URL(`/payment/status/${paymentId}`, API_URL).href
+      const url = new URL(`/paywall/status/${paymentId}`, API_URL).href
       while (true) {
         try {
           signal?.throwIfAborted()
           const res = await fetch(url, { signal })
           if (!res.ok) {
-            throw new Error('Failed to check payment status: ' + res.statusText)
+            throw new Error(`Payment status check failed: HTTP ${res.status}`)
           }
 
-          const status: PaymentStatus = await res.json()
+          const status: PaywallPaymentStatus = await res.json()
           yield status
 
           if (status.type === 'PENDING_GRANT_INTERACTION') {

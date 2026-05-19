@@ -111,6 +111,8 @@ export class Paywall extends LitElement {
         .title=${title.text}
         .description=${description.text}
         .sender=${this._screen.data.sender}
+        .paymentId=${this._screen.data.paymentId}
+        .controller=${this.#controller}
       ></wmt-paywall-verify>`
     }
 
@@ -171,10 +173,6 @@ export class Paywall extends LitElement {
 
   #setScreen<K extends keyof View>(view: K, data: View[K]) {
     this._screen = { type: view, data } as ViewInfo
-
-    if (view === 'verify' && data && 'sender' in data) {
-      this.#controller.checkEntitlement(data.sender.id)
-    }
   }
 
   @state() _delayComplete = false

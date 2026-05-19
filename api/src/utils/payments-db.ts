@@ -43,7 +43,7 @@ export async function savePayment(db: D1Database, data: Payment) {
       .prepare(
         sql`INSERT INTO paywall_payments_meta (
           paymentId, outgoingPaymentId, incomingPaymentId, ts, amount
-        ) VALUES (?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?)`,
       )
       .bind(
         data.paymentId,
@@ -103,6 +103,37 @@ export async function hasPayment(
   return res.status === 1 ? 'complete' : 'created'
 }
 
+export async function getPayment(db: D1Database, paymentId: string) {
+  const row = await db
+    .prepare(
+      sql`SELECT *
+      FROM paywall_payments p
+      INNER JOIN paywall_payments_meta m ON p.paymentId = m.paymentId
+      WHERE p.paymentId = ?
+      LIMIT 1`,
+    )
+    .bind(paymentId)
+    .first<PaywallPaymentRow & PaywallPaymentMetaRow>()
+
+  if (!row) {
+    return null
+  }
+
+  const { site, url, incomingPaymentId, outgoingPaymentId } = row
+  return {
+    paymentId,
+    site,
+    url,
+    status: mapStatusIdToStatus(row.status),
+    ts: new Date(row.ts),
+    incomingPaymentId,
+    outgoingPaymentId,
+    amount: JSON.parse(row.amount) as Amount,
+    receiver: { id: row.receiver, $url: row.receiverWalletAddressUrl },
+    sender: { id: row.sender, $url: row.senderWalletAddressUrl },
+  }
+}
+
 /**
  * @deprecated
  * @unsafe
@@ -118,6 +149,10 @@ function mapStatusToId(status: PaymentStatus) {
   return status.toLowerCase() === 'created' ? 0 : 1
 }
 
+function mapStatusIdToStatus(status: 0 | 1): PaymentStatus {
+  return status === 1 ? 'complete' : 'created'
+}
+
 function getSite(url: URL) {
   return url.hostname
 }
@@ -126,8 +161,12 @@ async function hash(text: string): Promise<HashedString> {
   const msgBuffer = new TextEncoder().encode(text)
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  return hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('') as HashedString
 }
+
+type HashedString = string & { readonly __brand: 'HashedString' }
 
 type PaymentStatus = 'created' | 'complete'
 
@@ -148,8 +187,6 @@ interface Payment {
  * Represents a raw row inside the 'paywall_payments' table.
  * All sensitive identity/routing fields are stored as hex-encoded SHA-256 strings.
  */
-type HashedString = string
-
 interface PaywallPaymentRow {
   site: string
   url: HashedString

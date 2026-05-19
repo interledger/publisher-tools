@@ -6,6 +6,7 @@ export type {
   PaymentInitiateResult,
   PaymentStatus,
 } from './routes/payment'
+export type { PaywallPaymentStatus } from './routes/paywall'
 
 export type ApiErrorResponse = {
   error: {

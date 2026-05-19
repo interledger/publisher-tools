@@ -28,7 +28,7 @@ async function handleStatus(
   data: PaymentKvData | null,
   paymentId: string,
   env: Env,
-): Promise<PaymentStatus> {
+): Promise<PaywallPaymentStatus> {
   if (!data) {
     throw createHTTPException(404, 'Payment not found', {
       message: 'The payment is either already complete, or never existed.',
@@ -105,7 +105,7 @@ async function handleStatus(
   )
 }
 
-export type PaymentStatus =
+export type PaywallPaymentStatus =
   | { type: 'PENDING_GRANT_INTERACTION' }
   | { type: 'GRANT_REJECTED' }
   | { type: 'OUTGOING_PAYMENT_CREATED'; outgoingPaymentId: string }

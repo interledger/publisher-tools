@@ -1,4 +1,7 @@
-import type { PaymentStatus, WalletAddressInfo } from 'publisher-tools-api'
+import type {
+  PaywallPaymentStatus,
+  WalletAddressInfo,
+} from 'publisher-tools-api'
 import type { PendingGrant } from '@interledger/open-payments'
 import { createDefaultPaywallProfile } from '@shared/default-data'
 import type { PaywallProfile } from '@shared/types'
@@ -66,7 +69,7 @@ export interface Controller {
   getStatus(
     paymentId: string,
     signal?: AbortSignal,
-  ): AsyncGenerator<PaymentStatus>
+  ): AsyncGenerator<PaywallPaymentStatus>
 
   isPreviewMode?: boolean
 }

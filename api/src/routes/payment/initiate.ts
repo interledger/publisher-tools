@@ -1,6 +1,7 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
 import { createId } from '@paralleldrive/cuid2'
+import { toAmount } from '@shared/utils'
 import { app } from '../../app'
 import {
   DebitOrReceiveAmountSchema,
@@ -9,7 +10,6 @@ import {
 import { OpenPaymentsService } from '../../utils/open-payments'
 import { setData } from '../../utils/payments-kv'
 import { createHTTPException, validate } from '../../utils/utils'
-import { toAmount } from '@shared/utils'
 
 const PaymentInitiateSchema = z
   .object({
