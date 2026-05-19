@@ -7,10 +7,12 @@ describe('diffProfile', () => {
     expect(diffProfile(profile, profile)).toEqual({})
   })
 
-  it('emits string length for primitive string changes', () => {
+  it('emits new string value for primitive string changes', () => {
     const prev = { title: { text: 'hi' } }
     const curr = { title: { text: 'hello world' } }
-    expect(diffProfile(prev, curr)).toEqual({ 'field.title.text': 11 })
+    expect(diffProfile(prev, curr)).toEqual({
+      'field.title.text': 'hello world',
+    })
   })
 
   it('emits true for non-string primitive changes', () => {
@@ -30,20 +32,20 @@ describe('diffProfile', () => {
   it('includes $name renames', () => {
     const prev = { $name: 'Default' }
     const curr = { $name: 'Production' }
-    expect(diffProfile(prev, curr)).toEqual({ 'field.$name': 10 })
+    expect(diffProfile(prev, curr)).toEqual({ 'field.$name': 'Production' })
   })
 
   it('emits all current fields when prev is undefined', () => {
     const curr = { title: { text: 'hi' }, description: { isVisible: true } }
     expect(diffProfile(undefined, curr)).toEqual({
-      'field.title.text': 2,
+      'field.title.text': 'hi',
       'field.description.isVisible': true,
     })
   })
 
-  it('emits 0 for cleared string fields', () => {
+  it('emits empty string for cleared string fields', () => {
     const prev = { title: { text: 'hello' } }
     const curr = { title: { text: '' } }
-    expect(diffProfile(prev, curr)).toEqual({ 'field.title.text': 0 })
+    expect(diffProfile(prev, curr)).toEqual({ 'field.title.text': '' })
   })
 })

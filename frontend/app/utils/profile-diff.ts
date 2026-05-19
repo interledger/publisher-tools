@@ -1,4 +1,6 @@
-export type ChangedFields = Partial<Record<`field.${string}`, boolean | number>>
+export type ChangedFields = Partial<
+  Record<`field.${string}`, boolean | number | string>
+>
 
 type ProfileLike = Record<string, unknown>
 
@@ -9,7 +11,7 @@ export function diffProfile(
   prev: object | undefined,
   current: object,
 ): ChangedFields {
-  const result: Record<string, boolean | number> = {}
+  const result: Record<string, boolean | number | string> = {}
   walk(prev as ProfileLike | undefined, current as ProfileLike, '', result)
   return result as ChangedFields
 }
@@ -18,7 +20,7 @@ function walk(
   prev: ProfileLike | undefined,
   current: ProfileLike,
   path: string,
-  result: Record<string, boolean | number>,
+  result: Record<string, boolean | number | string>,
 ): void {
   for (const [key, currentValue] of Object.entries(current)) {
     if (SKIPPED_KEYS.has(key)) continue
@@ -40,9 +42,8 @@ function walk(
     }
 
     if (prevValue !== currentValue) {
-      // string length instead of value
       result[`field.${fieldPath}`] =
-        typeof currentValue === 'string' ? currentValue.length : true
+        typeof currentValue === 'string' ? currentValue : true
     }
   }
 }
