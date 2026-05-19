@@ -160,6 +160,16 @@ export function createToolStoreUtils<T extends Tool>(
       return changed
     },
 
+    commitAllProfiles(): void {
+      PROFILE_IDS.forEach((id) => {
+        const profile = snapshot(store.profiles[id]) as ToolProfile<T>
+        snapshots.set(id, profile)
+        store.profilesUpdate.delete(id)
+      })
+      const snaps = Object.fromEntries(snapshots.entries())
+      localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    },
+
     removeProfilesFromStorage() {
       localStorage.removeItem(snapshotsStorageKey)
 

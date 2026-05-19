@@ -13,7 +13,7 @@ import type { SaveResult } from '~/lib/types'
 import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
-import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
+import { createToolStoreUtils } from '~/utils/utilts.store'
 import { toolState } from './toolStore'
 
 export const {
@@ -75,8 +75,6 @@ const bannerStoreUtils = createToolStoreUtils({
   atomicPaths: new Set(['color.background']),
 })
 
-const { snapshotsStorageKey } = getStorageKeys(TOOL_BANNER)
-
 export const actions = {
   setProfileName(name: string) {
     banner.profiles[toolState.activeTab].$name = name
@@ -121,14 +119,7 @@ export const actions = {
     return bannerStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
-    PROFILE_IDS.forEach((id) => {
-      const profile = snapshot(banner.profiles[id])
-      snapshots.set(id, profile)
-      banner.profilesUpdate.delete(id)
-    })
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    bannerStoreUtils.commitAllProfiles()
   },
 }
 
