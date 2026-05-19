@@ -30,7 +30,7 @@
   },
   "types": "./src/types.ts",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260505.1",
+    "@cloudflare/workers-types": "^4.20260518.1",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "esbuild": "0.28.0",
