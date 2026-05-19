@@ -4,6 +4,9 @@ export type ChangedFields = Partial<Record<`field.${string}`, boolean | number>>
 
 type ProfileLike = Record<string, unknown>
 
+// $version and $modifiedAt are system metadata $name is user-editable (profile rename)
+const SKIPPED_KEYS = new Set(['$version', '$modifiedAt'])
+
 export function diffProfile(
   prev: object | undefined,
   current: object,
@@ -27,17 +30,20 @@ function walk(
   out: Record<string, boolean | number>,
   atomicPaths: ReadonlySet<string> | undefined,
 ): void {
-  for (const [key, b] of Object.entries(current)) {
-    if (key.startsWith('$')) continue
+  for (const [key, currValue] of Object.entries(current)) {
+    if (SKIPPED_KEYS.has(key)) continue
     const fieldPath = path ? `${path}.${key}` : key
-    const a = prev?.[key]
-    const isObject = b !== null && typeof b === 'object' && !Array.isArray(b)
+    const prevValue = prev?.[key]
+    const isObject =
+      currValue !== null &&
+      typeof currValue === 'object' &&
+      !Array.isArray(currValue)
     const isAtomic = atomicPaths?.has(fieldPath) ?? false
 
     if (isObject && !isAtomic) {
       walk(
-        a as ProfileLike | undefined,
-        b as ProfileLike,
+        prevValue as ProfileLike | undefined,
+        currValue as ProfileLike,
         fieldPath,
         out,
         atomicPaths,
@@ -45,10 +51,12 @@ function walk(
       continue
     }
 
-    const changed = isAtomic ? !deepEqual(a, b) : a !== b
+    const changed = isAtomic
+      ? !deepEqual(prevValue, currValue)
+      : prevValue !== currValue
     if (changed) {
       out[`field.${fieldPath}`] =
-        !isAtomic && typeof b === 'string' ? b.length : true
+        !isAtomic && typeof currValue === 'string' ? currValue.length : true
     }
   }
 }
