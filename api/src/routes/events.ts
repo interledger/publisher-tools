@@ -7,6 +7,8 @@ const payloadSchema = z.object({
   name: z.string().startsWith('embed.'),
   /** Umami "page" path, e.g. `/embed/banner` (groups events per tool) */
   url: z.string(),
+  /** `WxH` from `window.screen` */
+  screen: z.string().optional(),
   data: z.looseObject({
     /** Publisher's domain from `window.location.hostname` (we can see which sites embed us) */
     hostname: z.string(),
@@ -63,6 +65,7 @@ app.post('/events', async ({ req, body }) => {
         payload: {
           ...event.payload,
           website: UMAMI_WEBSITE_ID,
+          tag: 'embed',
         },
       }),
     })
