@@ -13,7 +13,7 @@ import type { SaveResult } from '~/lib/types'
 import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
-import { createToolStoreUtils } from '~/utils/utilts.store'
+import { createToolStoreUtils } from '~/utils/utils.store'
 import { toolState } from './toolStore'
 
 export const {
