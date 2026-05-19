@@ -29,6 +29,7 @@ export const DebitOrReceiveAmountSchema = z.union(
 
 export const WalletAddressSchema = z.looseObject({
   id: z.string(),
+  $url: z.string(),
   publicName: z.string().optional(),
   assetCode: z.string(),
   assetScale: z.number().int().min(0),
