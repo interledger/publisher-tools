@@ -7,6 +7,8 @@
     "build": "node build.ts",
     "preview": "wrangler dev",
     "typecheck": "tsc --noEmit",
+    "db": "wrangler d1 --persist-to ../.wrangler execute 'publisher-tools' --local --file",
+    "db:prod": "wrangler d1 execute 'publisher-tools' --remote --file",
     "deploy": "wrangler deploy"
   },
   "keywords": [],
