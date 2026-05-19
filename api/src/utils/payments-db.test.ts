@@ -7,13 +7,11 @@ import {
   setPaymentStatus,
   UNSAFE_devEmptyDatabase,
   hash,
-} from '../../src/utils/payments-db'
+} from './payments-db'
 
 const DB = env.PUBLISHER_TOOLS_DB
 
-beforeEach(async () => {
-  await UNSAFE_devEmptyDatabase(env.PUBLISHER_TOOLS_DB)
-})
+beforeEach(() => UNSAFE_devEmptyDatabase(DB))
 
 const mockPayment = {
   url: new URL('https://myblog.com/premium-post'),
