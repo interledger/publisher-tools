@@ -76,16 +76,16 @@ export async function hasPayment(
   url: string,
   payer: Pick<WalletAddressInfo, 'id' | '$url'>,
 ): Promise<false | PaymentStatus> {
-  const [hashedUrl, hashedPayerId, hashedPayerWalletAddressUrl] =
+  const [hashedUrl, hashedPayerWalletAddressId, hashedPayerWalletAddressUrl] =
     await Promise.all([hash(url), hash(payer.id), hash(payer.$url)])
 
   const res = await db
     .prepare(
       sql`SELECT paymentId, status FROM paywall_payments
-          WHERE url = ? AND (sender = ? OR senderWalletAddressUrl = ?)
+          WHERE url = ? AND (sender = ? OR senderUrl = ?)
           LIMIT 1`,
     )
-    .bind(hashedUrl, hashedPayerId, hashedPayerWalletAddressUrl)
+    .bind(hashedUrl, hashedPayerWalletAddressId, hashedPayerWalletAddressUrl)
     .first<Pick<PaywallPaymentRow, 'paymentId' | 'status'>>()
 
   if (!res?.paymentId) {
@@ -149,7 +149,7 @@ function getSite(url: URL) {
   return url.hostname
 }
 
-async function hash(text: string): Promise<HashedString> {
+export async function hash(text: string): Promise<HashedString> {
   const msgBuffer = new TextEncoder().encode(text)
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
@@ -164,8 +164,8 @@ type PaymentStatus = 'created' | 'complete'
 
 interface Payment {
   url: URL
-  sender: Pick<WalletAddressInfo, 'id' | '$url' | 'assetCode'>
-  receiver: Pick<WalletAddressInfo, 'id' | '$url' | 'assetCode'>
+  sender: Pick<WalletAddressInfo, 'id' | '$url'>
+  receiver: Pick<WalletAddressInfo, 'id' | '$url'>
   paymentId: string
   status: PaymentStatus | 'CREATED' | 'COMPLETE'
   incomingPaymentId: string
