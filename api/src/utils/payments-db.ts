@@ -1,4 +1,5 @@
 import type { D1Database } from '@cloudflare/workers-types'
+import type { Amount } from '@shared/types'
 import type { WalletAddressInfo } from '../types'
 
 const sql = String.raw // for syntax highlighting
@@ -25,8 +26,8 @@ export async function savePayment(db: D1Database, data: Payment) {
     db
       .prepare(
         sql`INSERT INTO paywall_payments (
-        site, url, sender, senderWalletAddressUrl, receiver, receiverWalletAddressUrl, paymentId, status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          site, url, sender, senderWalletAddressUrl, receiver, receiverWalletAddressUrl, paymentId, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         site,
@@ -41,7 +42,7 @@ export async function savePayment(db: D1Database, data: Payment) {
     db
       .prepare(
         sql`INSERT INTO paywall_payments_meta (
-          paymentId, outgoingPaymentId, incomingPaymentId, ts, amount, currency
+          paymentId, outgoingPaymentId, incomingPaymentId, ts, amount
         ) VALUES (?, ?, ?, ?, ?, ?)`,
       )
       .bind(
@@ -49,8 +50,7 @@ export async function savePayment(db: D1Database, data: Payment) {
         data.outgoingPaymentId,
         data.incomingPaymentId,
         now,
-        data.amount.value,
-        data.amount.currency.toUpperCase(),
+        JSON.stringify(data.amount),
       ),
   ])
 }
@@ -122,7 +122,7 @@ function getSite(url: URL) {
   return url.hostname
 }
 
-async function hash(text: string): Promise<string> {
+async function hash(text: string): Promise<HashedString> {
   const msgBuffer = new TextEncoder().encode(text)
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
   const hashArray = Array.from(new Uint8Array(hashBuffer))
@@ -139,7 +139,7 @@ interface Payment {
   status: PaymentStatus | 'CREATED' | 'COMPLETE'
   incomingPaymentId: string
   outgoingPaymentId: string
-  amount: PaymentCurrencyAmount
+  amount: Amount
 }
 
 // #region Tables
@@ -148,13 +148,15 @@ interface Payment {
  * Represents a raw row inside the 'paywall_payments' table.
  * All sensitive identity/routing fields are stored as hex-encoded SHA-256 strings.
  */
+type HashedString = string
+
 interface PaywallPaymentRow {
   site: string
-  url: string // SHA-256 hashed hex string
-  sender: string // SHA-256 hashed hex string (walletAddress.id)
-  senderWalletAddressUrl: string // SHA-256 hashed hex string
-  receiver: string // SHA-256 hashed hex string (walletAddress.id)
-  receiverWalletAddressUrl: string // SHA-256 hashed hex string
+  url: HashedString
+  sender: HashedString // walletAddress.id
+  senderWalletAddressUrl: HashedString
+  receiver: HashedString // walletAddress.id
+  receiverWalletAddressUrl: HashedString
   paymentId: string // Unique string ID
   status: 0 | 1 // 0: created, 1: complete
 }
@@ -167,7 +169,6 @@ export interface PaywallPaymentMetaRow {
   outgoingPaymentId: string
   incomingPaymentId: string
   ts: number // Unix timestamp via Date.now()
-  amount: PaymentCurrencyAmount['value']
-  currency: PaymentCurrencyAmount['currency']
+  amount: string // stored as JSON.stringify(Amount)
 }
 // #endregion

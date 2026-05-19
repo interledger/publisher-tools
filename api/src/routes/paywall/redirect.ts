@@ -50,7 +50,7 @@ app.get('/paywall/redirect', validate('query', schema), async (c) => {
       sender,
       receiver,
       status: data.status,
-      amount: fromAmount(data.amount),
+      amount: data.amount,
     })
   } catch (err) {
     console.error(err)
