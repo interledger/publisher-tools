@@ -6,7 +6,6 @@ type EventData = Omit<EventPayload['data'], 'hostname'>
 
 export function trackEventFactory(tool: Tool) {
   const hostname = window.location.hostname
-  const screen = `${window.screen.width}x${window.screen.height}`
 
   return (name: string, data?: EventData): void => {
     if (!API_URL) return
@@ -15,7 +14,7 @@ export function trackEventFactory(tool: Tool) {
       payload: {
         name: `embed.${tool}.${name}`,
         url: `/embed/${tool}`,
-        screen,
+        screen: `${window.screen.width}x${window.screen.height}`,
         data: { hostname, ...data },
       },
     }
