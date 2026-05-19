@@ -7,6 +7,7 @@ import {
   setPaymentStatus,
   UNSAFE_devEmptyDatabase,
   hash,
+  sql,
 } from './payments-db'
 
 const DB = env.PUBLISHER_TOOLS_DB
@@ -28,7 +29,7 @@ describe('Paywall Database', () => {
   it('should successfully save a payment and later find it', async () => {
     await savePayment(DB, mockPayment)
     await expect(
-      DB.exec('SELECT * from paywall_payments'),
+      DB.exec(sql`SELECT * from paywall_payments`),
     ).resolves.toMatchObject({ count: 1 })
 
     await expect(
@@ -39,7 +40,7 @@ describe('Paywall Database', () => {
   it('should grant access using the fallback wallet URL if the internal ID changes', async () => {
     await savePayment(DB, mockPayment)
     await expect(
-      DB.exec('SELECT * from paywall_payments'),
+      DB.exec(sql`SELECT * from paywall_payments`),
     ).resolves.toMatchObject({ count: 1 })
 
     await expect(
@@ -120,7 +121,7 @@ describe('Paywall Database', () => {
 
     const countByPaymentId = (paymentId: string) =>
       DB.prepare(
-        'SELECT COUNT(*) as count from paywall_payments WHERE paymentId = ?',
+        sql`SELECT COUNT(*) as count from paywall_payments WHERE paymentId = ?`,
       )
         .bind(paymentId)
         .first()
@@ -133,10 +134,10 @@ describe('Paywall Database', () => {
     ).resolves.toMatchObject({ count: 1 })
 
     await expect(
-      DB.exec('SELECT COUNT(*) as count  from paywall_payments'),
+      DB.exec(sql`SELECT COUNT(*) as count from paywall_payments`),
     ).resolves.toMatchObject({ count: 1 })
     await expect(
-      DB.exec('SELECT COUNT(*) as count  from paywall_payments_meta'),
+      DB.exec(sql`SELECT COUNT(*) as count from paywall_payments_meta`),
     ).resolves.toMatchObject({ count: 1 })
   })
 })

@@ -2,7 +2,8 @@ import type { D1Database } from '@cloudflare/workers-types'
 import type { Amount } from '@shared/types'
 import type { WalletAddressInfo } from '../types'
 
-const sql = String.raw // for syntax highlighting
+/** for syntax highlighting */
+export const sql = String.raw
 
 export async function savePayment(db: D1Database, data: Payment) {
   const site = getSite(data.url)
