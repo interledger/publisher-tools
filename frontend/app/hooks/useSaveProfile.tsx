@@ -6,7 +6,7 @@ import {
 } from '@/components'
 import { TOOL_BANNER, TOOL_OFFERWALL, TOOL_WIDGET } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
-import { useTrackEvent } from '~/lib/analytics'
+import { trackSettingsEvent, useTrackEvent } from '~/lib/analytics'
 import { ApiError } from '~/lib/helpers'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
@@ -51,10 +51,7 @@ export const useSaveProfile = (wallet: WalletStore) => {
         if (result.success) {
           const tool = toolState.currentToolType
           const changedFields = actions.commitProfile()
-
-          if (Object.keys(changedFields).length > 0) {
-            trackEvent(`${tool}_settings_changed`, changedFields)
-          }
+          trackSettingsEvent(trackEvent, tool, changedFields)
 
           if (action === 'script') {
             trackEvent(`${tool}_script_generated`)

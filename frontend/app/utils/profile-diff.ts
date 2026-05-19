@@ -55,6 +55,7 @@ function walk(
       ? !deepEqual(prevValue, currValue)
       : prevValue !== currValue
     if (changed) {
+      // string length instead of value
       out[`field.${fieldPath}`] =
         !isAtomic && typeof currValue === 'string' ? currValue.length : true
     }
