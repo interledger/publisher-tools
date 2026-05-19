@@ -4,7 +4,7 @@ export type ChangedFields = Partial<Record<`field.${string}`, boolean | number>>
 
 type ProfileLike = Record<string, unknown>
 
-// $version and $modifiedAt are system metadata $name is user-editable (profile rename)
+// $version and $modifiedAt are system metadata; $name is user-editable (profile rename)
 const SKIPPED_KEYS = new Set(['$version', '$modifiedAt'])
 
 export function diffProfile(

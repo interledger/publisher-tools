@@ -149,12 +149,12 @@ export function createToolStoreUtils<T extends Tool>(
 
     commitActiveProfile(activeTab: ProfileId): ChangedFields {
       const prev = snapshots.get(activeTab)
-      const current = snapshot(store.profile) as ToolProfile<T>
+      const current = snapshot(store.profiles[activeTab]) as ToolProfile<T>
       const changed = diffProfile(prev, current, atomicPaths)
 
       snapshots.set(activeTab, current)
       store.profilesUpdate.delete(activeTab)
-      const snaps = Object.fromEntries(snapshots.entries())
+      const snaps = Object.fromEntries(snapshots)
       localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
 
       return changed
@@ -166,7 +166,7 @@ export function createToolStoreUtils<T extends Tool>(
         snapshots.set(id, profile)
         store.profilesUpdate.delete(id)
       })
-      const snaps = Object.fromEntries(snapshots.entries())
+      const snaps = Object.fromEntries(snapshots)
       localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
     },
 
