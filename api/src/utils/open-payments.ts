@@ -7,6 +7,7 @@ import {
   type WalletAddress,
   type AuthenticatedClient,
   type OutgoingPayment,
+  type IncomingPayment,
   type Grant,
   type GrantContinuation,
 } from '@interledger/open-payments'
@@ -381,6 +382,31 @@ export class OpenPaymentsService {
     }
 
     return { success: true }
+  }
+
+  async getIncomingPayment(
+    incomingPaymentId: IncomingPayment['id'],
+    tryFull = false,
+  ) {
+    const url = incomingPaymentId
+    const incomingPayment = await this.client.incomingPayment.getPublic({ url })
+
+    if (tryFull) {
+      const grant = await this.client.grant.request(
+        { url: incomingPayment.authServer },
+        {
+          access_token: {
+            access: [{ type: 'incoming-payment', actions: ['read'] }],
+          },
+        },
+      )
+      if (isFinalizedGrantWithAccessToken(grant)) {
+        const accessToken = grant.access_token?.value
+        return this.client.incomingPayment.get({ url, accessToken })
+      }
+    }
+
+    return incomingPayment
   }
 }
 

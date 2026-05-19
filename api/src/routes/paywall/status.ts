@@ -1,9 +1,10 @@
 import { HTTPException } from 'hono/http-exception'
 import z from 'zod'
+import { isEqualAmount } from '@shared/utils'
 import { app, type Env } from '../../app'
 import { PaymentIdSchema } from '../../schemas/payment'
 import { OpenPaymentsService } from '../../utils/open-payments'
-import { setPaymentStatus } from '../../utils/payments-db'
+import { getPayment, setPaymentStatus } from '../../utils/payments-db'
 import { getData, setData, type PaymentKvData } from '../../utils/payments-kv'
 import { createHTTPException, validate } from '../../utils/utils'
 
@@ -30,9 +31,41 @@ async function handleStatus(
   env: Env,
 ): Promise<PaywallPaymentStatus> {
   if (!data) {
-    throw createHTTPException(404, 'Payment not found', {
-      message: 'The payment is either already complete, or never existed.',
-    })
+    const row = await getPayment(env.PUBLISHER_TOOLS_DB, paymentId)
+    if (row?.status === 'complete') {
+      return {
+        type: 'OUTGOING_PAYMENT_DONE',
+        outgoingPaymentId: row.outgoingPaymentId,
+        result: 'success',
+      }
+    }
+
+    if (!row || Date.now() - row.ts.valueOf() > 60 * 60 * 1000) {
+      throw createHTTPException(404, 'Payment not found', {
+        message: 'The payment is either already complete, or never existed.',
+      })
+    }
+
+    const openPayments = await OpenPaymentsService.getInstance(env)
+    const incomingPayment = await openPayments.getIncomingPayment(
+      row.incomingPaymentId,
+    )
+    const completed = incomingPayment.receivedAmount
+      ? isEqualAmount(incomingPayment.receivedAmount, row.amount)
+      : false
+    if (completed) {
+      await setPaymentStatus(env.PUBLISHER_TOOLS_DB, paymentId, 'complete')
+      return {
+        type: 'OUTGOING_PAYMENT_DONE',
+        result: 'success',
+        outgoingPaymentId: row.outgoingPaymentId,
+      }
+    }
+
+    return {
+      type: 'OUTGOING_PAYMENT_CREATED',
+      outgoingPaymentId: row.outgoingPaymentId,
+    }
   }
 
   // The user hasn't accepted the grant yet

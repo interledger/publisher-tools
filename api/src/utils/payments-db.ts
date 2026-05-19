@@ -8,47 +8,39 @@ export async function savePayment(db: D1Database, data: Payment) {
   const site = getSite(data.url)
   const now = Date.now()
 
-  const [
-    hashedUrl,
-    hashedSenderId,
-    hashedSenderUrl,
-    hashedReceiverId,
-    hashedReceiverUrl,
-  ] = await Promise.all([
+  const [hashedUrl, hashedSenderId, hashedSenderUrl] = await Promise.all([
     hash(data.url.href),
     hash(data.sender.id),
     hash(data.sender.$url),
-    hash(data.receiver.id),
-    hash(data.receiver.$url),
   ])
 
   await db.batch([
     db
       .prepare(
         sql`INSERT INTO paywall_payments (
-          site, url, sender, senderWalletAddressUrl, receiver, receiverWalletAddressUrl, paymentId, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          site, url, sender, senderUrl, paymentId, status
+        ) VALUES (?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         site,
         hashedUrl,
         hashedSenderId,
         hashedSenderUrl,
-        hashedReceiverId,
-        hashedReceiverUrl,
         data.paymentId,
         mapStatusToId(data.status.toLowerCase() as PaymentStatus),
       ),
     db
       .prepare(
         sql`INSERT INTO paywall_payments_meta (
-          paymentId, outgoingPaymentId, incomingPaymentId, ts, amount
-        ) VALUES (?, ?, ?, ?, ?)`,
+          paymentId, outgoingPaymentId, incomingPaymentId, receiver, receiverUrl, ts, amount
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         data.paymentId,
         data.outgoingPaymentId,
         data.incomingPaymentId,
+        data.receiver.id,
+        data.receiver.$url,
         now,
         JSON.stringify(data.amount),
       ),
@@ -129,8 +121,8 @@ export async function getPayment(db: D1Database, paymentId: string) {
     incomingPaymentId,
     outgoingPaymentId,
     amount: JSON.parse(row.amount) as Amount,
-    receiver: { id: row.receiver, $url: row.receiverWalletAddressUrl },
-    sender: { id: row.sender, $url: row.senderWalletAddressUrl },
+    receiver: { id: row.receiver, $url: row.receiverUrl },
+    sender: { id: row.sender, $url: row.senderUrl },
   }
 }
 
@@ -191,9 +183,7 @@ interface PaywallPaymentRow {
   site: string
   url: HashedString
   sender: HashedString // walletAddress.id
-  senderWalletAddressUrl: HashedString
-  receiver: HashedString // walletAddress.id
-  receiverWalletAddressUrl: HashedString
+  senderUrl: HashedString
   paymentId: string // Unique string ID
   status: 0 | 1 // 0: created, 1: complete
 }
@@ -205,6 +195,8 @@ export interface PaywallPaymentMetaRow {
   paymentId: string // Primary key matching paywall_payments.paymentId
   outgoingPaymentId: string
   incomingPaymentId: string
+  receiver: string // walletAddress.id
+  receiverUrl: string
   ts: number // Unix timestamp via Date.now()
   amount: string // stored as JSON.stringify(Amount)
 }

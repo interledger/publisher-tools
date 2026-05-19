@@ -6,10 +6,7 @@ CREATE TABLE IF NOT EXISTS paywall_payments (
   url VARCHAR(64) NOT NULL, -- hashed
   -- sender
   sender VARCHAR(64) NOT NULL, -- hashed, walletAddress.id
-  senderWalletAddressUrl VARCHAR(64) NOT NULL, -- hashed
-  -- receiver
-  receiver VARCHAR(64) NOT NULL, -- hashed, walletAddress.id
-  receiverWalletAddressUrl VARCHAR(64) NOT NULL, -- hashed
+  senderUrl VARCHAR(64) NOT NULL, -- hashed
   -- metadata
   paymentId VARCHAR(32) NOT NULL UNIQUE,
   status INT NOT NULL DEFAULT 0, -- 0: created, 1: complete; if failed, delete entry
@@ -21,6 +18,8 @@ CREATE TABLE IF NOT EXISTS paywall_payments_meta (
   paymentId VARCHAR(32) NOT NULL PRIMARY KEY,
   outgoingPaymentId VARCHAR(1024) NOT NULL,
   incomingPaymentId VARCHAR(1024) NOT NULL,
+  receiver VARCHAR(512) NOT NULL, -- walletAddress.id
+  receiverUrl VARCHAR(512) NOT NULL,
   amount TEXT NOT NULL, -- JSON
   ts BIGINT NOT NULL DEFAULT (unixepoch() * 1000), -- Date.now()
   CONSTRAINT chk_valid_amount_json CHECK (
@@ -33,4 +32,6 @@ CREATE TABLE IF NOT EXISTS paywall_payments_meta (
   )
 );
 
-CREATE INDEX IF NOT EXISTS idx_paywall_payments ON paywall_payments(senderWalletAddressUrl, url);
+CREATE INDEX IF NOT EXISTS idx_paywall_payments ON paywall_payments(senderUrl, url);
+
+CREATE INDEX IF NOT EXISTS idx_paywall_receiver_payments ON paywall_payments_meta(receiver);
