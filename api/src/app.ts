@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
-import type { KVNamespace } from '@cloudflare/workers-types'
+import type { D1Database, KVNamespace } from '@cloudflare/workers-types'
 import { serializeError } from './utils/utils.js'
 
 export type Env = {
@@ -13,6 +13,7 @@ export type Env = {
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
   PUBLISHER_TOOLS_KV: KVNamespace
+  PUBLISHER_TOOLS_DB: D1Database
 }
 
 export const app = new Hono<{ Bindings: Env }>()
