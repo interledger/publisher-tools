@@ -95,6 +95,13 @@ export function createToolStoreUtils<T extends Tool>(
     })
   }
 
+  function persistSnapshots() {
+    localStorage.setItem(
+      snapshotsStorageKey,
+      JSON.stringify(Object.fromEntries(snapshots)),
+    )
+  }
+
   return {
     subscribeProfilesToStorage() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToStorage)
@@ -146,6 +153,7 @@ export function createToolStoreUtils<T extends Tool>(
       return () => unsubscribes.forEach((s) => s())
     },
 
+    // User-initiated save; returns diff for analytics
     commitActiveProfile(activeTab: ProfileId): ChangedFields {
       const prev = snapshots.get(activeTab)
       const current = snapshot(store.profiles[activeTab]) as ToolProfile<T>
@@ -153,20 +161,19 @@ export function createToolStoreUtils<T extends Tool>(
 
       snapshots.set(activeTab, current)
       store.profilesUpdate.delete(activeTab)
-      const snaps = Object.fromEntries(snapshots)
-      localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+      persistSnapshots()
 
       return changed
     },
 
+    // Server-load baseline reset; no analytics
     commitAllProfiles(): void {
       PROFILE_IDS.forEach((id) => {
         const profile = snapshot(store.profiles[id]) as ToolProfile<T>
         snapshots.set(id, profile)
         store.profilesUpdate.delete(id)
       })
-      const snaps = Object.fromEntries(snapshots)
-      localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+      persistSnapshots()
     },
 
     removeProfilesFromStorage() {

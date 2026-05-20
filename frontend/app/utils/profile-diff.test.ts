@@ -7,6 +7,12 @@ describe('diffProfile', () => {
     expect(diffProfile(profile, profile)).toEqual({})
   })
 
+  it('returns empty for structurally equal profiles with different references', () => {
+    const prev = { title: { text: 'hello' } }
+    const curr = { title: { text: 'hello' } }
+    expect(diffProfile(prev, curr)).toEqual({})
+  })
+
   it('emits new string value for primitive string changes', () => {
     const prev = { title: { text: 'hi' } }
     const curr = { title: { text: 'hello world' } }

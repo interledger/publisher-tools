@@ -2,7 +2,7 @@ import { useLocation } from 'react-router'
 import { TOOLS, type Tool } from '@shared/types'
 import type { ChangedFields } from '~/utils/profile-diff'
 
-// Wrapping under `changed` leaves room for sibling meta keys (e.g. save_trigger) without a future breaking change
+// Nest field keys under `changed`
 export type SettingsChangedData = { changed: ChangedFields }
 
 export type EventRegistry =

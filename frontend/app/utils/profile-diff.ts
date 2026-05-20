@@ -1,5 +1,5 @@
 export type ChangedFields = Partial<
-  Record<`field.${string}`, boolean | number | string>
+  Record<`field.${string}`, boolean | string>
 >
 
 type PlainObject = Record<string, unknown>
@@ -11,7 +11,7 @@ export function diffProfile(
   prev: object | undefined,
   current: object,
 ): ChangedFields {
-  const result: Record<string, boolean | number | string> = {}
+  const result: Record<string, boolean | string> = {}
   walk(prev as PlainObject | undefined, current as PlainObject, '', result)
   return result as ChangedFields
 }
@@ -20,7 +20,7 @@ function walk(
   prev: PlainObject | undefined,
   current: PlainObject,
   path: string,
-  result: Record<string, boolean | number | string>,
+  result: Record<string, boolean | string>,
 ): void {
   for (const [key, currentValue] of Object.entries(current)) {
     if (SKIPPED_KEYS.has(key)) continue
