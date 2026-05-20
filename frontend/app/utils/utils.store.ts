@@ -11,6 +11,7 @@ import {
 import type { BannerStore } from '~/stores/banner-store'
 import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { WidgetStore } from '~/stores/widget-store'
+import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
 import { omit } from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore
@@ -94,6 +95,13 @@ export function createToolStoreUtils<T extends Tool>(
     })
   }
 
+  function persistSnapshots() {
+    localStorage.setItem(
+      snapshotsStorageKey,
+      JSON.stringify(Object.fromEntries(snapshots)),
+    )
+  }
+
   return {
     subscribeProfilesToStorage() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToStorage)
@@ -143,6 +151,29 @@ export function createToolStoreUtils<T extends Tool>(
     subscribeProfilesToUpdates() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToUpdates)
       return () => unsubscribes.forEach((s) => s())
+    },
+
+    // User-initiated save; returns diff for analytics
+    commitActiveProfile(activeTab: ProfileId): ChangedFields {
+      const prev = snapshots.get(activeTab)
+      const current = snapshot(store.profiles[activeTab]) as ToolProfile<T>
+      const changed = diffProfile(prev, current)
+
+      snapshots.set(activeTab, current)
+      store.profilesUpdate.delete(activeTab)
+      persistSnapshots()
+
+      return changed
+    },
+
+    // Server-load baseline reset; no analytics
+    commitAllProfiles(): void {
+      PROFILE_IDS.forEach((id) => {
+        const profile = snapshot(store.profiles[id]) as ToolProfile<T>
+        snapshots.set(id, profile)
+        store.profilesUpdate.delete(id)
+      })
+      persistSnapshots()
     },
 
     removeProfilesFromStorage() {
