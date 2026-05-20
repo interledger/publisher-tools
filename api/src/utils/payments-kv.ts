@@ -5,8 +5,9 @@ import type {
 import type {
   GrantWithAccessToken,
   PendingGrant,
-  WalletAddress,
 } from '@interledger/open-payments'
+import type { Amount } from '@shared/types'
+import type { WalletAddressInfo } from '../types'
 
 export const KV_PAYMENTS_PREFIX = 'payments/'
 
@@ -14,10 +15,13 @@ export type PaymentKvData =
   | {
       status: 'PENDING'
       quoteId: string
+      incomingPaymentId: string
       redirectUrl: string
       grantContinuation: PendingGrant['continue']
       nonce: string
-      sender: WalletAddress
+      sender: WalletAddressInfo
+      receiver: WalletAddressInfo
+      amount: Amount
       metadata: Record<string, unknown>
     }
   | {
@@ -27,14 +31,21 @@ export type PaymentKvData =
       status: 'CREATED'
       // For polling of outgoing payment completion
       outgoingPaymentId: string
+      incomingPaymentId: string
+      sender: WalletAddressInfo
+      receiver: WalletAddressInfo
+      amount: Amount
       redirectUrl: string
       // For expiring resources/grants when done
       outgoingPaymentGrantAccessToken: GrantWithAccessToken['access_token']['value']
-      sender: WalletAddress
     }
   | {
       status: 'COMPLETE'
       outgoingPaymentId: string
+      incomingPaymentId: string
+      sender: WalletAddressInfo
+      receiver: WalletAddressInfo
+      amount: Amount
       result: 'success' | 'failure'
       error?: {
         code: string
