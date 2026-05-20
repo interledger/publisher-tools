@@ -1,6 +1,4 @@
-export type ChangedFields = Partial<
-  Record<`field.${string}`, boolean | string>
->
+export type ChangedFields = Partial<Record<`field.${string}`, boolean | string>>
 
 type PlainObject = Record<string, unknown>
 
