@@ -139,7 +139,7 @@ export async function UNSAFE_devEmptyDatabase(db: D1Database) {
 }
 
 function mapStatusToId(status: PaymentStatus) {
-  return status.toLowerCase() === 'created' ? 0 : 1
+  return status === 'complete' ? 1 : 0
 }
 
 function mapStatusIdToStatus(status: 0 | 1): PaymentStatus {
