@@ -96,6 +96,32 @@ export const createDefaultPaywallProfile = (
     $version: '0.0.1',
     $name: profileName,
     $modifiedAt: '',
+    behavior: {
+      coverage: { value: 50, enabled: true },
+      delay: { value: 0, enabled: true },
+    },
+    price: { value: '2.00', currency: 'USD' },
+    title: {
+      text: 'Finish reading this story',
+    },
+    description: {
+      text: `Unlock the full article with a one-time payment - no subscription, no account.`,
+    },
+    ctaButton: {
+      text: 'Pay with Open Payments',
+    },
+    font: {
+      name: FONT_FAMILY_OPTIONS[0],
+      size: 'base',
+    },
+    border: {
+      type: CORNER_OPTION.Light,
+    },
+    colors: {
+      text: '#676767',
+      background: '#ffffff',
+      theme: '#56b7b5',
+    },
   }
 }
 

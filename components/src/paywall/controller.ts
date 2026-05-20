@@ -7,15 +7,6 @@ type WalletAddressUrl = string
 /** The amount sender wants to send (like "1.05"), does not include fees */
 type UserAmount = number | PaymentCurrencyAmount['value']
 
-interface QuoteInput {
-  sender: WalletAddressInfo
-  receiver: WalletAddressInfo
-  amount: UserAmount
-}
-type QuoteResult =
-  | { debitAmount: PaymentCurrencyAmount; receiveAmount: PaymentCurrencyAmount }
-  | { error: string; minSendAmount?: PaymentCurrencyAmount }
-
 interface InitiatePaymentInput {
   sender: WalletAddressInfo
   receiver: WalletAddressInfo
@@ -29,8 +20,11 @@ interface InitiatePaymentResult {
 
 type Entitlement = 'no-access' | 'auth-required' | 'has-access'
 
+export type Screens = 'home' | 'form'
+
 export interface Controller {
   receiverWalletAddressUrl: string
+  cdnUrl: string
 
   fetchConfig(): Promise<PaywallProfile>
 
@@ -47,7 +41,6 @@ export interface Controller {
   ): Promise<void>
 
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
-  fetchQuote(request: QuoteInput): Promise<QuoteResult>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
   getStatus(
     paymentId: string,
@@ -58,6 +51,7 @@ export interface Controller {
 }
 
 export const NO_OP_CONTROLLER: Controller = {
+  cdnUrl: 'https://example.com',
   receiverWalletAddressUrl: 'https://example.com/pay',
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
   checkEntitlement: () => Promise.resolve('no-access'),
@@ -72,12 +66,6 @@ export const NO_OP_CONTROLLER: Controller = {
       resourceServer: 'https://resource.example.com',
       publicName: 'Wallet (Preview)',
     })
-  },
-  fetchQuote({ amount, sender, receiver }) {
-    amount = String(amount)
-    const debitAmount = { value: amount, currency: sender.assetCode }
-    const receiveAmount = { value: amount, currency: receiver.assetCode }
-    return Promise.resolve({ debitAmount, receiveAmount })
   },
   initiatePayment() {
     return Promise.resolve({
