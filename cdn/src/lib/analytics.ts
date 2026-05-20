@@ -18,6 +18,14 @@ export function trackEventFactory(tool: Tool) {
         data: { hostname, ...data },
       },
     }
-    navigator.sendBeacon?.(`${API_URL}/events`, JSON.stringify(body))
+    const endpoint = `${API_URL}/events`
+    const payload = JSON.stringify(body)
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(endpoint, payload)
+      return
+    }
+    fetch(endpoint, { method: 'POST', body: payload, keepalive: true }).catch(
+      () => {},
+    )
   }
 }
