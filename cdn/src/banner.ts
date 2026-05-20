@@ -1,10 +1,12 @@
 import { API_URL } from '@shared/defines'
 import type { BannerProfile } from '@shared/types'
 import { Banner } from '@tools/components/banner'
+import { trackEventFactory } from './lib/analytics'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
+const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
@@ -38,6 +40,11 @@ function drawBanner(profile: BannerProfile) {
     ...profile,
     cdnUrl: params.cdnUrl,
   }
+
+  bannerElement.addEventListener('click-extension-link', (e) => {
+    const { link } = (e as CustomEvent<{ link: string }>).detail
+    trackEvent('click_extension_link', { link })
+  })
 
   const position = profile.position ? profile.position.toLowerCase() : 'bottom'
 
