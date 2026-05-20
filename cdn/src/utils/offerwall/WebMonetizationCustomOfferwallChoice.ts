@@ -19,6 +19,9 @@ import type {
   OfferwallCustomChoice,
   StoredEvent,
 } from './types'
+import { trackEventFactory } from '../../lib/analytics'
+
+const trackEvent = trackEventFactory('offerwall')
 
 export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoice {
   #browserSupportKey = getBrowserSupportForExtension(
@@ -98,8 +101,8 @@ export class WebMonetizationCustomOfferwallChoice implements OfferwallCustomChoi
 
     const owElem = document.createElement(elementName) as OfferwallModal
     const actions = owElem.setController({
-      onExtensionLinkClick() {
-        // can start tracking
+      onExtensionLinkClick(e) {
+        trackEvent('click_extension_link', { link: e.detail.link })
       },
       onModalClose() {
         abortController.abort('modal closed by user')
