@@ -113,7 +113,8 @@ describe('Paywall Database', () => {
       hasPayment(DB, mockPayment.url.href, mockPayment.sender),
     ).resolves.toBe('created')
 
-    await setPaymentStatus(DB, mockPayment.paymentId, 'failed')
+    const changed = await setPaymentStatus(DB, mockPayment.paymentId, 'failed')
+    expect(changed).toBe(true)
 
     await expect(
       hasPayment(DB, mockPayment.url.href, mockPayment.sender),
@@ -132,6 +133,26 @@ describe('Paywall Database', () => {
     await expect(
       countByPaymentId(mockPayment2.paymentId),
     ).resolves.toMatchObject({ count: 1 })
+
+    await expect(
+      DB.exec(sql`SELECT COUNT(*) as count from paywall_payments`),
+    ).resolves.toMatchObject({ count: 1 })
+    await expect(
+      DB.exec(sql`SELECT COUNT(*) as count from paywall_payments_meta`),
+    ).resolves.toMatchObject({ count: 1 })
+  })
+
+  it('should only delete payment records when status is set to failed and not already complete', async () => {
+    await savePayment(DB, { ...mockPayment, status: 'complete' })
+    await expect(
+      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toBe('complete')
+
+    const changed = await setPaymentStatus(DB, mockPayment.paymentId, 'failed')
+    expect(changed).toBe(false)
+    await expect(
+      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toBe('complete')
 
     await expect(
       DB.exec(sql`SELECT COUNT(*) as count from paywall_payments`),

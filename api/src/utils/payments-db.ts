@@ -52,24 +52,35 @@ export async function setPaymentStatus(
   db: D1Database,
   paymentId: Payment['paymentId'],
   status: PaymentStatus | 'failed',
-) {
+): Promise<boolean> {
   if (status === 'failed') {
     // If failed (money stayed in user wallet), delete from both tables.
-    await db.batch([
+    // The first call deletes from meta table only if `status = 0` in the main
+    // table (as meta table doens't have status), then we do the main table
+    // delete. This is done to ensure data consistency, even if slightly more
+    // expensive.
+    const res = await db.batch([
       db
-        .prepare(`DELETE FROM paywall_payments WHERE paymentId = ?`)
-        .bind(paymentId),
+        .prepare(
+          sql`DELETE FROM paywall_payments_meta WHERE paymentId = ?
+              AND EXISTS (SELECT 1 FROM paywall_payments
+                WHERE paymentId = ? AND status = 0)`,
+        )
+        .bind(paymentId, paymentId),
       db
-        .prepare(`DELETE FROM paywall_payments_meta WHERE paymentId = ?`)
+        .prepare(
+          sql`DELETE FROM paywall_payments WHERE paymentId = ? AND status = 0`,
+        )
         .bind(paymentId),
     ])
-    return
+    return res[0].meta.changes + res[0].meta.changes === 2
   }
 
-  await db
+  const res = await db
     .prepare(sql`UPDATE paywall_payments SET status = ? WHERE paymentId = ?`)
     .bind(mapStatusToId(status), paymentId)
     .run()
+  return res.meta.changes === 1
 }
 
 export async function hasPayment(
