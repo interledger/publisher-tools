@@ -2,7 +2,7 @@ export type ChangedFields = Partial<
   Record<`field.${string}`, boolean | number | string>
 >
 
-type ProfileLike = Record<string, unknown>
+type PlainObject = Record<string, unknown>
 
 // $version and $modifiedAt are system metadata; $name is user-editable (profile rename)
 const SKIPPED_KEYS = new Set(['$version', '$modifiedAt'])
@@ -12,13 +12,13 @@ export function diffProfile(
   current: object,
 ): ChangedFields {
   const result: Record<string, boolean | number | string> = {}
-  walk(prev as ProfileLike | undefined, current as ProfileLike, '', result)
+  walk(prev as PlainObject | undefined, current as PlainObject, '', result)
   return result as ChangedFields
 }
 
 function walk(
-  prev: ProfileLike | undefined,
-  current: ProfileLike,
+  prev: PlainObject | undefined,
+  current: PlainObject,
   path: string,
   result: Record<string, boolean | number | string>,
 ): void {
@@ -33,8 +33,8 @@ function walk(
 
     if (isObject) {
       walk(
-        prevValue as ProfileLike | undefined,
-        currentValue as ProfileLike,
+        prevValue as PlainObject | undefined,
+        currentValue as PlainObject,
         fieldPath,
         result,
       )
