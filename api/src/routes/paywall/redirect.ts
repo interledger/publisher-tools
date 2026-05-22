@@ -48,7 +48,7 @@ app.get('/paywall/redirect', validate('query', schema), async (c) => {
   } catch (err) {
     console.error(err)
     return redirect(
-      urlWithParams(next, { paymentId, status: 'failure', reason: 'internal' }),
+      urlWithParams(next, { paymentId, result: 'failure', reason: 'internal' }),
     )
   }
 
