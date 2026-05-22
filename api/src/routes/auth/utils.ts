@@ -11,7 +11,7 @@ interface TokenData {
   sub: string
   /** Wallet addres URL, if different from ID */
   waUrl?: string
-  /** Original issued at timestamp (ms), even after refreshes */
+  /** Original issued at time. Stays same even after refreshes */
   auth_time: number
 }
 
@@ -32,7 +32,7 @@ export async function createToken(
     ...(walletAddress.id !== walletAddress.$url && {
       waUrl: walletAddress.$url,
     }),
-    auth_time: Date.now(),
+    auth_time: Math.floor(Date.now() / 1000),
   }
   return await _createToken(payload, secret)
 }
