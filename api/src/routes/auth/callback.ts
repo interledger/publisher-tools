@@ -43,7 +43,7 @@ app.get(
       return redirect(urlWithParams(next, { auth_failed: code }))
     }
 
-    const token = await createToken(walletAddress, 'SECRET_TODO')
+    const token = await createToken(walletAddress, env.JWT_SECRET)
     return redirect(urlWithParams(next, { token }))
   },
 )
