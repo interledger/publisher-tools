@@ -15,6 +15,7 @@ const schema = z.object({
   walletAddress: WalletAddressSchema,
   next: z.url(),
 })
+export type AuthInput = z.infer<typeof schema>
 
 export type AuthResponse = {
   grantRedirectUrl: string

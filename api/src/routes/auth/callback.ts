@@ -24,15 +24,11 @@ app.get(
     const { next, requestId } = params
 
     if ('result' in params && params.result === 'grant_rejected') {
-      return redirect(
-        urlWithParams(next, { auth_failed: 'CANCELED' satisfies ErrCode }),
-      )
+      return redirect(getNextWithFailure(next, 'CANCELED'))
     }
     if (!('hash' in params)) {
       // Won't happen, but TypeScript is crying
-      return redirect(
-        urlWithParams(next, { auth_failed: 'NO_HASH' satisfies ErrCode }),
-      )
+      return redirect(getNextWithFailure(next, 'NO_HASH'))
     }
 
     let walletAddress
@@ -40,7 +36,7 @@ app.get(
       walletAddress = await completeGrant(env, requestId, params)
     } catch (err) {
       const { code } = err as Err
-      return redirect(urlWithParams(next, { auth_failed: code }))
+      return redirect(getNextWithFailure(next, code))
     }
 
     const token = await createToken(walletAddress, env.JWT_SECRET)
@@ -102,4 +98,8 @@ class Err extends Error {
     super(message, params)
     this.code = message
   }
+}
+
+function getNextWithFailure(next: string, reason: ErrCode) {
+  return urlWithParams(next, { result: 'failure', reason })
 }
