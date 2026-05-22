@@ -49,21 +49,23 @@ async function handleStatus(
       data.outgoingPaymentId,
       data.outgoingPaymentGrantAccessToken,
     )
-    await setData(
-      env.PUBLISHER_TOOLS_KV,
-      paymentId,
-      {
-        status: 'COMPLETE',
-        incomingPaymentId: data.incomingPaymentId,
-        outgoingPaymentId: data.outgoingPaymentId,
-        sender: data.sender,
-        receiver: data.receiver,
-        amount: data.amount,
-        result: result.success ? 'success' : 'failure',
-        error: result.success ? undefined : result.error,
-      },
-      { expirationTtl: 3 * 60 /* 3 minutes */ },
-    )
+    if (result.success || result.error.code !== 'OUTGOING_PAYMENT_INCOMPLETE') {
+      await setData(
+        env.PUBLISHER_TOOLS_KV,
+        paymentId,
+        {
+          status: 'COMPLETE',
+          incomingPaymentId: data.incomingPaymentId,
+          outgoingPaymentId: data.outgoingPaymentId,
+          sender: data.sender,
+          receiver: data.receiver,
+          amount: data.amount,
+          result: result.success ? 'success' : 'failure',
+          error: result.success ? undefined : result.error,
+        },
+        { expirationTtl: 3 * 60 /* 3 minutes */ },
+      )
+    }
     if (!result.success) {
       if (result.error.code !== 'OUTGOING_PAYMENT_INCOMPLETE') {
         await setPaymentStatus(env.PUBLISHER_TOOLS_DB, paymentId, 'failed')
