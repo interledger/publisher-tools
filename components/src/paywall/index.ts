@@ -50,7 +50,7 @@ export class Paywall extends LitElement {
 
     const [config, entitlement] = await Promise.all([
       this.#controller.fetchConfig(),
-      this.#controller.checkEntitlement(),
+      this.#controller.checkEntitlement(''),
     ])
 
     this.#config = config
@@ -125,15 +125,6 @@ export class Paywall extends LitElement {
   async #handleSubmit(walletAddress: string) {
     const sender = await this.#controller.getWallet(walletAddress)
     const receiver = await this.#getReceiver()
-
-    const entitlement = await this.#controller.checkEntitlement(sender)
-    if (entitlement === 'auth-required') {
-      const { grantRedirectUrl } = await this.#controller.authenticate(sender)
-      if (grantRedirectUrl) {
-        // setScreen('verify-wallet')
-        window.location.href = grantRedirectUrl
-      }
-    }
 
     const result = await this.#controller.initiatePayment({
       sender,

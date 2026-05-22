@@ -143,8 +143,3 @@ export function appendPaymentPointer(walletAddressUrl: string) {
   document.head.appendChild(monetizationElement)
   return monetizationElement
 }
-
-export function redirect(url: string): never {
-  window.location.href = url
-  throw 'unreachable'
-}

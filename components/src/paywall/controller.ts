@@ -29,19 +29,16 @@ export interface Controller {
   fetchConfig(): Promise<PaywallProfile>
 
   /** Check if given wallet address is entitled to access */
-  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<Entitlement>
+  checkEntitlement(walletAddressUrl: WalletAddressUrl): Promise<Entitlement>
   /** Store the entitlement after a successful payment in some backend */
   saveEntitlement(
-    walletAddressUrl: WalletAddressUrl | WalletAddressInfo,
+    walletAddressUrl: WalletAddressUrl,
     details: {
       outgoingPaymentId: string
       incomingPaymentId: string
       paymentId: string
     },
   ): Promise<void>
-  authenticate(
-    walletAddress: WalletAddressInfo,
-  ): Promise<{ grantRedirectUrl: string }>
 
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
@@ -59,7 +56,6 @@ export const NO_OP_CONTROLLER: Controller = {
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
   checkEntitlement: () => Promise.resolve('no-access'),
   saveEntitlement: () => Promise.resolve(),
-  authenticate: () => Promise.reject('not-impl'),
   getWallet(walletAddressUrl) {
     return Promise.resolve({
       $url: walletAddressUrl,
