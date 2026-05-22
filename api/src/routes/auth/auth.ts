@@ -16,6 +16,10 @@ const schema = z.object({
   next: z.url(),
 })
 
+export type AuthResponse = {
+  grantRedirectUrl: string
+}
+
 app.post('/auth', validate('json', schema), async ({ req, json, env }) => {
   const { walletAddress, next } = req.valid('json')
   const requestId = crypto.randomUUID()
@@ -35,7 +39,11 @@ app.post('/auth', validate('json', schema), async ({ req, json, env }) => {
     nonce,
     walletAddress,
   })
-  return json(grant)
+
+  const resp: AuthResponse = {
+    grantRedirectUrl: grant.interact.redirect,
+  }
+  return json(resp)
 })
 
 async function createGrant(
