@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db": "wrangler d1 --persist-to ../.wrangler execute 'publisher-tools' --local --file",
-    "db:prod": "wrangler d1 execute 'publisher-tools' --remote --file",
+    "db": "wrangler d1 --persist-to ../.wrangler execute publisher-tools --local --file",
+    "db:prod": "wrangler d1 execute publisher-tools --remote --file",
     "deploy": "wrangler deploy"
   },
   "keywords": [],
