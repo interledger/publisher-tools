@@ -7,7 +7,7 @@ export type {
   PaymentStatus,
 } from './routes/payment'
 export type { AuthInput, AuthResponse } from './routes/auth'
-export type { PaywallPaymentStatus } from './routes/paywall'
+export type { PaywallPaymentStatus, PaywallCheckResult } from './routes/paywall'
 export type { EventPayload, EventBody } from './routes/events'
 
 export type ApiErrorResponse = {

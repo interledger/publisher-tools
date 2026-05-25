@@ -53,7 +53,10 @@ export async function refreshToken(token: string, secret: string) {
   const payload = await verifyToken(token, secret)
   if (!payload) return null
   const { sub, waUrl, auth_time } = payload
-  return await _createToken({ sub, waUrl, auth_time }, secret)
+  return {
+    payload,
+    token: await _createToken({ sub, waUrl, auth_time }, secret),
+  }
 }
 
 async function _createToken(data: TokenData, secret: string) {
