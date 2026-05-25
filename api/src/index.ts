@@ -3,6 +3,7 @@ import { app } from './app.js'
 
 import './routes/get-profile.js'
 import './routes/probabilistic-revshare.js'
+import './routes/auth/index.js'
 import './routes/payment/index.js'
 import './routes/paywall/index.js'
 import './routes/wallet.js'

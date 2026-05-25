@@ -12,6 +12,7 @@ export type Env = {
   OP_WALLET_ADDRESS: string
   OP_PRIVATE_KEY: string
   OP_KEY_ID: string
+  JWT_SECRET: string
   PUBLISHER_TOOLS_KV: KVNamespace
   PUBLISHER_TOOLS_DB: D1Database
 }

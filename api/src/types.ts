@@ -6,6 +6,7 @@ export type {
   PaymentInitiateResult,
   PaymentStatus,
 } from './routes/payment'
+export type { AuthInput, AuthResponse } from './routes/auth'
 export type { PaywallPaymentStatus } from './routes/paywall'
 export type { EventPayload, EventBody } from './routes/events'
 

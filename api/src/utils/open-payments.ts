@@ -35,6 +35,11 @@ export class OpenPaymentsService {
     return OpenPaymentsService._instance
   }
 
+  public static async getClient(env: Env) {
+    const instance = await OpenPaymentsService.getInstance(env)
+    return instance.client
+  }
+
   private async initClient(env: Env): Promise<AuthenticatedClient> {
     const { OP_WALLET_ADDRESS, OP_PRIVATE_KEY, OP_KEY_ID } = env
     return await createAuthenticatedClient({
