@@ -139,8 +139,8 @@ function main() {
     },
   })
 
-  document.body.appendChild(element)
   handlePageLoad(pageUrl, paramsFromUrl, actions)
+  document.body.appendChild(element)
 }
 
 function handlePageUrlOnLoad() {
