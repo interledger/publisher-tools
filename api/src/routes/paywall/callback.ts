@@ -5,6 +5,7 @@ import { PaymentIdSchema } from '../../schemas/payment'
 import { savePayment } from '../../utils/payments-db'
 import { getData } from '../../utils/payments-kv'
 import { validate } from '../../utils/utils'
+import { createToken } from '../auth/utils'
 
 const schema = z.object({
   // Passed by client
@@ -14,7 +15,7 @@ const schema = z.object({
   result: z.enum(['success', 'failure']),
 })
 
-app.get('/paywall/redirect', validate('query', schema), async (c) => {
+app.get('/paywall/callback', validate('query', schema), async (c) => {
   const { req, redirect, env } = c
   const { next, paymentId, result } = req.valid('query')
 
@@ -52,5 +53,6 @@ app.get('/paywall/redirect', validate('query', schema), async (c) => {
     )
   }
 
-  return redirect(urlWithParams(next, { paymentId, result }))
+  const token = await createToken(sender, env.JWT_SECRET)
+  return redirect(urlWithParams(next, { paymentId, result, token }))
 })
