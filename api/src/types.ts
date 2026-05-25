@@ -6,6 +6,7 @@ export type {
   PaymentInitiateResult,
   PaymentStatus,
 } from './routes/payment'
+export type { EventPayload, EventBody } from './routes/events'
 
 export type ApiErrorResponse = {
   error: {

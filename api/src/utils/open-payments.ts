@@ -173,6 +173,7 @@ export class OpenPaymentsService {
       grantRedirectUrl: grant.interact.redirect,
       grantContinuation: grant.continue,
       nonce,
+      amount: debitAmount || receiveAmount!,
     }
   }
 

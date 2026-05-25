@@ -4,7 +4,6 @@ import { sleep } from '@shared/utils'
 import { Paywall } from '@tools/components'
 import {
   fetchProfile,
-  fetchQuote,
   getScriptParams,
   getWallet,
   initiatePayment,
@@ -26,6 +25,7 @@ function drawPaywall() {
   if (price) element.setPrice(price)
   element.setController({
     receiverWalletAddressUrl: params.walletAddress,
+    cdnUrl: params.cdnUrl,
     fetchConfig: () => fetchProfile(API_URL, 'paywall', params),
     async checkEntitlement() {
       return 'no-access' // TODO: create and call API
@@ -34,10 +34,6 @@ function drawPaywall() {
       // TODO: create and call API
     },
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
-    fetchQuote({ sender, receiver, amount }) {
-      const receiveAmount = Number(amount)
-      return fetchQuote(API_URL, { sender, receiver, receiveAmount })
-    },
     async initiatePayment({ sender, receiver, amount, note }) {
       const receiveAmount = Number(amount)
       const redirectUrl = window.location.href

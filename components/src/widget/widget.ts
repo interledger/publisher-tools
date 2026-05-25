@@ -4,15 +4,15 @@ import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
 import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
 import { registerComponents } from '@c/utils'
+import { HomeView, type SubmitEventDetail } from './components/home.js'
+import { PaymentInitiate } from './components/initiate.js'
+import { PaymentWaiting } from './components/waiting.js'
 import {
   type Controller,
   NO_OP_CONTROLLER,
   WidgetController,
 } from './controller'
 import type { WidgetConfig } from './types'
-import { PaymentInitiate } from './views/confirmation/confirmation'
-import { HomeView, type SubmitEventDetail } from './views/home/home'
-import { PaymentWaiting } from './views/interaction/interaction'
 import styles from './widget.css?raw'
 
 export class PaymentWidget extends LitElement {
