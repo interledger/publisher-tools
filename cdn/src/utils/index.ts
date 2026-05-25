@@ -143,3 +143,52 @@ export function appendPaymentPointer(walletAddressUrl: string) {
   document.head.appendChild(monetizationElement)
   return monetizationElement
 }
+
+export function isAuthJwt(tokenStr?: string | null): tokenStr is string {
+  if (!tokenStr || typeof tokenStr !== 'string') return false
+  const parts = tokenStr.split('.')
+  if (parts.length !== 3) return false
+
+  const base64UrlRegex = /^[A-Za-z0-9\-_]+$/
+  if (!parts.every((part) => base64UrlRegex.test(part))) return false
+
+  let payload
+  try {
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const jsonString = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(''),
+    )
+    payload = JSON.parse(jsonString)
+  } catch {
+    return false
+  }
+  if (typeof payload === 'object' && payload !== null) {
+    return (
+      'sub' in payload &&
+      typeof payload.sub === 'string' &&
+      'iat' in payload &&
+      'auth_time' in payload
+    )
+  }
+  return false
+}
+
+export function redirect(url: string): never {
+  window.location.href = url
+  throw 'unreachable'
+}
+
+export function isAbortSignalTimeout(ev: unknown) {
+  return (
+    ev instanceof Event &&
+    ev.target instanceof AbortSignal &&
+    isTimeoutError(ev.target.reason)
+  )
+}
+
+export function isTimeoutError(err: unknown) {
+  return err instanceof DOMException && err.name === 'TimeoutError'
+}
