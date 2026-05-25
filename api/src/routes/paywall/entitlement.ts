@@ -10,17 +10,15 @@ const schema = z.object({
   wa: z.url().optional(),
   $wa: z.url().optional(),
 })
-const paramsSchema = z.object({ site: z.hostname() })
 
-export type PaywallCheckResult = {
+export type PaywallEntitlementResult = {
   entitlement: 'no-access' | 'has-access' | 'auth-required' | 'pending'
   // Refreshed Authorization header, if a valid one was passed in request
   token?: string | null
 }
 
 app.get(
-  '/paywall/check/:site',
-  validate('param', paramsSchema),
+  '/paywall/entitlement',
   validate('query', schema),
   async ({ req, header, status, json, env }) => {
     const params = req.valid('query')
@@ -41,7 +39,7 @@ app.get(
       payer,
     )
 
-    const result: PaywallCheckResult = {
+    const result: PaywallEntitlementResult = {
       entitlement: getEntitlement(paymentStatus, !!token),
       token: token?.jwt,
     }
@@ -83,7 +81,7 @@ app.get(
 function getEntitlement(
   paymentStatus: Awaited<ReturnType<typeof hasPayment>>,
   hasToken: boolean,
-): PaywallCheckResult['entitlement'] {
+): PaywallEntitlementResult['entitlement'] {
   if (!paymentStatus) return 'no-access'
   if (paymentStatus === 'created') return 'pending'
   return hasToken ? 'has-access' : 'auth-required'

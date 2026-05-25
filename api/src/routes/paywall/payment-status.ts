@@ -9,7 +9,7 @@ import { getData, setData, type PaymentKvData } from '../../utils/payments-kv'
 import { createHTTPException, validate } from '../../utils/utils'
 
 app.get(
-  '/paywall/status/:paymentId',
+  '/paywall/payment-status/:paymentId',
   validate('param', z.object({ paymentId: PaymentIdSchema })),
   async ({ req, json, env }) => {
     const { paymentId } = req.valid('param')

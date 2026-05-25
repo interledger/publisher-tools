@@ -15,7 +15,7 @@ const schema = z.object({
   result: z.enum(['success', 'failure']),
 })
 
-app.get('/paywall/redirect', validate('query', schema), async (c) => {
+app.get('/paywall/callback', validate('query', schema), async (c) => {
   const { req, redirect, env } = c
   const { next, paymentId, result } = req.valid('query')
 

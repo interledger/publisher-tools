@@ -1,6 +1,6 @@
-import './check'
-import './redirect'
-import './status'
+import './entitlement'
+import './callback'
+import './payment-status'
 
-export type { PaywallCheckResult } from './check'
-export type { PaywallPaymentStatus } from './status'
+export type { PaywallEntitlementResult } from './entitlement'
+export type { PaywallPaymentStatus } from './payment-status'

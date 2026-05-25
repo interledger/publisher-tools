@@ -41,7 +41,7 @@ function drawPaywall() {
       const receiveAmount = Number(amount)
       // When a grant accept request redirects to this URL, the backend stores
       // payment details in DB, and sends user back to `pageUrl`.
-      const redirectUrl = urlWithParams(new URL('/paywall/redirect', API_URL), {
+      const redirectUrl = urlWithParams(new URL('/paywall/callback', API_URL), {
         next: pageUrl,
       }).href
       return initiatePayment(API_URL, {
@@ -53,7 +53,7 @@ function drawPaywall() {
       })
     },
     async *getStatus(paymentId, signal) {
-      const url = new URL(`/paywall/status/${paymentId}`, API_URL).href
+      const url = new URL(`/paywall/payment-status/${paymentId}`, API_URL).href
       while (true) {
         try {
           signal?.throwIfAborted()
