@@ -1,6 +1,6 @@
-import type { PaymentStatus } from 'publisher-tools-api'
+import type { PaywallPaymentStatus } from 'publisher-tools-api'
 import { API_URL } from '@shared/defines'
-import { sleep } from '@shared/utils'
+import { sleep, urlWithParams } from '@shared/utils'
 import { Paywall } from '@tools/components'
 import {
   fetchProfile,
@@ -8,6 +8,7 @@ import {
   getWallet,
   initiatePayment,
 } from './utils'
+import { getPageUrl } from './utils/paywall-utils'
 
 const NAME = 'wm-paywall'
 customElements.define(NAME, Paywall)
@@ -20,6 +21,8 @@ function drawPaywall() {
   if (price && !/^\d+(\.\d+)?$/.test(price)) {
     throw new Error(`Invalid data-price="${price}"`)
   }
+
+  const pageUrl = getPageUrl(window.location)
 
   const element = document.createElement('wm-paywall')
   if (price) element.setPrice(price)
@@ -36,7 +39,11 @@ function drawPaywall() {
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
     async initiatePayment({ sender, receiver, amount, note }) {
       const receiveAmount = Number(amount)
-      const redirectUrl = window.location.href
+      // When a grant accept request redirects to this URL, the backend stores
+      // payment details in DB, and sends user back to `pageUrl`.
+      const redirectUrl = urlWithParams(new URL('/paywall/redirect', API_URL), {
+        next: pageUrl,
+      }).href
       return initiatePayment(API_URL, {
         sender,
         receiver,
@@ -46,24 +53,24 @@ function drawPaywall() {
       })
     },
     async *getStatus(paymentId, signal) {
-      const url = new URL(`/payment/status/${paymentId}`, API_URL).href
+      const url = new URL(`/paywall/status/${paymentId}`, API_URL).href
       while (true) {
         try {
           signal?.throwIfAborted()
           const res = await fetch(url, { signal })
           if (!res.ok) {
-            throw new Error('Failed to check payment status: ' + res.statusText)
+            throw new Error(`Payment status check failed: HTTP ${res.status}`)
           }
 
-          const status: PaymentStatus = await res.json()
+          const status: PaywallPaymentStatus = await res.json()
           yield status
 
           if (status.type === 'PENDING_GRANT_INTERACTION') {
             await sleep(3000)
-          } else if (status.type === 'OUTGOING_PAYMENT_CREATED') {
+          } else if (status.type === 'PAYMENT_CREATED') {
             await sleep(1500)
           } else if (
-            status.type === 'OUTGOING_PAYMENT_DONE' ||
+            status.type === 'PAYMENT_DONE' ||
             status.type === 'GRANT_REJECTED'
           ) {
             break
