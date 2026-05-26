@@ -8,7 +8,6 @@ import {
   getWallet,
   initiatePayment,
 } from './utils'
-import { getPageUrl } from './utils/paywall-utils'
 
 const NAME = 'wm-paywall'
 customElements.define(NAME, Paywall)
@@ -22,7 +21,7 @@ function drawPaywall() {
     throw new Error(`Invalid data-price="${price}"`)
   }
 
-  const pageUrl = getPageUrl(window.location)
+  const pageUrl = window.location.href
 
   const element = document.createElement('wm-paywall')
   if (price) element.setPrice(price)

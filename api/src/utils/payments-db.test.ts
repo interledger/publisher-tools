@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers'
 import { describe, it, expect, beforeEach } from 'vitest'
+import { ensureEnd } from '@shared/utils'
 import {
   savePayment,
   getPayment,
@@ -69,6 +70,37 @@ describe('Paywall Database', () => {
     ).resolves.toBeFalsy()
   })
 
+  it('should normalize URLs when storing payments', async () => {
+    const url = new URL(mockPayment.url)
+    url.searchParams.set('foo', 'bar')
+    await savePayment(DB, { ...mockPayment, url })
+    await expect(
+      DB.exec(sql`SELECT * from paywall_payments`),
+    ).resolves.toMatchObject({ count: 1 })
+
+    await expect(
+      hasPayment(DB, url.href, {
+        ...mockPayment.sender,
+        id: 'https://wallet.com/sender2',
+      }),
+    ).resolves.toBe('complete')
+
+    url.searchParams.set('bar', 'baz')
+    await expect(
+      hasPayment(DB, url.href, {
+        ...mockPayment.sender,
+        id: 'https://wallet.com/sender2',
+      }),
+    ).resolves.toBe('complete')
+
+    await expect(
+      hasPayment(DB, url.origin + ensureEnd(url.pathname, '/'), {
+        ...mockPayment.sender,
+        id: 'https://wallet.com/sender2',
+      }),
+    ).resolves.toBe('complete')
+  })
+
   it('should fetch the full, reconstructed payment record using getPayment', async () => {
     await savePayment(DB, mockPayment)
     const result = await getPayment(DB, mockPayment.paymentId)
@@ -81,7 +113,7 @@ describe('Paywall Database', () => {
     // Assert the fields contain the hashed values, not plain text
     expect(result!.url).not.toBe(mockPayment.url.href)
     expect(result!.sender.id).not.toBe(mockPayment.sender.id)
-    const urlHash = await hash(mockPayment.url.href)
+    const urlHash = await hash(ensureEnd(mockPayment.url.href, '/'))
     expect(result!.url).toBe(urlHash)
   })
 

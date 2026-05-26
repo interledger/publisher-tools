@@ -1,5 +1,6 @@
 import type { D1Database } from '@cloudflare/workers-types'
 import type { Amount } from '@shared/types'
+import { ensureEnd } from '@shared/utils'
 import type { WalletAddressInfo } from '../types'
 
 /** for syntax highlighting */
@@ -7,10 +8,11 @@ export const sql = String.raw
 
 export async function savePayment(db: D1Database, data: Payment) {
   const site = getSite(data.url)
+  const normalizedUrl = normalizeUrl(data.url)
   const now = Date.now()
 
   const [hashedUrl, hashedSenderId, hashedSenderUrl] = await Promise.all([
-    hash(data.url.href),
+    hash(normalizedUrl),
     hash(data.sender.id),
     hash(data.sender.$url),
   ])
@@ -88,8 +90,9 @@ export async function hasPayment(
   url: string,
   payer: Pick<WalletAddressInfo, 'id' | '$url'>,
 ): Promise<false | PaymentStatus> {
+  const normalizedUrl = normalizeUrl(new URL(url))
   const [hashedUrl, hashedPayerWalletAddressId, hashedPayerWalletAddressUrl] =
-    await Promise.all([hash(url), hash(payer.id), hash(payer.$url)])
+    await Promise.all([hash(normalizedUrl), hash(payer.id), hash(payer.$url)])
 
   const res = await db
     .prepare(
@@ -159,6 +162,12 @@ function mapStatusIdToStatus(status: 0 | 1): PaymentStatus {
 
 function getSite(url: URL) {
   return url.hostname
+}
+
+function normalizeUrl(url: URL) {
+  const { origin, pathname } = url
+  const path = /\.html?$/.test(pathname) ? pathname : ensureEnd(pathname, '/')
+  return origin + path
 }
 
 export async function hash(text: string): Promise<HashedString> {
