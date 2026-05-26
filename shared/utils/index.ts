@@ -69,6 +69,14 @@ export function toAmount(
   }
 }
 
+export function isEqualAmount(amount1: Amount, amount2: Amount) {
+  return (
+    amount1.value === amount2.value &&
+    amount1.assetScale === amount2.assetScale &&
+    amount1.assetCode === amount2.assetCode
+  )
+}
+
 export function fromAmount(amount: Amount): PaymentCurrencyAmount {
   const { assetScale, assetCode } = amount
   const value = Number(amount.value) / 10 ** assetScale
@@ -247,6 +255,10 @@ export function withResolvers<T>(): {
 
 export function sleep(delay: number): Promise<void> {
   return new Promise((r) => setTimeout(r, delay))
+}
+
+export function ensureEnd(str: string, suffix: string) {
+  return str.endsWith(suffix) ? str : str + suffix
 }
 
 export type UtmParams = {

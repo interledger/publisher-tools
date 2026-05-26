@@ -6,6 +6,7 @@ import {
   type PendingGrant,
   type WalletAddress,
   type AuthenticatedClient,
+  type IncomingPayment,
   type OutgoingPayment,
   type Grant,
   type GrantContinuation,
@@ -32,6 +33,11 @@ export class OpenPaymentsService {
         await OpenPaymentsService._instance.initClient(env)
     }
     return OpenPaymentsService._instance
+  }
+
+  public static async getClient(env: Env) {
+    const instance = await OpenPaymentsService.getInstance(env)
+    return instance.client
   }
 
   private async initClient(env: Env): Promise<AuthenticatedClient> {
@@ -382,6 +388,26 @@ export class OpenPaymentsService {
     }
 
     return { success: true }
+  }
+
+  async getIncomingPayment(incomingPaymentId: IncomingPayment['id']) {
+    const url = incomingPaymentId
+    const incomingPayment = await this.client.incomingPayment.getPublic({ url })
+
+    const grant = await this.client.grant.request(
+      { url: incomingPayment.authServer },
+      {
+        access_token: {
+          access: [{ type: 'incoming-payment', actions: ['read'] }],
+        },
+      },
+    )
+    if (isFinalizedGrantWithAccessToken(grant)) {
+      const accessToken = grant.access_token?.value
+      return this.client.incomingPayment.get({ url, accessToken })
+    }
+
+    return incomingPayment
   }
 }
 
