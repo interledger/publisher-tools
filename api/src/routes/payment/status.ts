@@ -56,7 +56,11 @@ async function handleStatus(
       paymentId,
       {
         status: 'COMPLETE',
+        incomingPaymentId: data.incomingPaymentId,
         outgoingPaymentId: data.outgoingPaymentId,
+        sender: data.sender,
+        receiver: data.receiver,
+        amount: data.amount,
         result: result.success ? 'success' : 'failure',
         error: result.success ? undefined : result.error,
       },

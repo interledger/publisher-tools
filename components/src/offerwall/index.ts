@@ -8,7 +8,12 @@ import {
   InstallRequired,
 } from './components/index.js'
 import { NO_OP_CONTROLLER } from './controller.js'
-import type { Actions, Controller, Screen } from './controller.js'
+import type {
+  Actions,
+  Controller,
+  ExtensionLinkClickEvent,
+  Screen,
+} from './controller.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
@@ -115,7 +120,7 @@ export class OfferwallModal extends LitElement {
     this.#closeDialog()
   }
 
-  #onExtensionLinkClick = (ev: Event) => {
+  #onExtensionLinkClick = (ev: ExtensionLinkClickEvent) => {
     this.#controller.onExtensionLinkClick(ev)
     if (ev.defaultPrevented) return
   }
