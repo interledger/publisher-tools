@@ -64,18 +64,18 @@ export async function setPaymentStatus(
     const res = await db.batch([
       db
         .prepare(
-          sql`DELETE FROM paywall_payments_meta WHERE paymentId = ?
+          sql`DELETE FROM paywall_payments_meta WHERE paymentId = ?1
               AND EXISTS (SELECT 1 FROM paywall_payments
-                WHERE paymentId = ? AND status = 0)`,
+                WHERE paymentId = ?1 AND status = 0)`,
         )
-        .bind(paymentId, paymentId),
+        .bind(paymentId),
       db
         .prepare(
           sql`DELETE FROM paywall_payments WHERE paymentId = ? AND status = 0`,
         )
         .bind(paymentId),
     ])
-    return res[0].meta.changes + res[0].meta.changes === 2
+    return res[0].meta.changes + res[1].meta.changes === 2
   }
 
   const res = await db
