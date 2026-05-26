@@ -6,17 +6,20 @@ try {
   // do nothing
 }
 
+const buildTimeVars = {
+  BUILD_AWS_PREFIX: JSON.stringify(process.env.BUILD_AWS_PREFIX ?? ''),
+  BUILD_UMAMI_HOST: JSON.stringify(
+    process.env.BUILD_UMAMI_HOST || process.env.UMAMI_HOST || '',
+  ),
+  BUILD_UMAMI_WEBSITE_ID: JSON.stringify(
+    process.env.BUILD_UMAMI_WEBSITE_ID || process.env.UMAMI_WEBSITE_ID || '',
+  ),
+}
+console.log('Building...', buildTimeVars)
+
 await build({
   entryPoints: ['src/index.ts'],
-  define: {
-    BUILD_AWS_PREFIX: JSON.stringify(process.env.BUILD_AWS_PREFIX ?? ''),
-    BUILD_UMAMI_HOST: JSON.stringify(
-      process.env.BUILD_UMAMI_HOST || process.env.UMAMI_HOST || '',
-    ),
-    BUILD_UMAMI_WEBSITE_ID: JSON.stringify(
-      process.env.BUILD_UMAMI_WEBSITE_ID || process.env.UMAMI_WEBSITE_ID || '',
-    ),
-  },
+  define: buildTimeVars,
   bundle: true,
   format: 'esm',
   outdir: 'dist',
