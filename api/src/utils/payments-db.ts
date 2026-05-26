@@ -75,7 +75,7 @@ export async function setPaymentStatus(
         )
         .bind(paymentId),
     ])
-    return res[0].meta.changes + res[0].meta.changes === 2
+    return res[0].meta.changes + res[1].meta.changes === 2
   }
 
   const res = await db
