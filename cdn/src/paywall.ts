@@ -19,7 +19,6 @@ import {
   isTimeoutError,
   redirect,
 } from './utils'
-import { getPageUrl } from './utils/paywall-utils'
 
 const NAME = 'wm-paywall'
 customElements.define(NAME, Paywall)
@@ -27,7 +26,6 @@ customElements.define(NAME, Paywall)
 const params = getScriptParams('paywall')
 
 function main() {
-  const pageUrl = getPageUrl(window.location)
   const paramsFromUrl = handlePageUrlOnLoad()
   if (paramsFromUrl.token) {
     // Used with future checkEntitlement requests
@@ -38,6 +36,8 @@ function main() {
   if (price && !/^\d+(\.\d+)?$/.test(price)) {
     throw new Error(`Invalid data-price="${price}"`)
   }
+
+  const pageUrl = window.location.href
 
   const element = document.createElement('wm-paywall')
   if (price) element.setPrice(price)
