@@ -26,7 +26,7 @@ type Entitlement = 'no-access' | 'auth-required' | 'has-access' | 'pending'
 export type View = {
   home: undefined
   form: { walletAddress?: string; isAuthMode?: boolean }
-  verify: { sender: WalletAddressInfo; paymentId: string }
+  verify: { paymentId: string; sender?: WalletAddressInfo }
   authenticate: { sender?: WalletAddressInfo }
 }
 
@@ -50,7 +50,10 @@ export interface Controller {
 
   senderWalletAddressUrl?: string | null
   /** Check if given wallet address is entitled to access */
-  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<Entitlement>
+  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<{
+    entitlement: Entitlement
+    paymentId?: string
+  }>
   authenticate(
     walletAddress: WalletAddressInfo,
   ): Promise<{ grantRedirectUrl: string }>
@@ -69,7 +72,7 @@ export const NO_OP_CONTROLLER: Controller = {
   cdnUrl: 'https://example.com',
   receiverWalletAddressUrl: 'https://example.com/pay',
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
-  checkEntitlement: () => Promise.resolve('no-access'),
+  checkEntitlement: () => Promise.resolve({ entitlement: 'no-access' }),
   authenticate: () => Promise.reject('not-implemented'),
   getWallet(walletAddressUrl) {
     return Promise.resolve({

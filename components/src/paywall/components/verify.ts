@@ -19,7 +19,7 @@ export class PaywallVerify extends LitElement {
   @property({ type: String }) title = DEFAULTS.title.text
   @property({ type: String }) description = DEFAULTS.description.text
   @property({ type: String }) paymentId!: string
-  @property({ type: Object }) sender!: WalletAddressInfo
+  @property({ type: Object }) sender?: WalletAddressInfo
 
   connectedCallback() {
     super.connectedCallback()
@@ -76,7 +76,7 @@ export class PaywallVerify extends LitElement {
 type Events = {
   payment_confirmed: {
     paymentId: string
-    sender: WalletAddressInfo
+    sender?: WalletAddressInfo
   }
 }
 export type { Events as PaymentVerifyEvents }

@@ -65,12 +65,16 @@ export class Paywall extends LitElement {
     void this.showAfterDelay(connectedAt).then(() => {
       this.hidden = false
     })
-    if (this.#entitlement === 'auth-required') {
-      // TODO: get wallet address available here
-      this.#setView('form', { isAuthMode: true })
-    } else if (this.#entitlement === 'has-access') {
+    if (entitlement.entitlement === 'auth-required') {
+      this.#setView('form', {
+        walletAddress: this.#controller.senderWalletAddressUrl ?? undefined,
+        isAuthMode: true,
+      })
+    } else if (entitlement.entitlement === 'has-access') {
       // TODO: dispatch events
       this.remove()
+    } else if (entitlement.entitlement === 'pending') {
+      this.#setView('verify', { paymentId: entitlement.paymentId! })
     }
   }
 
@@ -101,7 +105,7 @@ export class Paywall extends LitElement {
 
   render() {
     if (!this._ready) return nothing
-    if (this.#entitlement === 'has-access') return nothing
+    if (this.#entitlement.entitlement === 'has-access') return nothing
     if (!this._delayComplete) return nothing
 
     const { title, description, ctaButton, price } = this.#config
@@ -157,18 +161,17 @@ export class Paywall extends LitElement {
     const receiver = await this.#getReceiver()
 
     const status = await this.#controller.checkEntitlement(sender)
-    if (status === 'has-access') {
+    if (status.entitlement === 'has-access') {
       this.remove()
       return
     }
-    if (status === 'auth-required') {
+    if (status.entitlement === 'auth-required') {
       this.#setView('form', { isAuthMode: true })
       await this.#controller.authenticate(sender)
       return
     }
-    if (status === 'pending') {
-      // TODO: handle the case when payment is pending even later
-      // this.#setView('verify', {})
+    if (status.entitlement === 'pending') {
+      this.#setView('verify', { paymentId: status.paymentId!, sender })
       return
     }
 
@@ -185,7 +188,7 @@ export class Paywall extends LitElement {
   ) {
     const sender = ev.detail.sender
     const status = await this.#controller.checkEntitlement(sender)
-    if (status === 'has-access') {
+    if (status.entitlement === 'has-access') {
       this.remove()
       return
     }

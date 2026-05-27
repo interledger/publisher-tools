@@ -51,7 +51,7 @@ function main() {
       console.debug('checkEntitlement', { walletAddress })
       const token = storage.authJwt.get()
       if (!walletAddress && !token) {
-        return 'no-access'
+        return { entitlement: 'no-access' }
       }
       const url = urlWithParams(new URL('/paywall/entitlement', API_URL), {
         url: pageUrl,
@@ -68,14 +68,8 @@ function main() {
       if (data.token) {
         storage.authJwt.set(data.token)
       }
-      if (data.entitlement === 'pending' && data.paymentId) {
-        actions.setView('verify', {
-          paymentId: data.paymentId,
-          sender: walletAddress!,
-        })
-      }
 
-      return data.entitlement
+      return { entitlement: data.entitlement, paymentId: data.paymentId }
     },
     async authenticate(walletAddress) {
       const url = new URL('/auth', API_URL).href
