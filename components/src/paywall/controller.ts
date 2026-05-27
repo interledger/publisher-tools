@@ -23,7 +23,24 @@ interface InitiatePaymentResult {
 
 type Entitlement = 'no-access' | 'auth-required' | 'has-access'
 
-export type Screens = 'home' | 'form'
+export type View = {
+  home: undefined
+  form: { walletAddress?: string; isAuthMode?: boolean }
+  verify: { paymentId: string; sender?: WalletAddressInfo }
+  authenticate: { sender?: WalletAddressInfo }
+}
+
+export type ViewInfo = {
+  [K in keyof View]: { type: K; data: View[K] }
+}[keyof View]
+
+export interface Actions {
+  setView<K extends keyof View>(
+    ...args: View[K] extends undefined
+      ? [type: K, data?: View[K]]
+      : [type: K, data: View[K]]
+  ): void
+}
 
 export interface Controller {
   receiverWalletAddressUrl: string
