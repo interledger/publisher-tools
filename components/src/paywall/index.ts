@@ -115,7 +115,7 @@ export class Paywall extends LitElement {
         .title=${title.text}
         .description=${description.text}
         .ctaButton=${ctaButton.text}
-        .walletAddressUrl=${this.#controller.senderWalletAddressUrl}
+        .walletAddressUrl=${this._view.data.walletAddress}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
     }
@@ -141,7 +141,9 @@ export class Paywall extends LitElement {
   }
 
   async #onPayStart() {
-    this.#setView('form', {})
+    this.#setView('form', {
+      walletAddress: this.#controller.senderWalletAddressUrl ?? undefined,
+    })
     void this.#getReceiver() // pre-fetch
   }
 
