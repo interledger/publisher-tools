@@ -111,6 +111,7 @@ export class Paywall extends LitElement {
         .title=${title.text}
         .description=${description.text}
         .ctaButton=${ctaButton.text}
+        .walletAddressUrl=${this.#controller.senderWalletAddressUrl}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
     }

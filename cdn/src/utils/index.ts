@@ -152,20 +152,8 @@ export function isAuthJwt(tokenStr?: string | null): tokenStr is string {
   const base64UrlRegex = /^[A-Za-z0-9\-_]+$/
   if (!parts.every((part) => base64UrlRegex.test(part))) return false
 
-  let payload
-  try {
-    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
-    const jsonString = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join(''),
-    )
-    payload = JSON.parse(jsonString)
-  } catch {
-    return false
-  }
-  if (typeof payload === 'object' && payload !== null) {
+  const payload = extractJwtPayload(parts[1])
+  if (payload) {
     return (
       'sub' in payload &&
       typeof payload.sub === 'string' &&
@@ -174,6 +162,29 @@ export function isAuthJwt(tokenStr?: string | null): tokenStr is string {
     )
   }
   return false
+}
+
+// Ensure isAuthJwt is called before using this directly.
+export function extractJwtPayload<T extends Record<string, unknown>>(
+  payloadBase64Url: string,
+) {
+  let payload
+  try {
+    const base64 = payloadBase64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonString = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(''),
+    )
+    payload = JSON.parse(jsonString)
+  } catch {
+    return null
+  }
+  if (typeof payload === 'object' && payload !== null) {
+    return payload as T
+  }
+  return null
 }
 
 export function redirect(url: string): never {

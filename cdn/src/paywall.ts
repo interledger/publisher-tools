@@ -10,6 +10,7 @@ import { API_URL } from '@shared/defines'
 import { sleep, urlWithParams } from '@shared/utils'
 import { Paywall } from '@tools/components'
 import {
+  extractJwtPayload,
   fetchProfile,
   getScriptParams,
   getWallet,
@@ -43,7 +44,7 @@ function main() {
   if (price) element.setPrice(price)
   const actions = element.setController({
     receiverWalletAddressUrl: params.walletAddress,
-    // senderWalletAddressUrl:
+    senderWalletAddressUrl: storage.authJwt.getWalletAddress(),
     cdnUrl: params.cdnUrl,
     fetchConfig: () => fetchProfile(API_URL, 'paywall', params),
     async checkEntitlement(walletAddress) {
@@ -202,6 +203,13 @@ const storage = {
     get() {
       const stored = window.localStorage.getItem('ilpt:wallet-address-auth')
       return isAuthJwt(stored) ? stored : null
+    },
+    getWalletAddress(token?: string | null) {
+      type JwtPayload = { sub: string; waUrl?: string }
+      token ||= this.get()
+      if (!token) return null
+      const payload = extractJwtPayload<JwtPayload>(token.split('.')[1])
+      return payload?.waUrl || payload?.sub || null
     },
   },
   postPayment: {

@@ -48,6 +48,7 @@ export interface Controller {
 
   fetchConfig(): Promise<PaywallProfile>
 
+  senderWalletAddressUrl?: string | null
   /** Check if given wallet address is entitled to access */
   checkEntitlement(walletAddress?: WalletAddressInfo): Promise<Entitlement>
   authenticate(
