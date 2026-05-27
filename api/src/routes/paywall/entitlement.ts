@@ -37,10 +37,12 @@ app.get(
 
     const payment = await findPayment(env.PUBLISHER_TOOLS_DB, params.url, payer)
 
+    const entitlement = getEntitlement(payment, !!token)
+    const paymentId = payment ? payment.paymentId : undefined
     const result: PaywallEntitlementResult = {
-      entitlement: getEntitlement(payment, !!token),
+      entitlement,
       token: token?.jwt,
-      ...(payment && { paymentId: payment.paymentId }),
+      ...(payment && entitlement === 'pending' && { paymentId }),
     }
     if (result.entitlement === 'has-access') {
       header('Cache-Control', 'private, max-age=3600')
