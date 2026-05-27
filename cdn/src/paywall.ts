@@ -64,8 +64,11 @@ function main() {
         headers: { ...(token && { Authorization: `Bearer ${token}` }) },
       })
       const data: PaywallEntitlementResult = await res.json()
-      if (data.token) storage.authJwt.set(data.token)
-      if (data.entitlement === 'pending') {
+
+      if (data.token) {
+        storage.authJwt.set(data.token)
+      }
+      if (data.entitlement === 'pending' && data.paymentId) {
         actions.setView('verify', {
           paymentId: data.paymentId,
           sender: walletAddress!,
