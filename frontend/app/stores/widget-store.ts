@@ -13,7 +13,7 @@ import type { SaveResult } from '~/lib/types'
 import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
-import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
+import { createToolStoreUtils } from '~/utils/utils.store'
 import { toolState } from './toolStore'
 
 export const {
@@ -73,8 +73,6 @@ const widgetStoreUtils = createToolStoreUtils({
   snapshots,
 })
 
-const { snapshotsStorageKey } = getStorageKeys(TOOL_WIDGET)
-
 export const actions = {
   setProfileName(name: string) {
     widget.profiles[toolState.activeTab].$name = name
@@ -116,23 +114,10 @@ export const actions = {
     )
   },
   commitProfile() {
-    const profile = snapshot(widget.profile)
-    snapshots.set(toolState.activeTab, profile)
-    widget.profilesUpdate.delete(toolState.activeTab)
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    widgetStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
-    PROFILE_IDS.forEach((id) => {
-      const profile = snapshot(widget.profiles[id])
-
-      snapshots.set(id, profile)
-      widget.profilesUpdate.delete(id)
-    })
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    widgetStoreUtils.commitAllProfiles()
   },
 }
 
