@@ -7,6 +7,8 @@ import {
   getScriptParams,
   getWallet,
   initiatePayment,
+  isAbortSignalTimeout,
+  isTimeoutError,
 } from './utils'
 
 const NAME = 'wm-paywall'
@@ -90,16 +92,4 @@ function drawPaywall() {
   })
 
   document.body.appendChild(element)
-}
-
-function isAbortSignalTimeout(ev: unknown) {
-  return (
-    ev instanceof Event &&
-    ev.target instanceof AbortSignal &&
-    isTimeoutError(ev.target.reason)
-  )
-}
-
-function isTimeoutError(err: unknown) {
-  return err instanceof DOMException && err.name === 'TimeoutError'
 }

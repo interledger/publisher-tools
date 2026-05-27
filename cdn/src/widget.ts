@@ -10,6 +10,8 @@ import {
   getScriptParams,
   getWallet,
   initiatePayment,
+  isAbortSignalTimeout,
+  isTimeoutError,
 } from './utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)
@@ -113,16 +115,4 @@ function getFrontendUrlOrigin() {
   }
 
   return APP_URL.staging
-}
-
-function isAbortSignalTimeout(ev: unknown) {
-  return (
-    ev instanceof Event &&
-    ev.target instanceof AbortSignal &&
-    isTimeoutError(ev.target.reason)
-  )
-}
-
-function isTimeoutError(err: unknown) {
-  return err instanceof DOMException && err.name === 'TimeoutError'
 }
