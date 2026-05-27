@@ -143,3 +143,15 @@ export function appendPaymentPointer(walletAddressUrl: string) {
   document.head.appendChild(monetizationElement)
   return monetizationElement
 }
+
+export function isAbortSignalTimeout(ev: unknown) {
+  return (
+    ev instanceof Event &&
+    ev.target instanceof AbortSignal &&
+    isTimeoutError(ev.target.reason)
+  )
+}
+
+export function isTimeoutError(err: unknown) {
+  return err instanceof DOMException && err.name === 'TimeoutError'
+}

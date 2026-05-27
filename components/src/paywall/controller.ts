@@ -49,7 +49,7 @@ export interface Controller {
   fetchConfig(): Promise<PaywallProfile>
 
   /** Check if given wallet address is entitled to access */
-  checkEntitlement(walletAddressUrl: WalletAddressUrl): Promise<Entitlement>
+  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<Entitlement>
   /** Store the entitlement after a successful payment in some backend */
   saveEntitlement(
     walletAddressUrl: WalletAddressUrl,

@@ -52,7 +52,7 @@ export class Paywall extends LitElement {
 
     const [config, entitlement] = await Promise.all([
       this.#controller.fetchConfig(),
-      this.#controller.checkEntitlement(''),
+      this.#controller.checkEntitlement(),
     ])
 
     this.#config = config
