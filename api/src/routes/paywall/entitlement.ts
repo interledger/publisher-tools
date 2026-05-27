@@ -1,6 +1,6 @@
 import z from 'zod'
 import { app } from '../../app'
-import { hasPayment } from '../../utils/payments-db'
+import { findPayment } from '../../utils/payments-db'
 import { createHTTPException, validate } from '../../utils/utils'
 import { refreshToken } from '../auth/utils'
 
@@ -15,6 +15,8 @@ export type PaywallEntitlementResult = {
   entitlement: 'no-access' | 'has-access' | 'auth-required' | 'pending'
   // Refreshed Authorization header, if a valid one was passed in request
   token?: string | null
+  /** Set only when {@linkcode PaywallEntitlementResult['entitlement']} is 'pending' */
+  paymentId?: string
 }
 
 app.get(
@@ -33,15 +35,12 @@ app.get(
       $url: token?.payload.waUrl || params.$wa || walletAddress,
     }
 
-    const paymentStatus = await hasPayment(
-      env.PUBLISHER_TOOLS_DB,
-      params.url,
-      payer,
-    )
+    const payment = await findPayment(env.PUBLISHER_TOOLS_DB, params.url, payer)
 
     const result: PaywallEntitlementResult = {
-      entitlement: getEntitlement(paymentStatus, !!token),
+      entitlement: getEntitlement(payment, !!token),
       token: token?.jwt,
+      ...(payment && { paymentId: payment.paymentId }),
     }
     if (result.entitlement === 'has-access') {
       header('Cache-Control', 'private, max-age=3600')
@@ -79,10 +78,10 @@ app.get(
 )
 
 function getEntitlement(
-  paymentStatus: Awaited<ReturnType<typeof hasPayment>>,
+  payment: Awaited<ReturnType<typeof findPayment>>,
   hasToken: boolean,
 ): PaywallEntitlementResult['entitlement'] {
-  if (!paymentStatus) return 'no-access'
-  if (paymentStatus === 'created') return 'pending'
+  if (!payment) return 'no-access'
+  if (payment.status === 'created') return 'pending'
   return hasToken ? 'has-access' : 'auth-required'
 }
