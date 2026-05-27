@@ -61,19 +61,22 @@ export class PaywallVerify extends LitElement {
         continue
       }
       if (status.type === 'PAYMENT_DONE') {
-        // emit done
+        const detail: Events['payment_confirmed'] = {
+          paymentId: this.paymentId,
+          sender: this.sender,
+        }
+        this.dispatchEvent(new CustomEvent('payment_confirmed', { detail }))
         break
       }
       throw new Error('Invalid payment status')
     }
-
-    const entitlement = await this.#controller.checkEntitlement(this.sender)
-    if (entitlement === 'has-access') {
-      // dispatch hide paywall
-    } else if (entitlement === 'auth-required') {
-      // possible??
-    } else if (entitlement === 'no-access') {
-      // possible??
-    }
   }
 }
+
+type Events = {
+  payment_confirmed: {
+    paymentId: string
+    sender: WalletAddressInfo
+  }
+}
+export type { Events as PaymentVerifyEvents }

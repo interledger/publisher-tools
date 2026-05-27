@@ -65,6 +65,12 @@ function main() {
       })
       const data: PaywallEntitlementResult = await res.json()
       if (data.token) storage.authJwt.set(data.token)
+      if (data.entitlement === 'pending') {
+        actions.setView('verify', {
+          paymentId: data.paymentId,
+          sender: walletAddress!,
+        })
+      }
 
       return data.entitlement
     },

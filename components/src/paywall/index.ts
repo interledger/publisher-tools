@@ -19,7 +19,7 @@ import {
   type FormSubmitEventDetail,
 } from './components/form.js'
 import { PaywallHome } from './components/home.js'
-import { PaywallVerify } from './components/verify.js'
+import { PaywallVerify, type PaymentVerifyEvents } from './components/verify.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
@@ -123,6 +123,7 @@ export class Paywall extends LitElement {
         .sender=${this._view.data.sender}
         .paymentId=${this._view.data.paymentId}
         .controller=${this.#controller}
+        @payment_confirmed=${this.#onPaymentConfirmed}
       ></wmt-paywall-verify>`
     }
 
@@ -177,6 +178,17 @@ export class Paywall extends LitElement {
       amount: this.#price,
       note: this.defaultNote,
     })
+  }
+
+  async #onPaymentConfirmed(
+    ev: CustomEvent<PaymentVerifyEvents['payment_confirmed']>,
+  ) {
+    const sender = ev.detail.sender
+    const status = await this.#controller.checkEntitlement(sender)
+    if (status === 'has-access') {
+      this.remove()
+      return
+    }
   }
 
   #receiver_!: ReturnType<Controller['getWallet']>
