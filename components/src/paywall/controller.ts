@@ -26,7 +26,7 @@ type Entitlement = 'no-access' | 'auth-required' | 'has-access'
 export type View = {
   home: undefined
   form: { walletAddress?: string; isAuthMode?: boolean }
-  verify: { sender: WalletAddressInfo; paymentId: string }
+  verify: { paymentId: string; sender?: WalletAddressInfo; }
   authenticate: { sender?: WalletAddressInfo }
 }
 
