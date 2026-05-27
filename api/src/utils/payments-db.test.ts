@@ -4,7 +4,7 @@ import { ensureEnd } from '@shared/utils'
 import {
   savePayment,
   getPayment,
-  hasPayment,
+  findPayment,
   setPaymentStatus,
   UNSAFE_devEmptyDatabase,
   hash,
@@ -34,8 +34,8 @@ describe('Paywall Database', () => {
     ).resolves.toMatchObject({ count: 1 })
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
-    ).resolves.toBe('complete')
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
   })
 
   it('should grant access using the fallback wallet URL if the internal ID changes', async () => {
@@ -45,25 +45,25 @@ describe('Paywall Database', () => {
     ).resolves.toMatchObject({ count: 1 })
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, {
+      findPayment(DB, mockPayment.url.href, {
         ...mockPayment.sender,
         id: 'https://wallet.com/sender2',
       }),
-    ).resolves.toBe('complete')
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
   })
 
   it('should return falsy when a user has not paid for the content', async () => {
     await expect(
-      hasPayment(DB, 'https://myblog.com/other-post', mockPayment.sender),
+      findPayment(DB, 'https://myblog.com/other-post', mockPayment.sender),
     ).resolves.toBeFalsy()
 
     await savePayment(DB, mockPayment)
     await expect(
-      hasPayment(DB, 'https://myblog.com/other-post', mockPayment.sender),
+      findPayment(DB, 'https://myblog.com/other-post', mockPayment.sender),
     ).resolves.toBeFalsy()
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, {
+      findPayment(DB, mockPayment.url.href, {
         id: 'https://wallet.com/stranger',
         $url: 'https://stranger.com',
       }),
@@ -79,26 +79,26 @@ describe('Paywall Database', () => {
     ).resolves.toMatchObject({ count: 1 })
 
     await expect(
-      hasPayment(DB, url.href, {
+      findPayment(DB, url.href, {
         ...mockPayment.sender,
         id: 'https://wallet.com/sender2',
       }),
-    ).resolves.toBe('complete')
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
 
     url.searchParams.set('bar', 'baz')
     await expect(
-      hasPayment(DB, url.href, {
+      findPayment(DB, url.href, {
         ...mockPayment.sender,
         id: 'https://wallet.com/sender2',
       }),
-    ).resolves.toBe('complete')
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
 
     await expect(
-      hasPayment(DB, url.origin + ensureEnd(url.pathname, '/'), {
+      findPayment(DB, url.origin + ensureEnd(url.pathname, '/'), {
         ...mockPayment.sender,
         id: 'https://wallet.com/sender2',
       }),
-    ).resolves.toBe('complete')
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
   })
 
   it('should fetch the full, reconstructed payment record using getPayment', async () => {
@@ -121,14 +121,14 @@ describe('Paywall Database', () => {
     await savePayment(DB, { ...mockPayment, status: 'created' })
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
-    ).resolves.toBe('created')
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toEqual({ status: 'created', paymentId: mockPayment.paymentId })
 
     await setPaymentStatus(DB, mockPayment.paymentId, 'complete')
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
-    ).resolves.toBe('complete')
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
   })
 
   it('should delete the payment records when status is set to failed', async () => {
@@ -142,14 +142,14 @@ describe('Paywall Database', () => {
     await savePayment(DB, mockPayment2)
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
-    ).resolves.toBe('created')
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toEqual({ status: 'created', paymentId: mockPayment.paymentId })
 
     const changed = await setPaymentStatus(DB, mockPayment.paymentId, 'failed')
     expect(changed).toBe(true)
 
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
     ).resolves.toBeFalsy()
 
     const countByPaymentId = (paymentId: string) =>
@@ -177,14 +177,14 @@ describe('Paywall Database', () => {
   it('should only delete payment records when status is set to failed and not already complete', async () => {
     await savePayment(DB, { ...mockPayment, status: 'complete' })
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
-    ).resolves.toBe('complete')
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
 
     const changed = await setPaymentStatus(DB, mockPayment.paymentId, 'failed')
     expect(changed).toBe(false)
     await expect(
-      hasPayment(DB, mockPayment.url.href, mockPayment.sender),
-    ).resolves.toBe('complete')
+      findPayment(DB, mockPayment.url.href, mockPayment.sender),
+    ).resolves.toEqual({ status: 'complete', paymentId: mockPayment.paymentId })
 
     await expect(
       DB.exec(sql`SELECT COUNT(*) as count from paywall_payments`),
