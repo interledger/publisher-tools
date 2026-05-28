@@ -24,6 +24,7 @@ import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
 import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actions,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
@@ -38,6 +39,7 @@ import {
 import {
   loadState,
   persistState,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   toolActions,
   toolState,
 } from '~/stores/toolStore'
@@ -85,6 +87,7 @@ export default function Paywall() {
     wallet: paywallWallet,
     actions: paywallWalletActions,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const paywallSnap = useSnapshot(paywall)
   const navigate = useNavigate()
   const { save, saveLastAction } = useSaveProfile(paywallWallet)
