@@ -71,8 +71,7 @@ export class Paywall extends LitElement {
         isAuthMode: true,
       })
     } else if (entitlement.entitlement === 'has-access') {
-      // TODO: dispatch events
-      this.remove()
+      this.#hidePaywall()
     } else if (entitlement.entitlement === 'pending') {
       this.#setView('verify', { paymentId: entitlement.paymentId! })
     }
@@ -164,7 +163,7 @@ export class Paywall extends LitElement {
 
     const status = await this.#controller.checkEntitlement(sender)
     if (status.entitlement === 'has-access') {
-      this.remove()
+      this.#hidePaywall()
       return
     }
     if (status.entitlement === 'auth-required') {
@@ -191,9 +190,14 @@ export class Paywall extends LitElement {
     const sender = ev.detail.sender
     const status = await this.#controller.checkEntitlement(sender)
     if (status.entitlement === 'has-access') {
-      this.remove()
+      this.#hidePaywall()
       return
     }
+  }
+
+  #hidePaywall() {
+    this.dispatchEvent(new CustomEvent('paywall_hide'))
+    this.remove()
   }
 
   #receiver_!: ReturnType<Controller['getWallet']>
