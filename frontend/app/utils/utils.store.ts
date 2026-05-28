@@ -155,12 +155,13 @@ export function createToolStoreUtils<T extends Tool>(
 
     // User-initiated save; returns diff for analytics
     commitActiveProfile(activeTab: ProfileId): ChangedFields {
-      const prev = snapshots.get(activeTab)
+      const prev = snapshots.get(activeTab)!
       const current = snapshot(store.profiles[activeTab]) as ToolProfile<T>
       const changed = diffProfile(prev, current)
 
       snapshots.set(activeTab, current)
       store.profilesUpdate.delete(activeTab)
+      // TODO: determine if this needed here
       persistSnapshots()
 
       return changed

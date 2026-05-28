@@ -13,11 +13,11 @@ describe('diffProfile', () => {
     expect(diffProfile(prev, curr)).toEqual({})
   })
 
-  it('emits new string value for primitive string changes', () => {
+  it('emits length bucket for primitive string changes', () => {
     const prev = { title: { text: 'hi' } }
     const curr = { title: { text: 'hello world' } }
     expect(diffProfile(prev, curr)).toEqual({
-      'field.title.text': 'hello world',
+      'f.title.text': '11-30',
     })
   })
 
@@ -25,7 +25,7 @@ describe('diffProfile', () => {
     const prev = { description: { isVisible: false } }
     const curr = { description: { isVisible: true } }
     expect(diffProfile(prev, curr)).toEqual({
-      'field.description.isVisible': true,
+      'f.description.isVisible': true,
     })
   })
 
@@ -38,20 +38,30 @@ describe('diffProfile', () => {
   it('includes $name renames', () => {
     const prev = { $name: 'Default' }
     const curr = { $name: 'Production' }
-    expect(diffProfile(prev, curr)).toEqual({ 'field.$name': 'Production' })
+    expect(diffProfile(prev, curr)).toEqual({ 'f.$name': '1-10' })
   })
 
-  it('emits all current fields when prev is undefined', () => {
-    const curr = { title: { text: 'hi' }, description: { isVisible: true } }
-    expect(diffProfile(undefined, curr)).toEqual({
-      'field.title.text': 'hi',
-      'field.description.isVisible': true,
-    })
-  })
-
-  it('emits empty string for cleared string fields', () => {
+  it('emits "0" bucket for cleared string fields', () => {
     const prev = { title: { text: 'hello' } }
     const curr = { title: { text: '' } }
-    expect(diffProfile(prev, curr)).toEqual({ 'field.title.text': '' })
+    expect(diffProfile(prev, curr)).toEqual({ 'f.title.text': '0' })
+  })
+
+  it.each([
+    ['', '0'],
+    ['a', '1-10'],
+    ['x'.repeat(10), '1-10'],
+    ['x'.repeat(11), '11-30'],
+    ['x'.repeat(30), '11-30'],
+    ['x'.repeat(31), '31-60'],
+    ['x'.repeat(60), '31-60'],
+    ['x'.repeat(61), '61-150'],
+    ['x'.repeat(150), '61-150'],
+    ['x'.repeat(151), '151+'],
+    ['x'.repeat(500), '151+'],
+  ])('buckets string of length %i as %s', (value, bucket) => {
+    const prev = { title: { text: 'seed' } }
+    const curr = { title: { text: value } }
+    expect(diffProfile(prev, curr)).toEqual({ 'f.title.text': bucket })
   })
 })

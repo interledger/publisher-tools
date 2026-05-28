@@ -1,47 +1,27 @@
-export type ChangedFields = Partial<Record<`field.${string}`, boolean | string>>
+import diff from 'microdiff'
 
-type PlainObject = Record<string, unknown>
+export type ChangedFields = Partial<Record<`f.${string}`, boolean | string>>
 
-// $version and $modifiedAt are system metadata; $name is user-editable (profile rename)
+// $version and $modifiedAt change on every save
 const SKIPPED_KEYS = new Set(['$version', '$modifiedAt'])
 
-export function diffProfile(
-  prev: object | undefined,
-  current: object,
-): ChangedFields {
+export function diffProfile(prev: object, current: object): ChangedFields {
   const result: Record<string, boolean | string> = {}
-  walk(prev as PlainObject | undefined, current as PlainObject, '', result)
+  for (const d of diff(prev, current)) {
+    if (d.type !== 'CHANGE') continue
+    if (SKIPPED_KEYS.has(d.path[0] as string)) continue
+    result[`f.${d.path.join('.')}`] =
+      typeof d.value === 'string' ? lengthBucket(d.value) : true
+  }
   return result as ChangedFields
 }
 
-function walk(
-  prev: PlainObject | undefined,
-  current: PlainObject,
-  path: string,
-  result: Record<string, boolean | string>,
-): void {
-  for (const [key, currentValue] of Object.entries(current)) {
-    if (SKIPPED_KEYS.has(key)) continue
-    const fieldPath = path ? `${path}.${key}` : key
-    const prevValue = prev?.[key]
-    const isObject =
-      currentValue !== null &&
-      typeof currentValue === 'object' &&
-      !Array.isArray(currentValue)
-
-    if (isObject) {
-      walk(
-        prevValue as PlainObject | undefined,
-        currentValue as PlainObject,
-        fieldPath,
-        result,
-      )
-      continue
-    }
-
-    if (prevValue !== currentValue) {
-      result[`field.${fieldPath}`] =
-        typeof currentValue === 'string' ? currentValue : true
-    }
-  }
+function lengthBucket(s: string): string {
+  const n = s.length
+  if (n === 0) return '0'
+  if (n <= 10) return '1-10'
+  if (n <= 30) return '11-30'
+  if (n <= 60) return '31-60'
+  if (n <= 150) return '61-150'
+  return '151+'
 }
