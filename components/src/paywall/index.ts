@@ -3,7 +3,9 @@ import { property, state } from 'lit/decorators.js'
 import {
   NO_OP_CONTROLLER,
   type Controller,
-  type Screens,
+  type Actions,
+  type View,
+  type ViewInfo,
 } from '@c/paywall/controller'
 import { applyFontFamily, registerComponents } from '@c/utils.js'
 import {
@@ -28,7 +30,7 @@ export class Paywall extends LitElement {
 
   @property({ type: Boolean, reflect: true }) hidden = true
   @state() _ready = false
-  @state() _screen: Screens = 'home'
+  @state() _view: ViewInfo = { type: 'home', data: undefined }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -50,7 +52,7 @@ export class Paywall extends LitElement {
 
     const [config, entitlement] = await Promise.all([
       this.#controller.fetchConfig(),
-      this.#controller.checkEntitlement(''),
+      this.#controller.checkEntitlement(),
     ])
 
     this.#config = config
@@ -64,12 +66,19 @@ export class Paywall extends LitElement {
   }
 
   #controller = NO_OP_CONTROLLER
-  setController(controller: Controller) {
+  setController(controller: Controller): Actions {
+    // @ts-expect-error We want to return action first time only, ideally.
     if (this.#controller === controller) return
     if (this.#controller !== NO_OP_CONTROLLER) {
       throw new Error('controller is already set')
     }
     this.#controller = controller
+    return {
+      setView: (...args) => {
+        // @ts-expect-error weird
+        this.#setView(...args)
+      },
+    }
   }
 
   #price = ''
@@ -88,7 +97,7 @@ export class Paywall extends LitElement {
 
     const { title, description, ctaButton, price } = this.#config
 
-    if (this._screen === 'form') {
+    if (this._view.type === 'form') {
       return html`<wmt-paywall-form
         .title=${title.text}
         .description=${description.text}
@@ -107,7 +116,7 @@ export class Paywall extends LitElement {
   }
 
   async #onPayStart() {
-    this.#setScreen('form')
+    this.#setView('form', {})
     void this.#getReceiver() // pre-fetch
   }
 
@@ -151,8 +160,8 @@ export class Paywall extends LitElement {
     return `Pay Per Article service`
   }
 
-  #setScreen(screen: Screens) {
-    this._screen = screen
+  #setView<K extends keyof View>(view: K, data: View[K]) {
+    this._view = { type: view, data } as ViewInfo
   }
 
   @state() _delayComplete = false

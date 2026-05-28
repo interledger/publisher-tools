@@ -85,11 +85,11 @@ export async function setPaymentStatus(
   return res.meta.changes === 1
 }
 
-export async function hasPayment(
+export async function findPayment(
   db: D1Database,
   url: string,
   payer: Pick<WalletAddressInfo, 'id' | '$url'>,
-): Promise<false | PaymentStatus> {
+): Promise<false | { status: PaymentStatus; paymentId: string }> {
   const normalizedUrl = normalizeUrl(new URL(url))
   const [hashedUrl, hashedPayerWalletAddressId, hashedPayerWalletAddressUrl] =
     await Promise.all([hash(normalizedUrl), hash(payer.id), hash(payer.$url)])
@@ -107,7 +107,10 @@ export async function hasPayment(
     return false
   }
 
-  return res.status === 1 ? 'complete' : 'created'
+  return {
+    status: mapStatusIdToStatus(res.status),
+    paymentId: res.paymentId,
+  }
 }
 
 export async function getPayment(db: D1Database, paymentId: string) {
@@ -212,7 +215,7 @@ interface PaywallPaymentRow {
 /**
  * Represents a raw row inside the 'paywall_payments_meta' table.
  */
-export interface PaywallPaymentMetaRow {
+interface PaywallPaymentMetaRow {
   paymentId: string // Primary key matching paywall_payments.paymentId
   outgoingPaymentId: string
   incomingPaymentId: string
