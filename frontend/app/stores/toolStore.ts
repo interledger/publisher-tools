@@ -8,9 +8,11 @@ import {
   TOOL_WIDGET,
   TOOL_OFFERWALL,
   PROFILE_A,
+  TOOL_PAYWALL,
 } from '@shared/types'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
+import { actions as paywallActions } from '~/stores/paywall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
 
@@ -45,6 +47,9 @@ export const toolState = proxy({
 
   // customization steps state
   buildStep: 'unfilled' as StepStatus,
+  // Set only with paywall at present
+  // TODO: refactor the "steps" status
+  configureStep: 'unfiled' as StepStatus,
 })
 
 export const toolActions = {
@@ -57,6 +62,10 @@ export const toolActions = {
         return (await bannerActions.getProfiles(TOOL_BANNER)) as ToolProfiles<T>
       case TOOL_WIDGET:
         return (await widgetActions.getProfiles(TOOL_WIDGET)) as ToolProfiles<T>
+      case TOOL_PAYWALL:
+        return (await paywallActions.getProfiles(
+          TOOL_PAYWALL,
+        )) as ToolProfiles<T>
       case TOOL_OFFERWALL:
         return (await offerwallActions.getProfiles(
           TOOL_OFFERWALL,
@@ -78,6 +87,10 @@ export const toolActions = {
         widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
         widgetActions.commitProfiles()
         break
+      case TOOL_PAYWALL:
+        paywallActions.setProfiles(profiles as ToolProfiles<'paywall'>)
+        paywallActions.commitProfiles()
+        break
       case TOOL_OFFERWALL:
         offerwallActions.setProfiles(profiles as ToolProfiles<'offerwall'>)
         offerwallActions.commitProfiles()
@@ -94,6 +107,9 @@ export const toolActions = {
         break
       case TOOL_WIDGET:
         widgetActions.resetProfiles()
+        break
+      case TOOL_PAYWALL:
+        paywallActions.resetProfiles()
         break
       case TOOL_OFFERWALL:
         offerwallActions.resetProfiles()
@@ -117,6 +133,10 @@ export const toolActions = {
 
   setBuildCompleteStep(step: StepStatus) {
     toolState.buildStep = step
+  },
+
+  setConfigureCompleteStep(step: StepStatus) {
+    toolState.configureStep = step
   },
 }
 

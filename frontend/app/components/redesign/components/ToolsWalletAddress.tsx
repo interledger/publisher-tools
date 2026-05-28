@@ -17,7 +17,11 @@ import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 interface Props {
   store: WalletStore
   walletActions: WalletActions
-  toolName: 'drawer banner' | 'payment widget' | 'offerwall experience'
+  toolName:
+    | 'drawer banner'
+    | 'payment widget'
+    | 'offerwall experience'
+    | 'pay per article'
 }
 
 export const ToolsWalletAddress = ({
