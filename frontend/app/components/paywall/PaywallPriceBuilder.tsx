@@ -1,3 +1,4 @@
+import { getCurrencySymbol } from '@c/utils'
 import { useTranslation } from '~/i18n/useTranslation'
 import { usePaywallProfile } from '~/stores/paywall-store'
 import { InputField } from '../redesign/components'
@@ -7,6 +8,7 @@ export function PaywallPriceBuilder() {
   const t = useTranslation('paywall')
 
   const currency = snap.price.currency
+  const currencySymbol = getCurrencySymbol(currency)
 
   return (
     <div className="bg-white shadow-sm rounded-xl p-4">
@@ -30,6 +32,8 @@ export function PaywallPriceBuilder() {
             profile.price.value = ev.currentTarget.value
           }}
           helpText={t('input.price.hint', { currency })}
+          prefix={currencySymbol}
+          addonClassname="inline-block pr-2"
         />
       </fieldset>
     </div>
