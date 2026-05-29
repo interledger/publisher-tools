@@ -32,7 +32,7 @@ jobs:
 
       - name: Check deployment permissions
         id: deploy-check
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
@@ -181,7 +181,7 @@ jobs:
       #region Summary
       - name: Create Job summary
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         id: summary
         with:
           script: |
