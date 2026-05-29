@@ -130,7 +130,7 @@ export const StepsIndicator: React.FC<StepsIndicatorProps> = ({ steps }) => {
 
       {step3 && (
         <>
-          <div className={`w-px bg-purple-300 h-80`}></div>
+          <div className={`w-px bg-purple-300 h-[31rem]`}></div>
           <Step
             number={step3.number}
             label={step3.label}
