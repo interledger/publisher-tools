@@ -10,10 +10,11 @@ import {
 } from '@shared/types'
 import type { BannerStore } from '~/stores/banner-store'
 import type { OfferwallStore } from '~/stores/offerwall-store'
+import type { PaywallStore } from '~/stores/paywall-store'
 import type { WidgetStore } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
 
-type Store = BannerStore | WidgetStore | OfferwallStore
+type Store = BannerStore | WidgetStore | OfferwallStore | PaywallStore
 const STORAGE_PREFIX = 'wmt'
 
 export function getStorageKeys(tool: Tool) {
@@ -94,6 +95,13 @@ export function createToolStoreUtils<T extends Tool>(
     })
   }
 
+  function persistSnapshots() {
+    localStorage.setItem(
+      snapshotsStorageKey,
+      JSON.stringify(Object.fromEntries(snapshots)),
+    )
+  }
+
   return {
     subscribeProfilesToStorage() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToStorage)
@@ -143,6 +151,22 @@ export function createToolStoreUtils<T extends Tool>(
     subscribeProfilesToUpdates() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToUpdates)
       return () => unsubscribes.forEach((s) => s())
+    },
+
+    commitActiveProfile(activeTab: ProfileId): void {
+      const current = snapshot(store.profiles[activeTab]) as ToolProfile<T>
+      snapshots.set(activeTab, current)
+      store.profilesUpdate.delete(activeTab)
+      persistSnapshots()
+    },
+
+    commitAllProfiles(): void {
+      PROFILE_IDS.forEach((id) => {
+        const profile = snapshot(store.profiles[id]) as ToolProfile<T>
+        snapshots.set(id, profile)
+        store.profilesUpdate.delete(id)
+      })
+      persistSnapshots()
     },
 
     removeProfilesFromStorage() {

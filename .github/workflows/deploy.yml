@@ -138,6 +138,8 @@ jobs:
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
           origin: ${{ vars.API_ORIGIN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

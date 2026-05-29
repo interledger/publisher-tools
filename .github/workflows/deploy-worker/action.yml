@@ -42,7 +42,7 @@ inputs:
     description: 'AWS_PREFIX used for config storage'
     required: true
   BUILD_UMAMI_HOST:
-    description: 'Umami analytics host URL'
+    description: 'Umami host (e.g. https://cloud.umami.is)'
     required: false
   BUILD_UMAMI_WEBSITE_ID:
     description: 'Umami analytics website ID'

@@ -22,6 +22,7 @@ export class PaywallWalletAddressForm extends LitElement {
   @property({ type: String }) title = DEFAULTS.title.text
   @property({ type: String }) description = DEFAULTS.description.text
   @property({ type: String }) ctaText = DEFAULTS.ctaButton.text
+  @property({ type: String }) walletAddressUrl = ''
 
   @state() private _error = ''
   @state() private _loading = false
@@ -31,6 +32,13 @@ export class PaywallWalletAddressForm extends LitElement {
     registerComponents({
       'wm-dots-loader': DotsLoader,
     })
+  }
+
+  firstUpdated(): void {
+    if (this.walletAddressUrl) {
+      const input = this.renderRoot.querySelector('input')!
+      input.value = this.walletAddressUrl
+    }
   }
 
   render() {

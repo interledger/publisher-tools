@@ -1,4 +1,7 @@
-import type { PaymentStatus, WalletAddressInfo } from 'publisher-tools-api'
+import type {
+  PaywallPaymentStatus,
+  WalletAddressInfo,
+} from 'publisher-tools-api'
 import type { PendingGrant } from '@interledger/open-payments'
 import { createDefaultPaywallProfile } from '@shared/default-data'
 import type { PaywallProfile } from '@shared/types'
@@ -18,9 +21,26 @@ interface InitiatePaymentResult {
   grantRedirectUrl: PendingGrant['interact']['redirect']
 }
 
-type Entitlement = 'no-access' | 'auth-required' | 'has-access'
+type Entitlement = 'no-access' | 'auth-required' | 'has-access' | 'pending'
 
-export type Screens = 'home' | 'form'
+export type View = {
+  home: undefined
+  form: { walletAddress?: string; isAuthMode?: boolean }
+  verify: { paymentId: string; sender?: WalletAddressInfo }
+  authenticate: { sender?: WalletAddressInfo }
+}
+
+export type ViewInfo = {
+  [K in keyof View]: { type: K; data: View[K] }
+}[keyof View]
+
+export interface Actions {
+  setView<K extends keyof View>(
+    ...args: View[K] extends undefined
+      ? [type: K, data?: View[K]]
+      : [type: K, data: View[K]]
+  ): void
+}
 
 export interface Controller {
   receiverWalletAddressUrl: string
@@ -28,24 +48,22 @@ export interface Controller {
 
   fetchConfig(): Promise<PaywallProfile>
 
+  senderWalletAddressUrl?: string | null
   /** Check if given wallet address is entitled to access */
-  checkEntitlement(walletAddressUrl: WalletAddressUrl): Promise<Entitlement>
-  /** Store the entitlement after a successful payment in some backend */
-  saveEntitlement(
-    walletAddressUrl: WalletAddressUrl,
-    details: {
-      outgoingPaymentId: string
-      incomingPaymentId: string
-      paymentId: string
-    },
-  ): Promise<void>
+  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<{
+    entitlement: Entitlement
+    paymentId?: string
+  }>
+  authenticate(
+    walletAddress: WalletAddressInfo,
+  ): Promise<{ grantRedirectUrl: string }>
 
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
   getStatus(
     paymentId: string,
     signal?: AbortSignal,
-  ): AsyncGenerator<PaymentStatus>
+  ): AsyncGenerator<PaywallPaymentStatus>
 
   isPreviewMode?: boolean
 }
@@ -54,8 +72,8 @@ export const NO_OP_CONTROLLER: Controller = {
   cdnUrl: 'https://example.com',
   receiverWalletAddressUrl: 'https://example.com/pay',
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
-  checkEntitlement: () => Promise.resolve('no-access'),
-  saveEntitlement: () => Promise.resolve(),
+  checkEntitlement: () => Promise.resolve({ entitlement: 'no-access' }),
+  authenticate: () => Promise.reject('not-implemented'),
   getWallet(walletAddressUrl) {
     return Promise.resolve({
       $url: walletAddressUrl,
@@ -75,7 +93,7 @@ export const NO_OP_CONTROLLER: Controller = {
   },
   async *getStatus() {
     yield {
-      type: 'OUTGOING_PAYMENT_DONE',
+      type: 'PAYMENT_DONE',
       outgoingPaymentId: '',
       result: 'success',
     }

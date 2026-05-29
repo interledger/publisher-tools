@@ -108,7 +108,7 @@ const Step: React.FC<StepProps> = ({
 }
 
 export const StepsIndicator: React.FC<StepsIndicatorProps> = ({ steps }) => {
-  const [step1, step2] = steps
+  const [step1, step2, step3] = steps
 
   return (
     <div className="flex flex-col items-center">
@@ -127,6 +127,18 @@ export const StepsIndicator: React.FC<StepsIndicatorProps> = ({ steps }) => {
         status={step2.status}
         textPosition="bottom"
       />
+
+      {step3 && (
+        <>
+          <div className={`w-px bg-purple-300 h-80`}></div>
+          <Step
+            number={step3.number}
+            label={step3.label}
+            status={step3.status}
+            textPosition="bottom"
+          />
+        </>
+      )}
     </div>
   )
 }
