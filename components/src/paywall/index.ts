@@ -19,6 +19,7 @@ import {
   type FormSubmitEventDetail,
 } from './components/form.js'
 import { PaywallHome } from './components/home.js'
+import { PaywallVerify, type PaymentVerifyEvents } from './components/verify.js'
 import styles from './styles.css?raw'
 import styleTokens from './vars.css?raw'
 
@@ -42,6 +43,7 @@ export class Paywall extends LitElement {
     registerComponents({
       'wmt-paywall-home': PaywallHome,
       'wmt-paywall-form': PaywallWalletAddressForm,
+      'wmt-paywall-verify': PaywallVerify,
     })
 
     void this.#init()
@@ -63,6 +65,16 @@ export class Paywall extends LitElement {
     void this.showAfterDelay(connectedAt).then(() => {
       this.hidden = false
     })
+    if (entitlement.entitlement === 'auth-required') {
+      this.#setView('form', {
+        walletAddress: this.#controller.senderWalletAddressUrl ?? undefined,
+        isAuthMode: true,
+      })
+    } else if (entitlement.entitlement === 'has-access') {
+      this.#hidePaywall()
+    } else if (entitlement.entitlement === 'pending') {
+      this.#setView('verify', { paymentId: entitlement.paymentId! })
+    }
   }
 
   #controller = NO_OP_CONTROLLER
@@ -92,7 +104,7 @@ export class Paywall extends LitElement {
 
   render() {
     if (!this._ready) return nothing
-    if (this.#entitlement === 'has-access') return nothing
+    if (this.#entitlement.entitlement === 'has-access') return nothing
     if (!this._delayComplete) return nothing
 
     const { title, description, ctaButton, price } = this.#config
@@ -102,8 +114,20 @@ export class Paywall extends LitElement {
         .title=${title.text}
         .description=${description.text}
         .ctaButton=${ctaButton.text}
+        .walletAddressUrl=${this._view.data.walletAddress}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
+    }
+
+    if (this._view.type === 'verify') {
+      return html`<wmt-paywall-verify
+        .title=${title.text}
+        .description=${description.text}
+        .sender=${this._view.data.sender}
+        .paymentId=${this._view.data.paymentId}
+        .controller=${this.#controller}
+        @payment_confirmed=${this.#onPaymentConfirmed}
+      ></wmt-paywall-verify>`
     }
 
     return html`<wmt-paywall-home
@@ -116,7 +140,9 @@ export class Paywall extends LitElement {
   }
 
   async #onPayStart() {
-    this.#setView('form', {})
+    this.#setView('form', {
+      walletAddress: this.#controller.senderWalletAddressUrl ?? undefined,
+    })
     void this.#getReceiver() // pre-fetch
   }
 
@@ -135,16 +161,43 @@ export class Paywall extends LitElement {
     const sender = await this.#controller.getWallet(walletAddress)
     const receiver = await this.#getReceiver()
 
-    const result = await this.#controller.initiatePayment({
+    const status = await this.#controller.checkEntitlement(sender)
+    if (status.entitlement === 'has-access') {
+      this.#hidePaywall()
+      return
+    }
+    if (status.entitlement === 'auth-required') {
+      this.#setView('form', { isAuthMode: true })
+      await this.#controller.authenticate(sender)
+      return
+    }
+    if (status.entitlement === 'pending') {
+      this.#setView('verify', { paymentId: status.paymentId!, sender })
+      return
+    }
+
+    await this.#controller.initiatePayment({
       sender,
       receiver,
       amount: this.#price,
       note: this.defaultNote,
     })
+  }
 
-    if (!this.#controller.isPreviewMode) {
-      window.location.href = result.grantRedirectUrl
+  async #onPaymentConfirmed(
+    ev: CustomEvent<PaymentVerifyEvents['payment_confirmed']>,
+  ) {
+    const sender = ev.detail.sender
+    const status = await this.#controller.checkEntitlement(sender)
+    if (status.entitlement === 'has-access') {
+      this.#hidePaywall()
+      return
     }
+  }
+
+  #hidePaywall() {
+    this.dispatchEvent(new CustomEvent('paywall_hide'))
+    this.remove()
   }
 
   #receiver_!: ReturnType<Controller['getWallet']>
