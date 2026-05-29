@@ -21,7 +21,7 @@ interface InitiatePaymentResult {
   grantRedirectUrl: PendingGrant['interact']['redirect']
 }
 
-type Entitlement = 'no-access' | 'auth-required' | 'has-access'
+type Entitlement = 'no-access' | 'auth-required' | 'has-access' | 'pending'
 
 export type View = {
   home: undefined
@@ -48,17 +48,15 @@ export interface Controller {
 
   fetchConfig(): Promise<PaywallProfile>
 
+  senderWalletAddressUrl?: string | null
   /** Check if given wallet address is entitled to access */
-  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<Entitlement>
-  /** Store the entitlement after a successful payment in some backend */
-  saveEntitlement(
-    walletAddressUrl: WalletAddressUrl,
-    details: {
-      outgoingPaymentId: string
-      incomingPaymentId: string
-      paymentId: string
-    },
-  ): Promise<void>
+  checkEntitlement(walletAddress?: WalletAddressInfo): Promise<{
+    entitlement: Entitlement
+    paymentId?: string
+  }>
+  authenticate(
+    walletAddress: WalletAddressInfo,
+  ): Promise<{ grantRedirectUrl: string }>
 
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
@@ -74,8 +72,8 @@ export const NO_OP_CONTROLLER: Controller = {
   cdnUrl: 'https://example.com',
   receiverWalletAddressUrl: 'https://example.com/pay',
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
-  checkEntitlement: () => Promise.resolve('no-access'),
-  saveEntitlement: () => Promise.resolve(),
+  checkEntitlement: () => Promise.resolve({ entitlement: 'no-access' }),
+  authenticate: () => Promise.reject('not-implemented'),
   getWallet(walletAddressUrl) {
     return Promise.resolve({
       $url: walletAddressUrl,
