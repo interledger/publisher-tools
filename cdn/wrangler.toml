@@ -10,3 +10,4 @@ not_found_handling = "404-page"
 
 [dev]
 port = 5173
+inspector_port = 9230

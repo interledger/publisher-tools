@@ -21,3 +21,4 @@ head_sampling_rate = 1.00
 
 [dev]
 port = 3001
+inspector_port = 9231

@@ -16,6 +16,7 @@ d1_databases = [
 
 [dev]
 port = 8787
+inspector_port = 9229
 
 [build]
 command = "pnpm -s build"

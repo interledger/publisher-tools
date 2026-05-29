@@ -5,6 +5,7 @@
   "compatibility_date": "2025-09-24",
   "dev": {
     "port": 8081,
+    "inspector_port": 9233,
   },
   "r2_buckets": [
     {
