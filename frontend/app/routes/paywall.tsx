@@ -17,6 +17,7 @@ import {
   ToolsSecondaryButton,
   ToolsWalletAddress,
 } from '@/components'
+import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
 import { PaywallPlacementBuilder } from '~/components/paywall/PaywallPlacementBuilder'
 import { PaywallPreview } from '~/components/paywall/PaywallPreview'
 import { PaywallPriceBuilder } from '~/components/paywall/PaywallPriceBuilder'
@@ -90,8 +91,6 @@ export default function Paywall() {
     wallet: paywallWallet,
     actions: paywallWalletActions,
   })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const paywallSnap = useSnapshot(paywall)
   const navigate = useNavigate()
   const { save, saveLastAction } = useSaveProfile(paywallWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
@@ -231,9 +230,13 @@ export default function Paywall() {
                       status={snap.buildStep}
                     />
 
-                    <p className="h-80 bg-pink-50">
-                      Appearance & Content Builder here
-                    </p>
+                    <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full -mt-2 flex">
+                      <PaywallBuilder
+                        onRefresh={(section) =>
+                          actions.resetProfileSection(section)
+                        }
+                      />
+                    </div>
 
                     <div
                       id="builder-actions"
