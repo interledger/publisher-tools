@@ -38,3 +38,15 @@
 :host([hidden]) {
   display: none;
 }
+
+:host([data-preview-mode]) {
+  position: static;
+}
+
+:host([data-preview-mode])::before {
+  display: none;
+}
+
+:host([data-preview-mode]) > * {
+  position: absolute;
+}

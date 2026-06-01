@@ -60,6 +60,9 @@ export class Paywall extends LitElement {
     this.#config = config
     this.#price ||= config.price.value
     this.#entitlement = entitlement
+    if (this.#controller.isPreviewMode) {
+      this.dataset.previewMode = '1'
+    }
     this.setBaseStyles()
     this._ready = true
     void this.showAfterDelay(connectedAt).then(() => {
@@ -99,6 +102,16 @@ export class Paywall extends LitElement {
       this.#price = price
     } else {
       throw new Error('Price is already set')
+    }
+  }
+
+  /** To be used with preview mode only */
+  updateUI(conf: PaywallProfile) {
+    if (this.#controller.isPreviewMode) {
+      this.#config = conf
+      this.setPrice(conf.price.value)
+      this.setBaseStyles()
+      this.requestUpdate()
     }
   }
 

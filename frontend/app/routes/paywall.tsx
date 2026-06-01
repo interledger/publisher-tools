@@ -186,8 +186,10 @@ export default function Paywall() {
                   ]}
                 />
               </div>
+            </>
 
-              <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+            <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+              <>
                 <div id="wallet-address" ref={walletAddressRef}>
                   <MobileStepsIndicator
                     number={1}
@@ -200,11 +202,13 @@ export default function Paywall() {
                     toolName="pay per article"
                   />
                 </div>
+              </>
 
-                <div className="flex flex-col xl:flex-row gap-2xl">
+              <div className="flex flex-col xl:flex-row gap-2xl">
+                <div className="flex flex-col gap-2xl xl:flex-1">
                   <div
                     id="configure-builder"
-                    className="w-full xl:max-w-[628px] xl:flex-1"
+                    className="w-full xl:max-w-[628px]"
                   >
                     <MobileStepsIndicator
                       number={2}
@@ -217,13 +221,8 @@ export default function Paywall() {
                       <PaywallPlacementBuilder />
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col xl:flex-row gap-2xl">
-                  <div
-                    id="builder"
-                    className="w-full xl:max-w-[628px] xl:flex-1"
-                  >
+                  <div id="builder" className="w-full xl:max-w-[628px]">
                     <MobileStepsIndicator
                       number={3}
                       label="Build"
@@ -240,16 +239,14 @@ export default function Paywall() {
 
                     <div
                       id="builder-actions"
-                      className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                           fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                      className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
                       <div
                         id="builder-actions-inner"
                         className="xl:contents flex flex-col gap-xs mx-auto w-full xl:w-auto xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm"
                       >
                         <ToolsSecondaryButton
-                          className="xl:w-[150px] xl:rounded-lg
-                                               w-full min-w-0 border-0 xl:border order-last xl:order-first"
+                          className="xl:w-[150px] xl:rounded-lg w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={() => handleSave('save-success')}
                         >
@@ -263,8 +260,7 @@ export default function Paywall() {
                         <ToolsPrimaryButton
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
-                          className="xl:w-[250px] xl:rounded-lg
-                                               w-full min-w-0 order-first xl:order-last"
+                          className="xl:w-[250px] xl:rounded-lg w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={() => handleSave('script')}
                         >
@@ -282,16 +278,16 @@ export default function Paywall() {
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <div
-                    id="preview"
-                    className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
-                  >
-                    <PaywallPreview />
-                  </div>
+                <div
+                  id="preview"
+                  className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
+                >
+                  <PaywallPreview />
                 </div>
               </div>
-            </>
+            </div>
           </div>
         </div>
       </div>
