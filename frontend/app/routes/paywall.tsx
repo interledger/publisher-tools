@@ -17,6 +17,9 @@ import {
   ToolsSecondaryButton,
   ToolsWalletAddress,
 } from '@/components'
+import { PaywallPlacementBuilder } from '~/components/paywall/PaywallPlacementBuilder'
+import { PaywallPreview } from '~/components/paywall/PaywallPreview'
+import { PaywallPriceBuilder } from '~/components/paywall/PaywallPriceBuilder'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -205,7 +208,10 @@ export default function Paywall() {
                       status={snap.configureStep}
                     />
 
-                    <p className="h-80 bg-pink-50">Configure builder here</p>
+                    <div className="space-y-4">
+                      <PaywallPriceBuilder />
+                      <PaywallPlacementBuilder />
+                    </div>
                   </div>
                 </div>
 
@@ -273,7 +279,7 @@ export default function Paywall() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <p className="h-96 bg-pink-50">Paywall preview here</p>
+                    <PaywallPreview />
                   </div>
                 </div>
               </div>
