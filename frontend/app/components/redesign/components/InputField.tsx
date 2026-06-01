@@ -9,8 +9,8 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   ariaDescription?: string
   showCounter?: boolean
   currentLength?: number
-  prefix?: React.ReactNode
-  suffix?: React.ReactNode
+  addonBefore?: React.ReactNode
+  addonAfter?: React.ReactNode
   addonClassname?: string
 }
 
@@ -29,8 +29,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       currentLength,
       onBlur,
       onChange,
-      prefix,
-      suffix,
+      addonBefore,
+      addonAfter,
       addonClassname,
       ...props
     },
@@ -84,9 +84,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             className,
           )}
         >
-          {prefix && (
+          {addonBefore && (
             <span className={cx('text-text-placeholder mr-1', addonClassname)}>
-              {prefix}
+              {addonBefore}
             </span>
           )}
           <input
@@ -106,9 +106,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             onBlur={handleBlur}
             {...props}
           />
-          {suffix && (
+          {addonAfter && (
             <span className={cx('text-text-placeholder ml-1', addonClassname)}>
-              {suffix}
+              {addonAfter}
             </span>
           )}
 

@@ -110,7 +110,7 @@ function PaywallDelayInput({
       }}
       helpText={t('input.delay.hint')}
       className="max-w-56"
-      suffix={'seconds'}
+      addonAfter={'seconds'}
     />
   )
 }

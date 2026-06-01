@@ -32,7 +32,7 @@ export function PaywallPriceBuilder() {
             profile.price.value = ev.currentTarget.value
           }}
           helpText={t('input.price.hint', { currency })}
-          prefix={currencySymbol}
+          addonBefore={currencySymbol}
           addonClassname="inline-block pr-2"
         />
       </fieldset>
