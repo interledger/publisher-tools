@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 import { subscribe } from 'valtio'
 import { deepClone } from 'valtio/utils'
 import { BuilderBackground } from '@/components/BuilderBackground'
+import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
 import type { PaywallProfile } from '@shared/types'
 import { paywall } from '~/stores/paywall-store'
-import { ToolsSecondaryButton } from '../redesign/components'
 
 export type Message =
   | { action: 'RESET' }
@@ -28,7 +28,7 @@ export function PaywallPreview() {
       actions={
         <>
           <ToolsSecondaryButton
-            icon="play"
+            icon="refresh"
             className="w-[130px]"
             onClick={() => resetPaywall(ref.current)}
           >
