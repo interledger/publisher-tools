@@ -116,6 +116,7 @@ pnpm -C localenv/s3 dev
 ### How to Run Preview Changes
 
 For a pull request, **external contributors** (those without write access to the repository), deployment previews are not automatically.
+
 ## Technology Stack
 
 - **Runtime**: Cloudflare workers
