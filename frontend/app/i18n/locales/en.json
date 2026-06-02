@@ -32,6 +32,7 @@
     "input.coverage.label": "Coverage on the page",
     "input.coverage.hint": "How much of the screen the paywall takes when it appears.",
     "input.delay.label": "Show paywall after",
-    "input.delay.hint": "Set to 0 to show the paywall immediately on page load."
+    "input.delay.hint": "Set to 0 to show the paywall immediately on page load.",
+    "input.delay.suffix": "seconds"
   }
 }
