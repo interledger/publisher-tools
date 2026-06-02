@@ -85,6 +85,9 @@ function main() {
       const data: AuthResponse = await res.json()
       redirect(data.grantRedirectUrl)
     },
+    remove(el) {
+      el.remove()
+    },
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
     async initiatePayment({ sender, receiver, amount, note }) {
       const receiveAmount = Number(amount)

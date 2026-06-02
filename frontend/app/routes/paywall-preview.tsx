@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NO_OP_CONTROLLER } from '@c/paywall/controller'
 import { getDefaultProfile } from '@shared/default-data'
 import { CDN_URL } from '@shared/defines'
+import { sleep } from '@shared/utils'
 import type { Message } from '~/components/paywall/PaywallPreview'
 
 export default function PaywallPreview() {
@@ -31,12 +32,16 @@ export default function PaywallPreview() {
     if (!isLoaded) return
 
     const el = document.createElement(NAME)
-    const _actions = el.setController({
+    const actions = el.setController({
       isPreviewMode: true,
-      authenticate: NO_OP_CONTROLLER.authenticate,
-      cdnUrl: CDN_URL,
-      checkEntitlement: NO_OP_CONTROLLER.checkEntitlement,
       fetchConfig: () => Promise.resolve(profile),
+      async checkEntitlement(walletAddress) {
+        await sleep(2000)
+        return { entitlement: walletAddress ? 'has-access' : 'no-access' }
+      },
+      cdnUrl: CDN_URL,
+      remove: (el) => el.toggleAttribute('hidden'),
+      authenticate: NO_OP_CONTROLLER.authenticate,
       getStatus: NO_OP_CONTROLLER.getStatus,
       getWallet: NO_OP_CONTROLLER.getWallet,
       initiatePayment: NO_OP_CONTROLLER.initiatePayment,
@@ -54,6 +59,9 @@ export default function PaywallPreview() {
         const profile = ev.data.profile
         setProfile(profile)
         document.querySelector(NAME)?.updateUI(profile)
+      } else if (ev.data.action === 'RESET') {
+        el.removeAttribute('hidden')
+        actions.setView('home')
       }
     }
 

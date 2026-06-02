@@ -58,6 +58,8 @@ export interface Controller {
     walletAddress: WalletAddressInfo,
   ): Promise<{ grantRedirectUrl: string }>
 
+  remove(el: HTMLElement): void
+
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
   getStatus(
@@ -74,6 +76,7 @@ export const NO_OP_CONTROLLER: Controller = {
   fetchConfig: () => Promise.resolve(createDefaultPaywallProfile('')),
   checkEntitlement: () => Promise.resolve({ entitlement: 'no-access' }),
   authenticate: () => Promise.reject('not-implemented'),
+  remove: () => {},
   getWallet(walletAddressUrl) {
     return Promise.resolve({
       $url: walletAddressUrl,

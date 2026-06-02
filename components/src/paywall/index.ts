@@ -207,7 +207,7 @@ export class Paywall extends LitElement {
 
   #hidePaywall() {
     this.dispatchEvent(new CustomEvent('paywall_hide'))
-    this.remove()
+    this.#controller.remove(this)
   }
 
   #receiver_!: ReturnType<Controller['getWallet']>
