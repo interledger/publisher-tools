@@ -11,7 +11,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   currentLength?: number
   addonBefore?: React.ReactNode
   addonAfter?: React.ReactNode
-  addonClassname?: string
+  addonClassName?: string
 }
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -31,7 +31,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onChange,
       addonBefore,
       addonAfter,
-      addonClassname,
+      addonClassName,
       ...props
     },
     ref,
@@ -85,7 +85,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           )}
         >
           {addonBefore && (
-            <span className={cx('text-text-placeholder mr-1', addonClassname)}>
+            <span className={cx('text-text-placeholder mr-1', addonClassName)}>
               {addonBefore}
             </span>
           )}
@@ -107,7 +107,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {...props}
           />
           {addonAfter && (
-            <span className={cx('text-text-placeholder ml-1', addonClassname)}>
+            <span className={cx('text-text-placeholder ml-1', addonClassName)}>
               {addonAfter}
             </span>
           )}

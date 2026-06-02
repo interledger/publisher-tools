@@ -33,7 +33,7 @@ export function PaywallPriceBuilder() {
           }}
           helpText={t('input.price.hint', { currency })}
           addonBefore={currencySymbol}
-          addonClassname="inline-block pr-2"
+          addonClassName="inline-block pr-2"
         />
       </fieldset>
     </div>
