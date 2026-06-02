@@ -145,17 +145,16 @@ export const createDefaultOfferwallProfile = (
   },
 })
 
-export function getDefaultProfile(tool: Tool): ToolProfile<Tool> {
+export function getDefaultProfile<T extends Tool>(tool: T): ToolProfile<T> {
   switch (tool) {
     case TOOL_BANNER:
-      return createDefaultBannerProfile('Default')
+      return createDefaultBannerProfile('Default') as ToolProfile<T>
     case TOOL_WIDGET:
-      return createDefaultWidgetProfile('Default')
+      return createDefaultWidgetProfile('Default') as ToolProfile<T>
     case TOOL_PAYWALL:
-      return createDefaultPaywallProfile('Default')
+      return createDefaultPaywallProfile('Default') as ToolProfile<T>
     case TOOL_OFFERWALL:
-      return createDefaultOfferwallProfile('Default')
-
+      return createDefaultOfferwallProfile('Default') as ToolProfile<T>
     default:
       throw new Error('Invalid tool type')
   }

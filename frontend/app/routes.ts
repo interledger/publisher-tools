@@ -10,6 +10,7 @@ export default [
   route('prob-revshare/', 'routes/prob-revshare.tsx'),
   route('widget/', 'routes/widget.tsx'),
   route('paywall/', 'routes/paywall.tsx'),
+  route('paywall/preview/', 'routes/paywall-preview.tsx'),
   route('offerwall/', 'routes/offerwall.tsx'),
   // API routes
   route('api/grant/:type', 'routes/api.grant.$type.ts'),

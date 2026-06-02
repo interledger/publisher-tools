@@ -1,0 +1,74 @@
+import { useEffect, useState } from 'react'
+import { NO_OP_CONTROLLER } from '@c/paywall/controller'
+import { getDefaultProfile } from '@shared/default-data'
+import { CDN_URL } from '@shared/defines'
+import type { Message } from '~/components/paywall/PaywallPreview'
+
+export default function PaywallPreview() {
+  const [profile, setProfile] = useState(() => getDefaultProfile('paywall'))
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    document.querySelector('body > header')?.remove()
+    document.querySelector('body > footer')?.remove()
+  }, [])
+
+  const NAME = 'wm-paywall'
+  useEffect(() => {
+    const load = async () => {
+      if (!customElements.get(NAME)) {
+        const { Paywall } = await import('@tools/components/paywall/index')
+        if (!customElements.get(NAME)) {
+          customElements.define(NAME, Paywall)
+        }
+      }
+      setIsLoaded(true)
+    }
+    load()
+  }, [])
+
+  useEffect(() => {
+    if (!isLoaded) return
+
+    const el = document.createElement(NAME)
+    const _actions = el.setController({
+      isPreviewMode: true,
+      authenticate: NO_OP_CONTROLLER.authenticate,
+      cdnUrl: CDN_URL,
+      checkEntitlement: NO_OP_CONTROLLER.checkEntitlement,
+      fetchConfig: () => Promise.resolve(profile),
+      getStatus: NO_OP_CONTROLLER.getStatus,
+      getWallet: NO_OP_CONTROLLER.getWallet,
+      initiatePayment: NO_OP_CONTROLLER.initiatePayment,
+      receiverWalletAddressUrl: 'https://example.com',
+      senderWalletAddressUrl: '',
+    })
+
+    const container = document.getElementById('paywall-preview-container')!
+    container.appendChild(el)
+    window.parent.postMessage('ready', window.location.origin)
+
+    const listener = (ev: MessageEvent<Message>) => {
+      if (ev.origin !== window.location.origin) return
+      if (ev.data.action === 'UPDATE') {
+        const profile = ev.data.profile
+        setProfile(profile)
+        document.querySelector(NAME)?.updateUI(profile)
+      }
+    }
+
+    el.updateUI(profile)
+    window.addEventListener('message', listener)
+    return () => {
+      window.removeEventListener('message', listener)
+    }
+  }, [isLoaded])
+
+  return (
+    <div id="paywall-preview-container">
+      <p>Some content here</p>
+      {/*<pre>{JSON.stringify(profile, null, 2)}</pre>*/}
+      {/* element gets injected here */}
+    </div>
+  )
+}

@@ -60,9 +60,6 @@ export class Paywall extends LitElement {
     this.#config = config
     this.#price ||= config.price.value
     this.#entitlement = entitlement
-    if (this.#controller.isPreviewMode) {
-      this.dataset.previewMode = '1'
-    }
     this.setBaseStyles()
     this._ready = true
     void this.showAfterDelay(connectedAt).then(() => {

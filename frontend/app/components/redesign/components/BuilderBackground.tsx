@@ -17,12 +17,14 @@ interface BuilderBackgroundProps {
   children?: React.ReactNode
   onPreviewClick?: () => void
   isAnimationDisabled?: boolean
+  iframeMode?: boolean
 }
 
 export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   className = '',
   children,
   onPreviewClick,
+  iframeMode = false,
   isAnimationDisabled = false,
 }) => {
   const createDotPattern = () => {
@@ -66,7 +68,10 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
         <div
           id="browser-content"
-          className="flex-1 flex flex-col p-md [container-type:inline-size]"
+          className={cx(
+            'flex-1 flex flex-col [container-type:inline-size]',
+            !iframeMode && 'p-md',
+          )}
         >
           {children}
         </div>
