@@ -1,4 +1,5 @@
 import { proxy, snapshot, subscribe } from 'valtio'
+import type { WalletAddress } from '@interledger/open-payments'
 import type { Tool } from '@shared/types'
 import type { StepStatus } from './toolStore'
 
@@ -12,6 +13,7 @@ function createWalletState() {
   return {
     walletAddress: '',
     walletAddressId: '',
+    walletAddressInfo: null as WalletAddress | null,
     isWalletConnected: false,
     hasRemoteConfigs: false,
     walletConnectStep: 'unfilled' as StepStatus,
@@ -32,6 +34,9 @@ function createWalletActions(wallet: WalletStore, storageKey: string) {
     },
     setWalletAddressId(id: string) {
       wallet.walletAddressId = id
+    },
+    setWalletAddressInfo(info: WalletAddress | null) {
+      wallet.walletAddressInfo = info
     },
     setHasRemoteConfigs(has: boolean) {
       wallet.hasRemoteConfigs = has

@@ -119,6 +119,11 @@ export default function Paywall() {
     }
   }, [OP_WALLET_ADDRESS])
 
+  useEffect(() => {
+    paywall.profile.price.currency =
+      walletSnap.walletAddressInfo?.assetCode || 'USD'
+  }, [walletSnap.walletAddressInfo])
+
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,
   })
