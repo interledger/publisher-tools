@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [main]
     paths-ignore: ['**.md']
-  pull_request_review:
-    types: [submitted]
-    branches: [main]
 
 defaults:
   run:
@@ -25,8 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-        # Ensures we checkout the PR head commit for both pull_request and pull_request_review events
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           # Fetches the full git history, both base and head SHAs are available
           fetch-depth: 0
 
@@ -49,7 +44,6 @@ jobs:
 
       # https://github.com/dorny/paths-filter/issues/232
       - uses: dorny/paths-filter@v4
-        if: github.event_name != 'pull_request_review'
         id: changes
         with:
           filters: |
@@ -70,41 +64,6 @@ jobs:
               - *api
               - *cdn
               - 'frontend/**'
-
-      - name: Detect changes for review-triggered deployment
-        if: github.event_name == 'pull_request_review'
-        id: changes-review
-        run: |
-          # Get the PR base and head SHAs
-          BASE_SHA=${{ github.event.pull_request.base.sha }}
-          HEAD_SHA=${{ github.event.pull_request.head.sha }}
-
-          # Get list of changed files in the PR
-          CHANGED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA)
-
-          SHARED_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^(\.github/workflows/(deploy\.yml|deploy-worker/)|shared/)' && echo true || echo false)
-          API_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^api/' && echo true || echo false)
-          COMPONENTS_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^components/' && echo true || echo false)
-          CDN_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^cdn/' && echo true || echo false)
-          FRONTEND_CHANGED=$(echo "$CHANGED_FILES" | grep -qE '^frontend/' && echo true || echo false)
-
-          if $SHARED_CHANGED || $API_CHANGED; then
-            echo "api=true" >> $GITHUB_OUTPUT
-          else
-            echo "api=false" >> $GITHUB_OUTPUT
-          fi
-
-          if $SHARED_CHANGED || $API_CHANGED || $COMPONENTS_CHANGED || $CDN_CHANGED; then
-            echo "cdn=true" >> $GITHUB_OUTPUT
-          else
-            echo "cdn=false" >> $GITHUB_OUTPUT
-          fi
-
-          if $SHARED_CHANGED || $API_CHANGED || $COMPONENTS_CHANGED || $CDN_CHANGED || $FRONTEND_CHANGED; then
-            echo "frontend=true" >> $GITHUB_OUTPUT
-          else
-            echo "frontend=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Get deploy mode
         id: deploy-mode
@@ -134,7 +93,7 @@ jobs:
         id: api
         with:
           name: 'api'
-          changed: ${{ steps.changes.outputs.api || steps.changes-review.outputs.api }}
+          changed: ${{ steps.changes.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
@@ -149,7 +108,7 @@ jobs:
         id: cdn
         with:
           name: 'cdn'
-          changed: ${{ steps.changes.outputs.cdn || steps.changes-review.outputs.cdn }}
+          changed: ${{ steps.changes.outputs.cdn }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           build: 'pnpm -C cdn run build'
@@ -164,7 +123,7 @@ jobs:
         id: frontend
         with:
           name: 'frontend'
-          changed: ${{ steps.changes.outputs.frontend || steps.changes-review.outputs.frontend }}
+          changed: ${{ steps.changes.outputs.frontend }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
           build: 'pnpm -C frontend run build'
