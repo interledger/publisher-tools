@@ -17,7 +17,11 @@ import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 interface Props {
   store: WalletStore
   walletActions: WalletActions
-  toolName: 'drawer banner' | 'payment widget' | 'offerwall experience'
+  toolName:
+    | 'drawer banner'
+    | 'payment widget'
+    | 'offerwall experience'
+    | 'pay per article'
 }
 
 export const ToolsWalletAddress = ({
@@ -64,6 +68,7 @@ export const ToolsWalletAddress = ({
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
+      walletActions.setWalletAddressInfo(walletAddressInfo)
       await connect()
       trackEvent('wallet_connected', {
         wallet_provider: new URL(walletAddressInfo.id).hostname,

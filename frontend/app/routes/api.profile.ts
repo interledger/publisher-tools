@@ -8,6 +8,7 @@ import {
   TOOL_BANNER,
   TOOL_OFFERWALL,
   TOOL_WIDGET,
+  TOOL_PAYWALL,
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
@@ -22,6 +23,7 @@ import { walletSchema } from '~/utils/validate.server'
 import {
   BannerProfileSchema,
   OfferwallProfileSchema,
+  PaywallProfileSchema,
   WidgetProfileSchema,
 } from '~/utils/validate.shared'
 
@@ -42,6 +44,10 @@ const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
   BaseApiSchema.extend({
     tool: z.literal(TOOL_OFFERWALL),
     profile: OfferwallProfileSchema,
+  }),
+  BaseApiSchema.extend({
+    tool: z.literal(TOOL_PAYWALL),
+    profile: PaywallProfileSchema,
   }),
 ])
 

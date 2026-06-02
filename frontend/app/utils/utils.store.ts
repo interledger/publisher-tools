@@ -10,11 +10,12 @@ import {
 } from '@shared/types'
 import type { BannerStore } from '~/stores/banner-store'
 import type { OfferwallStore } from '~/stores/offerwall-store'
+import type { PaywallStore } from '~/stores/paywall-store'
 import type { WidgetStore } from '~/stores/widget-store'
 import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
 import { omit } from '~/utils/utils.storage'
 
-type Store = BannerStore | WidgetStore | OfferwallStore
+type Store = BannerStore | WidgetStore | OfferwallStore | PaywallStore
 const STORAGE_PREFIX = 'wmt'
 
 export function getStorageKeys(tool: Tool) {

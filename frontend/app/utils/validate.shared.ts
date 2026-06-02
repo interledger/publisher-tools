@@ -5,6 +5,8 @@ import type {
   OfferwallProfile,
   WidgetFontSize,
   WidgetProfile,
+  PaywallProfile,
+  PaywallFontSize,
 } from '@shared/types'
 import {
   CORNER_OPTION,
@@ -18,6 +20,10 @@ import {
   WIDGET_DESCRIPTION_MAX_LENGTH,
   BANNER_FONT_SIZE_MAP,
   WIDGET_FONT_SIZE_MAP,
+  PAYWALL_FONT_SIZE_MAP,
+  PAYWALL_TITLE_MAX_LENGTH,
+  PAYWALL_DESCRIPTION_MAX_LENGTH,
+  PAYWALL_CTA_BUTTON_MAX_LENGTH,
 } from '@shared/types'
 
 const hexColorSchema = z
@@ -35,6 +41,17 @@ const versionSchema = z
 const assetNameSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
+
+const currencyCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{3}$/, { message: 'Currency must be a 3-letter ISO code' })
+
+const currencyAmountSchema = z
+  .string()
+  .regex(/^\d+(\.\d+)?$/, { message: 'Price must be a positive number' })
+  .refine((v) => Number.parseFloat(v) > 0, {
+    message: 'Price must be greater than 0',
+  })
 
 export const bannerFieldsSchema = z.object({
   title: z.object({
@@ -144,3 +161,58 @@ export const OfferwallProfileSchema = offerwallFieldsSchema.extend({
   $version: versionSchema,
   $name: z.string().min(1).max(40),
 }) satisfies z.ZodType<OfferwallProfile>
+
+export const paywallFieldsSchema = z.object({
+  title: z.object({
+    text: z
+      .string()
+      .max(PAYWALL_TITLE_MAX_LENGTH, { message: 'Title is too long' }),
+  }),
+  description: z.object({
+    text: z.string().max(PAYWALL_DESCRIPTION_MAX_LENGTH, {
+      message: 'Description is too long',
+    }),
+  }),
+  ctaButton: z.object({
+    text: z.string().max(PAYWALL_CTA_BUTTON_MAX_LENGTH, {
+      message: 'Button text is too long',
+    }),
+  }),
+  price: z.object({
+    currency: currencyCodeSchema,
+    value: currencyAmountSchema,
+  }),
+  behavior: z.object({
+    delay: z.object({ value: z.number(), enabled: z.boolean() }),
+    coverage: z.object({
+      value: z.union([
+        z.literal(25),
+        z.literal(50),
+        z.literal(75),
+        z.literal(100),
+      ]),
+      enabled: z.boolean(),
+    }),
+  }),
+  font: z.object({
+    name: z.enum(FONT_FAMILY_OPTIONS, {
+      message: 'Choose a valid font family',
+    }),
+    size: z.enum(Object.keys(PAYWALL_FONT_SIZE_MAP) as PaywallFontSize[], {
+      message: 'Select a valid font size',
+    }),
+  }),
+  border: z.object({
+    type: z.enum(CORNER_OPTION),
+  }),
+  colors: z.object({
+    text: hexColorSchema,
+    background: z.union([hexColorSchema]),
+    theme: z.union([hexColorSchema]),
+  }),
+})
+
+export const PaywallProfileSchema = paywallFieldsSchema.extend({
+  $version: versionSchema,
+  $name: z.string().min(1).max(40),
+}) satisfies z.ZodType<PaywallProfile>
