@@ -66,9 +66,28 @@ export default function PaywallPreview() {
 
   return (
     <div id="paywall-preview-container">
-      <p>Some content here</p>
+      <PlaceholderContent />
       {/*<pre>{JSON.stringify(profile, null, 2)}</pre>*/}
       {/* element gets injected here */}
+    </div>
+  )
+}
+
+function PlaceholderContent() {
+  const text = `Below 2,000 metres, almost nothing moves quickly.
+    What looks empty on a sonar readout is a careful exchange between
+    organisms that trade carbon, nitrogen, and light.
+    For a long time we only measured it by what washed up.`
+
+  return (
+    <div className="p-4 space-y-2 select-none" role="presentation">
+      <div className="text-style-h5">The quiet economy of the deep ocean</div>
+      <div className="w-full h-[20vh] bg-gray-200"></div>
+      <div className="text-style-body-standard">{text}</div>
+      <div className="text-style-body-standard">{text}</div>
+      <div className="text-style-body-standard">{text}</div>
+      <div className="text-style-body-standard">{text}</div>
+      <div className="text-style-body-standard">{text}</div>
     </div>
   )
 }
