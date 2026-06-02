@@ -36,8 +36,11 @@ export default function PaywallPreview() {
       isPreviewMode: true,
       fetchConfig: () => Promise.resolve(profile),
       async checkEntitlement(walletAddress) {
-        await sleep(2000)
-        return { entitlement: walletAddress ? 'has-access' : 'no-access' }
+        if (walletAddress) {
+          await sleep(2000)
+          return { entitlement: 'has-access' }
+        }
+        return { entitlement: 'no-access' }
       },
       cdnUrl: CDN_URL,
       remove: (el) => el.toggleAttribute('hidden'),
