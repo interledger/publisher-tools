@@ -5,7 +5,7 @@ import PillRadioListItem from '../PillRadioListItem'
 interface Props {
   value: string
   onChange: (title: string) => void
-  suggestions: string[]
+  suggestions: readonly string[]
   maxLength: number
   helpText?: string
 }
