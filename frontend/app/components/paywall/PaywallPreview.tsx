@@ -28,7 +28,8 @@ export function PaywallPreview() {
         ref={ref}
         onLoad={(ev) => postMessage(ev.currentTarget)}
         src="/tools/paywall/preview"
-        className="w-full h-[744px] overflow-hidden border-none"
+        className="w-full overflow-hidden border-none"
+        style={{ height: 'clamp(25rem, 85vh, 46rem)' }}
       ></iframe>
     </BuilderBackground>
   )
