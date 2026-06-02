@@ -68,6 +68,7 @@ export const ToolsWalletAddress = ({
 
       const walletAddressInfo = await getWalletAddress(walletAddressUrl)
       walletActions.setWalletAddressId(walletAddressInfo.id)
+      walletActions.setWalletAddressInfo(walletAddressInfo)
       await connect()
       trackEvent('wallet_connected', {
         wallet_provider: new URL(walletAddressInfo.id).hostname,
