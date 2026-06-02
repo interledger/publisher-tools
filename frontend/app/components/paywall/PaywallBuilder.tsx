@@ -9,7 +9,13 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { CustomTitle } from '@/components/builder/TitleInput'
 import { BuilderAccordion } from '@/components/BuilderAccordion'
-import { FONT_FAMILY_OPTIONS, PAYWALL_FONT_SIZE_MAP } from '@shared/types'
+import {
+  FONT_FAMILY_OPTIONS,
+  PAYWALL_CTA_BUTTON_MAX_LENGTH,
+  PAYWALL_DESCRIPTION_MAX_LENGTH,
+  PAYWALL_FONT_SIZE_MAP,
+  PAYWALL_TITLE_MAX_LENGTH,
+} from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { usePaywallProfile } from '~/stores/paywall-store'
@@ -28,16 +34,16 @@ const config = {
     'Support this piece',
   ],
   titleHelpText: 'Short and direct works best.',
-  titleMaxLength: 40,
+  titleMaxLength: PAYWALL_TITLE_MAX_LENGTH,
 
   messageLabel: 'Subtitle',
   messagePlaceholder: `Unlock the full article with a one-time payment — no subscription, no account.`,
   messageHelpText: 'Explain the value in one sentence.',
-  messageMaxLength: 200,
+  messageMaxLength: PAYWALL_DESCRIPTION_MAX_LENGTH,
 
   buttonLabel: 'Pay button label',
   buttonPlaceholder: 'Pay with Open Payments',
-  buttonMaxLength: 30,
+  buttonMaxLength: PAYWALL_CTA_BUTTON_MAX_LENGTH,
 }
 
 export function PaywallBuilder({ onRefresh }: Props) {
