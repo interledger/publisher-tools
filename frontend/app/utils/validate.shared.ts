@@ -42,6 +42,17 @@ const assetNameSchema = z
   .string()
   .regex(/^[a-zA-Z0-9_\-/]*$/, { message: 'Invalid asset name' })
 
+const currencyCodeSchema = z
+  .string()
+  .regex(/^[A-Z]{3}$/, { message: 'Currency must be a 3-letter ISO code' })
+
+const currencyAmountSchema = z
+  .string()
+  .regex(/^\d+(\.\d+)?$/, { message: 'Price must be a positive number' })
+  .refine((v) => Number.parseFloat(v) > 0, {
+    message: 'Price must be greater than 0',
+  })
+
 export const bannerFieldsSchema = z.object({
   title: z.object({
     text: z
@@ -168,8 +179,8 @@ export const paywallFieldsSchema = z.object({
     }),
   }),
   price: z.object({
-    currency: z.string(),
-    value: z.string(),
+    currency: currencyCodeSchema,
+    value: currencyAmountSchema,
   }),
   behavior: z.object({
     delay: z.object({ value: z.number(), enabled: z.boolean() }),
