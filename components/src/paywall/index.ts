@@ -123,7 +123,7 @@ export class Paywall extends LitElement {
       return html`<wmt-paywall-form
         .title=${title.text}
         .description=${description.text}
-        .ctaButton=${ctaButton.text}
+        .ctaText=${ctaButton.text}
         .walletAddressUrl=${this._view.data.walletAddress}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
@@ -144,7 +144,7 @@ export class Paywall extends LitElement {
       .price=${{ value: this.#price, currency: price.currency }}
       .title=${title.text}
       .description=${description.text}
-      .ctaButton=${ctaButton.text}
+      .ctaText=${ctaButton.text}
       @payStart=${this.#onPayStart}
     ></wmt-paywall-home>`
   }
