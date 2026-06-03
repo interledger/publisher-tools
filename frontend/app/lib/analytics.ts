@@ -7,8 +7,8 @@ export type EventRegistry =
   | [event: 'wallet_connected', data: { wallet_provider: string }]
   | [event: 'wallet_disconnected']
   | [event: 'link_tag_generated', data: { wallet_provider: string }]
-  | [event: `${Tool}_profile_saved`, data: { changed: ChangedFields }]
-  | [event: `${Tool}_script_generated`, data: { changed: ChangedFields }]
+  | [event: `${Tool}_profile_saved`, data: ChangedFields]
+  | [event: `${Tool}_script_generated`, data: ChangedFields]
 
 export type TrackFn = (...args: EventRegistry) => void
 
