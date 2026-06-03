@@ -18,6 +18,7 @@ import {
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
 import { usePaywallProfile } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
 import { PaywallColorsSelector } from './PaywallColorsSelector'
@@ -27,12 +28,7 @@ interface Props {
 }
 
 const config = {
-  suggestedTitles: [
-    'Finish reading this story',
-    'Keep reading',
-    'Unlock full article',
-    'Support this piece',
-  ],
+  suggestedTitles: PAYWALL_SUGGESTED_TITLES,
   titleHelpText: 'Short and direct works best.',
   titleMaxLength: PAYWALL_TITLE_MAX_LENGTH,
 
