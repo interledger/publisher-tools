@@ -116,7 +116,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    paywallStoreUtils.commitActiveProfile(toolState.activeTab)
+    return paywallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     paywallStoreUtils.commitAllProfiles()

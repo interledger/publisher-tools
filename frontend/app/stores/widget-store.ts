@@ -114,7 +114,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    widgetStoreUtils.commitActiveProfile(toolState.activeTab)
+    return widgetStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     widgetStoreUtils.commitAllProfiles()
