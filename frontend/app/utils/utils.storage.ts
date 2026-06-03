@@ -64,5 +64,7 @@ export function splitProfileProperties<T extends Tool>(
 }
 
 function isContentProperty(key: string): boolean {
-  return key.endsWith('title') || key.endsWith('description')
+  return (
+    key.endsWith('title') || key.endsWith('description') || key === 'ctaButton'
+  )
 }

@@ -102,6 +102,16 @@ export class Paywall extends LitElement {
     }
   }
 
+  /** To be used with preview mode only */
+  updateUI(conf: PaywallProfile) {
+    if (this.#controller.isPreviewMode) {
+      this.#config = conf
+      this.setPrice(conf.price.value)
+      this.setBaseStyles()
+      this.requestUpdate()
+    }
+  }
+
   render() {
     if (!this._ready) return nothing
     if (this.#entitlement.entitlement === 'has-access') return nothing
@@ -113,7 +123,7 @@ export class Paywall extends LitElement {
       return html`<wmt-paywall-form
         .title=${title.text}
         .description=${description.text}
-        .ctaButton=${ctaButton.text}
+        .ctaText=${ctaButton.text}
         .walletAddressUrl=${this._view.data.walletAddress}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
@@ -134,7 +144,7 @@ export class Paywall extends LitElement {
       .price=${{ value: this.#price, currency: price.currency }}
       .title=${title.text}
       .description=${description.text}
-      .ctaButton=${ctaButton.text}
+      .ctaText=${ctaButton.text}
       @payStart=${this.#onPayStart}
     ></wmt-paywall-home>`
   }
@@ -197,7 +207,7 @@ export class Paywall extends LitElement {
 
   #hidePaywall() {
     this.dispatchEvent(new CustomEvent('paywall_hide'))
-    this.remove()
+    this.#controller.remove(this)
   }
 
   #receiver_!: ReturnType<Controller['getWallet']>

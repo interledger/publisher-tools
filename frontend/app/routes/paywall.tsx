@@ -185,8 +185,10 @@ export default function Paywall() {
                   ]}
                 />
               </div>
+            </>
 
-              <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+            <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+              <>
                 <div id="wallet-address" ref={walletAddressRef}>
                   <MobileStepsIndicator
                     number={1}
@@ -199,11 +201,13 @@ export default function Paywall() {
                     toolName="pay per article"
                   />
                 </div>
+              </>
 
-                <div className="flex flex-col xl:flex-row gap-2xl">
+              <div className="flex flex-col xl:flex-row gap-2xl">
+                <div className="flex flex-col gap-2xl xl:flex-1">
                   <div
                     id="configure-builder"
-                    className="w-full xl:max-w-[628px] xl:flex-1"
+                    className="w-full xl:max-w-[628px]"
                   >
                     <MobileStepsIndicator
                       number={2}
@@ -216,13 +220,8 @@ export default function Paywall() {
                       <PaywallPlacementBuilder />
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col xl:flex-row gap-2xl">
-                  <div
-                    id="builder"
-                    className="w-full xl:max-w-[628px] xl:flex-1"
-                  >
+                  <div id="builder" className="w-full xl:max-w-[628px]">
                     <MobileStepsIndicator
                       number={3}
                       label="Build"
@@ -281,16 +280,18 @@ export default function Paywall() {
                       </div>
                     </div>
                   </div>
+                </div>
 
+                <>
                   <div
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
                     <PaywallPreview />
                   </div>
-                </div>
+                </>
               </div>
-            </>
+            </div>
           </div>
         </div>
       </div>
