@@ -61,7 +61,7 @@ export default function PaywallPreview() {
       if (ev.data.action === 'UPDATE') {
         const profile = ev.data.profile
         setProfile(profile)
-        document.querySelector(NAME)?.updateUI(profile)
+        el.updateUI(profile)
       } else if (ev.data.action === 'RESET') {
         el.removeAttribute('hidden')
         actions.setView('home')
