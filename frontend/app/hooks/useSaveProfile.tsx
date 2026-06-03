@@ -57,14 +57,14 @@ export const useSaveProfile = (wallet: WalletStore) => {
         }
 
         if (result.success) {
-          actions.commitProfile()
           const tool = toolState.currentToolType
+          const changed = actions.commitProfile()
 
           if (action === 'script') {
-            trackEvent(`${tool}_script_generated`)
+            trackEvent(`${tool}_script_generated`, changed)
             openDialog(<ScriptDialog wallet={wallet} />)
           } else {
-            trackEvent(`${tool}_profile_saved`)
+            trackEvent(`${tool}_profile_saved`, changed)
             openDialog(<StatusDialog onDone={closeDialog} />)
           }
         }

@@ -116,7 +116,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    offerwallStoreUtils.commitActiveProfile(toolState.activeTab)
+    return offerwallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     offerwallStoreUtils.commitAllProfiles()

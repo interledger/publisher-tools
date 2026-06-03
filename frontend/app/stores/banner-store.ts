@@ -115,7 +115,7 @@ export const actions = {
     )
   },
   commitProfile() {
-    bannerStoreUtils.commitActiveProfile(toolState.activeTab)
+    return bannerStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
     bannerStoreUtils.commitAllProfiles()
