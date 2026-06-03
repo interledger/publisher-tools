@@ -28,7 +28,6 @@ import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
 import {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actions,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
