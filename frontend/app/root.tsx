@@ -10,11 +10,8 @@ import {
   type LinksFunction,
   type MetaFunction,
 } from 'react-router'
-import { Header, Footer } from '@/components'
 import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { I18nProvider } from '~/i18n/context'
-import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
@@ -43,15 +40,7 @@ export default function App() {
         )}
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
-        <I18nProvider>
-          <UIProvider>
-            <Header />
-            <main className="flex-grow flex flex-col">
-              <Outlet />
-            </main>
-            <Footer />
-          </UIProvider>
-        </I18nProvider>
+        <Outlet />
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>
