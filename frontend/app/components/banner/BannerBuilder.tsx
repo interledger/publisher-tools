@@ -9,8 +9,8 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import { BANNER_FONT_SIZE_MAP, FONT_FAMILY_OPTIONS, TOOL_BANNER } from '@shared/types'
-import { SUGGESTED_TITLES } from '~/lib/presets'
+import { BANNER_FONT_SIZE_MAP, FONT_FAMILY_OPTIONS } from '@shared/types'
+import { BANNER_SUGGESTED_TITLES } from '~/lib/presets'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -31,7 +31,7 @@ interface Props {
 }
 
 const config = {
-  suggestedTitles: SUGGESTED_TITLES[TOOL_BANNER]!,
+  suggestedTitles: BANNER_SUGGESTED_TITLES,
   titleHelpText: 'Strong message to help people engage with Web Monetization',
   titleMaxLength: 60,
   messageLabel: 'Banner message',

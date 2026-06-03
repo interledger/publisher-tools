@@ -15,10 +15,9 @@ import {
   PAYWALL_DESCRIPTION_MAX_LENGTH,
   PAYWALL_FONT_SIZE_MAP,
   PAYWALL_TITLE_MAX_LENGTH,
-  TOOL_PAYWALL,
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
-import { SUGGESTED_TITLES } from '~/lib/presets'
+import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { usePaywallProfile } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
@@ -29,7 +28,7 @@ interface Props {
 }
 
 const config = {
-  suggestedTitles: SUGGESTED_TITLES[TOOL_PAYWALL]!,
+  suggestedTitles: PAYWALL_SUGGESTED_TITLES,
   titleHelpText: 'Short and direct works best.',
   titleMaxLength: PAYWALL_TITLE_MAX_LENGTH,
 

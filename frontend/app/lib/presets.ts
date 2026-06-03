@@ -1,29 +1,28 @@
-import { TOOL_BANNER, TOOL_PAYWALL, TOOL_WIDGET } from '@shared/types'
-import type { Tool } from '@shared/types'
+export const BANNER_SUGGESTED_TITLES = [
+  'How to support?',
+  'Fund me',
+  'Pay as you browse',
+  'Easy donate',
+  'Support my work',
+] as const
 
-export const SUGGESTED_TITLES: Partial<Record<Tool, readonly string[]>> = {
-  [TOOL_BANNER]: [
-    'How to support?',
-    'Fund me',
-    'Pay as you browse',
-    'Easy donate',
-    'Support my work',
-  ],
-  [TOOL_WIDGET]: [
-    'Support this content',
-    'Make a payment',
-    'Contribute now',
-    'Help support',
-    'One-time donation',
-  ],
-  [TOOL_PAYWALL]: [
-    'Finish reading this story',
-    'Keep reading',
-    'Unlock full article',
-    'Support this piece',
-  ],
-}
+export const WIDGET_SUGGESTED_TITLES = [
+  'Support this content',
+  'Make a payment',
+  'Contribute now',
+  'Help support',
+  'One-time donation',
+] as const
 
-export const ALL_SUGGESTED_TITLES = new Set<string>(
-  Object.values(SUGGESTED_TITLES).flat(),
-)
+export const PAYWALL_SUGGESTED_TITLES = [
+  'Finish reading this story',
+  'Keep reading',
+  'Unlock full article',
+  'Support this piece',
+] as const
+
+export const ALL_SUGGESTED_TITLES = new Set<string>([
+  ...BANNER_SUGGESTED_TITLES,
+  ...WIDGET_SUGGESTED_TITLES,
+  ...PAYWALL_SUGGESTED_TITLES,
+])

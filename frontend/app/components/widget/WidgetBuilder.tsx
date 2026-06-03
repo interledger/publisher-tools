@@ -9,8 +9,8 @@ import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
-import { FONT_FAMILY_OPTIONS, TOOL_WIDGET, WIDGET_FONT_SIZE_MAP } from '@shared/types'
-import { SUGGESTED_TITLES } from '~/lib/presets'
+import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZE_MAP } from '@shared/types'
+import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
@@ -27,7 +27,7 @@ interface Props {
 }
 
 const config = {
-  suggestedTitles: SUGGESTED_TITLES[TOOL_WIDGET]!,
+  suggestedTitles: WIDGET_SUGGESTED_TITLES,
   titleHelpText: 'Message to encourage one-time payments',
   titleMaxLength: 30,
   messageLabel: 'Widget message',
