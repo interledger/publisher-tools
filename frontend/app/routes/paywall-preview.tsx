@@ -9,11 +9,6 @@ export default function PaywallPreview() {
   const [profile, setProfile] = useState(() => getDefaultProfile('paywall'))
   const [isLoaded, setIsLoaded] = useState(false)
 
-  useEffect(() => {
-    document.querySelector('body > header')?.remove()
-    document.querySelector('body > footer')?.remove()
-  }, [])
-
   const NAME = 'wm-paywall'
   useEffect(() => {
     const load = async () => {
