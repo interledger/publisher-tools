@@ -17,8 +17,8 @@ import {
   PAYWALL_TITLE_MAX_LENGTH,
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
-import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
 import { usePaywallProfile } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
 import { PaywallColorsSelector } from './PaywallColorsSelector'

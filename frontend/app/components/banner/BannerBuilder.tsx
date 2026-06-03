@@ -10,7 +10,6 @@ import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
 import { BANNER_FONT_SIZE_MAP, FONT_FAMILY_OPTIONS } from '@shared/types'
-import { BANNER_SUGGESTED_TITLES } from '~/lib/presets'
 import {
   SVGAnimation,
   SVGColorPicker,
@@ -23,6 +22,7 @@ import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSele
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { BANNER_SUGGESTED_TITLES } from '~/lib/presets'
 import { useBannerProfile } from '~/stores/banner-store'
 import type { BuilderSection } from '~/stores/uiStore'
 

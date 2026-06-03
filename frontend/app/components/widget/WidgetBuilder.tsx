@@ -10,7 +10,6 @@ import { InputFieldset } from '@/components/builder/InputFieldset'
 import { TitleInput } from '@/components/builder/TitleInput'
 import BuilderAccordion from '@/components/BuilderAccordion'
 import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZE_MAP } from '@shared/types'
-import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
 import {
   SVGColorPicker,
   SVGHeaderPosition,
@@ -19,6 +18,7 @@ import {
 } from '~/assets/svg'
 import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
 import type { BuilderSection } from '~/stores/uiStore'
 import { useWidgetProfile } from '~/stores/widget-store'
 
