@@ -280,8 +280,17 @@ export default function Banner() {
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
                     <BuilderBackground
-                      onPreviewClick={handlePreviewClick}
-                      isAnimationDisabled={isAnimationDisabled}
+                      actions={
+                        !isAnimationDisabled && (
+                          <ToolsSecondaryButton
+                            icon="play"
+                            className="w-[130px]"
+                            onClick={handlePreviewClick}
+                          >
+                            Preview
+                          </ToolsSecondaryButton>
+                        )
+                      }
                     >
                       <BannerPreview ref={bannerRef} cdnUrl={snap.cdnUrl} />
                     </BuilderBackground>
