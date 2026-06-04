@@ -1,4 +1,4 @@
-import { type ComponentProps, useRef } from 'react'
+import { type ComponentProps, useEffect, useRef } from 'react'
 import { InputField } from './InputField'
 
 type InputFieldProps = ComponentProps<typeof InputField>
@@ -61,6 +61,12 @@ export const InputFieldNumeric = ({
     setValue(newValue.toFixed(precision))
     onChange(newValue)
   }
+
+  useEffect(() => {
+    if (typeof value !== 'undefined') {
+      setValue(value.toString())
+    }
+  }, [value])
 
   return (
     <InputField

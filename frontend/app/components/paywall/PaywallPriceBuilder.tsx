@@ -30,7 +30,6 @@ export function PaywallPriceBuilder() {
           label={t('input.price.label')}
           value={snap.price.value}
           onChange={(value) => {
-            console.log('onChange', { value })
             profile.price.value = String(value)
           }}
           helpText={t('input.price.hint', { currency })}
