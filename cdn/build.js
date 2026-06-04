@@ -2,7 +2,7 @@ import { writeFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import directoryTree from 'directory-tree'
-import { build } from 'esbuild'
+import { build, transform } from 'esbuild'
 import { copy } from 'esbuild-plugin-copy'
 
 const isDev = process.env.npm_lifecycle_script?.includes('--watch')
@@ -60,11 +60,26 @@ function rawPlugin() {
       const namespace = 'raw-loader'
       const filter = /\?raw$/
       build.onResolve({ filter }, (args) => {
-        const resolvedPath = path.join(args.resolveDir, args.path)
+        let resolvedPath = path.join(args.resolveDir, args.path)
+        // resolve TypeScript aliases
+        if (args.path.includes('@c/')) {
+          const filepath = args.path.split('@c/')[1]
+          const root = path.join(process.cwd(), '..')
+          const components = path.join(root, 'components')
+          resolvedPath = path.join(components, 'src', filepath)
+        }
         return { path: resolvedPath, namespace }
       })
       build.onLoad({ filter, namespace }, async (args) => {
-        const contents = await readFile(args.path.replace(filter, ''))
+        const filepath = args.path.replace(filter, '')
+        const contents = await readFile(filepath)
+        if (filepath.endsWith('.css')) {
+          const { code, warnings } = await transform(contents, {
+            loader: 'css',
+            minify: true,
+          })
+          return { contents: code, loader: 'text', warnings }
+        }
         return { contents, loader: 'text' }
       })
     },

@@ -16,25 +16,41 @@ import {
   ToolsPrimaryButton,
   StepsIndicator,
   MobileStepsIndicator,
+  BuilderProfileTabs,
 } from '@/components'
+import { SLIDE_ANIMATION } from '@shared/types'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import {
   BannerPreview,
   type BannerHandle,
 } from '~/components/banner/BannerPreview'
-import { BuilderTabs } from '~/components/builder/BuilderTabs'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
-import { useSaveConfig } from '~/hooks/useSaveConfig'
+import { useSaveProfile } from '~/hooks/useSaveProfile'
+import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
+import { useToolWallet } from '~/hooks/useToolWallet'
+import {
+  actions,
+  banner,
+  bannerWallet,
+  bannerWalletActions,
+  hydrateProfilesFromStorage,
+  hydrateSnapshotsFromStorage,
+  loadBannerWallet,
+  persistBannerWallet,
+  subscribeProfilesToStorage,
+  subscribeProfilesToUpdates,
+  useBannerProfile,
+} from '~/stores/banner-store'
 import {
   toolState,
   toolActions,
   persistState,
   loadState,
 } from '~/stores/toolStore'
+import { useUIActions } from '~/stores/uiStore'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { legacySplitConfigProperties as splitConfigProperties } from '~/utils/utils.storage'
 
 export const meta: MetaFunction = () => {
   return [
@@ -75,11 +91,18 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function Banner() {
   const snap = useSnapshot(toolState)
+  const [walletSnap, walletActions] = useToolWallet({
+    wallet: bannerWallet,
+    actions: bannerWalletActions,
+  })
+  const bannerSnap = useSnapshot(banner)
+  const [profile] = useBannerProfile()
   const navigate = useNavigate()
-  const { save, saveLastAction } = useSaveConfig()
+  const uiActions = useUIActions()
+  const { save, saveLastAction } = useSaveProfile(bannerWallet)
+  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
-  const walletAddressRef = useRef<HTMLDivElement>(null)
   const bannerRef = useRef<BannerHandle>(null)
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
@@ -87,37 +110,30 @@ export default function Banner() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
+    uiActions.setActiveSection('content')
+    const unsubscribeUpdates = subscribeProfilesToUpdates()
+    hydrateProfilesFromStorage()
+    const unsubscribeStorage = subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
+
     loadState(OP_WALLET_ADDRESS)
     persistState()
+    loadBannerWallet()
+    persistBannerWallet()
+
+    return () => {
+      unsubscribeStorage()
+      unsubscribeUpdates()
+    }
   }, [OP_WALLET_ADDRESS])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,
   })
 
-  const scrollToWalletAddress = () => {
-    if (!walletAddressRef.current) {
-      return
-    }
-    walletAddressRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-    })
-
-    walletAddressRef.current.style.transition = 'all 0.3s ease'
-    walletAddressRef.current.style.transform = 'scale(1.02)'
-
-    setTimeout(() => {
-      if (walletAddressRef.current) {
-        walletAddressRef.current.style.transform = 'scale(1)'
-      }
-    }, 500)
-  }
-
   const handleSave = async (action: 'save-success' | 'script') => {
-    if (!snap.isWalletConnected) {
-      toolActions.setConnectWalletStep('error')
+    if (!walletSnap.isWalletConnected) {
+      walletActions.setConnectWalletStep('error')
       scrollToWalletAddress()
       return
     }
@@ -139,15 +155,7 @@ export default function Banner() {
     }
   }
 
-  const handleRefresh = (section: 'content' | 'appearance') => {
-    const savedConfig = snap.savedConfigurations[toolState.activeVersion]
-    const { content, appearance } = splitConfigProperties(savedConfig)
-    Object.assign(
-      toolState.currentConfig,
-      section === 'content' ? content : appearance,
-    )
-  }
-
+  const isAnimationDisabled = profile.animation.type === SLIDE_ANIMATION.None
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
@@ -170,7 +178,7 @@ export default function Banner() {
                     {
                       number: 1,
                       label: 'Connect',
-                      status: snap.walletConnectStep,
+                      status: walletSnap.walletConnectStep,
                     },
                     {
                       number: 2,
@@ -186,9 +194,13 @@ export default function Banner() {
                   <MobileStepsIndicator
                     number={1}
                     label="Connect"
-                    status={snap.walletConnectStep}
+                    status={walletSnap.walletConnectStep}
                   />
-                  <ToolsWalletAddress toolName="drawer banner" />
+                  <ToolsWalletAddress
+                    store={walletSnap}
+                    walletActions={walletActions}
+                    toolName="drawer banner"
+                  />
                 </div>
 
                 <div className="flex flex-col xl:flex-row gap-2xl">
@@ -202,14 +214,26 @@ export default function Banner() {
                       status={snap.buildStep}
                     />
 
-                    <BuilderTabs>
-                      <BannerBuilder onRefresh={handleRefresh} />
-                    </BuilderTabs>
+                    <BuilderProfileTabs
+                      idPrefix="profile"
+                      options={bannerSnap.profileTabs}
+                      selectedId={snap.activeTab}
+                      onChange={(profileId) =>
+                        toolActions.setActiveTab(profileId)
+                      }
+                      onRename={(name) => actions.setProfileName(name)}
+                    >
+                      <BannerBuilder
+                        onRefresh={(section) =>
+                          actions.resetProfileSection(section)
+                        }
+                      />
+                    </BuilderProfileTabs>
 
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                                fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
                       <div
                         id="builder-actions-inner"
@@ -217,7 +241,7 @@ export default function Banner() {
                       >
                         <ToolsSecondaryButton
                           className="xl:w-[150px] xl:rounded-lg
-                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
+                                    w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={() => handleSave('save-success')}
                         >
@@ -232,7 +256,7 @@ export default function Banner() {
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
                           className="xl:w-[250px] xl:rounded-lg
-                                     w-full min-w-0 order-first xl:order-last"
+                                    w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={() => handleSave('script')}
                         >
@@ -255,7 +279,19 @@ export default function Banner() {
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground onPreviewClick={handlePreviewClick}>
+                    <BuilderBackground
+                      actions={
+                        !isAnimationDisabled && (
+                          <ToolsSecondaryButton
+                            icon="play"
+                            className="w-[130px]"
+                            onClick={handlePreviewClick}
+                          >
+                            Preview
+                          </ToolsSecondaryButton>
+                        )
+                      }
+                    >
                       <BannerPreview ref={bannerRef} cdnUrl={snap.cdnUrl} />
                     </BuilderBackground>
                   </div>

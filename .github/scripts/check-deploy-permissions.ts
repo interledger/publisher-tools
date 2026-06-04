@@ -1,27 +1,7 @@
 import type { AsyncFunctionArguments } from 'github-script';
-import type { PullRequestEvent, PullRequestReviewEvent } from '@octokit/webhooks-types';
+import type { PullRequestEvent } from '@octokit/webhooks-types';
 
 export default async function checkDeployPermissions({ core, context }: AsyncFunctionArguments) {
-  if (context.eventName === 'pull_request_review') {
-    const event = context.payload as PullRequestReviewEvent;
-    const reviewerAssociation = event.review.author_association;
-
-    if (!isAllowedAuthor(reviewerAssociation)) {
-      await skipDeployment(core, 'Not authorized to trigger deployments.');
-      return;
-    }
-
-    if (event.review.body === 'ok-to-deploy') {
-      core.setOutput('should-deploy', 'true');
-      core.info('Deployment allowed: Triggered by maintainer review comment');
-      return;
-    }
-
-    core.setOutput('should-deploy', 'false');
-    core.info('No deployment command found in review');
-    return;
-  }
-
   if (context.eventName === 'pull_request') {
     const event = context.payload as PullRequestEvent;
     const authorAssociation = event.pull_request.author_association;
@@ -29,7 +9,7 @@ export default async function checkDeployPermissions({ core, context }: AsyncFun
     if (!isAllowedAuthor(authorAssociation)) {
       await skipDeployment(
         core,
-        'The PR author is not authorized to run deployments. Maintainers can trigger a deployment by submitting a review with "pull-request-review" in the comment.'
+        'The PR author is not authorized to run deployments.'
       );
       return;
     }
@@ -37,6 +17,17 @@ export default async function checkDeployPermissions({ core, context }: AsyncFun
     core.setOutput('should-deploy', 'true');
     core.info('Deployment allowed: Authorized contributor');
     return;
+  }
+
+  if (context.eventName === 'push') {
+    const branch = context.ref
+    const allowed = ['refs/heads/main', 'refs/heads/release'];
+
+    if (allowed.includes(branch)) {
+      core.setOutput('should-deploy', 'true');
+      core.info(`Deployment allowed: Push to ${branch}`);
+      return;
+    }
   }
 
   // no deployment for other events
@@ -59,9 +50,7 @@ async function skipDeployment(coreApi: AsyncFunctionArguments['core'], reason: s
     .addQuote(`🚫 Deployment skipped: ${reason}`)
     .addDetails(
       'Security Notice',
-      `Deployments are restricted to organization members, collaborators, and repository owners.
-      External contributors can still run builds and tests.
-      Maintainers can trigger deployments by reviewing the PR with "pull-request-review" in the comment.`
+      `Deployments are restricted to organization members, collaborators, and repository owners.`
     )
     .write();
 }

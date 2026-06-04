@@ -1,7 +1,8 @@
+import { useId } from 'react'
 import { cx } from 'class-variance-authority'
 
 interface TextareaFieldProps extends React.ComponentPropsWithRef<'textarea'> {
-  label?: string
+  label?: string | React.ReactNode
   error?: string
   helpText?: string
   showCounter?: boolean
@@ -20,15 +21,20 @@ export function TextareaField({
   ref,
   ...props
 }: TextareaFieldProps) {
+  const id = useId()
   return (
     <div className="space-y-2xs">
       {label && (
-        <label className="block text-sm font-medium text-text-primary">
+        <label
+          className="block text-sm font-medium text-text-primary"
+          htmlFor={id}
+        >
           {label}
         </label>
       )}
       <textarea
         ref={ref}
+        id={id}
         className={cx(
           'w-full px-md py-sm',
           'border rounded-sm',

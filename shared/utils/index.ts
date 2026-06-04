@@ -1,4 +1,5 @@
 import type { WalletAddress } from '@interledger/open-payments'
+import type { Amount } from '@shared/types'
 
 export async function getWalletAddress(
   walletAddressUrl: string,
@@ -52,6 +53,34 @@ export function isWalletAddress(obj: unknown): obj is WalletAddress {
     o.resourceServer &&
     typeof o.resourceServer === 'string'
   )
+}
+
+export function toAmount(
+  /** @example "1.20", "1.5", 1.53, 10.535 */
+  value: string | number,
+  walletAddress: Pick<WalletAddress, 'assetScale' | 'assetCode'>,
+): Amount {
+  const val = typeof value === 'number' ? value : parseFloat(value)
+  const { assetScale, assetCode } = walletAddress
+  return {
+    value: BigInt((val * 10 ** assetScale).toFixed()).toString(),
+    assetCode: assetCode,
+    assetScale: assetScale,
+  }
+}
+
+export function isEqualAmount(amount1: Amount, amount2: Amount) {
+  return (
+    amount1.value === amount2.value &&
+    amount1.assetScale === amount2.assetScale &&
+    amount1.assetCode === amount2.assetCode
+  )
+}
+
+export function fromAmount(amount: Amount): PaymentCurrencyAmount {
+  const { assetScale, assetCode } = amount
+  const value = Number(amount.value) / 10 ** assetScale
+  return { currency: assetCode, value: value.toFixed(assetScale) }
 }
 
 // https://github.com/interledger/web-monetization-extension/blob/305b47c9f67ca604c79cfbfb083e5fcd1a579161/src/shared/helpers/wallet.ts#L13-L21
@@ -206,6 +235,40 @@ export async function validateAndConfirmPointer(url: string): Promise<string> {
   return validUrl
 }
 
+/**
+ * Polyfill for `Promise.withResolvers()`
+ */
+export function withResolvers<T>(): {
+  resolve: (value: T | PromiseLike<T>) => void
+  reject: (reason?: unknown) => void
+  promise: Promise<T>
+} {
+  let resolve
+  let reject
+  const promise = new Promise((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  // @ts-expect-error I know, I know
+  return { resolve, reject, promise }
+}
+
+export function sleep(delay: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, delay))
+}
+
+export function ensureEnd(str: string, suffix: string) {
+  return str.endsWith(suffix) ? str : str + suffix
+}
+
+export type UtmParams = {
+  utm_source: string
+  utm_medium: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+}
+
 export function urlWithParams(
   url: string | URL,
   params: Record<string, string>,
@@ -216,6 +279,23 @@ export function urlWithParams(
     result.searchParams.set(key, val)
   }
   return result
+}
+
+export function isValidDate(d: unknown): d is Date {
+  return d instanceof Date && !isNaN(d.valueOf())
+}
+
+export function isValidUrl(v: unknown): v is string {
+  if (typeof v !== 'string' || !v) return false
+
+  try {
+    const url = new URL(v)
+    if (url.protocol !== 'https:') return false
+    if (url.pathname.length <= 1) return false
+    return true
+  } catch {
+    return false
+  }
 }
 
 export function groupBy<T, K extends PropertyKey>(
@@ -231,4 +311,24 @@ export function groupBy<T, K extends PropertyKey>(
   }
 
   return result
+}
+
+export function formatCurrency(amount: PaymentCurrencyAmount): string
+export function formatCurrency(value: string | number, currency: string): string
+export function formatCurrency(
+  arg0: PaymentCurrencyAmount | string | number,
+  arg1?: string,
+): string {
+  let value: number
+  let currency: string
+  if (typeof arg0 === 'object' && arg0 !== null) {
+    currency = arg0.currency
+    value = Number.parseFloat(arg0.value)
+  } else {
+    currency = arg1 as string
+    value = typeof arg0 === 'string' ? parseFloat(arg0) : arg0
+  }
+
+  const fmt = new Intl.NumberFormat(undefined, { style: 'currency', currency })
+  return fmt.format(value)
 }

@@ -1,5 +1,4 @@
-import { deepEqual } from 'fast-equals'
-import { proxy, snapshot, subscribe, useSnapshot } from 'valtio'
+import { proxy, snapshot, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
 import { createDefaultBannerProfile } from '@shared/default-data'
 import {
@@ -11,15 +10,20 @@ import {
   TOOL_BANNER,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
-import { saveToolProfile } from '~/utils/profile-api'
-import { splitProfileProperties } from '~/utils/utils.storage'
+import { createWalletStore } from '~/stores/wallet-store'
+import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
+import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
+import { createToolStoreUtils } from '~/utils/utils.store'
 import { toolState } from './toolStore'
 
+export const {
+  wallet: bannerWallet,
+  load: loadBannerWallet,
+  persist: persistBannerWallet,
+  actions: bannerWalletActions,
+} = createWalletStore(TOOL_BANNER)
+
 export type BannerStore = ReturnType<typeof createBannerStore>
-const STORAGE_KEY_PREFIX = 'wmt-banner'
-const getStorageKey = (profileId: ProfileId) =>
-  `${STORAGE_KEY_PREFIX}-${profileId}`
-const SNAP_STORAGE_KEY = 'wmt-banner-snapshots'
 
 const createProfileStoreBanner = (profileName: string) =>
   proxy(createDefaultBannerProfile(profileName))
@@ -64,10 +68,13 @@ const snapshots = new Map<ProfileId, BannerProfile>(
   ]),
 )
 
+const bannerStoreUtils = createToolStoreUtils({
+  tool: TOOL_BANNER,
+  store: banner,
+  snapshots,
+})
+
 export const actions = {
-  setActiveTab(profileId: ProfileId) {
-    toolState.activeTab = profileId
-  },
   setProfileName(name: string) {
     banner.profiles[toolState.activeTab].$name = name
   },
@@ -77,11 +84,16 @@ export const actions = {
       Object.assign(banner.profiles[profileId as ProfileId], profile)
     })
   },
+  async getProfiles(tool: typeof TOOL_BANNER): Promise<ToolProfiles<'banner'>> {
+    return await getToolProfiles(bannerWallet.walletAddress, tool)
+  },
   resetProfiles() {
+    bannerStoreUtils.removeProfilesFromStorage()
+
     PROFILE_IDS.forEach((id) => {
       const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
-      Object.assign(banner.profiles[id], profile)
       snapshots.set(id, profile)
+      patchProxy(banner.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
@@ -91,124 +103,29 @@ export const actions = {
     }
 
     const { content, appearance } = splitProfileProperties(snapshot)
-    Object.assign(banner.profile, section === 'content' ? content : appearance)
+    patchProxy(banner.profile, section === 'content' ? content : appearance)
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
-    const { walletAddress, activeTab } = toolState
-    return await saveToolProfile(walletAddress, TOOL_BANNER, profile, activeTab)
+    return await saveToolProfile(
+      bannerWallet.walletAddress,
+      TOOL_BANNER,
+      profile,
+      toolState.activeTab,
+    )
   },
   commitProfile() {
-    const profile = snapshot(banner.profile)
-    snapshots.set(toolState.activeTab, profile)
-    banner.profilesUpdate.delete(toolState.activeTab)
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snaps))
+    return bannerStoreUtils.commitActiveProfile(toolState.activeTab)
+  },
+  commitProfiles() {
+    bannerStoreUtils.commitAllProfiles()
   },
 }
 
-export function subscribeProfilesToStorage() {
-  PROFILE_IDS.forEach((profileId) => {
-    subscribeProfileToStorage(profileId)
-  })
-}
-
-export function hydrateProfilesFromStorage() {
-  PROFILE_IDS.forEach((profileId) => {
-    const parsed = parseProfileFromStorage(profileId)
-    if (parsed) {
-      Object.assign(banner.profiles[profileId], parsed)
-    }
-  })
-}
-
-function subscribeProfileToStorage(profileId: ProfileId) {
-  const profile = banner.profiles[profileId]
-  subscribe(profile, () => {
-    const snap = snapshot(profile)
-    localStorage.setItem(getStorageKey(profileId), JSON.stringify(snap))
-  })
-}
-
-function parseProfileFromStorage(profileId: ProfileId): BannerProfile | null {
-  const storageKey = getStorageKey(profileId)
-  const storage = localStorage.getItem(storageKey)
-  if (!storage) return null
-
-  try {
-    const profile: BannerProfile = JSON.parse(storage)
-    const isValid =
-      typeof profile === 'object' &&
-      Object.keys(profile).every((key) => key in banner.profile)
-
-    if (!isValid) throw new Error('Invalid profile shape')
-    return profile
-  } catch (error) {
-    console.warn(
-      `Failed to load profile ${profileId} from localStorage:`,
-      error,
-    )
-    localStorage.removeItem(storageKey)
-    return null
-  }
-}
-
-export function captureSnapshotsToStorage() {
-  const snap = snapshot(banner.profiles)
-  Object.entries(snap).forEach(([profileId, profile]) => {
-    snapshots.set(profileId as ProfileId, profile)
-  })
-
-  localStorage.setItem(SNAP_STORAGE_KEY, JSON.stringify(snap))
-}
-
-export function hydrateSnapshotsFromStorage() {
-  const storage = localStorage.getItem(SNAP_STORAGE_KEY)
-  if (!storage) return
-
-  try {
-    const stored: ToolProfiles<'banner'> = JSON.parse(storage)
-    if (!stored) return
-
-    const isValid = (profile: BannerProfile) =>
-      typeof profile === 'object' &&
-      Object.keys(profile).every((key) => key in banner.profile)
-
-    Object.entries(stored).forEach(([id, profile]) => {
-      if (isValid(profile)) {
-        snapshots.set(id as ProfileId, profile)
-      }
-    })
-  } catch (error) {
-    console.warn('Failed to hydrate banner baselines:', error)
-    localStorage.removeItem(SNAP_STORAGE_KEY)
-  }
-}
-
-export function subscribeProfilesToUpdates() {
-  PROFILE_IDS.forEach((profileId) => {
-    subscribeProfileToUpdates(profileId)
-  })
-}
-
-function subscribeProfileToUpdates(id: ProfileId) {
-  const profile = banner.profiles[id]
-  subscribe(profile, () => {
-    const snap = snapshot(profile)
-    if (checkForPendingUpdates(id, snap)) {
-      banner.profilesUpdate.add(id)
-    } else {
-      banner.profilesUpdate.delete(id)
-    }
-  })
-}
-
-function checkForPendingUpdates(id: ProfileId, snap: BannerProfile): boolean {
-  const baseline = snapshots.get(id)
-  if (!baseline) {
-    return false
-  }
-
-  return !deepEqual(snap, baseline)
-}
+export const {
+  subscribeProfilesToStorage,
+  hydrateProfilesFromStorage,
+  captureSnapshotsToStorage,
+  hydrateSnapshotsFromStorage,
+  subscribeProfilesToUpdates,
+} = bannerStoreUtils

@@ -1,23 +1,36 @@
 import { useId } from 'react'
 import { cx } from 'class-variance-authority'
 import { Slider } from '@/components'
+import type { FontSize } from '@shared/types'
 
-interface Props {
-  value: number
-  min: number
-  max: number
-  onChange: (value: number) => void
+interface Props<T extends FontSize> {
+  value: T
+  sizeMap: Record<T, number>
+  onChange: (value: T) => void
   label?: string
 }
 
-export function FontSizeInput({
+export function FontSizeInput<T extends FontSize>({
   value,
-  min,
-  max,
+  sizeMap,
   onChange,
   label = 'Size',
-}: Props) {
+}: Props<T>) {
   const id = useId()
+
+  const sizes = Object.keys(sizeMap) as T[]
+  const index = sizes.indexOf(value)
+  const sliderValue = index >= 0 ? index : 0
+  const min = 0
+  const max = sizes.length - 1
+
+  const handleSliderChange = (index: number) => {
+    const clampedIndex = Math.max(min, Math.min(max, index))
+    onChange(sizes[clampedIndex])
+  }
+
+  const ariaSize = `${sizeMap[sizes[sliderValue]]}px`
+
   return (
     <div className="space-y-2xs" role="group" aria-labelledby={`label-${id}`}>
       <label
@@ -31,7 +44,7 @@ export function FontSizeInput({
       <div className="flex items-center h-12 gap-md">
         <IncDecButton
           label="Decrease font size"
-          onClick={() => onChange(Math.max(min, (value ?? min) - 1))}
+          onClick={() => handleSliderChange(sliderValue - 1)}
           aria-controls={id}
         >
           <IncDecIcon type="dec" />
@@ -39,15 +52,16 @@ export function FontSizeInput({
 
         <Slider
           id={id}
-          value={value ?? min}
+          value={sliderValue}
           min={min}
           max={max}
-          onChange={onChange}
+          onChange={handleSliderChange}
+          ariaValueText={ariaSize}
         />
 
         <IncDecButton
           label="Increase font size"
-          onClick={() => onChange(Math.min(max, (value ?? min) + 1))}
+          onClick={() => handleSliderChange(sliderValue + 1)}
           aria-controls={id}
         >
           <IncDecIcon type="inc" />

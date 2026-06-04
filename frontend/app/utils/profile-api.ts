@@ -1,7 +1,8 @@
-import type { ProfileId, Tool, ToolProfile } from '@shared/types'
+import type { ProfileId, Tool, ToolProfile, ToolProfiles } from '@shared/types'
+import { urlWithParams } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
-import type { SaveResult } from '~/lib/types'
+import type { GetProfilesResult, SaveResult } from '~/lib/types'
 
 export async function saveToolProfile<T extends Tool>(
   walletAddress: string,
@@ -33,4 +34,27 @@ export async function saveToolProfile<T extends Tool>(
   }
 
   return data
+}
+
+export async function getToolProfiles<T extends Tool>(
+  walletAddress: string,
+  tool: T,
+): Promise<ToolProfiles<T>> {
+  const baseUrl = location.origin + APP_BASEPATH
+  const url = urlWithParams(`${baseUrl}/api/profiles`, { walletAddress, tool })
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  })
+  const data: GetProfilesResult<T> = await response.json()
+
+  if (!response.ok) {
+    throw new ApiError(
+      data.error?.message || 'Failed to fetch profiles',
+      data.error?.cause?.errors,
+      response.status,
+    )
+  }
+
+  return data.profiles
 }

@@ -9,6 +9,9 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   ariaDescription?: string
   showCounter?: boolean
   currentLength?: number
+  addonBefore?: React.ReactNode
+  addonAfter?: React.ReactNode
+  addonClassName?: string
 }
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -26,6 +29,9 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       currentLength,
       onBlur,
       onChange,
+      addonBefore,
+      addonAfter,
+      addonClassName,
       ...props
     },
     ref,
@@ -65,19 +71,32 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {required && <span className="text-text-error ml-1">*</span>}
           </label>
         )}
-        <div className="relative">
+        <div
+          className={cx(
+            'relative flex items-center flex-nowrap',
+            'w-full px-sm py-xs rounded-sm',
+            'border',
+            !props.disabled &&
+              'focus-within:border-field-border-focus focus-within:outline-none focus-within:ring-1 focus-within:ring-primary-focus hover:border-field-border-hover',
+            error ? 'border-field-border-error' : 'border-field-border',
+            props.disabled &&
+              'border-field-border-disabled bg-field-bg-disabled text-silver-700',
+            className,
+          )}
+        >
+          {addonBefore && (
+            <span className={cx('text-text-placeholder mr-1', addonClassName)}>
+              {addonBefore}
+            </span>
+          )}
           <input
             ref={ref}
             maxLength={maxLength}
             className={cx(
-              'w-full px-sm py-xs rounded-sm',
-              'text-text-primary placeholder:text-text-placeholder',
-              'border hover:border-field-border-hover',
-              'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
-              'disabled:border-field-border-disabled disabled:bg-field-bg-disabled disabled:text-silver-700',
-              'placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
-              error ? 'border-field-border-error' : 'border-field-border',
-              className,
+              'outline-none border-none ring-0 focus:ring-0 focus:outline-none focus:border-none',
+              'w-full',
+              'text-text-primary bg-inherit',
+              'placeholder:text-text-placeholder placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',
             )}
             id={fieldId}
             name={fieldId}
@@ -87,6 +106,12 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             onBlur={handleBlur}
             {...props}
           />
+          {addonAfter && (
+            <span className={cx('text-text-placeholder ml-1', addonClassName)}>
+              {addonAfter}
+            </span>
+          )}
+
           {ariaDescription && !displayError && (
             <p id={ariaDescriptionId} className="sr-only">
               {ariaDescription}
