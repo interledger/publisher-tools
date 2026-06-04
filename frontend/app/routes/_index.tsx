@@ -191,7 +191,7 @@ export default function Index() {
             Setup tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-small-standard max-xl:text-center xl:text-left">
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Get started quickly with tools designed to help you set up Web
             Monetization on your website
           </p>
@@ -233,7 +233,7 @@ export default function Index() {
             Interaction tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-small-standard max-xl:text-center xl:text-left">
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Add lightweight and embeddable tools, like banners and widgets, to
             your site with simple scripts.
             <br />

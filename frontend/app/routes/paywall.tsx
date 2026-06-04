@@ -153,8 +153,10 @@ export default function Paywall() {
             onBackClick={() => navigate('/')}
           >
             Pay Per Article lets visitors unlock gated content with a one-time
-            payment. It provides a clean, customizable interface to configure
-            pricing, and choose how locked content is revealed.
+            payment.
+            <br />
+            It provides a clean, customizable interface to configure pricing,
+            and choose how locked content is revealed.
           </HeadingCore>
 
           <Divider className="!my-3xl" />
