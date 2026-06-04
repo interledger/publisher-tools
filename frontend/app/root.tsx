@@ -49,12 +49,7 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
-  let error: unknown
-  try {
-    error = useRouteError()
-  } catch (e) {
-    error = e
-  }
+  const error = useRouteError()
 
   if (isRouteErrorResponse(error)) {
     return (

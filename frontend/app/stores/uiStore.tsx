@@ -112,6 +112,10 @@ export const useUIActions = (): UIActions => {
   return context
 }
 
-export const useUIState = (): UIState | undefined => {
-  return useContext(UIStateContext)
+export const useUIState = (): UIState => {
+  const state = useContext(UIStateContext)
+  if (!state) {
+    throw new Error('useUIState must be used within a UIProvider')
+  }
+  return state
 }
