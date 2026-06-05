@@ -7,7 +7,9 @@
   display: block;
   inset: 0;
   font-family: var(--font-family);
-  font-size: var(--font-size);
+  font-size: calc(
+    clamp(1rem, 0.943rem + 0.284vw, 1.25rem) * var(--font-scale, 1)
+  );
 }
 
 :host::before {

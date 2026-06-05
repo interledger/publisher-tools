@@ -245,7 +245,7 @@ export class Paywall extends LitElement {
 
     const fontBaseUrl = new URL('/assets/fonts/', this.#controller.cdnUrl).href
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
-    this.style.setProperty('--wmt-font-size', getBaseFontSize(font.size))
+    this.style.setProperty('--wmt-font-scale', getBaseFontScale(font.size))
     this.style.setProperty('--wmt-height', `${coverage.value}vh`)
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
@@ -254,6 +254,7 @@ export class Paywall extends LitElement {
   }
 }
 
-function getBaseFontSize(fontSize: PaywallProfile['font']['size']) {
-  return `${PAYWALL_FONT_SIZE_MAP[fontSize] || PAYWALL_FONT_SIZE_MAP['base']}px`
+function getBaseFontScale(fontSize: PaywallProfile['font']['size']) {
+  const size = PAYWALL_FONT_SIZE_MAP[fontSize] || PAYWALL_FONT_SIZE_MAP.base
+  return (size / 16).toString()
 }
