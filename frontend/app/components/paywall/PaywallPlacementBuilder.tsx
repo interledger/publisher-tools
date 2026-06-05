@@ -1,9 +1,9 @@
 import { useId } from 'react'
 import { cx } from 'class-variance-authority'
+import { InputFieldNumeric } from '@/components/InputFieldNumeric'
 import type { PaywallProfile } from '@shared/types'
 import { useTranslation } from '~/i18n/useTranslation'
 import { usePaywallProfile } from '~/stores/paywall-store'
-import { InputField } from '../redesign/components'
 
 export function PaywallPlacementBuilder() {
   const [snap, profile] = usePaywallProfile()
@@ -43,6 +43,12 @@ export function PaywallPlacementBuilder() {
 }
 
 type CoverageAmount = PaywallProfile['behavior']['coverage']['value']
+const coverageOptions: { value: CoverageAmount; text: string }[] = [
+  { value: 25, text: '25%' },
+  { value: 50, text: '50%' },
+  { value: 75, text: '75%' },
+  { value: 100, text: 'Full page' },
+]
 function PaywallCoverageInput({
   value,
   onChange,
@@ -52,12 +58,6 @@ function PaywallCoverageInput({
 }) {
   const id = useId()
   const t = useTranslation('paywall')
-  const options: { value: CoverageAmount; text: string }[] = [
-    { value: 25, text: '25%' },
-    { value: 50, text: '50%' },
-    { value: 75, text: '75%' },
-    { value: 100, text: 'Full page' },
-  ]
 
   return (
     <fieldset className="space-y-2xs">
@@ -65,7 +65,7 @@ function PaywallCoverageInput({
         {t('input.coverage.label')}
       </legend>
       <div className="flex gap-1 w-fit p-1.5 rounded-sm border border-field-border bg-field-bg-disabled">
-        {options.map(({ value: val, text }) => (
+        {coverageOptions.map(({ value: val, text }) => (
           <label
             key={val}
             className={cx(
@@ -98,19 +98,17 @@ function PaywallDelayInput({
 }) {
   const t = useTranslation('paywall')
   return (
-    <InputField
+    <InputFieldNumeric
       label={t('input.delay.label')}
       inputMode="decimal"
       value={value}
-      onChange={(ev) => {
-        const value = Number(ev.currentTarget.value)
-        if (!Number.isNaN(value) && Number.isInteger(value) && value >= 0) {
-          onChange(value)
-        }
-      }}
+      onChange={onChange}
       helpText={t('input.delay.hint')}
       className="max-w-56"
       addonAfter={t('input.delay.suffix')}
+      min={0}
+      max={15}
+      precision={1}
     />
   )
 }
