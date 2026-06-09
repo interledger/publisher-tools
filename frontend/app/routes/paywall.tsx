@@ -105,16 +105,8 @@ export default function Paywall() {
       }}
       walletAddressToolName="pay per article"
       steps={[
-        {
-          number: 2,
-          label: 'Configure',
-          status: snap.configureStep,
-        },
-        {
-          number: 3,
-          label: 'Build',
-          status: snap.buildStep,
-        },
+        { number: 2, label: 'Configure', status: snap.configureStep },
+        { number: 3, label: 'Build', status: snap.buildStep },
       ]}
       preview={<Preview />}
       loaderData={{
