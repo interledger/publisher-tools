@@ -28,13 +28,6 @@ interface Props {
   onRefresh: (section: BuilderSection) => void
 }
 
-const config = {
-  suggestedTitles: PAYWALL_SUGGESTED_TITLES,
-  titleMaxLength: PAYWALL_TITLE_MAX_LENGTH,
-  messageMaxLength: PAYWALL_DESCRIPTION_MAX_LENGTH,
-  buttonMaxLength: PAYWALL_CTA_BUTTON_MAX_LENGTH,
-}
-
 export function PaywallBuilder({ onRefresh }: Props) {
   return (
     <>
@@ -65,8 +58,8 @@ function ContentBuilder({ onRefresh }: Props) {
         onChange={(value) => {
           profile.title.text = value
         }}
-        suggestions={config.suggestedTitles}
-        maxLength={config.titleMaxLength}
+        suggestions={PAYWALL_SUGGESTED_TITLES}
+        maxLength={PAYWALL_TITLE_MAX_LENGTH}
         helpText={t('input.title.hint')}
       />
 
@@ -86,7 +79,7 @@ function ContentBuilder({ onRefresh }: Props) {
         }
         placeholder={t('input.message.placeholder')}
         helpText={t('input.message.hint')}
-        maxLength={config.messageMaxLength}
+        maxLength={PAYWALL_DESCRIPTION_MAX_LENGTH}
         className="h-16"
       />
 
@@ -99,7 +92,7 @@ function ContentBuilder({ onRefresh }: Props) {
         }}
         label={t('input.payButton.label')}
         placeholder={t('input.payButton.placeholder')}
-        maxLength={config.buttonMaxLength}
+        maxLength={PAYWALL_CTA_BUTTON_MAX_LENGTH}
         helpText={''}
         id="input-pay-button"
       />
