@@ -13,6 +13,7 @@ import { PaywallPriceBuilder } from '~/components/paywall/PaywallPriceBuilder'
 import { Divider } from '~/components/redesign/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { useToolWallet } from '~/hooks/useToolWallet'
+import { useTranslation } from '~/i18n/useTranslation'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -65,6 +66,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export default function Paywall() {
+  const t = useTranslation('paywall')
   const snap = useSnapshot(toolState)
   const [walletSnap] = useToolWallet({
     wallet: paywallWallet,
@@ -80,14 +82,12 @@ export default function Paywall() {
 
   return (
     <ToolLayoutWithPreview
-      title="Pay Per Article"
+      title={t('title')}
       description={
         <>
-          Pay Per Article lets visitors unlock gated content with a one-time
-          payment.
+          {t('description_0')}
           <br />
-          It provides a clean, customizable interface to configure pricing, and
-          choose how locked content is revealed.
+          {t('description_1')}
         </>
       }
       additionalDescription={<Divider className="!my-3xl" />}
