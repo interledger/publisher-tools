@@ -1,37 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import {
   useLoaderData,
-  useNavigate,
   data,
   type LoaderFunctionArgs,
   type MetaFunction,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
-import { SVGSpinner } from '@/assets'
-import {
-  HeadingCore,
-  ToolsWalletAddress,
-  BuilderBackground,
-  ToolsSecondaryButton,
-  ToolsPrimaryButton,
-  StepsIndicator,
-  MobileStepsIndicator,
-  BuilderProfileTabs,
-} from '@/components'
+import { BuilderBackground, BuilderProfileTabs } from '@/components'
+import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
-import { useBodyClass } from '~/hooks/useBodyClass'
-import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
-import { usePathTracker } from '~/hooks/usePathTracker'
-import { useSaveProfile } from '~/hooks/useSaveProfile'
-import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
-import { useToolWallet } from '~/hooks/useToolWallet'
-import {
-  toolState,
-  toolActions,
-  persistState,
-  loadState,
-} from '~/stores/toolStore'
+import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import {
   actions,
@@ -87,199 +66,93 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function Widget() {
   const snap = useSnapshot(toolState)
   const widgetSnap = useSnapshot(widget)
-  const navigate = useNavigate()
   const uiActions = useUIActions()
-  const [walletSnap, walletActions] = useToolWallet({
-    wallet: widgetWallet,
-    actions: widgetWalletActions,
-  })
-  const { save, saveLastAction } = useSaveProfile(widgetWallet)
-  const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingScript, setIsLoadingScript] = useState(false)
+
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
-  usePathTracker()
-  useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
     uiActions.setActiveSection('content')
-    const unsubscribeUpdates = subscribeProfilesToUpdates()
-    hydrateProfilesFromStorage()
-    const unsubscribeStorage = subscribeProfilesToStorage()
-    hydrateSnapshotsFromStorage()
-
-    loadState(OP_WALLET_ADDRESS)
-    persistState()
-    loadWidgetWallet()
-    persistWidgetWallet()
-
-    return () => {
-      unsubscribeStorage()
-      unsubscribeUpdates()
-    }
   }, [OP_WALLET_ADDRESS])
 
-  useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
-    onGrantSuccess: saveLastAction,
-  })
-
-  const handleSave = async (action: 'save-success' | 'script') => {
-    if (!walletSnap.isWalletConnected) {
-      walletActions.setConnectWalletStep('error')
-      scrollToWalletAddress()
-      return
-    }
-
-    const isScript = action === 'script'
-    const setLoading = isScript ? setIsLoadingScript : setIsLoading
-
-    setLoading(true)
-    try {
-      await save(action)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
-    <div className="bg-interface-bg-main w-full">
-      <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
-        <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore title="Widget" onBackClick={() => navigate('/')}>
-            The payment widget allows visitors to make one-time payments to
-            support your content directly.
-            <br />
-            It provides a clean, customizable interface for Web Monetization
-            payments.
-            <br />
-            Configure your wallet address to receive payments from your
-            supporters.
-          </HeadingCore>
-          <div className="flex flex-col min-h-[756px]">
-            <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
-              <div
-                id="steps-indicator"
-                className="hidden xl:block w-[60px] flex-shrink-0 pt-md"
-              >
-                <StepsIndicator
-                  steps={[
-                    {
-                      number: 1,
-                      label: 'Connect',
-                      status: walletSnap.walletConnectStep,
-                    },
-                    {
-                      number: 2,
-                      label: 'Build',
-                      status: snap.buildStep,
-                    },
-                  ]}
-                />
-              </div>
+    <ToolLayoutWithPreview
+      title="Widget"
+      description={
+        <>
+          The payment widget allows visitors to make one-time payments to
+          support your content directly.
+          <br />
+          It provides a clean, customizable interface for Web Monetization
+          payments.
+          <br />
+          Configure your wallet address to receive payments from your
+          supporters.
+        </>
+      }
+      walletStore={{
+        wallet: widgetWallet,
+        actions: widgetWalletActions,
+        load: loadWidgetWallet,
+        persist: persistWidgetWallet,
+      }}
+      toolStoreUtils={{
+        subscribeProfilesToStorage,
+        hydrateProfilesFromStorage,
+        hydrateSnapshotsFromStorage,
+        subscribeProfilesToUpdates,
+      }}
+      walletAddressToolName="payment widget"
+      steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
+      preview={
+        <Preview
+          cdnUrl={snap.cdnUrl}
+          apiUrl={snap.apiUrl}
+          opWallet={snap.opWallet}
+        />
+      }
+      loaderData={{
+        grantResponse,
+        isGrantAccepted,
+        isGrantResponse,
+        OP_WALLET_ADDRESS,
+      }}
+    >
+      <BuilderProfileTabs
+        idPrefix="profile"
+        options={widgetSnap.profileTabs}
+        selectedId={snap.activeTab}
+        onChange={(profileId) => toolActions.setActiveTab(profileId)}
+        onRename={(name) => actions.setProfileName(name)}
+      >
+        <WidgetBuilder
+          onRefresh={(section) => actions.resetProfileSection(section)}
+        />
+      </BuilderProfileTabs>
+    </ToolLayoutWithPreview>
+  )
+}
 
-              <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
-                <div id="wallet-address" ref={walletAddressRef}>
-                  <MobileStepsIndicator
-                    number={1}
-                    label="Connect"
-                    status={walletSnap.walletConnectStep}
-                  />
-                  <ToolsWalletAddress
-                    store={walletSnap}
-                    walletActions={walletActions}
-                    toolName="payment widget"
-                  />
-                </div>
-
-                <div className="flex flex-col xl:flex-row gap-2xl">
-                  <div
-                    id="builder"
-                    className="w-full xl:max-w-[628px] xl:flex-1"
-                  >
-                    <MobileStepsIndicator
-                      number={2}
-                      label="Build"
-                      status={snap.buildStep}
-                    />
-                    <BuilderProfileTabs
-                      idPrefix="profile"
-                      options={widgetSnap.profileTabs}
-                      selectedId={snap.activeTab}
-                      onChange={(profileId) =>
-                        toolActions.setActiveTab(profileId)
-                      }
-                      onRename={(name) => actions.setProfileName(name)}
-                    >
-                      <WidgetBuilder
-                        onRefresh={(section) =>
-                          actions.resetProfileSection(section)
-                        }
-                      />
-                    </BuilderProfileTabs>
-
-                    <div
-                      id="builder-actions"
-                      className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
-                    >
-                      <div
-                        id="builder-actions-inner"
-                        className="xl:contents flex flex-col gap-xs mx-auto w-full xl:w-auto xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm"
-                      >
-                        <ToolsSecondaryButton
-                          className="xl:w-[150px] xl:rounded-lg
-                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
-                          disabled={isLoading}
-                          onClick={() => handleSave('save-success')}
-                        >
-                          <div className="flex items-center justify-center gap-2">
-                            {isLoading && <SVGSpinner className="w-4 h-4" />}
-                            <span>
-                              {isLoading ? 'Saving...' : 'Save edits only'}
-                            </span>
-                          </div>
-                        </ToolsSecondaryButton>
-                        <ToolsPrimaryButton
-                          icon="script"
-                          iconPosition={isLoadingScript ? 'none' : 'left'}
-                          className="xl:w-[250px] xl:rounded-lg
-                                     w-full min-w-0 order-first xl:order-last"
-                          disabled={isLoadingScript}
-                          onClick={() => handleSave('script')}
-                        >
-                          <div className="flex items-center justify-center gap-xs">
-                            {isLoadingScript && (
-                              <SVGSpinner className="w-4 h-4" />
-                            )}
-                            <span>
-                              {isLoadingScript
-                                ? 'Saving...'
-                                : 'Save and generate script'}
-                            </span>
-                          </div>
-                        </ToolsPrimaryButton>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    id="preview"
-                    className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
-                  >
-                    <BuilderBackground>
-                      <WidgetPreview
-                        serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
-                        opWallet={snap.opWallet}
-                      />
-                    </BuilderBackground>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+function Preview({
+  cdnUrl,
+  apiUrl,
+  opWallet,
+}: {
+  cdnUrl: string
+  apiUrl: string
+  opWallet: string
+}) {
+  return (
+    <div
+      id="preview"
+      className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
+    >
+      <BuilderBackground>
+        <WidgetPreview
+          serviceUrls={{ cdn: cdnUrl, api: apiUrl }}
+          opWallet={opWallet}
+        />
+      </BuilderBackground>
     </div>
   )
 }
