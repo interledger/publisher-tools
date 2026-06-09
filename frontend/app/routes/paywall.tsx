@@ -85,9 +85,9 @@ export default function Paywall() {
       title={t('title')}
       description={
         <>
-          {t('description_0')}
-          <br />
           {t('description_1')}
+          <br />
+          {t('description_2')}
         </>
       }
       additionalDescription={<Divider className="!my-3xl" />}
