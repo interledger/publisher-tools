@@ -21,6 +21,9 @@
     "button.disconnectAriaLabel": "Disconnect wallet"
   },
   "paywall": {
+    "title": "Pay per Article",
+    "description_1": "Pay Per Article lets visitors unlock gated content with a one-time payment.",
+    "description_2": "It provides a clean, customizable interface to configure pricing, and choose how locked content is revealed.",
     "inputgroup.price.title": "Price",
     "inputgroup.price.titleDesc": "What visitors pay to unlock",
     "inputgroup.price.desc": "Set the one-time payment amount visitors pay to unlock this page’s gated content.",
@@ -33,6 +36,13 @@
     "input.coverage.hint": "How much of the screen the paywall takes when it appears.",
     "input.delay.label": "Show paywall after",
     "input.delay.hint": "Set to 0 to show the paywall immediately on page load.",
-    "input.delay.suffix": "seconds"
+    "input.delay.suffix": "seconds",
+    "input.title.label": "",
+    "input.title.hint": "Short and direct works best.",
+    "input.message.label": "Subtitle",
+    "input.message.hint": "Explain the value in one sentence.",
+    "input.message.placeholder": "Unlock the full article with a one-time payment — no subscription, no account.",
+    "input.payButton.label": "Pay button label",
+    "input.payButton.placeholder": "Pay with Open Payments"
   }
 }

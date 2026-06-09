@@ -18,6 +18,7 @@ import {
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { useTranslation } from '~/i18n/useTranslation'
 import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
 import { usePaywallProfile } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
@@ -29,16 +30,8 @@ interface Props {
 
 const config = {
   suggestedTitles: PAYWALL_SUGGESTED_TITLES,
-  titleHelpText: 'Short and direct works best.',
   titleMaxLength: PAYWALL_TITLE_MAX_LENGTH,
-
-  messageLabel: 'Subtitle',
-  messagePlaceholder: `Unlock the full article with a one-time payment — no subscription, no account.`,
-  messageHelpText: 'Explain the value in one sentence.',
   messageMaxLength: PAYWALL_DESCRIPTION_MAX_LENGTH,
-
-  buttonLabel: 'Pay button label',
-  buttonPlaceholder: 'Pay with Open Payments',
   buttonMaxLength: PAYWALL_CTA_BUTTON_MAX_LENGTH,
 }
 
@@ -52,6 +45,7 @@ export function PaywallBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
+  const t = useTranslation('paywall')
   const { isComplete, isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('content')
   const [snap, profile] = usePaywallProfile({ sync: true })
@@ -73,7 +67,7 @@ function ContentBuilder({ onRefresh }: Props) {
         }}
         suggestions={config.suggestedTitles}
         maxLength={config.titleMaxLength}
-        helpText={config.titleHelpText}
+        helpText={t('input.title.hint')}
       />
 
       <Divider />
@@ -87,11 +81,11 @@ function ContentBuilder({ onRefresh }: Props) {
         showCounter={true}
         label={
           <span className="text-base leading-md font-bold text-text-primary">
-            {config.messageLabel}
+            {t('input.message.label')}
           </span>
         }
-        placeholder={config.messagePlaceholder}
-        helpText={config.messageHelpText}
+        placeholder={t('input.message.placeholder')}
+        helpText={t('input.message.hint')}
         maxLength={config.messageMaxLength}
         className="h-16"
       />
@@ -103,8 +97,8 @@ function ContentBuilder({ onRefresh }: Props) {
         onChange={(value) => {
           profile.ctaButton.text = value
         }}
-        label={config.buttonLabel}
-        placeholder={config.buttonPlaceholder}
+        label={t('input.payButton.label')}
+        placeholder={t('input.payButton.placeholder')}
         maxLength={config.buttonMaxLength}
         helpText={''}
         id="input-pay-button"
