@@ -22,6 +22,7 @@ import { BannerAnimationSelector } from '~/components/banner/BannerAnimationSele
 import { BannerPositionSelector } from '~/components/banner/BannerPositionSelector'
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { BANNER_SUGGESTED_TITLES } from '~/lib/presets'
 import { useBannerProfile } from '~/stores/banner-store'
 import type { BuilderSection } from '~/stores/uiStore'
 
@@ -30,13 +31,7 @@ interface Props {
 }
 
 const config = {
-  suggestedTitles: [
-    'How to support?',
-    'Fund me',
-    'Pay as you browse',
-    'Easy donate',
-    'Support my work',
-  ],
+  suggestedTitles: BANNER_SUGGESTED_TITLES,
   titleHelpText: 'Strong message to help people engage with Web Monetization',
   titleMaxLength: 60,
   messageLabel: 'Banner message',

@@ -1,13 +1,13 @@
 import { proxy, snapshot, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
-import { createDefaultBannerProfile } from '@shared/default-data'
+import { createDefaultPaywallProfile } from '@shared/default-data'
 import {
   type ProfileId,
-  type BannerProfile,
+  type PaywallProfile,
   type ToolProfiles,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
-  TOOL_BANNER,
+  TOOL_PAYWALL,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
 import { createWalletStore } from '~/stores/wallet-store'
@@ -17,28 +17,28 @@ import { createToolStoreUtils } from '~/utils/utils.store'
 import { toolState } from './toolStore'
 
 export const {
-  wallet: bannerWallet,
-  load: loadBannerWallet,
-  persist: persistBannerWallet,
-  actions: bannerWalletActions,
-} = createWalletStore(TOOL_BANNER)
+  wallet: paywallWallet,
+  load: loadPaywallWallet,
+  persist: persistPaywallWallet,
+  actions: paywallWalletActions,
+} = createWalletStore(TOOL_PAYWALL)
 
-export type BannerStore = ReturnType<typeof createBannerStore>
+export type PaywallStore = ReturnType<typeof createPaywallStore>
 
-const createProfileStoreBanner = (profileName: string) =>
-  proxy(createDefaultBannerProfile(profileName))
+const createProfileStorePaywall = (profileName: string) =>
+  proxy(createDefaultPaywallProfile(profileName))
 
-function createBannerStore() {
+function createPaywallStore() {
   return proxy({
     profiles: Object.fromEntries(
       PROFILE_IDS.map((id) => [
         id,
-        createProfileStoreBanner(DEFAULT_PROFILE_NAMES[id]),
+        createProfileStorePaywall(DEFAULT_PROFILE_NAMES[id]),
       ]),
-    ) as Record<ProfileId, BannerProfile>,
+    ) as Record<ProfileId, PaywallProfile>,
     profilesUpdate: proxySet<ProfileId>(),
 
-    get profile(): BannerProfile {
+    get profile(): PaywallProfile {
       return this.profiles[toolState.activeTab]
     },
     get profileTabs() {
@@ -51,49 +51,50 @@ function createBannerStore() {
   })
 }
 
-export function useBannerProfile(options?: {
+export function usePaywallProfile(options?: {
   sync: boolean
-}): [BannerProfile, BannerProfile] {
-  // https://github.com/pmndrs/valtio/issues/132
-  const snapshot = useSnapshot(banner.profile, options)
-  return [snapshot, banner.profile]
+}): [PaywallProfile, PaywallProfile] {
+  const snapshot = useSnapshot(paywall.profile, options)
+  return [snapshot, paywall.profile]
 }
 
-export const banner = createBannerStore()
+export const paywall = createPaywallStore()
 
-const snapshots = new Map<ProfileId, BannerProfile>(
+const snapshots = new Map<ProfileId, PaywallProfile>(
   PROFILE_IDS.map((id) => [
     id,
-    createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id]),
+    createDefaultPaywallProfile(DEFAULT_PROFILE_NAMES[id]),
   ]),
 )
 
-const bannerStoreUtils = createToolStoreUtils({
-  tool: TOOL_BANNER,
-  store: banner,
+const paywallStoreUtils = createToolStoreUtils({
+  tool: TOOL_PAYWALL,
+  store: paywall,
   snapshots,
 })
 
 export const actions = {
   setProfileName(name: string) {
-    banner.profiles[toolState.activeTab].$name = name
+    paywall.profiles[toolState.activeTab].$name = name
   },
-  setProfiles(profiles: ToolProfiles<'banner'>) {
+  setProfiles(profiles: ToolProfiles<'paywall'>) {
     if (!profiles) return
     Object.entries(profiles).forEach(([profileId, profile]) => {
-      Object.assign(banner.profiles[profileId as ProfileId], profile)
+      Object.assign(paywall.profiles[profileId as ProfileId], profile)
     })
   },
-  async getProfiles(tool: typeof TOOL_BANNER): Promise<ToolProfiles<'banner'>> {
-    return await getToolProfiles(bannerWallet.walletAddress, tool)
+  async getProfiles(
+    tool: typeof TOOL_PAYWALL,
+  ): Promise<ToolProfiles<'paywall'>> {
+    return await getToolProfiles(paywallWallet.walletAddress, tool)
   },
   resetProfiles() {
-    bannerStoreUtils.removeProfilesFromStorage()
+    paywallStoreUtils.removeProfilesFromStorage()
 
     PROFILE_IDS.forEach((id) => {
-      const profile = createDefaultBannerProfile(DEFAULT_PROFILE_NAMES[id])
+      const profile = createDefaultPaywallProfile(DEFAULT_PROFILE_NAMES[id])
       snapshots.set(id, profile)
-      patchProxy(banner.profiles[id], profile)
+      patchProxy(paywall.profiles[id], profile)
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
@@ -103,22 +104,22 @@ export const actions = {
     }
 
     const { content, appearance } = splitProfileProperties(snapshot)
-    patchProxy(banner.profile, section === 'content' ? content : appearance)
+    patchProxy(paywall.profile, section === 'content' ? content : appearance)
   },
   async saveProfile(): Promise<SaveResult> {
-    const profile = snapshot(banner.profile)
+    const profile = snapshot(paywall.profile)
     return await saveToolProfile(
-      bannerWallet.walletAddress,
-      TOOL_BANNER,
+      paywallWallet.walletAddress,
+      TOOL_PAYWALL,
       profile,
       toolState.activeTab,
     )
   },
   commitProfile() {
-    return bannerStoreUtils.commitActiveProfile(toolState.activeTab)
+    return paywallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
-    bannerStoreUtils.commitAllProfiles()
+    paywallStoreUtils.commitAllProfiles()
   },
 }
 
@@ -128,4 +129,4 @@ export const {
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,
   subscribeProfilesToUpdates,
-} = bannerStoreUtils
+} = paywallStoreUtils

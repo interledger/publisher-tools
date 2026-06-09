@@ -1,25 +1,26 @@
 import { useEffect, useState } from 'react'
 import {
+  data,
   useLoaderData,
   useNavigate,
-  data,
-  type LoaderFunctionArgs,
   type MetaFunction,
+  type LoaderFunctionArgs,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { SVGSpinner } from '@/assets'
 import {
+  Divider,
   HeadingCore,
-  ToolsWalletAddress,
-  BuilderBackground,
-  ToolsSecondaryButton,
-  ToolsPrimaryButton,
-  StepsIndicator,
   MobileStepsIndicator,
-  BuilderProfileTabs,
+  StepsIndicator,
+  ToolsPrimaryButton,
+  ToolsSecondaryButton,
+  ToolsWalletAddress,
 } from '@/components'
-import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
-import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
+import { PaywallPlacementBuilder } from '~/components/paywall/PaywallPlacementBuilder'
+import { PaywallPreview } from '~/components/paywall/PaywallPreview'
+import { PaywallPriceBuilder } from '~/components/paywall/PaywallPriceBuilder'
 import { useBodyClass } from '~/hooks/useBodyClass'
 import { useGrantResponseHandler } from '~/hooks/useGrantResponseHandler'
 import { usePathTracker } from '~/hooks/usePathTracker'
@@ -27,33 +28,32 @@ import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
 import {
-  toolState,
-  toolActions,
-  persistState,
-  loadState,
-} from '~/stores/toolStore'
-import { useUIActions } from '~/stores/uiStore'
-import {
   actions,
-  widget,
   hydrateProfilesFromStorage,
   hydrateSnapshotsFromStorage,
-  loadWidgetWallet,
-  persistWidgetWallet,
+  loadPaywallWallet,
+  paywall,
+  paywallWallet,
+  paywallWalletActions,
+  persistPaywallWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
-  widgetWallet,
-  widgetWalletActions,
-} from '~/stores/widget-store'
-import { commitSession, getSession } from '~/utils/session.server.js'
+} from '~/stores/paywall-store'
+import {
+  loadState,
+  persistState,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  toolActions,
+  toolState,
+} from '~/stores/toolStore'
+import { commitSession, getSession } from '~/utils/session.server'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Widget - Publisher Tools' },
+    { title: 'Pay Per Article - Publisher Tools' },
     {
       name: 'description',
-      content:
-        'Create and customize a Web Monetization payment widget for your website. The widget allows visitors to make one-time payments to support your content.',
+      content: `Pay Per Article lets visitors unlock gated content with a one-time payment.`,
     },
   ]
 }
@@ -84,16 +84,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-export default function Widget() {
+export default function Paywall() {
   const snap = useSnapshot(toolState)
-  const widgetSnap = useSnapshot(widget)
-  const navigate = useNavigate()
-  const uiActions = useUIActions()
   const [walletSnap, walletActions] = useToolWallet({
-    wallet: widgetWallet,
-    actions: widgetWalletActions,
+    wallet: paywallWallet,
+    actions: paywallWalletActions,
   })
-  const { save, saveLastAction } = useSaveProfile(widgetWallet)
+  const navigate = useNavigate()
+  const { save, saveLastAction } = useSaveProfile(paywallWallet)
   const { walletAddressRef, scrollToWalletAddress } = useScrollToWalletAddress()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingScript, setIsLoadingScript] = useState(false)
@@ -103,7 +101,6 @@ export default function Widget() {
   useBodyClass('has-fixed-action-bar')
 
   useEffect(() => {
-    uiActions.setActiveSection('content')
     const unsubscribeUpdates = subscribeProfilesToUpdates()
     hydrateProfilesFromStorage()
     const unsubscribeStorage = subscribeProfilesToStorage()
@@ -111,14 +108,19 @@ export default function Widget() {
 
     loadState(OP_WALLET_ADDRESS)
     persistState()
-    loadWidgetWallet()
-    persistWidgetWallet()
+    loadPaywallWallet()
+    persistPaywallWallet()
 
     return () => {
       unsubscribeStorage()
       unsubscribeUpdates()
     }
   }, [OP_WALLET_ADDRESS])
+
+  useEffect(() => {
+    paywall.profile.price.currency =
+      walletSnap.walletAddressInfo?.assetCode || 'USD'
+  }, [walletSnap.walletAddressInfo])
 
   useGrantResponseHandler(grantResponse, isGrantAccepted, isGrantResponse, {
     onGrantSuccess: saveLastAction,
@@ -145,19 +147,22 @@ export default function Widget() {
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
-        <div className="w-full max-w-[1280px] px-md">
-          <HeadingCore title="Widget" onBackClick={() => navigate('/')}>
-            The payment widget allows visitors to make one-time payments to
-            support your content directly.
+        <div className="w-full max-w-[1280px]">
+          <HeadingCore
+            title="Pay Per Article"
+            onBackClick={() => navigate('/')}
+          >
+            Pay Per Article lets visitors unlock gated content with a one-time
+            payment.
             <br />
-            It provides a clean, customizable interface for Web Monetization
-            payments.
-            <br />
-            Configure your wallet address to receive payments from your
-            supporters.
+            It provides a clean, customizable interface to configure pricing,
+            and choose how locked content is revealed.
           </HeadingCore>
-          <div className="flex flex-col min-h-[756px]">
-            <div className="flex flex-col xl:flex-row xl:items-start gap-lg">
+
+          <Divider className="!my-3xl" />
+
+          <div className="flex flex-col min-h-[756px] px-md xl:flex-row xl:items-start gap-lg">
+            <>
               <div
                 id="steps-indicator"
                 className="hidden xl:block w-[60px] flex-shrink-0 pt-md"
@@ -171,14 +176,21 @@ export default function Widget() {
                     },
                     {
                       number: 2,
+                      label: 'Configure',
+                      status: snap.configureStep,
+                    },
+                    {
+                      number: 3,
                       label: 'Build',
                       status: snap.buildStep,
                     },
                   ]}
                 />
               </div>
+            </>
 
-              <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+            <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+              <>
                 <div id="wallet-address" ref={walletAddressRef}>
                   <MobileStepsIndicator
                     number={1}
@@ -188,40 +200,48 @@ export default function Widget() {
                   <ToolsWalletAddress
                     store={walletSnap}
                     walletActions={walletActions}
-                    toolName="payment widget"
+                    toolName="pay per article"
                   />
                 </div>
+              </>
 
-                <div className="flex flex-col xl:flex-row gap-2xl">
+              <div className="flex flex-col xl:flex-row gap-2xl">
+                <div className="flex flex-col gap-2xl xl:flex-1">
                   <div
-                    id="builder"
-                    className="w-full xl:max-w-[628px] xl:flex-1"
+                    id="configure-builder"
+                    className="w-full xl:max-w-[628px]"
                   >
                     <MobileStepsIndicator
                       number={2}
+                      label="Configure"
+                      status={snap.configureStep}
+                    />
+
+                    <div className="space-y-4">
+                      <PaywallPriceBuilder />
+                      <PaywallPlacementBuilder />
+                    </div>
+                  </div>
+
+                  <div id="builder" className="w-full xl:max-w-[628px]">
+                    <MobileStepsIndicator
+                      number={3}
                       label="Build"
                       status={snap.buildStep}
                     />
-                    <BuilderProfileTabs
-                      idPrefix="profile"
-                      options={widgetSnap.profileTabs}
-                      selectedId={snap.activeTab}
-                      onChange={(profileId) =>
-                        toolActions.setActiveTab(profileId)
-                      }
-                      onRename={(name) => actions.setProfileName(name)}
-                    >
-                      <WidgetBuilder
+
+                    <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full -mt-2 flex">
+                      <PaywallBuilder
                         onRefresh={(section) =>
                           actions.resetProfileSection(section)
                         }
                       />
-                    </BuilderProfileTabs>
+                    </div>
 
                     <div
                       id="builder-actions"
                       className="xl:flex xl:items-center xl:justify-end xl:gap-sm xl:mt-lg xl:static xl:bg-transparent xl:p-0 xl:border-0 xl:backdrop-blur-none xl:flex-row
-                                 fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
+                                           fixed bottom-0 left-0 right-0 flex flex-col gap-xs px-md sm:px-lg md:px-xl py-md bg-interface-bg-stickymenu/95 backdrop-blur-[20px] border-t border-field-border z-40"
                     >
                       <div
                         id="builder-actions-inner"
@@ -229,7 +249,7 @@ export default function Widget() {
                       >
                         <ToolsSecondaryButton
                           className="xl:w-[150px] xl:rounded-lg
-                                     w-full min-w-0 border-0 xl:border order-last xl:order-first"
+                                               w-full min-w-0 border-0 xl:border order-last xl:order-first"
                           disabled={isLoading}
                           onClick={() => handleSave('save-success')}
                         >
@@ -244,7 +264,7 @@ export default function Widget() {
                           icon="script"
                           iconPosition={isLoadingScript ? 'none' : 'left'}
                           className="xl:w-[250px] xl:rounded-lg
-                                     w-full min-w-0 order-first xl:order-last"
+                                               w-full min-w-0 order-first xl:order-last"
                           disabled={isLoadingScript}
                           onClick={() => handleSave('script')}
                         >
@@ -262,19 +282,16 @@ export default function Widget() {
                       </div>
                     </div>
                   </div>
+                </div>
 
+                <>
                   <div
                     id="preview"
                     className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
                   >
-                    <BuilderBackground>
-                      <WidgetPreview
-                        serviceUrls={{ cdn: snap.cdnUrl, api: snap.apiUrl }}
-                        opWallet={snap.opWallet}
-                      />
-                    </BuilderBackground>
+                    <PaywallPreview />
                   </div>
-                </div>
+                </>
               </div>
             </div>
           </div>

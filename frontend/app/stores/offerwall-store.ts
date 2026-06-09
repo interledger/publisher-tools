@@ -13,7 +13,7 @@ import type { SaveResult } from '~/lib/types'
 import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy } from '~/utils/utils.storage'
-import { createToolStoreUtils, getStorageKeys } from '~/utils/utilts.store'
+import { createToolStoreUtils } from '~/utils/utils.store'
 import { toolState } from './toolStore'
 
 export const {
@@ -74,8 +74,6 @@ const offerwallStoreUtils = createToolStoreUtils({
   snapshots,
 })
 
-const { snapshotsStorageKey } = getStorageKeys(TOOL_OFFERWALL)
-
 export const actions = {
   setProfileName(name: string) {
     offerwall.profiles[toolState.activeTab].$name = name
@@ -118,22 +116,10 @@ export const actions = {
     )
   },
   commitProfile() {
-    const profile = snapshot(offerwall.profile)
-    snapshots.set(toolState.activeTab, profile)
-    offerwall.profilesUpdate.delete(toolState.activeTab)
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    return offerwallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
   commitProfiles() {
-    PROFILE_IDS.forEach((id) => {
-      const profile = snapshot(offerwall.profiles[id])
-      snapshots.set(id, profile)
-      offerwall.profilesUpdate.delete(id)
-    })
-
-    const snaps = Object.fromEntries(snapshots.entries())
-    localStorage.setItem(snapshotsStorageKey, JSON.stringify(snaps))
+    offerwallStoreUtils.commitAllProfiles()
   },
 }
 

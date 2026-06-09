@@ -5,7 +5,7 @@ import PillRadioListItem from '../PillRadioListItem'
 interface Props {
   value: string
   onChange: (title: string) => void
-  suggestions: string[]
+  suggestions: readonly string[]
   maxLength: number
   helpText?: string
 }
@@ -32,6 +32,8 @@ export function TitleInput({
         placeholder={suggestions[0]}
         maxLength={maxLength}
         helpText={helpText}
+        label="Custom title"
+        id="custom-title-input"
       />
     </>
   )
@@ -71,21 +73,28 @@ function SuggestedTitles({
   )
 }
 
-function CustomTitle({
+type CustomTitleProps = Omit<Props, 'suggestions'> & {
+  placeholder: string
+  label: string
+  id: string
+}
+
+export function CustomTitle({
+  id,
   value,
   onChange,
   placeholder,
   maxLength,
   helpText,
-}: Omit<Props, 'suggestions'> & { placeholder: string }) {
-  const id = 'custom-title-input'
+  label,
+}: CustomTitleProps) {
   return (
     <div className="flex flex-col gap-xs">
       <label
         htmlFor={id}
         className="text-base leading-md font-bold text-text-primary"
       >
-        Custom title
+        {label}
       </label>
       <InputField
         id={id}

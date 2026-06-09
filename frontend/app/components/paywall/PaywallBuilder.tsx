@@ -2,43 +2,47 @@ import {
   Divider,
   ToolsDropdown,
   CornerRadiusSelector,
-  WidgetColorsSelector,
+  TitleInput,
+  TextareaField,
 } from '@/components'
-import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
-import { TitleInput } from '@/components/builder/TitleInput'
-import BuilderAccordion from '@/components/BuilderAccordion'
-import { FONT_FAMILY_OPTIONS, WIDGET_FONT_SIZE_MAP } from '@shared/types'
+import { CustomTitle } from '@/components/builder/TitleInput'
+import { BuilderAccordion } from '@/components/BuilderAccordion'
 import {
-  SVGColorPicker,
-  SVGHeaderPosition,
-  SVGRoundedCorner,
-  SVGText,
-} from '~/assets/svg'
-import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
+  FONT_FAMILY_OPTIONS,
+  PAYWALL_CTA_BUTTON_MAX_LENGTH,
+  PAYWALL_DESCRIPTION_MAX_LENGTH,
+  PAYWALL_FONT_SIZE_MAP,
+  PAYWALL_TITLE_MAX_LENGTH,
+} from '@shared/types'
+import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
-import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
+import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
+import { usePaywallProfile } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
-import { useWidgetProfile } from '~/stores/widget-store'
+import { PaywallColorsSelector } from './PaywallColorsSelector'
 
 interface Props {
   onRefresh: (section: BuilderSection) => void
 }
 
 const config = {
-  suggestedTitles: WIDGET_SUGGESTED_TITLES,
-  titleHelpText: 'Message to encourage one-time payments',
-  titleMaxLength: 30,
-  messageLabel: 'Widget message',
-  messagePlaceholder: 'Enter your widget message...',
-  messageHelpText: 'Describe how payments support your work',
-  messageMaxLength: 300,
+  suggestedTitles: PAYWALL_SUGGESTED_TITLES,
+  titleHelpText: 'Short and direct works best.',
+  titleMaxLength: PAYWALL_TITLE_MAX_LENGTH,
 
-  showThumbnail: false,
+  messageLabel: 'Subtitle',
+  messagePlaceholder: `Unlock the full article with a one-time payment — no subscription, no account.`,
+  messageHelpText: 'Explain the value in one sentence.',
+  messageMaxLength: PAYWALL_DESCRIPTION_MAX_LENGTH,
+
+  buttonLabel: 'Pay button label',
+  buttonPlaceholder: 'Pay with Open Payments',
+  buttonMaxLength: PAYWALL_CTA_BUTTON_MAX_LENGTH,
 }
 
-export function WidgetBuilder({ onRefresh }: Props) {
+export function PaywallBuilder({ onRefresh }: Props) {
   return (
     <>
       <ContentBuilder onRefresh={onRefresh} />
@@ -50,7 +54,7 @@ export function WidgetBuilder({ onRefresh }: Props) {
 function ContentBuilder({ onRefresh }: Props) {
   const { isComplete, isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('content')
-  const [snap, profile] = useWidgetProfile({ sync: true })
+  const [snap, profile] = usePaywallProfile({ sync: true })
 
   return (
     <BuilderAccordion
@@ -74,19 +78,36 @@ function ContentBuilder({ onRefresh }: Props) {
 
       <Divider />
 
-      <DescriptionInput
-        label={config.messageLabel}
+      <TextareaField
         value={snap.description.text}
-        onChange={(text) => {
-          profile.description.text = text
+        onChange={(e) => {
+          profile.description.text = e.target.value
         }}
-        isVisible={snap.description.isVisible}
-        onVisibilityChange={(visible) => {
-          profile.description.isVisible = visible
-        }}
+        currentLength={snap.description.text.length || 0}
+        showCounter={true}
+        label={
+          <span className="text-base leading-md font-bold text-text-primary">
+            {config.messageLabel}
+          </span>
+        }
         placeholder={config.messagePlaceholder}
         helpText={config.messageHelpText}
         maxLength={config.messageMaxLength}
+        className="h-16"
+      />
+
+      <Divider />
+
+      <CustomTitle
+        value={snap.ctaButton.text}
+        onChange={(value) => {
+          profile.ctaButton.text = value
+        }}
+        label={config.buttonLabel}
+        placeholder={config.buttonPlaceholder}
+        maxLength={config.buttonMaxLength}
+        helpText={''}
+        id="input-pay-button"
       />
     </BuilderAccordion>
   )
@@ -95,7 +116,7 @@ function ContentBuilder({ onRefresh }: Props) {
 function AppearanceBuilder({ onRefresh }: Props) {
   const { isComplete, isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('appearance')
-  const [snap, profile] = useWidgetProfile()
+  const [snap, profile] = usePaywallProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
@@ -130,7 +151,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
           onChange={(value) => {
             profile.font.size = value
           }}
-          sizeMap={WIDGET_FONT_SIZE_MAP}
+          sizeMap={PAYWALL_FONT_SIZE_MAP}
         />
       </InputFieldset>
 
@@ -140,18 +161,18 @@ function AppearanceBuilder({ onRefresh }: Props) {
         label="Colors"
         icon={<SVGColorPicker className="w-5 h-5" />}
       >
-        <WidgetColorsSelector
-          backgroundColor={snap.color.background}
+        <PaywallColorsSelector
+          backgroundColor={snap.colors.background}
+          textColor={snap.colors.text}
+          themeColor={snap.colors.theme}
           onBackgroundColorChange={(color) => {
-            profile.color.background = color
+            profile.colors.background = color
           }}
-          textColor={snap.color.text}
           onTextColorChange={(color) => {
-            profile.color.text = color
+            profile.colors.text = color
           }}
-          themeColor={snap.color.theme}
           onThemeColorChange={(color) => {
-            profile.color.theme = color
+            profile.colors.theme = color
           }}
         />
       </InputFieldset>
@@ -166,20 +187,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
           value={snap.border.type}
           onChange={(value) => {
             profile.border.type = value
-          }}
-        />
-      </InputFieldset>
-
-      <Divider />
-
-      <InputFieldset
-        label="Position"
-        icon={<SVGHeaderPosition className="w-5 h-5" />}
-      >
-        <WidgetPositionSelector
-          value={snap.position}
-          onChange={(value) => {
-            profile.position = value
           }}
         />
       </InputFieldset>
