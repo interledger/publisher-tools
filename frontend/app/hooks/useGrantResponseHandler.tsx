@@ -7,9 +7,9 @@ interface UseGrantResponseHandlerOptions {
 }
 
 export const useGrantResponseHandler = (
-  grantResponse: string,
-  isGrantAccepted: boolean,
-  isGrantResponse: boolean,
+  grantResponse: string | undefined,
+  isGrantAccepted: boolean | undefined,
+  isGrantResponse: boolean | undefined,
   options: UseGrantResponseHandlerOptions,
 ) => {
   const [openDialog, closeDialog] = useDialog()
