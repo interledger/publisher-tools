@@ -1,6 +1,6 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGArrowCollapse, SVGGreenVector } from '@/assets'
+import { SVGArrowCollapse, SVGEdit } from '@/assets'
 import { ToolsSecondaryButton, Divider } from '@/components'
 import { Heading5 } from '@/typography'
 import { GhostButton } from './GhostButton'
@@ -9,7 +9,7 @@ interface Props {
   title: string
   onRefresh: () => void
   onDone?: () => void
-  isComplete?: boolean
+  hasChanges?: boolean
   isOpen?: boolean
   onClick?: (isOpen: boolean) => void
   onToggle?: (e: React.SyntheticEvent<HTMLDetailsElement>) => void
@@ -18,7 +18,7 @@ interface Props {
 
 export const BuilderAccordion: React.FC<Props> = ({
   title,
-  isComplete = false,
+  hasChanges = false,
   isOpen = false,
   onClick,
   onRefresh,
@@ -50,7 +50,12 @@ export const BuilderAccordion: React.FC<Props> = ({
         )}
       >
         <div className="flex gap-xs items-center">
-          {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
+          {hasChanges && !isOpen && (
+            <>
+              <span className="sr-only">Edited</span>
+              <SVGEdit className="w-6 h-6 text-text-secondary" />
+            </>
+          )}
           <Heading5>{title}</Heading5>
         </div>
 
