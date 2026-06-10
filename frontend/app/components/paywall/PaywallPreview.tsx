@@ -1,8 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { cx } from 'class-variance-authority'
 import { subscribe } from 'valtio'
 import { deepClone } from 'valtio/utils'
 import { BuilderBackground } from '@/components/BuilderBackground'
 import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
+import type { View } from '@c/paywall/controller'
 import type { PaywallProfile } from '@shared/types'
 import { paywall } from '~/stores/paywall-store'
 
@@ -10,16 +12,31 @@ export type Message =
   | { action: 'RESET' }
   | { action: 'UPDATE'; profile: PaywallProfile }
 
+export type MessageFromIframe =
+  | { type: 'READY' }
+  | { type: 'CURRENT_SCREEN'; view: keyof View }
+
 export function PaywallPreview() {
+  const [currentView, setCurrentView] = useState<keyof View>('home')
   const ref = useRef<HTMLIFrameElement>(null)
 
+  const messageHandler = (ev: MessageEvent<MessageFromIframe>) => {
+    if (ev.origin !== location.origin) return
+    switch (ev.data.type) {
+      case 'READY':
+        return updateUI(ref.current)
+      case 'CURRENT_SCREEN':
+        return setCurrentView(ev.data.view)
+    }
+  }
+
   useEffect(() => {
-    window.addEventListener(
-      'message',
-      (ev) => ev.origin === location.origin && updateUI(ref.current),
-      { once: true },
-    )
-    return subscribe(paywall.profile, () => updateUI(ref.current))
+    window.addEventListener('message', messageHandler)
+    const unsub = subscribe(paywall.profile, () => updateUI(ref.current))
+    return () => {
+      window.removeEventListener('message', messageHandler)
+      unsub()
+    }
   }, [])
 
   return (
@@ -29,7 +46,7 @@ export function PaywallPreview() {
         <>
           <ToolsSecondaryButton
             icon="refresh"
-            className="w-[130px]"
+            className={cx('w-[130px]', currentView === 'home' && 'invisible')}
             onClick={() => resetPaywall(ref.current)}
           >
             Reset

@@ -68,6 +68,8 @@ export interface Controller {
   ): AsyncGenerator<PaywallPaymentStatus>
 
   isPreviewMode?: boolean
+
+  onScreenChange?: (view: keyof View) => void
 }
 
 export const NO_OP_CONTROLLER: Controller = {

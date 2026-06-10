@@ -11,7 +11,7 @@ interface StepProps {
   textPosition?: TextPosition
 }
 
-interface StepsIndicatorStep {
+export interface StepsIndicatorStep {
   number: number
   label: string
   status: StepStatus
