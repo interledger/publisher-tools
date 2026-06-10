@@ -27,6 +27,7 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
+import { useTranslation } from '~/i18n/useTranslation'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -85,6 +86,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export default function Paywall() {
+  const t = useTranslation('paywall')
   const snap = useSnapshot(toolState)
   const [walletSnap, walletActions] = useToolWallet({
     wallet: paywallWallet,
@@ -148,15 +150,10 @@ export default function Paywall() {
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
         <div className="w-full max-w-[1280px]">
-          <HeadingCore
-            title="Pay Per Article"
-            onBackClick={() => navigate('/')}
-          >
-            Pay Per Article lets visitors unlock gated content with a one-time
-            payment.
+          <HeadingCore title={t('title')} onBackClick={() => navigate('/')}>
+            {t('description_1')}
             <br />
-            It provides a clean, customizable interface to configure pricing,
-            and choose how locked content is revealed.
+            {t('description_2')}
           </HeadingCore>
 
           <Divider className="!my-3xl" />
