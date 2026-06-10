@@ -208,7 +208,7 @@ function BuilderActions({ handleSave }: BuilderActionsProps) {
 
   const onClickScript = async () => {
     setIsLoadingScript(true)
-    await handleSave('script').finally(() => setIsLoading(false))
+    await handleSave('script').finally(() => setIsLoadingScript(false))
   }
 
   return (
