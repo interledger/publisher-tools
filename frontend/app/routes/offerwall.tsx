@@ -121,13 +121,8 @@ export default function Offerwall() {
 
 function Preview() {
   return (
-    <div
-      id="preview"
-      className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
-    >
-      <BuilderBackground>
-        <OfferwallPreview />
-      </BuilderBackground>
-    </div>
+    <BuilderBackground>
+      <OfferwallPreview />
+    </BuilderBackground>
   )
 }

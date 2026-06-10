@@ -143,16 +143,11 @@ function Preview({
   opWallet: string
 }) {
   return (
-    <div
-      id="preview"
-      className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
-    >
-      <BuilderBackground>
-        <WidgetPreview
-          serviceUrls={{ cdn: cdnUrl, api: apiUrl }}
-          opWallet={opWallet}
-        />
-      </BuilderBackground>
-    </div>
+    <BuilderBackground>
+      <WidgetPreview
+        serviceUrls={{ cdn: cdnUrl, api: apiUrl }}
+        opWallet={opWallet}
+      />
+    </BuilderBackground>
   )
 }

@@ -108,7 +108,7 @@ export default function Paywall() {
         { number: 2, label: 'Configure', status: snap.configureStep },
         { number: 3, label: 'Build', status: snap.buildStep },
       ]}
-      preview={<Preview />}
+      preview={<PaywallPreview />}
       loaderData={{
         grantResponse,
         isGrantAccepted,
@@ -128,16 +128,5 @@ export default function Paywall() {
         />
       </div>
     </ToolLayoutWithPreview>
-  )
-}
-
-function Preview() {
-  return (
-    <div
-      id="preview"
-      className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
-    >
-      <PaywallPreview />
-    </div>
   )
 }
