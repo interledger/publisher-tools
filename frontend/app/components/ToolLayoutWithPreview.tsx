@@ -40,9 +40,9 @@ type Props = React.PropsWithChildren<{
   walletAddressToolName: ComponentProps<typeof ToolsWalletAddress>['toolName']
   preview: ReactNode
   loaderData: {
-    grantResponse: string
-    isGrantAccepted: boolean
-    isGrantResponse: boolean
+    grantResponse?: string
+    isGrantAccepted?: boolean
+    isGrantResponse?: boolean
     OP_WALLET_ADDRESS: string
   }
 }>
