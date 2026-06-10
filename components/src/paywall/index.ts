@@ -49,6 +49,10 @@ export class Paywall extends LitElement {
     void this.#init()
   }
 
+  disconnectedCallback(): void {
+    document.body.style.overflow = ''
+  }
+
   async #init() {
     const connectedAt = Date.now()
 
@@ -116,7 +120,12 @@ export class Paywall extends LitElement {
     if (!this._ready) return nothing
     if (this.#entitlement.entitlement === 'has-access') return nothing
     if (!this._delayComplete) return nothing
+    document.body.style.overflow = 'hidden'
 
+    return html`<div>${this.#render()}</div> `
+  }
+
+  #render() {
     const { title, description, ctaButton, price } = this.#config
 
     if (this._view.type === 'form') {

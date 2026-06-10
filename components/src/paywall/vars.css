@@ -4,6 +4,7 @@
   --background: var(--wmt-background, #ffffff);
   --color: var(--wmt-color, #6b6e76);
   --theme: var(--wmt-theme, #56b7b5);
+  --coverage: var(--wmt-height, 50vh);
   --border-radius: var(--wmt-border-radius, 1rem);
 
   --color-error: #e51d25;
@@ -11,7 +12,6 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
 }
 
 .sr-only {

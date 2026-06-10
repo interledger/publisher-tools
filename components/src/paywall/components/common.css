@@ -21,6 +21,7 @@ button {
   color: oklch(from var(--theme) round(1.21 - L) 0 0);
   font-weight: 600;
   cursor: pointer;
+  margin: 0;
 }
 
 button:disabled {
@@ -32,4 +33,10 @@ button:disabled {
   font-size: 0.6em;
   margin-top: -1.25em;
   text-align: center;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
 }
