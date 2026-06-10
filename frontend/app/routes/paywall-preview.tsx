@@ -3,7 +3,10 @@ import { NO_OP_CONTROLLER } from '@c/paywall/controller'
 import { getDefaultProfile } from '@shared/default-data'
 import { CDN_URL } from '@shared/defines'
 import { sleep } from '@shared/utils'
-import type { Message } from '~/components/paywall/PaywallPreview'
+import type {
+  Message,
+  MessageFromIframe,
+} from '~/components/paywall/PaywallPreview'
 
 export default function PaywallPreview() {
   const [profile, setProfile] = useState(() => getDefaultProfile('paywall'))
@@ -45,11 +48,15 @@ export default function PaywallPreview() {
       initiatePayment: NO_OP_CONTROLLER.initiatePayment,
       receiverWalletAddressUrl: 'https://example.com',
       senderWalletAddressUrl: '',
+
+      onScreenChange(view) {
+        postMessage({ type: 'CURRENT_SCREEN', view })
+      },
     })
 
     const container = document.getElementById('paywall-preview-container')!
     container.appendChild(el)
-    window.parent.postMessage('ready', window.location.origin)
+    postMessage({ type: 'READY' })
 
     const listener = (ev: MessageEvent<Message>) => {
       if (ev.origin !== window.location.origin) return
@@ -77,6 +84,10 @@ export default function PaywallPreview() {
       {/* element gets injected here */}
     </div>
   )
+}
+
+function postMessage(message: MessageFromIframe) {
+  window.parent.postMessage(message, window.location.origin)
 }
 
 function PlaceholderContent() {

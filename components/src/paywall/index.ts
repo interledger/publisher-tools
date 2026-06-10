@@ -225,6 +225,7 @@ export class Paywall extends LitElement {
 
   #setView<K extends keyof View>(view: K, data: View[K]) {
     this._view = { type: view, data } as ViewInfo
+    this.#controller.onScreenChange?.(view)
   }
 
   @state() _delayComplete = false
