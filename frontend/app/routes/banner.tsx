@@ -72,7 +72,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   )
 }
 
-export default function Paywall() {
+export default function Banner() {
   const snap = useSnapshot(toolState)
   const bannerSnap = useSnapshot(banner)
   const uiActions = useUIActions()

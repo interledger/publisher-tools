@@ -55,7 +55,7 @@ export function ToolLayoutWithPreview({
   toolStoreUtils,
   walletAddressToolName,
   steps,
-  stepMiddle: stepMiddle,
+  stepMiddle,
   loaderData,
   preview,
   children,
