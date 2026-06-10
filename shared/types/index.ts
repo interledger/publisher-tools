@@ -76,13 +76,9 @@ export const WIDGET_FONT_SIZE_MAP = {
 export type WidgetFontSize = keyof typeof WIDGET_FONT_SIZE_MAP
 
 export const PAYWALL_FONT_SIZE_MAP = {
-  'xs': 13,
-  'sm': 14,
-  'md': 15,
-  'base': 16,
-  'lg': 17,
-  'xl': 18,
-  '2xl': 19,
+  md: 15,
+  base: 16,
+  lg: 17,
 } as const
 export type PaywallFontSize = keyof typeof PAYWALL_FONT_SIZE_MAP
 
