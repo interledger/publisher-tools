@@ -198,17 +198,17 @@ type BuilderActionsProps = {
 }
 
 function BuilderActions({ handleSave }: BuilderActionsProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingScript, setIsLoadingScript] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const onClickSave = async () => {
-    setIsLoading(true)
-    await handleSave('save-success').finally(() => setIsLoading(false))
+    setIsSaving(true)
+    await handleSave('save-success').finally(() => setIsSaving(false))
   }
 
   const onClickScript = async () => {
-    setIsLoadingScript(true)
-    await handleSave('script').finally(() => setIsLoadingScript(false))
+    setIsGenerating(true)
+    await handleSave('script').finally(() => setIsGenerating(false))
   }
 
   return (
@@ -222,26 +222,26 @@ function BuilderActions({ handleSave }: BuilderActionsProps) {
       >
         <ToolsSecondaryButton
           className="xl:w-[150px] xl:rounded-lg w-full min-w-0 border-0 xl:border order-last xl:order-first"
-          disabled={isLoading}
+          disabled={isSaving}
           onClick={onClickSave}
         >
           <div className="flex items-center justify-center gap-2">
-            {isLoading && <SVGSpinner className="w-4 h-4" />}
-            <span>{isLoading ? 'Saving...' : 'Save edits only'}</span>
+            {isSaving && <SVGSpinner className="w-4 h-4" />}
+            <span>{isSaving ? 'Saving...' : 'Save edits only'}</span>
           </div>
         </ToolsSecondaryButton>
 
         <ToolsPrimaryButton
           icon="script"
-          iconPosition={isLoadingScript ? 'none' : 'left'}
+          iconPosition={isGenerating ? 'none' : 'left'}
           className="xl:w-[250px] xl:rounded-lg w-full min-w-0 order-first xl:order-last"
-          disabled={isLoadingScript}
+          disabled={isGenerating}
           onClick={onClickScript}
         >
           <div className="flex items-center justify-center gap-xs">
-            {isLoadingScript && <SVGSpinner className="w-4 h-4" />}
+            {isGenerating && <SVGSpinner className="w-4 h-4" />}
             <span>
-              {isLoadingScript ? 'Saving...' : 'Save and generate script'}
+              {isGenerating ? 'Saving...' : 'Save and generate script'}
             </span>
           </div>
         </ToolsPrimaryButton>
