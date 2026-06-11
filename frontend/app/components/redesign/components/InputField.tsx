@@ -12,6 +12,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   addonBefore?: React.ReactNode
   addonAfter?: React.ReactNode
   addonClassName?: string
+  labelClassName?: string
 }
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -32,6 +33,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       addonBefore,
       addonAfter,
       addonClassName,
+      labelClassName = 'text-sm font-medium text-text-primary',
       ...props
     },
     ref,
@@ -63,10 +65,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     return (
       <div className="space-y-2xs">
         {label && (
-          <label
-            className="block text-sm font-medium text-text-primary"
-            htmlFor={fieldId}
-          >
+          <label className={cx('block', labelClassName)} htmlFor={fieldId}>
             {label}
             {required && <span className="text-text-error ml-1">*</span>}
           </label>
@@ -85,7 +84,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           )}
         >
           {addonBefore && (
-            <span className={cx('text-text-placeholder mr-1', addonClassName)}>
+            <span
+              className={cx('text-text-placeholder mr-1', addonClassName)}
+              onClick={() => document.getElementById(fieldId)?.focus()}
+            >
               {addonBefore}
             </span>
           )}
@@ -107,7 +109,10 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {...props}
           />
           {addonAfter && (
-            <span className={cx('text-text-placeholder ml-1', addonClassName)}>
+            <span
+              className={cx('text-text-placeholder ml-1', addonClassName)}
+              onClick={() => document.getElementById(fieldId)?.focus()}
+            >
               {addonAfter}
             </span>
           )}

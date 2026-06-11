@@ -10,17 +10,14 @@ export function PaywallPlacementBuilder() {
   const t = useTranslation('paywall')
 
   return (
-    <div className="bg-white shadow-sm rounded-xl p-4">
-      <fieldset className="space-y-4">
+    <>
+      <fieldset>
         <legend className="flex justify-between items-center w-full">
           <span className="text-style-body-emphasis">
             {t('inputgroup.placement.title')}
           </span>
-          <span className="text-style-small-standard !text-text-secondary">
-            {t('inputgroup.placement.titleDesc')}
-          </span>
         </legend>
-        <p className="text-style-small-standard !text-text-secondary">
+        <p className="text-style-small-standard mt-xs mb-md">
           {t('inputgroup.placement.desc')}
         </p>
 
@@ -31,6 +28,8 @@ export function PaywallPlacementBuilder() {
           }}
         />
 
+        <div className="h-md"></div>
+
         <PaywallDelayInput
           value={snap.behavior.delay.value}
           onChange={(value) => {
@@ -38,7 +37,7 @@ export function PaywallPlacementBuilder() {
           }}
         />
       </fieldset>
-    </div>
+    </>
   )
 }
 
@@ -47,7 +46,7 @@ const coverageOptions: { value: CoverageAmount; text: string }[] = [
   { value: 25, text: '25%' },
   { value: 50, text: '50%' },
   { value: 75, text: '75%' },
-  { value: 100, text: 'Full page' },
+  { value: 100, text: '100%' },
 ]
 function PaywallCoverageInput({
   value,
@@ -61,16 +60,18 @@ function PaywallCoverageInput({
 
   return (
     <fieldset className="space-y-2xs">
-      <legend className="text-sm font-medium text-text-primary">
+      <legend className="text-style-caption-standard !text-field-helpertext-default">
         {t('input.coverage.label')}
       </legend>
-      <div className="flex gap-1 w-fit p-1.5 rounded-sm border border-field-border bg-field-bg-disabled">
+      <div className="grid grid-cols-4 gap-1 p-2xs rounded-sm border border-interface-edge-container bg-tabs-bg-default">
         {coverageOptions.map(({ value: val, text }) => (
           <label
             key={val}
             className={cx(
-              'py-1.5 px-3 rounded-xs text-text-primary',
-              val === value && 'bg-white shadow-sm',
+              'text-sm py-sm px-md rounded-sm text-center  border ',
+              val === value
+                ? 'bg-white text-text-buttons-default border-text-buttons-default '
+                : 'text-tabs-inactive-default border-transparent',
             )}
           >
             <input
@@ -84,7 +85,9 @@ function PaywallCoverageInput({
           </label>
         ))}
       </div>
-      <p className="text-xs text-text-secondary">{t('input.coverage.hint')}</p>
+      <p className="text-style-caption-standard !text-field-helpertext-default">
+        {t('input.coverage.hint')}
+      </p>
     </fieldset>
   )
 }
@@ -100,12 +103,13 @@ function PaywallDelayInput({
   return (
     <InputFieldNumeric
       label={t('input.delay.label')}
+      labelClassName="text-style-caption-standard !text-field-helpertext-default"
       inputMode="decimal"
       value={value}
       onChange={onChange}
       helpText={t('input.delay.hint')}
-      className="max-w-56"
       addonAfter={t('input.delay.suffix')}
+      addonClassName="absolute left-12 top-2"
       min={0}
       max={15}
       precision={1}

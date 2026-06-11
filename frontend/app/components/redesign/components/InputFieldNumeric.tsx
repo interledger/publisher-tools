@@ -1,4 +1,5 @@
 import { type ComponentProps, useEffect, useRef } from 'react'
+import { cx } from 'class-variance-authority'
 import { InputField } from './InputField'
 
 type InputFieldProps = ComponentProps<typeof InputField>
@@ -77,6 +78,7 @@ export const InputFieldNumeric = ({
       onBlur={handleBlur}
       ref={ref}
       {...props}
+      className={cx('tabular-nums', props.className)}
     />
   )
 }
