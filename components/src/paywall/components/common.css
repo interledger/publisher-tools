@@ -1,9 +1,17 @@
+h1,
+h2,
+p {
+  margin: 0;
+}
+
 .title {
-  font-size: 1.75em;
+  font-size: var(--title-font-size);
+  line-height: var(--title-line-height);
 }
 
 .description {
-  font-size: 1em;
+  font-size: var(--p-font-size);
+  line-height: var(--p-line-height);
 }
 
 button {
@@ -11,17 +19,18 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1em;
-  font-size: 1.25em;
-  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+  border-radius: 0.5rem;
+
   background-color: var(--theme);
   /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
      https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
   color: white;
   color: oklch(from var(--theme) round(1.21 - L) 0 0);
-  font-weight: 600;
   cursor: pointer;
-  margin: 0;
 }
 
 button:disabled {
@@ -33,10 +42,4 @@ button:disabled {
   font-size: 0.6em;
   margin-top: -1.25em;
   text-align: center;
-}
-
-h1,
-h2,
-p {
-  margin: 0;
 }
