@@ -34,7 +34,7 @@
     "typescript-eslint": "^8.59.4"
   },
   "resolutions": {
-    "esbuild": "^0.28.0"
+    "esbuild": "^0.28.1"
   },
   "pnpm": {
     "overrides": {
