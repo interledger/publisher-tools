@@ -108,10 +108,14 @@ function PaywallDelayInput({
       value={value}
       onChange={onChange}
       helpText={t('input.delay.hint')}
-      addonAfter={t('input.delay.suffix')}
-      addonClassName="absolute left-12 top-2"
+      aria-describedby="input-delay-addon-suffix"
+      addonAfter={
+        <span id="input-delay-addon-suffix">{t('input.delay.suffix')}</span>
+      }
+      addonClassName="absolute left-12 top-2 bg-white"
       min={0}
       max={15}
+      maxLength={4}
       precision={1}
     />
   )

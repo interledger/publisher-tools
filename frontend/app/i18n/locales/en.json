@@ -24,6 +24,7 @@
     "title": "Pay per Article",
     "description_1": "Pay Per Article lets visitors unlock gated content with a one-time payment.",
     "description_2": "It provides a clean, customizable interface to configure pricing, and choose how locked content is revealed.",
+    "section.settings.title": "Settings",
     "inputgroup.price.title": "Price",
     "inputgroup.price.desc": "Set the one-time payment amount visitors pay to unlock this page’s gated content.",
     "input.price.label": "Amount",

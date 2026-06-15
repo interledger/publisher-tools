@@ -87,6 +87,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             <span
               className={cx('text-text-placeholder mr-1', addonClassName)}
               onClick={() => document.getElementById(fieldId)?.focus()}
+              aria-hidden="true"
             >
               {addonBefore}
             </span>
@@ -112,6 +113,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             <span
               className={cx('text-text-placeholder ml-1', addonClassName)}
               onClick={() => document.getElementById(fieldId)?.focus()}
+              aria-hidden="true"
             >
               {addonAfter}
             </span>
