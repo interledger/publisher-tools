@@ -14,6 +14,28 @@ p {
   line-height: var(--p-line-height);
 }
 
+.img {
+  align-self: center;
+  width: 100%;
+  min-height: 0;
+  --min-height-threshold: 6rem;
+  height: clamp(
+    0%,
+    (100% - var(--min-height-threshold)) * 999,
+    var(--coverage) * 0.3
+  );
+  max-height: calc(var(--coverage) * 0.3);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.img svg {
+  height: inherit;
+  aspect-ratio: 96/161;
+  max-height: 12rem;
+}
+
 button {
   border: none;
   display: flex;
@@ -36,10 +58,4 @@ button {
 button:disabled {
   opacity: 0.75;
   cursor: not-allowed;
-}
-
-.footer {
-  font-size: 0.6em;
-  margin-top: -1.25em;
-  text-align: center;
 }

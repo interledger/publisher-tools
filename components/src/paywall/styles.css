@@ -1,24 +1,26 @@
 :host {
-  --border-radius: var(--border-radius);
-
   width: 100%;
-  height: 100%;
   position: fixed;
-  display: block;
+  display: flex;
+  align-items: end;
   inset: 0;
   font-family: var(--font-family);
   font-size: calc(1rem * var(--font-scale, 1));
 
   --title-font-size: 1.875rem;
-  --title-line-height: 1.2667;
+  --title-line-height: 2.25rem;
 
   --p-font-size: 1rem;
-  --p-line-height: 1.5;
+  --p-line-height: 1.5rem;
 
-  --helper-font-size: 1rem;
-  --helper-line-height: 1.5rem;
+  --helper-font-size: 0.8125rem;
+  --helper-line-height: 1.0625rem;
+
+  --price-font-size: 1.25rem;
+  --price-line-height: 1.75rem;
 }
 
+/* backdrop */
 :host::before {
   content: ' ';
   display: block;
@@ -27,35 +29,28 @@
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) calc(0.5 * (100vh - var(--coverage))),
-    rgba(0, 0, 0, 0.1) calc(0.8 * (100vh - var(--coverage))),
-    rgba(0, 0, 0, 0.5) calc(100vh - var(--coverage)),
-    rgba(0, 0, 0, 0.75) 100%
+    rgba(0, 0, 0, 0.75) calc(100vh - var(--coverage))
   );
   z-index: -1;
 }
 
-:host > * {
+:host > div {
   background: var(--background);
   color: var(--color);
-  height: var(--coverage);
   width: 100%;
-  position: fixed;
-  padding: 1rem;
-  bottom: 0;
-  left: 0;
+  min-height: var(--coverage);
   border-radius: var(--border-radius);
   border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 :host > div > * {
   max-width: 600px;
   margin: 0 auto;
-}
-
-:host > div > * {
-  max-width: 600px;
-  margin: 0 auto;
+  flex: 1;
+  max-height: 32rem;
+  padding: 1rem;
 }
 
 :host([hidden]) {
@@ -64,14 +59,28 @@
 
 :host([data-font-size='sm']) {
   --title-font-size: 1.625rem;
+  --title-line-height: 2.0625rem;
+
   --p-font-size: 0.8125rem;
+  --p-line-height: 1.25rem;
+
   --helper-font-size: 0.75rem;
   --helper-line-height: 1rem;
+
+  --price-font-size: 1.125rem;
+  --price-line-height: 1.375rem;
 }
 
 :host([data-font-size='lg']) {
   --title-font-size: 2.125rem;
-  --p-font-size: 0.8125rem;
-  --helper-font-size: 0.75rem;
-  --helper-line-height: 1rem;
+  --title-line-height: 2.6875rem;
+
+  --p-font-size: 1rem;
+  --p-line-height: 1.5rem;
+
+  --helper-font-size: 0.875rem;
+  --helper-line-height: 1.125rem;
+
+  --price-font-size: 1.25rem;
+  --price-line-height: 1.75rem;
 }

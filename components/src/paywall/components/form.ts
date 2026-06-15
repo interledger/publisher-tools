@@ -1,5 +1,7 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
+import icon from '@c/assets/lock_outline.svg?raw'
 import { DotsLoader } from '@c/shared/dots-loader'
 import { registerComponents } from '@c/utils'
 import stylesCommon from './common.css?raw'
@@ -43,9 +45,17 @@ export class PaywallWalletAddressForm extends LitElement {
 
   render() {
     return html`
-      <h2 class="title">${this.title}</h2>
-      <p class="description">${this.description}</p>
+      <div class="top">
+        <h2 class="title">${this.title}</h2>
+        <p class="description">${this.description}</p>
+      </div>
+      <span class="img">${unsafeSVG(icon)}</span>
+      <div class="bottom">${this.#form}</div>
+    `
+  }
 
+  get #form() {
+    return html`
       <form @submit=${this.handleSubmit}>
         <div>
           <label for="wallet-address-url">Wallet address</label>
@@ -59,15 +69,13 @@ export class PaywallWalletAddressForm extends LitElement {
             ?disabled=${this._loading}
             required
           />
-          <p id="wallet-address-url-error" class="error">
-            ${this._error}&nbsp;
-          </p>
+          <p id="wallet-address-url-error" class="error">${this._error}</p>
         </div>
 
         <button type="submit" ?disabled=${this._loading}>
           ${this._loading
             ? html`<wm-dots-loader></wm-dots-loader
-                ><span class="sr-only">${this.ctaText}</span>`
+                ><span class="sr-only">${this.ctaText}</span>&nbsp;`
             : this.ctaText}
         </button>
       </form>
