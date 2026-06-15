@@ -7,9 +7,8 @@ import {
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
-import { PaywallPlacementBuilder } from '~/components/paywall/PaywallPlacementBuilder'
+import { PaywallBuilderSettings } from '~/components/paywall/PaywallBuilderSettings'
 import { PaywallPreview } from '~/components/paywall/PaywallPreview'
-import { PaywallPriceBuilder } from '~/components/paywall/PaywallPriceBuilder'
 import { Divider } from '~/components/redesign/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { useToolWallet } from '~/hooks/useToolWallet'
@@ -115,12 +114,7 @@ export default function Paywall() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
-      stepMiddle={
-        <>
-          <PaywallPriceBuilder />
-          <PaywallPlacementBuilder />
-        </>
-      }
+      stepMiddle={<PaywallBuilderSettings />}
     >
       <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full -mt-2 flex">
         <PaywallBuilder
