@@ -16,9 +16,23 @@ export type MessageFromIframe =
   | { type: 'READY' }
   | { type: 'CURRENT_SCREEN'; view: keyof View }
 
+const IFRAME_WIDTH_DESKTOP = 1400
+const IFRAME_HEIGHT_DESKTOP = 900
+
+const IFRAME_WIDTH_MOBILE = 380
+const IFRAME_HEIGHT_MOBILE = 600
+
+const TOGGLE_MEDIA_QUERY = '(min-width: 34rem)'
+
 export function PaywallPreview() {
   const [currentView, setCurrentView] = useState<keyof View>('home')
   const ref = useRef<HTMLIFrameElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const [iframeSize, setIframeSize] = useState({
+    width: IFRAME_WIDTH_DESKTOP,
+    height: IFRAME_HEIGHT_DESKTOP,
+  })
 
   const messageHandler = (ev: MessageEvent<MessageFromIframe>) => {
     if (ev.origin !== location.origin) return
@@ -30,6 +44,13 @@ export function PaywallPreview() {
     }
   }
 
+  const updateScreenMode = (isDesktop: boolean) => {
+    setIframeSize({
+      width: isDesktop ? IFRAME_WIDTH_DESKTOP : IFRAME_WIDTH_MOBILE,
+      height: isDesktop ? IFRAME_HEIGHT_DESKTOP : IFRAME_HEIGHT_MOBILE,
+    })
+  }
+
   useEffect(() => {
     window.addEventListener('message', messageHandler)
     const unsub = subscribe(paywall.profile, () => updateUI(ref.current))
@@ -38,6 +59,31 @@ export function PaywallPreview() {
       unsub()
     }
   }, [])
+
+  useEffect(() => {
+    const listener = (ev: MediaQueryListEvent) => {
+      updateScreenMode(ev.matches)
+    }
+    const media = window.matchMedia(TOGGLE_MEDIA_QUERY)
+    updateScreenMode(media.matches)
+    media.addEventListener('change', listener)
+    return () => {
+      media.removeEventListener('change', listener)
+    }
+  }, [])
+
+  useEffect(() => {
+    const resizePreview = () => {
+      const containerWidth = containerRef.current!.offsetWidth
+      const scaleFactor = containerWidth / iframeSize.width
+      ref.current!.style.setProperty('--scale', scaleFactor.toString())
+    }
+    resizePreview()
+    window.addEventListener('resize', resizePreview)
+    return () => {
+      window.removeEventListener('resize', resizePreview)
+    }
+  }, [iframeSize.width])
 
   return (
     <BuilderBackground
@@ -54,13 +100,22 @@ export function PaywallPreview() {
         </>
       }
     >
-      <iframe
-        ref={ref}
-        onLoad={(ev) => updateUI(ev.currentTarget)}
-        src="/tools/paywall/preview"
-        className="w-full overflow-hidden border-none"
-        style={{ height: 'clamp(25rem, 70vh, 36rem)' }}
-      ></iframe>
+      <div
+        className="w-full relative overflow-hidden"
+        style={{ aspectRatio: `${iframeSize.width}/${iframeSize.height}` }}
+        ref={containerRef}
+      >
+        <iframe
+          ref={ref}
+          src="/tools/paywall/preview"
+          className="absolute top-0 left-0 origin-top-left border-none"
+          style={{
+            width: iframeSize.width + 'px',
+            height: iframeSize.height + 'px',
+            transform: 'scale(var(--scale, 0.5))',
+          }}
+        ></iframe>
+      </div>
     </BuilderBackground>
   )
 }
