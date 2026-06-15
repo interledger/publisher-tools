@@ -91,7 +91,13 @@ const sanitizers = {
     return { ...offerwall, $name: sanitizeText(offerwall.$name) }
   },
   [TOOL_PAYWALL](paywall: PaywallProfile): PaywallProfile {
-    return { ...paywall, $name: sanitizeText(paywall.$name) }
+    return {
+      ...paywall,
+      $name: sanitizeText(paywall.$name),
+      title: { text: sanitizeText(paywall.title.text) },
+      description: { text: sanitizeHtmlField(paywall.description.text) },
+      ctaButton: { text: sanitizeText(paywall.ctaButton.text) },
+    }
   },
 } satisfies { [K in Tool]: (profile: ToolProfile<K>) => ToolProfile<K> }
 
