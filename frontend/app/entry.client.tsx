@@ -5,18 +5,8 @@
  */
 
 import { startTransition, StrictMode } from 'react'
-import { scan } from 'react-scan'
 import { hydrateRoot } from 'react-dom/client'
 import { HydratedRouter } from 'react-router/dom'
-
-if (process.env.NODE_ENV === 'development') {
-  scan({
-    enabled: false,
-    trackUnnecessaryRenders: true,
-    showToolbar: true,
-    log: true,
-  })
-}
 
 startTransition(() => {
   hydrateRoot(
