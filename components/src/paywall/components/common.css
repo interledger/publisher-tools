@@ -45,7 +45,7 @@ button {
   font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 400;
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius, 0.5rem);
 
   background-color: var(--theme);
   /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
