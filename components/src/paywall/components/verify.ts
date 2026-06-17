@@ -44,7 +44,7 @@ export class PaywallVerify extends LitElement {
 
   render() {
     return html`
-      <div>
+      <div class="top">
         <h2 class="title">${this.title}</h2>
         <p class="description">${this.description}</p>
       </div>
