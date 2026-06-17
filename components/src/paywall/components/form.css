@@ -5,6 +5,12 @@
   overflow: hidden;
 }
 
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 form {
   display: flex;
   flex-direction: column;
