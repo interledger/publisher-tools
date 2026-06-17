@@ -116,7 +116,7 @@ export default function Paywall() {
       }}
       stepMiddle={<PaywallBuilderSettings />}
     >
-      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full -mt-2 flex">
+      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full flex">
         <PaywallBuilder
           onRefresh={(section) => actions.resetProfileSection(section)}
         />
