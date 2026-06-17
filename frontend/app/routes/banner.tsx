@@ -117,6 +117,7 @@ export default function Banner() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
+      hasUnsavedChanges={bannerSnap.profilesUpdate.has(snap.activeTab)}
     >
       <BuilderProfileTabs
         idPrefix="profile"

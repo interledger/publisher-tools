@@ -117,6 +117,7 @@ export default function Widget() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
+      hasUnsavedChanges={widgetSnap.profilesUpdate.has(snap.activeTab)}
     >
       <BuilderProfileTabs
         idPrefix="profile"
