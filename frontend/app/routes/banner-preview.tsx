@@ -34,6 +34,7 @@ export default function BannerPreviewRoute() {
 
     const update = (profile: BannerProfile) => {
       el.config = { ...profile, cdnUrl }
+      el.undoDismiss()
     }
 
     const el = document.createElement(NAME)
