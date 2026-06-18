@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import {
   useLoaderData,
   data,
@@ -6,12 +6,7 @@ import {
   type MetaFunction,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
-import {
-  BuilderBackground,
-  ToolsSecondaryButton,
-  BuilderProfileTabs,
-} from '@/components'
-import { SLIDE_ANIMATION } from '@shared/types'
+import { BuilderProfileTabs } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
 import { BannerPreview } from '~/components/banner/BannerPreview'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
@@ -26,7 +21,6 @@ import {
   persistBannerWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
-  useBannerProfile,
 } from '~/stores/banner-store'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
