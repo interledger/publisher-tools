@@ -82,7 +82,7 @@ export function ToolPreview<MessageToIframe, MessageFromIframe>({
     return () => {
       window.removeEventListener('message', messageHandler)
     }
-  }, [])
+  }, [onMessage])
 
   return (
     <BuilderBackground iframeMode={true} actions={children}>
@@ -106,8 +106,8 @@ export function ToolPreview<MessageToIframe, MessageFromIframe>({
   )
 }
 
-const IFRAME_WIDTH_DESKTOP = 1400
-const IFRAME_HEIGHT_DESKTOP = 900
+const IFRAME_WIDTH_DESKTOP = 1080
+const IFRAME_HEIGHT_DESKTOP = 720
 
 const IFRAME_WIDTH_MOBILE = 380
 const IFRAME_HEIGHT_MOBILE = 600

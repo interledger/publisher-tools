@@ -7,6 +7,7 @@ import type {
   Message,
   MessageFromIframe,
 } from '~/components/paywall/PaywallPreview'
+import { ToolPreviewPlaceholder } from '~/components/ToolPreviewPlaceholder'
 
 export default function PaywallPreview() {
   const [profile, setProfile] = useState(() => getDefaultProfile('paywall'))
@@ -79,7 +80,7 @@ export default function PaywallPreview() {
 
   return (
     <div id="paywall-preview-container">
-      <PlaceholderContent />
+      <ToolPreviewPlaceholder />
       {/*<pre>{JSON.stringify(profile, null, 2)}</pre>*/}
       {/* element gets injected here */}
     </div>
@@ -88,23 +89,4 @@ export default function PaywallPreview() {
 
 function postMessage(message: MessageFromIframe) {
   window.parent.postMessage(message, window.location.origin)
-}
-
-function PlaceholderContent() {
-  const text = `Below 2,000 metres, almost nothing moves quickly.
-    What looks empty on a sonar readout is a careful exchange between
-    organisms that trade carbon, nitrogen, and light.
-    For a long time we only measured it by what washed up.`
-
-  return (
-    <div className="p-4 space-y-2 select-none" role="presentation">
-      <div className="text-style-h5">The quiet economy of the deep ocean</div>
-      <div className="w-full h-[20vh] bg-gray-200"></div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-    </div>
-  )
 }
