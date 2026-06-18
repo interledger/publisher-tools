@@ -5,7 +5,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
-import { BuilderBackground, BuilderProfileTabs, Divider } from '@/components'
+import { BuilderProfileTabs, Divider } from '@/components'
 import HowItWorks from '~/components/offerwall/HowItWorks'
 import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
 import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
