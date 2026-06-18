@@ -98,7 +98,7 @@ export default function Offerwall() {
       }}
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
       walletAddressToolName="offerwall experience"
-      preview={<Preview />}
+      preview={<OfferwallPreview />}
       loaderData={{
         grantResponse,
         isGrantAccepted,
@@ -116,13 +116,5 @@ export default function Offerwall() {
         <OfferwallBuilder onRefresh={() => actions.resetProfileSection()} />
       </BuilderProfileTabs>
     </ToolLayoutWithPreview>
-  )
-}
-
-function Preview() {
-  return (
-    <BuilderBackground>
-      <OfferwallPreview />
-    </BuilderBackground>
   )
 }
