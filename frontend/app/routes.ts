@@ -18,6 +18,7 @@ export default [
     route('offerwall/', 'routes/offerwall.tsx'),
   ]),
   route('payment-confirmation/', 'routes/payment-confirmation.tsx'),
+  route('banner/preview/', 'routes/banner-preview.tsx'),
   route('paywall/preview/', 'routes/paywall-preview.tsx'),
   // API routes
   route('api/grant/:type', 'routes/api.grant.$type.ts'),

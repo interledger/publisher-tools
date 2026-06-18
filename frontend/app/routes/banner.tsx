@@ -13,10 +13,7 @@ import {
 } from '@/components'
 import { SLIDE_ANIMATION } from '@shared/types'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
-import {
-  BannerPreview,
-  type BannerHandle,
-} from '~/components/banner/BannerPreview'
+import { BannerPreview } from '~/components/banner/BannerPreview'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import {
   actions,
@@ -110,7 +107,7 @@ export default function Banner() {
       }}
       walletAddressToolName="drawer banner"
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
-      preview={<Preview cdnUrl={snap.cdnUrl} />}
+      preview={<BannerPreview />}
       loaderData={{
         grantResponse,
         isGrantAccepted,
@@ -130,35 +127,5 @@ export default function Banner() {
         />
       </BuilderProfileTabs>
     </ToolLayoutWithPreview>
-  )
-}
-
-function Preview({ cdnUrl }: { cdnUrl: string }) {
-  const [profile] = useBannerProfile()
-
-  const isAnimationDisabled = profile.animation.type === SLIDE_ANIMATION.None
-  const bannerRef = useRef<BannerHandle>(null)
-  const handlePreviewClick = () => {
-    if (bannerRef.current) {
-      bannerRef.current.triggerPreview()
-    }
-  }
-
-  return (
-    <BuilderBackground
-      actions={
-        !isAnimationDisabled && (
-          <ToolsSecondaryButton
-            icon="play"
-            className="w-[130px]"
-            onClick={handlePreviewClick}
-          >
-            Preview
-          </ToolsSecondaryButton>
-        )
-      }
-    >
-      <BannerPreview ref={bannerRef} cdnUrl={cdnUrl} />
-    </BuilderBackground>
   )
 }
