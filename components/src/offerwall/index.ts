@@ -70,13 +70,8 @@ export class OfferwallModal extends LitElement {
   }
 
   render() {
-    const isPreviewMode = !!this.#controller.isPreviewMode
     return html`
-      <dialog
-        ${ref(this.#dialogRef)}
-        @cancel=${this.#onDialogCancel}
-        ?data-preview=${isPreviewMode}
-      >
+      <dialog ${ref(this.#dialogRef)} @cancel=${this.#onDialogCancel}>
         ${this.#renderScreen(this._screen)}
       </dialog>
     `
@@ -133,13 +128,6 @@ export class OfferwallModal extends LitElement {
 
   #dialogRef: Ref<HTMLDialogElement> = createRef()
   #openDialog() {
-    if (this.#controller.isPreviewMode) {
-      const dialog = this.#dialogRef.value!
-      dialog.inert = true
-      dialog.show()
-      dialog.inert = false
-      return
-    }
     this.#dialogRef.value!.showModal()
   }
   #closeDialog = () => {
