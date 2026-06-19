@@ -179,7 +179,7 @@ export const BuilderProfileTabs = <T extends string>({
               inputId={`${idPrefix}-tab-label-${activeTabId}`}
             />
           )}
-          {!editingId && editIntentId && (
+          {!editingId && editIntentId === activeTabId && (
             <TabActionTrigger onClick={() => setEditingId(activeTabId)} />
           )}
         </div>
