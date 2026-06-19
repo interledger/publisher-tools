@@ -15,7 +15,7 @@
     "format:check": "prettier . --check --cache --cache-location='node_modules/.cache/prettiercache'",
     "lint": "eslint . --fix --cache --cache-location 'node_modules/.cache/eslintcache'",
     "lint:check": "eslint . --cache --cache-location 'node_modules/.cache/eslintcache'",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "tsc -b",
     "test": "pnpm -r test",
     "analytics:dev": "pnpm -C localenv/analytics dev",
     "analytics:down": "pnpm -C localenv/analytics down"

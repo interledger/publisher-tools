@@ -1,28 +1,18 @@
 {
+  "extends": "../tsconfig.base.json",
   "include": [
     "app/**/*.ts",
     "app/**/*.tsx",
+    "app/**/*.json",
     "worker.ts",
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "skipDefaultLibCheck": true,
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
     "jsx": "react-jsx",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "noEmit": true,
-    "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"],
@@ -30,11 +20,11 @@
       "@/components/*": ["./app/components/redesign/components/*"],
       "@/typography": ["./app/components/redesign/Typography.tsx"],
       "@/assets": ["./app/assets/svg.tsx"],
-      "@c/*": ["../components/src/*"]
+      "@c/*": ["./node_modules/@tools/components/src/*"]
     },
     "types": [
-      "./worker-configuration.d.ts",
       "vite/client",
+      "./worker-configuration.d.ts",
       "./tools-components.d.ts"
     ],
     "rootDirs": [".", "./.react-router/types"]

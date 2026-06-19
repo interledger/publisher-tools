@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NO_OP_CONTROLLER } from '@c/widget/controller'
+import { NO_OP_CONTROLLER } from '@c/widget/controller.js'
 import { getDefaultProfile } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { WidgetProfile } from '@shared/types'
@@ -20,7 +20,8 @@ export default function WidgetPreviewRoute() {
   useEffect(() => {
     const load = async () => {
       if (!customElements.get(NAME)) {
-        const { PaymentWidget } = await import('@tools/components/widget/index')
+        const { PaymentWidget } =
+          await import('@tools/components/widget/index.js')
         if (!customElements.get(NAME)) {
           customElements.define(NAME, PaymentWidget)
         }
