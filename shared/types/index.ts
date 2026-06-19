@@ -17,9 +17,9 @@ export const PROFILE_IDS = [PROFILE_A, PROFILE_B, PROFILE_C] as const
 export type ProfileId = (typeof PROFILE_IDS)[number]
 
 export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {
-  version1: 'Default profile 1',
-  version2: 'Default profile 2',
-  version3: 'Default profile 3',
+  version1: 'Default layout 1',
+  version2: 'Default layout 2',
+  version3: 'Default layout 3',
 } as const
 
 export interface Configuration {
