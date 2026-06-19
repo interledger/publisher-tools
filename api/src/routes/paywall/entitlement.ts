@@ -45,7 +45,7 @@ app.get(
       ...(payment && entitlement === 'pending' && { paymentId }),
     }
     if (result.entitlement === 'has-access') {
-      header('Cache-Control', 'private, max-age=3600')
+      // header('Cache-Control', 'private, max-age=3600')
     } else if (result.entitlement === 'no-access') {
       status(402)
     } else if (result.entitlement === 'auth-required') {
