@@ -50,7 +50,7 @@ export async function getToolProfiles<T extends Tool>(
 
   if (!response.ok) {
     throw new ApiError(
-      data.error?.message || 'Failed to fetch profiles',
+      data.error?.message || 'Failed to fetch layouts',
       data.error?.cause?.errors,
       response.status,
     )
