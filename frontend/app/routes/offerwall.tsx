@@ -105,6 +105,7 @@ export default function Offerwall() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
+      hasUnsavedChanges={offerwallSnap.profilesUpdate.has(snap.activeTab)}
     >
       <BuilderProfileTabs
         idPrefix="profile"

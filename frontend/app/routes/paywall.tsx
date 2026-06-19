@@ -67,6 +67,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function Paywall() {
   const t = useTranslation('paywall')
   const snap = useSnapshot(toolState)
+  const paywallSnap = useSnapshot(paywall)
   const [walletSnap] = useToolWallet({
     wallet: paywallWallet,
     actions: paywallWalletActions,
@@ -114,6 +115,7 @@ export default function Paywall() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
+      hasUnsavedChanges={paywallSnap.profilesUpdate.has(snap.activeTab)}
       stepMiddle={<PaywallBuilderSettings />}
     >
       <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full flex">
