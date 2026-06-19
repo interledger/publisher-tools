@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import {
   useLoaderData,
   data,
@@ -6,17 +6,9 @@ import {
   type MetaFunction,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
-import {
-  BuilderBackground,
-  ToolsSecondaryButton,
-  BuilderProfileTabs,
-} from '@/components'
-import { SLIDE_ANIMATION } from '@shared/types'
+import { BuilderProfileTabs } from '@/components'
 import { BannerBuilder } from '~/components/banner/BannerBuilder'
-import {
-  BannerPreview,
-  type BannerHandle,
-} from '~/components/banner/BannerPreview'
+import { BannerPreview } from '~/components/banner/BannerPreview'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import {
   actions,
@@ -29,7 +21,6 @@ import {
   persistBannerWallet,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
-  useBannerProfile,
 } from '~/stores/banner-store'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
@@ -110,7 +101,7 @@ export default function Banner() {
       }}
       walletAddressToolName="drawer banner"
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
-      preview={<Preview cdnUrl={snap.cdnUrl} />}
+      preview={<BannerPreview />}
       loaderData={{
         grantResponse,
         isGrantAccepted,
@@ -131,35 +122,5 @@ export default function Banner() {
         />
       </BuilderProfileTabs>
     </ToolLayoutWithPreview>
-  )
-}
-
-function Preview({ cdnUrl }: { cdnUrl: string }) {
-  const [profile] = useBannerProfile()
-
-  const isAnimationDisabled = profile.animation.type === SLIDE_ANIMATION.None
-  const bannerRef = useRef<BannerHandle>(null)
-  const handlePreviewClick = () => {
-    if (bannerRef.current) {
-      bannerRef.current.triggerPreview()
-    }
-  }
-
-  return (
-    <BuilderBackground
-      actions={
-        !isAnimationDisabled && (
-          <ToolsSecondaryButton
-            icon="play"
-            className="w-[130px]"
-            onClick={handlePreviewClick}
-          >
-            Preview
-          </ToolsSecondaryButton>
-        )
-      }
-    >
-      <BannerPreview ref={bannerRef} cdnUrl={cdnUrl} />
-    </BuilderBackground>
   )
 }
