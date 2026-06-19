@@ -9,13 +9,13 @@
   "toolsWalletAddress": {
     "heading.message": "Wallet address",
     "tooltip.ariaLabel": "Why connect your wallet?",
-    "tooltip.message": "Connecting your wallet allows us to save your custom profiles, link them to you as the original author, and verify ownership for future updates.",
+    "tooltip.message": "Connecting your wallet allows us to save your custom layouts, link them to you as the original author, and verify ownership for future updates.",
     "tooltip.message2": "It also enables Web Monetization on your behalf by embedding your wallet address into your web page automatically.",
     "errors.fieldRequired": "This field is required",
     "errors.connectionError": "You have not connected your wallet address yet.",
-    "status.connect": "If you're connecting your wallet address for the first time, you'll start with the default profile. You can then customize and save your profile as needed.",
+    "status.connect": "If you're connecting your wallet address for the first time, you'll start with the default layout. You can then customize and save your layout as needed.",
     "status.noSavedProfiles": "There are no custom edits for the {{toolName}} correlated to this wallet address but you can start customizing when you want.",
-    "status.profilesFetched": "We've loaded your profiles. Feel free to keep customizing your {{toolName}} to fit your style.",
+    "status.profilesFetched": "We've loaded your layouts. Feel free to keep customizing your {{toolName}} to fit your style.",
     "button.loadingLabel": "Connecting...",
     "button.submitLabel": "Continue",
     "button.disconnectAriaLabel": "Disconnect wallet"
