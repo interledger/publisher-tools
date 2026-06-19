@@ -12,22 +12,20 @@ export function PaywallPriceBuilder() {
   const currencySymbol = getCurrencySymbol(currency)
 
   return (
-    <div className="bg-white shadow-sm rounded-xl p-4">
-      <fieldset className="space-y-4">
+    <>
+      <fieldset>
         <legend className="flex justify-between items-center w-full">
           <span className="text-style-body-emphasis">
             {t('inputgroup.price.title')}
           </span>
-          <span className="text-style-small-standard !text-text-secondary">
-            {t('inputgroup.price.titleDesc')}
-          </span>
         </legend>
-        <p className="text-style-small-standard !text-text-secondary">
+        <p className="text-style-small-standard mt-xs mb-md">
           {t('inputgroup.price.desc')}
         </p>
 
         <InputFieldNumeric
           label={t('input.price.label')}
+          labelClassName="text-style-caption-standard !text-field-helpertext-default"
           value={snap.price.value}
           onChange={(value) => {
             profile.price.value = String(value)
@@ -39,6 +37,6 @@ export function PaywallPriceBuilder() {
           min={Math.pow(10, -precision)}
         />
       </fieldset>
-    </div>
+    </>
   )
 }
