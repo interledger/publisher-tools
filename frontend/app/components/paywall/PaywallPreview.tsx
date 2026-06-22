@@ -1,65 +1,51 @@
-import { useEffect, useRef } from 'react'
-import { subscribe } from 'valtio'
+import { useEffect, useRef, useState } from 'react'
+import { cx } from 'class-variance-authority'
 import { deepClone } from 'valtio/utils'
-import { BuilderBackground } from '@/components/BuilderBackground'
 import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
+import type { View } from '@c/paywall/controller'
 import type { PaywallProfile } from '@shared/types'
-import { paywall } from '~/stores/paywall-store'
+import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
+import { usePaywallProfile } from '~/stores/paywall-store'
 
 export type Message =
   | { action: 'RESET' }
   | { action: 'UPDATE'; profile: PaywallProfile }
 
+export type MessageFromIframe =
+  | { type: 'READY' }
+  | { type: 'CURRENT_SCREEN'; view: keyof View }
+
 export function PaywallPreview() {
-  const ref = useRef<HTMLIFrameElement>(null)
+  const [currentView, setCurrentView] = useState<keyof View>('home')
+  const [profile] = usePaywallProfile()
+  const ref = useRef<ToolPreviewHandle<Message>>(null)
+
+  const messageHandler = (data: MessageFromIframe) => {
+    switch (data.type) {
+      case 'READY':
+        return ref.current?.postMessage(UpdateUIMessage(profile))
+      case 'CURRENT_SCREEN':
+        return setCurrentView(data.view)
+    }
+  }
 
   useEffect(() => {
-    window.addEventListener(
-      'message',
-      (ev) => ev.origin === location.origin && updateUI(ref.current),
-      { once: true },
-    )
-    return subscribe(paywall.profile, () => updateUI(ref.current))
-  }, [])
+    ref.current?.postMessage(UpdateUIMessage(profile))
+  }, [profile])
 
   return (
-    <BuilderBackground
-      iframeMode={true}
-      actions={
-        <>
-          <ToolsSecondaryButton
-            icon="refresh"
-            className="w-[130px]"
-            onClick={() => resetPaywall(ref.current)}
-          >
-            Reset
-          </ToolsSecondaryButton>
-        </>
-      }
-    >
-      <iframe
-        ref={ref}
-        onLoad={(ev) => updateUI(ev.currentTarget)}
-        src="/tools/paywall/preview"
-        className="w-full overflow-hidden border-none"
-        style={{ height: 'clamp(25rem, 70vh, 36rem)' }}
-      ></iframe>
-    </BuilderBackground>
+    <ToolPreview tool="paywall" ref={ref} onMessage={messageHandler}>
+      <ToolsSecondaryButton
+        icon="refresh"
+        className={cx('w-[130px]', currentView === 'home' && 'invisible')}
+        onClick={() => ref.current!.postMessage({ action: 'RESET' })}
+      >
+        Reset
+      </ToolsSecondaryButton>
+    </ToolPreview>
   )
 }
 
-function updateUI(iframeEl: HTMLIFrameElement | null) {
-  if (!iframeEl) return
-  const profile = deepClone(paywall.profile)
-  const message: Message = { action: 'UPDATE', profile }
-  postMessage(iframeEl, message)
-}
-
-function resetPaywall(iframeEl: HTMLIFrameElement | null) {
-  if (!iframeEl) return
-  postMessage(iframeEl, { action: 'RESET' })
-}
-
-function postMessage(iframeEl: HTMLIFrameElement, message: Message) {
-  iframeEl.contentWindow!.postMessage(message, location.origin)
+function UpdateUIMessage(profile: PaywallProfile): Message {
+  return { action: 'UPDATE', profile: deepClone(profile) }
 }

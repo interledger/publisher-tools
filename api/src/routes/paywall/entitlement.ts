@@ -22,7 +22,7 @@ export type PaywallEntitlementResult = {
 app.get(
   '/paywall/entitlement',
   validate('query', schema),
-  async ({ req, header, status, json, env }) => {
+  async ({ req, status, json, env }) => {
     const params = req.valid('query')
     const token = await getRefreshedToken()
 
@@ -44,9 +44,7 @@ app.get(
       token: token?.jwt,
       ...(payment && entitlement === 'pending' && { paymentId }),
     }
-    if (result.entitlement === 'has-access') {
-      header('Cache-Control', 'private, max-age=3600')
-    } else if (result.entitlement === 'no-access') {
+    if (result.entitlement === 'no-access') {
       status(402)
     } else if (result.entitlement === 'auth-required') {
       status(401)

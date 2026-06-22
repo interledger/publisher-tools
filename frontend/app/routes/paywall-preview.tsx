@@ -2,11 +2,20 @@ import { useEffect, useState } from 'react'
 import { NO_OP_CONTROLLER } from '@c/paywall/controller'
 import { getDefaultProfile } from '@shared/default-data'
 import { CDN_URL } from '@shared/defines'
+import type { PaywallProfile } from '@shared/types'
 import { sleep } from '@shared/utils'
-import type { Message } from '~/components/paywall/PaywallPreview'
+import type {
+  Message,
+  MessageFromIframe,
+} from '~/components/paywall/PaywallPreview'
+import { ToolPreviewPlaceholder } from '~/components/ToolPreviewPlaceholder'
+import { toolState } from '~/stores/toolStore'
+import { getStorageKeys } from '~/utils/utils.store'
+
+const TOOL = 'paywall'
 
 export default function PaywallPreview() {
-  const [profile, setProfile] = useState(() => getDefaultProfile('paywall'))
+  const [profile, setProfile] = useState(() => getDefaultProfile(TOOL))
   const [isLoaded, setIsLoaded] = useState(false)
 
   const NAME = 'wm-paywall'
@@ -21,6 +30,14 @@ export default function PaywallPreview() {
       setIsLoaded(true)
     }
     load()
+  }, [])
+
+  useEffect(() => {
+    if (window.location !== window.parent.location) {
+      return // skip in iframe mode
+    }
+    const saved = getProfileFromLocalStorage()
+    if (saved) setProfile(saved)
   }, [])
 
   useEffect(() => {
@@ -45,11 +62,15 @@ export default function PaywallPreview() {
       initiatePayment: NO_OP_CONTROLLER.initiatePayment,
       receiverWalletAddressUrl: 'https://example.com',
       senderWalletAddressUrl: '',
+
+      onScreenChange(view) {
+        postMessage({ type: 'CURRENT_SCREEN', view })
+      },
     })
 
     const container = document.getElementById('paywall-preview-container')!
     container.appendChild(el)
-    window.parent.postMessage('ready', window.location.origin)
+    postMessage({ type: 'READY' })
 
     const listener = (ev: MessageEvent<Message>) => {
       if (ev.origin !== window.location.origin) return
@@ -72,28 +93,29 @@ export default function PaywallPreview() {
 
   return (
     <div id="paywall-preview-container">
-      <PlaceholderContent />
+      <ToolPreviewPlaceholder />
       {/*<pre>{JSON.stringify(profile, null, 2)}</pre>*/}
       {/* element gets injected here */}
     </div>
   )
 }
 
-function PlaceholderContent() {
-  const text = `Below 2,000 metres, almost nothing moves quickly.
-    What looks empty on a sonar readout is a careful exchange between
-    organisms that trade carbon, nitrogen, and light.
-    For a long time we only measured it by what washed up.`
+function getProfileFromLocalStorage(): PaywallProfile | null {
+  const key = getStorageKeys(TOOL).getProfileStorageKey(toolState.activeTab)
+  const stored = localStorage.getItem(key)
+  if (!stored) return null
 
-  return (
-    <div className="p-4 space-y-2 select-none" role="presentation">
-      <div className="text-style-h5">The quiet economy of the deep ocean</div>
-      <div className="w-full h-[20vh] bg-gray-200"></div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-      <div className="text-style-body-standard">{text}</div>
-    </div>
-  )
+  try {
+    const profile: PaywallProfile = JSON.parse(stored)
+    if (typeof profile === 'object' && profile.behavior) {
+      return profile
+    }
+  } catch (err) {
+    console.error(err)
+  }
+  return null
+}
+
+function postMessage(message: MessageFromIframe) {
+  window.parent.postMessage(message, window.location.origin)
 }

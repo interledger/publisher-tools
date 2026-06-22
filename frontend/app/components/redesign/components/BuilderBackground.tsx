@@ -32,7 +32,8 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
     <div
       id="builder-background"
       className={cx(
-        'bg-silver-100 rounded-[20px] p-md flex flex-col items-center min-h-[600px]',
+        'bg-silver-100 rounded-[20px] p-md flex flex-col items-center',
+        !iframeMode && 'min-h-[600px]',
         actions && 'gap-4xl',
         className,
       )}
@@ -46,7 +47,10 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
       <div
         id="browser-mockup"
-        className="w-full flex-1 rounded-2xl border border-field-border overflow-hidden flex flex-col"
+        className={cx(
+          'w-full flex-1 border border-field-border overflow-hidden flex flex-col',
+          iframeMode ? 'rounded-t-2xl rounded-b-xs' : 'rounded-2xl',
+        )}
       >
         <div className="flex items-center p-md bg-white">
           <div className="flex items-center gap-4 w-full">
