@@ -32,6 +32,7 @@ export const WidgetPreview = ({
       el.setController({
         isPreviewMode: true,
         getWallet: NO_OP_CONTROLLER.getWallet,
+        validateCompatibility: NO_OP_CONTROLLER.validateCompatibility,
         async fetchQuote(request) {
           await sleep(500)
           return NO_OP_CONTROLLER.fetchQuote(request)

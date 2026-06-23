@@ -49,8 +49,19 @@ interface InitiatePaymentResult {
   grantRedirectUrl: PendingGrant['interact']['redirect']
 }
 
+interface ValidateCompatibilityInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+}
+type ValidateCompatibilityResult =
+  | { ok: true }
+  | { ok: false; code: 'WALLET_MISMATCH' }
+
 export interface Controller {
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
+  validateCompatibility(
+    request: ValidateCompatibilityInput,
+  ): Promise<ValidateCompatibilityResult>
   fetchQuote(request: QuoteInput): Promise<QuoteResult>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
   getStatus(
@@ -72,6 +83,9 @@ export const NO_OP_CONTROLLER: Controller = {
       resourceServer: 'https://resource.example.com',
       publicName: 'Wallet (Preview)',
     })
+  },
+  validateCompatibility() {
+    return Promise.resolve({ ok: true })
   },
   fetchQuote({ amount, sender, receiver }) {
     amount = String(amount)

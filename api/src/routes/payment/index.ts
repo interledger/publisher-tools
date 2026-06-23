@@ -2,7 +2,12 @@ import './quotes.js'
 import './initiate.js'
 import './redirect.js'
 import './status.js'
+import './validate.js'
 
 export type { PaymentQuoteInput, PaymentQuoteResult } from './quotes.js'
 export type { PaymentInitiateInput, PaymentInitiateResult } from './initiate.js'
 export type { PaymentStatus } from './status.js'
+export type {
+  PaymentValidateInput,
+  PaymentValidateResult,
+} from './validate.js'

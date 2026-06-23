@@ -61,9 +61,19 @@ export class PaymentWidget extends LitElement {
         throw new Error('Please fill out your wallet address.')
       }
       const walletInfo = await this.#controller.getWallet(walletAddress)
+      const receiver = await this.#receiver
+
+      const validation = await this.#controller.validateCompatibility({
+        sender: walletInfo,
+        receiver,
+      })
+      if (!validation.ok) {
+        return errorMessageFor(validation.code)
+      }
+
       this.configController.updateState({
         walletAddress: walletInfo,
-        receiver: await this.#receiver,
+        receiver,
       })
       this.currentView = 'initiate'
     } catch (error) {
@@ -192,5 +202,12 @@ export class PaymentWidget extends LitElement {
         <img src="${triggerIcon}" alt="" />
       </button>
     `
+  }
+}
+
+function errorMessageFor(code: 'WALLET_MISMATCH'): string {
+  switch (code) {
+    case 'WALLET_MISMATCH':
+      return 'Your wallet is incompatible with this page. Please try a different wallet provider.'
   }
 }

@@ -130,6 +130,63 @@ export class OpenPaymentsService {
     }
   }
 
+  async validateCompatibility(
+    sender: WalletAddress,
+    receiver: WalletAddress,
+  ): Promise<{ ok: true } | { ok: false; code: 'WALLET_MISMATCH' }> {
+    let incomingPaymentGrant: Grant | undefined
+    try {
+      const [quoteGrant, ipg] = await Promise.all([
+        this.createQuoteGrant(sender),
+        this.createIncomingPaymentGrant(receiver),
+      ])
+      incomingPaymentGrant = ipg
+
+      const incomingPayment = await this.client.incomingPayment.create(
+        {
+          url: receiver.resourceServer,
+          accessToken: ipg.access_token.value,
+        },
+        {
+          expiresAt: new Date(Date.now() + 15 * 1000).toISOString(),
+          walletAddress: receiver.id,
+          metadata: { description: 'Compatibility probe via Publisher Tools' },
+        },
+      )
+
+      await this.client.quote.create(
+        {
+          url: sender.resourceServer,
+          accessToken: quoteGrant.access_token.value,
+        },
+        {
+          method: 'ilp',
+          walletAddress: sender.id,
+          receiver: incomingPayment.id,
+          receiveAmount: {
+            value: '1',
+            assetCode: receiver.assetCode,
+            assetScale: receiver.assetScale,
+          },
+        },
+      )
+
+      return { ok: true }
+    } catch (error) {
+      if (isNonPositiveAmountError(error)) return { ok: true }
+      if (hasOpenPaymentsClientErrorCause(error)) {
+        return { ok: false, code: 'WALLET_MISMATCH' }
+      }
+      throw error
+    } finally {
+      if (incomingPaymentGrant) {
+        void this.revokeIncomingPaymentGrant(incomingPaymentGrant).catch(
+          () => {},
+        )
+      }
+    }
+  }
+
   async paymentInitiate(params: PaymentInitiateInput) {
     const { sender, receiver, note, redirectUrl, ...amt } = params
     const debitAmount = amt.debitAmount
@@ -413,6 +470,18 @@ export class OpenPaymentsService {
 
 const isOpenPaymentsClientError = (error: unknown) =>
   error instanceof OpenPaymentsClientError
+
+// Some helpers in this file wrap OpenPaymentsClientError in generic Error
+// (e.g. createQuoteGrant) or HTTPException (e.g. createIncomingPayment),
+// so the original is only reachable via the cause chain.
+const hasOpenPaymentsClientErrorCause = (error: unknown): boolean => {
+  let cur: unknown = error
+  while (cur != null) {
+    if (cur instanceof OpenPaymentsClientError) return true
+    cur = (cur as { cause?: unknown }).cause
+  }
+  return false
+}
 
 // happens during quoting only
 export const isNonPositiveAmountError = (
