@@ -129,7 +129,10 @@ export const ToolsWalletAddress = ({
     }
 
     return {
-      message: t('status.profilesFetched', { toolName }),
+      message:
+        toolName === 'pay per article' // single profile
+          ? t('status.profileFetched', { toolName })
+          : t('status.profilesFetched', { toolName }),
       type: 'success',
     }
   }

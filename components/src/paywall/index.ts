@@ -8,11 +8,7 @@ import {
   type ViewInfo,
 } from '@c/paywall/controller'
 import { applyFontFamily, registerComponents } from '@c/utils.js'
-import {
-  BORDER_RADIUS,
-  PAYWALL_FONT_SIZE_MAP,
-  type PaywallProfile,
-} from '@shared/types'
+import { BORDER_RADIUS, type PaywallProfile } from '@shared/types'
 import { sleep } from '@shared/utils'
 import {
   PaywallWalletAddressForm,
@@ -47,6 +43,10 @@ export class Paywall extends LitElement {
     })
 
     void this.#init()
+  }
+
+  disconnectedCallback(): void {
+    document.body.style.overflow = ''
   }
 
   async #init() {
@@ -116,7 +116,12 @@ export class Paywall extends LitElement {
     if (!this._ready) return nothing
     if (this.#entitlement.entitlement === 'has-access') return nothing
     if (!this._delayComplete) return nothing
+    document.body.style.overflow = 'hidden'
 
+    return html`<div>${this.#render()}</div> `
+  }
+
+  #render() {
     const { title, description, ctaButton, price } = this.#config
 
     if (this._view.type === 'form') {
@@ -225,6 +230,7 @@ export class Paywall extends LitElement {
 
   #setView<K extends keyof View>(view: K, data: View[K]) {
     this._view = { type: view, data } as ViewInfo
+    this.#controller.onScreenChange?.(view)
   }
 
   @state() _delayComplete = false
@@ -245,15 +251,11 @@ export class Paywall extends LitElement {
 
     const fontBaseUrl = new URL('/assets/fonts/', this.#controller.cdnUrl).href
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
-    this.style.setProperty('--wmt-font-size', getBaseFontSize(font.size))
+    this.dataset.fontSize = font.size
     this.style.setProperty('--wmt-height', `${coverage.value}vh`)
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
     this.style.setProperty('--wmt-color', colors.text)
     this.style.setProperty('--wmt-border-radius', BORDER_RADIUS[border.type])
   }
-}
-
-function getBaseFontSize(fontSize: PaywallProfile['font']['size']) {
-  return `${PAYWALL_FONT_SIZE_MAP[fontSize] || PAYWALL_FONT_SIZE_MAP['base']}px`
 }

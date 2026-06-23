@@ -6,7 +6,7 @@ import {
   type MetaFunction,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
-import { BuilderBackground, BuilderProfileTabs } from '@/components'
+import { BuilderProfileTabs } from '@/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
@@ -104,19 +104,14 @@ export default function Widget() {
       }}
       walletAddressToolName="payment widget"
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
-      preview={
-        <Preview
-          cdnUrl={snap.cdnUrl}
-          apiUrl={snap.apiUrl}
-          opWallet={snap.opWallet}
-        />
-      }
+      preview={<WidgetPreview />}
       loaderData={{
         grantResponse,
         isGrantAccepted,
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
+      hasUnsavedChanges={widgetSnap.profilesUpdate.has(snap.activeTab)}
     >
       <BuilderProfileTabs
         idPrefix="profile"
@@ -130,24 +125,5 @@ export default function Widget() {
         />
       </BuilderProfileTabs>
     </ToolLayoutWithPreview>
-  )
-}
-
-function Preview({
-  cdnUrl,
-  apiUrl,
-  opWallet,
-}: {
-  cdnUrl: string
-  apiUrl: string
-  opWallet: string
-}) {
-  return (
-    <BuilderBackground>
-      <WidgetPreview
-        serviceUrls={{ cdn: cdnUrl, api: apiUrl }}
-        opWallet={opWallet}
-      />
-    </BuilderBackground>
   )
 }

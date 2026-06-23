@@ -45,6 +45,7 @@ type Props = React.PropsWithChildren<{
     isGrantResponse?: boolean
     OP_WALLET_ADDRESS: string
   }
+  hasUnsavedChanges: boolean
 }>
 
 export function ToolLayoutWithPreview({
@@ -58,6 +59,7 @@ export function ToolLayoutWithPreview({
   stepMiddle,
   loaderData,
   preview,
+  hasUnsavedChanges,
   children,
 }: Props) {
   const navigate = useNavigate()
@@ -173,7 +175,10 @@ export function ToolLayoutWithPreview({
 
                     {children}
 
-                    <BuilderActions handleSave={handleSave} />
+                    <BuilderActions
+                      handleSave={handleSave}
+                      hasUnsavedChanges={hasUnsavedChanges}
+                    />
                   </div>
                 </div>
 
@@ -194,10 +199,14 @@ export function ToolLayoutWithPreview({
 
 type SaveAction = 'save-success' | 'script'
 type BuilderActionsProps = {
+  hasUnsavedChanges: boolean
   handleSave: (action: SaveAction) => Promise<void>
 }
 
-function BuilderActions({ handleSave }: BuilderActionsProps) {
+function BuilderActions({
+  handleSave,
+  hasUnsavedChanges,
+}: BuilderActionsProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -220,6 +229,16 @@ function BuilderActions({ handleSave }: BuilderActionsProps) {
         id="builder-actions-inner"
         className="xl:contents flex flex-col gap-xs mx-auto w-full xl:w-auto xl:p-0 xl:mx-0 xl:flex-row xl:gap-sm"
       >
+        {hasUnsavedChanges && (
+          <span
+            className="order-first text-center text-xs xl:text-style-body-standard flex-1"
+            title="This configuration has unsaved changes"
+            style={{ color: '#AD6200' }}
+          >
+            unsaved changes
+          </span>
+        )}
+
         <ToolsSecondaryButton
           className="xl:w-[150px] xl:rounded-lg w-full min-w-0 border-0 xl:border order-last xl:order-first"
           disabled={isSaving}

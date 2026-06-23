@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@shared/utils": "workspace:^",
-    "lit": "^3.3.2"
+    "lit": "^3.3.3"
   },
   "devDependencies": {
     "@interledger/open-payments": "^7.4.0",
@@ -22,7 +22,7 @@
     "@shared/utils": "workspace:^",
     "publisher-tools-api": "workspace:^",
     "typescript": "^5.9.3",
-    "vite": "^8.0.10"
+    "vite": "^8.0.16"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

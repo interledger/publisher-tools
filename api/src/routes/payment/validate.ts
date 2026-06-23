@@ -16,9 +16,6 @@ export type PaymentValidateResult =
   | { compatible: true }
   | { error: Extract<PaymentError, 'WALLET_MISMATCH'> }
 
-// Best-effort metadata pre-check. No-op for now — see plan §"Pre-check signals".
-// All hits return the same WALLET_MISMATCH code as a probe-quote failure, so
-// adding signals later changes only latency, not the user-facing behaviour.
 const detectObviousMismatch = (
   _sender: PaymentValidateInput['sender'],
   _receiver: PaymentValidateInput['receiver'],
@@ -41,10 +38,7 @@ app.post(
       const openPayments = await OpenPaymentsService.getInstance(env)
       const result = await openPayments.validateCompatibility(sender, receiver)
       if (!result.ok) {
-        return json(
-          { error: result.code } satisfies PaymentValidateResult,
-          400,
-        )
+        return json({ error: result.code } satisfies PaymentValidateResult, 400)
       }
       return json({ compatible: true } satisfies PaymentValidateResult)
     } catch (error) {

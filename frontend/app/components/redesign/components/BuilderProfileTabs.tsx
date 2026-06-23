@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGEdit, SVGExclamationCircle } from '~/assets/svg'
+import { SVGEdit2, SVGExclamationCircle } from '~/assets/svg'
 
 type TabOption<T extends string> = { id: T; label: string; hasUpdates: boolean }
 interface Props<T extends string> {
@@ -25,6 +25,7 @@ export const BuilderProfileTabs = <T extends string>({
   const activeTabId = selectedId
   const activeTabIdx = options.findIndex((option) => option.id === selectedId)
   const [editingId, setEditingId] = useState<T | null>()
+  const [editIntentId, setEditIntentId] = useState<T | null>(null)
   const [hasEditingError, setHasEditingError] = useState(false)
 
   const getTabElement = (id: T) => {
@@ -32,6 +33,18 @@ export const BuilderProfileTabs = <T extends string>({
       `#${idPrefix}-tab-${id}`,
     )
   }
+
+  const handleEditIntentLeave = useCallback(
+    (e: React.MouseEvent | React.FocusEvent, id: T) => {
+      if (!(e.relatedTarget instanceof Element)) return
+      const dest = e.relatedTarget
+      if (dest?.closest(`#${idPrefix}-tab-${id}`)) return
+      if (dest?.closest(`[data-intent-wrapper="${id}"]`)) return
+
+      setEditIntentId(null)
+    },
+    [idPrefix],
+  )
 
   const setActiveTab = useCallback(
     (tabIndex: number) => {
@@ -98,9 +111,13 @@ export const BuilderProfileTabs = <T extends string>({
               onClick={() => onChange(option.id)}
               onDoubleClick={() => setEditingId(option.id)}
               onKeyDown={onKeyDown}
+              onMouseEnter={() => setEditIntentId(option.id)}
+              onMouseLeave={(e) => handleEditIntentLeave(e, option.id)}
+              onFocus={() => setEditIntentId(option.id)}
+              onBlur={(e) => handleEditIntentLeave(e, option.id)}
               className={cx(
                 'flex-grow flex items-center text-left relative',
-                'px-4 py-4 rounded-b-none rounded-t-sm',
+                'px-2 pb-2 pt-4 rounded-b-none rounded-t-sm',
                 'cursor-pointer !-outline-offset-2',
                 !editingId && 'mb-2',
                 option.id === activeTabId
@@ -111,19 +128,29 @@ export const BuilderProfileTabs = <T extends string>({
               <span
                 title={option.label}
                 className={cx(
-                  'truncate inline-block w-48 pr-4',
+                  'truncate inline-block w-full px-2 py-2 rounded-sm',
                   option.id === activeTabId
                     ? 'text-text-buttons-default'
                     : 'text-silver-600',
+                  !editingId &&
+                    editIntentId === option.id &&
+                    editIntentId === activeTabId &&
+                    'bg-white outline outline-1 outline-field-border-hover text-text-primary',
                 )}
               >
                 {option.label}
               </span>
 
-              {option.hasUpdates && (
+              {option.hasUpdates && editingId !== option.id && (
                 <>
                   <span className="sr-only"> (modified)</span>
-                  <DirtyMarker />
+                  <DirtyMarker
+                    visible={
+                      editIntentId === activeTabId
+                        ? editIntentId !== option.id
+                        : true
+                    }
+                  />
                 </>
               )}
             </button>
@@ -133,6 +160,11 @@ export const BuilderProfileTabs = <T extends string>({
         <div
           className={cx('-mt-14 z-0', editingId ? 'w-full' : 'w-min ml-auto')}
           style={{ gridColumn: `${activeTabIdx + 1} / span 1` }}
+          data-intent-wrapper={activeTabId}
+          onMouseEnter={() => setEditIntentId(activeTabId)}
+          onFocus={() => setEditIntentId(activeTabId)}
+          onMouseLeave={(e) => handleEditIntentLeave(e, activeTabId)}
+          onBlur={(e) => handleEditIntentLeave(e, activeTabId)}
         >
           {editingId === activeTabId && (
             <TabNameEditor
@@ -147,7 +179,7 @@ export const BuilderProfileTabs = <T extends string>({
               inputId={`${idPrefix}-tab-label-${activeTabId}`}
             />
           )}
-          {!editingId && (
+          {!editingId && editIntentId === activeTabId && (
             <TabActionTrigger onClick={() => setEditingId(activeTabId)} />
           )}
         </div>
@@ -171,13 +203,16 @@ export const BuilderProfileTabs = <T extends string>({
   )
 }
 
-function DirtyMarker() {
+function DirtyMarker({ visible }: { visible: boolean }) {
   return (
     <div
       aria-hidden="true"
-      className="absolute right-2 top-2 w-1.5 h-1.5 bg-blue-500 rounded-full"
+      className="absolute left-4 top-1 w-fit transition-colors"
       title="This configuration has unsaved changes"
-    />
+      style={{ fontSize: '10px', color: visible ? '#AD6200' : 'transparent' }}
+    >
+      • unsaved changes
+    </div>
   )
 }
 
@@ -185,13 +220,14 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
-      className="grid items-center cursor-pointer px-4 rounded-none rounded-tr-sm h-full -mt-1 text-field-helpertext-default hover:text-text-buttons-default focus:text-text-buttons-default"
+      data-test-id="tab-rename-trigger"
+      className="grid items-center cursor-pointer px-2 mr-2 rounded-none rounded-r-sm h-full bg-white text-text-buttons-default"
       onClick={onClick}
       title="Edit configuration name"
-      style={{ height: `calc(100% - 0.25rem * 2)` }}
+      style={{ height: `calc(100% - 0.5rem * 2)` }}
     >
       <span className="sr-only">Edit configuration name</span>
-      <SVGEdit className="w-5 h-5" />
+      <SVGEdit2 className="size-4" />
     </button>
   )
 }
@@ -255,20 +291,19 @@ function TabNameEditor<T extends string>({
         }
       }}
       className={cx(
-        'grid grid-flow-col items-center -outline-offset-2 rounded-t-sm bg-white pr-2 relative mb-2',
-        // 'focus-within:outline outline-2 outline-primary-focus',
-        !!errorMessage && 'outline outline-2 outline-field-border-error',
+        'grid grid-flow-col items-center rounded-t-sm bg-white relative p-2 mb-2',
       )}
     >
       <input
         type="text"
         id={inputId}
         className={cx(
-          'flex-shrink-0 w-auto px-4 py-4 text-left',
+          'flex-shrink-0 w-auto p-2 pr-8 text-left',
           'text-style-body-standard leading-md font-normal w-full',
-          'text-text-buttons-default bg-white rounded-t-sm',
+          'text-text-buttons-default bg-white rounded-sm',
           'invalid:text-text-error invalid:underline invalid:empty:no-underline decoration-dashed',
-          'focus:outline-none',
+          'outline outline-1',
+          !!errorMessage && 'outline outline-field-border-error',
         )}
         placeholder="Preset name"
         autoFocus={true}
@@ -287,7 +322,7 @@ function TabNameEditor<T extends string>({
       />
       {!!errorMessage && (
         <span
-          className="text-style-caption-standard !text-text-error absolute -bottom-1.5 right-1.5 bg-white"
+          className="text-style-caption-standard !text-text-error absolute bottom-1.5 right-1.5 bg-white"
           id={`${inputId}-error`}
         >
           {errorMessage}
@@ -296,14 +331,14 @@ function TabNameEditor<T extends string>({
 
       <button
         type="submit"
-        className="cursor-pointer rounded-none p-xs -outline-offset-2 h-full focus:scale-120 focus:outline-none ml-auto"
+        className="cursor-pointer rounded-none p-xs -outline-offset-2 h-full focus:scale-120 focus:outline-none absolute right-2"
         title="Save configuration name"
       >
         <span className="sr-only">Save configuration name</span>
         {errorMessage ? (
-          <SVGExclamationCircle className="w-4 h-4 text-text-error" />
+          <SVGExclamationCircle className="size-4 text-text-error bg-white" />
         ) : (
-          <SVGEdit className="w-5 h-5 text-text-buttons-default" />
+          <SVGEdit2 className="size-4 text-text-buttons-default bg-white" />
         )}
       </button>
     </form>

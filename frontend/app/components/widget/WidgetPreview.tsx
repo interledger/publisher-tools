@@ -1,95 +1,35 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
-import { NO_OP_CONTROLLER } from '@c/widget/controller'
-import { sleep } from '@shared/utils'
-import type { PaymentWidget as WidgetComponent } from '@tools/components'
+import { useEffect, useRef } from 'react'
+import { deepClone } from 'valtio/utils'
+import type { WidgetProfile } from '@shared/types'
+import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
 import { useWidgetProfile } from '~/stores/widget-store'
 
-interface Props {
-  serviceUrls: { cdn: string; api: string }
-  opWallet: string
-}
+export type Message = { action: 'UPDATE'; profile: WidgetProfile }
 
-export const WidgetPreview = ({
-  serviceUrls,
-  opWallet,
-}: React.PropsWithChildren<Props>) => {
-  const [isLoaded, setIsLoaded] = useState(false)
+export type MessageFromIframe = { type: 'READY' }
+
+export const WidgetPreview = () => {
+  const ref = useRef<ToolPreviewHandle<Message>>(null)
   const [profile] = useWidgetProfile()
-  const widgetRef = useRef<WidgetComponent>(null)
+
+  const messageHandler = (data: MessageFromIframe) => {
+    switch (data.type) {
+      case 'READY':
+        return ref.current?.postMessage(UpdateUIMessage(profile))
+    }
+  }
 
   useEffect(() => {
-    const name = 'wm-payment-widget'
-    const load = async () => {
-      if (!customElements.get(name)) {
-        // dynamic import - ensure component only runs on the client side and not on SSR
-        const { PaymentWidget } = await import('@tools/components/widget/index')
-        if (!customElements.get(name)) {
-          customElements.define(name, PaymentWidget)
-        }
-      }
-
-      const el = document.querySelector(name)!
-      el.setController({
-        isPreviewMode: true,
-        getWallet: NO_OP_CONTROLLER.getWallet,
-        validateCompatibility: NO_OP_CONTROLLER.validateCompatibility,
-        async fetchQuote(request) {
-          await sleep(500)
-          return NO_OP_CONTROLLER.fetchQuote(request)
-        },
-        async initiatePayment(request) {
-          await sleep(500)
-          return NO_OP_CONTROLLER.initiatePayment(request)
-        },
-        async *getStatus() {
-          const outgoingPaymentId = 'https://example.com/outgoing-payments/id'
-          yield { type: 'PENDING_GRANT_INTERACTION' }
-          await sleep(2000)
-          yield { type: 'OUTGOING_PAYMENT_CREATED', outgoingPaymentId }
-          await sleep(2000)
-          yield {
-            type: 'OUTGOING_PAYMENT_DONE',
-            result: 'success',
-            outgoingPaymentId,
-          }
-        },
-      })
-
-      setIsLoaded(true)
-    }
-
-    load()
-  }, [])
-
-  const widgetConfig = useMemo(() => {
-    return {
-      apiUrl: serviceUrls.api,
-      cdnUrl: serviceUrls.cdn,
-      receiverAddress: opWallet,
-      profile,
-    }
-  }, [profile, serviceUrls, opWallet])
-
-  useEffect(() => {
-    if (widgetRef.current && isLoaded) {
-      const widget = widgetRef.current
-      widget.config = widgetConfig
-      widget.isOpen = true
-    }
-  }, [widgetConfig, isLoaded])
+    ref.current?.postMessage(UpdateUIMessage(profile))
+  }, [profile])
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '678px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-      }}
-    >
-      <wm-payment-widget ref={widgetRef} />
-    </div>
+    <ToolPreview tool="widget" ref={ref} onMessage={messageHandler}>
+      {/* no actions/controllers needed here */}
+    </ToolPreview>
   )
+}
+
+function UpdateUIMessage(profile: WidgetProfile): Message {
+  return { action: 'UPDATE', profile: deepClone(profile) }
 }

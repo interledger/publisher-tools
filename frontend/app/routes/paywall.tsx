@@ -7,9 +7,8 @@ import {
 } from 'react-router'
 import { useSnapshot } from 'valtio'
 import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
-import { PaywallPlacementBuilder } from '~/components/paywall/PaywallPlacementBuilder'
+import { PaywallBuilderSettings } from '~/components/paywall/PaywallBuilderSettings'
 import { PaywallPreview } from '~/components/paywall/PaywallPreview'
-import { PaywallPriceBuilder } from '~/components/paywall/PaywallPriceBuilder'
 import { Divider } from '~/components/redesign/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { useToolWallet } from '~/hooks/useToolWallet'
@@ -68,6 +67,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function Paywall() {
   const t = useTranslation('paywall')
   const snap = useSnapshot(toolState)
+  const paywallSnap = useSnapshot(paywall)
   const [walletSnap] = useToolWallet({
     wallet: paywallWallet,
     actions: paywallWalletActions,
@@ -115,14 +115,10 @@ export default function Paywall() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
-      stepMiddle={
-        <>
-          <PaywallPriceBuilder />
-          <PaywallPlacementBuilder />
-        </>
-      }
+      hasUnsavedChanges={paywallSnap.profilesUpdate.has(snap.activeTab)}
+      stepMiddle={<PaywallBuilderSettings />}
     >
-      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full -mt-2 flex">
+      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full flex">
         <PaywallBuilder
           onRefresh={(section) => actions.resetProfileSection(section)}
         />

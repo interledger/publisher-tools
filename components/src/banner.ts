@@ -98,6 +98,11 @@ export class Banner extends LitElement {
     }, 2000)
   }
 
+  undoDismiss() {
+    this.isDismissed = false
+    this.requestUpdate()
+  }
+
   render() {
     if (!this.isVisible || this.isDismissed) {
       return html``

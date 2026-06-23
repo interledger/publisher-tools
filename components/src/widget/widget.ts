@@ -171,15 +171,11 @@ export class PaymentWidget extends LitElement {
     if (!this.config) {
       return html``
     }
-    const isPreview = !!this.#controller.isPreviewMode
+
     const triggerIcon = this.config.profile?.icon.value || defaultTriggerIcon
 
     return html`
-      <div
-        class="content ${this.isOpen ? 'open' : 'closed'} ${isPreview
-          ? 'preview-mode'
-          : ''}"
-      >
+      <div class="content ${this.isOpen ? 'open' : 'closed'}">
         ${this.renderCurrentView()}
 
         <div class="widget-footer">
