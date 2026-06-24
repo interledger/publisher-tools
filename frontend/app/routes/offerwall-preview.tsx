@@ -20,7 +20,7 @@ export default function OfferwallPreviewRoute() {
     const load = async () => {
       if (!customElements.get(NAME)) {
         const { OfferwallModal } =
-          await import('@tools/components/offerwall/index')
+          await import('@tools/components/offerwall/index.js')
         if (!customElements.get(NAME)) {
           customElements.define(NAME, OfferwallModal)
         }

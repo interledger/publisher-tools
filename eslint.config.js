@@ -100,6 +100,7 @@ export default [
       '**/node_modules/',
       '**/dist/',
       '**/build/',
+      '.cache/**',
       '**/public/init.js',
       '**/.react-router/',
       '**/.wrangler/',
