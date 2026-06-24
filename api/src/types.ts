@@ -4,6 +4,8 @@ export type {
   PaymentQuoteResult,
   PaymentInitiateInput,
   PaymentInitiateResult,
+  PaymentValidateInput,
+  PaymentValidateResult,
   PaymentStatus,
 } from './routes/payment'
 export type { AuthInput, AuthResponse } from './routes/auth'
