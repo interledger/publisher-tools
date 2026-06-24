@@ -89,7 +89,7 @@ export async function createInteractiveGrant(
   env: Env,
   args: {
     walletAddress: WalletAddress
-    redirectUrl?: string
+    redirectUrl: string
   },
 ) {
   const opClient = await createClient(env)
@@ -122,7 +122,7 @@ async function createSubjectGrant(params: {
   walletAddress: WalletAddress
   nonce: string
   opClient: AuthenticatedClient
-  redirectUrl?: string
+  redirectUrl: string
 }): Promise<PendingGrant> {
   const { walletAddress, nonce, opClient, redirectUrl } = params
 
@@ -136,7 +136,7 @@ async function createSubjectGrant(params: {
         start: ['redirect'],
         finish: {
           method: 'redirect',
-          uri: redirectUrl ?? '',
+          uri: redirectUrl,
           nonce,
         },
       },
@@ -165,7 +165,7 @@ type CreateOutgoingPaymentParams = {
 }
 
 async function createOutgoingPaymentGrant(
-  params: CreateOutgoingPaymentParams & { redirectUrl?: string },
+  params: CreateOutgoingPaymentParams & { redirectUrl: string },
 ): Promise<PendingGrant> {
   const {
     walletAddress,
