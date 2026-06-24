@@ -11,8 +11,7 @@
     "deploy": "wrangler deploy",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "wrangler types && react-router typegen",
-    "typecheck": "tsc --noEmit"
+    "prepare": "wrangler types && react-router typegen"
   },
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.8",
@@ -62,7 +61,6 @@
     "eslint": "^9.39.4",
     "postcss": "^8.5.15",
     "publisher-tools-api": "workspace:^",
-    "typescript": "5.9.3",
     "vite": "^8.0.16",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.9",

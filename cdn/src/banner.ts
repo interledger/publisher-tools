@@ -1,6 +1,6 @@
+import { Banner } from '@c/banner.js'
 import { API_URL } from '@shared/defines'
 import type { BannerProfile } from '@shared/types'
-import { Banner } from '@tools/components/banner'
 import { trackEventFactory } from './lib/analytics'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
@@ -41,10 +41,13 @@ function drawBanner(profile: BannerProfile) {
     cdnUrl: params.cdnUrl,
   }
 
-  bannerElement.addEventListener('click-extension-link', (e) => {
-    const { link } = (e as CustomEvent<{ link: string }>).detail
-    trackEvent('click_extension_link', { link })
-  })
+  bannerElement.addEventListener(
+    'click-extension-link',
+    (e: CustomEvent<{ link: string }>) => {
+      const { link } = e.detail
+      trackEvent('click_extension_link', { link })
+    },
+  )
 
   const position = profile.position ? profile.position.toLowerCase() : 'bottom'
 

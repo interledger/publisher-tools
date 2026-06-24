@@ -100,9 +100,6 @@ importers:
       esbuild:
         specifier: ^0.28.1
         version: 0.28.1
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vitest:
         specifier: ^4.1.9
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@24.13.2)(vite@8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
@@ -148,9 +145,6 @@ importers:
       publisher-tools-api:
         specifier: workspace:^
         version: link:../api
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
       wrangler:
         specifier: ^4.100.0
         version: 4.100.0(@cloudflare/workers-types@4.20260616.1)
@@ -176,9 +170,6 @@ importers:
       publisher-tools-api:
         specifier: workspace:^
         version: link:../api
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
       vite:
         specifier: ^8.0.16
         version: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
@@ -321,9 +312,6 @@ importers:
       publisher-tools-api:
         specifier: workspace:^
         version: link:../api
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vite:
         specifier: ^8.0.16
         version: 8.0.16(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
@@ -341,9 +329,6 @@ importers:
 
   localenv/s3:
     devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
       wrangler:
         specifier: ^4.100.0
         version: 4.100.0(@cloudflare/workers-types@4.20260616.1)

@@ -19,7 +19,7 @@ export default function BannerPreviewRoute() {
   useEffect(() => {
     const load = async () => {
       if (!customElements.get(NAME)) {
-        const { Banner } = await import('@tools/components/banner')
+        const { Banner } = await import('@tools/components/banner.js')
         if (!customElements.get(NAME)) {
           customElements.define(NAME, Banner)
         }
