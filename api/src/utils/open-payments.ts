@@ -22,6 +22,9 @@ const OUTGOING_PAYMENT_POLLING_INITIAL_DELAY = 3000
 const OUTGOING_PAYMENT_POLLING_INTERVAL = 1500
 const OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS = 3
 
+const PROBE_INCOMING_PAYMENT_EXPIRES_MS = 15 * 1000
+const PROBE_RECEIVE_AMOUNT_VALUE = '1'
+
 export class OpenPaymentsService {
   private client!: AuthenticatedClient
   private static _instance: OpenPaymentsService
@@ -130,7 +133,7 @@ export class OpenPaymentsService {
     }
   }
 
-  async validateCompatibility(
+  async probeWalletCompatibility(
     sender: WalletAddress,
     receiver: WalletAddress,
   ): Promise<{ ok: true } | { ok: false; code: 'WALLET_MISMATCH' }> {
@@ -142,13 +145,17 @@ export class OpenPaymentsService {
       ])
       incomingPaymentGrant = ipg
 
+      // Direct SDK call — `createIncomingPayment` serializes errors and
+      // loses the OpenPaymentsClientError prototype we classify on.
       const incomingPayment = await this.client.incomingPayment.create(
         {
           url: receiver.resourceServer,
           accessToken: ipg.access_token.value,
         },
         {
-          expiresAt: new Date(Date.now() + 15 * 1000).toISOString(),
+          expiresAt: new Date(
+            Date.now() + PROBE_INCOMING_PAYMENT_EXPIRES_MS,
+          ).toISOString(),
           walletAddress: receiver.id,
           metadata: { description: 'Compatibility probe via Publisher Tools' },
         },
@@ -164,7 +171,7 @@ export class OpenPaymentsService {
           walletAddress: sender.id,
           receiver: incomingPayment.id,
           receiveAmount: {
-            value: '1',
+            value: PROBE_RECEIVE_AMOUNT_VALUE,
             assetCode: receiver.assetCode,
             assetScale: receiver.assetScale,
           },
@@ -471,9 +478,6 @@ export class OpenPaymentsService {
 const isOpenPaymentsClientError = (error: unknown) =>
   error instanceof OpenPaymentsClientError
 
-// Some helpers in this file wrap OpenPaymentsClientError in generic Error
-// (e.g. createQuoteGrant) or HTTPException (e.g. createIncomingPayment),
-// so the original is only reachable via the cause chain.
 const hasOpenPaymentsClientErrorCause = (error: unknown): boolean => {
   let cur: unknown = error
   while (cur != null) {

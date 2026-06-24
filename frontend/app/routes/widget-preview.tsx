@@ -47,7 +47,7 @@ export default function WidgetPreviewRoute() {
     el.setController({
       isPreviewMode: true,
       getWallet: NO_OP_CONTROLLER.getWallet,
-      validateCompatibility: NO_OP_CONTROLLER.validateCompatibility,
+      probeWalletCompatibility: NO_OP_CONTROLLER.probeWalletCompatibility,
       async fetchQuote(request) {
         await sleep(500)
         return NO_OP_CONTROLLER.fetchQuote(request)

@@ -63,12 +63,12 @@ export class PaymentWidget extends LitElement {
       const walletInfo = await this.#controller.getWallet(walletAddress)
       const receiver = await this.#receiver
 
-      const validation = await this.#controller.validateCompatibility({
+      const probe = await this.#controller.probeWalletCompatibility({
         sender: walletInfo,
         receiver,
       })
-      if (!validation.ok) {
-        return errorMessageFor(validation.code)
+      if (!probe.ok) {
+        return errorMessageFor(probe.code)
       }
 
       this.configController.updateState({

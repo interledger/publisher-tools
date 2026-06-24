@@ -1,5 +1,4 @@
 import z from 'zod'
-import type { PaymentError } from '@shared/types'
 import { app } from '../../app.js'
 import { WalletAddressSchema } from '../../schemas/payment.js'
 import { OpenPaymentsService } from '../../utils/open-payments.js'
@@ -14,9 +13,11 @@ export type PaymentValidateInput = z.infer<typeof PaymentValidateSchema>
 
 export type PaymentValidateResult =
   | { compatible: true }
-  | { error: Extract<PaymentError, 'WALLET_MISMATCH'> }
+  | { error: 'WALLET_MISMATCH' }
 
-const detectObviousMismatch = (
+// Best-effort metadata pre-check — fail-fast before the probe-quote round-trip.
+// No-op for now; signals tracked in #784.
+const hasIncompatibleMetadata = (
   _sender: PaymentValidateInput['sender'],
   _receiver: PaymentValidateInput['receiver'],
 ): boolean => false
@@ -27,7 +28,7 @@ app.post(
   async ({ req, json, env }) => {
     const { sender, receiver } = req.valid('json')
 
-    if (detectObviousMismatch(sender, receiver)) {
+    if (hasIncompatibleMetadata(sender, receiver)) {
       return json(
         { error: 'WALLET_MISMATCH' } satisfies PaymentValidateResult,
         400,
@@ -36,7 +37,10 @@ app.post(
 
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
-      const result = await openPayments.validateCompatibility(sender, receiver)
+      const result = await openPayments.probeWalletCompatibility(
+        sender,
+        receiver,
+      )
       if (!result.ok) {
         return json({ error: result.code } satisfies PaymentValidateResult, 400)
       }
