@@ -6,6 +6,7 @@ import {
   type WalletAddress,
   type AuthenticatedClient,
   isFinalizedGrantWithAccessToken,
+  isFinalizedGrantWithSubject,
   isPendingGrant,
   createAuthenticatedClient,
 } from '@interledger/open-payments'
@@ -93,22 +94,60 @@ export async function createInteractiveGrant(
 ) {
   const opClient = await createClient(env)
   const clientNonce = crypto.randomUUID()
-  const paymentId = createId()
 
-  const outgoingPaymentGrant = await createOutgoingPaymentGrant({
-    walletAddress: args.walletAddress,
-    debitAmount: {
-      value: String(1 * 10 ** args.walletAddress.assetScale),
-      assetCode: args.walletAddress.assetCode,
-      assetScale: args.walletAddress.assetScale,
+  try {
+    return await createSubjectGrant({
+      walletAddress: args.walletAddress,
+      nonce: clientNonce,
+      opClient,
+      redirectUrl: args.redirectUrl,
+    })
+  } catch {
+    return createOutgoingPaymentGrant({
+      walletAddress: args.walletAddress,
+      debitAmount: {
+        value: String(1 * 10 ** args.walletAddress.assetScale),
+        assetCode: args.walletAddress.assetCode,
+        assetScale: args.walletAddress.assetScale,
+      },
+      nonce: clientNonce,
+      paymentId: createId(),
+      opClient,
+      redirectUrl: args.redirectUrl,
+    })
+  }
+}
+
+async function createSubjectGrant(params: {
+  walletAddress: WalletAddress
+  nonce: string
+  opClient: AuthenticatedClient
+  redirectUrl?: string
+}): Promise<PendingGrant> {
+  const { walletAddress, nonce, opClient, redirectUrl } = params
+
+  const grant = await opClient.grant.request(
+    { url: walletAddress.authServer },
+    {
+      subject: {
+        sub_ids: [{ id: walletAddress.id, format: 'uri' }],
+      },
+      interact: {
+        start: ['redirect'],
+        finish: {
+          method: 'redirect',
+          uri: redirectUrl ?? '',
+          nonce,
+        },
+      },
     },
-    nonce: clientNonce,
-    paymentId: paymentId,
-    opClient,
-    redirectUrl: args.redirectUrl,
-  })
+  )
 
-  return outgoingPaymentGrant
+  if (!isPendingGrant(grant)) {
+    throw new Error('Expected interactive subject grant.')
+  }
+
+  return grant
 }
 
 export interface Amount {
@@ -195,11 +234,10 @@ export async function isGrantValidAndAccepted(
     },
   )
 
-  if (!isFinalizedGrantWithAccessToken(continuation)) {
-    return false
-  }
-
-  return !!continuation.access_token.value
+  return (
+    isFinalizedGrantWithSubject(continuation) ||
+    isFinalizedGrantWithAccessToken(continuation)
+  )
 }
 
 async function createHeaders({
