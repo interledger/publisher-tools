@@ -6,6 +6,7 @@ import {
   WalletAddressSchema,
 } from '../../schemas/payment.js'
 import {
+  hasOpenPaymentsClientErrorCause,
   isNonPositiveAmountError,
   OpenPaymentsService,
 } from '../../utils/open-payments.js'
@@ -40,6 +41,9 @@ app.post(
           } satisfies PaymentQuoteResult,
           400,
         )
+      }
+      if (hasOpenPaymentsClientErrorCause(error)) {
+        return json({ error: 'WALLET_MISMATCH' satisfies PaymentError }, 400)
       }
       console.error(error)
       throw createHTTPException(500, 'Payment quote creation error: ', error)

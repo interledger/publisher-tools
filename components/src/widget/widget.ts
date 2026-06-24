@@ -204,6 +204,6 @@ export class PaymentWidget extends LitElement {
 function errorMessageFor(code: 'WALLET_MISMATCH'): string {
   switch (code) {
     case 'WALLET_MISMATCH':
-      return 'Your wallet is incompatible with this page. Please try a different wallet provider.'
+      return 'This page cannot receive payments from your wallet at this time. Please check back later.'
   }
 }

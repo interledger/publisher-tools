@@ -12,7 +12,6 @@ import {
   initiatePayment,
   isAbortSignalTimeout,
   isTimeoutError,
-  probeWalletCompatibility,
 } from './utils'
 
 customElements.define('wm-payment-widget', PaymentWidget)
@@ -32,8 +31,16 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
   const element = document.createElement('wm-payment-widget')
   element.setController({
     getWallet: (walletAddressUrl) => getWallet(API_URL, walletAddressUrl),
-    probeWalletCompatibility: ({ sender, receiver }) =>
-      probeWalletCompatibility(API_URL, { sender, receiver }),
+    async probeWalletCompatibility({ sender, receiver }) {
+      const result = await fetchQuote(API_URL, {
+        sender,
+        receiver,
+        receiveAmount: 1,
+      })
+      return 'error' in result && result.error === 'WALLET_MISMATCH'
+        ? { ok: false, code: 'WALLET_MISMATCH' }
+        : { ok: true }
+    },
     fetchQuote({ sender, receiver, amount }) {
       const debitAmount = Number(amount)
       return fetchQuote(API_URL, { sender, receiver, debitAmount })

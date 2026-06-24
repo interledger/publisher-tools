@@ -4,8 +4,6 @@ import type {
   PaymentInitiateResult,
   PaymentQuoteInput,
   PaymentQuoteResult,
-  PaymentValidateInput,
-  PaymentValidateResult,
   WalletAddressInfo,
 } from 'publisher-tools-api'
 import type { Tool, ProfileId, ToolProfile } from '@shared/types'
@@ -116,37 +114,6 @@ export async function fetchQuote(apiUrl: string, body: PaymentQuoteInput) {
     return {
       error: 'Failed to create payment. Please try a different amount.',
     }
-  }
-}
-
-export async function probeWalletCompatibility(
-  apiUrl: string,
-  body: PaymentValidateInput,
-): Promise<{ ok: true } | { ok: false; code: 'WALLET_MISMATCH' }> {
-  const url = new URL('/payment/validate', apiUrl)
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-    if (res.ok) {
-      const json: PaymentValidateResult = await res.json()
-      if ('compatible' in json && json.compatible) return { ok: true }
-      console.warn('Unexpected payment/validate response shape', json)
-      return { ok: false, code: 'WALLET_MISMATCH' }
-    }
-    if (res.status === 400) {
-      const json: PaymentValidateResult = await res.json()
-      if ('error' in json) return { ok: false, code: json.error }
-    }
-    console.warn(
-      `payment/validate returned HTTP ${res.status} ${res.statusText}`,
-    )
-    return { ok: false, code: 'WALLET_MISMATCH' }
-  } catch (err) {
-    console.warn('payment/validate request failed:', err)
-    return { ok: false, code: 'WALLET_MISMATCH' }
   }
 }
 
