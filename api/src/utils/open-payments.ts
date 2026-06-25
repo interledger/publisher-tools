@@ -260,7 +260,6 @@ export class OpenPaymentsService {
     expiresIn = 6 * 60 * 1000,
   }: CreateIncomingPaymentParams) {
     try {
-      // create incoming payment without amount
       return await this.client.incomingPayment.create(
         {
           url: walletAddress.resourceServer,
@@ -414,15 +413,6 @@ export class OpenPaymentsService {
 
 const isOpenPaymentsClientError = (error: unknown) =>
   error instanceof OpenPaymentsClientError
-
-export const hasOpenPaymentsClientErrorCause = (error: unknown): boolean => {
-  let cur: unknown = error
-  while (cur != null) {
-    if (cur instanceof OpenPaymentsClientError) return true
-    cur = (cur as { cause?: unknown }).cause
-  }
-  return false
-}
 
 // happens during quoting only
 export const isNonPositiveAmountError = (

@@ -55,7 +55,7 @@ interface ProbeWalletCompatibilityInput {
 }
 type ProbeWalletCompatibilityResult =
   | { ok: true }
-  | { ok: false; code: 'WALLET_MISMATCH' }
+  | { ok: false; code: 'WALLET_UNAVAILABLE' }
 
 export interface Controller {
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>

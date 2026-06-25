@@ -210,7 +210,7 @@ export declare class MonetizationEvent extends Event {
 
 export const KV_PAYMENTS_PREFIX = 'payments/'
 
-export type PaymentError = 'NON_POSITIVE_AMOUNT' | 'WALLET_MISMATCH'
+export type PaymentError = 'NON_POSITIVE_AMOUNT' | 'WALLET_UNAVAILABLE'
 
 export const BANNER_TITLE_MAX_LENGTH = 60
 export const BANNER_DESCRIPTION_MAX_LENGTH = 300

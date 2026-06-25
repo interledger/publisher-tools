@@ -5,8 +5,8 @@ import {
   DebitOrReceiveAmountSchema,
   WalletAddressSchema,
 } from '../../schemas/payment.js'
+import { OpenPaymentsClientError } from '@interledger/open-payments'
 import {
-  hasOpenPaymentsClientErrorCause,
   isNonPositiveAmountError,
   OpenPaymentsService,
 } from '../../utils/open-payments.js'
@@ -42,8 +42,8 @@ app.post(
           400,
         )
       }
-      if (hasOpenPaymentsClientErrorCause(error)) {
-        return json({ error: 'WALLET_MISMATCH' satisfies PaymentError }, 400)
+      if (error instanceof OpenPaymentsClientError) {
+        return json({ error: 'WALLET_UNAVAILABLE' satisfies PaymentError }, 400)
       }
       console.error(error)
       throw createHTTPException(500, 'Payment quote creation error: ', error)

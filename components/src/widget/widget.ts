@@ -201,9 +201,9 @@ export class PaymentWidget extends LitElement {
   }
 }
 
-function errorMessageFor(code: 'WALLET_MISMATCH'): string {
+function errorMessageFor(code: 'WALLET_UNAVAILABLE'): string {
   switch (code) {
-    case 'WALLET_MISMATCH':
+    case 'WALLET_UNAVAILABLE':
       return 'This page cannot receive payments from your wallet at this time. Please check back later.'
   }
 }

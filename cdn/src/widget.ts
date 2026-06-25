@@ -37,8 +37,8 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
         receiver,
         receiveAmount: 1,
       })
-      return 'error' in result && result.error === 'WALLET_MISMATCH'
-        ? { ok: false, code: 'WALLET_MISMATCH' }
+      return 'error' in result && result.error === 'WALLET_UNAVAILABLE'
+        ? { ok: false, code: 'WALLET_UNAVAILABLE' }
         : { ok: true }
     },
     fetchQuote({ sender, receiver, amount }) {
