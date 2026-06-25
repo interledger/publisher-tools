@@ -1,11 +1,11 @@
 import z from 'zod'
+import { OpenPaymentsClientError } from '@interledger/open-payments'
 import type { Amount, PaymentError } from '@shared/types'
 import { app } from '../../app.js'
 import {
   DebitOrReceiveAmountSchema,
   WalletAddressSchema,
 } from '../../schemas/payment.js'
-import { OpenPaymentsClientError } from '@interledger/open-payments'
 import {
   isNonPositiveAmountError,
   OpenPaymentsService,
