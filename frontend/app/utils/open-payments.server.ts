@@ -85,6 +85,15 @@ async function createClient(env: Env) {
   return client
 }
 
+// authServers known to support subject (remove once broadly supported)
+const SUBJECT_GRANT_AUTH_SERVERS = new Set<string>([
+  'auth.interledger-test.dev',
+])
+
+function supportsSubjectGrant(walletAddress: WalletAddress): boolean {
+  return SUBJECT_GRANT_AUTH_SERVERS.has(new URL(walletAddress.authServer).host)
+}
+
 export async function createInteractiveGrant(
   env: Env,
   args: {
@@ -95,27 +104,27 @@ export async function createInteractiveGrant(
   const opClient = await createClient(env)
   const clientNonce = crypto.randomUUID()
 
-  try {
-    return await createSubjectGrant({
+  if (supportsSubjectGrant(args.walletAddress)) {
+    return createSubjectGrant({
       walletAddress: args.walletAddress,
       nonce: clientNonce,
-      opClient,
-      redirectUrl: args.redirectUrl,
-    })
-  } catch {
-    return createOutgoingPaymentGrant({
-      walletAddress: args.walletAddress,
-      debitAmount: {
-        value: String(1 * 10 ** args.walletAddress.assetScale),
-        assetCode: args.walletAddress.assetCode,
-        assetScale: args.walletAddress.assetScale,
-      },
-      nonce: clientNonce,
-      paymentId: createId(),
       opClient,
       redirectUrl: args.redirectUrl,
     })
   }
+
+  return createOutgoingPaymentGrant({
+    walletAddress: args.walletAddress,
+    debitAmount: {
+      value: String(1 * 10 ** args.walletAddress.assetScale),
+      assetCode: args.walletAddress.assetCode,
+      assetScale: args.walletAddress.assetScale,
+    },
+    nonce: clientNonce,
+    paymentId: createId(),
+    opClient,
+    redirectUrl: args.redirectUrl,
+  })
 }
 
 async function createSubjectGrant(params: {
