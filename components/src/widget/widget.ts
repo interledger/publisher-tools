@@ -63,13 +63,10 @@ export class PaymentWidget extends LitElement {
       const walletInfo = await this.#controller.getWallet(walletAddress)
       const receiver = await this.#receiver
 
-      const probe = await this.#controller.probeWalletCompatibility({
+      await this.#controller.probeWalletCompatibility({
         sender: walletInfo,
         receiver,
       })
-      if (!probe.ok) {
-        return errorMessageFor(probe.code)
-      }
 
       this.configController.updateState({
         walletAddress: walletInfo,
@@ -198,12 +195,5 @@ export class PaymentWidget extends LitElement {
         <img src="${triggerIcon}" alt="" />
       </button>
     `
-  }
-}
-
-function errorMessageFor(code: 'WALLET_UNAVAILABLE'): string {
-  switch (code) {
-    case 'WALLET_UNAVAILABLE':
-      return 'This page cannot receive payments from your wallet at this time. Please check back later.'
   }
 }

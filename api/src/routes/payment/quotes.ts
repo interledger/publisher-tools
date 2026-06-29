@@ -42,7 +42,7 @@ app.post(
           400,
         )
       }
-      if (error instanceof OpenPaymentsClientError) {
+      if (error instanceof OpenPaymentsClientError && error.status === 400) {
         return json({ error: 'WALLET_UNAVAILABLE' satisfies PaymentError }, 400)
       }
       console.error(error)

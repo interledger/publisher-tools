@@ -37,9 +37,11 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
         receiver,
         receiveAmount: 1,
       })
-      return 'error' in result && result.error === 'WALLET_UNAVAILABLE'
-        ? { ok: false, code: 'WALLET_UNAVAILABLE' }
-        : { ok: true }
+      if ('error' in result && result.error === 'WALLET_UNAVAILABLE') {
+        throw new Error(
+          'This page cannot receive payments from your wallet at this time. Please check back later.',
+        )
+      }
     },
     fetchQuote({ sender, receiver, amount }) {
       const debitAmount = Number(amount)

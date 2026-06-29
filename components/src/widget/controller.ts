@@ -53,15 +53,12 @@ interface ProbeWalletCompatibilityInput {
   sender: WalletAddressInfo
   receiver: WalletAddressInfo
 }
-type ProbeWalletCompatibilityResult =
-  | { ok: true }
-  | { ok: false; code: 'WALLET_UNAVAILABLE' }
 
 export interface Controller {
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
   probeWalletCompatibility(
     request: ProbeWalletCompatibilityInput,
-  ): Promise<ProbeWalletCompatibilityResult>
+  ): Promise<void>
   fetchQuote(request: QuoteInput): Promise<QuoteResult>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
   getStatus(
@@ -85,7 +82,7 @@ export const NO_OP_CONTROLLER: Controller = {
     })
   },
   probeWalletCompatibility() {
-    return Promise.resolve({ ok: true })
+    return Promise.resolve()
   },
   fetchQuote({ amount, sender, receiver }) {
     amount = String(amount)
