@@ -35,7 +35,7 @@
   "types": "./src/types.ts",
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.16.15",
-    "@cloudflare/workers-types": "^4.20260616.1",
+    "@cloudflare/workers-types": "^4.20260630.1",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "esbuild": "0.28.1",
