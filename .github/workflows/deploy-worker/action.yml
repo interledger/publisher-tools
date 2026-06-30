@@ -90,7 +90,7 @@ runs:
     - name: Deploy Worker
       if: ${{ inputs.skip-deploy == 'false' && (inputs.changed == 'true' || inputs.mode == 'production') }}
       id: deploy
-      uses: cloudflare/wrangler-action@v3
+      uses: cloudflare/wrangler-action@v4
       with:
         apiToken: ${{ inputs.apiToken }}
         accountId: ${{ inputs.accountId }}
