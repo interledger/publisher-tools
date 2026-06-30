@@ -31,7 +31,7 @@
     "globals": "^17.7.0",
     "prettier": "^3.8.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.61.1"
+    "typescript-eslint": "^8.62.0"
   },
   "resolutions": {
     "esbuild": "^0.28.1"
