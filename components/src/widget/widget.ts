@@ -61,9 +61,16 @@ export class PaymentWidget extends LitElement {
         throw new Error('Please fill out your wallet address.')
       }
       const walletInfo = await this.#controller.getWallet(walletAddress)
+      const receiver = await this.#receiver
+
+      await this.#controller.probeWalletCompatibility({
+        sender: walletInfo,
+        receiver,
+      })
+
       this.configController.updateState({
         walletAddress: walletInfo,
-        receiver: await this.#receiver,
+        receiver,
       })
       this.currentView = 'initiate'
     } catch (error) {

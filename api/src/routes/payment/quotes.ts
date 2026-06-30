@@ -1,4 +1,5 @@
 import z from 'zod'
+import { OpenPaymentsClientError } from '@interledger/open-payments'
 import type { Amount, PaymentError } from '@shared/types'
 import { app } from '../../app.js'
 import {
@@ -40,6 +41,9 @@ app.post(
           } satisfies PaymentQuoteResult,
           400,
         )
+      }
+      if (error instanceof OpenPaymentsClientError && error.status === 400) {
+        return json({ error: 'WALLET_UNAVAILABLE' satisfies PaymentError }, 400)
       }
       console.error(error)
       throw createHTTPException(500, 'Payment quote creation error: ', error)
