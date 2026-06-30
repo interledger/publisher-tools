@@ -24,7 +24,7 @@
     "@shared/utils": "workspace:^",
     "@tailwindcss/postcss": "^4.3.1",
     "@tools/components": "workspace:*",
-    "@typescript-eslint/parser": "^8.61.1",
+    "@typescript-eslint/parser": "^8.62.1",
     "autoprefixer": "^10.5.0",
     "class-variance-authority": "^0.7.1",
     "crypto-browserify": "^3.12.1",
