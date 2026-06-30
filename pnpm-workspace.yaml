@@ -8,3 +8,6 @@ packages:
 
 onlyBuiltDependencies:
   - '@actions/github-script@https://codeload.github.com/actions/github-script/tar.gz/ed597411d8f924073f98dfc5c65a23a2325f34cd'
+
+overrides:
+  wrangler: ^4.100.0
