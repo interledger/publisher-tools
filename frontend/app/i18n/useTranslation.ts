@@ -3,8 +3,7 @@ import { useI18n, type Translations } from './context'
 type Namespace = keyof Translations
 type GeneralKey = keyof Translations['general'] & string
 type NamespaceKey<NS extends Namespace> = (
-  | keyof Translations[NS]
-  | GeneralKey
+  keyof Translations[NS] | GeneralKey
 ) &
   string
 

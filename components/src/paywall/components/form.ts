@@ -73,10 +73,12 @@ export class PaywallWalletAddressForm extends LitElement {
         </div>
 
         <button type="submit" ?disabled=${this._loading}>
-          ${this._loading
-            ? html`<wm-dots-loader></wm-dots-loader
-                ><span class="sr-only">${this.ctaText}</span>&nbsp;`
-            : this.ctaText}
+          ${
+            this._loading
+              ? html`<wm-dots-loader></wm-dots-loader
+                  ><span class="sr-only">${this.ctaText}</span>&nbsp;`
+              : this.ctaText
+          }
         </button>
       </form>
     `
