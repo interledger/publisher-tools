@@ -24,6 +24,13 @@ interface Props {
     | 'pay per article'
 }
 
+const NO_SAVED_PROFILES_KEYS = {
+  'drawer banner': 'status.noSavedProfiles.banner',
+  'payment widget': 'status.noSavedProfiles.widget',
+  'offerwall experience': 'status.noSavedProfiles.offerwall',
+  'pay per article': 'status.noSavedProfiles.paywall',
+} as const satisfies Record<Props['toolName'], string>
+
 export const ToolsWalletAddress = ({
   store: snap,
   walletActions,
@@ -123,7 +130,7 @@ export const ToolsWalletAddress = ({
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: t('status.noSavedProfiles', { toolName }),
+        message: t(NO_SAVED_PROFILES_KEYS[toolName]),
         type: 'success',
       }
     }
