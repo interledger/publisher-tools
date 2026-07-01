@@ -36,7 +36,7 @@ This is a monorepo containing several packages:
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 24+
-- [pnpm](https://pnpm.io/) 10.33+
+- [pnpm](https://pnpm.io/) 11+
 
 ## Installation
 
@@ -121,7 +121,7 @@ For a pull request, **external contributors** (those without write access to the
 
 - **Runtime**: Cloudflare workers
 - **Development**: Node.js
-- **Package Manager**: pnpm 10.33+
+- **Package Manager**: pnpm 11+
 - **Frontend**: React Router 7
 - **API**: Hono framework on Cloudflare Workers
 - **Components**: Lit web components

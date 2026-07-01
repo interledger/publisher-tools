@@ -372,7 +372,7 @@ packages:
     resolution: {integrity: sha512-+sCcHHbVdk93a0XT19ECtO/gIXoxvdsgQLzb2fE2/5sIZmWQuluYyjPQtrtTHdU1YzTZ7bAPN4sITq2xi1679w==}
 
   '@actions/github-script@https://codeload.github.com/actions/github-script/tar.gz/ed597411d8f924073f98dfc5c65a23a2325f34cd':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/actions/github-script/tar.gz/ed597411d8f924073f98dfc5c65a23a2325f34cd}
+    resolution: {gitHosted: true, integrity: sha512-k5uqKAaKLVw2SFrBUPsh7i1nxBrMmoF2Ce/4CL/kEM5jz5LZZEoohtzcKq3HdiXgBdoSLL4tRyUktUU3DidjSw==, tarball: https://codeload.github.com/actions/github-script/tar.gz/ed597411d8f924073f98dfc5c65a23a2325f34cd}
     version: 7.0.1
     engines: {node: '>=24'}
 

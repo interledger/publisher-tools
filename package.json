@@ -33,20 +33,12 @@
     "typescript": "5.9.3",
     "typescript-eslint": "^8.61.1"
   },
-  "resolutions": {
-    "esbuild": "^0.28.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "wrangler": "^4.100.0"
-    }
-  },
   "engines": {
-    "pnpm": "^10.33.0",
+    "pnpm": "^11.0.0",
     "npm": "pnpm",
     "yarn": "pnpm",
     "node": ">=24.0.0"
   },
   "private": true,
-  "packageManager": "pnpm@10.34.3"
+  "packageManager": "pnpm@11.9.0"
 }
