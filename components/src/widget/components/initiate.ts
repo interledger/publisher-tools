@@ -247,9 +247,11 @@ export class PaymentInitiate extends LitElement {
             @change=${this.onAmountChange}
           ></wm-amount>
 
-          ${this.inputAmount
-            ? this.renderPaymentDetails()
-            : this.renderEmptyState()}
+          ${
+            this.inputAmount
+              ? this.renderPaymentDetails()
+              : this.renderEmptyState()
+          }
         </div>
       </div>
     `
@@ -310,9 +312,11 @@ export class PaymentInitiate extends LitElement {
         @click=${this.onPaymentConfirmed}
         ?disabled=${this.isPreparingPayment}
       >
-        ${this.isPreparingPayment
-          ? html`<wm-dots-loader></wm-dots-loader>`
-          : 'Confirm Payment'}
+        ${
+          this.isPreparingPayment
+            ? html`<wm-dots-loader></wm-dots-loader>`
+            : 'Confirm Payment'
+        }
       </button>
     `
   }

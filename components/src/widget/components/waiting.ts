@@ -28,10 +28,7 @@ export class PaymentWaiting extends LitElement {
   #interactionCompleted = false
 
   @state() private currentView:
-    | 'authorizing'
-    | 'processing'
-    | 'success'
-    | 'failed' = 'authorizing'
+    'authorizing' | 'processing' | 'success' | 'failed' = 'authorizing'
   @state() private errorMessage = ''
 
   @property({ type: String, attribute: false }) private paymentId = ''
@@ -221,22 +218,26 @@ export class PaymentWaiting extends LitElement {
 
         <div class="interaction-body">
           <div class="title ${titleClass}">${title}</div>
-          ${description
-            ? html`<div class="description">${description}</div>`
-            : nothing}
+          ${
+            description
+              ? html`<div class="description">${description}</div>`
+              : nothing
+          }
           <img src=${image.src} width="122" height="200" alt=${image.alt} />
         </div>
 
-        ${button
-          ? html`
-              <button
-                class="button-container ${button.buttonClass}"
-                @click=${button.handler}
-              >
-                ${button.label}
-              </button>
-            `
-          : nothing}
+        ${
+          button
+            ? html`
+                <button
+                  class="button-container ${button.buttonClass}"
+                  @click=${button.handler}
+                >
+                  ${button.label}
+                </button>
+              `
+            : nothing
+        }
       </div>
     `
   }
