@@ -33,9 +33,6 @@
     "typescript": "5.9.3",
     "typescript-eslint": "^8.61.1"
   },
-  "resolutions": {
-    "esbuild": "^0.28.1"
-  },
   "engines": {
     "pnpm": "^11.0.0",
     "npm": "pnpm",

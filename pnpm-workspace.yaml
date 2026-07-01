@@ -13,4 +13,5 @@ allowBuilds:
   workerd: true
 
 overrides:
+  esbuild: ^0.28.1
   wrangler: ^4.100.0
