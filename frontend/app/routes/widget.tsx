@@ -102,7 +102,7 @@ export default function Widget() {
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,
       }}
-      walletAddressToolName="payment widget"
+      tool="widget"
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
       preview={<WidgetPreview />}
       loaderData={{
