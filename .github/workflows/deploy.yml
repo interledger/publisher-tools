@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'release' && 'production' || 'staging' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Fetches the full git history, both base and head SHAs are available
           fetch-depth: 0
