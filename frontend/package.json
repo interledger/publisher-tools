@@ -24,15 +24,15 @@
     "@shared/utils": "workspace:^",
     "@tailwindcss/postcss": "^4.3.1",
     "@tools/components": "workspace:*",
-    "@typescript-eslint/parser": "^8.61.1",
-    "autoprefixer": "^10.5.0",
+    "@typescript-eslint/parser": "^8.62.0",
+    "autoprefixer": "^10.5.2",
     "class-variance-authority": "^0.7.1",
     "crypto-browserify": "^3.12.1",
     "fast-equals": "^6.0.0",
     "he": "^1.2.0",
     "http-message-signatures": "^1.0.6",
     "httpbis-digest-headers": "^1.0.0",
-    "isbot": "^5.1.43",
+    "isbot": "^5.1.44",
     "microdiff": "^1.5.0",
     "react": "^19.2.7",
     "react-click-away-listener": "^2.4.2",
@@ -46,7 +46,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.40.2",
+    "@cloudflare/vite-plugin": "^1.42.3",
     "@lit/react": "^1.0.8",
     "@react-router/dev": "^7.17.0",
     "@shared/default-data": "workspace:^",
@@ -59,11 +59,11 @@
     "@types/react-dom": "^19.2.3",
     "@types/sanitize-html": "^2.16.1",
     "eslint": "^9.39.4",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.16",
     "publisher-tools-api": "workspace:^",
-    "vite": "^8.0.16",
+    "vite": "^8.1.0",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.9",
-    "wrangler": "^4.100.0"
+    "wrangler": "^4.105.0"
   }
 }

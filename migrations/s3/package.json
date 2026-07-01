@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@shared/types": "workspace:^",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.9.4",
     "aws-sdk-client-mock": "^4.1.0",
     "vitest": "^4.1.4"
   }
