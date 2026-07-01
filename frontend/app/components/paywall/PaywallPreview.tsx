@@ -8,12 +8,10 @@ import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
 import { usePaywallProfile } from '~/stores/paywall-store'
 
 export type Message =
-  | { action: 'RESET' }
-  | { action: 'UPDATE'; profile: PaywallProfile }
+  { action: 'RESET' } | { action: 'UPDATE'; profile: PaywallProfile }
 
 export type MessageFromIframe =
-  | { type: 'READY' }
-  | { type: 'CURRENT_SCREEN'; view: keyof View }
+  { type: 'READY' } | { type: 'CURRENT_SCREEN'; view: keyof View }
 
 export function PaywallPreview() {
   const [currentView, setCurrentView] = useState<keyof View>('home')

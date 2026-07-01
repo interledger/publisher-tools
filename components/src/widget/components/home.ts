@@ -116,9 +116,11 @@ export class HomeView extends LitElement {
           type="submit"
           ?disabled=${this._isSubmitting}
         >
-          ${this._isSubmitting
-            ? html`<wm-dots-loader></wm-dots-loader>`
-            : this.ctaText || DEFAULT_CTA_TEXT}
+          ${
+            this._isSubmitting
+              ? html`<wm-dots-loader></wm-dots-loader>`
+              : this.ctaText || DEFAULT_CTA_TEXT
+          }
         </button>
       </form>
     `
