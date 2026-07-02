@@ -21,13 +21,6 @@ interface Props {
   tool: Tool
 }
 
-const TOOL_DISPLAY_NAMES = {
-  banner: 'drawer banner',
-  widget: 'payment widget',
-  offerwall: 'offerwall experience',
-  paywall: 'pay per article',
-} as const satisfies Record<Tool, string>
-
 export const ToolsWalletAddress = ({
   store: snap,
   walletActions,
@@ -132,10 +125,8 @@ export const ToolsWalletAddress = ({
       }
     }
 
-    const key =
-      tool === 'paywall' ? 'status.profileFetched' : 'status.profilesFetched'
     return {
-      message: t(key, { toolName: TOOL_DISPLAY_NAMES[tool] }),
+      message: t(`status.profilesFetched.${tool}`),
       type: 'success',
     }
   }
