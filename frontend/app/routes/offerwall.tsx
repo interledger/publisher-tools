@@ -97,7 +97,7 @@ export default function Offerwall() {
         subscribeProfilesToUpdates,
       }}
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
-      walletAddressToolName="offerwall experience"
+      tool="offerwall"
       preview={<OfferwallPreview />}
       loaderData={{
         grantResponse,
