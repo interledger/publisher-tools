@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
+import { type Tool } from '@shared/types'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -17,17 +18,13 @@ import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 interface Props {
   store: WalletStore
   walletActions: WalletActions
-  toolName:
-    | 'drawer banner'
-    | 'payment widget'
-    | 'offerwall experience'
-    | 'pay per article'
+  tool: Tool
 }
 
 export const ToolsWalletAddress = ({
   store: snap,
   walletActions,
-  toolName,
+  tool,
 }: Props) => {
   const t = useTranslation('toolsWalletAddress')
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
@@ -123,16 +120,13 @@ export const ToolsWalletAddress = ({
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: t('status.noSavedProfiles', { toolName }),
+        message: t(`status.noSavedProfiles.${tool}`),
         type: 'success',
       }
     }
 
     return {
-      message:
-        toolName === 'pay per article' // single profile
-          ? t('status.profileFetched', { toolName })
-          : t('status.profilesFetched', { toolName }),
+      message: t(`status.profilesFetched.${tool}`),
       type: 'success',
     }
   }

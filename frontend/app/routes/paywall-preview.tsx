@@ -2,22 +2,27 @@ import { useEffect, useState } from 'react'
 import { NO_OP_CONTROLLER } from '@c/paywall/controller'
 import { getDefaultProfile } from '@shared/default-data'
 import { CDN_URL } from '@shared/defines'
+import type { PaywallProfile } from '@shared/types'
 import { sleep } from '@shared/utils'
 import type {
   Message,
   MessageFromIframe,
 } from '~/components/paywall/PaywallPreview'
 import { ToolPreviewPlaceholder } from '~/components/ToolPreviewPlaceholder'
+import { toolState } from '~/stores/toolStore'
+import { getStorageKeys } from '~/utils/utils.store'
+
+const TOOL = 'paywall'
 
 export default function PaywallPreview() {
-  const [profile, setProfile] = useState(() => getDefaultProfile('paywall'))
+  const [profile, setProfile] = useState(() => getDefaultProfile(TOOL))
   const [isLoaded, setIsLoaded] = useState(false)
 
   const NAME = 'wm-paywall'
   useEffect(() => {
     const load = async () => {
       if (!customElements.get(NAME)) {
-        const { Paywall } = await import('@tools/components/paywall/index')
+        const { Paywall } = await import('@tools/components/paywall/index.js')
         if (!customElements.get(NAME)) {
           customElements.define(NAME, Paywall)
         }
@@ -25,6 +30,14 @@ export default function PaywallPreview() {
       setIsLoaded(true)
     }
     load()
+  }, [])
+
+  useEffect(() => {
+    if (window.location !== window.parent.location) {
+      return // skip in iframe mode
+    }
+    const saved = getProfileFromLocalStorage()
+    if (saved) setProfile(saved)
   }, [])
 
   useEffect(() => {
@@ -85,6 +98,22 @@ export default function PaywallPreview() {
       {/* element gets injected here */}
     </div>
   )
+}
+
+function getProfileFromLocalStorage(): PaywallProfile | null {
+  const key = getStorageKeys(TOOL).getProfileStorageKey(toolState.activeTab)
+  const stored = localStorage.getItem(key)
+  if (!stored) return null
+
+  try {
+    const profile: PaywallProfile = JSON.parse(stored)
+    if (typeof profile === 'object' && profile.behavior) {
+      return profile
+    }
+  } catch (err) {
+    console.error(err)
+  }
+  return null
 }
 
 function postMessage(message: MessageFromIframe) {

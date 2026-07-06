@@ -1,23 +1,30 @@
 :host {
+  width: 100%;
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  overflow: hidden;
+}
+
+.top {
   display: flex;
   flex-direction: column;
-  gap: 1em;
-  width: 100%;
-  height: 100%;
+  gap: 0.75rem;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 1em;
-  margin-top: auto;
+  gap: 0.75rem;
+  width: calc(100% - 4px);
+  margin: 0 auto;
 }
 
 form label {
   display: block;
-  margin-bottom: 0.2em;
-  font-size: 1em;
-  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 300;
 }
 
 form input {
@@ -27,9 +34,10 @@ form input {
   width: 100%;
   justify-content: center;
   align-items: center;
-  padding: 1em;
-  font-size: 1.25em;
-  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  border-radius: var(--border-radius, 0.5rem);
   background-color: #fff;
 }
 
@@ -37,11 +45,11 @@ form wm-dots-loader {
   --primary-color: var(--theme);
 }
 
-form input[aria-invalid='true'] {
+form input[aria-invalid='true'],
+form input:user-invalid {
   border-color: var(--color-error);
 }
 form div p.error {
-  margin-top: 0.2em;
   font-size: 0.9em;
   color: var(--color-error);
 }

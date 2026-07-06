@@ -5,17 +5,15 @@
   "main": "./index.ts",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1030.0"
   },
   "devDependencies": {
     "@shared/types": "workspace:^",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.9.4",
     "aws-sdk-client-mock": "^4.1.0",
-    "typescript": "5.9.3",
     "vitest": "^4.1.4"
   }
 }

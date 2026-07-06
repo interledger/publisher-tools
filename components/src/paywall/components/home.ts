@@ -1,5 +1,7 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { property } from 'lit/decorators.js'
+import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
+import icon from '@c/assets/lock_outline.svg?raw'
 import { formatCurrency } from '@shared/utils'
 import stylesCommon from './common.css?raw'
 import styles from './home.css?raw'
@@ -22,14 +24,19 @@ export class PaywallHome extends LitElement {
 
   render() {
     return html`
-      <h2 class="title">${this.title}</h2>
-      <p class="description">${this.description}</p>
-
-      <div class="price">
-        <span>Unlock</span> <span>${formatCurrency(this.price)}</span>
+      <div class="top">
+        <h2 class="title">${this.title}</h2>
+        <p class="description">${this.description}</p>
       </div>
-      <button type="button" @click=${this.onClick}>${this.ctaText}</button>
-      <p class="footer">Secured by Open Payments. No card needed</p>
+
+      <span class="img">${unsafeSVG(icon)}</span>
+
+      <div class="bottom">
+        <div class="price">
+          <span>Unlock</span> <span>${formatCurrency(this.price)}</span>
+        </div>
+        <button type="button" @click=${this.onClick}>${this.ctaText}</button>
+      </div>
     `
   }
 

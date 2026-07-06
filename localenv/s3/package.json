@@ -5,11 +5,9 @@
   "scripts": {
     "predev": "wrangler types",
     "dev": "wrangler dev",
-    "prepare": "wrangler types",
-    "typecheck": "tsc --noEmit"
+    "prepare": "wrangler types"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "wrangler": "^4.100.0"
+    "wrangler": "^4.105.0"
   }
 }

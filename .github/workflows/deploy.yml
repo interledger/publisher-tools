@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'release' && 'production' || 'staging' }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Fetches the full git history, both base and head SHAs are available
           fetch-depth: 0
@@ -39,7 +39,7 @@ jobs:
         # The wrangler Action expects a global installation, so we better reuse
         # what we've in our project.
         run: |
-          wrangler_version=$(cat package.json | jq -r '.pnpm.overrides.wrangler')
+          wrangler_version=$(yq '.overrides.wrangler' pnpm-workspace.yaml)
           pnpm install -g "wrangler@${wrangler_version}"
 
       # https://github.com/dorny/paths-filter/issues/232

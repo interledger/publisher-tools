@@ -37,7 +37,7 @@ type Props = React.PropsWithChildren<{
   steps: [StepsIndicatorStep] | [StepsIndicatorStep, StepsIndicatorStep]
   // XXX: Fix me sometime - hacky for now
   stepMiddle?: ReactNode
-  walletAddressToolName: ComponentProps<typeof ToolsWalletAddress>['toolName']
+  tool: ComponentProps<typeof ToolsWalletAddress>['tool']
   preview: ReactNode
   loaderData: {
     grantResponse?: string
@@ -54,7 +54,7 @@ export function ToolLayoutWithPreview({
   additionalDescription,
   walletStore,
   toolStoreUtils,
-  walletAddressToolName,
+  tool,
   steps,
   stepMiddle,
   loaderData,
@@ -145,7 +145,7 @@ export function ToolLayoutWithPreview({
                 <ToolsWalletAddress
                   store={walletSnap}
                   walletActions={walletActions}
-                  toolName={walletAddressToolName}
+                  tool={tool}
                 />
               </div>
 

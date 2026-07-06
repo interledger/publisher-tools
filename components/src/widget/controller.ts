@@ -49,8 +49,16 @@ interface InitiatePaymentResult {
   grantRedirectUrl: PendingGrant['interact']['redirect']
 }
 
+interface ProbeWalletCompatibilityInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+}
+
 export interface Controller {
   getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
+  probeWalletCompatibility(
+    request: ProbeWalletCompatibilityInput,
+  ): Promise<void>
   fetchQuote(request: QuoteInput): Promise<QuoteResult>
   initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
   getStatus(
@@ -72,6 +80,9 @@ export const NO_OP_CONTROLLER: Controller = {
       resourceServer: 'https://resource.example.com',
       publicName: 'Wallet (Preview)',
     })
+  },
+  probeWalletCompatibility() {
+    return Promise.resolve()
   },
   fetchQuote({ amount, sender, receiver }) {
     amount = String(amount)

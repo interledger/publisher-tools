@@ -103,7 +103,7 @@ export default function Paywall() {
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,
       }}
-      walletAddressToolName="pay per article"
+      tool="paywall"
       steps={[
         { number: 2, label: 'Configure', status: snap.configureStep },
         { number: 3, label: 'Build', status: snap.buildStep },
@@ -118,7 +118,7 @@ export default function Paywall() {
       hasUnsavedChanges={paywallSnap.profilesUpdate.has(snap.activeTab)}
       stepMiddle={<PaywallBuilderSettings />}
     >
-      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full -mt-2 flex">
+      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full flex">
         <PaywallBuilder
           onRefresh={(section) => actions.resetProfileSection(section)}
         />

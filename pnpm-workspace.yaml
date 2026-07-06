@@ -6,5 +6,12 @@ packages:
   - 'shared/*'
   - 'localenv/*'
 
-onlyBuiltDependencies:
-  - '@actions/github-script@https://codeload.github.com/actions/github-script/tar.gz/ed597411d8f924073f98dfc5c65a23a2325f34cd'
+allowBuilds:
+  '@actions/github-script@https://codeload.github.com/actions/github-script/tar.gz/3a2844b7e9c422d3c10d287c895573f7108da1b3': true
+  esbuild: true
+  sharp: true
+  workerd: true
+
+overrides:
+  esbuild: ^0.28.1
+  wrangler: ^4.105.0

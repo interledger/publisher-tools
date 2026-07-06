@@ -15,7 +15,7 @@
     "format:check": "prettier . --check --cache --cache-location='node_modules/.cache/prettiercache'",
     "lint": "eslint . --fix --cache --cache-location 'node_modules/.cache/eslintcache'",
     "lint:check": "eslint . --cache --cache-location 'node_modules/.cache/eslintcache'",
-    "typecheck": "pnpm -r typecheck",
+    "typecheck": "tsc -b",
     "test": "pnpm -r test",
     "analytics:dev": "pnpm -C localenv/analytics dev",
     "analytics:down": "pnpm -C localenv/analytics down"
@@ -23,30 +23,22 @@
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@octokit/webhooks-types": "^7.6.1",
-    "@types/github-script": "github:actions/github-script#v8.0.0",
+    "@types/github-script": "github:actions/github-script#v9.0.0",
     "del-cli": "^7.0.0",
     "eslint": "^9.39.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
-    "globals": "^17.6.0",
-    "prettier": "^3.8.4",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.3",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.61.1"
-  },
-  "resolutions": {
-    "esbuild": "^0.28.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "wrangler": "^4.100.0"
-    }
+    "typescript-eslint": "^8.62.0"
   },
   "engines": {
-    "pnpm": "^10.33.0",
+    "pnpm": "^11.0.0",
     "npm": "pnpm",
     "yarn": "pnpm",
     "node": ">=24.0.0"
   },
   "private": true,
-  "packageManager": "pnpm@10.34.3"
+  "packageManager": "pnpm@11.9.0"
 }
