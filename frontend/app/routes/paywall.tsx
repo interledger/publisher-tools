@@ -103,7 +103,7 @@ export default function Paywall() {
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,
       }}
-      walletAddressToolName="pay per article"
+      tool="paywall"
       steps={[
         { number: 2, label: 'Configure', status: snap.configureStep },
         { number: 3, label: 'Build', status: snap.buildStep },
