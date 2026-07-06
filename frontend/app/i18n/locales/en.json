@@ -18,10 +18,10 @@
     "status.noSavedProfiles.widget": "This is the default widget style. Customize it to make it your own.",
     "status.noSavedProfiles.offerwall": "This is the default offerwall style. Customize it to make it your own.",
     "status.noSavedProfiles.paywall": "This is the default paywall style. Customize it to make it your own.",
-    "status.profilesFetched.banner": "We've loaded your layouts. Feel free to keep customizing your drawer banner to fit your style.",
-    "status.profilesFetched.widget": "We've loaded your layouts. Feel free to keep customizing your payment widget to fit your style.",
+    "status.profilesFetched.banner": "We've loaded your layouts. Feel free to keep customizing your banner to fit your style.",
+    "status.profilesFetched.widget": "We've loaded your layouts. Feel free to keep customizing your widget to fit your style.",
     "status.profilesFetched.offerwall": "We've loaded your layouts. Feel free to keep customizing your offerwall experience to fit your style.",
-    "status.profilesFetched.paywall": "We've loaded your layouts. Feel free to keep customizing your pay per article to fit your style.",
+    "status.profilesFetched.paywall": "We've loaded your layout. Feel free to keep customizing your pay per article to fit your style.",
     "button.loadingLabel": "Connecting...",
     "button.submitLabel": "Continue",
     "button.disconnectAriaLabel": "Disconnect wallet"
