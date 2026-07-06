@@ -38,8 +38,7 @@ export type SharesState = Share[]
  */
 export function getValidShares(shares: Share[]): SharesState {
   return shares.filter(
-    (share) =>
-      share.pointer && Number(share.weight) && share.isValid === true,
+    (share) => share.pointer && Number(share.weight) && share.isValid === true,
   )
 }
 
