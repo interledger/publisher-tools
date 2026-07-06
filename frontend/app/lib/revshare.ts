@@ -37,7 +37,10 @@ export type SharesState = Share[]
  * @returns Array of shares that have both pointer and weight
  */
 export function getValidShares(shares: Share[]): SharesState {
-  return shares.filter((share) => share.pointer && Number(share.weight))
+  return shares.filter(
+    (share) =>
+      share.pointer && Number(share.weight) && share.isValid === true,
+  )
 }
 
 export function generateShareId(): string {
