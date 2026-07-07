@@ -84,7 +84,10 @@ function Revshare() {
   const handleChangePointer = useCallback(
     (index: number, pointer: string) => {
       setShares((prevShares) =>
-        changeList(prevShares, index, { pointer: pointer.trim() }),
+        changeList(prevShares, index, {
+          pointer: pointer.trim(),
+          isValid: false,
+        }),
       )
     },
     [setShares],
