@@ -8,7 +8,7 @@
   font-size: calc(1rem * var(--font-scale, 1));
 
   --title-font-size: 1.875rem;
-  --title-line-height: 2.25rem;
+  --title-line-height: 2.375rem;
 
   --p-font-size: 1rem;
   --p-line-height: 1.5rem;
@@ -47,8 +47,20 @@
   max-width: 600px;
   margin: 0 auto;
   flex: 1;
-  max-height: 32rem;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--wmt-content-justify, center);
+  align-items: var(--wmt-content-align, center);
+  gap: var(--wmt-content-gap, 1.5rem);
+  padding: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  :host > div > * {
+    padding: 1rem;
+    width: 100%;
+    max-width: none;
+  }
 }
 
 :host([hidden]) {

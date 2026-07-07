@@ -58,7 +58,10 @@ export class PaywallWalletAddressForm extends LitElement {
     return html`
       <form @submit=${this.handleSubmit}>
         <div>
-          <label for="wallet-address-url">Wallet address</label>
+          <label for="wallet-address-url"
+            >Wallet address
+            <span class="required" aria-hidden="true">*</span></label
+          >
           <input
             type="text"
             id="wallet-address-url"

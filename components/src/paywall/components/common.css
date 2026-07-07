@@ -7,6 +7,7 @@ p {
 .title {
   font-size: var(--title-font-size);
   line-height: var(--title-line-height);
+  font-weight: 500;
 }
 
 .description {
@@ -18,22 +19,15 @@ p {
   align-self: center;
   width: 100%;
   min-height: 0;
-  --min-height-threshold: 6rem;
-  height: clamp(
-    0%,
-    (100% - var(--min-height-threshold)) * 999,
-    var(--coverage) * 0.3
-  );
   max-height: calc(var(--coverage) * 0.3);
   overflow: hidden;
-  display: grid;
+  display: var(--wmt-icon-display, grid);
   place-items: center;
 }
 
 .img svg {
-  height: inherit;
+  max-height: min(100%, 12rem);
   aspect-ratio: 96/161;
-  max-height: 12rem;
 }
 
 button {
@@ -49,9 +43,11 @@ button {
 
   background-color: var(--theme);
   /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
-     https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
+     https://css-tricks.com/approximating-contrast-color-with-other-css-features/
+     Threshold shifted to L=0.9 so common brand colors (e.g. teal L≈0.73) get
+     white text; only near-white themes fall back to black. */
   color: white;
-  color: oklch(from var(--theme) round(1.21 - L) 0 0);
+  color: oklch(from var(--theme) round(1.4 - L) 0 0);
   cursor: pointer;
 }
 

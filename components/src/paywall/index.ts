@@ -253,6 +253,25 @@ export class Paywall extends LitElement {
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
     this.dataset.fontSize = font.size
     this.style.setProperty('--wmt-height', `${coverage.value}vh`)
+    this.style.setProperty(
+      '--wmt-icon-display',
+      coverage.value >= 75 ? 'grid' : 'none',
+    )
+    this.style.setProperty(
+      '--wmt-price-padding',
+      coverage.value >= 50 ? '1.5rem 0.5rem' : '0.25rem 0.5rem',
+    )
+    // Compact (25%) sits top-aligned with tight 12px gap; medium+ (50/75/100)
+    const spacious = coverage.value >= 50
+    this.style.setProperty(
+      '--wmt-content-justify',
+      spacious ? 'center' : 'flex-start',
+    )
+    this.style.setProperty(
+      '--wmt-content-align',
+      spacious ? 'center' : 'flex-start',
+    )
+    this.style.setProperty('--wmt-content-gap', spacious ? '1.5rem' : '0.75rem')
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
     this.style.setProperty('--wmt-color', colors.text)
