@@ -18,6 +18,26 @@
 
   --price-font-size: 1.25rem;
   --price-line-height: 1.75rem;
+
+  --wmt-icon-display: none;
+  --wmt-price-padding: 0.25rem 0.5rem;
+  --wmt-content-justify: flex-start;
+  --wmt-content-align: flex-start;
+  --wmt-content-gap: 0.75rem;
+}
+
+:host([data-coverage='50']),
+:host([data-coverage='75']),
+:host([data-coverage='100']) {
+  --wmt-price-padding: 1.5rem 0.5rem;
+  --wmt-content-justify: center;
+  --wmt-content-align: center;
+  --wmt-content-gap: 1.5rem;
+}
+
+:host([data-coverage='75']),
+:host([data-coverage='100']) {
+  --wmt-icon-display: grid;
 }
 
 /* backdrop */
