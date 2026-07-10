@@ -15,25 +15,28 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const walletAddress = session.get('wallet-address')
   const grant = session.get('payment-grant')
 
-  const isGrantResponse = true
-  let grantResponse = result == 'grant_rejected' ? 'Grant was declined' : ''
   let isGrantAccepted = false
+  let grantResponse: string
 
-  if (walletAddress && grant && interactRef) {
+  if (result === 'grant_rejected') {
+    grantResponse = 'The grant request was declined.'
+  } else if (!walletAddress || !grant || !interactRef) {
+    grantResponse = 'Grant session is missing or expired. Please try again.'
+  } else {
     try {
       isGrantAccepted = await isGrantValidAndAccepted(env, grant, interactRef)
-    } catch (_err) {
-      isGrantAccepted = false
+      grantResponse = isGrantAccepted
+        ? 'Wallet ownership confirmed!'
+        : 'Grant could not be finalized. Please try again.'
+    } catch (err) {
+      grantResponse = 'Unable to verify grant. Please try again.'
     }
-    if (isGrantAccepted) {
-      grantResponse = 'Wallet ownership confirmed!'
-      session.set('validForWallet', walletAddress.id)
-    }
+    if (isGrantAccepted) session.set('validForWallet', walletAddress.id)
     session.unset('payment-grant')
   }
 
   session.set('is-grant-accepted', isGrantAccepted)
-  session.set('is-grant-response', isGrantResponse)
+  session.set('is-grant-response', true)
   session.set('grant-response', grantResponse)
 
   return redirect(`/${elementType}`, {
