@@ -13,6 +13,29 @@
   width: 100%;
 }
 
+.wallet-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.wallet-link:hover {
+  color: #7469a8;
+}
+
+.wallet-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .price {
   background-color: #f6f8fa;
   border-radius: 0.5rem;

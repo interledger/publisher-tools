@@ -28,8 +28,14 @@ export class PaywallHome extends LitElement {
         <h2 class="title">${this.title}</h2>
         <p class="description">${this.description}</p>
         <p class="description">
-          Already paid? Enter your wallet address to access this content for
-          free.
+          <button
+            type="button"
+            class="wallet-link"
+            @click=${this.onWalletLinkClick}
+          >
+            Already paid? Enter your wallet address to access this content for
+            free.
+          </button>
         </p>
       </div>
 
@@ -45,6 +51,10 @@ export class PaywallHome extends LitElement {
   }
 
   private onClick() {
+    this.dispatchEvent(new CustomEvent('payStart'))
+  }
+
+  private onWalletLinkClick() {
     this.dispatchEvent(new CustomEvent('payStart'))
   }
 }
