@@ -34,6 +34,13 @@ export const LinkTagGenerator = () => {
       setInvalidUrl(false)
       setError('')
 
+      if (!pointerInput.trim()) {
+        setInvalidUrl(true)
+        setError('Please enter a payment pointer or wallet address')
+        setIsLoading(false)
+        return
+      }
+
       try {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
