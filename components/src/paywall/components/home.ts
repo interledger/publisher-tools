@@ -27,6 +27,10 @@ export class PaywallHome extends LitElement {
       <div class="top">
         <h2 class="title">${this.title}</h2>
         <p class="description">${this.description}</p>
+        <p class="description">
+          Already paid? Enter your wallet address to access this content for
+          free.
+        </p>
       </div>
 
       <span class="img">${unsafeSVG(icon)}</span>
