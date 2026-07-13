@@ -34,6 +34,13 @@ export const LinkTagGenerator = () => {
       setInvalidUrl(false)
       setError('')
 
+      if (!pointerInput.trim()) {
+        setInvalidUrl(true)
+        setError('Please enter a payment pointer or wallet address')
+        setIsLoading(false)
+        return
+      }
+
       try {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
@@ -79,9 +86,9 @@ export const LinkTagGenerator = () => {
       <div>
         <InputField
           id="paymentPointer"
-          label="Your payment pointer/wallet address"
+          label="Payment pointer or wallet address"
           required
-          placeholder="Fill in your payment pointer/wallet address"
+          placeholder="https://walletprovider.com/MyWallet"
           value={pointerInput}
           onChange={(e) => handleOnChange(e)}
           error={invalidUrl ? error : ''}
