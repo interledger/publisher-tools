@@ -1,7 +1,10 @@
 import { redirect } from 'react-router'
+import en from '~/i18n/locales/en.json'
 import { isGrantValidAndAccepted } from '~/utils/open-payments.server'
 import { commitSession, getSession } from '~/utils/session.server'
 import type { Route } from './+types/api.grant.$type'
+
+const messages = en.grantInteraction
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const { env } = context.cloudflare
@@ -19,17 +22,17 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   let grantResponse: string
 
   if (result === 'grant_rejected') {
-    grantResponse = 'The grant request was declined.'
+    grantResponse = messages['error.declined']
   } else if (!walletAddress || !grant || !interactRef) {
-    grantResponse = 'Grant session is missing or expired. Please try again.'
+    grantResponse = messages['error.sessionExpired']
   } else {
     try {
       isGrantAccepted = await isGrantValidAndAccepted(env, grant, interactRef)
       grantResponse = isGrantAccepted
-        ? 'Wallet ownership confirmed!'
-        : 'Grant could not be finalized. Please try again.'
-    } catch (err) {
-      grantResponse = 'Unable to verify grant. Please try again.'
+        ? messages.success
+        : messages['error.notFinalized']
+    } catch (_err) {
+      grantResponse = messages['error.unverifiable']
     }
     if (isGrantAccepted) session.set('validForWallet', walletAddress.id)
     session.unset('payment-grant')
