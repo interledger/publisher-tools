@@ -79,9 +79,9 @@ export const LinkTagGenerator = () => {
       <div>
         <InputField
           id="paymentPointer"
-          label="Your payment pointer/wallet address"
+          label="Payment pointer or wallet address"
           required
-          placeholder="Fill in your payment pointer/wallet address"
+          placeholder="https://walletprovider.com/MyWallet"
           value={pointerInput}
           onChange={(e) => handleOnChange(e)}
           error={invalidUrl ? error : ''}
