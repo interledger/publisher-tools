@@ -48,6 +48,6 @@
     "input.message.hint": "Explain the value in one sentence.",
     "input.message.placeholder": "Unlock the full article with a one-time payment — no subscription, no account.",
     "input.payButton.label": "Pay button label",
-    "input.payButton.placeholder": "Pay with Open Payments"
+    "input.payButton.placeholder": "Unlock article"
   }
 }
