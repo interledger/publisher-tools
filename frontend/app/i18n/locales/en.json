@@ -26,6 +26,12 @@
     "button.submitLabel": "Continue",
     "button.disconnectAriaLabel": "Disconnect wallet"
   },
+  "grantInteraction": {
+    "success": "Wallet ownership confirmed!",
+    "declined": "Wallet authorization was declined.",
+    "sessionExpired": "Your session has expired. Please try again.",
+    "verificationFailed": "Unable to verify wallet access. Please try again."
+  },
   "paywall": {
     "title": "Pay per Article",
     "description_1": "Pay Per Article lets visitors unlock gated content with a one-time payment.",
