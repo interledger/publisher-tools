@@ -36,18 +36,26 @@ form label .required {
   color: var(--color-error);
 }
 
+form .field-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
 form input {
+  flex: 1;
+  min-width: 0;
   font-family: inherit;
   border: 2px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
   padding: 0.75rem 1rem;
   font-size: var(--p-font-size);
   line-height: var(--p-line-height);
   border-radius: var(--border-radius, 0.5rem);
   background-color: #fff;
+}
+
+form button {
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 form wm-dots-loader {
@@ -58,7 +66,8 @@ form input[aria-invalid='true'],
 form input:user-invalid {
   border-color: var(--color-error);
 }
-form div p.error {
+
+form p.error {
   font-size: 0.9em;
   color: var(--color-error);
 }

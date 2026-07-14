@@ -14,11 +14,12 @@
 }
 
 .wallet-link {
+  display: inline;
   background: none;
   border: 0;
   padding: 0;
   font: inherit;
-  color: inherit;
+  color: #7469a8;
   text-align: inherit;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -27,7 +28,7 @@
 }
 
 .wallet-link:hover {
-  color: #7469a8;
+  color: #5d5490;
 }
 
 .wallet-link:focus-visible {

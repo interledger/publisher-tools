@@ -33,9 +33,9 @@ export class PaywallHome extends LitElement {
             class="wallet-link"
             @click=${this.onWalletLinkClick}
           >
-            Already paid? Enter your wallet address to access this content for
-            free.
+            Already paid? Enter your wallet address
           </button>
+          to access this content for free.
         </p>
       </div>
 

@@ -1,6 +1,7 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
+import lockIcon from '@c/assets/lock_filled.svg?raw'
 import icon from '@c/assets/lock_outline.svg?raw'
 import { DotsLoader } from '@c/shared/dots-loader'
 import { registerComponents } from '@c/utils'
@@ -23,7 +24,6 @@ export class PaywallWalletAddressForm extends LitElement {
 
   @property({ type: String }) title = DEFAULTS.title.text
   @property({ type: String }) description = DEFAULTS.description.text
-  @property({ type: String }) ctaText = DEFAULTS.ctaButton.text
   @property({ type: String }) walletAddressUrl = ''
 
   @state() private _error = ''
@@ -57,11 +57,11 @@ export class PaywallWalletAddressForm extends LitElement {
   get #form() {
     return html`
       <form @submit=${this.handleSubmit}>
-        <div>
-          <label for="wallet-address-url"
-            >Wallet address
-            <span class="required" aria-hidden="true">*</span></label
-          >
+        <label for="wallet-address-url"
+          >Wallet address
+          <span class="required" aria-hidden="true">*</span></label
+        >
+        <div class="field-row">
           <input
             type="text"
             id="wallet-address-url"
@@ -72,17 +72,17 @@ export class PaywallWalletAddressForm extends LitElement {
             ?disabled=${this._loading}
             required
           />
-          <p id="wallet-address-url-error" class="error">${this._error}</p>
-        </div>
 
-        <button type="submit" ?disabled=${this._loading}>
-          ${
-            this._loading
-              ? html`<wm-dots-loader></wm-dots-loader
-                  ><span class="sr-only">${this.ctaText}</span>&nbsp;`
-              : this.ctaText
-          }
-        </button>
+          <button type="submit" ?disabled=${this._loading}>
+            ${
+              this._loading
+                ? html`<wm-dots-loader></wm-dots-loader
+                    ><span class="sr-only">Unlock</span>&nbsp;`
+                : html`Unlock${unsafeSVG(lockIcon)}`
+            }
+          </button>
+        </div>
+        <p id="wallet-address-url-error" class="error">${this._error}</p>
       </form>
     `
   }
