@@ -28,10 +28,9 @@
   },
   "grantInteraction": {
     "success": "Wallet ownership confirmed!",
-    "error.declined": "Wallet authorization was declined.",
-    "error.sessionExpired": "Your session has expired. Please try again.",
-    "error.unverifiable": "Unable to verify wallet access. Please try again.",
-    "error.notFinalized": "Wallet authorization could not be completed. Please try again."
+    "declined": "Wallet authorization was declined.",
+    "sessionExpired": "Your session has expired. Please try again.",
+    "verificationFailed": "Unable to verify wallet access. Please try again."
   },
   "paywall": {
     "title": "Pay per Article",
