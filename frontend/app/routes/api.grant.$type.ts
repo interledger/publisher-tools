@@ -1,7 +1,7 @@
 import { redirect } from 'react-router'
+import type { GrantOutcome } from '~/lib/types'
 import { isGrantValidAndAccepted } from '~/utils/open-payments.server'
 import { commitSession, getSession } from '~/utils/session.server'
-import type { GrantOutcome } from '~/lib/types'
 import type { Route } from './+types/api.grant.$type'
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {

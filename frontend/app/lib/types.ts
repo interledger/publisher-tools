@@ -1,10 +1,7 @@
 import type { Tool, ToolProfiles } from '@shared/types'
 
 export type GrantOutcome =
-  | 'success'
-  | 'declined'
-  | 'sessionExpired'
-  | 'verificationFailed'
+  'success' | 'declined' | 'sessionExpired' | 'verificationFailed'
 
 export type SaveResult = {
   success?: boolean
