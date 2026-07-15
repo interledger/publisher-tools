@@ -46,7 +46,38 @@ export class Paywall extends LitElement {
   }
 
   disconnectedCallback(): void {
+    this.#unlockPageScroll()
+  }
+
+  #scrollLockY: number | null = null
+
+  #lockPageScroll() {
+    if (this.#scrollLockY !== null) return
+    const y = window.scrollY
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth
+    this.#scrollLockY = y
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${y}px`
+    document.body.style.left = '0'
+    document.body.style.right = '0'
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+  }
+
+  #unlockPageScroll() {
+    if (this.#scrollLockY === null) return
+    const y = this.#scrollLockY
+    this.#scrollLockY = null
     document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.top = ''
+    document.body.style.left = ''
+    document.body.style.right = ''
+    document.body.style.paddingRight = ''
+    window.scrollTo(0, y)
   }
 
   async #init() {
@@ -116,7 +147,7 @@ export class Paywall extends LitElement {
     if (!this._ready) return nothing
     if (this.#entitlement.entitlement === 'has-access') return nothing
     if (!this._delayComplete) return nothing
-    document.body.style.overflow = 'hidden'
+    this.#lockPageScroll()
 
     return html`<div>${this.#render()}</div> `
   }
@@ -212,6 +243,7 @@ export class Paywall extends LitElement {
 
   #hidePaywall() {
     this.dispatchEvent(new CustomEvent('paywall_hide'))
+    this.#unlockPageScroll()
     this.#controller.remove(this)
   }
 
@@ -250,9 +282,12 @@ export class Paywall extends LitElement {
     } = this.#config
 
     const fontBaseUrl = new URL('/assets/fonts/', this.#controller.cdnUrl).href
+    const vhUnit = CSS.supports('height', '100dvh') ? 'dvh' : 'vh'
+
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
     this.dataset.fontSize = font.size
-    this.style.setProperty('--wmt-height', `${coverage.value}vh`)
+    this.style.setProperty('--wmt-height', `${coverage.value}${vhUnit}`)
+    this.style.setProperty('--wmt-viewport-height', `100${vhUnit}`)
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
     this.style.setProperty('--wmt-color', colors.text)
