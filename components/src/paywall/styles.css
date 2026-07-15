@@ -40,6 +40,16 @@
   --wmt-icon-display: grid;
 }
 
+@media (max-width: 600px) {
+  :host {
+    --wmt-form-direction: row;
+  }
+}
+
+:host([data-coverage='100']) {
+  --wmt-form-direction: column;
+}
+
 /* backdrop */
 :host::before {
   content: ' ';
