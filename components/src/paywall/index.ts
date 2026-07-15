@@ -252,7 +252,7 @@ export class Paywall extends LitElement {
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
     this.dataset.fontSize = font.size
     this.dataset.coverage = String(coverage.value)
-    this.style.setProperty('--wmt-height', `${coverage.value}vh`)
+    this.style.setProperty('--wmt-height', `${coverage.value}dvh`)
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
     this.style.setProperty('--wmt-color', colors.text)
