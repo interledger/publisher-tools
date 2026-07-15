@@ -275,6 +275,7 @@ export const FONT_FAMILY_OPTIONS = [
   'Cookie',
   'Titillium Web',
   'Roboto',
+  'Inter',
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]
