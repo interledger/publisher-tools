@@ -96,7 +96,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       <Divider />
 
       <InputFieldset
-        label="Container Corner Radius"
+        label="Button Corner Radius"
         icon={<SVGRoundedCorner className="w-5 h-5" />}
       >
         <CornerRadiusSelector
