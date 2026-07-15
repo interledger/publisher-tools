@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overscroll-behavior: contain;
   inset: 0;
   font-family: var(--font-family);
   font-size: calc(1rem * var(--font-scale, 1));
