@@ -285,12 +285,10 @@ export class Paywall extends LitElement {
     } = this.#config
 
     const fontBaseUrl = new URL('/assets/fonts/', this.#controller.cdnUrl).href
-    const vhUnit = CSS.supports('height', '100dvh') ? 'dvh' : 'vh'
 
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
     this.dataset.fontSize = font.size
-    this.style.setProperty('--wmt-height', `${coverage.value}${vhUnit}`)
-    this.style.setProperty('--wmt-viewport-height', `100${vhUnit}`)
+    this.style.setProperty('--wmt-height', `${coverage.value}`)
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
     this.style.setProperty('--wmt-color', colors.text)
