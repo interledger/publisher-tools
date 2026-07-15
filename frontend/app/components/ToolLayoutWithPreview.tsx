@@ -18,6 +18,7 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
+import type { GrantOutcome } from '~/lib/types'
 import { loadState, persistState } from '~/stores/toolStore'
 import type { createWalletStore } from '~/stores/wallet-store'
 import type { createToolStoreUtils } from '~/utils/utils.store'
@@ -40,7 +41,7 @@ type Props = React.PropsWithChildren<{
   tool: ComponentProps<typeof ToolsWalletAddress>['tool']
   preview: ReactNode
   loaderData: {
-    grantResponse?: string
+    grantResponse?: GrantOutcome
     isGrantAccepted?: boolean
     isGrantResponse?: boolean
     OP_WALLET_ADDRESS: string
