@@ -1,7 +1,6 @@
 import { html, LitElement, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
-import lockIcon from '@c/assets/lock_filled.svg?raw'
 import icon from '@c/assets/lock_outline.svg?raw'
 import { DotsLoader } from '@c/shared/dots-loader'
 import { registerComponents } from '@c/utils'
@@ -78,7 +77,7 @@ export class PaywallWalletAddressForm extends LitElement {
               this._loading
                 ? html`<wm-dots-loader></wm-dots-loader
                     ><span class="sr-only">Unlock</span>&nbsp;`
-                : html`Unlock${unsafeSVG(lockIcon)}`
+                : html`Unlock`
             }
           </button>
         </div>
