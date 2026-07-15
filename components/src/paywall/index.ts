@@ -51,6 +51,9 @@ export class Paywall extends LitElement {
 
   #scrollLockY: number | null = null
 
+  // iOS Safari ignores `overflow: hidden` on <body>; pin it with
+  // `position: fixed` at -scrollY and restore on unlock. See the
+  // `body-scroll-lock` library for reference of technique
   #lockPageScroll() {
     if (this.#scrollLockY !== null) return
     const y = window.scrollY
