@@ -36,10 +36,11 @@ export class PaywallWalletAddressForm extends LitElement {
   }
 
   firstUpdated(): void {
+    const input = this.renderRoot.querySelector('input')!
     if (this.walletAddressUrl) {
-      const input = this.renderRoot.querySelector('input')!
       input.value = this.walletAddressUrl
     }
+    input.focus()
   }
 
   render() {
@@ -72,6 +73,7 @@ export class PaywallWalletAddressForm extends LitElement {
             required
           />
 
+          <!-- Note: the form step always says "Unlock", independent of the configurable CTA text on the home view. -->
           <button type="submit" ?disabled=${this._loading}>
             ${
               this._loading

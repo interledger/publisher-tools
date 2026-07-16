@@ -25,10 +25,11 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   cursor: pointer;
+  transition: text-decoration-thickness 120ms ease;
 }
 
 .wallet-link:hover {
-  color: #5d5490;
+  text-decoration-thickness: 2px;
 }
 
 .wallet-link:focus-visible {
