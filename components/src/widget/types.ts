@@ -17,9 +17,3 @@ export type FormattedAmount = {
   amountWithCurrency: string
   symbol: string
 }
-
-export interface Amount {
-  value: string
-  assetCode: string
-  assetScale: number
-}

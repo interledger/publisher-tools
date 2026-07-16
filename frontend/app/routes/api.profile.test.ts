@@ -29,10 +29,12 @@ vi.mock('~/utils/session.server.js', () => ({
 }))
 
 vi.mock('~/utils/config-storage.server.js', () => ({
-  ConfigStorageService: vi.fn().mockImplementation(() => ({
-    getJson: vi.fn().mockResolvedValue(null),
-    putJson: vi.fn().mockResolvedValue(undefined),
-  })),
+  ConfigStorageService: vi.fn().mockImplementation(function () {
+    return {
+      getJson: vi.fn().mockResolvedValue(null),
+      putJson: vi.fn().mockResolvedValue(undefined),
+    }
+  }),
 }))
 
 vi.mock('~/utils/open-payments.server.js', () => ({

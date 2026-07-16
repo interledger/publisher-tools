@@ -4,11 +4,18 @@ import {
   ScriptDialog,
   GrantConfirmationDialog,
 } from '@/components'
-import { TOOL_BANNER, TOOL_OFFERWALL, TOOL_WIDGET } from '@shared/types'
+import {
+  TOOL_BANNER,
+  TOOL_OFFERWALL,
+  TOOL_PAYWALL,
+  TOOL_WIDGET,
+} from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
+import { useTrackEvent } from '~/lib/analytics'
 import { ApiError } from '~/lib/helpers'
 import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
+import { actions as paywallActions } from '~/stores/paywall-store'
 import { toolState } from '~/stores/toolStore'
 import type { WalletStore } from '~/stores/wallet-store'
 import { actions as widgetActions } from '~/stores/widget-store'
@@ -21,6 +28,8 @@ function getToolActions() {
       return widgetActions
     case TOOL_OFFERWALL:
       return offerwallActions
+    case TOOL_PAYWALL:
+      return paywallActions
     default:
       throw new Error(`Unsupported tool type: ${toolState.currentToolType}`)
   }
@@ -28,6 +37,7 @@ function getToolActions() {
 
 export const useSaveProfile = (wallet: WalletStore) => {
   const [openDialog, closeDialog] = useDialog()
+  const trackEvent = useTrackEvent()
 
   const save = useCallback(
     async (action: 'save-success' | 'script'): Promise<void> => {
@@ -47,11 +57,14 @@ export const useSaveProfile = (wallet: WalletStore) => {
         }
 
         if (result.success) {
-          actions.commitProfile()
+          const tool = toolState.currentToolType
+          const changed = actions.commitProfile()
 
           if (action === 'script') {
+            trackEvent(`${tool}_script_generated`, changed)
             openDialog(<ScriptDialog wallet={wallet} />)
           } else {
+            trackEvent(`${tool}_profile_saved`, changed)
             openDialog(<StatusDialog onDone={closeDialog} />)
           }
         }
@@ -69,7 +82,7 @@ export const useSaveProfile = (wallet: WalletStore) => {
         )
       }
     },
-    [openDialog, closeDialog],
+    [openDialog, closeDialog, trackEvent],
   )
 
   const saveLastAction = useCallback(async (): Promise<void> => {

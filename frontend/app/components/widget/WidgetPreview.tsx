@@ -1,69 +1,35 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
-import type { PaymentWidget as WidgetComponent } from '@tools/components'
+import { useEffect, useRef } from 'react'
+import { deepClone } from 'valtio/utils'
+import type { WidgetProfile } from '@shared/types'
+import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
 import { useWidgetProfile } from '~/stores/widget-store'
 
-interface Props {
-  serviceUrls: { cdn: string; api: string }
-  opWallet: string
-}
+export type Message = { action: 'UPDATE'; profile: WidgetProfile }
 
-export const WidgetPreview = ({
-  serviceUrls,
-  opWallet,
-}: React.PropsWithChildren<Props>) => {
-  const [isLoaded, setIsLoaded] = useState(false)
+export type MessageFromIframe = { type: 'READY' }
+
+export const WidgetPreview = () => {
+  const ref = useRef<ToolPreviewHandle<Message>>(null)
   const [profile] = useWidgetProfile()
-  const widgetRef = useRef<WidgetComponent>(null)
 
-  useEffect(() => {
-    const loadWidgetElement = async () => {
-      if (!customElements.get('wm-payment-widget')) {
-        // dynamic import - ensure component only runs on the client side and not on SSR
-        const { PaymentWidget } = await import('@tools/components/widget/index')
-        if (!customElements.get('wm-payment-widget')) {
-          customElements.define('wm-payment-widget', PaymentWidget)
-        }
-      }
-      setIsLoaded(true)
+  const messageHandler = (data: MessageFromIframe) => {
+    switch (data.type) {
+      case 'READY':
+        return ref.current?.postMessage(UpdateUIMessage(profile))
     }
-
-    loadWidgetElement()
-  }, [])
-
-  const widgetConfig = useMemo(() => {
-    return {
-      apiUrl: serviceUrls.api,
-      cdnUrl: serviceUrls.cdn,
-      receiverAddress: opWallet,
-      profile,
-    }
-  }, [profile, serviceUrls, opWallet])
-
-  useEffect(() => {
-    if (widgetRef.current && isLoaded) {
-      const widget = widgetRef.current
-      widget.config = widgetConfig
-      widget.isPreview = true
-      widget.isOpen = true
-    }
-  }, [widgetConfig, isLoaded])
-
-  if (!isLoaded) {
-    return <div>Loading widget...</div>
   }
 
+  useEffect(() => {
+    ref.current?.postMessage(UpdateUIMessage(profile))
+  }, [profile])
+
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '678px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-      }}
-    >
-      <wm-payment-widget ref={widgetRef} />
-    </div>
+    <ToolPreview tool="widget" ref={ref} onMessage={messageHandler}>
+      {/* no actions/controllers needed here */}
+    </ToolPreview>
   )
+}
+
+function UpdateUIMessage(profile: WidgetProfile): Message {
+  return { action: 'UPDATE', profile: deepClone(profile) }
 }

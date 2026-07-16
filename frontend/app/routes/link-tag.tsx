@@ -21,11 +21,18 @@ export default function LinkTag() {
           title="Link Tag Generator"
           onBackClick={() => navigate('/')}
         >
-          The link tag generator creates a monetization link element for your
-          HTML documents. Enter your wallet address to generate the tag.
+          The Link Tag Generator creates a monetization &lt;link&gt; element
+          for your HTML documents.
           <br />
-          Add the generated tag to the head section of your website to enable
-          Web Monetization.
+          Enter your&nbsp;
+          <a href="https://paymentpointers.org/" className="underline">
+            payment pointer
+          </a>
+          &nbsp;or&nbsp;
+          <a href="https://webmonetization.org/wallets/" className="underline">
+            wallet address
+          </a>
+          &nbsp;into the field and click Generate.
         </HeadingCore>
       </div>
       <div className="flex flex-col items-center gap-md">

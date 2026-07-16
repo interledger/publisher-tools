@@ -1,90 +1,35 @@
-import { useEffect, useRef, useState } from 'react'
-import { useSnapshot } from 'valtio'
-import type { OfferwallModal } from '@c/index'
-import { applyFontFamily } from '@c/utils'
-import {
-  BORDER_RADIUS,
-  TOOL_OFFERWALL,
-  type OfferwallProfile,
-} from '@shared/types'
+import { useEffect, useRef } from 'react'
+import { deepClone } from 'valtio/utils'
+import { type OfferwallProfile } from '@shared/types'
+import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
 import { useOfferwallProfile } from '~/stores/offerwall-store'
-import { toolState } from '~/stores/toolStore'
+
+export type Message = { action: 'UPDATE'; profile: OfferwallProfile }
+
+export type MessageFromIframe = { type: 'READY' }
 
 export default function OfferwallPreview() {
-  const [isLoaded, setIsLoaded] = useState(false)
   const [profile] = useOfferwallProfile()
-  const offerwallRef = useRef<OfferwallModal>(null)
-  const snap = useSnapshot(toolState)
+  const ref = useRef<ToolPreviewHandle<Message>>(null)
 
-  const setCssVars = (elem: OfferwallModal, profile: OfferwallProfile) => {
-    const fontBaseUrl = new URL('/assets/fonts/', snap.cdnUrl).href
-    applyFontFamily(elem, profile.font.name, TOOL_OFFERWALL, fontBaseUrl)
-
-    elem.style.setProperty(
-      '--wm-border-radius',
-      BORDER_RADIUS[profile.border.type],
-    )
-
-    const { background, text, theme, headline } = profile.color
-    elem.style.setProperty('--wm-text-color', text)
-    elem.style.setProperty('--wm-heading-color', headline)
-    elem.style.setProperty(
-      '--wm-background',
-      typeof background === 'string' ? background : '', // TODO: handle gradient,
-    )
-    elem.style.setProperty(
-      '--wm-accent-color',
-      typeof theme === 'string' ? theme : '', // TODO: handle gradient,
-    )
+  const messageHandler = (data: MessageFromIframe) => {
+    switch (data.type) {
+      case 'READY':
+        return ref.current?.postMessage(UpdateUIMessage(profile))
+    }
   }
 
   useEffect(() => {
-    const name = 'wm-offerwall'
-    const load = async () => {
-      if (!customElements.get(name)) {
-        const { OfferwallModal } =
-          await import('@tools/components/offerwall/index')
-        if (!customElements.get(name)) {
-          customElements.define(name, OfferwallModal)
-        }
-      }
+    ref.current?.postMessage(UpdateUIMessage(profile))
+  }, [profile])
 
-      const el = document.querySelector<OfferwallModal>('wm-offerwall')!
-      const actions = el.setController({
-        onModalClose: (ev) => {
-          ev.preventDefault()
-          console.log('onModalClose')
-          console.log('showing offerwall options')
-        },
-        onExtensionLinkClick(ev) {
-          console.log('onExtensionLinkClick')
-          ev.preventDefault()
-          setTimeout(() => {
-            actions.setScreen('all-set')
-          }, 500)
-        },
-        onDone(ev) {
-          console.log('onDone')
-          ev.preventDefault()
-          actions.setScreen('install-required')
-        },
-        isPreviewMode: true,
-      })
-
-      setIsLoaded(true)
-    }
-    load()
-  }, [])
-
-  useEffect(() => {
-    if (offerwallRef.current && isLoaded) {
-      const offerwall = offerwallRef.current
-      setCssVars(offerwall, profile)
-    }
-  }, [profile, isLoaded])
   return (
-    <div className="relative w-full h-[744px]">
-      <wm-offerwall ref={offerwallRef} />
-    </div>
+    <ToolPreview tool="offerwall" ref={ref} onMessage={messageHandler}>
+      {/* no actions/controllers needed here */}
+    </ToolPreview>
   )
+}
+
+function UpdateUIMessage(profile: OfferwallProfile): Message {
+  return { action: 'UPDATE', profile: deepClone(profile) }
 }

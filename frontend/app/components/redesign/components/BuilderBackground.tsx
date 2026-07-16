@@ -1,6 +1,5 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
 
 const DOT_PATTERN_SVG = `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="2" fill="white" fill-opacity="0.5" /></svg>`
 
@@ -15,15 +14,15 @@ const BrowserDots = () => (
 interface BuilderBackgroundProps {
   className?: string
   children?: React.ReactNode
-  onPreviewClick?: () => void
-  isAnimationDisabled?: boolean
+  actions?: React.ReactNode
+  iframeMode?: boolean
 }
 
 export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   className = '',
   children,
-  onPreviewClick,
-  isAnimationDisabled = false,
+  actions,
+  iframeMode = false,
 }) => {
   const createDotPattern = () => {
     return `data:image/svg+xml;base64,${btoa(DOT_PATTERN_SVG)}`
@@ -33,8 +32,9 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
     <div
       id="builder-background"
       className={cx(
-        'bg-silver-100 rounded-[20px] p-md flex flex-col items-center min-h-[600px]',
-        onPreviewClick && 'gap-4xl',
+        'bg-silver-100 rounded-[20px] p-md flex flex-col items-center',
+        !iframeMode && 'min-h-[600px]',
+        actions && 'gap-4xl',
         className,
       )}
       style={{
@@ -43,19 +43,14 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         backgroundSize: '16px 16px',
       }}
     >
-      {onPreviewClick && !isAnimationDisabled && (
-        <ToolsSecondaryButton
-          icon="play"
-          className="w-[130px]"
-          onClick={onPreviewClick}
-        >
-          Preview
-        </ToolsSecondaryButton>
-      )}
+      {actions}
 
       <div
         id="browser-mockup"
-        className="w-full flex-1 rounded-2xl border border-field-border overflow-hidden flex flex-col"
+        className={cx(
+          'w-full flex-1 border border-field-border overflow-hidden flex flex-col',
+          iframeMode ? 'rounded-t-2xl rounded-b-xs' : 'rounded-2xl',
+        )}
       >
         <div className="flex items-center p-md bg-white">
           <div className="flex items-center gap-4 w-full">
@@ -66,7 +61,10 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
 
         <div
           id="browser-content"
-          className="flex-1 flex flex-col p-md [container-type:inline-size]"
+          className={cx(
+            'flex-1 flex flex-col [container-type:inline-size]',
+            !iframeMode && 'p-md',
+          )}
         >
           {children}
         </div>

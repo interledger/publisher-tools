@@ -6,24 +6,25 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    "./*": "./src/*"
+  },
+  "imports": {
+    "#c/*": "./src/*"
   },
   "sideEffects": [
     "./src/**/*.css"
   ],
   "dependencies": {
     "@shared/utils": "workspace:^",
-    "lit": "^3.3.2"
+    "lit": "^3.3.3"
   },
   "devDependencies": {
     "@interledger/open-payments": "^7.4.0",
+    "@shared/default-data": "workspace:^",
     "@shared/types": "workspace:^",
     "@shared/utils": "workspace:^",
     "publisher-tools-api": "workspace:^",
-    "typescript": "^5.9.3",
-    "vite": "^5.4.20"
+    "vite": "^8.1.0"
   },
-  "scripts": {
-    "typecheck": "tsc --noEmit"
-  }
+  "scripts": {}
 }

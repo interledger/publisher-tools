@@ -10,14 +10,19 @@ import {
   type LinksFunction,
   type MetaFunction,
 } from 'react-router'
-import { Header, Footer } from '@/components'
+import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { UIProvider } from '~/stores/uiStore'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
 
 export default function App() {
+  const domain = new URL(
+    process.env.NODE_ENV === 'development'
+      ? APP_URL.development
+      : APP_URL.production,
+  ).hostname
+
   return (
     <html lang="en">
       <head>
@@ -25,15 +30,17 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {UMAMI_HOST && UMAMI_WEBSITE_ID && (
+          <script
+            defer
+            src={`${UMAMI_HOST}/script.js`}
+            data-website-id={UMAMI_WEBSITE_ID}
+            data-domains={domain}
+          />
+        )}
       </head>
       <body className="h-screen bg-interface-bg-main flex flex-col">
-        <UIProvider>
-          <Header />
-          <main className="flex-grow flex flex-col">
-            <Outlet />
-          </main>
-          <Footer />
-        </UIProvider>
+        <Outlet />
         <ScrollRestoration />
         <Scripts crossOrigin="" />
       </body>

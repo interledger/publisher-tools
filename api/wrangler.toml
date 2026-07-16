@@ -1,6 +1,6 @@
 name = "publisher-tools-api"
-main = "src/index.ts"
-compatibility_date = "2024-09-23"
+main = "dist/index.js"
+compatibility_date = "2026-04-07"
 compatibility_flags = ["nodejs_compat"]
 
 workers_dev = true
@@ -10,5 +10,20 @@ kv_namespaces = [
   { binding = "PUBLISHER_TOOLS_KV", id = "b00031e45d5945c78e1eb3df6336e54a", preview_id = "preview_publisher_tools_kv" }
 ]
 
+d1_databases = [
+  { binding = "PUBLISHER_TOOLS_DB", database_name = "publisher-tools", database_id = "e1d3faf9-7227-4e5f-8dfc-442fd481814f" }
+]
+
 [dev]
 port = 8787
+
+[build]
+command = "pnpm -s build"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+invocation_logs = true

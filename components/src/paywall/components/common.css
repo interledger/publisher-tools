@@ -1,0 +1,61 @@
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.title {
+  font-size: var(--title-font-size);
+  line-height: var(--title-line-height);
+}
+
+.description {
+  font-size: var(--p-font-size);
+  line-height: var(--p-line-height);
+}
+
+.img {
+  align-self: center;
+  width: 100%;
+  min-height: 0;
+  --min-height-threshold: 6rem;
+  height: clamp(
+    0%,
+    (100% - var(--min-height-threshold)) * 999,
+    var(--coverage) * 0.3
+  );
+  max-height: calc(var(--coverage) * 0.3);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.img svg {
+  height: inherit;
+  aspect-ratio: 96/161;
+  max-height: 12rem;
+}
+
+button {
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+  border-radius: var(--border-radius, 0.5rem);
+
+  background-color: var(--theme);
+  /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
+     https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
+  color: white;
+  color: oklch(from var(--theme) round(1.21 - L) 0 0);
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}

@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./api" },
+    { "path": "./cdn" },
+    { "path": "./frontend" },
+    { "path": "./components" },
+    { "path": "./localenv/s3" },
+    // { "path": "./migrations/s3" },
+    { "path": "./shared/config-storage-service" },
+    { "path": "./shared/default-data" },
+    { "path": "./shared/defines" },
+    { "path": "./shared/probabilistic-revenue-share" },
+    { "path": "./shared/types" },
+    { "path": "./shared/utils" }
+  ]
+}

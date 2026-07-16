@@ -6,6 +6,7 @@ import {
   validateAndConfirmPointer,
   WalletAddressFormatError,
 } from '@shared/utils/index'
+import { useTrackEvent } from '~/lib/analytics'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
@@ -24,6 +25,7 @@ export const LinkTagGenerator = () => {
   const [error, setError] = useState('')
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const trackEvent = useTrackEvent()
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -32,10 +34,20 @@ export const LinkTagGenerator = () => {
       setInvalidUrl(false)
       setError('')
 
+      if (!pointerInput.trim()) {
+        setInvalidUrl(true)
+        setError('Please enter a payment pointer or wallet address')
+        setIsLoading(false)
+        return
+      }
+
       try {
         const validatedPointer = await validateAndConfirmPointer(pointerInput)
         setParsedLinkTag(htmlEncodePointer(validatedPointer))
         setShowCodeBox(true)
+        trackEvent('link_tag_generated', {
+          wallet_provider: new URL(validatedPointer).hostname,
+        })
       } catch (err) {
         const message =
           err instanceof WalletAddressFormatError
@@ -47,7 +59,7 @@ export const LinkTagGenerator = () => {
         setIsLoading(false)
       }
     },
-    [pointerInput],
+    [pointerInput, trackEvent],
   )
 
   const handleOnChange = useCallback(
@@ -74,9 +86,9 @@ export const LinkTagGenerator = () => {
       <div>
         <InputField
           id="paymentPointer"
-          label="Your payment pointer/wallet address"
+          label="Payment pointer or wallet address"
           required
-          placeholder="Fill in your payment pointer/wallet address"
+          placeholder="https://walletprovider.com/MyWallet"
           value={pointerInput}
           onChange={(e) => handleOnChange(e)}
           error={invalidUrl ? error : ''}

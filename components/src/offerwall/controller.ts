@@ -1,8 +1,10 @@
 export type Screen = 'install-required' | 'contribution-required' | 'all-set'
 
+export type ExtensionLinkClickEvent = CustomEvent<{ link: string }>
+
 export interface Controller {
   onModalClose(ev: Event): void
-  onExtensionLinkClick(ev: Event): void
+  onExtensionLinkClick(ev: ExtensionLinkClickEvent): void
   onDone(ev: Event): void
   /**
    * In preview mode, instead of rendering the component as "dialog" modal;  we

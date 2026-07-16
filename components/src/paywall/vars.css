@@ -1,0 +1,33 @@
+:host {
+  --font-family: var(--wm-font-family, system-ui, sans-serif);
+  --background: var(--wmt-background, #ffffff);
+  --color: var(--wmt-color, #6b6e76);
+  --theme: var(--wmt-theme, #56b7b5);
+  --wmt-vh: 1vh;
+  --coverage: calc(var(--wmt-height, 50) * var(--wmt-vh));
+  --border-radius: var(--wmt-border-radius, 1rem);
+
+  --color-error: #e51d25;
+}
+
+@supports (height: 100dvh) {
+  :host {
+    --wmt-vh: 1dvh;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

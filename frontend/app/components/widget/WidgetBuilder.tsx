@@ -18,6 +18,7 @@ import {
 } from '~/assets/svg'
 import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelector'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
+import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
 import type { BuilderSection } from '~/stores/uiStore'
 import { useWidgetProfile } from '~/stores/widget-store'
 
@@ -26,13 +27,7 @@ interface Props {
 }
 
 const config = {
-  suggestedTitles: [
-    'Support this content',
-    'Make a payment',
-    'Contribute now',
-    'Help support',
-    'One-time donation',
-  ],
+  suggestedTitles: WIDGET_SUGGESTED_TITLES,
   titleHelpText: 'Message to encourage one-time payments',
   titleMaxLength: 30,
   messageLabel: 'Widget message',
