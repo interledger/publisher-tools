@@ -1,0 +1,55 @@
+:host {
+  width: 100%;
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  overflow: hidden;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: calc(100% - 4px);
+  margin: 0 auto;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 300;
+}
+
+form input {
+  font-family: inherit;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  border-radius: var(--border-radius, 0.5rem);
+  background-color: #fff;
+}
+
+form wm-dots-loader {
+  --primary-color: var(--theme);
+}
+
+form input[aria-invalid='true'],
+form input:user-invalid {
+  border-color: var(--color-error);
+}
+form div p.error {
+  font-size: 0.9em;
+  color: var(--color-error);
+}

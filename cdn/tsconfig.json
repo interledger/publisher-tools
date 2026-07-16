@@ -1,9 +1,14 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "noEmit": true,
-    "moduleResolution": "bundler",
-    "module": "es2015",
-    "target": "es2020",
-    "types": ["./@types/index.d.ts"]
-  }
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "allowArbitraryExtensions": true,
+    "types": ["./@types/index.d.ts", "./@types/types.d.ts"],
+    "paths": {
+      "@c/*": ["./node_modules/@tools/components/src/*"]
+    }
+  },
+  "include": ["./src/**/*", "./@types/*.d.ts"]
 }

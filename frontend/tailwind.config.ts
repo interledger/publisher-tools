@@ -118,6 +118,9 @@ export default {
         'field-border-error': palettes['red-600'],
         'field-helpertext-default': palettes['silver-800'],
 
+        'tabs-bg-default': palettes['blue-50'],
+        'tabs-inactive-default': palettes['silver-600'],
+
         'landing-footer-bg': palettes['mint-100'],
         'landing-button-bg': palettes['black'],
         'landing-button-bg-hover': palettes['silver-950'],
@@ -389,7 +392,6 @@ export default {
         '128': '36rem',
         'md-old': '28rem',
       },
-
       padding: {
         '3xs': '2px',
         '2xs': '4px',

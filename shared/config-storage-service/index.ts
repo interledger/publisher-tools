@@ -31,10 +31,21 @@ export class ConfigStorageService {
     const response = await this.client.fetch(url)
 
     if (!response.ok) {
-      throw new Error(`S3 request failed with status: ${response.status}`)
+      const { status } = response
+      if (status === 404) {
+        const msg = 'File not found'
+        throw new ConfigStorageServiceError('not-found', status, msg)
+      }
+      const msg = 'S3 request failed'
+      throw new ConfigStorageServiceError('unknown', status, msg)
     }
 
-    return await response.json()
+    const json = await response.json()
+    if (typeof json !== 'object' || !json) {
+      const msg = 'Invalid JSON response from S3'
+      throw new ConfigStorageServiceError('not-found', response.status, msg)
+    }
+    return json as T
   }
 
   async putJson<T>(walletAddress: string, data: T): Promise<void> {
@@ -53,6 +64,33 @@ export class ConfigStorageService {
     if (!response.ok) {
       throw new Error(`Failed to upload to S3: ${response.status}`)
     }
+  }
+
+  async delete(walletAddress: string): Promise<void> {
+    const key = walletAddressToKey(walletAddress)
+    const url = new URL(`${this.prefix}/${key}`, this.endpoint)
+
+    const res = await this.client.fetch(url, { method: 'DELETE' })
+    if (!res.ok) {
+      throw new Error(`Failed to delete from S3: ${res.status}`)
+    }
+  }
+}
+
+export const isConfigStorageNotFoundError = (
+  err: unknown,
+): err is ConfigStorageServiceError => {
+  return err instanceof ConfigStorageServiceError && err.code === 'not-found'
+}
+
+export class ConfigStorageServiceError extends Error {
+  constructor(
+    public readonly code: 'not-found' | 'unknown',
+    public readonly statusCode: number,
+    message: string,
+  ) {
+    super(message)
+    this.name = 'ConfigStorageError'
   }
 }
 

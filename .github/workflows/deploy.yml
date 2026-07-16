@@ -33,13 +33,13 @@ jobs:
       pr-base-sha: ${{ steps.check.outputs.pr-base-sha }}
     steps:
       - name: Checkout base branch for security check
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
       - name: Check deployment permissions
         id: check
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
@@ -50,9 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-permissions
     if: needs.check-permissions.outputs.should-deploy == 'true'
+    environment: ${{ github.ref_name == 'release' && 'production' || 'staging' }}
     steps:
       # warning: untrusted code, checkout the PR head only after auth check passed
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.check-permissions.outputs.pr-head-sha || github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
@@ -63,11 +64,11 @@ jobs:
         # The wrangler Action expects a global installation, so we better reuse
         # what we've in our project.
         run: |
-          wrangler_version=$(cat package.json | jq -r '.pnpm.overrides.wrangler')
+          wrangler_version=$(yq '.overrides.wrangler' pnpm-workspace.yaml)
           pnpm install -g "wrangler@${wrangler_version}"
 
       # https://github.com/dorny/paths-filter/issues/232
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         if: github.event_name != 'issue_comment'
         id: changes
         with:
@@ -157,10 +158,11 @@ jobs:
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: 'false'
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
-          stagingUrl: ${{ vars.API_STAGING_URL }}
-          productionUrl: ${{ vars.API_PRODUCTION_URL }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.API_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy CDN
         uses: ./.github/workflows/deploy-worker
@@ -173,10 +175,9 @@ jobs:
           build: 'pnpm -C cdn run build'
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
-          stagingUrl: ${{ vars.CDN_STAGING_URL }}
-          productionUrl: ${{ vars.CDN_PRODUCTION_URL }}
+          origin: ${{ vars.CDN_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy Frontend
         uses: ./.github/workflows/deploy-worker
@@ -190,16 +191,17 @@ jobs:
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
-          stagingUrl: ${{ vars.APP_STAGING_URL }}
-          productionUrl: ${{ vars.APP_PRODUCTION_URL }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.APP_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       #endregion
 
       #region Summary
       - name: Create Job summary
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         id: summary
         with:
           script: |

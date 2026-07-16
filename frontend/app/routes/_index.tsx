@@ -1,9 +1,12 @@
 import type { MetaFunction } from 'react-router'
+import { urlWithParams } from '@shared/utils'
 import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
+import SVGOfferwall from '~/assets/images/landing/illustration_offerwall.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
+import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_plugin.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
 import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
 import { Heading1, Heading3 } from '~/components/redesign/Typography'
@@ -13,6 +16,14 @@ const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'
 const DEFAULT_IMAGE_URL = 'https://webmonetization.org/img/wm-social.png'
 const DEFAULT_URL = 'https://webmonetization.org/tools'
 const SITE_NAME = 'Web Monetization'
+const WORDPRESS_PLUGIN_URL = urlWithParams(
+  'https://wordpress.org/plugins/interledger-web-monetization-integration/',
+  {
+    utm_source: 'webmonetization.org',
+    utm_medium: 'integration_tools_list',
+    utm_campaign: 'publisher_tools',
+  },
+).href
 
 const setupTools = [
   {
@@ -47,8 +58,13 @@ const setupTools = [
 const interactionTools = [
   {
     title: 'Banner',
-    description:
-      'Show a customizable banner to introduce Web Monetization. The banner disappears when dismissed or the extension is installed.',
+    description: (
+      <>
+        Show a customizable banner to introduce Web Monetization.
+        <br />
+        The banner disappears when dismissed or the extension is installed.
+      </>
+    ),
     tags: [
       'Web Monetization',
       'Visibility boost',
@@ -60,7 +76,14 @@ const interactionTools = [
   },
   {
     title: 'Widget',
-    description: `A floating icon that lets visitors support you with one-time payments. No extension needed, simple and flexible.`,
+    description: (
+      <>
+        Add a floating icon to your site so visitors can support you instantly
+        with a one-time contribution.
+        <br />
+        Simple, flexible, no extension required.
+      </>
+    ),
     tags: [
       'Web Monetization',
       'One time support',
@@ -72,14 +95,45 @@ const interactionTools = [
   },
   {
     title: 'Call-to-Action button',
-    description:
-      'The most classic, yet one of the most effective methods in order to link to your supporters. Ladies and gents, the button!',
+    description: (
+      <>
+        The most classic, yet one of the most effective methods in order to link
+        to your supporters.
+        <br />
+        Ladies and gents, the button!
+      </>
+    ),
     tags: ['flawless', 'dynamic', 'high click rate', 'button'],
     icon: SVGButton,
     link: '/button',
     disabled: true,
   },
 ].filter((e) => !e.disabled)
+
+const integrationTools = [
+  {
+    title: 'Google Offerwall',
+    description:
+      'Customize the Web Monetization choice shown in Google Offerwall to help visitors support your site.',
+    tags: [
+      'Web Monetization',
+      'Visibility boost',
+      'Audience education',
+      'Engagement',
+    ],
+    icon: SVGOfferwall,
+    link: '/offerwall',
+  },
+  {
+    title: 'WordPress plugin',
+    description:
+      'Enable Web Monetization on your WordPress site with a simple plugin and minimal setup.',
+    tags: ['Web Monetization', 'WordPress', 'Easy integration', 'Easy setup'],
+    icon: SVGWordpressPlugin,
+    link: WORDPRESS_PLUGIN_URL,
+    target: '_blank' as const,
+  },
+]
 
 export const meta: MetaFunction = () => {
   const title = DEFAULT_TITLE
@@ -117,6 +171,7 @@ export default function Index() {
 
         <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-body-standard">
           Use our suite of tools to set up and promote Web Monetization.
+          <br />
           Encourage your visitors to support your content and website.
         </p>
       </div>
@@ -160,7 +215,10 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
 
@@ -177,9 +235,10 @@ export default function Index() {
 
           <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
             Add lightweight and embeddable tools, like banners and widgets, to
-            your site with simple scripts. They&apos;re easily customizable,
-            helping you connect with your audience to encourage Web Monetization
-            support.
+            your site with simple scripts.
+            <br />
+            They&apos;re easily customizable, helping you connect with your
+            audience to encourage Web Monetization support.
           </p>
 
           <ul
@@ -200,7 +259,49 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <div className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
+          </ul>
+        </section>
+
+        <section
+          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          aria-labelledby="heading-integration-tools"
+        >
+          <Heading3
+            className="w-full max-xl:text-center"
+            id="heading-integration-tools"
+          >
+            Integration tools
+          </Heading3>
+
+          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+            Use integration tools to enable Web Monetization on your site
+            through supported platforms like Google and WordPress.
+          </p>
+
+          <ul
+            className="grid gap-lg w-full justify-items-center"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(19rem, 1fr))',
+            }}
+          >
+            {integrationTools.map((tool, index) => (
+              <li key={index}>
+                <ToolCard
+                  title={tool.title}
+                  tags={tool.tags}
+                  icon={tool.icon}
+                  to={tool.link}
+                  target={tool.target}
+                >
+                  {tool.description}
+                </ToolCard>
+              </li>
+            ))}
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
       </div>

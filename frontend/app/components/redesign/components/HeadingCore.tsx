@@ -19,7 +19,7 @@ export const HeadingCore: React.FC<HeadingCoreProps> = ({
     <>
       <div
         id="header"
-        className="flex flex-col pt-md gap-xs md:flex-row md:items-center md:justify-between md:py-0 md:px-0 md:pt-0 md:pb-0 w-full md:gap-0"
+        className="flex flex-col gap-xs md:flex-row md:items-center md:justify-between md:py-0 pt-md px-md md:pt-0 md:pb-0 w-full md:gap-0"
       >
         <GhostButton
           onClick={onBackClick}
@@ -39,7 +39,7 @@ export const HeadingCore: React.FC<HeadingCoreProps> = ({
         <div className="hidden md:block shrink-0 w-[100px] md:order-3" />
       </div>
 
-      <div className="text-center max-w-[1280px] mx-auto mb-lg mt-lg md:mb-3xl md:mt-3xl">
+      <div className="text-center mb-lg mt-lg md:mb-3xl md:mt-3xl px-md">
         <p className="text-base leading-md text-text-primary">{children}</p>
       </div>
     </>

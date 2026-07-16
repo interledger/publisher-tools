@@ -4,6 +4,7 @@ import { SVGMarkStatusSmall, SVGTooltip } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
 import { toWalletAddressUrl } from '@shared/utils'
 import { toolState } from '~/stores/toolStore'
+import type { WalletStore } from '~/stores/wallet-store'
 import { BaseDialog } from './BaseDialog'
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 
@@ -12,16 +13,26 @@ interface ScriptAttribute {
   value: string
 }
 
-export const ScriptDialog: React.FC = () => {
+interface Props {
+  wallet: WalletStore
+}
+
+export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
   const snap = useSnapshot(toolState)
-  const attributes = getScriptAttributes(snap)
+  const attributes = getScriptAttributes({
+    walletAddress: wallet.walletAddress,
+    walletAddressId: wallet.walletAddressId,
+    currentToolType: snap.currentToolType,
+    activeTab: snap.activeTab,
+    cdnUrl: snap.cdnUrl,
+  })
   const { isCopied, handleCopyClick } = useCopyToClipboard(
     toScriptHtml(attributes),
   )
 
   return (
     <BaseDialog
-      className="pt-xl px-md pb-md flex flex-col items-center gap-md w-full max-w-[544px]"
+      className="p-md pt-xl flex flex-col items-center gap-md"
       aria-labelledby="script-dialog-title"
     >
       <div className="flex gap-xs items-center justify-center">
@@ -94,14 +105,14 @@ function getScriptAttributes(snapshot: {
   walletAddress: string
   walletAddressId: string
   currentToolType: string
-  activeVersion: string
+  activeTab: string
   cdnUrl: string
 }): ScriptAttribute[] {
   const {
     walletAddress,
     walletAddressId,
     currentToolType: tool,
-    activeVersion: profileId,
+    activeTab: profileId,
     cdnUrl,
   } = snapshot
 

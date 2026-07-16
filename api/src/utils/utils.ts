@@ -1,8 +1,11 @@
+import type { ValidationTargets } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import type { Request } from 'http-message-signatures'
 import { signMessage } from 'http-message-signatures/lib/httpbis'
 import { createContentDigestHeader } from 'httpbis-digest-headers'
+import type { ZodType } from 'zod'
+import { zValidator } from '@hono/zod-validator'
 import { signAsync } from '@noble/ed25519'
 
 type Headers = SignatureHeaders & Partial<ContentHeaders>
@@ -26,10 +29,6 @@ interface SignOptions {
   request: RequestLike
   privateKey: Uint8Array
   keyId: string
-}
-
-export function sleep(delay: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, delay))
 }
 
 export function waitWithAbort(ms: number, signal: AbortSignal): Promise<void> {
@@ -140,5 +139,14 @@ export function createHTTPException(
   return new HTTPException(statusCode, {
     message,
     cause: serializedError,
+  })
+}
+
+export const validate = <T extends keyof ValidationTargets, S extends ZodType>(
+  target: T,
+  schema: S,
+) => {
+  return zValidator(target, schema, (result) => {
+    if (!result.success) throw result.error
   })
 }

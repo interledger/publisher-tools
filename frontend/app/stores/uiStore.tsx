@@ -11,10 +11,12 @@ import type { ReactNode } from 'react'
 import { DialogProvider } from '@/components'
 import { toolActions } from '~/stores/toolStore'
 
+export type BuilderSection = 'content' | 'appearance'
+
 type UIState = {
   contentComplete: boolean
   appearanceComplete: boolean
-  activeSection: 'content' | 'appearance' | null
+  activeSection: BuilderSection | null
   buildStepComplete: boolean
 }
 

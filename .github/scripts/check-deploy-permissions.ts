@@ -62,9 +62,14 @@ export default async function checkDeployPermissions({ core, context, github }: 
   }
 
   if (context.eventName === 'push') {
-    core.setOutput('should-deploy', 'true');
-    core.info('Deployment allowed: Push to protected branch');
-    return;
+    const branch = context.ref
+    const allowed = ['refs/heads/main', 'refs/heads/release'];
+
+    if (allowed.includes(branch)) {
+      core.setOutput('should-deploy', 'true');
+      core.info(`Deployment allowed: Push to ${branch}`);
+      return;
+    }
   }
 
   // no deployment for other events

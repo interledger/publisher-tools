@@ -1,25 +1,112 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
-import type {
-  Grant,
-  Quote,
-  PendingGrant,
-  WalletAddress,
-} from '@interledger/open-payments'
-import { WIDGET_POSITION, BORDER_RADIUS } from '@shared/types'
+import type { PaymentStatus, WalletAddressInfo } from 'publisher-tools-api'
+import type { Grant, Quote, PendingGrant } from '@interledger/open-payments'
+import {
+  WIDGET_POSITION,
+  BORDER_RADIUS,
+  WIDGET_FONT_SIZE_MAP,
+} from '@shared/types'
 import type { FontFamilyKey, BorderRadiusKey } from '@shared/types'
 import { applyFontFamily } from '../utils.js'
-import type { WidgetConfig, FormatAmountArgs, FormattedAmount } from './types'
+import type { WidgetConfig } from './types'
 
 export interface WidgetState {
-  walletAddress: WalletAddress
+  /** sender wallet address */
+  walletAddress: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: number
   incomingPaymentGrant: Grant
   quote: Quote
-  outgoingPaymentGrant: PendingGrant
+  grantRedirectUrl: string
   paymentId: string
   debitAmount: string
   receiveAmount: string
   receiverPublicName?: string
   note?: string
+}
+
+type WalletAddressUrl = string
+/** The amount sender wants to send (like "1.05"), does not include fees */
+type UserAmount = number | PaymentCurrencyAmount['value']
+
+interface QuoteInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: UserAmount
+}
+type QuoteResult =
+  | { debitAmount: PaymentCurrencyAmount; receiveAmount: PaymentCurrencyAmount }
+  | { error: string; minSendAmount?: PaymentCurrencyAmount }
+
+interface InitiatePaymentInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+  amount: UserAmount
+  note: string
+}
+interface InitiatePaymentResult {
+  paymentId: string
+  grantRedirectUrl: PendingGrant['interact']['redirect']
+}
+
+interface ProbeWalletCompatibilityInput {
+  sender: WalletAddressInfo
+  receiver: WalletAddressInfo
+}
+
+export interface Controller {
+  getWallet(walletAddressUrl: WalletAddressUrl): Promise<WalletAddressInfo>
+  probeWalletCompatibility(
+    request: ProbeWalletCompatibilityInput,
+  ): Promise<void>
+  fetchQuote(request: QuoteInput): Promise<QuoteResult>
+  initiatePayment(request: InitiatePaymentInput): Promise<InitiatePaymentResult>
+  getStatus(
+    paymentId: string,
+    signal?: AbortSignal,
+  ): AsyncGenerator<PaymentStatus>
+
+  isPreviewMode?: boolean
+}
+
+export const NO_OP_CONTROLLER: Controller = {
+  getWallet(walletAddressUrl) {
+    return Promise.resolve({
+      $url: walletAddressUrl,
+      id: walletAddressUrl,
+      assetCode: 'USD',
+      assetScale: 2,
+      authServer: 'https://auth.example.com',
+      resourceServer: 'https://resource.example.com',
+      publicName: 'Wallet (Preview)',
+    })
+  },
+  probeWalletCompatibility() {
+    return Promise.resolve()
+  },
+  fetchQuote({ amount, sender, receiver }) {
+    amount = String(amount)
+    const debitAmount = { value: amount, currency: sender.assetCode }
+    const receiveAmount = { value: amount, currency: receiver.assetCode }
+    return Promise.resolve({ debitAmount, receiveAmount })
+  },
+  initiatePayment() {
+    return Promise.resolve({
+      paymentId: 'payment-id',
+      grantRedirectUrl: 'https://example.com/redirect',
+    })
+  },
+  async *getStatus() {
+    yield {
+      type: 'OUTGOING_PAYMENT_DONE',
+      outgoingPaymentId: '',
+      result: 'success',
+    }
+  },
+}
+
+export interface Actions {
+  setScreen(screen: unknown): void
 }
 
 export class WidgetController implements ReactiveController {
@@ -59,52 +146,6 @@ export class WidgetController implements ReactiveController {
     this.host.requestUpdate()
   }
 
-  getCurrencySymbol(assetCode: string): string {
-    const isISO4217Code = (code: string): boolean => {
-      return code.length === 3
-    }
-
-    if (!isISO4217Code(assetCode)) {
-      return assetCode.toUpperCase()
-    }
-    return new Intl.NumberFormat('en-US', {
-      currency: assetCode,
-      style: 'currency',
-      currencyDisplay: 'symbol',
-      maximumFractionDigits: 0,
-      minimumFractionDigits: 0,
-    })
-      .format(0)
-      .replace(/0/g, '')
-      .trim()
-  }
-
-  getFormattedAmount = (args: FormatAmountArgs): FormattedAmount => {
-    const { value, assetCode, assetScale } = args
-    const formatterWithCurrency = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: assetCode,
-      maximumFractionDigits: assetScale,
-      minimumFractionDigits: assetScale,
-    })
-    const formatter = new Intl.NumberFormat('en-US', {
-      maximumFractionDigits: assetScale,
-      minimumFractionDigits: assetScale,
-    })
-
-    const amount = Number(formatter.format(Number(`${value}e-${assetScale}`)))
-    const amountWithCurrency = formatterWithCurrency.format(
-      Number(`${value}e-${assetScale}`),
-    )
-    const symbol = this.getCurrencySymbol(assetCode)
-
-    return {
-      amount,
-      amountWithCurrency,
-      symbol,
-    }
-  }
-
   private applyBorderRadius(borderRadius: BorderRadiusKey) {
     const borderRadiusValue = BORDER_RADIUS[borderRadius]
     this.host.style.setProperty(
@@ -113,10 +154,14 @@ export class WidgetController implements ReactiveController {
     )
   }
 
+  private applyTriggerBackgroundColor(color: string) {
+    this.host.style.setProperty('--wm-widget-trigger-bg-color', color)
+  }
+
   private applyPosition() {
     this.host.classList.remove('position-left', 'position-right')
 
-    const position = this._config.widgetPosition || WIDGET_POSITION.Right
+    const position = this._config.profile?.position || WIDGET_POSITION.Right
     if (position === WIDGET_POSITION.Left) {
       this.host.classList.add('position-left')
     } else {
@@ -130,38 +175,34 @@ export class WidgetController implements ReactiveController {
   }
 
   applyTheme(element: HTMLElement) {
-    const theme = this._config.theme
-    if (!theme) return
+    const { color, font, border, icon } = this._config.profile
 
-    if (theme.primaryColor) {
-      element.style.setProperty('--wm-primary-color', theme.primaryColor)
+    if (color.theme) {
+      element.style.setProperty('--wm-primary-color', color.theme as string)
     }
-    if (theme.backgroundColor) {
-      element.style.setProperty('--wm-background-color', theme.backgroundColor)
-    }
-    if (theme.textColor) {
-      element.style.setProperty('--wm-text-color', theme.textColor)
-    }
-    if (theme.fontFamily) {
-      this.applyFontFamily(theme.fontFamily)
-    }
-    if (theme.fontSize) {
-      element.style.setProperty('--wm-font-size', `${theme.fontSize}px`)
-    }
-    if (theme.widgetBorderRadius) {
+    if (color.background) {
       element.style.setProperty(
-        '--wm-widget-border-radius',
-        theme.widgetBorderRadius,
+        '--wm-background-color',
+        color.background as string,
       )
     }
-    if (theme.widgetBorderRadius) {
-      this.applyBorderRadius(theme.widgetBorderRadius)
+    if (color.text) {
+      element.style.setProperty('--wm-text-color', color.text)
     }
-    if (theme.widgetButtonBackgroundColor) {
+    if (font.name) {
+      this.applyFontFamily(font.name)
+    }
+    if (font.size) {
       element.style.setProperty(
-        '--wm-widget-trigger-bg-color',
-        theme.widgetButtonBackgroundColor,
+        '--wm-font-size',
+        `${WIDGET_FONT_SIZE_MAP[font.size]}px`,
       )
+    }
+    if (border.type) {
+      this.applyBorderRadius(border.type)
+    }
+    if (icon.color) {
+      this.applyTriggerBackgroundColor(icon.color as string)
     }
   }
 }

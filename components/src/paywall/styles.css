@@ -1,0 +1,87 @@
+:host {
+  width: 100%;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  inset: 0;
+  font-family: var(--font-family);
+  font-size: calc(1rem * var(--font-scale, 1));
+
+  --title-font-size: 1.875rem;
+  --title-line-height: 2.25rem;
+
+  --p-font-size: 1rem;
+  --p-line-height: 1.5rem;
+
+  --helper-font-size: 0.8125rem;
+  --helper-line-height: 1.0625rem;
+
+  --price-font-size: 1.25rem;
+  --price-line-height: 1.75rem;
+}
+
+/* backdrop */
+:host::before {
+  content: ' ';
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.75) calc((100 * var(--wmt-vh)) - var(--coverage))
+  );
+  z-index: -1;
+}
+
+:host > div {
+  background: var(--background);
+  color: var(--color);
+  width: 100%;
+  min-height: var(--coverage);
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+:host > div > * {
+  max-width: 600px;
+  margin: 0 auto;
+  flex: 1;
+  max-height: 32rem;
+  padding: 1rem;
+}
+
+:host([hidden]) {
+  display: none;
+}
+
+:host([data-font-size='sm']) {
+  --title-font-size: 1.625rem;
+  --title-line-height: 2.0625rem;
+
+  --p-font-size: 0.8125rem;
+  --p-line-height: 1.25rem;
+
+  --helper-font-size: 0.75rem;
+  --helper-line-height: 1rem;
+
+  --price-font-size: 1.125rem;
+  --price-line-height: 1.375rem;
+}
+
+:host([data-font-size='lg']) {
+  --title-font-size: 2.125rem;
+  --title-line-height: 2.6875rem;
+
+  --p-font-size: 1rem;
+  --p-line-height: 1.5rem;
+
+  --helper-font-size: 0.875rem;
+  --helper-line-height: 1.125rem;
+
+  --price-font-size: 1.25rem;
+  --price-line-height: 1.75rem;
+}

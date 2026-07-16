@@ -1,0 +1,19 @@
+{
+  "name": "@migration/s3",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1030.0"
+  },
+  "devDependencies": {
+    "@shared/types": "workspace:^",
+    "@types/node": "^25.9.4",
+    "aws-sdk-client-mock": "^4.1.0",
+    "vitest": "^4.1.4"
+  }
+}

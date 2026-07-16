@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import ClickAwayListener from 'react-click-away-listener'
 import { cx } from 'class-variance-authority'
 import { SVGDownArrow } from '@/assets'
 import developerImage from '~/assets/images/dropdown-developer.png'
@@ -66,6 +65,7 @@ export const NavDropdown = ({
 }: NavDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const containerRef = useRef<HTMLLIElement>(null)
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -83,19 +83,32 @@ export const NavDropdown = ({
     }
   }, [isOpen])
 
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Node)) return
+      if (containerRef.current?.contains(event.target)) return
+      if (window.innerWidth >= 768) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('click', handleOutsideClick)
+    return () => {
+      document.removeEventListener('click', handleOutsideClick)
+    }
+  }, [isOpen])
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen)
   }
 
-  /** only handle click away on desktop (md breakpoint and above) */
-  const handleClickAway = () => {
-    if (window.innerWidth >= 768) {
-      setIsOpen(false)
-    }
-  }
-
   return (
-    <li className="relative inline-flex flex-col items-start justify-center">
+    <li
+      className="relative inline-flex flex-col items-start justify-center"
+      ref={containerRef}
+    >
       <button
         id="nav-dropdown-trigger"
         ref={triggerRef}
@@ -123,7 +136,7 @@ export const NavDropdown = ({
           )}
         />
       </button>
-      <ClickAwayListener onClickAway={handleClickAway}>
+      <>
         <div
           id="nav-dropdown-content"
           aria-label={title}
@@ -160,7 +173,7 @@ export const NavDropdown = ({
             />
           </ul>
         </div>
-      </ClickAwayListener>
+      </>
     </li>
   )
 }

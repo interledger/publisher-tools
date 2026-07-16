@@ -1,10 +1,12 @@
+import { Banner } from '@c/banner.js'
 import { API_URL } from '@shared/defines'
-import type { BannerConfig } from '@shared/types'
-import { Banner } from '@tools/components/banner'
+import type { BannerProfile } from '@shared/types'
+import { trackEventFactory } from './lib/analytics'
 import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
+const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
@@ -17,7 +19,7 @@ fetchProfile(API_URL, 'banner', params)
   })
   .catch((error) => console.error(error))
 
-function drawBanner(profile: BannerConfig) {
+function drawBanner(profile: BannerProfile) {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
@@ -34,29 +36,20 @@ function drawBanner(profile: BannerConfig) {
   }
 
   const bannerElement = document.createElement('wm-banner')
-  const config = profile
-
-  const bannerConfig = {
+  bannerElement.config = {
+    ...profile,
     cdnUrl: params.cdnUrl,
-    bannerTitleText: config.bannerTitleText,
-    bannerDescriptionText: config.bannerDescriptionText,
-    isBannerDescriptionVisible: config.bannerDescriptionVisible,
-    bannerBorderRadius: config.bannerBorder,
-    bannerPosition: config.bannerPosition,
-    bannerSlideAnimation: config.bannerSlideAnimation,
-    bannerThumbnail: config.bannerThumbnail,
-    theme: {
-      backgroundColor: config.bannerBackgroundColor,
-      textColor: config.bannerTextColor,
-      fontFamily: config.bannerFontName,
-      fontSize: config.bannerFontSize,
-    },
   }
-  bannerElement.config = bannerConfig
 
-  const position = config.bannerPosition
-    ? config.bannerPosition.toLowerCase()
-    : 'bottom'
+  bannerElement.addEventListener(
+    'click-extension-link',
+    (e: CustomEvent<{ link: string }>) => {
+      const { link } = e.detail
+      trackEvent('click_extension_link', { link })
+    },
+  )
+
+  const position = profile.position ? profile.position.toLowerCase() : 'bottom'
 
   bannerElement.style.position = 'fixed'
   bannerElement.style.left = '0'

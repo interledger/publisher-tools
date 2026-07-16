@@ -1,6 +1,6 @@
 # Publisher Tools - Frontend
 
-This package contains the Remix frontend application for the Publisher Tools, providing a user-friendly dashboard for publishers to configure and manage monetization on their websites.
+This package contains the React Router 7 frontend application for Publisher Tools, providing a user-friendly dashboard for publishers to configure and manage monetization on their websites.
 
 ## Core Features
 
@@ -13,7 +13,7 @@ The dashboard allows users to customize and generate code for the following tool
 - **Probabilistic Revshare (`/prob-revshare`):** A UI for setting up probabilistic revenue sharing, allowing publishers to distribute incoming payments among multiple recipients based on assigned weights.
 - **Payment Confirmation (`/payment-confirmation`):** A dedicated page to display the status of a payment to the user. Embedded tools may redirect users to this page after a payment is completed or fails.
 
-The application also includes API routes (e.g., `api.config.$type.ts`) that are handled by the Remix server to manage configuration and other backend tasks.
+The application also includes API routes (e.g., `api.config.$type.ts`) that are handled by the React Router server runtime to manage configuration and other backend tasks.
 
 ## Development
 

@@ -1,14 +1,10 @@
 /**
- * By default, Remix will handle generating the HTTP Response for you.
- * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
- * For more information, see https://remix.run/file-conventions/entry.server
+ * Server entry for React Router
+ * You can delete this file to use the framework default, or restore it with `npx react-router reveal`.
+ * @see https://reactrouter.com/api/framework-conventions/entry.server.tsx
  */
 
-import {
-  ServerRouter,
-  type AppLoadContext,
-  type EntryContext,
-} from 'react-router'
+import { ServerRouter, type EntryContext } from 'react-router'
 import { isbot } from 'isbot'
 import { renderToReadableStream } from 'react-dom/server'
 
@@ -19,10 +15,6 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   reactRouterContext: EntryContext,
-  // This is ignored so we can keep it in the template for visibility.  Feel
-  // free to delete this parameter in your app if you're not using it!
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loadContext: AppLoadContext,
 ) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), streamTimeout)

@@ -1,69 +1,25 @@
-/** @deprecated will be removed in future versions */
-export interface ConfigVersions {
-  [key: string]: ElementConfigType
-}
-
-export interface ElementConfigType {
-  // general config
-  /** the display name for this configuration version */
-  versionName: string
-  /** necessary when creating a new configuration */
-  tag?: string
-  /** added by user later, not part of "default" data. TODO: use correct types at all site to extend default data. */
-  walletAddress: string
-
-  // button specific
-  buttonFontName: string
-  buttonText: string
-  buttonBorder: CornerType
-  buttonTextColor: string
-  buttonBackgroundColor: string
-  buttonDescriptionText?: string
-
-  // banner specific
-  bannerFontName: FontFamilyKey
-  bannerFontSize: number
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
-
-  // widget specific
-  widgetFontName: FontFamilyKey
-  widgetFontSize: number
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
-}
-
 export const TOOL_BANNER = 'banner'
 export const TOOL_WIDGET = 'widget'
-export const TOOLS = [TOOL_BANNER, TOOL_WIDGET] as const
+export const TOOL_PAYWALL = 'paywall'
+export const TOOL_OFFERWALL = 'offerwall'
+export const TOOLS = [
+  TOOL_BANNER,
+  TOOL_WIDGET,
+  TOOL_PAYWALL,
+  TOOL_OFFERWALL,
+] as const
 export type Tool = (typeof TOOLS)[number]
 
-export const PROFILE_IDS = ['version1', 'version2', 'version3'] as const
+export const PROFILE_A = 'version1'
+export const PROFILE_B = 'version2'
+export const PROFILE_C = 'version3'
+export const PROFILE_IDS = [PROFILE_A, PROFILE_B, PROFILE_C] as const
 export type ProfileId = (typeof PROFILE_IDS)[number]
 
 export const DEFAULT_PROFILE_NAMES: Record<ProfileId, string> = {
-  version1: 'Default profile 1',
-  version2: 'Default profile 2',
-  version3: 'Default profile 3',
+  version1: 'Default layout 1',
+  version2: 'Default layout 2',
+  version3: 'Default layout 3',
 } as const
 
 export interface Configuration {
@@ -77,6 +33,12 @@ export interface Configuration {
   widget?: {
     [presetId in ProfileId]?: WidgetProfile
   }
+  paywall?: {
+    [presetId in ProfileId]?: PaywallProfile
+  }
+  offerwall?: {
+    [presetId in ProfileId]?: OfferwallProfile
+  }
 }
 
 export type ToolProfiles<T extends Tool> = Configuration[T]
@@ -84,7 +46,49 @@ export type ToolProfiles<T extends Tool> = Configuration[T]
 export type ToolProfile<T extends Tool> = {
   banner: BannerProfile
   widget: WidgetProfile
+  paywall: PaywallProfile
+  offerwall: OfferwallProfile
 }[T]
+
+export const BANNER_FONT_SIZE_MAP = {
+  '2xs': 16,
+  'xs': 17,
+  'sm': 18,
+  'md': 19,
+  'base': 20,
+  'lg': 21,
+  '2lg': 22,
+  'xl': 23,
+  '2xl': 24,
+} as const
+
+export type BannerFontSize = keyof typeof BANNER_FONT_SIZE_MAP
+
+export const WIDGET_FONT_SIZE_MAP = {
+  xs: 14,
+  sm: 15,
+  md: 16,
+  base: 17,
+  lg: 18,
+  xl: 19,
+} as const
+
+export type WidgetFontSize = keyof typeof WIDGET_FONT_SIZE_MAP
+
+export const PAYWALL_FONT_SIZE_MAP = {
+  sm: 16,
+  base: 17,
+  lg: 18,
+} as const
+export type PaywallFontSize = keyof typeof PAYWALL_FONT_SIZE_MAP
+
+export type FontSize = BannerFontSize | WidgetFontSize | PaywallFontSize
+
+export type HexString = string
+export type GradientCssString = string
+
+export type TextColor = HexString
+export type Background = HexString | { gradient: GradientCssString }
 
 export interface BaseToolProfile {
   $version: string
@@ -93,72 +97,139 @@ export interface BaseToolProfile {
 }
 
 export interface BannerProfile extends BaseToolProfile {
-  // content
-  bannerTitleText: string
-  bannerDescriptionText: string
-  bannerDescriptionVisible: boolean
-
-  // appearance
-  bannerFontName: FontFamilyKey
-  bannerFontSize: number
-  bannerSlideAnimation: SlideAnimationType
-  bannerPosition: BannerPositionKey
-  bannerBorder: CornerType
-  bannerTextColor: string
-  bannerBackgroundColor: string
-  /** empty: not visible; default: visible */
-  bannerThumbnail: string
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+    isVisible: boolean
+  }
+  font: {
+    name: FontFamilyKey
+    size: BannerFontSize
+  }
+  animation: {
+    type: SlideAnimationType
+  }
+  position: BannerPositionKey
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+  }
+  thumbnail: {
+    value: string
+  }
 }
 
 export interface WidgetProfile extends BaseToolProfile {
-  // content
-  widgetTitleText: string
-  widgetDescriptionText: string
-  widgetDescriptionVisible: boolean
-
-  // appearance
-  widgetFontName: FontFamilyKey
-  widgetFontSize: number
-  widgetPosition: WidgetPositionKey
-  widgetDonateAmount: number // not posibble currently
-  widgetButtonText: string
-  widgetButtonBorder: CornerType
-  widgetTextColor: string
-  widgetBackgroundColor: string
-  widgetButtonTextColor: string
-  widgetButtonBackgroundColor: string
-  widgetTriggerBackgroundColor: string
-  widgetTriggerIcon: string
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+    isVisible: boolean
+  }
+  font: {
+    name: FontFamilyKey
+    size: WidgetFontSize
+  }
+  position: WidgetPositionKey
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+    theme: Background
+  }
+  ctaPayButton: {
+    text: string
+  }
+  icon: {
+    value: string
+    color: Background
+  }
 }
 
-type PickByPrefix<T, P> = Pick<T, Extract<keyof T, P>>
-/** @deprecated Use BannerProfile instead */
-export type BannerConfig = PickByPrefix<ElementConfigType, `banner${string}`>
-/** @deprecated Use WidgetProfile instead */
-export type WidgetConfig = PickByPrefix<ElementConfigType, `widget${string}`>
+export interface PaywallProfile extends BaseToolProfile {
+  /** The default price, unless changed via `data-price` attribute */
+  price: PaymentCurrencyAmount
+  behavior: {
+    // The `enabled` flags are for forward compatibility
+    /** How much of the page the paywall covers? */
+    coverage: { value: 25 | 50 | 75 | 100; enabled: boolean }
+    /** Number of seconds to wait for paywall to appear */
+    delay: { value: number; enabled: boolean }
+  }
+  title: {
+    text: string
+  }
+  description: {
+    text: string
+  }
+  ctaButton: {
+    text: string
+  }
+  font: {
+    name: FontFamilyKey
+    size: PaywallFontSize
+  }
+  colors: {
+    text: TextColor
+    background: Background
+    theme: Background
+  }
+  border: {
+    type: CornerType
+  }
+}
 
-export type ToolConfig<T extends Tool> = {
-  banner: BannerConfig
-  widget: WidgetConfig
-}[T]
+export interface OfferwallProfile extends BaseToolProfile {
+  font: {
+    name: FontFamilyKey
+  }
+  border: {
+    type: CornerType
+  }
+  color: {
+    text: TextColor
+    background: Background
+    headline: TextColor
+    theme: Background
+  }
+}
+
+export declare class MonetizationEvent extends Event {
+  amountSent: { value: string; currency: string }
+  paymentPointer: string
+  incomingPayment: string
+}
 
 export const KV_PAYMENTS_PREFIX = 'payments/'
+
+export type PaymentError = 'NON_POSITIVE_AMOUNT' | 'WALLET_UNAVAILABLE'
 
 export const BANNER_TITLE_MAX_LENGTH = 60
 export const BANNER_DESCRIPTION_MAX_LENGTH = 300
 export const WIDGET_TITLE_MAX_LENGTH = 30
 export const WIDGET_DESCRIPTION_MAX_LENGTH = 300
+export const PAYWALL_TITLE_MAX_LENGTH = 40
+export const PAYWALL_DESCRIPTION_MAX_LENGTH = 200
+export const PAYWALL_CTA_BUTTON_MAX_LENGTH = 30
 
 export const BANNER_FONT_SIZES = {
-  min: 16,
-  max: 24,
-  default: 20,
+  min: BANNER_FONT_SIZE_MAP['2xs'],
+  max: BANNER_FONT_SIZE_MAP['2xl'],
+  default: BANNER_FONT_SIZE_MAP.base,
 } as const
 
 export const WIDGET_FONT_SIZES = {
-  min: 12,
-  max: 20,
-  default: 16,
+  min: WIDGET_FONT_SIZE_MAP.xs,
+  max: WIDGET_FONT_SIZE_MAP.xl,
+  default: WIDGET_FONT_SIZE_MAP.base,
 } as const
 
 export const CORNER_OPTION = {
@@ -203,6 +274,21 @@ export const FONT_FAMILY_OPTIONS = [
   'Cookie',
   'Titillium Web',
   'Roboto',
+  'Inter',
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]
+
+export type UtmParams = {
+  utm_source: string
+  utm_medium: string
+  utm_campaign?: string
+  utm_content?: string
+  utm_term?: string
+}
+
+export interface Amount {
+  value: string
+  assetCode: string
+  assetScale: number
+}

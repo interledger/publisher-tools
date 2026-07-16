@@ -1,10 +1,10 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGPlay } from '~/assets/svg'
+import { SVGPlay, SVGRefresh } from '~/assets/svg'
 
 interface ToolsSecondaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
-  icon?: 'play'
+  icon?: 'play' | 'refresh'
   iconAlt?: string
   className?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
@@ -37,6 +37,7 @@ export function ToolsSecondaryButton({
       {...props}
     >
       {icon === 'play' && <SVGPlay className="w-5 h-5" />}
+      {icon === 'refresh' && <SVGRefresh className="w-5 h-5" />}
       <span className="font-normal leading-md text-base whitespace-pre">
         {children}
       </span>
