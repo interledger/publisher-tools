@@ -17,15 +17,7 @@ export default async function checkDeployPermissions({ core, context, github }: 
       return;
     }
 
-    const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      username: event.comment.user.login
-    });
-
-    const isAuthorized = ['admin', 'maintain', 'write'].includes(permission.permission);
-
-    if (!isAuthorized) {
+    if (!isAllowedAuthor(event.comment.author_association)) {
       await skipDeployment(core, 'Not authorized to trigger deployments.');
       return;
     }
