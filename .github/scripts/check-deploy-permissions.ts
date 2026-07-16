@@ -1,5 +1,5 @@
 import type { AsyncFunctionArguments } from 'github-script';
-import type { PullRequestEvent, IssueCommentEvent } from '@octokit/webhooks-types';
+import type { AuthorAssociation, IssueCommentEvent, PullRequestEvent } from '@octokit/webhooks-types';
 
 export default async function checkDeployPermissions({ core, context, github }: AsyncFunctionArguments) {
   if (context.eventName === 'issue_comment') {
@@ -69,7 +69,7 @@ export default async function checkDeployPermissions({ core, context, github }: 
   core.info('Deployment not triggered for this event type');
 }
 
-function isAllowedAuthor(authorAssociation: string): boolean {
+function isAllowedAuthor(authorAssociation: AuthorAssociation): boolean {
   return (
     authorAssociation === 'OWNER' ||
     authorAssociation === 'MEMBER' ||

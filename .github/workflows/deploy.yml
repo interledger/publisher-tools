@@ -18,6 +18,10 @@ permissions:
   issues: read
   contents: read
 
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-permissions:
     name: Check Permissions
