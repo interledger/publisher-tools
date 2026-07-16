@@ -2,7 +2,6 @@ import { html, LitElement, unsafeCSS } from 'lit'
 import { property } from 'lit/decorators.js'
 import { unsafeSVG } from 'lit/directives/unsafe-svg.js'
 import icon from '@c/assets/lock_outline.svg?raw'
-import { formatCurrency } from '@shared/utils'
 import stylesCommon from './common.css?raw'
 import styles from './home.css?raw'
 import { DEFAULTS } from '../utils'
@@ -43,7 +42,7 @@ export class PaywallHome extends LitElement {
 
       <div class="bottom">
         <div class="price">
-          <span>Unlock</span> <span>${formatCurrency(this.price)}</span>
+          <span>Unlock</span> <span>${renderPrice(this.price)}</span>
         </div>
         <button type="button" @click=${this.onClick}>${this.ctaText}</button>
       </div>
@@ -57,4 +56,16 @@ export class PaywallHome extends LitElement {
   private onWalletLinkClick() {
     this.dispatchEvent(new CustomEvent('payStart'))
   }
+}
+
+function renderPrice(price: PaymentCurrencyAmount) {
+  const parts = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: price.currency,
+  }).formatToParts(Number(price.value))
+  return parts.map((p) =>
+    p.type === 'currency'
+      ? html`<span class="currency">${p.value}</span>`
+      : p.value,
+  )
 }
