@@ -54,4 +54,4 @@ build
 .react-router/
 
 # Local CDN embed test harness
-cdn/public/embed-test.html
+cdn/public/sandbox/
