@@ -162,6 +162,7 @@ export class Paywall extends LitElement {
       return html`<wmt-paywall-form
         .title=${title.text}
         .description=${description.text}
+        ctaText="Unlock"
         .walletAddressUrl=${this._view.data.walletAddress}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`

@@ -23,6 +23,7 @@ export class PaywallWalletAddressForm extends LitElement {
 
   @property({ type: String }) title = DEFAULTS.title.text
   @property({ type: String }) description = DEFAULTS.description.text
+  @property({ type: String }) ctaText = 'Unlock'
   @property({ type: String }) walletAddressUrl = ''
 
   @state() private _error = ''
@@ -73,13 +74,12 @@ export class PaywallWalletAddressForm extends LitElement {
             required
           />
 
-          <!-- Note: the form step always says "Unlock", independent of the configurable CTA text on the home view. -->
           <button type="submit" ?disabled=${this._loading}>
             ${
               this._loading
                 ? html`<wm-dots-loader></wm-dots-loader
-                    ><span class="sr-only">Unlock</span>&nbsp;`
-                : html`Unlock`
+                    ><span class="sr-only">${this.ctaText}</span>&nbsp;`
+                : this.ctaText
             }
           </button>
         </div>

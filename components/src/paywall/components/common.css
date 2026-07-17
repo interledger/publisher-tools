@@ -43,11 +43,9 @@ button {
 
   background-color: var(--theme);
   /* contrast-color() is unreliable in Chrome shadow DOM; approximate with OKLCH:
-     https://css-tricks.com/approximating-contrast-color-with-other-css-features/
-     Threshold shifted to L=0.9 so common brand colors (e.g. teal L≈0.73) get
-     white text; only near-white themes fall back to black. */
+     https://css-tricks.com/approximating-contrast-color-with-other-css-features/ */
   color: white;
-  color: oklch(from var(--theme) round(1.4 - L) 0 0);
+  color: oklch(from var(--theme) round(1.21 - L) 0 0);
   cursor: pointer;
 }
 
