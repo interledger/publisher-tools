@@ -11,7 +11,7 @@ kv_namespaces = [
 ]
 
 d1_databases = [
-  { binding = "PUBLISHER_TOOLS_DB", database_name = "publisher-tools", database_id = "e1d3faf9-7227-4e5f-8dfc-442fd481814f" }
+  { binding = "PUBLISHER_TOOLS_DB", database_name = "publisher-tools", database_id = "e1d3faf9-7227-4e5f-8dfc-442fd481814f", migrations_dir = "./migrations" }
 ]
 
 [dev]
