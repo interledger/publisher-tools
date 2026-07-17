@@ -99,13 +99,17 @@ export class Paywall extends LitElement {
     void this.showAfterDelay(connectedAt).then(() => {
       this.hidden = false
     })
-    if (entitlement.entitlement === 'auth-required') {
+    if (entitlement.entitlement === 'has-access') {
+      this.#hidePaywall()
+    } else if (this._view.type === 'verify') {
+      // If user already is here before checkEntitlement() resolved, trust that
+      // over our own (possibly) stale/racy entitlement read rather than sending
+      // user back to home/form mid-verification.
+    } else if (entitlement.entitlement === 'auth-required') {
       this.#setView('form', {
         walletAddress: this.#controller.senderWalletAddressUrl ?? undefined,
         isAuthMode: true,
       })
-    } else if (entitlement.entitlement === 'has-access') {
-      this.#hidePaywall()
     } else if (entitlement.entitlement === 'pending') {
       this.#setView('verify', { paymentId: entitlement.paymentId! })
     }
@@ -149,7 +153,7 @@ export class Paywall extends LitElement {
   render() {
     if (!this._ready) return nothing
     if (this.#entitlement.entitlement === 'has-access') return nothing
-    if (!this._delayComplete) return nothing
+    if (!this._delayComplete && this._view.type !== 'verify') return nothing
     this.#lockPageScroll()
 
     return html`<div>${this.#render()}</div> `
