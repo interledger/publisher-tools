@@ -180,6 +180,7 @@ export class Paywall extends LitElement {
         .paymentId=${this._view.data.paymentId}
         .controller=${this.#controller}
         @payment_confirmed=${this.#onPaymentConfirmed}
+        @payment_failed=${this.#onPaymentFailed}
       ></wmt-paywall-verify>`
     }
 
@@ -235,6 +236,11 @@ export class Paywall extends LitElement {
       amount: this.#price,
       note: this.defaultNote,
     })
+  }
+
+  #onPaymentFailed(ev: CustomEvent<PaymentVerifyEvents['payment_failed']>) {
+    console.warn('payment_failed', ev.detail.paymentId, ev.detail.errorCode)
+    this.#setView('home', undefined)
   }
 
   async #onPaymentConfirmed(
