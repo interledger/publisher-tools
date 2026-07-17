@@ -136,7 +136,7 @@ export const ToolsWalletAddress = ({
     <form
       onSubmit={handleSubmit}
       className={cx(
-        'flex flex-col xl:flex-row xl:items-start gap-2xl p-md bg-white rounded-lg',
+        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-2xl gap-x-lg p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600',
       )}
     >
@@ -179,7 +179,7 @@ export const ToolsWalletAddress = ({
         </div>
       </div>
 
-      <div className="flex flex-col w-full xl:max-w-[490px] items-start gap-xs xl:flex-1 xl:grow">
+      <div className="flex flex-col w-full items-start gap-xs xl:flex-1 xl:grow">
         <span
           id="wallet-status"
           role={statusMessage.type === 'error' ? 'alert' : 'status'}
