@@ -39,7 +39,10 @@ export class PaywallVerify extends LitElement {
   }
 
   firstUpdated() {
-    void this.#startVerify()
+    void this.#startVerify().catch((err) => {
+      console.error('Payment verification failed', err)
+      this.#fail('VERIFY_FAILED')
+    })
   }
 
   render() {
@@ -77,16 +80,20 @@ export class PaywallVerify extends LitElement {
         } else if (status.error?.code) {
           errorCode = status.error.code
         }
-        const detail: Events['payment_failed'] = {
-          paymentId: this.paymentId,
-          sender: this.sender,
-          errorCode,
-        }
-        this.dispatchEvent(new CustomEvent('payment_failed', { detail }))
+        this.#fail(errorCode)
         break
       }
       throw new Error('Invalid payment status')
     }
+  }
+
+  #fail(errorCode: string) {
+    const detail: Events['payment_failed'] = {
+      paymentId: this.paymentId,
+      sender: this.sender,
+      errorCode,
+    }
+    this.dispatchEvent(new CustomEvent('payment_failed', { detail }))
   }
 }
 

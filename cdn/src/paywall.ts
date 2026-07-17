@@ -110,12 +110,31 @@ function main() {
       return res
     },
     async *getStatus(paymentId, signal) {
+      if (
+        paramsFromUrl.result === 'failure' &&
+        paramsFromUrl.paymentId === paymentId
+      ) {
+        storage.postPayment.delete(pageUrl)
+        yield { type: 'GRANT_REJECTED' }
+        return
+      }
+
       const url = new URL(`/paywall/payment-status/${paymentId}`, API_URL).href
       while (true) {
         try {
           signal?.throwIfAborted()
           const res = await fetch(url, { signal })
           if (!res.ok) {
+            if (res.status === 404) {
+              storage.postPayment.delete(pageUrl)
+              yield {
+                type: 'PAYMENT_DONE',
+                outgoingPaymentId: '',
+                result: 'failure',
+                error: { code: 'NOT_FOUND', message: 'Payment not found' },
+              }
+              break
+            }
             throw new Error(`Payment status check failed: HTTP ${res.status}`)
           }
 
@@ -148,7 +167,7 @@ function main() {
     },
   })
 
-  handlePageLoad(pageUrl, paramsFromUrl, actions)
+  handlePageLoad(pageUrl, actions)
   document.body.appendChild(element)
 }
 
@@ -185,22 +204,10 @@ function handlePageUrlOnLoad() {
   return res
 }
 
-type PageLoadParams = ReturnType<typeof handlePageUrlOnLoad>
-
-function handlePageLoad(
-  pageUrl: string,
-  params: PageLoadParams,
-  actions: Actions,
-) {
+function handlePageLoad(pageUrl: string, actions: Actions) {
   const stored = storage.postPayment.get(pageUrl)
   // must be set during initiatePayment; is removed on failure/completion
   if (!stored) return
-
-  // params are empty after page reload (available only on first load)
-  if (params.result === 'failure') {
-    storage.postPayment.delete(pageUrl)
-    return
-  }
 
   const { sender, paymentId } = stored
   actions.setView('verify', { sender, paymentId })
