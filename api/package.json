@@ -9,8 +9,8 @@
     "prepare": "wrangler types",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db": "wrangler d1 --persist-to ../.wrangler execute publisher-tools --local --file",
-    "db:prod": "wrangler d1 execute publisher-tools --remote --file",
+    "migrate": "wrangler d1 migrations apply publisher-tools --local --persist-to  ../.wrangler",
+    "migrate:prod": "wrangler d1 migrations apply publisher-tools --remote",
     "deploy": "wrangler deploy"
   },
   "keywords": [],

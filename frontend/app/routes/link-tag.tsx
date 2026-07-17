@@ -21,10 +21,10 @@ export default function LinkTag() {
           title="Link Tag Generator"
           onBackClick={() => navigate('/')}
         >
-          Use the Link Tag Generator to generate a monetization &lt;link&gt;
-          element for your HTML documents.
+          The Link Tag Generator creates a monetization &lt;link&gt; element for
+          your HTML documents.
           <br />
-          Just enter your&nbsp;
+          Enter your&nbsp;
           <a href="https://paymentpointers.org/" className="underline">
             payment pointer
           </a>
