@@ -5,11 +5,13 @@ These "migration" scripts set up the database. See [Cloudflare D1 docs](https://
 ## Applying migrations
 
 During development:
+
 ```bash
 pnpm -C api migrate
 ```
 
 For production:
+
 ```bash
 pnpm -C api migrate:prod
 ```
