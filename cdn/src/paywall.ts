@@ -110,12 +110,31 @@ function main() {
       return res
     },
     async *getStatus(paymentId, signal) {
+      if (
+        paramsFromUrl.result === 'failure' &&
+        paramsFromUrl.paymentId === paymentId
+      ) {
+        storage.postPayment.delete(pageUrl)
+        yield { type: 'GRANT_REJECTED' }
+        return
+      }
+
       const url = new URL(`/paywall/payment-status/${paymentId}`, API_URL).href
       while (true) {
         try {
           signal?.throwIfAborted()
           const res = await fetch(url, { signal })
           if (!res.ok) {
+            if (res.status === 404) {
+              storage.postPayment.delete(pageUrl)
+              yield {
+                type: 'PAYMENT_DONE',
+                outgoingPaymentId: '',
+                result: 'failure',
+                error: { code: 'NOT_FOUND', message: 'Payment not found' },
+              }
+              break
+            }
             throw new Error(`Payment status check failed: HTTP ${res.status}`)
           }
 
@@ -130,6 +149,7 @@ function main() {
             status.type === 'PAYMENT_DONE' ||
             status.type === 'GRANT_REJECTED'
           ) {
+            storage.postPayment.delete(pageUrl)
             break
           } else {
             throw new Error('Unknown payment status: ' + JSON.stringify(status))
@@ -147,7 +167,7 @@ function main() {
     },
   })
 
-  handlePageLoad(pageUrl, paramsFromUrl, actions)
+  handlePageLoad(pageUrl, actions)
   document.body.appendChild(element)
 }
 
@@ -184,21 +204,13 @@ function handlePageUrlOnLoad() {
   return res
 }
 
-type PageLoadParams = ReturnType<typeof handlePageUrlOnLoad>
+function handlePageLoad(pageUrl: string, actions: Actions) {
+  const stored = storage.postPayment.get(pageUrl)
+  // must be set during initiatePayment; is removed on failure/completion
+  if (!stored) return
 
-function handlePageLoad(
-  pageUrl: string,
-  params: PageLoadParams,
-  actions: Actions,
-) {
-  if (params.paymentId && params.result === 'success') {
-    const stored = storage.postPayment.get(pageUrl, params)
-    if (stored) {
-      const { sender, paymentId } = stored
-      actions.setView('verify', { sender, paymentId })
-      storage.postPayment.delete(pageUrl)
-    }
-  }
+  const { sender, paymentId } = stored
+  actions.setView('verify', { sender, paymentId })
 }
 
 const storage = {
@@ -228,7 +240,7 @@ const storage = {
         JSON.stringify({ data, ts: Date.now() }),
       )
     },
-    get(pageUrl: string, params: PageLoadParams) {
+    get(pageUrl: string) {
       const stored = window.localStorage.getItem(
         `wmt-paywall-payment:${pageUrl}`,
       )
@@ -236,15 +248,14 @@ const storage = {
 
       try {
         const parsed = JSON.parse(stored)
-        if (!parsed.ts || !parsed.data) {
+        if (!parsed.ts || !parsed.data?.sender || !parsed.data?.paymentId) {
           throw new Error('Invalid stored data')
         }
-        // TODO: add more validation, check recency too
-        if (!parsed.data.sender || !parsed.data.paymentId) {
-          throw new Error('Invalid stored data')
-        }
-        if (parsed.data.paymentId !== params.paymentId) {
-          throw new Error('Stored data is for different paymentId')
+        const MAX_AGE_MS = 2 * 60 * 60 * 1000
+        if (Date.now() - parsed.ts > MAX_AGE_MS) {
+          // don't trust too stale data
+          this.delete(pageUrl)
+          return null
         }
         return {
           sender: parsed.data.sender as WalletAddressInfo,
