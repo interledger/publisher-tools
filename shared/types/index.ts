@@ -268,6 +268,7 @@ export const WIDGET_POSITION = {
 export type WidgetPositionKey = keyof typeof WIDGET_POSITION
 
 export const FONT_FAMILY_OPTIONS = [
+  'Inter',
   'Arial',
   'Inherit',
   'Open Sans',

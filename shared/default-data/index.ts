@@ -108,7 +108,7 @@ export const createDefaultPaywallProfile = (
       text: `Unlock the full article with a one-time payment - no subscription, no account.`,
     },
     ctaButton: {
-      text: 'Pay with Open Payments',
+      text: 'Unlock article',
     },
     font: {
       name: FONT_FAMILY_OPTIONS[0],
@@ -118,7 +118,7 @@ export const createDefaultPaywallProfile = (
       type: CORNER_OPTION.Light,
     },
     colors: {
-      text: '#676767',
+      text: '#363636',
       background: '#ffffff',
       theme: '#56b7b5',
     },

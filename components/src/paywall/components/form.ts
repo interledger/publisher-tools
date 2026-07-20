@@ -23,7 +23,7 @@ export class PaywallWalletAddressForm extends LitElement {
 
   @property({ type: String }) title = DEFAULTS.title.text
   @property({ type: String }) description = DEFAULTS.description.text
-  @property({ type: String }) ctaText = DEFAULTS.ctaButton.text
+  @property({ type: String }) ctaText = 'Unlock'
   @property({ type: String }) walletAddressUrl = ''
 
   @state() private _error = ''
@@ -37,10 +37,11 @@ export class PaywallWalletAddressForm extends LitElement {
   }
 
   firstUpdated(): void {
+    const input = this.renderRoot.querySelector('input')!
     if (this.walletAddressUrl) {
-      const input = this.renderRoot.querySelector('input')!
       input.value = this.walletAddressUrl
     }
+    input.focus()
   }
 
   render() {
@@ -57,8 +58,11 @@ export class PaywallWalletAddressForm extends LitElement {
   get #form() {
     return html`
       <form @submit=${this.handleSubmit}>
-        <div>
-          <label for="wallet-address-url">Wallet address</label>
+        <label for="wallet-address-url"
+          >Wallet address
+          <span class="required" aria-hidden="true">*</span></label
+        >
+        <div class="field-row">
           <input
             type="text"
             id="wallet-address-url"
@@ -69,17 +73,17 @@ export class PaywallWalletAddressForm extends LitElement {
             ?disabled=${this._loading}
             required
           />
-          <p id="wallet-address-url-error" class="error">${this._error}</p>
-        </div>
 
-        <button type="submit" ?disabled=${this._loading}>
-          ${
-            this._loading
-              ? html`<wm-dots-loader></wm-dots-loader
-                  ><span class="sr-only">${this.ctaText}</span>&nbsp;`
-              : this.ctaText
-          }
-        </button>
+          <button type="submit" ?disabled=${this._loading}>
+            ${
+              this._loading
+                ? html`<wm-dots-loader></wm-dots-loader
+                    ><span class="sr-only">${this.ctaText}</span>&nbsp;`
+                : this.ctaText
+            }
+          </button>
+        </div>
+        <p id="wallet-address-url-error" class="error">${this._error}</p>
       </form>
     `
   }

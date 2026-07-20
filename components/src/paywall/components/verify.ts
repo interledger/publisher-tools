@@ -39,7 +39,10 @@ export class PaywallVerify extends LitElement {
   }
 
   firstUpdated() {
-    void this.#startVerify()
+    void this.#startVerify().catch((err) => {
+      console.error('Payment verification failed', err)
+      this.#fail('VERIFY_FAILED')
+    })
   }
 
   render() {
@@ -62,7 +65,7 @@ export class PaywallVerify extends LitElement {
         // keep Verifying
         continue
       }
-      if (status.type === 'PAYMENT_DONE') {
+      if (status.type === 'PAYMENT_DONE' && status.result === 'success') {
         const detail: Events['payment_confirmed'] = {
           paymentId: this.paymentId,
           sender: this.sender,
@@ -70,8 +73,27 @@ export class PaywallVerify extends LitElement {
         this.dispatchEvent(new CustomEvent('payment_confirmed', { detail }))
         break
       }
+      if (status.type === 'PAYMENT_DONE' || status.type === 'GRANT_REJECTED') {
+        let errorCode = 'UNKNOWN'
+        if (status.type === 'GRANT_REJECTED') {
+          errorCode = status.type
+        } else if (status.error?.code) {
+          errorCode = status.error.code
+        }
+        this.#fail(errorCode)
+        break
+      }
       throw new Error('Invalid payment status')
     }
+  }
+
+  #fail(errorCode: string) {
+    const detail: Events['payment_failed'] = {
+      paymentId: this.paymentId,
+      sender: this.sender,
+      errorCode,
+    }
+    this.dispatchEvent(new CustomEvent('payment_failed', { detail }))
   }
 }
 
@@ -79,6 +101,11 @@ type Events = {
   payment_confirmed: {
     paymentId: string
     sender?: WalletAddressInfo
+  }
+  payment_failed: {
+    paymentId: string
+    sender?: WalletAddressInfo
+    errorCode: string
   }
 }
 export type { Events as PaymentVerifyEvents }

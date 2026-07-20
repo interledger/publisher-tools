@@ -18,6 +18,7 @@ import { usePathTracker } from '~/hooks/usePathTracker'
 import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
+import type { GrantOutcome } from '~/lib/types'
 import { loadState, persistState } from '~/stores/toolStore'
 import type { createWalletStore } from '~/stores/wallet-store'
 import type { createToolStoreUtils } from '~/utils/utils.store'
@@ -40,7 +41,7 @@ type Props = React.PropsWithChildren<{
   tool: ComponentProps<typeof ToolsWalletAddress>['tool']
   preview: ReactNode
   loaderData: {
-    grantResponse?: string
+    grantResponse?: GrantOutcome
     isGrantAccepted?: boolean
     isGrantResponse?: boolean
     OP_WALLET_ADDRESS: string
@@ -149,13 +150,10 @@ export function ToolLayoutWithPreview({
                 />
               </div>
 
-              <div className="flex flex-col xl:flex-row gap-2xl">
-                <div className="flex flex-col gap-2xl xl:flex-1">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-2xl gap-x-sm">
+                <div className="flex flex-col gap-2xl">
                   {steps.length > 1 && stepMiddle && (
-                    <div
-                      id="configure-builder"
-                      className="w-full xl:max-w-[628px]"
-                    >
+                    <div id="configure-builder" className="w-full">
                       <MobileStepsIndicator
                         number={steps[0].number}
                         label={steps[0].label}
@@ -166,7 +164,7 @@ export function ToolLayoutWithPreview({
                     </div>
                   )}
 
-                  <div id="builder" className="w-full xl:max-w-[628px]">
+                  <div id="builder" className="w-full">
                     <MobileStepsIndicator
                       number={steps.at(-1)!.number}
                       label={steps.at(-1)!.label}
@@ -184,7 +182,7 @@ export function ToolLayoutWithPreview({
 
                 <div
                   id="preview"
-                  className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md xl:self-start xl:flex-shrink-0 xl:w-[504px] h-fit"
+                  className="w-full mx-auto xl:mx-0 xl:sticky xl:top-md h-fit"
                 >
                   {preview}
                 </div>

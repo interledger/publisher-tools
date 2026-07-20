@@ -9,6 +9,21 @@ export const FONT_MAP = new Map<
   { fileName: string; fallback: string[] }
 >([
   [
+    'Inter',
+    {
+      fileName: 'inter.css',
+      fallback: [
+        'ui-sans-serif',
+        'system-ui',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        'sans-serif',
+      ],
+    },
+  ],
+  [
     'Open Sans',
     {
       fileName: 'open-sans.css',
