@@ -85,7 +85,7 @@ export const BuilderProfileTabs = <T extends string>({
   )
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <div
         className="grid w-full overflow-x-auto"
         style={{

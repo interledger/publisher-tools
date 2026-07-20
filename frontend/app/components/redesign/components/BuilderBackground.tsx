@@ -32,7 +32,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
     <div
       id="builder-background"
       className={cx(
-        'bg-silver-100 rounded-[20px] p-md flex flex-col items-center',
+        'bg-silver-100 rounded-[20px] rounded-b-none p-sm flex flex-col items-center',
         !iframeMode && 'min-h-[600px]',
         actions && 'gap-4xl',
         className,
