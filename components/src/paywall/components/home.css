@@ -1,7 +1,8 @@
 :host {
   width: 100%;
-  display: grid;
-  grid-template-rows: max-content 1fr max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   overflow: hidden;
 }
 
@@ -12,13 +13,38 @@
   width: 100%;
 }
 
+.wallet-link {
+  display: inline;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: #7469a8;
+  text-align: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: text-decoration-thickness 120ms ease;
+}
+
+.wallet-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.wallet-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .price {
-  background-color: rgba(0, 0, 0, 0.05);
-  border: rgba(0, 0, 0, 0.1);
+  background-color: #f6f8fa;
   border-radius: 0.5rem;
-  padding: 0.25rem 0.5rem;
+  padding: var(--wmt-price-padding, 1.5rem 0.5rem);
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 
   span:first-child {
     text-transform: uppercase;
@@ -30,5 +56,10 @@
     font-size: var(--price-font-size);
     line-height: var(--price-line-height);
     font-weight: 400;
+    color: #7469a8;
+  }
+
+  .currency {
+    margin-inline-end: 0.25em;
   }
 }

@@ -268,13 +268,13 @@ export const WIDGET_POSITION = {
 export type WidgetPositionKey = keyof typeof WIDGET_POSITION
 
 export const FONT_FAMILY_OPTIONS = [
+  'Inter',
   'Arial',
   'Inherit',
   'Open Sans',
   'Cookie',
   'Titillium Web',
   'Roboto',
-  'Inter',
 ] as const
 
 export type FontFamilyKey = (typeof FONT_FAMILY_OPTIONS)[number]

@@ -106,7 +106,7 @@ export function ToolPreview<MessageToIframe, MessageFromIframe>({
   )
 }
 
-const IFRAME_WIDTH_DESKTOP = 1080
+const IFRAME_WIDTH_DESKTOP = 860
 const IFRAME_HEIGHT_DESKTOP = 720
 
 const IFRAME_WIDTH_MOBILE = 380

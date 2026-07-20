@@ -118,7 +118,7 @@ export const createDefaultPaywallProfile = (
       type: CORNER_OPTION.Light,
     },
     colors: {
-      text: '#676767',
+      text: '#363636',
       background: '#ffffff',
       theme: '#56b7b5',
     },
