@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { cx } from 'class-variance-authority'
 import { ToolsSecondaryButton, InputField, Tooltip } from '@/components'
 import { Heading5 } from '@/typography'
+import { type Tool } from '@shared/types'
 import {
   checkHrefFormat,
   getWalletAddress,
@@ -17,17 +18,13 @@ import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 interface Props {
   store: WalletStore
   walletActions: WalletActions
-  toolName:
-    | 'drawer banner'
-    | 'payment widget'
-    | 'offerwall experience'
-    | 'pay per article'
+  tool: Tool
 }
 
 export const ToolsWalletAddress = ({
   store: snap,
   walletActions,
-  toolName,
+  tool,
 }: Props) => {
   const t = useTranslation('toolsWalletAddress')
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
@@ -123,16 +120,13 @@ export const ToolsWalletAddress = ({
     }
     if (!snap.hasRemoteConfigs) {
       return {
-        message: t('status.noSavedProfiles', { toolName }),
+        message: t(`status.noSavedProfiles.${tool}`),
         type: 'success',
       }
     }
 
     return {
-      message:
-        toolName === 'pay per article' // single profile
-          ? t('status.profileFetched', { toolName })
-          : t('status.profilesFetched', { toolName }),
+      message: t(`status.profilesFetched.${tool}`),
       type: 'success',
     }
   }
@@ -142,7 +136,7 @@ export const ToolsWalletAddress = ({
     <form
       onSubmit={handleSubmit}
       className={cx(
-        'flex flex-col xl:flex-row xl:items-start gap-2xl p-md bg-white rounded-lg',
+        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-2xl gap-x-lg p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600',
       )}
     >
@@ -185,7 +179,7 @@ export const ToolsWalletAddress = ({
         </div>
       </div>
 
-      <div className="flex flex-col w-full xl:max-w-[490px] items-start gap-xs xl:flex-1 xl:grow">
+      <div className="flex flex-col w-full items-start gap-xs xl:flex-1 xl:grow">
         <span
           id="wallet-status"
           role={statusMessage.type === 'error' ? 'alert' : 'status'}

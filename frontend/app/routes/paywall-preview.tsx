@@ -22,7 +22,7 @@ export default function PaywallPreview() {
   useEffect(() => {
     const load = async () => {
       if (!customElements.get(NAME)) {
-        const { Paywall } = await import('@tools/components/paywall/index')
+        const { Paywall } = await import('@tools/components/paywall/index.js')
         if (!customElements.get(NAME)) {
           customElements.define(NAME, Paywall)
         }

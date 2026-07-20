@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NO_OP_CONTROLLER } from '@c/widget/controller'
+import { NO_OP_CONTROLLER } from '@c/widget/controller.js'
 import { getDefaultProfile } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
 import type { WidgetProfile } from '@shared/types'
@@ -20,7 +20,8 @@ export default function WidgetPreviewRoute() {
   useEffect(() => {
     const load = async () => {
       if (!customElements.get(NAME)) {
-        const { PaymentWidget } = await import('@tools/components/widget/index')
+        const { PaymentWidget } =
+          await import('@tools/components/widget/index.js')
         if (!customElements.get(NAME)) {
           customElements.define(NAME, PaymentWidget)
         }
@@ -47,6 +48,7 @@ export default function WidgetPreviewRoute() {
     el.setController({
       isPreviewMode: true,
       getWallet: NO_OP_CONTROLLER.getWallet,
+      probeWalletCompatibility: NO_OP_CONTROLLER.probeWalletCompatibility,
       async fetchQuote(request) {
         await sleep(500)
         return NO_OP_CONTROLLER.fetchQuote(request)

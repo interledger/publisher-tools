@@ -14,12 +14,23 @@
     "errors.fieldRequired": "This field is required",
     "errors.connectionError": "You have not connected your wallet address yet.",
     "status.connect": "If you're connecting your wallet address for the first time, you'll start with the default layout. You can then customize and save your layout as needed.",
-    "status.noSavedProfiles": "There are no custom edits for the {{toolName}} correlated to this wallet address but you can start customizing when you want.",
-    "status.profilesFetched": "We've loaded your layouts. Feel free to keep customizing your {{toolName}} to fit your style.",
-    "status.profileFetched": "We've loaded your layout. Feel free to keep customizing your {{toolName}} to fit your style.",
+    "status.noSavedProfiles.banner": "This is the default banner style. Customize it to make it your own.",
+    "status.noSavedProfiles.widget": "This is the default widget style. Customize it to make it your own.",
+    "status.noSavedProfiles.offerwall": "This is the default offerwall style. Customize it to make it your own.",
+    "status.noSavedProfiles.paywall": "This is the default paywall style. Customize it to make it your own.",
+    "status.profilesFetched.banner": "We've loaded your layouts. Feel free to keep customizing your banner to fit your style.",
+    "status.profilesFetched.widget": "We've loaded your layouts. Feel free to keep customizing your widget to fit your style.",
+    "status.profilesFetched.offerwall": "We've loaded your layouts. Feel free to keep customizing your offerwall experience to fit your style.",
+    "status.profilesFetched.paywall": "We've loaded your layout. Feel free to keep customizing your pay per article to fit your style.",
     "button.loadingLabel": "Connecting...",
     "button.submitLabel": "Continue",
     "button.disconnectAriaLabel": "Disconnect wallet"
+  },
+  "grantInteraction": {
+    "success": "Wallet ownership confirmed!",
+    "declined": "Wallet authorization was declined.",
+    "sessionExpired": "Your session has expired. Please try again.",
+    "verificationFailed": "Unable to verify wallet access. Please try again."
   },
   "paywall": {
     "title": "Pay per Article",
@@ -43,6 +54,6 @@
     "input.message.hint": "Explain the value in one sentence.",
     "input.message.placeholder": "Unlock the full article with a one-time payment — no subscription, no account.",
     "input.payButton.label": "Pay button label",
-    "input.payButton.placeholder": "Pay with Open Payments"
+    "input.payButton.placeholder": "Unlock article"
   }
 }

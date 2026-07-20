@@ -36,7 +36,7 @@ function getLegacyOptions() {
 }
 
 export const useConnectWallet = (
-  wallet: WalletStore,
+  _wallet: WalletStore,
   walletActions: WalletActions,
 ) => {
   const [openDialog, closeDialog] = useDialog()

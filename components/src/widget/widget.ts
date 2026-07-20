@@ -1,9 +1,9 @@
 import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
-import interledgerLogoIcon from '@c/assets/interledger_logo.svg'
-import defaultTriggerIcon from '@c/assets/wm_logo_animated.svg'
-import { registerComponents } from '@c/utils'
+import interledgerLogoIcon from '@tools/components/assets/interledger_logo.svg'
+import defaultTriggerIcon from '@tools/components/assets/wm_logo_animated.svg'
+import { registerComponents } from '@tools/components/utils.js'
 import { HomeView, type SubmitEventDetail } from './components/home.js'
 import { PaymentInitiate } from './components/initiate.js'
 import { PaymentWaiting } from './components/waiting.js'
@@ -61,9 +61,16 @@ export class PaymentWidget extends LitElement {
         throw new Error('Please fill out your wallet address.')
       }
       const walletInfo = await this.#controller.getWallet(walletAddress)
+      const receiver = await this.#receiver
+
+      await this.#controller.probeWalletCompatibility({
+        sender: walletInfo,
+        receiver,
+      })
+
       this.configController.updateState({
         walletAddress: walletInfo,
-        receiver: await this.#receiver,
+        receiver,
       })
       this.currentView = 'initiate'
     } catch (error) {

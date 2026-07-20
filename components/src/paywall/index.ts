@@ -46,7 +46,41 @@ export class Paywall extends LitElement {
   }
 
   disconnectedCallback(): void {
+    this.#unlockPageScroll()
+  }
+
+  #scrollLockY: number | null = null
+
+  // iOS Safari ignores `overflow: hidden` on <body>; pin it with
+  // `position: fixed` at -scrollY and restore on unlock. See the
+  // `body-scroll-lock` library for reference of technique
+  #lockPageScroll() {
+    if (this.#scrollLockY !== null) return
+    const y = window.scrollY
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth
+    this.#scrollLockY = y
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${y}px`
+    document.body.style.left = '0'
+    document.body.style.right = '0'
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+  }
+
+  #unlockPageScroll() {
+    if (this.#scrollLockY === null) return
+    const y = this.#scrollLockY
+    this.#scrollLockY = null
     document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.top = ''
+    document.body.style.left = ''
+    document.body.style.right = ''
+    document.body.style.paddingRight = ''
+    window.scrollTo(0, y)
   }
 
   async #init() {
@@ -65,13 +99,17 @@ export class Paywall extends LitElement {
     void this.showAfterDelay(connectedAt).then(() => {
       this.hidden = false
     })
-    if (entitlement.entitlement === 'auth-required') {
+    if (entitlement.entitlement === 'has-access') {
+      this.#hidePaywall()
+    } else if (this._view.type === 'verify') {
+      // If user already is here before checkEntitlement() resolved, trust that
+      // over our own (possibly) stale/racy entitlement read rather than sending
+      // user back to home/form mid-verification.
+    } else if (entitlement.entitlement === 'auth-required') {
       this.#setView('form', {
         walletAddress: this.#controller.senderWalletAddressUrl ?? undefined,
         isAuthMode: true,
       })
-    } else if (entitlement.entitlement === 'has-access') {
-      this.#hidePaywall()
     } else if (entitlement.entitlement === 'pending') {
       this.#setView('verify', { paymentId: entitlement.paymentId! })
     }
@@ -115,8 +153,8 @@ export class Paywall extends LitElement {
   render() {
     if (!this._ready) return nothing
     if (this.#entitlement.entitlement === 'has-access') return nothing
-    if (!this._delayComplete) return nothing
-    document.body.style.overflow = 'hidden'
+    if (!this._delayComplete && this._view.type !== 'verify') return nothing
+    this.#lockPageScroll()
 
     return html`<div>${this.#render()}</div> `
   }
@@ -128,7 +166,7 @@ export class Paywall extends LitElement {
       return html`<wmt-paywall-form
         .title=${title.text}
         .description=${description.text}
-        .ctaText=${ctaButton.text}
+        ctaText="Unlock"
         .walletAddressUrl=${this._view.data.walletAddress}
         @submit=${this.#onSubmit}
       ></wmt-paywall-form>`
@@ -142,6 +180,7 @@ export class Paywall extends LitElement {
         .paymentId=${this._view.data.paymentId}
         .controller=${this.#controller}
         @payment_confirmed=${this.#onPaymentConfirmed}
+        @payment_failed=${this.#onPaymentFailed}
       ></wmt-paywall-verify>`
     }
 
@@ -199,6 +238,11 @@ export class Paywall extends LitElement {
     })
   }
 
+  #onPaymentFailed(ev: CustomEvent<PaymentVerifyEvents['payment_failed']>) {
+    console.warn('payment_failed', ev.detail.paymentId, ev.detail.errorCode)
+    this.#setView('home', undefined)
+  }
+
   async #onPaymentConfirmed(
     ev: CustomEvent<PaymentVerifyEvents['payment_confirmed']>,
   ) {
@@ -212,6 +256,7 @@ export class Paywall extends LitElement {
 
   #hidePaywall() {
     this.dispatchEvent(new CustomEvent('paywall_hide'))
+    this.#unlockPageScroll()
     this.#controller.remove(this)
   }
 
@@ -250,9 +295,11 @@ export class Paywall extends LitElement {
     } = this.#config
 
     const fontBaseUrl = new URL('/assets/fonts/', this.#controller.cdnUrl).href
+
     applyFontFamily(this, font.name, 'paywall', fontBaseUrl)
     this.dataset.fontSize = font.size
-    this.style.setProperty('--wmt-height', `${coverage.value}vh`)
+    this.dataset.coverage = String(coverage.value)
+    this.style.setProperty('--wmt-height', `${coverage.value}`)
     this.style.setProperty('--wmt-background', colors.background as string)
     this.style.setProperty('--wmt-theme', colors.theme as string)
     this.style.setProperty('--wmt-color', colors.text)

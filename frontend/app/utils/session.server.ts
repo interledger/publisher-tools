@@ -1,10 +1,11 @@
 import { createCookieSessionStorage } from 'react-router'
 import type { PendingGrant, WalletAddress } from '@interledger/open-payments'
+import type { GrantOutcome } from '~/lib/types'
 
 type SessionData = {
   'is-grant-accepted': boolean
   'is-grant-response': boolean
-  'grant-response': string
+  'grant-response': GrantOutcome
   'payment-grant': PendingGrant
   'wallet-address': WalletAddress
   'validForWallet': WalletAddress['id']

@@ -99,7 +99,7 @@ export default function Banner() {
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,
       }}
-      walletAddressToolName="drawer banner"
+      tool="banner"
       steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
       preview={<BannerPreview />}
       loaderData={{

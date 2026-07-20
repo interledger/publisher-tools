@@ -4,6 +4,7 @@ import SVGBanner from '~/assets/images/landing/illustration_banner.svg?url'
 import SVGButton from '~/assets/images/landing/illustration_button.svg?url'
 import SVGLinkGenerator from '~/assets/images/landing/illustration_link_generator.svg?url'
 import SVGOfferwall from '~/assets/images/landing/illustration_offerwall.svg?url'
+import SVGPaywall from '~/assets/images/landing/illustration_paywall.svg?url'
 import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share.svg?url'
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
 import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_plugin.svg?url'
@@ -92,6 +93,25 @@ const interactionTools = [
     ],
     icon: SVGWidget,
     link: '/widget',
+  },
+  {
+    title: 'Pay per Article',
+    description: (
+      <>
+        Gate articles behind a one-time payment. Visitors unlock the full read
+        with their wallet.
+        <br />
+        No subscription, no account required.
+      </>
+    ),
+    tags: [
+      'Open Payments',
+      'One-time support',
+      'Content gating',
+      'Customizable',
+    ],
+    icon: SVGPaywall,
+    link: '/paywall',
   },
   {
     title: 'Call-to-Action button',

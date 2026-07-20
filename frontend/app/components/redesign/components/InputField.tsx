@@ -43,14 +43,6 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     const ariaDescriptionId =
       ariaDescription && !error ? `${fieldId}-aria-desc` : undefined
 
-    const getDisplayError = (): string | string[] | undefined => {
-      if (required && !props.value) {
-        return 'This field is required'
-      }
-
-      return error
-    }
-
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       const trimmed = e.target.value.trim()
       if (trimmed !== e.target.value) {
@@ -61,7 +53,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       onBlur?.(e)
     }
 
-    const displayError = getDisplayError()
+    const displayError = error
     return (
       <div className="space-y-2xs">
         {label && (

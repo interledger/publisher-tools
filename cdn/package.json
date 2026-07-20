@@ -12,6 +12,7 @@
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/open-sans": "^5.2.7",
     "@fontsource-variable/roboto": "^5.2.10",
     "@fontsource/cookie": "^5.2.7",
@@ -24,7 +25,6 @@
     "esbuild": "0.28.1",
     "esbuild-plugin-copy": "^2.1.1",
     "publisher-tools-api": "workspace:^",
-    "typescript": "^5.9.3",
-    "wrangler": "^4.100.0"
+    "wrangler": "^4.105.0"
   }
 }

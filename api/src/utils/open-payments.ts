@@ -13,7 +13,7 @@ import {
 } from '@interledger/open-payments'
 import type { Amount } from '@shared/types'
 import { toAmount, sleep } from '@shared/utils'
-import { createHeaders, createHTTPException } from './utils.js'
+import { createHeaders } from './utils.js'
 import type { Env } from '../app.js'
 import type { PaymentInitiateInput } from '../routes/payment/initiate.js'
 import type { PaymentQuoteInput } from '../routes/payment/quotes.js'
@@ -259,28 +259,19 @@ export class OpenPaymentsService {
     note,
     expiresIn = 6 * 60 * 1000,
   }: CreateIncomingPaymentParams) {
-    try {
-      // create incoming payment without amount
-      return await this.client.incomingPayment.create(
-        {
-          url: walletAddress.resourceServer,
-          accessToken: accessToken,
+    return await this.client.incomingPayment.create(
+      {
+        url: walletAddress.resourceServer,
+        accessToken: accessToken,
+      },
+      {
+        expiresAt: new Date(Date.now() + expiresIn).toISOString(),
+        walletAddress: walletAddress.id,
+        metadata: {
+          description: note,
         },
-        {
-          expiresAt: new Date(Date.now() + expiresIn).toISOString(),
-          walletAddress: walletAddress.id,
-          metadata: {
-            description: note,
-          },
-        },
-      )
-    } catch (error) {
-      throw createHTTPException(
-        500,
-        'Unable to create incoming payment.',
-        error,
-      )
-    }
+      },
+    )
   }
 
   private async createQuoteGrant({ authServer }: WalletAddress) {

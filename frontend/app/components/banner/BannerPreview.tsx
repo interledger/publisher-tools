@@ -7,8 +7,7 @@ import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
 import { useBannerProfile } from '~/stores/banner-store'
 
 export type Message =
-  | { action: 'RESET' }
-  | { action: 'UPDATE'; profile: BannerProfile }
+  { action: 'RESET' } | { action: 'UPDATE'; profile: BannerProfile }
 
 export type MessageFromIframe = { type: 'READY' }
 

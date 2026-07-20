@@ -7,11 +7,10 @@
     "build": "node build.ts",
     "preview": "wrangler dev",
     "prepare": "wrangler types",
-    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db": "wrangler d1 --persist-to ../.wrangler execute publisher-tools --local --file",
-    "db:prod": "wrangler d1 execute publisher-tools --remote --file",
+    "migrate": "wrangler d1 migrations apply publisher-tools --local --persist-to  ../.wrangler",
+    "migrate:prod": "wrangler d1 migrations apply publisher-tools --remote",
     "deploy": "wrangler deploy"
   },
   "keywords": [],
@@ -28,20 +27,19 @@
     "@shared/default-data": "workspace:^",
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
-    "hono": "^4.12.25",
+    "hono": "^4.12.27",
     "http-message-signatures": "^1.0.6",
     "httpbis-digest-headers": "^1.0.0",
     "zod": "^4.4.3"
   },
   "types": "./src/types.ts",
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.16.15",
-    "@cloudflare/workers-types": "^4.20260616.1",
+    "@cloudflare/vitest-pool-workers": "^0.16.20",
+    "@cloudflare/workers-types": "^4.20260629.1",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "esbuild": "0.28.1",
-    "typescript": "5.9.3",
     "vitest": "^4.1.9",
-    "wrangler": "^4.100.0"
+    "wrangler": "^4.105.0"
   }
 }

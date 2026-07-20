@@ -1,8 +1,13 @@
 :host {
   width: 100%;
-  display: grid;
-  grid-template-rows: max-content 1fr max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   overflow: hidden;
+}
+
+:host > div {
+  width: 100%;
 }
 
 .top {
@@ -14,31 +19,43 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.25rem;
   width: calc(100% - 4px);
   margin: 0 auto;
 }
 
 form label {
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: var(--helper-font-size);
+  line-height: var(--helper-line-height);
   font-weight: 300;
 }
 
+form label .required {
+  color: var(--color-error);
+}
+
+form .field-row {
+  display: flex;
+  flex-direction: var(--wmt-form-direction, column);
+  gap: 0.75rem;
+}
+
 form input {
+  flex: 1;
+  min-width: 0;
   font-family: inherit;
   border: 2px solid rgba(0, 0, 0, 0.1);
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
   padding: 0.75rem 1rem;
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: var(--p-font-size);
+  line-height: var(--p-line-height);
   border-radius: var(--border-radius, 0.5rem);
   background-color: #fff;
+}
+
+form button {
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 form wm-dots-loader {
@@ -49,7 +66,8 @@ form input[aria-invalid='true'],
 form input:user-invalid {
   border-color: var(--color-error);
 }
-form div p.error {
+
+form p.error {
   font-size: 0.9em;
   color: var(--color-error);
 }
