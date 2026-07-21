@@ -50,7 +50,7 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.8.0
-        version: 0.8.0(hono@4.12.27)(zod@4.4.3)
+        version: 0.8.0(hono@4.12.31)(zod@4.4.3)
       '@interledger/open-payments':
         specifier: ^7.4.0
         version: 7.4.0
@@ -73,8 +73,8 @@ importers:
         specifier: workspace:^
         version: link:../shared/utils
       hono:
-        specifier: ^4.12.27
-        version: 4.12.27
+        specifier: ^4.12.31
+        version: 4.12.31
       http-message-signatures:
         specifier: ^1.0.6
         version: 1.0.6
@@ -2659,8 +2659,8 @@ packages:
   hmac-drbg@1.0.1:
     resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
 
-  hono@4.12.27:
-    resolution: {integrity: sha512-1yrb/+w6HWQJrUCLkJ2IF5jNIPvvFkblV5RNOYl6bV+OA6p9GLcMpHFFGTosSvHvcAUibuUukRqhlYI4z32C7Q==}
+  hono@4.12.31:
+    resolution: {integrity: sha512-zJIHFrl6bq3RDd2YusFNCDlM8qUprxKswyi/OPzPyzKDdyBXDqWx8bZlZ7R+saTdSTatUmb3O7K4SspGPaEOQg==}
     engines: {node: '>=16.9.0'}
 
   htmlparser2@10.1.0:
@@ -4688,9 +4688,9 @@ snapshots:
 
   '@fontsource/titillium-web@5.2.8': {}
 
-  '@hono/zod-validator@0.8.0(hono@4.12.27)(zod@4.4.3)':
+  '@hono/zod-validator@0.8.0(hono@4.12.31)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.27
+      hono: 4.12.31
       zod: 4.4.3
 
   '@humanfs/core@0.19.1': {}
@@ -6601,7 +6601,7 @@ snapshots:
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
 
-  hono@4.12.27: {}
+  hono@4.12.31: {}
 
   htmlparser2@10.1.0:
     dependencies:
