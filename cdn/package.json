@@ -12,11 +12,11 @@
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "@fontsource-variable/inter": "^5.2.8",
-    "@fontsource-variable/open-sans": "^5.2.7",
-    "@fontsource-variable/roboto": "^5.2.10",
-    "@fontsource/cookie": "^5.2.7",
-    "@fontsource/titillium-web": "^5.2.8",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/open-sans": "^5.3.0",
+    "@fontsource-variable/roboto": "^5.3.0",
+    "@fontsource/cookie": "^5.3.0",
+    "@fontsource/titillium-web": "^5.3.0",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "@shared/utils": "workspace:^",
