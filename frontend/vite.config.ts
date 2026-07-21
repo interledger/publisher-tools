@@ -27,6 +27,7 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
       persistState: {
         path: '../.wrangler',
       },
+      viteEnvironment: { name: 'ssr' },
     }),
     reactRouter(),
   ],

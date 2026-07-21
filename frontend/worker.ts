@@ -1,16 +1,11 @@
-import {
-  createRequestHandler,
-  RouterContextProvider,
-  type ServerBuild,
-} from 'react-router'
+import { createRequestHandler, RouterContextProvider } from 'react-router'
 import { APP_BASEPATH } from '~/lib/constants.js'
 import { cloudflareContext } from '~/lib/context.js'
 
-const build =
-  process.env.NODE_ENV === 'development'
-    ? () => import('virtual:react-router/server-build')
-    : // @ts-expect-error - build artifact created during build process
-      () => import('./build/server/index.js')
+const requestHandler = createRequestHandler(
+  () => import('virtual:react-router/server-build'),
+  import.meta.env.MODE,
+)
 
 export default {
   async fetch(request, env, ctx) {
@@ -20,8 +15,6 @@ export default {
       if (url.pathname === '/') {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
-      const serverBuild = await build()
-      const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 
       const routerContext = new RouterContextProvider()
       routerContext.set(cloudflareContext, { env, ctx })
