@@ -17,7 +17,7 @@ export default [
     route('paywall/', 'routes/paywall.tsx'),
     route('offerwall/', 'routes/offerwall.tsx'),
   ]),
-  route('payment-confirmation/', 'routes/payment-confirmation.tsx'),
+  route('grant-interaction/', 'routes/grant-interaction.tsx'),
   route('banner/preview/', 'routes/banner-preview.tsx'),
   route('paywall/preview/', 'routes/paywall-preview.tsx'),
   route('offerwall/preview/', 'routes/offerwall-preview.tsx'),
