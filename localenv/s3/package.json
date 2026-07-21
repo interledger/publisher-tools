@@ -8,6 +8,6 @@
     "prepare": "wrangler types"
   },
   "devDependencies": {
-    "wrangler": "^4.105.0"
+    "wrangler": "^4.112.0"
   }
 }

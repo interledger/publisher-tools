@@ -25,6 +25,6 @@
     "esbuild": "0.28.1",
     "esbuild-plugin-copy": "^2.1.1",
     "publisher-tools-api": "workspace:^",
-    "wrangler": "^4.105.0"
+    "wrangler": "^4.112.0"
   }
 }
