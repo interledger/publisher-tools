@@ -246,8 +246,8 @@ importers:
         specifier: ^2.4.2
         version: 2.4.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-colorful:
-        specifier: ^5.7.0
-        version: 5.7.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: ^5.8.0
+        version: 5.8.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-dom:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
@@ -3433,8 +3433,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react-colorful@5.7.0:
-    resolution: {integrity: sha512-fuesYIemttah97XmsIHmz4OORDHiSFzyc9HMAIrCHJou2jaRQmL8cFJ76K4zQhhj8jzwOBlOi4BaGTjjOZCfTg==}
+  react-colorful@5.8.0:
+    resolution: {integrity: sha512-Wy9OzPfjSN9bF12OB8N7UQvlsZ0I+7wHxpN+bV5BjNQGxOj6IiwkRjevJK9yOBjJWGQvAaf1OXtn8rUeEatAng==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -7366,7 +7366,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  react-colorful@5.7.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-colorful@5.8.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
