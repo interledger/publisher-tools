@@ -49,8 +49,8 @@ importers:
   api:
     dependencies:
       '@hono/zod-validator':
-        specifier: ^0.8.0
-        version: 0.8.0(hono@4.12.27)(zod@4.4.3)
+        specifier: ^0.9.0
+        version: 0.9.0(hono@4.12.27)(zod@4.4.3)
       '@interledger/open-payments':
         specifier: ^7.4.0
         version: 7.4.0
@@ -835,10 +835,10 @@ packages:
   '@fontsource/titillium-web@5.2.8':
     resolution: {integrity: sha512-DNhXS1ib/de+LwbJiEmKgB9WAGK6MZfG9qFbJbz1JoY1f4KCt9HDK7lSUtqJPxdK47D2o0vqdWcg5SD+yphWOw==}
 
-  '@hono/zod-validator@0.8.0':
-    resolution: {integrity: sha512-5uS4S1/LKtZQYvD4BtpPUFkOv8d1wNxHHrChm26buMiEYc1FrHWvDUaKVBwkiVtvSExHSpLGDvcnpI2Copyj9w==}
+  '@hono/zod-validator@0.9.0':
+    resolution: {integrity: sha512-n0ZSXmCiHVIp4Y5wlOOyZCeTd/rsawA/qW1cipB8QOYKZ9N8Tk0nZUZCXho9cu374AN4JpDNKioNKBJ/W+LBug==}
     peerDependencies:
-      hono: '>=4.10.0'
+      hono: '>=4.11.2'
       zod: ^3.25.0 || ^4.0.0
 
   '@humanfs/core@0.19.1':
@@ -4688,7 +4688,7 @@ snapshots:
 
   '@fontsource/titillium-web@5.2.8': {}
 
-  '@hono/zod-validator@0.8.0(hono@4.12.27)(zod@4.4.3)':
+  '@hono/zod-validator@0.9.0(hono@4.12.27)(zod@4.4.3)':
     dependencies:
       hono: 4.12.27
       zod: 4.4.3
