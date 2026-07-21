@@ -24,7 +24,7 @@
     "@shared/types": "workspace:^",
     "@shared/utils": "workspace:^",
     "publisher-tools-api": "workspace:^",
-    "vite": "^8.1.0"
+    "vite": "^8.1.5"
   },
   "scripts": {}
 }
