@@ -30,7 +30,7 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.7.0",
     "prettier": "^3.9.3",
-    "typescript": "5.9.3",
+    "typescript": "7.0.2",
     "typescript-eslint": "^8.62.0"
   },
   "engines": {
