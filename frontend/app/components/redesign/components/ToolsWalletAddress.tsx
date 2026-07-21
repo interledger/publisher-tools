@@ -136,7 +136,7 @@ export const ToolsWalletAddress = ({
     <form
       onSubmit={handleSubmit}
       className={cx(
-        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-2xl gap-x-lg p-md bg-white rounded-lg',
+        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-2xl gap-x-lg p-md bg-white rounded-sm',
         snap.walletConnectStep === 'error' && 'border border-red-600',
       )}
     >
@@ -170,7 +170,7 @@ export const ToolsWalletAddress = ({
           {snap.isWalletConnected && (
             <button
               onClick={handleDisconnect}
-              className="flex items-center justify-center w-12 h-12 p-2 rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              className="flex items-center justify-center w-12 h-12 p-2 rounded-sm shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label={t('button.disconnectAriaLabel')}
             >
               <SVGRefresh className="w-5 h-5 text-purple-500" />
@@ -185,8 +185,8 @@ export const ToolsWalletAddress = ({
           role={statusMessage.type === 'error' ? 'alert' : 'status'}
           className={cx(
             'w-full text-style-small-standard',
-            statusMessage.type === 'error' && '!text-red-600',
-            statusMessage.type === 'success' && '!text-text-success',
+            statusMessage.type === 'error' && 'text-red-600!',
+            statusMessage.type === 'success' && 'text-text-success!',
           )}
         >
           {statusMessage.message}

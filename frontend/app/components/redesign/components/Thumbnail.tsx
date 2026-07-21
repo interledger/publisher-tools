@@ -13,7 +13,7 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({
 }) => {
   return (
     <div
-      className={`w-[100px] h-20 border rounded-lg flex items-center justify-center cursor-pointer ${
+      className={`w-[100px] h-20 border rounded-sm flex items-center justify-center cursor-pointer ${
         isSelected ? 'border-purple-600' : 'border-silver-300'
       }`}
       onClick={onClick}

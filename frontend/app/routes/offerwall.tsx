@@ -81,7 +81,7 @@ export default function Offerwall() {
       additionalDescription={
         <>
           <HowItWorks />
-          <Divider className="!my-3xl" />
+          <Divider className="my-3xl!" />
         </>
       }
       walletStore={{

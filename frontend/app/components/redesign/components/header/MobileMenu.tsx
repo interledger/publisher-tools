@@ -28,7 +28,7 @@ const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default focusable-nav-item"
+        className="flex w-full items-center gap-xs rounded-sm p-md text-base font-normal leading-md text-nav-link-default focusable-nav-item"
       >
         {text}
       </a>
@@ -60,7 +60,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
       aria-modal="true"
       aria-label="Mobile menu"
     >
-      <div className="flex-shrink-0 flex items-center justify-between pt-[22px] pr-[20px] pb-[6px] pl-[28px]">
+      <div className="shrink-0 flex items-center justify-between pt-5.5 pr-5 pb-1.5 pl-7">
         <a href="https://webmonetization.org/">
           <img src={mobileLogo} alt="Web Monetization Logo" />
         </a>

@@ -147,7 +147,7 @@ export const ShareInput = React.memo(
         aria-rowindex={index + 2}
         aria-invalid={hasError}
         className={cx(
-          'bg-white flex flex-col gap-md p-md rounded-lg border border-silver-200',
+          'bg-white flex flex-col gap-md p-md rounded-sm border border-silver-200',
           'md:rounded-none md:border-none md:grid md:px-md md:py-0 md:items-center',
           GRID_COLS,
           GRID_GAP,

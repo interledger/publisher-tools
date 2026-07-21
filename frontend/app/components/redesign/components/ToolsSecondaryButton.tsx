@@ -29,7 +29,7 @@ export function ToolsSecondaryButton({
         'rounded-sm',
         'font-medium',
         'gap-2',
-        'focus:outline-none focus:ring-2 focus:ring-primary-focus',
+        'focus:outline-hidden focus:ring-2 focus:ring-primary-focus',
         'transition-all duration-200',
         className,
       )}

@@ -71,7 +71,7 @@ export function Tooltip({ children, label }: TooltipProps) {
         onMouseLeave={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
-        className="rounded-full hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-primary-focus"
+        className="rounded-full hover:bg-gray-100 focus:outline-hidden focus:ring-1 focus:ring-primary-focus"
       >
         <SVGTooltip className="w-6 h-6" />
       </button>
@@ -86,7 +86,7 @@ export function Tooltip({ children, label }: TooltipProps) {
             top: y,
             left: x,
           }}
-          className="relative z-50 p-md bg-interface-tooltip rounded-lg shadow-lg text-white text-xs sm:text-sm"
+          className="relative z-50 p-md bg-interface-tooltip rounded-sm shadow-lg text-white text-xs sm:text-sm"
         >
           {children}
 
