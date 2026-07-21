@@ -1,7 +1,4 @@
-import {
-  RouterContextProvider,
-  type ActionFunctionArgs,
-} from 'react-router'
+import { RouterContextProvider, type ActionFunctionArgs } from 'react-router'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { BannerProfile, WidgetProfile } from '@shared/types'
 import { cloudflareContext } from '~/lib/context'

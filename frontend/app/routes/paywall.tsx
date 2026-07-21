@@ -13,6 +13,7 @@ import { Divider } from '~/components/redesign/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { useToolWallet } from '~/hooks/useToolWallet'
 import { useTranslation } from '~/i18n/useTranslation'
+import { cloudflareContext } from '~/lib/context.js'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -26,7 +27,6 @@ import {
   subscribeProfilesToUpdates,
 } from '~/stores/paywall-store'
 import { toolState } from '~/stores/toolStore'
-import { cloudflareContext } from '~/lib/context.js'
 import { commitSession, getSession } from '~/utils/session.server'
 
 export const meta: MetaFunction = () => {

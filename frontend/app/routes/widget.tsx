@@ -10,6 +10,7 @@ import { BuilderProfileTabs } from '@/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { cloudflareContext } from '~/lib/context.js'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import {
@@ -24,7 +25,6 @@ import {
   widgetWallet,
   widgetWalletActions,
 } from '~/stores/widget-store'
-import { cloudflareContext } from '~/lib/context.js'
 import { commitSession, getSession } from '~/utils/session.server.js'
 
 export const meta: MetaFunction = () => {
