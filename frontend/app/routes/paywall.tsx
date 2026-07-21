@@ -26,6 +26,7 @@ import {
   subscribeProfilesToUpdates,
 } from '~/stores/paywall-store'
 import { toolState } from '~/stores/toolStore'
+import { cloudflareContext } from '~/lib/context.js'
 import { commitSession, getSession } from '~/utils/session.server'
 
 export const meta: MetaFunction = () => {
@@ -39,7 +40,7 @@ export const meta: MetaFunction = () => {
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const { env } = context.cloudflare
+  const { env } = context.get(cloudflareContext)
   const session = await getSession(request.headers.get('Cookie'))
   const grantResponse = session.get('grant-response')
   const isGrantAccepted = session.get('is-grant-accepted')

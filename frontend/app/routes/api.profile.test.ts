@@ -1,6 +1,10 @@
-import type { ActionFunctionArgs } from 'react-router'
+import {
+  RouterContextProvider,
+  type ActionFunctionArgs,
+} from 'react-router'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { BannerProfile, WidgetProfile } from '@shared/types'
+import { cloudflareContext } from '~/lib/context'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import { action } from './api.profile'
 
@@ -108,16 +112,16 @@ describe('api.profile action - HTML injection', () => {
   }
 
   beforeEach(() => {
-    mockContext = {
-      cloudflare: {
-        env: {
-          AWS_S3_BUCKET: 'test-bucket',
-          AWS_S3_ENDPOINT: 'https://s3.example.com',
-          AWS_S3_KEY_ID: 'test-key-id',
-          AWS_S3_SECRET_KEY: 'test-secret-key',
-        },
+    const context = new RouterContextProvider()
+    context.set(cloudflareContext, {
+      env: {
+        AWS_S3_BUCKET: 'test-bucket',
+        AWS_S3_ENDPOINT: 'https://s3.example.com',
+        AWS_S3_KEY_ID: 'test-key-id',
+        AWS_S3_SECRET_KEY: 'test-secret-key',
       },
-    } as ActionFunctionArgs['context']
+    } as unknown as { env: Env; ctx: ExecutionContext })
+    mockContext = context
   })
 
   it('should reject XSS script injection in widget title text', async () => {

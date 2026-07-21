@@ -1,14 +1,10 @@
-import { createRequestHandler, type ServerBuild } from 'react-router'
+import {
+  createRequestHandler,
+  RouterContextProvider,
+  type ServerBuild,
+} from 'react-router'
 import { APP_BASEPATH } from '~/lib/constants.js'
-
-declare module 'react-router' {
-  export interface AppLoadContext {
-    cloudflare: {
-      env: Env
-      ctx: ExecutionContext
-    }
-  }
-}
+import { cloudflareContext } from '~/lib/context.js'
 
 const build =
   process.env.NODE_ENV === 'development'
@@ -27,9 +23,10 @@ export default {
       const serverBuild = await build()
       const requestHandler = createRequestHandler(serverBuild as ServerBuild)
 
-      return await requestHandler(request, {
-        cloudflare: { env, ctx },
-      })
+      const routerContext = new RouterContextProvider()
+      routerContext.set(cloudflareContext, { env, ctx })
+
+      return await requestHandler(request, routerContext)
     } catch (error) {
       const errorMessage = `Error: ${error instanceof Error ? error.message : String(error)}`
       return new Response(errorMessage, { status: 500 })
