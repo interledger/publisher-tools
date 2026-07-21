@@ -2,8 +2,6 @@
 
 @import 'tailwindcss';
 
-@plugin '@tailwindcss/forms';
-
 /*
   Replaces the safelist array we had in v3 - replaces the class names
   that are created at runtime

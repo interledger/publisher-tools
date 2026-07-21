@@ -50,7 +50,6 @@
     "@shared/default-data": "workspace:^",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
-    "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/vite": "^4.3.1",
     "@types/he": "^1.2.3",
     "@types/node": "^24.13.2",
