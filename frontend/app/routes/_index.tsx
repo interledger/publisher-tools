@@ -184,7 +184,7 @@ export default function Index() {
           </Heading1>
           <img
             alt=""
-            className="block max-w-none h-5.75 w-110.5 max-xl:h-3.25 max-xl:w-61.75"
+            className="block max-w-none h-[23px] w-[442px] max-xl:h-[13px] max-xl:w-[247px]"
             src={SVGHeadingVector}
           />
         </div>

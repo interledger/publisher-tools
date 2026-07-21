@@ -246,16 +246,23 @@
     @apply focus:outline-hidden;
     @apply focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
   }
+
+  /*
+    v4 dropped `cursor: pointer` from buttons - added to restore prior behavior
+    (https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor)
+  */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
-@layer components {
-  a.focusable-nav-item,
-  button.focusable-nav-item {
-    @apply transition-colors duration-200 ease-in;
-    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover active:bg-secondary-hover-surface active:text-nav-link-hover;
-    @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
-    @apply focus-visible:outline-offset-0;
-  }
+a.focusable-nav-item,
+button.focusable-nav-item {
+  @apply transition-colors duration-200 ease-in;
+  @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover active:bg-secondary-hover-surface active:text-nav-link-hover;
+  @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
+  @apply focus-visible:outline-offset-0;
 }
 
 /* Placeholder text with ellipsis */
