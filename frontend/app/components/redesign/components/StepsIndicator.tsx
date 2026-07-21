@@ -62,7 +62,7 @@ export const MobileStep: React.FC<{ number: number; status: StepStatus }> = ({
   status,
 }) => {
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-center gap-2xs">
       <div
         className={`
           w-6 h-6
@@ -86,7 +86,7 @@ const Step: React.FC<StepProps> = ({
   return (
     <div className="flex flex-col items-center">
       <div
-        className={`flex flex-col ${textPosition === 'top' ? 'flex-col-reverse' : 'flex-col'} items-center gap-1`}
+        className={`flex flex-col ${textPosition === 'top' ? 'flex-col-reverse' : 'flex-col'} items-center gap-2xs`}
       >
         <div
           className={`
@@ -119,7 +119,7 @@ export const StepsIndicator: React.FC<StepsIndicatorProps> = ({ steps }) => {
         textPosition="bottom"
       />
 
-      <div className={`w-px bg-purple-300 h-[115px]`}></div>
+      <div className={`w-px bg-purple-300 h-[116px]`}></div>
 
       <Step
         number={step2.number}
@@ -149,7 +149,7 @@ export const MobileStepsIndicator: React.FC<StepProps> = ({
   status,
 }) => {
   return (
-    <div className="xl:hidden flex items-center gap-1 mb-sm">
+    <div className="xl:hidden flex items-center gap-2xs mb-sm">
       <MobileStep number={number} status={status} />
       <h6 className="text-style-h6">{label}</h6>
     </div>

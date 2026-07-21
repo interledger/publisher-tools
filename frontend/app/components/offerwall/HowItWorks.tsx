@@ -41,7 +41,7 @@ const Step: React.FC<StepProps> = ({
 export default function HowItWorks() {
   return (
     <section
-      className="flex flex-col gap-2xl rounded-md px-md"
+      className="flex flex-col gap-2xl rounded-2xl px-md"
       aria-labelledby="how-it-works-heading"
     >
       <header className="flex flex-col items-center gap-md xl:items-start">

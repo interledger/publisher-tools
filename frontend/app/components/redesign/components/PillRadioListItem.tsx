@@ -19,7 +19,7 @@ export const PillRadioListItem = <T extends string>({
   size = 'md',
 }: PillRadioListItemProps<T>) => {
   const sizeClasses = {
-    sm: 'px-2 py-1 text-xs leading-xs',
+    sm: 'px-xs py-2xs text-xs leading-xs',
     md: 'px-sm py-2xs text-sm leading-sm',
   }
 

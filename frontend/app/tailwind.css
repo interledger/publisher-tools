@@ -135,7 +135,14 @@
   --color-wm-teal: #9cd6cb;
   --color-wm-purple: #7f76b2;
 
-  /* Spacing scale */
+  /*
+    Spacing scale.
+    Note: v4 resolves `w-<name>`, `min-w-<name>`, `max-w-<name>`,
+    `h-<name>`, `min-h-<name>`, `max-h-<name>` against `--spacing-*`
+    before falling back to `--container-*`. For example`max-w-md` here
+    yields 16px, not the 28rem container size. For container-shaped widths
+    use an arbitrary value instead (e.g. `max-w-[28rem]`).
+  */
   --spacing-3xs: 2px;
   --spacing-2xs: 4px;
   --spacing-xs: 8px;
@@ -152,7 +159,7 @@
   --spacing-256: 72rem;
 
   /*
-    We follow v4 defaults for font-size (https://tailwindcss.com/docs/font-size)
+    Follow v4 defaults for font-size (https://tailwindcss.com/docs/font-size)
     so was able to remove references that we're in v3. Needed to add 
     `--text-*--line-height` to inherit browser line-height. There are
     a few places in code where we don't set line-height with `leading-*`
@@ -197,13 +204,6 @@
   --font-mono:
     ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
     'DejaVu Sans Mono', monospace;
-
-  /* Radius scale */
-  --radius-none: 0px;
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-full: 99999px;
 }
 
 /*
@@ -242,7 +242,7 @@
   summary,
   [role='tab'],
   [role='menu'] {
-    @apply rounded-sm;
+    @apply rounded-lg;
     @apply focus:outline-hidden;
     @apply focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
   }

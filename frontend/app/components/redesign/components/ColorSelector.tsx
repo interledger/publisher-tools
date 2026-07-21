@@ -73,7 +73,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               type="button"
               onClick={toggleDropdown}
               className={cx(
-                'flex items-center justify-between w-full px-xs py-xs rounded-sm border',
+                'flex items-center justify-between w-full px-xs py-xs rounded-lg border',
                 disabled
                   ? 'bg-field-bg-disabled border-field-border-disabled cursor-not-allowed'
                   : isOpen
@@ -90,7 +90,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
             >
               <div className="flex items-center">
                 <div
-                  className="w-8 h-8 rounded-full border border-silver-200 mr-2"
+                  className="w-[32px] h-[32px] rounded-full border border-silver-200 mr-xs"
                   style={{ backgroundColor: selectedColor as string }}
                 />
 
@@ -114,8 +114,8 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               </span>
             </button>
             {isOpen && (
-              <div className="absolute z-10 mt-1 left-0 w-auto bg-white border border-silver-200 rounded-sm shadow-xs p-3">
-                <div className="flex items-center gap-3 whitespace-nowrap">
+              <div className="absolute z-10 mt-2xs left-0 w-auto bg-white border border-silver-200 rounded-lg shadow-xs p-sm">
+                <div className="flex items-center gap-sm whitespace-nowrap">
                   <SVGColorPicker
                     className="w-5 h-5 cursor-pointer fill-purple-300"
                     onClick={() => {
@@ -160,7 +160,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                 >
                   <div
                     className={cx(
-                      'absolute border border-gray-400 p-1 bg-gray-200 rounded-sm z-10',
+                      'absolute border border-gray-400 p-2xs bg-gray-200 rounded-lg z-10',
                       openColorPicker ? 'flex flex-col' : 'hidden',
                     )}
                   >
@@ -174,8 +174,8 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                         }
                       }}
                     />
-                    <div className="flex items-center justify-center p-2 bg-white border-t border-gray-300">
-                      <span className="text-gray-600 mr-2">#</span>
+                    <div className="flex items-center justify-center p-xs bg-white border-t border-gray-300">
+                      <span className="text-gray-600 mr-xs">#</span>
                       <HexColorInput
                         color={String(selectedColor)}
                         onChange={(color) => {
@@ -184,7 +184,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                             onChange(color)
                           }
                         }}
-                        className="w-24 px-2 py-1 text-sm border border-gray-300 rounded-xs focus:outline-hidden focus:border-blue-500"
+                        className="w-[96px] px-xs py-2xs text-sm border border-gray-300 rounded-sm focus:outline-hidden focus:border-blue-500"
                         placeholder="000000"
                       />
                     </div>

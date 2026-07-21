@@ -146,7 +146,7 @@ export const ProfilesDialog: React.FC<Props> = ({
       </div>
 
       <div className="flex flex-col gap-2xs px-md w-full">
-        <div className="bg-silver-50 rounded-sm p-sm">
+        <div className="bg-silver-50 rounded-lg p-sm">
           <div className="flex items-center text-style-small-standard text-text-secondary">
             <span className="w-[50px] mr-md">Tab</span>
             <span className="w-[150px] mr-md">Current version</span>
@@ -175,11 +175,11 @@ export const ProfilesDialog: React.FC<Props> = ({
 
       <div className="w-full px-md flex flex-col gap-xs">
         <ToolsPrimaryButton
-          className="w-full h-12 rounded-sm bg-primary-bg hover:bg-primary-bg-hover text-white"
+          className="w-full h-[48px] rounded-lg bg-primary-bg hover:bg-primary-bg-hover text-white"
           onClick={handleOverride}
           disabled={!fetchedConfigs || isOverriding}
         >
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-xs">
             {isOverriding && <SVGSpinner className="w-4 h-4" />}
             <span>
               {isOverriding
@@ -200,7 +200,7 @@ export const ProfilesDialog: React.FC<Props> = ({
 
       <div className="w-full px-md">
         <ToolsSecondaryButton
-          className="w-full h-12 rounded-sm border border-secondary-edge text-text-buttons-default hover:border-secondary-edge-hover hover:text-secondary-edge-hover"
+          className="w-full h-[48px] rounded-lg border border-secondary-edge text-text-buttons-default hover:border-secondary-edge-hover hover:text-secondary-edge-hover"
           onClick={onAddWalletAddress}
         >
           Add another wallet address

@@ -36,12 +36,12 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
   return (
     <label
       onClick={handleClick}
-      className={`flex items-center w-full px-md py-sm rounded-sm bg-white ${className} ${
+      className={`flex items-center w-full px-md py-sm rounded-lg bg-white ${className} ${
         !isDisabled ? 'cursor-pointer hover:bg-gray-50' : 'cursor-not-allowed'
       }`}
       id={id}
     >
-      <div className="flex items-center gap-3 mr-4">
+      <div className="flex items-center gap-sm mr-md">
         <Checkbox
           checked={checked}
           onChange={onCheckedChange}
@@ -61,7 +61,7 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-col w-[150px] mr-4">
+      <div className="flex flex-col w-[150px] mr-md">
         <p
           className={`text-style-small-emphasis ${
             isDisabled ? 'text-text-secondary' : 'text-text-primary'
@@ -80,7 +80,7 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
         )}
       </div>
 
-      <div className="flex justify-center w-[70px] mr-4">
+      <div className="flex justify-center w-[70px] mr-md">
         <SVGArrow1 className="w-[70px] h-2 text-purple-400" />
       </div>
 

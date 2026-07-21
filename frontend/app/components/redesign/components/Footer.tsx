@@ -10,7 +10,7 @@ export const Footer = () => {
 
 export function Copyright() {
   return (
-    <p className="text-field-helpertext-default! text-style-small-standard text-center max-w-7xl px-4">
+    <p className="text-field-helpertext-default! text-style-small-standard text-center max-w-7xl px-md">
       <CopyrightLink href="https://www.w3.org/policies/#copyright">
         Copyright
       </CopyrightLink>

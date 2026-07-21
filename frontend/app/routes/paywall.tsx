@@ -118,7 +118,7 @@ export default function Paywall() {
       hasUnsavedChanges={paywallSnap.profilesUpdate.has(snap.activeTab)}
       stepMiddle={<PaywallBuilderSettings />}
     >
-      <div className="bg-interface-bg-container rounded-sm p-md flex-col gap-md w-full flex">
+      <div className="bg-interface-bg-container rounded-lg p-md flex-col gap-md w-full flex">
         <PaywallBuilder
           onRefresh={(section) => actions.resetProfileSection(section)}
         />

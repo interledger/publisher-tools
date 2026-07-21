@@ -28,7 +28,7 @@ const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
     <li>
       <a
         href={to}
-        className="flex w-full items-center gap-xs rounded-sm p-md text-base font-normal leading-md text-nav-link-default focusable-nav-item"
+        className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default focusable-nav-item"
       >
         {text}
       </a>
@@ -39,7 +39,7 @@ const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
 const MobileMenuSection = ({ title, items }: MobileMenuSectionProps) => {
   return (
     <section className="flex w-full flex-col gap-xs">
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col gap-3xs">
         <h2 className="text-style-caption-standard">{title}</h2>
         <hr className="border-silver-200" />
       </div>
@@ -60,14 +60,14 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
       aria-modal="true"
       aria-label="Mobile menu"
     >
-      <div className="shrink-0 flex items-center justify-between pt-[22px] pr-5 pb-1.5 pl-7">
+      <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs.5 pl-7">
         <a href="https://webmonetization.org/">
           <img src={mobileLogo} alt="Web Monetization Logo" />
         </a>
         <GhostButton
           onClick={onClose}
           autoFocus
-          className="size-12 flex items-center justify-center focusable-nav-item"
+          className="size-[48px] flex items-center justify-center focusable-nav-item"
           aria-label="Close menu"
         >
           <SVGCloseIcon className="w-5 h-5" />

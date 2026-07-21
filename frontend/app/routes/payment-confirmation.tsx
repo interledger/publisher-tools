@@ -11,11 +11,11 @@ export const meta: MetaFunction = () => {
 export default function PaymentComplete() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-[28rem] w-full space-y-8 p-8">
+      <div className="max-w-[28rem] w-full space-y-xl p-xl">
         <div className="text-center">
-          <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-green-100 mb-6">
+          <div className="mx-auto flex items-center justify-center h-[96px] w-[96px] rounded-full bg-green-100 mb-lg">
             <svg
-              className="h-12 w-12 text-green-600"
+              className="h-[48px] w-[48px] text-green-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -30,11 +30,11 @@ export default function PaymentComplete() {
             </svg>
           </div>
 
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-md">
             Payment Complete!
           </h2>
 
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 mb-xl">
             Your payment has been processed successfully.
             <br />
             You can now close this window.

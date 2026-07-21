@@ -35,7 +35,7 @@ export const BuilderAccordion: React.FC<Props> = ({
     <details
       open={isOpen}
       className={cx(
-        'flex flex-col rounded-sm relative',
+        'flex flex-col rounded-lg relative',
         'transition-transform duration-300 ease-in-out',
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main',
       )}
@@ -71,7 +71,7 @@ export const BuilderAccordion: React.FC<Props> = ({
           )}
           {onDone && (
             <SVGArrowCollapse
-              className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
+              className={cx('w-[48px] h-[48px] p-sm.5', !isOpen && 'rotate-180')}
             />
           )}
         </div>

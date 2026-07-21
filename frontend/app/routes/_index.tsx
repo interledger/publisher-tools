@@ -184,7 +184,7 @@ export default function Index() {
           </Heading1>
           <img
             alt=""
-            className="block max-w-none h-[23px] w-[442px] max-xl:h-[13px] max-xl:w-[247px]"
+            className="block max-w-none w-[442px] max-xl:w-[247px]"
             src={SVGHeadingVector}
           />
         </div>
@@ -198,7 +198,7 @@ export default function Index() {
 
       <div
         id="content"
-        className="flex flex-col gap-2.5 items-center justify-start p-0 w-full"
+        className="flex flex-col gap-xs.5 items-center justify-start p-0 w-full"
       >
         <section
           className="max-w-7xl w-full flex flex-col gap-md items-center justify-start px-md py-0"
@@ -235,7 +235,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li aria-hidden="true" className="w-85 opacity-0 max-xl:hidden" />
+            <li aria-hidden="true" className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -276,7 +276,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li className="w-85 opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -315,7 +315,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li aria-hidden="true" className="w-85 opacity-0 max-xl:hidden" />
+            <li aria-hidden="true" className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
       </div>

@@ -28,7 +28,7 @@ export function PaywallPlacementBuilder() {
           }}
         />
 
-        <div className="h-md"></div>
+        <div className="h-[16px]"></div>
 
         <PaywallDelayInput
           value={snap.behavior.delay.value}
@@ -63,12 +63,12 @@ function PaywallCoverageInput({
       <legend className="text-style-caption-standard text-field-helpertext-default!">
         {t('input.coverage.label')}
       </legend>
-      <div className="grid grid-cols-4 gap-1 p-2xs rounded-sm border border-interface-edge-container bg-tabs-bg-default">
+      <div className="grid grid-cols-4 gap-2xs p-2xs rounded-lg border border-interface-edge-container bg-tabs-bg-default">
         {coverageOptions.map(({ value: val, text }) => (
           <label
             key={val}
             className={cx(
-              'text-sm py-sm px-md rounded-sm text-center  border ',
+              'text-sm py-sm px-md rounded-lg text-center  border ',
               val === value
                 ? 'bg-white text-text-buttons-default border-text-buttons-default '
                 : 'text-tabs-inactive-default border-transparent',

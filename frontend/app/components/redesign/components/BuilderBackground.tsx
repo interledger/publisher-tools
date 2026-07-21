@@ -49,11 +49,11 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
         id="browser-mockup"
         className={cx(
           'w-full flex-1 border border-field-border overflow-hidden flex flex-col',
-          iframeMode ? 'rounded-t-2xl rounded-b-xs' : 'rounded-2xl',
+          iframeMode ? 'rounded-t-2xl rounded-b-sm' : 'rounded-2xl',
         )}
       >
         <div className="flex items-center p-md bg-white">
-          <div className="flex items-center gap-4 w-full">
+          <div className="flex items-center gap-md w-full">
             <BrowserDots />
             <div className="flex-1 h-2 bg-field-border rounded-full" />
           </div>
