@@ -59,8 +59,6 @@
   --color-red-800: #a01419;
 
   /* Neutrals */
-  --color-black: #000000;
-  --color-white: #ffffff;
   --color-silver-50: #f7f7f7;
   --color-silver-100: #efefef;
   --color-silver-200: #dfdfdf;
@@ -159,7 +157,7 @@
 
   /*
     Follow v4 defaults for font-size (https://tailwindcss.com/docs/font-size)
-    so was able to remove references that we're in v3. Needed to add 
+    so was able to remove references that were in v3. Needed to add
     `--text-*--line-height` to inherit browser line-height. There are
     a few places in code where we don't set line-height with `leading-*`
   */
@@ -187,13 +185,6 @@
   --leading-5xl: 56px;
   --leading-6xl: 70px;
   --leading-7xl: 80px;
-
-  /* Font weights */
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
 
   /* Font families */
   --font-sans:
