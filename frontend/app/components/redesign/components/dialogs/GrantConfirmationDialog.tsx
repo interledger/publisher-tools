@@ -17,7 +17,7 @@ export const GrantConfirmationDialog: React.FC<Props> = ({
       <div className="text-center">
         <BodyEmphasis>Confirm you are the owner of</BodyEmphasis>
         {walletAddress && (
-          <div className="flex justify-center text-center mt-2">
+          <div className="flex justify-center text-center mt-xs">
             <BodyStandard className="text-text-success!">
               {walletAddress}
             </BodyStandard>

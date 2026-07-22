@@ -32,7 +32,7 @@ const ToolsMenuItem = ({
           hoverImage && 'group',
         )}
       >
-        <div className="relative w-20 h-20">
+        <div className="relative w-[80px] h-[80px]">
           <img
             className={cx(imgClasses, 'opacity-100 group-hover:opacity-0')}
             src={defaultImage}
@@ -144,7 +144,7 @@ export const NavDropdown = ({
           tabIndex={0}
           inert={!isOpen}
           className={cx(
-            'relative z-50 flex flex-col gap-xs overflow-hidden rounded-sm p-sm',
+            'relative z-50 flex flex-col gap-xs overflow-hidden rounded-lg p-sm',
             !isOpen && '!sr-only',
             'md:absolute md:left-0 md:top-[calc(100%+1rem)] md:w-max',
             'md:items-start md:justify-start md:bg-interface-bg-container',

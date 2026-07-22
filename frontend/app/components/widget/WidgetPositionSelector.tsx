@@ -14,12 +14,12 @@ const widgetPositionOptions: Option<WidgetPositionKey>[] = [
   {
     label: 'Left',
     value: WIDGET_POSITION.Left,
-    icon: <SVGPositionLeft className="w-11 h-11" />,
+    icon: <SVGPositionLeft className="w-[44px] h-[44px]" />,
   },
   {
     label: 'Right',
     value: WIDGET_POSITION.Right,
-    icon: <SVGPositionRight className="w-11 h-11" />,
+    icon: <SVGPositionRight className="w-[44px] h-[44px]" />,
   },
 ]
 

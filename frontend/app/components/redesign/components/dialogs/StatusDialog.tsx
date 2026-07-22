@@ -18,7 +18,7 @@ export const StatusDialog: React.FC<Props> = ({
 }) => {
   return (
     <BaseDialog className="p-md pt-xl flex flex-col items-center gap-md">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-xs">
         {status === 'error' || fieldErrors ? (
           <SVGErrorVector className="size-6" />
         ) : (
@@ -31,7 +31,7 @@ export const StatusDialog: React.FC<Props> = ({
 
       {fieldErrors && Object.keys(fieldErrors).length && (
         <details className="self-start text-left">
-          <ul className="list-disc ml-6 text-sm text-field-helpertext-default">
+          <ul className="list-disc ml-lg text-sm text-field-helpertext-default">
             {Object.entries(fieldErrors).map(([key, msg], i) => (
               <li key={i}>
                 <span className="font-medium">{key}</span>: {msg as string}

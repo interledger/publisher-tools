@@ -29,7 +29,7 @@ export const HeadingCore: React.FC<HeadingCoreProps> = ({
           All tools
         </GhostButton>
 
-        <div className="flex flex-col gap-3 items-center justify-start w-full md:order-2 md:w-auto">
+        <div className="flex flex-col gap-sm items-center justify-start w-full md:order-2 md:w-auto">
           <Heading2SemiBold className="md:hidden text-center">
             {title}
           </Heading2SemiBold>

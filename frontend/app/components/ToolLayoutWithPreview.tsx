@@ -111,7 +111,7 @@ export function ToolLayoutWithPreview({
   return (
     <div className="bg-interface-bg-main w-full">
       <div className="flex flex-col items-center pt-4xl md:pt-5xl">
-        <div className="w-full max-w-[1280px]">
+        <div className="w-full max-w-7xl">
           <div className=" px-md">
             <HeadingCore title={title} onBackClick={() => navigate('/')}>
               {description}
@@ -136,7 +136,7 @@ export function ToolLayoutWithPreview({
               />
             </div>
 
-            <div className="flex flex-col gap-2xl xl:gap-12 flex-1">
+            <div className="flex flex-col gap-xl xl:gap-3xl flex-1">
               <div id="wallet-address" ref={walletAddressRef}>
                 <MobileStepsIndicator
                   number={1}
@@ -150,8 +150,8 @@ export function ToolLayoutWithPreview({
                 />
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-2xl gap-x-sm">
-                <div className="flex flex-col gap-2xl">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-xl gap-x-sm">
+                <div className="flex flex-col gap-xl">
                   {steps.length > 1 && stepMiddle && (
                     <div id="configure-builder" className="w-full">
                       <MobileStepsIndicator
@@ -160,7 +160,7 @@ export function ToolLayoutWithPreview({
                         status={steps[0].status}
                       />
 
-                      <div className="space-y-4">{stepMiddle}</div>
+                      <div className="space-y-md">{stepMiddle}</div>
                     </div>
                   )}
 
@@ -238,11 +238,11 @@ function BuilderActions({
         )}
 
         <ToolsSecondaryButton
-          className="xl:w-[150px] xl:rounded-sm w-full min-w-0 border-0 xl:border order-last xl:order-first"
+          className="xl:w-[150px] xl:rounded-lg w-full min-w-0 border-0 xl:border order-last xl:order-first"
           disabled={isSaving}
           onClick={onClickSave}
         >
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-xs">
             {isSaving && <SVGSpinner className="w-4 h-4" />}
             <span>{isSaving ? 'Saving...' : 'Save edits only'}</span>
           </div>
@@ -251,7 +251,7 @@ function BuilderActions({
         <ToolsPrimaryButton
           icon="script"
           iconPosition={isGenerating ? 'none' : 'left'}
-          className="xl:w-[250px] xl:rounded-sm w-full min-w-0 order-first xl:order-last"
+          className="xl:w-[250px] xl:rounded-lg w-full min-w-0 order-first xl:order-last"
           disabled={isGenerating}
           onClick={onClickScript}
         >

@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <footer className="w-full pb-xl mt-2xl bg-interface-bg-main">
+    <footer className="w-full pb-xl mt-xl bg-interface-bg-main">
       <div className="flex flex-row items-center justify-center w-full">
         <Copyright />
       </div>
@@ -10,7 +10,7 @@ export const Footer = () => {
 
 export function Copyright() {
   return (
-    <p className="text-field-helpertext-default! text-style-small-standard text-center max-w-7xl px-4">
+    <p className="text-field-helpertext-default! text-style-small-standard text-center max-w-7xl px-md">
       <CopyrightLink href="https://www.w3.org/policies/#copyright">
         Copyright
       </CopyrightLink>

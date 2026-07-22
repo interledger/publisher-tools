@@ -51,7 +51,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
       </div>
 
       <div
-        className="bg-mint-50 w-full rounded-sm p-sm overflow-x-auto"
+        className="bg-mint-50 w-full rounded-lg p-sm overflow-x-auto"
         role="region"
         aria-label="Script tag snippet"
       >
@@ -92,7 +92,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
           href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
           target="_blank"
           rel="noreferrer"
-          className="text-blue-600 underline hover:text-blue-800 focus:outline-hidden focus:ring-2 focus:ring-primary-focus rounded-xs"
+          className="text-blue-600 underline hover:text-blue-800 focus:outline-hidden focus:ring-2 focus:ring-primary-focus rounded-sm"
         >
           Documentation
         </a>

@@ -45,16 +45,16 @@ export const Header = () => {
       >
         <nav
           role="navigation"
-          className="relative flex items-center justify-between bg-white shadow-[0px_12px_20px_0px_rgba(0,0,0,0.06)] rounded-sm mx-4 mt-4 h-14 py-1 pl-4 pr-2 md:max-w-7xl md:mx-auto md:px-xl md:py-xs md:mt-0 md:rounded-none md:shadow-none md:bg-transparent md:h-auto md:w-full"
+          className="relative flex items-center justify-between bg-white shadow-[0px_12px_20px_0px_rgba(0,0,0,0.06)] rounded-lg mx-md mt-md h-[56px] py-2xs pl-md pr-xs md:max-w-7xl md:mx-auto md:px-xl md:py-xs md:mt-0 md:rounded-none md:shadow-none md:bg-transparent md:h-auto md:w-full"
         >
           <a
             href="https://webmonetization.org/"
-            className="flex items-center focus:outline-hidden focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-0 rounded-sm"
+            className="flex items-center focus:outline-hidden focus-visible:outline-2 focus-visible:outline-nav-link-hover focus-visible:outline-offset-0 rounded-lg"
           >
             <img
               src={wmLogo}
               alt="Web Monetization Logo"
-              className="w-8 md:w-11 h-8 md:h-11"
+              className="w-[32px] md:w-[44px] h-[32px] md:h-[44px]"
             />
           </a>
 
@@ -67,7 +67,7 @@ export const Header = () => {
           <GhostButton
             onClick={toggleMobileMenu}
             tabIndex={0}
-            className="md:hidden size-12 focusable-nav-item"
+            className="md:hidden size-[48px] focusable-nav-item"
           >
             <SVGHamburgerIcon className="w-5 h-5" />
           </GhostButton>

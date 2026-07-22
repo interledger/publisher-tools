@@ -41,7 +41,7 @@ export function FontSizeInput<T extends FontSize>({
         {label}
       </label>
 
-      <div className="flex items-center h-12 gap-md">
+      <div className="flex items-center h-[48px] gap-md">
         <IncDecButton
           label="Decrease font size"
           onClick={() => handleSliderChange(sliderValue - 1)}
@@ -78,7 +78,7 @@ function IncDecButton({
 }: { label: string } & React.ComponentProps<'button'>) {
   return (
     <button
-      className="flex items-center justify-center w-6 h-7 cursor-pointer"
+      className="flex items-center justify-center w-6 h-[28px] cursor-pointer"
       onClick={onClick}
     >
       <span className="sr-only">{label}</span>

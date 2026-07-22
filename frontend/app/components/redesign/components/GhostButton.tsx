@@ -21,7 +21,7 @@ export const GhostButton: React.FC<Props> = ({
     <button
       className={cx(
         'flex flex-row items-center justify-center',
-        'rounded-sm',
+        'rounded-lg',
         'font-normal',
         'transition-all duration-200',
         'text-secondary-edge',

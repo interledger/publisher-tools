@@ -32,7 +32,7 @@ export function PaywallPriceBuilder() {
           }}
           helpText={t('input.price.hint', { currency })}
           addonBefore={currencySymbol}
-          addonClassName="inline-block pr-2"
+          addonClassName="inline-block pr-xs"
           precision={precision}
           min={Math.pow(10, -precision)}
         />

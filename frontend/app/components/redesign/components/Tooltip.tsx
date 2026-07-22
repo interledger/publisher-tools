@@ -86,7 +86,7 @@ export function Tooltip({ children, label }: TooltipProps) {
             top: y,
             left: x,
           }}
-          className="relative z-50 p-md bg-interface-tooltip rounded-sm shadow-lg text-white text-xs sm:text-sm"
+          className="relative z-50 p-md bg-interface-tooltip rounded-lg shadow-lg text-white text-xs sm:text-sm"
         >
           {children}
 
