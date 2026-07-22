@@ -153,7 +153,7 @@
 
   /*
     We follow v4 defaults for font-size (https://tailwindcss.com/docs/font-size)
-    so was able to remove references that we're in v3. Needed to add 
+    so was able to remove references that were in v3. Needed to add 
     `--text-*--line-height` to inherit browser line-height. There are
     a few places in code where we don't set line-height with `leading-*`
   */
