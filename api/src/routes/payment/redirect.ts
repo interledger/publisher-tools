@@ -23,6 +23,18 @@ export const PaymentStatusSchema = z.union([
 export type PaymentStatusSuccess = z.infer<typeof PaymentStatusSuccessSchema>
 export type PaymentStatusRejected = z.infer<typeof PaymentStatusRejectedSchema>
 
+const redirectFailure = (
+  redirect: (location: string | URL) => Response,
+  redirectUrl: string,
+  paymentId: string,
+) =>
+  redirect(
+    urlWithParams(redirectUrl, {
+      paymentId,
+      result: 'failure',
+    }),
+  )
+
 // This used to be in frontend/client earlier. It doesn't need to be. But we'll
 // still have something (the `redirectUrl` provided in initiate) in frontend (to
 // show to user). If someone else wants to use this PR (like from an embed with
@@ -59,46 +71,46 @@ app.get(
           { status: 'GRANT_REJECTED' },
           { expirationTtl: 5 * 60 /* 5 minutes */ },
         )
-        return redirect(
-          urlWithParams(data.redirectUrl, {
-            paymentId,
-            result: 'failure',
-          }),
-        )
+        return redirectFailure(redirect, data.redirectUrl, paymentId)
       }
 
       if ('hash' in queryParams) {
-        const { outgoingPaymentId, accessToken } =
-          await openPayments.paymentComplete({
-            quoteId: data.quoteId,
-            grantContinuation: data.grantContinuation,
-            sender: data.sender,
-            metadata: data.metadata,
-            nonce: data.nonce,
-            interactRef: queryParams.interact_ref,
-            hash: queryParams.hash,
-          })
-        await setData(
-          env.PUBLISHER_TOOLS_KV,
-          paymentId,
-          {
-            status: 'CREATED',
-            redirectUrl: data.redirectUrl,
-            outgoingPaymentId,
-            incomingPaymentId: data.incomingPaymentId,
-            sender: data.sender,
-            receiver: data.receiver,
-            amount: data.amount,
-            outgoingPaymentGrantAccessToken: accessToken,
-          },
-          { expirationTtl: 5 * 60 /* 5 minutes */ },
-        )
-        return redirect(
-          urlWithParams(data.redirectUrl, {
+        try {
+          const { outgoingPaymentId, accessToken } =
+            await openPayments.paymentComplete({
+              quoteId: data.quoteId,
+              grantContinuation: data.grantContinuation,
+              sender: data.sender,
+              metadata: data.metadata,
+              nonce: data.nonce,
+              interactRef: queryParams.interact_ref,
+              hash: queryParams.hash,
+            })
+          await setData(
+            env.PUBLISHER_TOOLS_KV,
             paymentId,
-            result: 'success',
-          }),
-        )
+            {
+              status: 'CREATED',
+              redirectUrl: data.redirectUrl,
+              outgoingPaymentId,
+              incomingPaymentId: data.incomingPaymentId,
+              sender: data.sender,
+              receiver: data.receiver,
+              amount: data.amount,
+              outgoingPaymentGrantAccessToken: accessToken,
+            },
+            { expirationTtl: 5 * 60 /* 5 minutes */ },
+          )
+          return redirect(
+            urlWithParams(data.redirectUrl, {
+              paymentId,
+              result: 'success',
+            }),
+          )
+        } catch (error) {
+          console.error(error)
+          return redirectFailure(redirect, data.redirectUrl, paymentId)
+        }
       }
     } catch (error) {
       console.error(error)
