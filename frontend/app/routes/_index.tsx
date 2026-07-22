@@ -176,8 +176,8 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div className="bg-interface-bg-main min-h-screen flex flex-col gap-2xl items-center pt-5xl pb-xl px-0">
-      <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-7xl">
+    <div className="bg-interface-bg-main min-h-screen flex flex-col gap-xl items-center pt-5xl pb-xl px-0">
+      <div className="flex flex-col gap-xl items-center justify-start px-md py-0 w-full max-w-7xl">
         <div className="flex flex-col gap-xs items-center justify-start p-0 w-full">
           <Heading1 className="leading-normal! text-[42px]! max-xl:text-style-h2-semibold! text-center">
             {DEFAULT_TITLE}

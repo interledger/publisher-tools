@@ -136,7 +136,7 @@ export const ToolsWalletAddress = ({
     <form
       onSubmit={handleSubmit}
       className={cx(
-        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-2xl gap-x-lg p-md bg-white rounded-lg',
+        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-xl gap-x-lg p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600',
       )}
     >

@@ -135,14 +135,13 @@
   --color-wm-teal: #9cd6cb;
   --color-wm-purple: #7f76b2;
 
-  /*
-    Spacing scale.
-    Note: v4 resolves `w-<name>`, `min-w-<name>`, `max-w-<name>`,
-    `h-<name>`, `min-h-<name>`, `max-h-<name>` against `--spacing-*`
-    before falling back to `--container-*`. For example`max-w-md` here
-    yields 16px, not the 28rem container size. For container-shaped widths
-    use an arbitrary value instead (e.g. `max-w-[28rem]`).
-  */
+  /* 
+  Spacing scale. 
+    Note: v4 resolves `w-*`/`h-*` (and min/max variants) 
+    against `--spacing-*` before `--container-*` — e.g. `max-w-md` yields 
+    16px here, not the 28rem container size; use an arbitrary value like 
+    `max-w-[28rem]` for container-shaped widths
+    */
   --spacing-3xs: 2px;
   --spacing-2xs: 4px;
   --spacing-xs: 8px;
@@ -150,7 +149,7 @@
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  --spacing-2xl: 32px;
+  --spacing-2xl: 40px;
   --spacing-3xl: 48px;
   --spacing-4xl: 60px;
   --spacing-5xl: 120px;
@@ -217,11 +216,9 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: #e5e7eb;
+    border-color: var(--color-gray-200);
   }
-}
 
-@layer base {
   :root {
     --focus-outline-color: var(--color-nav-link-hover);
     --focus-outline-width: 2px;
@@ -309,102 +306,87 @@ button.focusable-nav-item {
   font-size: 48px;
   line-height: 56px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h2 {
   font-size: 36px;
   line-height: 44px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h2-semibold {
   font-size: 36px;
   line-height: 44px;
   font-weight: 600;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h3 {
   font-size: 30px;
   line-height: 38px;
   font-weight: 500;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h4 {
   font-size: 24px;
   line-height: 32px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h5 {
   font-size: 20px;
   line-height: 28px;
   font-weight: 400;
-  font-family: var(--font-sans);
   color: var(--color-purple-300);
 }
 @utility text-style-h6 {
   font-size: 18px;
   line-height: 26px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-body-standard {
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-body-emphasis {
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-small-standard {
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-small-emphasis {
   font-size: 14px;
   line-height: 20px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-caption-standard {
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-caption-emphasis {
   font-size: 12px;
   line-height: 16px;
   font-weight: 700;
-  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-display-1 {
   font-size: 72px;
   line-height: 80px;
   font-weight: 700;
-  font-family: var(--font-sans);
 }
 @utility text-style-display-2 {
   font-size: 60px;
   line-height: 70px;
   font-weight: 500;
-  font-family: var(--font-sans);
 }

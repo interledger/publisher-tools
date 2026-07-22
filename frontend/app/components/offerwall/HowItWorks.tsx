@@ -28,7 +28,7 @@ const Step: React.FC<StepProps> = ({
   showNext = false,
 }) => (
   <li className="flex flex-col items-center xl:flex-1 xl:flex-row xl:items-center">
-    <div className="flex w-[200px] flex-col items-center gap-2xl xl:w-[296px] xl:max-h-[240px] xl:flex-1">
+    <div className="flex w-[200px] flex-col items-center gap-xl xl:w-[296px] xl:max-h-[240px] xl:flex-1">
       <img src={image} alt="" className="h-full w-auto object-contain" />
       <BodyEmphasis className="min-w-full shrink-0 text-center text-green-400!">
         {description}
@@ -41,7 +41,7 @@ const Step: React.FC<StepProps> = ({
 export default function HowItWorks() {
   return (
     <section
-      className="flex flex-col gap-2xl rounded-2xl px-md"
+      className="flex flex-col gap-xl rounded-2xl px-md"
       aria-labelledby="how-it-works-heading"
     >
       <header className="flex flex-col items-center gap-md xl:items-start">

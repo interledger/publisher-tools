@@ -136,7 +136,7 @@ export function ToolLayoutWithPreview({
               />
             </div>
 
-            <div className="flex flex-col gap-2xl xl:gap-3xl flex-1">
+            <div className="flex flex-col gap-xl xl:gap-3xl flex-1">
               <div id="wallet-address" ref={walletAddressRef}>
                 <MobileStepsIndicator
                   number={1}
@@ -150,8 +150,8 @@ export function ToolLayoutWithPreview({
                 />
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-2xl gap-x-sm">
-                <div className="flex flex-col gap-2xl">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-xl gap-x-sm">
+                <div className="flex flex-col gap-xl">
                   {steps.length > 1 && stepMiddle && (
                     <div id="configure-builder" className="w-full">
                       <MobileStepsIndicator

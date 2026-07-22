@@ -49,9 +49,9 @@ const dividerClass = 'w-[40px] h-[5px]'
 
 export const EnhancedFooter = () => {
   return (
-    <footer className="w-full rounded-2xl bg-footer-bg p-md md:p-xl mx-auto max-w-none flex flex-col gap-2xl md:gap-lg items-center justify-center">
+    <footer className="w-full rounded-2xl bg-footer-bg p-md md:p-xl mx-auto max-w-none flex flex-col gap-xl md:gap-lg items-center justify-center">
       <nav
-        className="flex flex-col md:flex-row gap-2xl md:gap-lg items-center md:items-start justify-center md:justify-start w-full max-w-[56rem]"
+        className="flex flex-col md:flex-row gap-xl md:gap-lg items-center md:items-start justify-center md:justify-start w-full max-w-[56rem]"
         aria-label="Footer"
       >
         <div className="flex-1 flex flex-col gap-sm items-center md:items-start justify-center w-full md:w-auto">
