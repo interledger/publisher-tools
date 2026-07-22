@@ -59,8 +59,6 @@
   --color-red-800: #a01419;
 
   /* Neutrals */
-  --color-black: #000000;
-  --color-white: #ffffff;
   --color-silver-50: #f7f7f7;
   --color-silver-100: #efefef;
   --color-silver-200: #dfdfdf;
@@ -181,13 +179,6 @@
   --leading-5xl: 56px;
   --leading-6xl: 70px;
   --leading-7xl: 80px;
-
-  /* Font weights */
-  --font-weight-light: 300;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
 
   /* Font families */
   --font-sans:
