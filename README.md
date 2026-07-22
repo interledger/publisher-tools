@@ -145,3 +145,17 @@ For detailed information on how to use and configure Publisher Tools, including 
 - [Widget Tool](https://webmonetization.org/publishers/widget-tool/)
 - [Link Tag Generator](https://webmonetization.org/publishers/link-tag-tool/)
 - [Probabilistic revshare generator](https://webmonetization.org/publishers/revshare-tool/)
+
+## Web Monetization Community Call
+
+Publisher Tools updates are part of the larger Web Monetization updates that the team shares during our community calls are open to our community. We have them every fourth Thursday at 14:00 GMT, via Google Meet.
+
+To join the video meeting, click this link: https://meet.google.com/fjy-vjef-ogj
+Otherwise, to join by phone, dial +49 30 300195060 and enter this PIN: 982 511 322 1488#
+To view more phone numbers, click this link: https://tel.meet/fjy-vjef-ogj?hs=5
+
+Video call link: https://meet.google.com/fjy-vjef-ogj
+
+More phone numbers: https://tel.meet/fjy-vjef-ogj?hs=5
+
+[Add to Google Calendar](https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=c2dyMjY4M2k1dXRrcjZkYW05Mmo3c2xzZm1fMjAyNDA1MDlUMTMwMDAwWiBjX2NqMDI3Z21oc3VqazkxZXZpMjRkOXB2bXQ0QGc&tmsrc=c_cj027gmhsujk91evi24d9pvmt4%40group.calendar.google.com&scp=ALL)
