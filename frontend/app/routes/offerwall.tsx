@@ -10,6 +10,7 @@ import HowItWorks from '~/components/offerwall/HowItWorks'
 import { OfferwallBuilder } from '~/components/offerwall/OfferwallBuilder'
 import OfferwallPreview from '~/components/offerwall/OfferwallPreview'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
+import { cloudflareContext } from '~/lib/context.js'
 import {
   actions,
   hydrateProfilesFromStorage,
@@ -37,7 +38,7 @@ export const meta: MetaFunction = () => {
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const { env } = context.cloudflare
+  const { env } = context.get(cloudflareContext)
   const session = await getSession(request.headers.get('Cookie'))
   const grantResponse = session.get('grant-response')
   const isGrantAccepted = session.get('is-grant-accepted')

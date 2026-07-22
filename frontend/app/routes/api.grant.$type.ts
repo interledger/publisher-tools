@@ -1,11 +1,12 @@
 import { redirect } from 'react-router'
+import { cloudflareContext } from '~/lib/context.js'
 import type { GrantOutcome } from '~/lib/types'
 import { isGrantValidAndAccepted } from '~/utils/open-payments.server'
 import { commitSession, getSession } from '~/utils/session.server'
 import type { Route } from './+types/api.grant.$type'
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
-  const { env } = context.cloudflare
+  const { env } = context.get(cloudflareContext)
 
   const elementType = params.type
   const url = new URL(request.url)
