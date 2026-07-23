@@ -68,7 +68,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             'w-full px-sm py-xs rounded-sm',
             'border',
             !props.disabled &&
-              'focus-within:border-field-border-focus focus-within:outline-none focus-within:ring-1 focus-within:ring-primary-focus hover:border-field-border-hover',
+              'focus-within:border-field-border-focus focus-within:outline-hidden focus-within:ring-1 focus-within:ring-primary-focus hover:border-field-border-hover',
             error ? 'border-field-border-error' : 'border-field-border',
             props.disabled &&
               'border-field-border-disabled bg-field-bg-disabled text-silver-700',
@@ -88,7 +88,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             ref={ref}
             maxLength={maxLength}
             className={cx(
-              'outline-none border-none ring-0 focus:ring-0 focus:outline-none focus:border-none',
+              'outline-hidden border-none ring-0 focus:ring-0 focus:outline-hidden focus:border-none',
               'w-full',
               'text-text-primary bg-inherit',
               'placeholder:text-text-placeholder placeholder-ellipsis placeholder:text-xs sm:placeholder:text-sm',

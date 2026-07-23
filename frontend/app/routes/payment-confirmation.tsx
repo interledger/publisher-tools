@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 export default function PaymentComplete() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8">
+      <div className="max-w-[28rem] w-full space-y-8 p-8">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-green-100 mb-6">
             <svg

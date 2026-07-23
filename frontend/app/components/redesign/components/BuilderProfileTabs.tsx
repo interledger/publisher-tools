@@ -118,7 +118,7 @@ export const BuilderProfileTabs = <T extends string>({
               className={cx(
                 'flex-grow flex items-center text-left relative',
                 'px-2 pb-2 pt-4 rounded-b-none rounded-t-sm',
-                'cursor-pointer !-outline-offset-2',
+                'cursor-pointer -outline-offset-2!',
                 !editingId && 'mb-2',
                 option.id === activeTabId
                   ? 'bg-white text-text-buttons-default'
@@ -135,7 +135,7 @@ export const BuilderProfileTabs = <T extends string>({
                   !editingId &&
                     editIntentId === option.id &&
                     editIntentId === activeTabId &&
-                    'bg-white outline outline-1 outline-field-border-hover text-text-primary',
+                    'bg-white outline-solid outline-1 outline-field-border-hover text-text-primary',
                 )}
               >
                 {option.label}
@@ -298,12 +298,12 @@ function TabNameEditor<T extends string>({
         type="text"
         id={inputId}
         className={cx(
-          'flex-shrink-0 w-auto p-2 pr-8 text-left',
+          'shrink-0 w-auto p-2 pr-8 text-left',
           'text-style-body-standard leading-md font-normal w-full',
           'text-text-buttons-default bg-white rounded-sm',
           'invalid:text-text-error invalid:underline invalid:empty:no-underline decoration-dashed',
-          'outline outline-1',
-          !!errorMessage && 'outline outline-field-border-error',
+          'outline-solid outline-1',
+          !!errorMessage && 'outline-solid outline-field-border-error',
         )}
         placeholder="Preset name"
         autoFocus={true}
@@ -322,7 +322,7 @@ function TabNameEditor<T extends string>({
       />
       {!!errorMessage && (
         <span
-          className="text-style-caption-standard !text-text-error absolute bottom-1.5 right-1.5 bg-white"
+          className="text-style-caption-standard text-text-error! absolute bottom-1.5 right-1.5 bg-white"
           id={`${inputId}-error`}
         >
           {errorMessage}
@@ -331,7 +331,7 @@ function TabNameEditor<T extends string>({
 
       <button
         type="submit"
-        className="cursor-pointer rounded-none p-xs -outline-offset-2 h-full focus:scale-120 focus:outline-none absolute right-2"
+        className="cursor-pointer rounded-none p-xs -outline-offset-2 h-full focus:scale-120 focus:outline-hidden absolute right-2"
         title="Save configuration name"
       >
         <span className="sr-only">Save configuration name</span>

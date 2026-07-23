@@ -35,7 +35,7 @@ export const BuilderAccordion: React.FC<Props> = ({
     <details
       open={isOpen}
       className={cx(
-        'flex flex-col rounded-lg relative',
+        'flex flex-col rounded-sm relative',
         'transition-transform duration-300 ease-in-out',
         isOpen ? 'bg-interface-bg-container' : 'bg-interface-bg-main',
       )}

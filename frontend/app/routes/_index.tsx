@@ -177,9 +177,9 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="bg-interface-bg-main min-h-screen flex flex-col gap-2xl items-center pt-5xl pb-xl px-0">
-      <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-[1280px]">
+      <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-7xl">
         <div className="flex flex-col gap-xs items-center justify-start p-0 w-full">
-          <Heading1 className="!leading-normal !text-[42px] max-xl:!text-style-h2-semibold text-center">
+          <Heading1 className="leading-normal! text-[42px]! max-xl:text-style-h2-semibold! text-center">
             {DEFAULT_TITLE}
           </Heading1>
           <img
@@ -189,7 +189,7 @@ export default function Index() {
           />
         </div>
 
-        <p className="text-style-h5 !text-landing-content text-center w-full max-xl:!text-style-body-standard">
+        <p className="text-style-h5 text-landing-content! text-center w-full max-xl:text-style-body-standard!">
           Use our suite of tools to set up and promote Web Monetization.
           <br />
           Encourage your visitors to support your content and website.
@@ -201,7 +201,7 @@ export default function Index() {
         className="flex flex-col gap-2.5 items-center justify-start p-0 w-full"
       >
         <section
-          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          className="max-w-7xl w-full flex flex-col gap-md items-center justify-start px-md py-0"
           aria-labelledby="heading-setup-tools"
         >
           <Heading3
@@ -211,7 +211,7 @@ export default function Index() {
             Setup tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 text-landing-content! text-left w-full max-xl:text-style-small-standard! max-xl:text-center">
             Get started quickly with tools designed to help you set up Web
             Monetization on your website
           </p>
@@ -235,15 +235,12 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li
-              aria-hidden="true"
-              className="w-[340px] opacity-0 max-xl:hidden"
-            />
+            <li aria-hidden="true" className="w-85 opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
         <section
-          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          className="max-w-7xl w-full flex flex-col gap-md items-center justify-start px-md py-0"
           aria-labelledby="heading-interaction-tools"
         >
           <Heading3
@@ -253,7 +250,7 @@ export default function Index() {
             Interaction tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 text-landing-content! text-left w-full max-xl:text-style-small-standard! max-xl:text-center">
             Add lightweight and embeddable tools, like banners and widgets, to
             your site with simple scripts.
             <br />
@@ -279,12 +276,12 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li className="w-[340px] opacity-0 max-xl:hidden" />
+            <li className="w-85 opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
         <section
-          className="max-w-[1280px] w-full flex flex-col gap-md items-center justify-start px-md py-0"
+          className="max-w-7xl w-full flex flex-col gap-md items-center justify-start px-md py-0"
           aria-labelledby="heading-integration-tools"
         >
           <Heading3
@@ -294,7 +291,7 @@ export default function Index() {
             Integration tools
           </Heading3>
 
-          <p className="text-style-h5 !text-landing-content text-left w-full max-xl:!text-style-small-standard max-xl:text-center">
+          <p className="text-style-h5 text-landing-content! text-left w-full max-xl:text-style-small-standard! max-xl:text-center">
             Use integration tools to enable Web Monetization on your site
             through supported platforms like Google and WordPress.
           </p>
@@ -318,10 +315,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li
-              aria-hidden="true"
-              className="w-[340px] opacity-0 max-xl:hidden"
-            />
+            <li aria-hidden="true" className="w-85 opacity-0 max-xl:hidden" />
           </ul>
         </section>
       </div>

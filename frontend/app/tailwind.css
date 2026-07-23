@@ -1,33 +1,227 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/*
+  Replaces the safelist array we had in v3 - replaces the class names
+  that are created at runtime
+*/
+@source inline("text-style-{h1,h2,h2-semibold,h3,h4,h5,h6,body-standard,body-emphasis,small-standard,small-emphasis,caption-standard,caption-emphasis,display-1,display-2}");
+
+@theme {
+  /* Green palette */
+  --color-green-50: #dbe9e7;
+  --color-green-200: #abe4df;
+  --color-green-400: #56b7b5;
+  --color-green-600: #27797a;
+  --color-green-800: #204d4f;
+
+  /* Purple palette */
+  --color-purple-50: #f3f4fa;
+  --color-purple-100: #a7a6d3;
+  --color-purple-300: #7469a8;
+  --color-purple-600: #5b5380;
+  --color-purple-800: #2d2a3c;
+
+  /* Mint palette */
+  --color-mint-50: #f2fbf9;
+  --color-mint-100: #d4f3eb;
+  --color-mint-300: #98e1d0;
+  --color-mint-600: #4ab7a5;
+  --color-mint-800: #247d71;
+
+  /* Blue palette */
+  --color-blue-50: #f6f8fa;
+  --color-blue-100: #d0dded;
+  --color-blue-300: #a3bedc;
+  --color-blue-600: #5a77b6;
+  --color-blue-800: #455588;
+
+  /* Orange palette */
+  --color-orange-50: #fff6ed;
+  --color-orange-100: #ffd3a8;
+  --color-orange-300: #ff9852;
+  --color-orange-600: #ef4c07;
+  --color-orange-800: #9d2d0f;
+
+  /* Pink palette */
+  --color-pink-50: #fef1f5;
+  --color-pink-100: #fee5ee;
+  --color-pink-300: #ffc8dc;
+  --color-pink-600: #ff6698;
+  --color-pink-800: #eb174a;
+
+  /* Red palette */
+  --color-red-50: #fff1f2;
+  --color-red-100: #fee5ee;
+  --color-red-300: #ff7a7f;
+  --color-red-600: #e51d25;
+  --color-red-800: #a01419;
+
+  /* Neutrals */
+  --color-silver-50: #f7f7f7;
+  --color-silver-100: #efefef;
+  --color-silver-200: #dfdfdf;
+  --color-silver-300: #c9c9c9;
+  --color-silver-400: #adadad;
+  --color-silver-500: #999999;
+  --color-silver-600: #888888;
+  --color-silver-700: #7b7b7b;
+  --color-silver-800: #676767;
+  --color-silver-900: #545454;
+  --color-silver-950: #363636;
+
+  /* Semantic colors */
+  --color-interface-bg-main: var(--color-blue-50);
+  --color-interface-bg-container: var(--color-white);
+  --color-interface-edge-container: var(--color-silver-200);
+  --color-interface-heading-container: var(--color-purple-300);
+  --color-interface-bg-stickymenu: var(--color-silver-100);
+  --color-interface-tooltip: var(--color-purple-800);
+
+  --color-primary-bg: var(--color-green-400);
+  --color-primary-bg-hover: var(--color-green-600);
+  --color-primary-focus: var(--color-purple-600);
+
+  --color-secondary-edge: var(--color-purple-300);
+  --color-secondary-edge-hover: var(--color-purple-600);
+  --color-secondary-hover-surface: var(--color-purple-50);
+
+  --color-text-primary: var(--color-silver-950);
+  --color-text-secondary: var(--color-silver-600);
+  --color-text-placeholder: var(--color-silver-700);
+  --color-text-disabled: var(--color-silver-300);
+  --color-text-error: var(--color-red-600);
+  --color-text-success: var(--color-green-600);
+  --color-text-buttons-default: var(--color-purple-300);
+
+  --color-field-border: var(--color-silver-300);
+  --color-field-border-hover: var(--color-silver-400);
+  --color-field-border-focus: var(--color-purple-600);
+  --color-field-border-disabled: var(--color-silver-200);
+  --color-field-bg-disabled: var(--color-silver-100);
+  --color-field-border-error: var(--color-red-600);
+  --color-field-helpertext-default: var(--color-silver-800);
+
+  --color-tabs-bg-default: var(--color-blue-50);
+  --color-tabs-inactive-default: var(--color-silver-600);
+
+  --color-landing-footer-bg: var(--color-mint-100);
+  --color-landing-button-bg: var(--color-black);
+  --color-landing-button-bg-hover: var(--color-silver-950);
+  --color-landing-button-border: var(--color-silver-800);
+  --color-landing-button-border-hover: var(--color-black);
+  --color-landing-pill-border: var(--color-blue-300);
+  --color-landing-content: var(--color-silver-800);
+
+  --color-footer-bg: var(--color-mint-100);
+  --color-footer-content: var(--color-silver-800);
+
+  --color-nav-link-default: var(--color-purple-300);
+  --color-nav-link-hover: var(--color-purple-600);
+
+  /* Custom old WM colors */
+  --color-wm-green: #5bc8bb;
+  --color-wm-green-fade: #bfeee8;
+  --color-wm-green-shade: #92dbca;
+  --color-wm-dark-green: #005d84;
+  --color-wm-dark-green-fade: #4a989d;
+  --color-wm-pink: #f8c6db;
+  --color-wm-red: #ef4e71;
+  --color-wm-red-fade: #efa4b4;
+  --color-wm-orange: #f69656;
+  --color-wm-teal: #9cd6cb;
+  --color-wm-purple: #7f76b2;
+
+  /* Spacing scale */
+  --spacing-3xs: 2px;
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  --spacing-4xl: 60px;
+  --spacing-5xl: 120px;
+  --spacing-128: 36rem;
+  --spacing-148: 42rem;
+  --spacing-256: 72rem;
+
+  /*
+    We follow v4 defaults for font-size (https://tailwindcss.com/docs/font-size)
+    so was able to remove references that were in v3. Needed to add 
+    `--text-*--line-height` to inherit browser line-height. There are
+    a few places in code where we don't set line-height with `leading-*`
+  */
+  --text-xs--line-height: initial;
+  --text-sm--line-height: initial;
+  --text-base--line-height: initial;
+  --text-lg--line-height: initial;
+  --text-xl--line-height: initial;
+  --text-2xl--line-height: initial;
+  --text-3xl--line-height: initial;
+  --text-4xl--line-height: initial;
+  --text-5xl--line-height: initial;
+  --text-6xl--line-height: initial;
+  --text-7xl--line-height: initial;
+
+  /* Line heights (accessible via leading-*) */
+  --leading-xs: 16px;
+  --leading-sm: 20px;
+  --leading-md: 24px;
+  --leading-lg: 26px;
+  --leading-xl: 28px;
+  --leading-2xl: 32px;
+  --leading-3xl: 38px;
+  --leading-4xl: 44px;
+  --leading-5xl: 56px;
+  --leading-6xl: 70px;
+  --leading-7xl: 80px;
+
+  /* Font families */
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono:
+    ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas,
+    'DejaVu Sans Mono', monospace;
+
+  /* Radius scale */
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-full: 99999px;
+}
+
+/*
+  TODO: will go back and specify border-* where applicable
+  Reference (https://tailwindcss.com/docs/upgrade-guide#default-border-color)
+  for current implementation
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #e5e7eb;
+  }
+}
 
 @layer base {
   :root {
-    --focus-outline-color: theme('colors.nav-link-hover');
+    --focus-outline-color: var(--color-nav-link-hover);
     --focus-outline-width: 2px;
     --focus-outline-offset: 2px;
   }
+
   html,
   body {
-    font-family:
-      'Inter',
-      ui-sans-serif,
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      'Segoe UI',
-      Roboto,
-      'Helvetica Neue',
-      Arial,
-      'Noto Sans',
-      sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol',
-      'Noto Color Emoji';
+    font-family: var(--font-sans);
   }
 
   body:has([aria-label='Mobile menu']) {
@@ -39,28 +233,37 @@
   summary,
   [role='tab'],
   [role='menu'] {
-    @apply rounded-lg;
-    @apply focus:outline-none;
-    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
+    @apply rounded-sm;
+    @apply focus:outline-hidden;
+    @apply focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nav-link-hover;
+  }
+
+  /*
+    v4 dropped `cursor: pointer` from buttons - added to restore prior behavior
+    (https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor)
+  */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
 
-@layer components {
-  a.focusable-nav-item,
-  button.focusable-nav-item {
-    @apply transition-colors duration-200 ease-in;
-    @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover active:bg-secondary-hover-surface active:text-nav-link-hover;
-    @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
-    @apply focus-visible:outline-offset-0;
+a.focusable-nav-item,
+button.focusable-nav-item {
+  @apply transition-colors duration-200 ease-in;
+  @apply hover:bg-secondary-hover-surface hover:text-nav-link-hover active:bg-secondary-hover-surface active:text-nav-link-hover;
+  @apply focus-visible:bg-secondary-hover-surface focus-visible:text-nav-link-hover;
+  @apply focus-visible:outline-offset-0;
+}
+
+/* Placeholder text with ellipsis */
+@utility placeholder-ellipsis {
+  &[placeholder] {
+    text-overflow: ellipsis;
   }
 }
 
 @layer utilities {
-  /* Placeholder text with ellipsis */
-  .placeholder-ellipsis[placeholder] {
-    text-overflow: ellipsis;
-  }
-
   .has-fixed-action-bar footer {
     padding-bottom: var(--action-bar-height) !important;
   }
@@ -90,4 +293,109 @@
       transform: translateY(0);
     }
   }
+}
+
+/* text-style-* utilities */
+@utility text-style-h1 {
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-h2 {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-h2-semibold {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-h3 {
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-h4 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-h5 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+  color: var(--color-purple-300);
+}
+@utility text-style-h6 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-body-standard {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-body-emphasis {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-small-standard {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-small-emphasis {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-caption-standard {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-caption-emphasis {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  color: var(--color-silver-950);
+}
+@utility text-style-display-1 {
+  font-size: 72px;
+  line-height: 80px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+}
+@utility text-style-display-2 {
+  font-size: 60px;
+  line-height: 70px;
+  font-weight: 500;
+  font-family: var(--font-sans);
 }

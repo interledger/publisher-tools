@@ -96,7 +96,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-silver-400 bg-opacity-40 px-md md:px-0"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-silver-400/40 px-md md:px-0"
       onClick={handleOverlayClick}
     >
       <div
@@ -104,7 +104,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
         className={cx(
           'relative w-full max-w-[426px] bg-interface-bg-container',
           'border-[1.135px] border-interface-edge-container',
-          'pt-2xl pb-md rounded-lg',
+          'pt-4xl pb-md rounded-sm',
           className,
         )}
         role="dialog"
@@ -115,7 +115,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           onClick={onClose}
           className={cx(
             'absolute top-3 right-3 text-silver-800 hover:text-text-secondary transition-colors rounded-sm',
-            'focus:border-field-border-focus focus:outline-none focus:ring-2 focus:ring-primary-focus',
+            'focus:border-field-border-focus focus:outline-hidden focus:ring-2 focus:ring-primary-focus',
           )}
           aria-label="Close modal"
         >
@@ -137,9 +137,9 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             id="linkTagInput"
             ref={inputRef}
             className={cx(
-              'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none',
-              'w-full max-w-full h-[136px]',
-              'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+              'py-sm pl-md pr-xs rounded-sm border border-silver-300 resize-none',
+              'w-full max-w-full h-34',
+              'focus:border-field-border-focus focus:outline-hidden focus:ring-1 focus:ring-primary-focus',
               'placeholder:text-xs sm:placeholder:text-sm text-sm font-mono',
             )}
             placeholder={PLACEHOLDER_LINK_TAG}

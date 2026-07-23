@@ -7,7 +7,7 @@ import { Heading5 } from '../redesign/Typography'
 export function PaywallBuilderSettings() {
   const t = useTranslation('paywall')
   return (
-    <div className="bg-white shadow-sm rounded-xl p-md">
+    <div className="bg-white shadow-xs rounded-xl p-md">
       <Heading5 className="mb-sm">{t('section.settings.title')}</Heading5>
 
       <PaywallPriceBuilder />
