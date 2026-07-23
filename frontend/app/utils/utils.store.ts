@@ -1,5 +1,5 @@
 import { deepEqual } from 'fast-equals'
-import { snapshot, subscribe } from 'valtio'
+import { snapshot, subscribe, useSnapshot } from 'valtio'
 import {
   type BaseToolProfile,
   type ProfileId,
@@ -11,12 +11,15 @@ import {
 import type { BannerStore } from '~/stores/banner-store'
 import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { PaywallStore } from '~/stores/paywall-store'
+import { toolState } from '~/stores/toolStore'
 import type { WidgetStore } from '~/stores/widget-store'
 import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
-import { omit } from '~/utils/utils.storage'
+import { omit, splitProfileProperties } from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore | PaywallStore
 const STORAGE_PREFIX = 'wmt'
+
+type BuilderSection = 'content' | 'appearance'
 
 export function getStorageKeys(tool: Tool) {
   return {
@@ -96,6 +99,18 @@ export function createToolStoreUtils<T extends Tool>(
     })
   }
 
+  function useSectionHasChanges(section: BuilderSection): boolean {
+    const { activeTab } = useSnapshot(toolState)
+    const updates = useSnapshot(store.profilesUpdate)
+    const profile = useSnapshot(store.profiles[activeTab]) as ToolProfile<T>
+    if (!updates.has(activeTab)) return false
+    const baseline = snapshots.get(activeTab)
+    if (!baseline) return false
+    const cur = splitProfileProperties(profile)
+    const base = splitProfileProperties(baseline)
+    return !deepEqual(cur[section], base[section])
+  }
+
   function persistSnapshots() {
     localStorage.setItem(
       snapshotsStorageKey,
@@ -104,6 +119,8 @@ export function createToolStoreUtils<T extends Tool>(
   }
 
   return {
+    useSectionHasChanges,
+
     subscribeProfilesToStorage() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToStorage)
       return () => unsubscribes.forEach((s) => s())

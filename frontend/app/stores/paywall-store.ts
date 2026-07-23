@@ -124,6 +124,7 @@ export const actions = {
 }
 
 export const {
+  useSectionHasChanges,
   subscribeProfilesToStorage,
   hydrateProfilesFromStorage,
   captureSnapshotsToStorage,

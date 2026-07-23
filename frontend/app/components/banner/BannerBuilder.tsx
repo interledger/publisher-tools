@@ -23,7 +23,7 @@ import { BannerPositionSelector } from '~/components/banner/BannerPositionSelect
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { BANNER_SUGGESTED_TITLES } from '~/lib/presets'
-import { useBannerProfile } from '~/stores/banner-store'
+import { useBannerProfile, useSectionHasChanges } from '~/stores/banner-store'
 import type { BuilderSection } from '~/stores/uiStore'
 
 interface Props {
@@ -52,14 +52,15 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('content')
+  const hasChanges = useSectionHasChanges('content')
   const [snap, profile] = useBannerProfile({ sync: true })
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
+      hasChanges={hasChanges}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
@@ -97,8 +98,9 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('appearance')
+  const hasChanges = useSectionHasChanges('appearance')
   const [snap, profile] = useBannerProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -108,7 +110,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
+      hasChanges={hasChanges}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
