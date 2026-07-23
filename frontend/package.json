@@ -39,7 +39,7 @@
     "react-minimal-pie-chart": "^9.1.2",
     "react-router": "^8.2.0",
     "sanitize-html": "^2.17.5",
-    "tailwindcss": "^4.3.1",
+    "tailwindcss": "^4.3.3",
     "valtio": "^2.3.2",
     "zod": "^4.4.3"
   },
@@ -50,7 +50,7 @@
     "@shared/default-data": "workspace:^",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
-    "@tailwindcss/vite": "^4.3.1",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/he": "^1.2.3",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
