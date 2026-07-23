@@ -37,7 +37,7 @@
     "pnpm": "^11.0.0",
     "npm": "pnpm",
     "yarn": "pnpm",
-    "node": ">=24.0.0"
+    "node": ">=24.18.0"
   },
   "private": true,
   "packageManager": "pnpm@11.9.0"
