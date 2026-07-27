@@ -23,18 +23,6 @@ export const PaymentStatusSchema = z.union([
 export type PaymentStatusSuccess = z.infer<typeof PaymentStatusSuccessSchema>
 export type PaymentStatusRejected = z.infer<typeof PaymentStatusRejectedSchema>
 
-const redirectFailure = (
-  redirect: (location: string | URL) => Response,
-  redirectUrl: string,
-  paymentId: string,
-) =>
-  redirect(
-    urlWithParams(redirectUrl, {
-      paymentId,
-      result: 'failure',
-    }),
-  )
-
 // This used to be in frontend/client earlier. It doesn't need to be. But we'll
 // still have something (the `redirectUrl` provided in initiate) in frontend (to
 // show to user). If someone else wants to use this PR (like from an embed with
@@ -47,12 +35,14 @@ app.get(
   validate('param', z.object({ paymentId: PaymentIdSchema })),
   validate('query', PaymentStatusSchema),
   async ({ req, redirect, env }) => {
+    let data: Awaited<ReturnType<typeof getData>> | undefined
+    const { paymentId } = req.valid('param')
+
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
-      const { paymentId } = req.valid('param')
       const queryParams = req.valid('query')
 
-      const data = await getData(env.PUBLISHER_TOOLS_KV, paymentId)
+      data = await getData(env.PUBLISHER_TOOLS_KV, paymentId)
       if (!data) {
         throw createHTTPException(404, 'Payment not found', {})
       }
@@ -71,50 +61,45 @@ app.get(
           { status: 'GRANT_REJECTED' },
           { expirationTtl: 5 * 60 /* 5 minutes */ },
         )
-        return redirectFailure(redirect, data.redirectUrl, paymentId)
+        return redirect(urlWithParams(data.redirectUrl, { paymentId, result: 'failure' }))
       }
 
       if ('hash' in queryParams) {
-        try {
-          const { outgoingPaymentId, accessToken } =
-            await openPayments.paymentComplete({
-              quoteId: data.quoteId,
-              grantContinuation: data.grantContinuation,
-              sender: data.sender,
-              metadata: data.metadata,
-              nonce: data.nonce,
-              interactRef: queryParams.interact_ref,
-              hash: queryParams.hash,
-            })
-          await setData(
-            env.PUBLISHER_TOOLS_KV,
-            paymentId,
-            {
-              status: 'CREATED',
-              redirectUrl: data.redirectUrl,
-              outgoingPaymentId,
-              incomingPaymentId: data.incomingPaymentId,
-              sender: data.sender,
-              receiver: data.receiver,
-              amount: data.amount,
-              outgoingPaymentGrantAccessToken: accessToken,
-            },
-            { expirationTtl: 5 * 60 /* 5 minutes */ },
-          )
-          return redirect(
-            urlWithParams(data.redirectUrl, {
-              paymentId,
-              result: 'success',
-            }),
-          )
-        } catch (error) {
-          console.error(error)
-          return redirectFailure(redirect, data.redirectUrl, paymentId)
-        }
+        const { outgoingPaymentId, accessToken } =
+          await openPayments.paymentComplete({
+            quoteId: data.quoteId,
+            grantContinuation: data.grantContinuation,
+            sender: data.sender,
+            metadata: data.metadata,
+            nonce: data.nonce,
+            interactRef: queryParams.interact_ref,
+            hash: queryParams.hash,
+          })
+        await setData(
+          env.PUBLISHER_TOOLS_KV,
+          paymentId,
+          {
+            status: 'CREATED',
+            redirectUrl: data.redirectUrl,
+            outgoingPaymentId,
+            incomingPaymentId: data.incomingPaymentId,
+            sender: data.sender,
+            receiver: data.receiver,
+            amount: data.amount,
+            outgoingPaymentGrantAccessToken: accessToken,
+          },
+          { expirationTtl: 5 * 60 /* 5 minutes */ },
+        )
+        return redirect(urlWithParams(data.redirectUrl, { paymentId, result: 'success' }))
       }
     } catch (error) {
       console.error(error)
       if (error instanceof HTTPException) throw error
+      if (data?.status === 'PENDING') {
+        return redirect(
+          urlWithParams(data.redirectUrl, { paymentId, result: 'failure' }),
+        )
+      }
       throw createHTTPException(500, 'Payment continue error', error)
     }
   },

@@ -30,7 +30,17 @@
     "success": "Wallet ownership confirmed!",
     "declined": "Wallet authorization was declined.",
     "sessionExpired": "Your session has expired. Please try again.",
-    "verificationFailed": "Unable to verify wallet access. Please try again."
+    "verificationFailed": "Unable to verify wallet access. Please try again.",
+    "payment.meta.successTitle": "Payment Complete",
+    "payment.meta.successDescription": "Your payment has been processed successfully.",
+    "payment.meta.failureTitle": "Payment not authorized",
+    "payment.meta.failureDescription": "The payment was declined or could not be completed.",
+    "payment.meta.defaultTitle": "Grant Interaction",
+    "payment.meta.defaultDescription": "Grant interaction result",
+    "payment.success.title": "Payment Complete!",
+    "payment.success.message": "Your payment has been processed successfully.\nYou can now close this window.",
+    "payment.failure.title": "Payment not authorized",
+    "payment.failure.message": "The payment was declined or could not be completed.\nYou can now close this window."
   },
   "paywall": {
     "title": "Pay per Article",

@@ -1,11 +1,29 @@
 import type { ComponentType, SVGProps } from 'react'
 import { useSearchParams, type MetaFunction } from 'react-router'
 import { SVGErrorVector, SVGMarkSuccess } from '@/assets'
+import en from '~/i18n/locales/en.json'
+import { useTranslation } from '~/i18n/useTranslation'
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ location }) => {
+  const params = new URLSearchParams(location.search)
+  const result = params.get('result')
+  const gi = en.grantInteraction
+
+  if (result === 'success') {
+    return [
+      { title: gi['payment.meta.successTitle'] },
+      { name: 'description', content: gi['payment.meta.successDescription'] },
+    ]
+  }
+  if (result === 'failure') {
+    return [
+      { title: gi['payment.meta.failureTitle'] },
+      { name: 'description', content: gi['payment.meta.failureDescription'] },
+    ]
+  }
   return [
-    { title: 'Grant Interaction' },
-    { name: 'description', content: 'Grant interaction result' },
+    { title: gi['payment.meta.defaultTitle'] },
+    { name: 'description', content: gi['payment.meta.defaultDescription'] },
   ]
 }
 
@@ -15,23 +33,22 @@ type View = {
   message: string
 }
 
-const SUCCESS_VIEW: View = {
-  Icon: SVGMarkSuccess,
-  title: 'Payment Complete!',
-  message:
-    'Your payment has been processed successfully.\nYou can now close this window.',
-}
-
-const FAILURE_VIEW: View = {
-  Icon: SVGErrorVector,
-  title: 'Payment not authorized',
-  message:
-    'The payment was declined or could not be completed.\nYou can now close this window.',
-}
-
 export default function GrantInteraction() {
   const [searchParams] = useSearchParams()
+  const t = useTranslation('grantInteraction')
   const result = searchParams.get('result')
+
+  const SUCCESS_VIEW: View = {
+    Icon: SVGMarkSuccess,
+    title: t('payment.success.title'),
+    message: t('payment.success.message'),
+  }
+
+  const FAILURE_VIEW: View = {
+    Icon: SVGErrorVector,
+    title: t('payment.failure.title'),
+    message: t('payment.failure.message'),
+  }
 
   const view = result === 'failure' ? FAILURE_VIEW : SUCCESS_VIEW
 
