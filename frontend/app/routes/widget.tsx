@@ -10,6 +10,7 @@ import { BuilderProfileTabs } from '@/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { WidgetBuilder } from '~/components/widget/WidgetBuilder'
 import { WidgetPreview } from '~/components/widget/WidgetPreview'
+import { cloudflareContext } from '~/lib/context.js'
 import { toolState, toolActions } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import {
@@ -38,7 +39,7 @@ export const meta: MetaFunction = () => {
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const { env } = context.cloudflare
+  const { env } = context.get(cloudflareContext)
   const session = await getSession(request.headers.get('Cookie'))
   const grantResponse = session.get('grant-response')
   const isGrantAccepted = session.get('is-grant-accepted')

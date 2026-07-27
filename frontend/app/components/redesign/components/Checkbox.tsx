@@ -43,7 +43,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     >
       <span
         className={cx(
-          'w-4 h-4 rounded flex items-center justify-center',
+          'w-4 h-4 rounded-xs flex items-center justify-center',
           checked
             ? 'bg-purple-300 border-purple-300'
             : 'bg-white border border-purple-300',

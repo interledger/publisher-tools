@@ -9,6 +9,7 @@ import { AWS_PREFIX } from '@shared/defines'
 import type { Configuration, Tool } from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { cloudflareContext } from '~/lib/context.js'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
 import { walletSchema } from '~/utils/validate.server'
@@ -20,7 +21,7 @@ const ApiGetProfilesSchema = z.object({
 })
 
 export async function loader({ request, context }: Route.LoaderArgs) {
-  const { env } = context.cloudflare
+  const { env } = context.get(cloudflareContext)
 
   try {
     const url = new URL(request.url)

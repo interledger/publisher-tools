@@ -127,7 +127,7 @@ function Revshare() {
 
   return (
     <div className="bg-interface-bg-main w-full px-md">
-      <div className="max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
+      <div className="max-w-7xl mx-auto pt-4xl md:pt-5xl">
         <HeadingCore
           title="Probabilistic Revenue Share"
           onBackClick={() => navigate('/')}

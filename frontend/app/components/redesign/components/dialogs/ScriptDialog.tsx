@@ -42,7 +42,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
 
       <div className="flex gap-xs items-center px-sm py-0 w-full">
         <SVGTooltip className="w-6 h-6 shrink-0" />
-        <p className="text-style-small-standard !text-field-helpertext-default">
+        <p className="text-style-small-standard text-field-helpertext-default!">
           Add the script to the <code className="font-mono">&lt;body&gt;</code>{' '}
           of your website.
           <br />
@@ -92,7 +92,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
           href={`https://webmonetization.org/publishers/${snap.currentToolType}-tool/`}
           target="_blank"
           rel="noreferrer"
-          className="text-blue-600 underline hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-primary-focus rounded"
+          className="text-blue-600 underline hover:text-blue-800 focus:outline-hidden focus:ring-2 focus:ring-primary-focus rounded-xs"
         >
           Documentation
         </a>

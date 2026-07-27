@@ -60,7 +60,7 @@ function PaywallCoverageInput({
 
   return (
     <fieldset className="space-y-2xs">
-      <legend className="text-style-caption-standard !text-field-helpertext-default">
+      <legend className="text-style-caption-standard text-field-helpertext-default!">
         {t('input.coverage.label')}
       </legend>
       <div className="grid grid-cols-4 gap-1 p-2xs rounded-sm border border-interface-edge-container bg-tabs-bg-default">
@@ -85,7 +85,7 @@ function PaywallCoverageInput({
           </label>
         ))}
       </div>
-      <p className="text-style-caption-standard !text-field-helpertext-default">
+      <p className="text-style-caption-standard text-field-helpertext-default!">
         {t('input.coverage.hint')}
       </p>
     </fieldset>
@@ -103,7 +103,7 @@ function PaywallDelayInput({
   return (
     <InputFieldNumeric
       label={t('input.delay.label')}
-      labelClassName="text-style-caption-standard !text-field-helpertext-default"
+      labelClassName="text-style-caption-standard text-field-helpertext-default!"
       inputMode="decimal"
       value={value}
       onChange={onChange}

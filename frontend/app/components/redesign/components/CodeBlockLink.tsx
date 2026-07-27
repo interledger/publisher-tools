@@ -54,7 +54,7 @@ const CopyButton = ({
   return (
     <button
       type="button"
-      className="sticky right-0 h-full flex items-center justify-center p-xs rounded-sm bg-interface-bg-main flex-shrink-0"
+      className="sticky right-0 h-full flex items-center justify-center p-xs rounded-sm bg-interface-bg-main shrink-0"
       onClick={onCopyClick}
       aria-label={
         isCopied

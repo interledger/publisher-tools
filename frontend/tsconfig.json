@@ -13,7 +13,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-    "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"],
       "@/components": ["./app/components/redesign/components"],
