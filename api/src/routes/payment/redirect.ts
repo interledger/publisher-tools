@@ -61,7 +61,9 @@ app.get(
           { status: 'GRANT_REJECTED' },
           { expirationTtl: 5 * 60 /* 5 minutes */ },
         )
-        return redirect(urlWithParams(data.redirectUrl, { paymentId, result: 'failure' }))
+        return redirect(
+          urlWithParams(data.redirectUrl, { paymentId, result: 'failure' }),
+        )
       }
 
       if ('hash' in queryParams) {
@@ -90,7 +92,9 @@ app.get(
           },
           { expirationTtl: 5 * 60 /* 5 minutes */ },
         )
-        return redirect(urlWithParams(data.redirectUrl, { paymentId, result: 'success' }))
+        return redirect(
+          urlWithParams(data.redirectUrl, { paymentId, result: 'success' }),
+        )
       }
     } catch (error) {
       console.error(error)
