@@ -297,87 +297,102 @@ button.focusable-nav-item {
   font-size: 48px;
   line-height: 56px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h2 {
   font-size: 36px;
   line-height: 44px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h2-semibold {
   font-size: 36px;
   line-height: 44px;
   font-weight: 600;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h3 {
   font-size: 30px;
   line-height: 38px;
   font-weight: 500;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h4 {
   font-size: 24px;
   line-height: 32px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-h5 {
   font-size: 20px;
   line-height: 28px;
   font-weight: 400;
+  font-family: var(--font-sans);
   color: var(--color-purple-300);
 }
 @utility text-style-h6 {
   font-size: 18px;
   line-height: 26px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-body-standard {
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-body-emphasis {
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-small-standard {
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-small-emphasis {
   font-size: 14px;
   line-height: 20px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-caption-standard {
   font-size: 12px;
   line-height: 16px;
   font-weight: 400;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-caption-emphasis {
   font-size: 12px;
   line-height: 16px;
   font-weight: 700;
+  font-family: var(--font-sans);
   color: var(--color-silver-950);
 }
 @utility text-style-display-1 {
   font-size: 72px;
   line-height: 80px;
   font-weight: 700;
+  font-family: var(--font-sans);
 }
 @utility text-style-display-2 {
   font-size: 60px;
   line-height: 70px;
   font-weight: 500;
+  font-family: var(--font-sans);
 }
