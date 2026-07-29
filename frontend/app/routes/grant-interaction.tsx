@@ -7,7 +7,7 @@ import { useTranslation } from '~/i18n/useTranslation'
 export const meta: MetaFunction = ({ location }) => {
   const params = new URLSearchParams(location.search)
   const result = params.get('result')
-  const gi = en.grantInteraction
+  const t = en.grantInteraction
 
   if (result === 'success') {
     return [
