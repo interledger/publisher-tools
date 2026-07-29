@@ -35,24 +35,26 @@ app.get(
   validate('param', z.object({ paymentId: PaymentIdSchema })),
   validate('query', PaymentStatusSchema),
   async ({ req, redirect, env }) => {
-    let data: Awaited<ReturnType<typeof getData>> | undefined
     const { paymentId } = req.valid('param')
+    const data = await getData(env.PUBLISHER_TOOLS_KV, paymentId)
+
+    if (!data) {
+      throw createHTTPException(404, 'Payment not found', {})
+    }
+    if (data.status !== 'PENDING') {
+      throw createHTTPException(
+        500,
+        `Unexpected payment status: ${data.status}. Expected: PENDING`,
+        {},
+      )
+    }
+
+    const getRedirectUrl = (result: 'success' | 'failure') =>
+      urlWithParams(data.redirectUrl, { paymentId, result })
 
     try {
       const openPayments = await OpenPaymentsService.getInstance(env)
       const queryParams = req.valid('query')
-
-      data = await getData(env.PUBLISHER_TOOLS_KV, paymentId)
-      if (!data) {
-        throw createHTTPException(404, 'Payment not found', {})
-      }
-      if (data.status !== 'PENDING') {
-        throw createHTTPException(
-          500,
-          `Unexpected payment status: ${data.status}. Expected: PENDING`,
-          {},
-        )
-      }
 
       if ('result' in queryParams && queryParams.result === 'grant_rejected') {
         await setData(
@@ -61,9 +63,7 @@ app.get(
           { status: 'GRANT_REJECTED' },
           { expirationTtl: 5 * 60 /* 5 minutes */ },
         )
-        return redirect(
-          urlWithParams(data.redirectUrl, { paymentId, result: 'failure' }),
-        )
+        return redirect(getRedirectUrl('failure'))
       }
 
       if ('hash' in queryParams) {
@@ -92,17 +92,13 @@ app.get(
           },
           { expirationTtl: 5 * 60 /* 5 minutes */ },
         )
-        return redirect(
-          urlWithParams(data.redirectUrl, { paymentId, result: 'success' }),
-        )
+        return redirect(getRedirectUrl('success'))
       }
     } catch (error) {
       console.error(error)
       if (error instanceof HTTPException) throw error
-      if (data?.status === 'PENDING') {
-        return redirect(
-          urlWithParams(data.redirectUrl, { paymentId, result: 'failure' }),
-        )
+      if (data.status === 'PENDING') {
+        return redirect(getRedirectUrl('failure'))
       }
       throw createHTTPException(500, 'Payment continue error', error)
     }

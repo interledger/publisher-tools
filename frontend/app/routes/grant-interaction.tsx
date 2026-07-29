@@ -7,23 +7,23 @@ import { useTranslation } from '~/i18n/useTranslation'
 export const meta: MetaFunction = ({ location }) => {
   const params = new URLSearchParams(location.search)
   const result = params.get('result')
-  const t = en.grantInteraction
+  const t = en.paymentResult
 
   if (result === 'success') {
     return [
-      { title: gi['payment.meta.successTitle'] },
-      { name: 'description', content: gi['payment.meta.successDescription'] },
+      { title: t['meta.successTitle'] },
+      { name: 'description', content: t['meta.successDescription'] },
     ]
   }
   if (result === 'failure') {
     return [
-      { title: gi['payment.meta.failureTitle'] },
-      { name: 'description', content: gi['payment.meta.failureDescription'] },
+      { title: t['meta.failureTitle'] },
+      { name: 'description', content: t['meta.failureDescription'] },
     ]
   }
   return [
-    { title: gi['payment.meta.defaultTitle'] },
-    { name: 'description', content: gi['payment.meta.defaultDescription'] },
+    { title: t['meta.defaultTitle'] },
+    { name: 'description', content: t['meta.defaultDescription'] },
   ]
 }
 
@@ -35,19 +35,19 @@ type View = {
 
 export default function GrantInteraction() {
   const [searchParams] = useSearchParams()
-  const t = useTranslation('grantInteraction')
+  const t = useTranslation('paymentResult')
   const result = searchParams.get('result')
 
   const SUCCESS_VIEW: View = {
     Icon: SVGMarkSuccess,
-    title: t('payment.success.title'),
-    message: t('payment.success.message'),
+    title: t('success.title'),
+    message: t('success.message'),
   }
 
   const FAILURE_VIEW: View = {
     Icon: SVGErrorVector,
-    title: t('payment.failure.title'),
-    message: t('payment.failure.message'),
+    title: t('failure.title'),
+    message: t('failure.message'),
   }
 
   const view = result === 'failure' ? FAILURE_VIEW : SUCCESS_VIEW
