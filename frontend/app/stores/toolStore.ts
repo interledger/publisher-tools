@@ -14,7 +14,11 @@ import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as paywallActions } from '~/stores/paywall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
-import { omit } from '~/utils/utils.storage'
+import {
+  omit,
+  parseWithShape,
+  subscribeToStorage,
+} from '~/utils/utils.storage'
 
 const STORAGE_KEY = 'valtio-store'
 
@@ -140,26 +144,23 @@ export const toolActions = {
   },
 }
 
+function parseToolState(raw: string | null): Partial<typeof toolState> | null {
+  const parsed = parseWithShape(raw, toolState)
+  if (!parsed) return null
+  return omit(parsed, EXCLUDED_FROM_STORAGE) as Partial<typeof toolState>
+}
+
 /** Load from localStorage on init, remove storage if invalid */
 export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
   toolState.cdnUrl = CDN_URL
   toolState.apiUrl = API_URL
   toolState.opWallet = OP_WALLET_ADDRESS
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      const parsed: typeof toolState = JSON.parse(saved)
-      const validKeys =
-        typeof parsed === 'object' &&
-        Object.keys(parsed).every((key) => key in toolState)
 
-      if (validKeys) {
-        Object.assign(toolState, omit(parsed, EXCLUDED_FROM_STORAGE))
-      } else {
-        throw new Error('saved configuration not valid')
-      }
-    }
-  } catch {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  const parsed = parseToolState(raw)
+  if (parsed) {
+    Object.assign(toolState, parsed)
+  } else if (raw !== null) {
     localStorage.removeItem(STORAGE_KEY)
   }
 }
@@ -170,5 +171,13 @@ export function persistState() {
       STORAGE_KEY,
       JSON.stringify(omit(toolState, EXCLUDED_FROM_STORAGE)),
     )
+  })
+}
+
+export function subscribeStateCrossTab() {
+  return subscribeToStorage((event) => {
+    if (event.key !== STORAGE_KEY) return
+    const parsed = parseToolState(event.newValue)
+    if (parsed) Object.assign(toolState, parsed)
   })
 }

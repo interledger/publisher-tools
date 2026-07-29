@@ -19,7 +19,11 @@ import { useSaveProfile } from '~/hooks/useSaveProfile'
 import { useScrollToWalletAddress } from '~/hooks/useScrollToWalletAddress'
 import { useToolWallet } from '~/hooks/useToolWallet'
 import type { GrantOutcome } from '~/lib/types'
-import { loadState, persistState } from '~/stores/toolStore'
+import {
+  loadState,
+  persistState,
+  subscribeStateCrossTab,
+} from '~/stores/toolStore'
 import type { createWalletStore } from '~/stores/wallet-store'
 import type { createToolStoreUtils } from '~/utils/utils.store'
 
@@ -31,6 +35,7 @@ type Props = React.PropsWithChildren<{
   toolStoreUtils: Pick<
     ReturnType<typeof createToolStoreUtils>,
     | 'subscribeProfilesToStorage'
+    | 'subscribeProfilesToCrossTab'
     | 'hydrateProfilesFromStorage'
     | 'hydrateSnapshotsFromStorage'
     | 'subscribeProfilesToUpdates'
@@ -80,15 +85,22 @@ export function ToolLayoutWithPreview({
     toolStoreUtils.hydrateProfilesFromStorage()
     const unsubscribeStorage = toolStoreUtils.subscribeProfilesToStorage()
     toolStoreUtils.hydrateSnapshotsFromStorage()
+    const unsubscribeProfilesCrossTab = toolStoreUtils.subscribeProfilesToCrossTab()
 
     loadState(loaderData.OP_WALLET_ADDRESS)
     persistState()
+    const unsubscribeToolCrossTab = subscribeStateCrossTab()
+
     walletStore.load()
     walletStore.persist()
+    const unsubscribeWalletCrossTab = walletStore.subscribeCrossTab()
 
     return () => {
       unsubscribeStorage()
       unsubscribeUpdates()
+      unsubscribeProfilesCrossTab()
+      unsubscribeToolCrossTab()
+      unsubscribeWalletCrossTab()
     }
   }, [loaderData.OP_WALLET_ADDRESS])
 
