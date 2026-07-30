@@ -14,7 +14,9 @@ describe('parseWithShape', () => {
   })
 
   it('returns null when a key is not part of the shape', () => {
-    expect(parseWithShape(JSON.stringify({ a: 2, unknown: 9 }), shape)).toBeNull()
+    expect(
+      parseWithShape(JSON.stringify({ a: 2, unknown: 9 }), shape),
+    ).toBeNull()
   })
 
   it('returns null for non-object JSON', () => {

@@ -85,7 +85,8 @@ export function ToolLayoutWithPreview({
     toolStoreUtils.hydrateProfilesFromStorage()
     const unsubscribeStorage = toolStoreUtils.subscribeProfilesToStorage()
     toolStoreUtils.hydrateSnapshotsFromStorage()
-    const unsubscribeProfilesCrossTab = toolStoreUtils.subscribeProfilesToCrossTab()
+    const unsubscribeProfilesCrossTab =
+      toolStoreUtils.subscribeProfilesToCrossTab()
 
     loadState(loaderData.OP_WALLET_ADDRESS)
     persistState()

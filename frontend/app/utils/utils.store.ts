@@ -167,7 +167,7 @@ export function createToolStoreUtils<T extends Tool>(
       )
 
       return subscribeToStorage((event) => {
-        const profileId = profileKeyToId.get(event.key)
+        const profileId = event.key ? profileKeyToId.get(event.key) : undefined
         if (profileId) {
           const parsed = parseWithShape(
             event.newValue,

@@ -14,11 +14,7 @@ import { actions as bannerActions } from '~/stores/banner-store'
 import { actions as offerwallActions } from '~/stores/offerwall-store'
 import { actions as paywallActions } from '~/stores/paywall-store'
 import { actions as widgetActions } from '~/stores/widget-store'
-import {
-  omit,
-  parseWithShape,
-  subscribeToStorage,
-} from '~/utils/utils.storage'
+import { omit, parseWithShape, subscribeToStorage } from '~/utils/utils.storage'
 
 const STORAGE_KEY = 'valtio-store'
 
