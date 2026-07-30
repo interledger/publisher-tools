@@ -116,12 +116,10 @@ export function createToolStoreUtils<T extends Tool>(
     const stored = parseSnapshots<T>(raw)
     if (!stored) return false
 
-    let hasEntries = false
     Object.entries(stored).forEach(([id, profile]) => {
       snapshots.set(id as ProfileId, profile as ToolProfile<T>)
-      hasEntries = true
     })
-    return hasEntries
+    return true
   }
 
   return {

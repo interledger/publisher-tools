@@ -89,18 +89,20 @@ export function ToolLayoutWithPreview({
       toolStoreUtils.subscribeProfilesToCrossTab()
 
     loadState(loaderData.OP_WALLET_ADDRESS)
-    persistState()
+    const unsubscribePersistState = persistState()
     const unsubscribeToolCrossTab = subscribeStateCrossTab()
 
     walletStore.load()
-    walletStore.persist()
+    const unsubscribePersistWallet = walletStore.persist()
     const unsubscribeWalletCrossTab = walletStore.subscribeCrossTab()
 
     return () => {
       unsubscribeStorage()
       unsubscribeUpdates()
       unsubscribeProfilesCrossTab()
+      unsubscribePersistState()
       unsubscribeToolCrossTab()
+      unsubscribePersistWallet()
       unsubscribeWalletCrossTab()
     }
   }, [loaderData.OP_WALLET_ADDRESS])

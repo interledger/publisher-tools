@@ -66,7 +66,7 @@ export function createWalletStore(tool: Tool) {
   }
 
   function persist() {
-    subscribe(wallet, () => {
+    return subscribe(wallet, () => {
       localStorage.setItem(storageKey, JSON.stringify(snapshot(wallet)))
     })
   }

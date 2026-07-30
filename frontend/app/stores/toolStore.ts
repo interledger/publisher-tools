@@ -162,7 +162,7 @@ export function loadState(OP_WALLET_ADDRESS: Env['OP_WALLET_ADDRESS']) {
 }
 
 export function persistState() {
-  subscribe(toolState, () => {
+  return subscribe(toolState, () => {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(omit(toolState, EXCLUDED_FROM_STORAGE)),
