@@ -159,6 +159,8 @@ git pull origin release --ff-only
 
 git merge main --no-ff --no-edit
 git push origin release
+
+git switch main
 ```
 
 This will start a new [deployment](https://github.com/interledger/publisher-tools/actions/workflows/deploy.yml). Create a [new release](https://github.com/interledger/publisher-tools/releases/new) on GitHub and make sure to create a new tag on the `release` branch.
