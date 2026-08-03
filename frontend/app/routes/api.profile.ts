@@ -12,6 +12,7 @@ import {
 } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
 import { APP_BASEPATH } from '~/lib/constants.js'
+import { cloudflareContext } from '~/lib/context.js'
 import type { ApiError } from '~/lib/helpers'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
@@ -59,7 +60,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     )
   }
 
-  const { env } = context.cloudflare
+  const { env } = context.get(cloudflareContext)
   const url = new URL(request.url)
 
   try {

@@ -49,7 +49,7 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
     },
     initiatePayment({ sender, receiver, amount, note }) {
       const debitAmount = Number(amount)
-      const redirectUrl = new URL('payment-confirmation', frontendUrl).href
+      const redirectUrl = new URL('grant-interaction', frontendUrl).href
       return initiatePayment(API_URL, {
         sender,
         receiver,

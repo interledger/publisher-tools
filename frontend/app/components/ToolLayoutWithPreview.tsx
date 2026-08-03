@@ -110,7 +110,7 @@ export function ToolLayoutWithPreview({
 
   return (
     <div className="bg-interface-bg-main w-full">
-      <div className="flex flex-col items-center pt-[60px] md:pt-3xl">
+      <div className="flex flex-col items-center pt-4xl md:pt-5xl">
         <div className="w-full max-w-[1280px]">
           <div className=" px-md">
             <HeadingCore title={title} onBackClick={() => navigate('/')}>
@@ -122,7 +122,7 @@ export function ToolLayoutWithPreview({
           <div className="flex flex-col min-h-[756px] px-md xl:flex-row xl:items-start gap-lg">
             <div
               id="steps-indicator"
-              className="hidden xl:block w-[60px] flex-shrink-0 pt-md"
+              className="hidden xl:block w-[60px] shrink-0 pt-md"
             >
               <StepsIndicator
                 steps={[
@@ -238,7 +238,7 @@ function BuilderActions({
         )}
 
         <ToolsSecondaryButton
-          className="xl:w-[150px] xl:rounded-lg w-full min-w-0 border-0 xl:border order-last xl:order-first"
+          className="xl:w-[150px] xl:rounded-sm w-full min-w-0 border-0 xl:border order-last xl:order-first"
           disabled={isSaving}
           onClick={onClickSave}
         >
@@ -251,7 +251,7 @@ function BuilderActions({
         <ToolsPrimaryButton
           icon="script"
           iconPosition={isGenerating ? 'none' : 'left'}
-          className="xl:w-[250px] xl:rounded-lg w-full min-w-0 order-first xl:order-last"
+          className="xl:w-[250px] xl:rounded-sm w-full min-w-0 order-first xl:order-last"
           disabled={isGenerating}
           onClick={onClickScript}
         >

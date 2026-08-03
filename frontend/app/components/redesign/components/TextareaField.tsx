@@ -41,7 +41,7 @@ export function TextareaField({
           'text-sm leading-sm text-text-primary placeholder:text-text-placeholder',
           'resize-none',
           'hover:border-field-border-hover',
-          'focus:border-field-border-focus focus:outline-none focus:ring-1 focus:ring-primary-focus',
+          'focus:border-field-border-focus focus:outline-hidden focus:ring-1 focus:ring-primary-focus',
           'disabled:border-field-border-disabled disabled:bg-field-bg-disabled',
           error ? 'border-field-border-error' : 'border-field-border',
           className,

@@ -2,6 +2,7 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
 import { reactRouter } from '@react-router/dev/vite'
+import tailwindcss from '@tailwindcss/vite'
 import { APP_BASEPATH } from './app/lib/constants.js'
 
 try {
@@ -27,7 +28,9 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
       persistState: {
         path: '../.wrangler',
       },
+      viteEnvironment: { name: 'ssr' },
     }),
+    tailwindcss(),
     reactRouter(),
   ],
   resolve: {

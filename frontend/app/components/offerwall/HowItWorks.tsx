@@ -11,7 +11,7 @@ const StepArrow = () => (
     aria-hidden="true"
   >
     <div className="size-[10px] shrink-0 rounded-full bg-[#9CD6CB]" />
-    <div className="h-[2px] flex-1 bg-gradient-to-r from-[#9CD6CB] via-[#F2797F] to-[#7F76B2]" />
+    <div className="h-[2px] flex-1 bg-linear-to-r from-[#9CD6CB] via-[#F2797F] to-[#7F76B2]" />
     <div className="size-0 shrink-0 border-y-[5px] border-l-[7px] border-y-transparent border-l-[#7F76B2]" />
   </div>
 )
@@ -30,7 +30,7 @@ const Step: React.FC<StepProps> = ({
   <li className="flex flex-col items-center xl:flex-1 xl:flex-row xl:items-center">
     <div className="flex w-[200px] flex-col items-center gap-2xl xl:w-[296px] xl:max-h-[240px] xl:flex-1">
       <img src={image} alt="" className="h-full w-auto object-contain" />
-      <BodyEmphasis className="min-w-full shrink-0 text-center !text-green-400">
+      <BodyEmphasis className="min-w-full shrink-0 text-center text-green-400!">
         {description}
       </BodyEmphasis>
     </div>

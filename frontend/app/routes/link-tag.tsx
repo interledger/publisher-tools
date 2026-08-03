@@ -16,7 +16,7 @@ export default function LinkTag() {
   const navigate = useNavigate()
   return (
     <div className="bg-interface-bg-main w-full px-md">
-      <div className="w-full max-w-[1280px] mx-auto pt-[60px] md:pt-3xl">
+      <div className="w-full max-w-7xl mx-auto pt-4xl md:pt-5xl">
         <HeadingCore
           title="Link Tag Generator"
           onBackClick={() => navigate('/')}
@@ -37,21 +37,21 @@ export default function LinkTag() {
       </div>
       <div className="flex flex-col items-center gap-md">
         <LinkTagGenerator />
-        <div className="flex-grow flex-shrink-0 basis-0 max-w-[1280px] text-center">
-          <p className="text-style-body-standard !text-field-helpertext-default">
+        <div className="grow shrink-0 basis-0 max-w-7xl text-center">
+          <p className="text-style-body-standard text-field-helpertext-default!">
             After generating your&nbsp;
-            <span className="text-style-body-standard !text-text-buttons-default">
+            <span className="text-style-body-standard text-text-buttons-default!">
               &lt;link&gt;
             </span>
             &nbsp;tag, add the tag to the&nbsp;
-            <span className="text-style-body-standard !text-text-buttons-default">
+            <span className="text-style-body-standard text-text-buttons-default!">
               &lt;head&gt;
             </span>
             &nbsp;section of your website.
             <br />
             Visit our&nbsp;
             <a
-              className="text-style-body-standard !text-text-buttons-default underline"
+              className="text-style-body-standard text-text-buttons-default! underline"
               href="https://webmonetization.org/docs/"
             >
               docs

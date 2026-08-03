@@ -25,7 +25,7 @@ export function PaywallPriceBuilder() {
 
         <InputFieldNumeric
           label={t('input.price.label')}
-          labelClassName="text-style-caption-standard !text-field-helpertext-default"
+          labelClassName="text-style-caption-standard text-field-helpertext-default!"
           value={snap.price.value}
           onChange={(value) => {
             profile.price.value = String(value)
