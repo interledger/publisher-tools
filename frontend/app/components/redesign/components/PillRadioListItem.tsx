@@ -50,7 +50,7 @@ export const PillRadioListItem = <T extends string>({
         'cursor-pointer',
         'font-normal',
         'transition-all duration-200',
-        selected && 'group-focus-within:ring',
+        selected && 'group-focus-within:ring-3',
         'disabled:opacity-50',
         'disabled:cursor-not-allowed',
         'disabled:hover:border-field-border',

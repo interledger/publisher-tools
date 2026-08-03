@@ -32,7 +32,7 @@ export const BaseDialog: React.FC<Props> = ({ children, className }) => {
     <dialog
       ref={dialogRef}
       className={cx(
-        'fixed w-[calc(100%-2rem)] max-w-[34rem] rounded-lg border border-interface-edge-container bg-interface-bg-container shadow-2xl backdrop:bg-[#8995a7]/65',
+        'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-[34rem] rounded-sm border border-interface-edge-container bg-interface-bg-container shadow-2xl backdrop:bg-[#8995a7]/65',
         className,
       )}
     >

@@ -38,7 +38,7 @@ export const Slider: React.FC<Props> = ({
       step={step}
       aria-valuetext={ariaValueText}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full opacity-0 cursor-pointer focus:outline-none"
+      className="w-full opacity-0 cursor-pointer focus:outline-hidden"
     />
   </div>
 )

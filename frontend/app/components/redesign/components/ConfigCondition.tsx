@@ -36,7 +36,7 @@ export const ConfigCondition: React.FC<ConfigConditionProps> = ({
   return (
     <label
       onClick={handleClick}
-      className={`flex items-center w-full px-md py-sm rounded-lg bg-white ${className} ${
+      className={`flex items-center w-full px-md py-sm rounded-sm bg-white ${className} ${
         !isDisabled ? 'cursor-pointer hover:bg-gray-50' : 'cursor-not-allowed'
       }`}
       id={id}

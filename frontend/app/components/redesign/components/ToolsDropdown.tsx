@@ -119,7 +119,7 @@ export function ToolsDropdown({
                 : isFocused
                   ? 'border-field-border-focus'
                   : 'border-field-border hover:border-field-border-hover',
-            'focus:outline-none',
+            'focus:outline-hidden',
           )}
           disabled={disabled}
           aria-expanded={isOpen}
@@ -169,7 +169,7 @@ export function ToolsDropdown({
         </button>
 
         {isOpen && (
-          <div className="absolute z-10 mt-1 w-full bg-white border border-silver-200 rounded-sm shadow-sm">
+          <div className="absolute z-10 mt-1 w-full bg-white border border-silver-200 rounded-sm shadow-xs">
             <ul className="p-xs" role="listbox">
               {options.map((option) => (
                 <li

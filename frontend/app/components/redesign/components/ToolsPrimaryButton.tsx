@@ -34,7 +34,7 @@ export function ToolsPrimaryButton({
         'rounded-sm',
         'font-medium',
         'gap-2',
-        'focus:outline-none focus:ring-2 focus:ring-primary-focus',
+        'focus:outline-hidden focus:ring-2 focus:ring-primary-focus',
         'transition-colors duration-200',
         className,
       )}

@@ -91,7 +91,7 @@ export default function Paywall() {
           {t('description_2')}
         </>
       }
-      additionalDescription={<Divider className="!my-3xl" />}
+      additionalDescription={<Divider className="my-3xl!" />}
       walletStore={{
         wallet: paywallWallet,
         actions: paywallWalletActions,
