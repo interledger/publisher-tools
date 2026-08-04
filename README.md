@@ -154,6 +154,7 @@ To join the video meeting, click this link: https://meet.google.com/fjy-vjef-ogj
 Otherwise, to join by phone: https://tel.meet/fjy-vjef-ogj?hs=5
 
 [Add to Google Calendar](https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=c2dyMjY4M2k1dXRrcjZkYW05Mmo3c2xzZm1fMjAyNDA1MDlUMTMwMDAwWiBjX2NqMDI3Z21oc3VqazkxZXZpMjRkOXB2bXQ0QGc&tmsrc=c_cj027gmhsujk91evi24d9pvmt4%40group.calendar.google.com&scp=ALL)
+
 ## Release process
 
 Currently everything merged to the `main` branch is released to the [staging environment](https://staging-publisher-tools.webmonetization.workers.dev). To release to production, we follow these steps:
