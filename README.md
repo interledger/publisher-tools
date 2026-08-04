@@ -146,6 +146,15 @@ For detailed information on how to use and configure Publisher Tools, including 
 - [Link Tag Generator](https://webmonetization.org/publishers/link-tag-tool/)
 - [Probabilistic revshare generator](https://webmonetization.org/publishers/revshare-tool/)
 
+## Web Monetization Community Call
+
+Publisher Tools updates are part of the larger Web Monetization updates that the team shares during our community calls. We have them the fourth Thursday of every month at 14:00 GMT, via Google Meet. The calls are open to everyone.
+
+To join the video meeting, click this link: https://meet.google.com/fjy-vjef-ogj
+Otherwise, to join by phone: https://tel.meet/fjy-vjef-ogj?hs=5
+
+[Add to Google Calendar](https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=c2dyMjY4M2k1dXRrcjZkYW05Mmo3c2xzZm1fMjAyNDA1MDlUMTMwMDAwWiBjX2NqMDI3Z21oc3VqazkxZXZpMjRkOXB2bXQ0QGc&tmsrc=c_cj027gmhsujk91evi24d9pvmt4%40group.calendar.google.com&scp=ALL)
+
 ## Release process
 
 Currently everything merged to the `main` branch is released to the [staging environment](https://staging-publisher-tools.webmonetization.workers.dev). To release to production, we follow these steps:
