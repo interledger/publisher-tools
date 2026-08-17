@@ -7,7 +7,6 @@ export function useBuilderSectionHandlers(section: BuilderSection) {
 
   if (section === 'content') {
     return {
-      isComplete: uiState.contentComplete,
       isOpen: uiState.activeSection === 'content',
       onClick: (isOpen: boolean) => {
         uiActions.setActiveSection(
@@ -29,7 +28,6 @@ export function useBuilderSectionHandlers(section: BuilderSection) {
   }
 
   return {
-    isComplete: uiState.appearanceComplete,
     isOpen: uiState.activeSection === 'appearance',
     onClick: (isOpen: boolean) => {
       uiActions.setActiveSection(

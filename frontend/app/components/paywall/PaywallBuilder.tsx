@@ -20,7 +20,7 @@ import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { useTranslation } from '~/i18n/useTranslation'
 import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
-import { usePaywallProfile } from '~/stores/paywall-store'
+import { usePaywallProfile, useSectionHasChanges } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
 import { PaywallColorsSelector } from './PaywallColorsSelector'
 
@@ -39,14 +39,15 @@ export function PaywallBuilder({ onRefresh }: Props) {
 
 function ContentBuilder({ onRefresh }: Props) {
   const t = useTranslation('paywall')
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('content')
+  const hasChanges = useSectionHasChanges('content')
   const [snap, profile] = usePaywallProfile({ sync: true })
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
+      hasChanges={hasChanges}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
@@ -101,8 +102,9 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('appearance')
+  const hasChanges = useSectionHasChanges('appearance')
   const [snap, profile] = usePaywallProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -112,7 +114,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
+      hasChanges={hasChanges}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}

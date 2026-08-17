@@ -20,7 +20,7 @@ import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelect
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
 import type { BuilderSection } from '~/stores/uiStore'
-import { useWidgetProfile } from '~/stores/widget-store'
+import { useSectionHasChanges, useWidgetProfile } from '~/stores/widget-store'
 
 interface Props {
   onRefresh: (section: BuilderSection) => void
@@ -48,14 +48,15 @@ export function WidgetBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('content')
+  const hasChanges = useSectionHasChanges('content')
   const [snap, profile] = useWidgetProfile({ sync: true })
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
+      hasChanges={hasChanges}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
@@ -93,8 +94,9 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isOpen, onClick, onToggle, onDone } =
     useBuilderSectionHandlers('appearance')
+  const hasChanges = useSectionHasChanges('appearance')
   const [snap, profile] = useWidgetProfile()
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
@@ -104,7 +106,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
+      hasChanges={hasChanges}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
