@@ -19,7 +19,7 @@
   "description": "",
   "type": "module",
   "dependencies": {
-    "@hono/zod-validator": "^0.8.0",
+    "@hono/zod-validator": "^0.9.0",
     "@interledger/open-payments": "^7.4.0",
     "@noble/ed25519": "^3.1.0",
     "@paralleldrive/cuid2": "^3.3.0",
@@ -27,19 +27,19 @@
     "@shared/default-data": "workspace:^",
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
-    "hono": "^4.12.27",
+    "hono": "^4.13.2",
     "http-message-signatures": "^1.0.6",
     "httpbis-digest-headers": "^1.0.0",
     "zod": "^4.4.3"
   },
   "types": "./src/types.ts",
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.16.20",
-    "@cloudflare/workers-types": "^4.20260629.1",
+    "@cloudflare/vitest-pool-workers": "^0.21.3",
+    "@cloudflare/workers-types": "^5.20260816.1",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
-    "esbuild": "0.28.1",
-    "vitest": "^4.1.9",
-    "wrangler": "^4.105.0"
+    "esbuild": "^0.28.2",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.123.0"
   }
 }

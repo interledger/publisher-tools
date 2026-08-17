@@ -87,7 +87,7 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
           if (err instanceof Error && err.name === 'AbortError') {
             break
           } else if (isAbortSignalTimeout(err) || isTimeoutError(err)) {
-            throw new Error('Payment authorization timed out')
+            throw new Error('Payment authorization timed out', { cause: err })
           } else {
             throw new Error('Failed to check payment status', { cause: err })
           }
