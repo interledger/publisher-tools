@@ -80,7 +80,7 @@ runs:
       shell: bash
       env:
         DEPLOY_MODE: ${{ inputs.mode }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || '' }}
       run: |
         case "$DEPLOY_MODE" in
           preview)    DEPLOY_COMMAND="versions upload --preview-alias pr${PR_NUMBER}" ;;
