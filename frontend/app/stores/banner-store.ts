@@ -20,6 +20,7 @@ export const {
   wallet: bannerWallet,
   load: loadBannerWallet,
   persist: persistBannerWallet,
+  subscribeCrossTab: subscribeBannerWalletCrossTab,
   actions: bannerWalletActions,
 } = createWalletStore(TOOL_BANNER)
 
@@ -124,6 +125,7 @@ export const actions = {
 
 export const {
   subscribeProfilesToStorage,
+  subscribeProfilesToCrossTab,
   hydrateProfilesFromStorage,
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,

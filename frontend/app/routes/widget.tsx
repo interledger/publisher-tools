@@ -20,8 +20,10 @@ import {
   hydrateSnapshotsFromStorage,
   loadWidgetWallet,
   persistWidgetWallet,
+  subscribeProfilesToCrossTab,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
+  subscribeWidgetWalletCrossTab,
   widgetWallet,
   widgetWalletActions,
 } from '~/stores/widget-store'
@@ -96,9 +98,11 @@ export default function Widget() {
         actions: widgetWalletActions,
         load: loadWidgetWallet,
         persist: persistWidgetWallet,
+        subscribeCrossTab: subscribeWidgetWalletCrossTab,
       }}
       toolStoreUtils={{
         subscribeProfilesToStorage,
+        subscribeProfilesToCrossTab,
         hydrateProfilesFromStorage,
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,
