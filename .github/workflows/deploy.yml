@@ -12,6 +12,7 @@ defaults:
     shell: bash
 
 permissions:
+  contents: read
   pull-requests: write
 
 jobs:
@@ -30,7 +31,7 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            const script = await import('${{ github.workspace }}/.github/scripts/check-deploy-permissions.ts');
+            const script = await import(`${process.env.GITHUB_WORKSPACE}/.github/scripts/check-deploy-permissions.ts`);
             await script.default({ core, context });
 
       - uses: ./.github/workflows/setup
@@ -67,9 +68,10 @@ jobs:
 
       - name: Get deploy mode
         id: deploy-mode
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_REF: ${{ github.ref }}
         run: |
-          GH_EVENT_NAME='${{ github.event_name }}'
-          GH_REF='${{ github.ref }}'
           mode="preview"
           if [[ "$GH_EVENT_NAME" == 'push' ]]; then
             [[ "$GH_REF" == 'refs/heads/main' ]] && mode="staging"
@@ -142,6 +144,16 @@ jobs:
         if: always()
         uses: actions/github-script@v9
         id: summary
+        env:
+          API_URL: ${{ steps.api.outputs.url }}
+          API_VERSIONED_URL: ${{ steps.api.outputs.versioned-url }}
+          API_OUTCOME: ${{ steps.api.outcome }}
+          CDN_URL: ${{ steps.cdn.outputs.url }}
+          CDN_VERSIONED_URL: ${{ steps.cdn.outputs.versioned-url }}
+          CDN_OUTCOME: ${{ steps.cdn.outcome }}
+          FRONTEND_URL: ${{ steps.frontend.outputs.url }}
+          FRONTEND_VERSIONED_URL: ${{ steps.frontend.outputs.versioned-url }}
+          FRONTEND_OUTCOME: ${{ steps.frontend.outcome }}
         with:
           script: |
             core.summary.addHeading('Deployment results', 'h2');
@@ -149,13 +161,13 @@ jobs:
             core.summary.addRaw(`
             | Worker | Alias | URL  | Outcome |
             | ------ | --- | --- | --- |
-            | API    | ${getTableText('${{ steps.api.outputs.url }}', '${{ steps.api.outputs.versioned-url }}', '${{ steps.api.outcome }}')} |
-            | CDN    | ${getTableText('${{ steps.cdn.outputs.url }}', '${{ steps.cdn.outputs.versioned-url }}', '${{ steps.cdn.outcome }}')} |
-            | App    | ${getTableText('${{ steps.frontend.outputs.url }}', '${{ steps.frontend.outputs.versioned-url }}', '${{ steps.frontend.outcome }}')} |
+            | API    | ${getTableText(process.env.API_URL, process.env.API_VERSIONED_URL, process.env.API_OUTCOME)} |
+            | CDN    | ${getTableText(process.env.CDN_URL, process.env.CDN_VERSIONED_URL, process.env.CDN_OUTCOME)} |
+            | App    | ${getTableText(process.env.FRONTEND_URL, process.env.FRONTEND_VERSIONED_URL, process.env.FRONTEND_OUTCOME)} |
             `, true);
 
-            const repoUrl = '${{ github.server_url }}/${{ github.repository }}';
-            const runId = '${{ github.run_id }}';
+            const repoUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}`;
+            const runId = process.env.GITHUB_RUN_ID;
             core.summary.addSeparator();
             core.summary.addLink(`Logs #${runId}`, `${repoUrl}/actions/runs/${runId}`);
 
