@@ -18,7 +18,7 @@ Never heard of Interledger before, or you would like to learn more? Here are som
 
 ## Contributing
 
-Please read the [contribution guidelines](.github/CONTRIBUTING.md) before submitting contributions. All contributions and interactions must adhere to our [code of conduct](.github/CODE_OF_CONDUCT.md).
+Please read the [contribution guidelines](docs/CONTRIBUTING.md) before submitting contributions. All contributions and interactions must adhere to our [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 ## Documentation
 
