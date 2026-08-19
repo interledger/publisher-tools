@@ -9,11 +9,11 @@ Thank you for contributing to the publisher tools :tada: Your contributions are 
 
 ## Types of contributions
 
-### :mega: Discussions
+### :mega: Discussions, ideas & features
 
-We use GitHub for [discussions](https://github.com/interledger/publisher-tools/discussions). You can either participate in existing discussions or create a new one.
+We use [GitHub discussions](https://github.com/interledger/publisher-tools/discussions) to discuss the tools, questions and ideas. You can either participate in existing discussions or create a new one. Actionable outcomes can then be transferred to [issues](https://github.com/interledger/publisher-tools/issues).
 
-### :bug: Issues
+### :bug: Bugs
 
 Found a bug? Please report it as an [issue](https://github.com/interledger/publisher-tools/issues/new?template=bug.yml).
 
@@ -98,14 +98,7 @@ You can also run the "default build task" with a keyboard shortcut.
 
 #### Manual setup
 
-Alternatively, you can start each service manually.
-
-```sh
-pnpm -r --parallel dev
-```
-
-This will run all development servers in parallel in a single terminal.\
-_For separate terminal output_, run each command in a separate terminal tab/window:
+Alternatively, you can start each service yourself.
 
 ```sh
 pnpm -C frontend dev
