@@ -1,143 +1,142 @@
-# Contributing to this repository <!-- omit in toc -->
+# Contributing
 
-## Getting started <!-- omit in toc -->
-
-Thank you for contributing to Publisher tools :tada: Your contributions are essential to making this project better.
+Thank you for contributing to the publisher tools :tada: Your contributions are essential to making this project better.
 
 ## Before you begin
 
 - Have you read the [code of conduct](CODE_OF_CONDUCT.md)?
 - Check out the [existing issues](https://github.com/interledger/publisher-tools/issues) & see if we [accept contributions](#types-of-contributions) for your type of issue.
 
-## Table of Contents <!-- omit in toc -->
-
-- [Types of contributions](#types-of-contributions)
-  - [:mega: Discussions](#mega-discussions)
-  - [:hammer_and_wrench: Pull requests](#hammer_and_wrench-pull-requests)
-  - [:books: Documentation](#books-documentation)
-- Working in the test network repository
-  - [Labels](#labels)
-  - [Code quality](#code-quality)
-    - [Linting](#linting)
-    - [Formatting](#formatting)
-    - [Testing](#testing)
-    - [Language](#language)
-    - [CI](#ci)
-  - [Reporting Issues](#reporting-issues)
-  - [Submitting Pull Requests](#submitting-pull-requests)
-  - [Review Process](#review-process)
-
 ## Types of contributions
-
-You can contribute to Test Wallet and e-commerce in several ways.
 
 ### :mega: Discussions
 
-Discussions are where we have conversations about Test network.
+We use GitHub for [discussions](https://github.com/interledger/publisher-tools/discussions). You can either participate in existing discussions or create a new one.
 
-If you would like to discuss topics about the broader ecosystem, have a new idea, or want to show off your work - join us in [discussions](https://github.com/interledger/publisher-tools/discussions).
+### :bug: Issues
 
-### :hammer_and_wrench: Pull requests
+Found a bug? Please report it as an [issue](https://github.com/interledger/publisher-tools/issues/new?template=bug.yml).
 
-Feel free to fork and create a pull request on changes you think you can contribute.
-
-The team will review your pull request as soon as possible.
-
-### :books: Documentation
-
-The project is new and available documentation is a work in progress.
-
-## Working in the Publisher tools repository
-
-This project uses `pnpm`. A list of steps for setting up a [local development environment](https://github.com/interledger/publisher-tools#local-development-environment) can be found in the Readme.
-
-> **Warning**
-> DO NOT use `npm install`. This will cause the project to spontaneously self-destruct :boom:.
-
-### Labels
-
-We use labels to communicate the intention of issues and PRs.
-
-- `package: wallet/*` prefix denotes issues that are partaining the wallet application (frontend and backend);
-- `priority:` prefix denotes pirority of issues.
-- `type:` prefix denotes the type of issues/PRs, ex. type:story represents a bigger issue with subtasks.
-
-Some labels will be automatically assigned to issues/PRs.
-
-### Code quality
-
-All the code quality tools used in the project are installed and configured at the root.
-This allows for consistency across the monorepo. Allows new packages to be added with
-minimal configuration overhead.
-
-We try not to put config files in workspaces, unless absolutely necessary.
-
-#### Linting
-
-[Eslint](https://eslint.org/) is used for linting.
-
-```shell
-./.eslintrc.js # config
-./.eslintignore # ignore file
-```
-
-Eslint config should not be overridden in any packages.
-
-#### Formatting
-
-[Prettier](https://prettier.io/) is used for formatting.
-
-```shell
-./.prettierrc.js # config
-./.prettierignore # ignore file
-```
-
-Prettier config should not be overridden in any packages.
-
-#### Testing
-
-[Jest](https://jestjs.io/) is used for unit and integration testing.
-
-#### Language
-
-[Typescript](https://www.staging-typescript.org/) is the chosen language.
-
-```shell
-./tsconfig.base.json # config
-```
-
-Typescript config at the root is intended to be a base config that should be extended by
-each package to suit the package's requirements.
-
-#### CI
-
-We use GitHub actions to manage our CI pipeline.
-
-The workflows can be found in `.github/workflows`
-
-### Reporting Issues
-
-If you encounter any issues or have a feature request, please [create a new issue](https://github.com/interledger/publisher-tools/issues/new) and provide the following details:
+Please include:
 
 - A clear and descriptive title.
 - A detailed description of the issue, including steps to reproduce if applicable.
 - Information about your environment (e.g., operating system, browser, version).
 - Any relevant screenshots or error messages.
 
-### Submitting Pull Requests
+### :hammer_and_wrench: Pull requests
 
-1. [Fork](https://github.com/interledger/publisher-tools) the repository.
-2. Create a new branch from `main`.
-3. Make your changes and commit them.
-4. Create a pull request (PR) to `main`.
-5. Ensure your PR includes a clear title and description following the [Conventional Commits Specification](https://www.conventionalcommits.org/en/v1.0.0/).
-6. If your PR addresses an issue, reference the issue in the description using `Closes #123`.
-7. Be patient and be prepared to address feedback and make changes if needed.
+Feel free to fork and create a pull request for [existing issues](https://github.com/interledger/publisher-tools/issues). If you have an idea, please create a [discussion](https://github.com/interledger/publisher-tools/discussions) first. This makes sure that the contribution is impactful and you don't spend time creating a PR that we will not accept.
 
-### Review Process
+Ensure your PR includes a clear title and description following the [Conventional Commits Specification](https://www.conventionalcommits.org/en/v1.0.0/).
 
-- Project maintainers will review your PR for code quality, correctness, and adherence to guidelines.
-- Please respond to any feedback promptly and make necessary changes.
-- Once the PR is approved, it will be merged into the main branch.
+If your PR addresses an issue, reference the issue in the description using `Closes #123`.
 
-Happy coding!
+Project maintainers will review your PR for code quality, correctness, and adherence to guidelines as soon as possible. Please respond to any feedback and make necessary changes.
+
+### :books: Documentation
+
+Found an issue in the documentation? Please head over to the [website](https://github.com/WICG/webmonetization) repository.
+
+## Development
+
+### Project structure & technology stack
+
+This is a monorepo containing several packages:
+
+- **`api/`** - Hono-based API server running on Cloudflare Workers. Used by tools embedded on websites to fetch their config, handle payments, and manage probabilistic revenue sharing.
+- **`frontend/`** - React Router (framework mode) React frontend. Provides the configuration interface where publishers customize their Web Monetization tools (banners, widgets, link tags).
+- **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
+- **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
+- **`shared/`** - Shared utilities and types
+- **`localenv/`** - Local development environment setup. Provides local S3 simulation for testing configuration storage during development.
+
+### Pre-requisites
+
+You need to have Node 24 installed. See this [complete setup guide](https://gist.github.com/sidvishnoi/f795887659f5bec32f01a7ec9e788fc1) for installing Node.js and nvm on any platform.
+
+Then enable pnpm
+
+```sh
+corepack enable
+```
+
+or install it manually:
+
+```sh
+npm install -g pnpm
+```
+
+### Install dependencies
+
+```sh
+pnpm i
+```
+
+### Environment configuration
+
+1. **Copy the environment file**:
+
+   ```sh
+   cp .env.sample .dev.vars
+   ```
+
+2. **Configure your environment variables** in `.dev.vars`
+
+   📖 For detailed setup instructions for each variable, see [env-vars.md](./docs/env-vars.md)
+
+### Running the development environment
+
+If you're using VS Code, you can start the entire development environment with one command:
+
+1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+2. Run "Tasks: Run Task"
+3. Select "Dev" to start all development servers simultaneously
+
+This will start the Local S3 service, CDN, API, and Frontend in parallel.\
+You can also run the "default build task" with a keyboard shortcut.
+
+#### Manual setup
+
+Alternatively, you can start each service manually.
+
+```sh
+pnpm -r --parallel dev
+```
+
+This will run all development servers in parallel in a single terminal.\
+_For separate terminal output_, run each command in a separate terminal tab/window:
+
+```sh
+pnpm -C frontend dev
+pnpm -C api dev
+pnpm -C cdn dev
+pnpm -C localenv/s3 dev
+```
+
+### Code quality
+
+All the code quality tools used in the project are installed and configured at the root.
+This allows for consistency across the monorepo. This allows new packages to be added with
+minimal configuration overhead.
+
+We try not to put config files in workspaces, unless absolutely necessary.
+
+Typescript config at the root is intended to be a base config that should be extended by
+each package to suit the package's requirements.
+
+#### Example commands
+
+- `pnpm format` - Format code with Prettier
+- `pnpm lint` - Lint and fix code with ESLint
+- `pnpm typecheck` - Run TypeScript type checking across all packages
+
+### CI
+
+We use GitHub actions to manage our CI pipeline.
+
+The workflows can be found in `.github/workflows`
+
+### How to preview changes
+
+For contributors without write access to the repository, deployment previews on PRs are not automatic.
