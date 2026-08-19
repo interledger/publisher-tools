@@ -177,6 +177,6 @@ Open the application on [localhost:3000](http://localhost:3000/tools/) try to us
 ## Need Help?
 
 - Check the main [README.md](../README.md) for general setup instructions
-- Review the [contribution guidelines](../docs/contributing.md)
+- Review the [contribution guidelines](../docs/CONTRIBUTING.md)
 - For Web Monetization questions, visit [webmonetization.org](https://webmonetization.org/)
 - For Interledger information, see [interledger.org](https://interledger.org)
