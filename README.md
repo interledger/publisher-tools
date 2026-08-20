@@ -2,6 +2,14 @@
 Publisher Tools
 </h1>
 
+The Publisher Tools are no longer being proactively developed by the Interledger Foundation in terms of new features or integrations. We are maintaining the existing code and the tools will remain open source and available to use.
+
+We are moving to a community-led model and welcome code contributions, including the development of new features. All code will be reviewed by the Interledger Foundation. For more information, review our [Contribution Guidelines](docs/CONTRIBUTING.md)
+
+The Web Monetization standard will continue to be actively stewarded by the foundation.
+
+## Publisher Tools
+
 The Publisher Tools are a suite of tools designed to help content owners and publishers set up and promote Web Monetization as a model for users to support their websites.
 
 Inspired by platforms like BuyMeACoffee and Patreon, these tools prioritize accessibility, ease of use, and low technical barriers to adoption. They allow publishers with a Web Monetization-enabled wallet to easily customize and generate embeddable components by inserting a simple script into their website's HTML.\
