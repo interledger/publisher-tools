@@ -194,6 +194,15 @@ export default function Index() {
           <br />
           Encourage your visitors to support your content and website.
         </p>
+        <p className="text-style-h5 text-center max-w-full sm:max-w-2/3 max-xl:text-style-body-standard text-announcement-content!">
+          <span className="font-bold">Note: </span> We are no longer proactively
+          developing new tools or features. For more information, view the
+          announcement{' '}
+          <a href="https://webmonetization.org" className="underline">
+            on our homepage
+          </a>
+          .
+        </p>
       </div>
 
       <div

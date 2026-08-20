@@ -39,8 +39,8 @@ export const RevShareInfo = () => {
           Define a revshare
         </p>
         <p className="text-sm leading-sm text-field-helpertext-default">
-          Enter each payment pointer and wallet address that will receive a
-          split of the revenue into the table.
+          Enter each wallet address that will receive a split of the revenue
+          into the table.
           <br />
           Names are optional.
           <br />

@@ -63,9 +63,9 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
         <div
           role="columnheader"
           id="col-payment-pointer"
-          aria-label="Wallet address or payment pointer for recipient, required field"
+          aria-label="Wallet address for recipient, required field"
         >
-          Wallet Address/Payment Pointer
+          Wallet address
         </div>
         <div
           role="columnheader"
@@ -185,7 +185,7 @@ export const ShareInput = React.memo(
           aria-labelledby="col-payment-pointer"
         >
           <label htmlFor={pointerInputId} className="sr-only">
-            Wallet Address or Payment Pointer
+            Wallet address
           </label>
           <InputField
             id={pointerInputId}
@@ -196,7 +196,7 @@ export const ShareInput = React.memo(
             }
             required
             error={error}
-            ariaDescription="Enter a valid wallet address or payment pointer for this recipient"
+            ariaDescription="Enter a valid wallet address for this recipient"
             className={cx(
               showIcon && 'pr-10',
               hasError && 'border-field-border-error',
