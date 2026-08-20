@@ -2,6 +2,12 @@
 
 Thank you for contributing to the publisher tools :tada: Your contributions are essential to making this project better.
 
+The Publisher Tools are no longer being proactively developed by the Interledger Foundation in terms of new features or integrations. We are maintaining the existing code and the tools will remain open source and available to use.
+
+We are moving to a community-led model and welcome code contributions, including the development of new features. All code will be reviewed by the Interledger Foundation.
+
+The Web Monetization standard will continue to be actively stewarded by the foundation.
+
 ## Before you begin
 
 - Have you read the [code of conduct](CODE_OF_CONDUCT.md)?
