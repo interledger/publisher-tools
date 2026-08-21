@@ -135,10 +135,13 @@ export function pointerToShares(pointer: string): SharesState {
     }))
   } catch (err: unknown) {
     if (err instanceof TypeError) {
-      throw new Error('Meta tag or payment pointer is malformed')
+      throw new Error('Meta tag or payment pointer is malformed', {
+        cause: err,
+      })
     } else if (err instanceof SyntaxError) {
       throw new Error(
         'Payment pointer has malformed share data. Make sure to copy the entire pointer.',
+        { cause: err },
       )
     } else {
       throw err

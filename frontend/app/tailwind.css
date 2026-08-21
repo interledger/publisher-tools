@@ -113,6 +113,7 @@
   --color-landing-button-border-hover: var(--color-black);
   --color-landing-pill-border: var(--color-blue-300);
   --color-landing-content: var(--color-silver-800);
+  --color-announcement-content: var(--color-purple-300);
 
   --color-footer-bg: var(--color-mint-100);
   --color-footer-content: var(--color-silver-800);

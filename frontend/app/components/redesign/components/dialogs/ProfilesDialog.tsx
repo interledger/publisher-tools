@@ -48,7 +48,7 @@ export const ProfilesDialog: React.FC<Props> = ({
       const currentTitle = truncateTitle(localConfig?.$name ?? 'Unknown')
 
       let databaseStableKey = localStableKey
-      let databaseTitle = ''
+      let databaseTitle: string
 
       if (fetchedConfigs[localStableKey]) {
         // exact stable key match found

@@ -49,7 +49,7 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
     },
     initiatePayment({ sender, receiver, amount, note }) {
       const debitAmount = Number(amount)
-      const redirectUrl = new URL('payment-confirmation', frontendUrl).href
+      const redirectUrl = new URL('grant-interaction', frontendUrl).href
       return initiatePayment(API_URL, {
         sender,
         receiver,
@@ -87,7 +87,7 @@ const drawWidget = (walletAddressUrl: string, profile: WidgetProfile) => {
           if (err instanceof Error && err.name === 'AbortError') {
             break
           } else if (isAbortSignalTimeout(err) || isTimeoutError(err)) {
-            throw new Error('Payment authorization timed out')
+            throw new Error('Payment authorization timed out', { cause: err })
           } else {
             throw new Error('Failed to check payment status', { cause: err })
           }
