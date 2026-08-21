@@ -207,7 +207,7 @@ export default function Index() {
 
       <div
         id="content"
-        className="flex flex-col gap-xs.5 items-center justify-start p-0 w-full"
+        className="flex flex-col gap-2.5 items-center justify-start p-0 w-full"
       >
         <section
           className="max-w-7xl w-full flex flex-col gap-md items-center justify-start px-md py-0"

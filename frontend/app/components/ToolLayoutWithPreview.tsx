@@ -136,7 +136,7 @@ export function ToolLayoutWithPreview({
               />
             </div>
 
-            <div className="flex flex-col gap-xl xl:gap-3xl flex-1">
+            <div className="flex flex-col gap-xl xl:gap-2xl flex-1">
               <div id="wallet-address" ref={walletAddressRef}>
                 <MobileStepsIndicator
                   number={1}

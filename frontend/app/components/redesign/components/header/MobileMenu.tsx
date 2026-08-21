@@ -60,7 +60,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
       aria-modal="true"
       aria-label="Mobile menu"
     >
-      <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs.5 pl-7">
+      <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs pl-7">
         <a href="https://webmonetization.org/">
           <img src={mobileLogo} alt="Web Monetization Logo" />
         </a>
