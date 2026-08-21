@@ -7,7 +7,7 @@ interface Props {
 export function InputFieldset({ label, icon, children }: Props) {
   return (
     <fieldset className="space-y-xs">
-      <legend className="flex flex-row items-center gap-1 text-style-caption-emphasis">
+      <legend className="flex flex-row items-center gap-2xs text-style-caption-emphasis">
         {icon}
         {label}
       </legend>

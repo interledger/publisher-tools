@@ -31,9 +31,9 @@ export function ToolsPrimaryButton({
         'bg-primary-bg hover:bg-primary-bg-hover',
         'text-white',
         'p-sm',
-        'rounded-sm',
+        'rounded-lg',
         'font-medium',
-        'gap-2',
+        'gap-xs',
         'focus:outline-hidden focus:ring-2 focus:ring-primary-focus',
         'transition-colors duration-200',
         className,
@@ -44,7 +44,7 @@ export function ToolsPrimaryButton({
       {icon === 'script' && iconPosition === 'left' && (
         <SVGScriptCode className="w-5 h-5" />
       )}
-      <span className="block font-normal leading-[24px] text-[16px] whitespace-pre">
+      <span className="block font-normal leading-md text-base whitespace-pre">
         {children}
       </span>
       {icon === 'script' && iconPosition === 'right' && (

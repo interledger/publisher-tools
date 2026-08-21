@@ -75,7 +75,7 @@ export function TabTooltip({
         shouldShowTooltip &&
         createPortal(
           <div
-            className="px-3 py-2 bg-gray-900 text-white text-sm rounded-sm shadow-lg whitespace-nowrap"
+            className="px-sm py-xs bg-gray-900 text-white text-sm rounded-lg shadow-lg whitespace-nowrap"
             style={{
               position: 'fixed',
               left: `${tooltipPosition.x}px`,

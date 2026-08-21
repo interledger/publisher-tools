@@ -111,7 +111,7 @@ export function ToolsDropdown({
           type="button"
           onClick={toggleDropdown}
           className={cx(
-            'flex items-center justify-between w-full h-12 px-md py-3 rounded-sm border',
+            'flex items-center justify-between w-full h-[48px] px-md py-sm rounded-lg border',
             disabled
               ? 'bg-field-bg-disabled border-field-border-disabled cursor-not-allowed'
               : error
@@ -169,7 +169,7 @@ export function ToolsDropdown({
         </button>
 
         {isOpen && (
-          <div className="absolute z-10 mt-1 w-full bg-white border border-silver-200 rounded-sm shadow-xs">
+          <div className="absolute z-10 mt-2xs w-full bg-white border border-silver-200 rounded-lg shadow-xs">
             <ul className="p-xs" role="listbox">
               {options.map((option) => (
                 <li
@@ -181,7 +181,7 @@ export function ToolsDropdown({
                     type="button"
                     onClick={() => handleOptionSelect(option)}
                     className={cx(
-                      'w-full text-left px-md py-xs text-sm leading-5 text-text-primary hover:bg-purple-50 rounded-xs',
+                      'w-full text-left px-md py-xs text-sm leading-5 text-text-primary hover:bg-purple-50 rounded-sm',
                       selectedOption?.value === option.value
                         ? 'font-medium'
                         : 'font-normal',

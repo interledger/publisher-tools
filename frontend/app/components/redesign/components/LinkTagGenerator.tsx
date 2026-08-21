@@ -77,7 +77,7 @@ export const LinkTagGenerator = () => {
 
   return (
     <form
-      className="flex w-full max-w-[800px] p-md flex-col gap-md rounded-sm bg-interface-bg-container"
+      className="flex w-full max-w-[800px] p-md flex-col gap-md rounded-lg bg-interface-bg-container"
       onSubmit={handleSubmit}
     >
       <div>
@@ -104,14 +104,14 @@ export const LinkTagGenerator = () => {
         className="justify-center"
         type="submit"
       >
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-xs">
           {isLoading && <SVGSpinner className="w-4 h-4" />}
           <span>{isLoading ? 'Checking...' : 'Generate Link Tag'}</span>
         </div>
       </ToolsPrimaryButton>
 
       {isCopied && (
-        <div className="h-[40px] p-sm rounded-sm bg-interface-bg-main">
+        <div className="h-[40px] p-sm rounded-lg bg-interface-bg-main">
           <p className="font-sans text-sm font-normal leading-normal text-text-success text-center">
             Copied to clipboard.
           </p>

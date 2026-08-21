@@ -117,9 +117,9 @@ export const BuilderProfileTabs = <T extends string>({
               onBlur={(e) => handleEditIntentLeave(e, option.id)}
               className={cx(
                 'flex-grow flex items-center text-left relative',
-                'px-2 pb-2 pt-4 rounded-b-none rounded-t-sm',
+                'px-xs pb-xs pt-md rounded-b-none rounded-t-lg',
                 'cursor-pointer -outline-offset-2!',
-                !editingId && 'mb-2',
+                !editingId && 'mb-xs',
                 option.id === activeTabId
                   ? 'bg-white text-text-buttons-default'
                   : 'text-silver-600 hover:bg-purple-50',
@@ -128,7 +128,7 @@ export const BuilderProfileTabs = <T extends string>({
               <span
                 title={option.label}
                 className={cx(
-                  'truncate inline-block w-full px-2 py-2 rounded-sm',
+                  'truncate inline-block w-full px-xs py-xs rounded-lg',
                   option.id === activeTabId
                     ? 'text-text-buttons-default'
                     : 'text-silver-600',
@@ -189,7 +189,7 @@ export const BuilderProfileTabs = <T extends string>({
         <div
           role="tabpanel"
           className={cx(
-            'bg-interface-bg-container rounded-b-sm p-md flex-col gap-md w-full -mt-2',
+            'bg-interface-bg-container rounded-b-lg p-md flex-col gap-md w-full -mt-xs',
             option.id === activeTabId ? 'flex' : 'hidden',
           )}
           aria-labelledby={`${idPrefix}-tab-${option.id}`}
@@ -221,7 +221,7 @@ function TabActionTrigger({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       data-test-id="tab-rename-trigger"
-      className="grid items-center cursor-pointer px-2 mr-2 rounded-none rounded-r-sm h-full bg-white text-text-buttons-default"
+      className="grid items-center cursor-pointer px-xs mr-xs rounded-none rounded-r-lg h-full bg-white text-text-buttons-default"
       onClick={onClick}
       title="Edit configuration name"
       style={{ height: `calc(100% - 0.5rem * 2)` }}
@@ -291,16 +291,16 @@ function TabNameEditor<T extends string>({
         }
       }}
       className={cx(
-        'grid grid-flow-col items-center rounded-t-sm bg-white relative p-2 mb-2',
+        'grid grid-flow-col items-center rounded-t-lg bg-white relative p-xs mb-xs',
       )}
     >
       <input
         type="text"
         id={inputId}
         className={cx(
-          'shrink-0 w-auto p-2 pr-8 text-left',
+          'shrink-0 w-auto p-xs pr-xl text-left',
           'text-style-body-standard leading-md font-normal w-full',
-          'text-text-buttons-default bg-white rounded-sm',
+          'text-text-buttons-default bg-white rounded-lg',
           'invalid:text-text-error invalid:underline invalid:empty:no-underline decoration-dashed',
           'outline-solid outline-1',
           !!errorMessage && 'outline-solid outline-field-border-error',

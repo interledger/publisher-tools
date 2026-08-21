@@ -11,14 +11,14 @@ export interface BannerPositionSelectorProps {
 }
 
 const PositionBottom = () => (
-  <div className="w-11 h-11 border border-silver-200 rounded-xs flex flex-col justify-between p-0.5">
+  <div className="w-[44px] h-[44px] border border-silver-200 rounded-sm flex flex-col justify-between p-3xs">
     <div className="h-3 bg-transparent border border-silver-200 rounded-none" />
     <div className="h-3 bg-green-200 rounded-none" />
   </div>
 )
 
 const PositionTop = () => (
-  <div className="w-11 h-11 border border-silver-200 rounded-xs flex flex-col justify-between p-0.5">
+  <div className="w-[44px] h-[44px] border border-silver-200 rounded-sm flex flex-col justify-between p-3xs">
     <div className="h-3 bg-green-200 rounded-none" />
     <div className="h-3 bg-transparent border border-silver-200 rounded-none" />
   </div>

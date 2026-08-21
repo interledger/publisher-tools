@@ -37,7 +37,7 @@ export function TextareaField({
         id={id}
         className={cx(
           'w-full px-md py-sm',
-          'border rounded-sm',
+          'border rounded-lg',
           'text-sm leading-sm text-text-primary placeholder:text-text-placeholder',
           'resize-none',
           'hover:border-field-border-hover',

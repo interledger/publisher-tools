@@ -59,13 +59,13 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         {label && (
           <label className={cx('block', labelClassName)} htmlFor={fieldId}>
             {label}
-            {required && <span className="text-text-error ml-1">*</span>}
+            {required && <span className="text-text-error ml-2xs">*</span>}
           </label>
         )}
         <div
           className={cx(
             'relative flex items-center flex-nowrap',
-            'w-full px-sm py-xs rounded-sm',
+            'w-full px-sm py-xs rounded-lg',
             'border',
             !props.disabled &&
               'focus-within:border-field-border-focus focus-within:outline-hidden focus-within:ring-1 focus-within:ring-primary-focus hover:border-field-border-hover',
@@ -77,7 +77,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         >
           {addonBefore && (
             <span
-              className={cx('text-text-placeholder mr-1', addonClassName)}
+              className={cx('text-text-placeholder mr-2xs', addonClassName)}
               onClick={() => document.getElementById(fieldId)?.focus()}
               aria-hidden="true"
             >
@@ -103,7 +103,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           />
           {addonAfter && (
             <span
-              className={cx('text-text-placeholder ml-1', addonClassName)}
+              className={cx('text-text-placeholder ml-2xs', addonClassName)}
               onClick={() => document.getElementById(fieldId)?.focus()}
               aria-hidden="true"
             >
@@ -124,7 +124,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               aria-live="polite"
               className="absolute right-3 top-full
               -translate-y-1/2
-              px-1 text-xs text-text-error bg-white"
+              px-2xs text-xs text-text-error bg-white"
             >
               {displayError}
             </span>

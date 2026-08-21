@@ -80,7 +80,7 @@ function ContentBuilder({ onRefresh }: Props) {
         placeholder={t('input.message.placeholder')}
         helpText={t('input.message.hint')}
         maxLength={PAYWALL_DESCRIPTION_MAX_LENGTH}
-        className="h-16"
+        className="h-[64px]"
       />
 
       <Divider />
