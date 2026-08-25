@@ -23,6 +23,8 @@ import {
   paywallWallet,
   paywallWalletActions,
   persistPaywallWallet,
+  subscribePaywallWalletCrossTab,
+  subscribeProfilesToCrossTab,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
 } from '~/stores/paywall-store'
@@ -97,9 +99,11 @@ export default function Paywall() {
         actions: paywallWalletActions,
         load: loadPaywallWallet,
         persist: persistPaywallWallet,
+        subscribeCrossTab: subscribePaywallWalletCrossTab,
       }}
       toolStoreUtils={{
         subscribeProfilesToStorage,
+        subscribeProfilesToCrossTab,
         hydrateProfilesFromStorage,
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,

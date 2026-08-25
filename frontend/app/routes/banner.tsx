@@ -20,6 +20,8 @@ import {
   hydrateSnapshotsFromStorage,
   loadBannerWallet,
   persistBannerWallet,
+  subscribeBannerWalletCrossTab,
+  subscribeProfilesToCrossTab,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
 } from '~/stores/banner-store'
@@ -93,9 +95,11 @@ export default function Banner() {
         actions: bannerWalletActions,
         load: loadBannerWallet,
         persist: persistBannerWallet,
+        subscribeCrossTab: subscribeBannerWalletCrossTab,
       }}
       toolStoreUtils={{
         subscribeProfilesToStorage,
+        subscribeProfilesToCrossTab,
         hydrateProfilesFromStorage,
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,

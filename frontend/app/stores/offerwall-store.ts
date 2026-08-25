@@ -20,6 +20,7 @@ export const {
   wallet: offerwallWallet,
   load: loadOfferwallWallet,
   persist: persistOfferwallWallet,
+  subscribeCrossTab: subscribeOfferwallWalletCrossTab,
   actions: offerwallWalletActions,
 } = createWalletStore(TOOL_OFFERWALL)
 
@@ -125,6 +126,7 @@ export const actions = {
 
 export const {
   subscribeProfilesToStorage,
+  subscribeProfilesToCrossTab,
   hydrateProfilesFromStorage,
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,

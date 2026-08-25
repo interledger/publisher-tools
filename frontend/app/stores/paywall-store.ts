@@ -20,6 +20,7 @@ export const {
   wallet: paywallWallet,
   load: loadPaywallWallet,
   persist: persistPaywallWallet,
+  subscribeCrossTab: subscribePaywallWalletCrossTab,
   actions: paywallWalletActions,
 } = createWalletStore(TOOL_PAYWALL)
 
@@ -125,6 +126,7 @@ export const actions = {
 
 export const {
   subscribeProfilesToStorage,
+  subscribeProfilesToCrossTab,
   hydrateProfilesFromStorage,
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,
