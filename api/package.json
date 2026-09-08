@@ -39,7 +39,7 @@
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "esbuild": "^0.28.2",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "wrangler": "^4.123.0"
   }
 }
