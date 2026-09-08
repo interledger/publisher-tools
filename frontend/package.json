@@ -60,7 +60,7 @@
     "publisher-tools-api": "workspace:^",
     "vite": "^8.2.1",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "wrangler": "^4.123.0"
   }
 }
