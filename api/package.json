@@ -40,6 +40,6 @@
     "@shared/types": "workspace:^",
     "esbuild": "^0.28.2",
     "vitest": "^4.1.10",
-    "wrangler": "^4.123.0"
+    "wrangler": "^4.129.1"
   }
 }
