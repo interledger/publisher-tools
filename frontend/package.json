@@ -41,7 +41,7 @@
     "sanitize-html": "^2.17.7",
     "tailwindcss": "^4.3.3",
     "valtio": "^2.3.2",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.52.1",
