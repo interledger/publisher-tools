@@ -34,7 +34,7 @@
     "microdiff": "^1.6.0",
     "react": "^19.2.8",
     "react-click-away-listener": "^2.4.2",
-    "react-colorful": "^5.8.0",
+    "react-colorful": "^5.8.1",
     "react-dom": "^19.2.8",
     "react-minimal-pie-chart": "^9.1.2",
     "react-router": "^8.3.0",
