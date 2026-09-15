@@ -14,4 +14,4 @@ allowBuilds:
 
 overrides:
   esbuild: ^0.28.2
-  wrangler: ^4.105.0
+  wrangler: ^4.131.2
