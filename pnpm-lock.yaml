@@ -79,8 +79,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       httpbis-digest-headers:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^2.0.0
+        version: 2.0.0
       zod:
         specifier: ^4.5.4
         version: 4.5.4
@@ -225,8 +225,8 @@ importers:
         specifier: ^1.0.6
         version: 1.0.6
       httpbis-digest-headers:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^2.0.0
+        version: 2.0.0
       isbot:
         specifier: ^5.2.2
         version: 5.2.2
@@ -2382,6 +2382,10 @@ packages:
   httpbis-digest-headers@1.0.0:
     resolution: {integrity: sha512-RpaFuZD3tG8wtsvjDv1u7O8wAvfpAxS20F3CrFPZOMn+IBb7E7yiqlN5Tks4E5tBEnTdpMOD151rJsUv03sAIg==}
 
+  httpbis-digest-headers@2.0.0:
+    resolution: {integrity: sha512-bTXwfKFApQi/kz94xX2Nq47MDjULbfBbm42SeQxPvM1qrLRksK7yZ1kGiYpSV0FnPiVVhZtoKLT9pzeg0Tu1Xg==}
+    engines: {node: '>=24.0.0'}
+
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -3347,6 +3351,10 @@ packages:
 
   structured-headers@2.0.2:
     resolution: {integrity: sha512-IUul56vVHuMg2UxWhwDj9zVJE6ztYEQQkynr1FQ/NydPhivtk5+Qb2N1RS36owEFk2fNUriTguJ2R7htRObcdA==}
+    engines: {node: '>=18', npm: '>=6'}
+
+  structured-headers@2.1.0:
+    resolution: {integrity: sha512-ClzykN+XQVaSW5UfpOdEWfDplZ1Th7mISdaFvaC2+GjLTeBhGMJw83D/Rw9jPkHOml4oYd3EXaZhbz3gnE5nBQ==}
     engines: {node: '>=18', npm: '>=6'}
 
   supports-color@10.2.2:
@@ -5877,6 +5885,10 @@ snapshots:
     dependencies:
       structured-headers: 0.5.0
 
+  httpbis-digest-headers@2.0.0:
+    dependencies:
+      structured-headers: 2.1.0
+
   ieee754@1.2.1: {}
 
   ignore@5.3.2: {}
@@ -6915,6 +6927,8 @@ snapshots:
   structured-headers@0.5.0: {}
 
   structured-headers@2.0.2: {}
+
+  structured-headers@2.1.0: {}
 
   supports-color@10.2.2: {}
 
