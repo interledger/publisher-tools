@@ -47,7 +47,7 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
         role="row"
         aria-rowindex={1}
         className={cx(
-          'hidden p-md leading-sm text-silver-600 rounded-sm bg-silver-50',
+          'hidden p-md leading-sm text-silver-600 rounded-lg bg-silver-50',
           'md:grid',
           GRID_COLS,
           GRID_GAP,

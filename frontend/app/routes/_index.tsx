@@ -176,15 +176,15 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div className="bg-interface-bg-main min-h-screen flex flex-col gap-2xl items-center pt-5xl pb-xl px-0">
-      <div className="flex flex-col gap-2xl items-center justify-start px-md py-0 w-full max-w-7xl">
+    <div className="bg-interface-bg-main min-h-screen flex flex-col gap-xl items-center pt-5xl pb-xl px-0">
+      <div className="flex flex-col gap-xl items-center justify-start px-md py-0 w-full max-w-7xl">
         <div className="flex flex-col gap-xs items-center justify-start p-0 w-full">
           <Heading1 className="leading-normal! text-[42px]! max-xl:text-style-h2-semibold! text-center">
             {DEFAULT_TITLE}
           </Heading1>
           <img
             alt=""
-            className="block max-w-none h-[23px] w-[442px] max-xl:h-[13px] max-xl:w-[247px]"
+            className="block max-w-none w-[442px] max-xl:w-[247px]"
             src={SVGHeadingVector}
           />
         </div>
@@ -244,7 +244,10 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li aria-hidden="true" className="w-85 opacity-0 max-xl:hidden" />
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
 
@@ -285,7 +288,7 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li className="w-85 opacity-0 max-xl:hidden" />
+            <li className="w-[340px] opacity-0 max-xl:hidden" />
           </ul>
         </section>
 
@@ -324,7 +327,10 @@ export default function Index() {
                 </ToolCard>
               </li>
             ))}
-            <li aria-hidden="true" className="w-85 opacity-0 max-xl:hidden" />
+            <li
+              aria-hidden="true"
+              className="w-[340px] opacity-0 max-xl:hidden"
+            />
           </ul>
         </section>
       </div>

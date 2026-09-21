@@ -71,7 +71,7 @@ export const BuilderAccordion: React.FC<Props> = ({
           )}
           {onDone && (
             <SVGArrowCollapse
-              className={cx('w-12 h-12 p-3.5', !isOpen && 'rotate-180')}
+              className={cx('w-[48px] h-[48px] p-sm', !isOpen && 'rotate-180')}
             />
           )}
         </div>

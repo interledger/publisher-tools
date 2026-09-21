@@ -105,7 +105,7 @@ export function CustomTitle({
         currentLength={value.length}
         maxLength={maxLength}
         helpText={helpText}
-        className="h-12 text-base leading-md"
+        className="h-[48px] text-base leading-md"
       />
     </div>
   )

@@ -17,7 +17,7 @@ export const CodeBlockLink = ({ link, className, onCopy }: CodeBlockProps) => {
   return (
     <div
       className={cx(
-        'flex items-center justify-between rounded-sm bg-interface-bg-main',
+        'flex items-center justify-between rounded-lg bg-interface-bg-main',
         className,
       )}
     >
@@ -54,7 +54,7 @@ const CopyButton = ({
   return (
     <button
       type="button"
-      className="sticky right-0 h-full flex items-center justify-center p-xs rounded-sm bg-interface-bg-main shrink-0"
+      className="sticky right-0 h-full flex items-center justify-center p-xs rounded-lg bg-interface-bg-main shrink-0"
       onClick={onCopyClick}
       aria-label={
         isCopied

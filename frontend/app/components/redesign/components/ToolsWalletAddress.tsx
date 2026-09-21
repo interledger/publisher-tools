@@ -136,7 +136,7 @@ export const ToolsWalletAddress = ({
     <form
       onSubmit={handleSubmit}
       className={cx(
-        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-2xl gap-x-lg p-md bg-white rounded-sm',
+        'grid grid-cols-1 xl:grid-cols-2 xl:items-start gap-y-xl gap-x-lg p-md bg-white rounded-lg',
         snap.walletConnectStep === 'error' && 'border border-red-600',
       )}
     >
@@ -150,8 +150,8 @@ export const ToolsWalletAddress = ({
             <br /> {t('tooltip.message2')}
           </Tooltip>
         </div>
-        <div className="flex items-start gap-3 w-full pt-md">
-          <div className="flex-1 min-w-0 h-12">
+        <div className="flex items-start gap-sm w-full pt-md">
+          <div className="flex-1 min-w-0 h-[48px]">
             <InputField
               ref={inputRef}
               id="wallet-address-url"
@@ -170,7 +170,7 @@ export const ToolsWalletAddress = ({
           {snap.isWalletConnected && (
             <button
               onClick={handleDisconnect}
-              className="flex items-center justify-center w-12 h-12 p-2 rounded-sm shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+              className="flex items-center justify-center w-[48px] h-[48px] p-xs rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
               aria-label={t('button.disconnectAriaLabel')}
             >
               <SVGRefresh className="w-5 h-5 text-purple-500" />
@@ -195,11 +195,11 @@ export const ToolsWalletAddress = ({
         {!snap.isWalletConnected && (
           <ToolsSecondaryButton
             type="submit"
-            className="xl:w-[143px]"
+            className="xl:w-[144px]"
             disabled={isLoading}
             aria-busy={isLoading}
           >
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-xs">
               {isLoading && <SVGSpinner className="w-4 h-4" />}
               <span>
                 {isLoading ? t('button.loadingLabel') : t('button.submitLabel')}

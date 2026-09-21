@@ -104,7 +104,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
         className={cx(
           'relative w-full max-w-[426px] bg-interface-bg-container',
           'border-[1.135px] border-interface-edge-container',
-          'pt-4xl pb-md rounded-sm',
+          'pt-4xl pb-md rounded-lg',
           className,
         )}
         role="dialog"
@@ -114,7 +114,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
         <button
           onClick={onClose}
           className={cx(
-            'absolute top-3 right-3 text-silver-800 hover:text-text-secondary transition-colors rounded-sm',
+            'absolute top-3 right-3 text-silver-800 hover:text-text-secondary transition-colors rounded-lg',
             'focus:border-field-border-focus focus:outline-hidden focus:ring-2 focus:ring-primary-focus',
           )}
           aria-label="Close modal"
@@ -137,8 +137,8 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
             id="linkTagInput"
             ref={inputRef}
             className={cx(
-              'py-sm pl-md pr-xs rounded-sm border border-silver-300 resize-none',
-              'w-full max-w-full h-34',
+              'py-sm pl-md pr-xs rounded-lg border border-silver-300 resize-none',
+              'w-full max-w-full h-[136px]',
               'focus:border-field-border-focus focus:outline-hidden focus:ring-1 focus:ring-primary-focus',
               'placeholder:text-xs sm:placeholder:text-sm text-sm font-mono',
             )}
@@ -155,7 +155,7 @@ export const ImportTagModal: React.FC<ImportTagModalProps> = ({
           {errorMessage && (
             <p
               id="import-error-message"
-              className="text-xs text-text-error w-full my-2"
+              className="text-xs text-text-error w-full my-xs"
               role="alert"
               aria-live="polite"
             >

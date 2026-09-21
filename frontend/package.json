@@ -16,9 +16,9 @@
   "dependencies": {
     "@floating-ui/react-dom": "^2.1.9",
     "@interledger/open-payments": "^7.4.0",
-    "@noble/ed25519": "^3.1.0",
+    "@noble/ed25519": "^3.2.0",
     "@paralleldrive/cuid2": "^3.3.0",
-    "@react-router/cloudflare": "^8.3.0",
+    "@react-router/cloudflare": "^8.3.1",
     "@shared/config-storage-service": "workspace:^",
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
@@ -30,23 +30,23 @@
     "he": "^1.2.0",
     "http-message-signatures": "^1.0.6",
     "httpbis-digest-headers": "^1.0.0",
-    "isbot": "^5.2.1",
+    "isbot": "^5.2.2",
     "microdiff": "^1.6.0",
     "react": "^19.2.8",
     "react-click-away-listener": "^2.4.2",
     "react-colorful": "^5.8.0",
     "react-dom": "^19.2.8",
     "react-minimal-pie-chart": "^9.1.2",
-    "react-router": "^8.3.0",
+    "react-router": "^8.3.1",
     "sanitize-html": "^2.17.7",
     "tailwindcss": "^4.3.3",
     "valtio": "^2.3.2",
-    "zod": "^4.4.3"
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.52.1",
     "@lit/react": "^1.0.8",
-    "@react-router/dev": "^8.3.0",
+    "@react-router/dev": "^8.3.1",
     "@shared/default-data": "workspace:^",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
@@ -58,9 +58,9 @@
     "@types/sanitize-html": "^2.16.1",
     "eslint": "^10.8.1",
     "publisher-tools-api": "workspace:^",
-    "vite": "^8.2.1",
+    "vite": "^8.2.2",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.10",
+    "vitest": "^4.1.11",
     "wrangler": "^4.123.0"
   }
 }

@@ -32,7 +32,7 @@ const ToolsMenuItem = ({
           hoverImage && 'group',
         )}
       >
-        <div className="relative w-20 h-20">
+        <div className="relative w-[80px] h-[80px]">
           <img
             className={cx(imgClasses, 'opacity-100 group-hover:opacity-0')}
             src={defaultImage}
