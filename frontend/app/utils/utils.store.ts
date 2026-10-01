@@ -13,7 +13,12 @@ import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { PaywallStore } from '~/stores/paywall-store'
 import type { WidgetStore } from '~/stores/widget-store'
 import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
-import { omit } from '~/utils/utils.storage'
+import {
+  omit,
+  parseWithShape,
+  patchProxy,
+  subscribeToStorage,
+} from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore | PaywallStore
 const STORAGE_PREFIX = 'wmt'
@@ -32,35 +37,37 @@ interface ToolStoreConfig<T extends Tool> {
   snapshots: Map<ProfileId, ToolProfile<T>>
 }
 
+export function parseSnapshots<T extends Tool>(
+  raw: string | null,
+): ToolProfiles<T> | null {
+  if (!raw) return null
+  try {
+    const parsed: ToolProfiles<T> = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
 export function createToolStoreUtils<T extends Tool>(
   config: ToolStoreConfig<T>,
 ) {
   const { tool, store, snapshots } = config
   const { snapshotsStorageKey, getProfileStorageKey } = getStorageKeys(tool)
 
-  function parseProfileFromStorage(
-    profileId: ProfileId,
-  ): ToolProfile<T> | null {
+  function loadProfileFromStorage(profileId: ProfileId): ToolProfile<T> | null {
     const storageKey = getProfileStorageKey(profileId)
-    const storage = localStorage.getItem(storageKey)
-    if (!storage) return null
-
-    try {
-      const profile: ToolProfile<T> = JSON.parse(storage)
-      const isValid =
-        typeof profile === 'object' &&
-        Object.keys(profile).every((key) => key in store.profile)
-
-      if (!isValid) throw new Error('Invalid profile shape')
-      return profile
-    } catch (error) {
-      console.warn(
-        `Failed to load profile ${profileId} from localStorage:`,
-        error,
-      )
+    const raw = localStorage.getItem(storageKey)
+    const parsed = parseWithShape(
+      raw,
+      store.profile as ToolProfile<T>,
+    ) as ToolProfile<T> | null
+    if (parsed === null && raw !== null) {
+      console.warn(`Failed to load profile ${profileId} from localStorage`)
       localStorage.removeItem(storageKey)
-      return null
     }
+    return parsed
   }
 
   function subscribeProfileToStorage(profileId: ProfileId) {
@@ -84,16 +91,18 @@ export function createToolStoreUtils<T extends Tool>(
     return !deepEqual(omit(snap, keys), omit(baseline, keys))
   }
 
+  function recomputeProfileUpdate(id: ProfileId) {
+    const snap = snapshot(store.profiles[id]) as ToolProfile<T>
+    if (hasPendingUpdates(id, snap)) {
+      store.profilesUpdate.add(id)
+    } else {
+      store.profilesUpdate.delete(id)
+    }
+  }
+
   function subscribeProfileToUpdates(id: ProfileId) {
     const profile = store.profiles[id]
-    return subscribe(profile, () => {
-      const snap = snapshot(profile) as ToolProfile<T>
-      if (hasPendingUpdates(id, snap)) {
-        store.profilesUpdate.add(id)
-      } else {
-        store.profilesUpdate.delete(id)
-      }
-    })
+    return subscribe(profile, () => recomputeProfileUpdate(id))
   }
 
   function persistSnapshots() {
@@ -101,6 +110,16 @@ export function createToolStoreUtils<T extends Tool>(
       snapshotsStorageKey,
       JSON.stringify(Object.fromEntries(snapshots)),
     )
+  }
+
+  function applySnapshotsFromStorage(raw: string | null) {
+    const stored = parseSnapshots<T>(raw)
+    if (!stored) return false
+
+    Object.entries(stored).forEach(([id, profile]) => {
+      snapshots.set(id as ProfileId, profile as ToolProfile<T>)
+    })
+    return true
   }
 
   return {
@@ -111,9 +130,9 @@ export function createToolStoreUtils<T extends Tool>(
 
     hydrateProfilesFromStorage() {
       PROFILE_IDS.forEach((profileId) => {
-        const parsed = parseProfileFromStorage(profileId)
-        if (parsed) {
-          Object.assign(store.profiles[profileId], parsed)
+        const profile = loadProfileFromStorage(profileId)
+        if (profile) {
+          patchProxy(store.profiles[profileId], profile)
         }
       })
     },
@@ -127,24 +146,10 @@ export function createToolStoreUtils<T extends Tool>(
     },
 
     hydrateSnapshotsFromStorage() {
-      const storage = localStorage.getItem(snapshotsStorageKey)
-      if (!storage) return
-
-      try {
-        const stored: ToolProfiles<T> = JSON.parse(storage)
-        if (!stored) return
-
-        const isValid = (profile: ToolProfile<T>) =>
-          typeof profile === 'object' &&
-          Object.keys(profile).every((key) => key in store.profile)
-
-        Object.entries(stored).forEach(([id, profile]) => {
-          if (isValid(profile as ToolProfile<T>)) {
-            snapshots.set(id as ProfileId, profile as ToolProfile<T>)
-          }
-        })
-      } catch (error) {
-        console.warn(`Failed to hydrate ${tool} baselines:`, error)
+      const raw = localStorage.getItem(snapshotsStorageKey)
+      const applied = applySnapshotsFromStorage(raw)
+      if (!applied && raw !== null) {
+        console.warn(`Failed to hydrate ${tool} baselines`)
         localStorage.removeItem(snapshotsStorageKey)
       }
     },
@@ -152,6 +157,29 @@ export function createToolStoreUtils<T extends Tool>(
     subscribeProfilesToUpdates() {
       const unsubscribes = PROFILE_IDS.map(subscribeProfileToUpdates)
       return () => unsubscribes.forEach((s) => s())
+    },
+
+    subscribeProfilesToCrossTab() {
+      const profileKeyToId = new Map(
+        PROFILE_IDS.map((id) => [getProfileStorageKey(id), id]),
+      )
+
+      return subscribeToStorage((event) => {
+        const profileId = event.key ? profileKeyToId.get(event.key) : undefined
+        if (profileId) {
+          const parsed = parseWithShape(
+            event.newValue,
+            store.profile as ToolProfile<T>,
+          ) as ToolProfile<T> | null
+          if (parsed) patchProxy(store.profiles[profileId], parsed)
+          return
+        }
+
+        if (event.key === snapshotsStorageKey) {
+          const applied = applySnapshotsFromStorage(event.newValue)
+          if (applied) PROFILE_IDS.forEach(recomputeProfileUpdate)
+        }
+      })
     },
 
     // User-initiated save; returns diff for analytics
