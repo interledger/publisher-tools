@@ -31,6 +31,25 @@ export interface Share extends PayloadEntry {
 /** Represents the state of all shares in the revenue distribution */
 export type SharesState = Share[]
 
+export const DUPLICATE_WALLET_ERROR =
+  'Duplicate wallet address detected. Each recipient must have a unique wallet address. Please update the entries and try again.'
+
+export function hasDuplicatePointers(shares: SharesState): boolean {
+  const pointers = new Set<string>()
+  for (const share of shares) {
+    let pointer = normalizePointerPrefix(share.pointer.trim())
+    if (!pointer) continue
+    try {
+      pointer = new URL(pointer).href
+    } catch {
+      // Invalid addresses are handled by the existing wallet validation.
+    }
+    if (pointers.has(pointer)) return true
+    pointers.add(pointer)
+  }
+  return false
+}
+
 /**
  * Returns an array of valid shares, filtering out any shares that do not have a pointer or weight
  * @param shares - Array of shares to filter
@@ -100,6 +119,7 @@ export function sharesToPaymentPointer(
   /** Must end with a trailing slash */
   baseUrl: string,
 ): string {
+  if (hasDuplicatePointers(shares)) return ''
   const validShares = getValidShares(shares)
   if (!validShares.length) return ''
 

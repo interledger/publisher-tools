@@ -17,7 +17,9 @@ import { API_URL } from '@shared/defines'
 import { Heading5 } from '../components/redesign/Typography'
 import {
   changeList,
+  DUPLICATE_WALLET_ERROR,
   dropIndex,
+  hasDuplicatePointers,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
@@ -61,7 +63,8 @@ function Revshare() {
     () => shares.reduce((a, b) => a + Number(b.weight), 0),
     [shares],
   )
-  const hasValidShares = validateShares(shares)
+  const hasDuplicates = hasDuplicatePointers(shares)
+  const hasValidShares = validateShares(shares) && !hasDuplicates
 
   const addShare = useCallback(() => {
     setShares((prevShares) => [...prevShares, newShare()])
@@ -111,6 +114,10 @@ function Revshare() {
     try {
       setImportError('')
       const importedShares = tagOrPointerToShares(importTag) || []
+      if (hasDuplicatePointers(importedShares)) {
+        setImportError(DUPLICATE_WALLET_ERROR)
+        return
+      }
       setShares(importedShares)
       setIsModalOpen(false)
       setImportTag('')
@@ -171,6 +178,11 @@ function Revshare() {
               })}
             </div>
           </ShareInputTable>
+          {hasDuplicates && (
+            <p role="alert" className="text-xs text-text-error">
+              {DUPLICATE_WALLET_ERROR}
+            </p>
+          )}
           <ToolsPrimaryButton
             icon="share"
             iconPosition="right"
