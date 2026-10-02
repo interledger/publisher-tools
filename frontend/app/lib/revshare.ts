@@ -40,7 +40,10 @@ export function hasDuplicatePointers(shares: SharesState): boolean {
     let pointer = normalizePointerPrefix(share.pointer.trim())
     if (!pointer) continue
     try {
-      pointer = new URL(pointer).href
+      const url = new URL(pointer)
+      // Match wallet validation's default endpoint for root addresses.
+      if (url.pathname === '/') url.pathname = '/.well-known/pay'
+      pointer = url.href
     } catch {
       // Invalid addresses are handled by the existing wallet validation.
     }

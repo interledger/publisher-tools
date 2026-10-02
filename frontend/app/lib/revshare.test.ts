@@ -24,6 +24,11 @@ describe('duplicate recipient wallets', () => {
     ['$wallet.example/alice', 'https://wallet.example/alice'],
     [' https://wallet.example/alice ', 'https://wallet.example/alice'],
     ['https://WALLET.example:443/alice', 'https://wallet.example/alice'],
+    ['https://wallet.example', 'https://wallet.example/.well-known/pay'],
+    ['https://wallet.example/', 'https://wallet.example/.well-known/pay'],
+    ['$wallet.example', 'https://wallet.example/.well-known/pay'],
+    ['$wallet.example/', '$wallet.example/.well-known/pay'],
+    ['https://WALLET.example:443/', '$wallet.example/.well-known/pay'],
   ])('detects equivalent addresses %s and %s', (first, second) => {
     const recipients = shares(first, second)
     expect(hasDuplicatePointers(recipients)).toBe(true)
@@ -35,6 +40,11 @@ describe('duplicate recipient wallets', () => {
     expect(
       hasDuplicatePointers(
         shares('https://wallet.example/Alice', 'https://wallet.example/alice'),
+      ),
+    ).toBe(false)
+    expect(
+      hasDuplicatePointers(
+        shares('https://wallet.example', 'https://wallet.example/alice'),
       ),
     ).toBe(false)
   })
@@ -70,6 +80,31 @@ describe('duplicate recipient wallets', () => {
         )!,
       ),
     ).toBe(false)
+  })
+
+  it('keeps duplicate imports editable while blocking output until corrected', () => {
+    const imported = tagOrPointerToShares(
+      baseUrl +
+        encode(
+          shares('$wallet.example', 'https://wallet.example/.well-known/pay'),
+        ),
+    )!
+    expect(imported.map((share) => share.pointer)).toEqual([
+      '$wallet.example',
+      'https://wallet.example/.well-known/pay',
+    ])
+    expect(imported[0].id).not.toBe(imported[1].id)
+    imported.forEach((share) => (share.isValid = true))
+    expect(hasDuplicatePointers(imported)).toBe(true)
+    expect(sharesToPaymentPointer(imported, baseUrl)).toBe('')
+
+    imported[1].pointer = 'https://wallet.example/bob'
+    expect(hasDuplicatePointers(imported)).toBe(false)
+    expect(
+      pointerToShares(sharesToPaymentPointer(imported, baseUrl)).map(
+        (share) => share.pointer,
+      ),
+    ).toEqual(imported.map((share) => share.pointer))
   })
 
   it('keeps previously validated duplicate entries recoverable from storage', () => {

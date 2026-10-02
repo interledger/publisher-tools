@@ -114,10 +114,6 @@ function Revshare() {
     try {
       setImportError('')
       const importedShares = tagOrPointerToShares(importTag) || []
-      if (hasDuplicatePointers(importedShares)) {
-        setImportError(DUPLICATE_WALLET_ERROR)
-        return
-      }
       setShares(importedShares)
       setIsModalOpen(false)
       setImportTag('')
