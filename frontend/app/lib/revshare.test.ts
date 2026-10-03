@@ -108,9 +108,25 @@ describe('percentage distributions', () => {
     expect(hasValidPercentages(recipients)).toBe(false)
   })
 
-  it('accepts equal two-decimal splits that round just under 100', () => {
+  it.each([
+    [[50, 49.99]],
+    [[50, 50.01]],
+    [[33.34, 33.34, 33.34]],
+    [[33.33, 33.33, 33.33]],
+  ])('rejects totals that are close to but not exactly 100: %j', (values) => {
+    const recipients = values.map((percentage, index) => ({
+      id: String(index),
+      pointer: `https://wallet.example/${index}`,
+      percentage,
+      isValid: true,
+    }))
+    expect(hasValidPercentages(recipients)).toBe(false)
+    expect(sharesToPaymentPointer(recipients, baseUrl)).toBe('')
+  })
+
+  it('encodes an exact 100% split without altering it', () => {
     const thirds = [
-      { id: '1', pointer: 'one', percentage: 33.33, isValid: true },
+      { id: '1', pointer: 'one', percentage: 33.34, isValid: true },
       { id: '2', pointer: 'two', percentage: 33.33, isValid: true },
       { id: '3', pointer: 'three', percentage: 33.33, isValid: true },
     ]

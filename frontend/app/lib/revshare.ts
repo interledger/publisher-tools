@@ -96,8 +96,7 @@ export function hasValidPercentages(shares: Share[]): boolean {
     totalUnits += roundedUnits
   }
 
-  // Two-decimal entry can land 0.01% * (n-1) off 100% (e.g. 33.33 three times).
-  return Math.abs(totalUnits - PERCENTAGE_TOTAL_UNITS) <= shares.length - 1
+  return totalUnits === PERCENTAGE_TOTAL_UNITS
 }
 
 /** Maps relative values to 2-decimal percentages that sum to 100%. */
@@ -155,7 +154,9 @@ export function normalizeSharePercentages(shares: Share[]): SharesState {
 }
 
 export function appendShareRow(shares: SharesState): SharesState {
-  const leftover = roundPercentage(PERCENTAGE_TOTAL - getPercentageTotal(shares))
+  const leftover = roundPercentage(
+    PERCENTAGE_TOTAL - getPercentageTotal(shares),
+  )
   if (leftover >= 0.01) {
     return [
       ...shares,
