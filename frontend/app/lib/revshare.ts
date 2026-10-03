@@ -185,6 +185,25 @@ export function appendShareRow(shares: SharesState): SharesState {
   ])
 }
 
+export function removeShareRow(shares: SharesState, i: number): SharesState {
+  const remaining = dropIndex(shares, i)
+  // Rescaling rounded even splits drifts (e.g. thirds become 50.01 / 49.99).
+  if (isEvenSplit(shares)) {
+    return normalizeSharePercentages(
+      remaining.map((share) => ({ ...share, percentage: 1 })),
+    )
+  }
+  return normalizeSharePercentages(remaining)
+}
+
+function isEvenSplit(shares: SharesState): boolean {
+  if (!hasValidPercentages(shares)) return false
+  const units = shares.map((share) =>
+    Math.round(share.percentage * 10 ** PERCENTAGE_DECIMAL_PLACES),
+  )
+  return Math.max(...units) - Math.min(...units) <= 1
+}
+
 export function generateShareId(): string {
   return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
 }

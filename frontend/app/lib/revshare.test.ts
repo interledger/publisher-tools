@@ -10,6 +10,7 @@ import {
   hasDuplicatePointers,
   normalizeSharePercentages,
   pointerToShares,
+  removeShareRow,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
@@ -154,6 +155,29 @@ describe('percentage distributions', () => {
     expect(added.map((share) => share.percentage)).toEqual([46.67, 20, 33.33])
     expect(getPercentageTotal(added)).toBe(100)
     expect(hasValidPercentages(added)).toBe(true)
+  })
+
+  it('rebalances percentages when removing recipients', () => {
+    let remaining = shares('a', 'b', 'c', 'd', 'e')
+    expect(remaining.map((share) => share.percentage)).toEqual([
+      20, 20, 20, 20, 20,
+    ])
+    remaining = removeShareRow(remaining, 4)
+    remaining = removeShareRow(remaining, 3)
+    remaining = removeShareRow(remaining, 2)
+    expect(remaining.map((share) => share.percentage)).toEqual([50, 50])
+    expect(hasValidPercentages(remaining)).toBe(true)
+
+    expect(
+      removeShareRow(
+        [
+          { id: '1', pointer: 'one', percentage: 60 },
+          { id: '2', pointer: 'two', percentage: 20 },
+          { id: '3', pointer: 'three', percentage: 20 },
+        ],
+        2,
+      ).map((share) => share.percentage),
+    ).toEqual([75, 25])
   })
 
   it('normalizes imported legacy values to percentages', () => {

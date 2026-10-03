@@ -19,11 +19,11 @@ import {
   appendShareRow,
   changeList,
   DUPLICATE_WALLET_ERROR,
-  dropIndex,
   getPercentageTotal,
   hasValidPercentages,
   hasDuplicatePointers,
   PERCENTAGE_TOTAL,
+  removeShareRow,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
@@ -76,7 +76,7 @@ function Revshare() {
 
   const handleRemove = useCallback(
     (index: number) => {
-      setShares((prevShares) => dropIndex(prevShares, index))
+      setShares((prevShares) => removeShareRow(prevShares, index))
     },
     [setShares],
   )
