@@ -96,14 +96,11 @@ export function hasValidPercentages(shares: Share[]): boolean {
     totalUnits += roundedUnits
   }
 
-  return totalUnits === PERCENTAGE_TOTAL_UNITS
+  // Two-decimal entry can land 0.01% * (n-1) off 100% (e.g. 33.33 three times).
+  return Math.abs(totalUnits - PERCENTAGE_TOTAL_UNITS) <= shares.length - 1
 }
 
-/**
- * Converts legacy relative values into percentages rounded to two decimal places.
- * Positive shares receive at least 0.01%, and largest-remainder rounding keeps
- * the result at exactly 100%.
- */
+/** Maps relative values to 2-decimal percentages that sum to 100%. */
 export function normalizeSharePercentages(shares: Share[]): SharesState {
   const values = shares.map((share) => Math.max(0, Number(share.percentage)))
   const total = values.reduce((sum, value) => sum + value, 0)
@@ -139,11 +136,14 @@ export function normalizeSharePercentages(shares: Share[]): SharesState {
     const removableIndexes = [...positiveIndexes].sort(
       (a, b) => units[b] - units[a] || a - b,
     )
-    for (let i = 0; excessUnits > 0; i++) {
+    for (let i = 0, stalled = 0; excessUnits > 0; i++) {
       const index = removableIndexes[i % removableIndexes.length]
       if (units[index] > 1) {
         units[index] -= 1
         excessUnits -= 1
+        stalled = 0
+      } else if (++stalled >= removableIndexes.length) {
+        break
       }
     }
   }
@@ -152,6 +152,36 @@ export function normalizeSharePercentages(shares: Share[]): SharesState {
     ...share,
     percentage: units[index] / 10 ** PERCENTAGE_DECIMAL_PLACES,
   }))
+}
+
+export function appendShareRow(shares: SharesState): SharesState {
+  const leftover = roundPercentage(PERCENTAGE_TOTAL - getPercentageTotal(shares))
+  if (leftover >= 0.01) {
+    return [
+      ...shares,
+      {
+        id: generateShareId(),
+        name: '',
+        pointer: '',
+        percentage: leftover,
+      },
+    ]
+  }
+
+  const nextCount = shares.length + 1
+  const scaled = shares.map((share) => ({
+    ...share,
+    percentage: (Number(share.percentage) * shares.length) / nextCount,
+  }))
+  return normalizeSharePercentages([
+    ...scaled,
+    {
+      id: generateShareId(),
+      name: '',
+      pointer: '',
+      percentage: PERCENTAGE_TOTAL / nextCount,
+    },
+  ])
 }
 
 export function generateShareId(): string {
@@ -217,7 +247,7 @@ export function sharesToPaymentPointer(
   const validShares = getValidShares(shares)
   if (!validShares.length) return ''
 
-  const encodedShares = encode(validShares)
+  const encodedShares = encode(normalizeSharePercentages(validShares))
   return baseUrl + encodedShares
 }
 

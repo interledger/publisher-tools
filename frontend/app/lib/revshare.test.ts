@@ -4,6 +4,7 @@ import {
   pickRandomByPercentage,
 } from '@shared/probabilistic-revenue-share'
 import {
+  appendShareRow,
   getPercentageTotal,
   hasValidPercentages,
   hasDuplicatePointers,
@@ -105,6 +106,38 @@ describe('percentage distributions', () => {
     recipients[0].percentage = 100.01
     recipients[1].percentage = Number.NaN
     expect(hasValidPercentages(recipients)).toBe(false)
+  })
+
+  it('accepts equal two-decimal splits that round just under 100', () => {
+    const thirds = [
+      { id: '1', pointer: 'one', percentage: 33.33, isValid: true },
+      { id: '2', pointer: 'two', percentage: 33.33, isValid: true },
+      { id: '3', pointer: 'three', percentage: 33.33, isValid: true },
+    ]
+    expect(hasValidPercentages(thirds)).toBe(true)
+    expect(
+      pointerToShares(sharesToPaymentPointer(thirds, baseUrl)).map(
+        (share) => share.percentage,
+      ),
+    ).toEqual([33.34, 33.33, 33.33])
+  })
+
+  it('fills leftover percentage when adding a recipient', () => {
+    const added = appendShareRow([
+      { id: '1', pointer: 'one', percentage: 40, isValid: true },
+      { id: '2', pointer: 'two', percentage: 40, isValid: true },
+    ])
+    expect(added.map((share) => share.percentage)).toEqual([40, 40, 20])
+  })
+
+  it('rescales existing shares when adding to a full 100% split', () => {
+    const added = appendShareRow([
+      { id: '1', pointer: 'one', percentage: 70, isValid: true },
+      { id: '2', pointer: 'two', percentage: 30, isValid: true },
+    ])
+    expect(added.map((share) => share.percentage)).toEqual([46.67, 20, 33.33])
+    expect(getPercentageTotal(added)).toBe(100)
+    expect(hasValidPercentages(added)).toBe(true)
   })
 
   it('normalizes imported legacy values to percentages', () => {

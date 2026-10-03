@@ -16,6 +16,7 @@ import {
 import { API_URL } from '@shared/defines'
 import { Heading5 } from '../components/redesign/Typography'
 import {
+  appendShareRow,
   changeList,
   DUPLICATE_WALLET_ERROR,
   dropIndex,
@@ -27,7 +28,7 @@ import {
   tagOrPointerToShares,
   validateShares,
 } from '../lib/revshare'
-import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
+import { SharesProvider, useShares } from '../stores/revshareStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -70,7 +71,7 @@ function Revshare() {
     walletsAreValid && percentagesAreValid && !hasDuplicates
 
   const addShare = useCallback(() => {
-    setShares((prevShares) => [...prevShares, newShare()])
+    setShares((prevShares) => appendShareRow(prevShares))
   }, [setShares])
 
   const handleRemove = useCallback(
@@ -183,8 +184,9 @@ function Revshare() {
           )}
           {walletsAreValid && !percentagesAreValid && (
             <p role="status" className="text-xs text-text-error">
-              Each percentage must be greater than 0, and the total must be{' '}
-              {PERCENTAGE_TOTAL}%. Current total: {percentageTotal}%.
+              {shares.some((share) => Number(share.percentage) <= 0)
+                ? `Each percentage must be greater than 0. Current total: ${percentageTotal}%.`
+                : `Percentages must add up to ${PERCENTAGE_TOTAL}%. Current total: ${percentageTotal}%.`}
             </p>
           )}
           <ToolsPrimaryButton
