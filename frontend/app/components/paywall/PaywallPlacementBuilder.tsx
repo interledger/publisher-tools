@@ -5,6 +5,8 @@ import type { PaywallProfile } from '@shared/types'
 import { useTranslation } from '~/i18n/useTranslation'
 import { usePaywallProfile } from '~/stores/paywall-store'
 
+const MAX_PAYWALL_DELAY_SECONDS = 15
+
 export function PaywallPlacementBuilder() {
   const [snap, profile] = usePaywallProfile()
   const t = useTranslation('paywall')
@@ -100,6 +102,9 @@ function PaywallDelayInput({
   onChange(val: number): void
 }) {
   const t = useTranslation('paywall')
+  const delayHint = t('input.delay.hint', {
+    max: String(MAX_PAYWALL_DELAY_SECONDS),
+  })
   return (
     <InputFieldNumeric
       label={t('input.delay.label')}
@@ -107,14 +112,14 @@ function PaywallDelayInput({
       inputMode="decimal"
       value={value}
       onChange={onChange}
-      helpText={t('input.delay.hint')}
-      aria-describedby="input-delay-addon-suffix"
+      helpText={delayHint}
+      ariaDescription={delayHint}
       addonAfter={
         <span id="input-delay-addon-suffix">{t('input.delay.suffix')}</span>
       }
       addonClassName="absolute left-12 top-2 bg-white"
       min={0}
-      max={15}
+      max={MAX_PAYWALL_DELAY_SECONDS}
       maxLength={4}
       precision={1}
     />
