@@ -2,7 +2,10 @@ import { HTTPException } from 'hono/http-exception'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import z from 'zod'
 import type { WalletAddress } from '@interledger/open-payments'
-import { decode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
+import {
+  decode,
+  pickRandomByPercentage,
+} from '@shared/probabilistic-revenue-share'
 import { isWalletAddress, validateWalletAddressOrPointer } from '@shared/utils'
 import { app } from '../app.js'
 import { createHTTPException, validate } from '../utils/utils'
@@ -35,7 +38,7 @@ async function handler(encodedPayload: string): Promise<WalletAddress> {
     throw createHTTPException(400, 'Invalid payload', error)
   }
 
-  const selected = pickWeightedRandom(pointerMap)
+  const selected = pickRandomByPercentage(pointerMap)
   let walletAddressUrl
   try {
     walletAddressUrl = validateWalletAddressOrPointer(selected)

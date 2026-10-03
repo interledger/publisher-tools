@@ -9,20 +9,19 @@ interface ShareInputProps {
   index: number
   name: string
   pointer: string
-  weight: number
-  percent: number
-  weightDisabled?: boolean
+  percentage: number
+  percentageDisabled?: boolean
   showDelete?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
-  onChangeWeight: (weight: number) => void
+  onChangePercentage: (percentage: number) => void
   onValidationChange: (index: number, isValid: boolean) => void
   onRemove: () => void
 }
 
 const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
 const GRID_COLS =
-  'md:grid-cols-[1fr_3fr_1fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_6rem_6rem_minmax(0,auto)]'
+  'md:grid-cols-[1fr_3fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_8rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
@@ -69,15 +68,8 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
         </div>
         <div
           role="columnheader"
-          id="col-weight"
-          aria-label="Weight value for revenue distribution, required field"
-        >
-          Weight
-        </div>
-        <div
-          role="columnheader"
           id="col-percentage"
-          aria-label="Calculated percentage of total revenue based on weight"
+          aria-label="Percentage of revenue for recipient, required field"
         >
           Percentage
         </div>
@@ -100,15 +92,14 @@ export const ShareInput = React.memo(
     index,
     name,
     pointer,
-    weight,
-    percent,
+    percentage,
     onChangeName,
     onChangePointer,
-    onChangeWeight,
+    onChangePercentage,
     onValidationChange,
     onRemove,
     showDelete = false,
-    weightDisabled = false,
+    percentageDisabled = false,
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
     const [showSuccess, setShowSuccess] = useState(false)
@@ -138,8 +129,7 @@ export const ShareInput = React.memo(
 
     const nameInputId = `name-input-${index}`
     const pointerInputId = `pointer-input-${index}`
-    const weightInputId = `weight-input-${index}`
-    const percentInputId = `percent-input-${index}`
+    const percentageInputId = `percentage-input-${index}`
 
     return (
       <div
@@ -209,31 +199,25 @@ export const ShareInput = React.memo(
             </div>
           )}
         </div>
-        <div role="cell" aria-labelledby="col-weight">
-          <label htmlFor={weightInputId} className="sr-only">
-            Weight
+        <div role="cell" aria-labelledby="col-percentage">
+          <label htmlFor={percentageInputId} className="sr-only">
+            Percentage
           </label>
           <InputField
-            id={weightInputId}
+            id={percentageInputId}
             type="number"
-            value={weight}
-            min={0}
-            step="any"
+            value={percentage}
+            min={0.01}
+            max={100}
+            step={0.01}
+            addonAfter="%"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onChangeWeight(Number(e.target.value))
+              onChangePercentage(Number(e.target.value))
             }
-            disabled={weightDisabled || (!!pointer && isValid !== true)}
+            disabled={percentageDisabled || (!!pointer && isValid !== true)}
             required
-            ariaDescription="Enter a numeric weight for this recipient. Higher weight values result in a larger percentage of revenue."
+            ariaDescription="Enter the percentage of revenue for this recipient. All recipient percentages must add up to 100."
           />
-        </div>
-        <div role="cell" aria-labelledby="col-percentage">
-          <div
-            id={percentInputId}
-            className="ml-2xs md:ml-0 md:text-center text-field-helpertext-default"
-          >
-            {Math.round(percent * 100)}%
-          </div>
         </div>
         {showDelete && (
           <div

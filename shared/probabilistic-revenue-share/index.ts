@@ -1,8 +1,8 @@
 export interface PayloadEntry {
   /** The payment pointer or wallet address of the recipient */
   pointer: string
-  /** The numerical weight of the share, used to calculate the distribution */
-  weight: number
+  /** The percentage chance that this recipient will be selected */
+  percentage: number
   /** An optional name for the recipient for display purposes */
   name?: string
 }
@@ -10,11 +10,13 @@ export interface PayloadEntry {
 /** Represents the state of all shares in the revenue distribution */
 export type Payload = PayloadEntry[]
 
-type PointerList = Array<[pointer: string, weight: number, name: string]>
+type PointerList = Array<[pointer: string, percentage: number, name: string]>
 
 export function encode(payload: Payload) {
   const pointerList: PointerList = payload.flatMap((e) =>
-    e.pointer && e.weight ? [[e.pointer, Number(e.weight), e.name || '']] : [],
+    e.pointer && e.percentage
+      ? [[e.pointer, Number(e.percentage), e.name || '']]
+      : [],
   )
   return base64url(JSON.stringify(pointerList))
 }
@@ -38,19 +40,20 @@ export function decode(pathPart: string): Payload {
     throw new Error('Invalid payload')
   }
 
-  return pointerList.map(([pointer, weight, name]) => ({
+  return pointerList.map(([pointer, percentage, name]) => ({
     pointer,
-    weight,
+    percentage,
     name,
   }))
 }
 
-export function pickWeightedRandom(entries: Payload) {
-  const sum = entries.reduce((sum2, entry) => sum2 + entry.weight, 0)
+export function pickRandomByPercentage(entries: Payload) {
+  // Use the actual sum so links generated with legacy relative weights continue
+  // to select recipients with the same probability.
+  const sum = entries.reduce((sum2, entry) => sum2 + entry.percentage, 0)
   let choice = Math.random() * sum
   for (const entry of entries) {
-    const weight = entry.weight
-    if ((choice -= weight) <= 0) {
+    if ((choice -= entry.percentage) <= 0) {
       return entry.pointer
     }
   }

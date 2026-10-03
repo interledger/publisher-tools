@@ -19,7 +19,10 @@ import {
   changeList,
   DUPLICATE_WALLET_ERROR,
   dropIndex,
+  getPercentageTotal,
+  hasValidPercentages,
   hasDuplicatePointers,
+  PERCENTAGE_TOTAL,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
@@ -59,12 +62,12 @@ function Revshare() {
     () => sharesToPaymentPointer(shares, baseUrl) ?? '',
     [shares],
   )
-  const totalWeight = useMemo(
-    () => shares.reduce((a, b) => a + Number(b.weight), 0),
-    [shares],
-  )
+  const percentageTotal = useMemo(() => getPercentageTotal(shares), [shares])
   const hasDuplicates = hasDuplicatePointers(shares)
-  const hasValidShares = validateShares(shares) && !hasDuplicates
+  const walletsAreValid = validateShares(shares)
+  const percentagesAreValid = hasValidPercentages(shares)
+  const hasValidShares =
+    walletsAreValid && percentagesAreValid && !hasDuplicates
 
   const addShare = useCallback(() => {
     setShares((prevShares) => [...prevShares, newShare()])
@@ -96,9 +99,9 @@ function Revshare() {
     [setShares],
   )
 
-  const handleChangeWeight = useCallback(
-    (index: number, weight: number) => {
-      setShares((prevShares) => changeList(prevShares, index, { weight }))
+  const handleChangePercentage = useCallback(
+    (index: number, percentage: number) => {
+      setShares((prevShares) => changeList(prevShares, index, { percentage }))
     },
     [setShares],
   )
@@ -156,19 +159,18 @@ function Revshare() {
                     index={i}
                     name={share.name || ''}
                     pointer={share.pointer}
-                    weight={share.weight || 0}
-                    percent={
-                      totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
-                    }
+                    percentage={share.percentage || 0}
                     onChangeName={(name) => handleChangeName(i, name)}
                     onChangePointer={(pointer) =>
                       handleChangePointer(i, pointer)
                     }
-                    onChangeWeight={(weight) => handleChangeWeight(i, weight)}
+                    onChangePercentage={(percentage) =>
+                      handleChangePercentage(i, percentage)
+                    }
                     onValidationChange={handleValidationChange}
                     onRemove={() => handleRemove(i)}
                     showDelete={showDeleteColumn}
-                    weightDisabled={!share.pointer}
+                    percentageDisabled={!share.pointer}
                   />
                 )
               })}
@@ -177,6 +179,12 @@ function Revshare() {
           {hasDuplicates && (
             <p role="alert" className="text-xs text-text-error">
               {DUPLICATE_WALLET_ERROR}
+            </p>
+          )}
+          {walletsAreValid && !percentagesAreValid && (
+            <p role="status" className="text-xs text-text-error">
+              Each percentage must be greater than 0, and the total must be{' '}
+              {PERCENTAGE_TOTAL}%. Current total: {percentageTotal}%.
             </p>
           )}
           <ToolsPrimaryButton
