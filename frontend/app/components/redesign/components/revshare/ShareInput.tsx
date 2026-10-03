@@ -103,6 +103,14 @@ export const ShareInput = React.memo(
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
     const [showSuccess, setShowSuccess] = useState(false)
+    // Keep the typed text so clearing doesnt add a 0 in the field
+    const [percentageText, setPercentageText] = useState(String(percentage))
+
+    useEffect(() => {
+      if (Number(percentageText) !== percentage) {
+        setPercentageText(String(percentage))
+      }
+    }, [percentage])
 
     useEffect(() => {
       onValidationChange(index, isValid)
@@ -206,14 +214,16 @@ export const ShareInput = React.memo(
           <InputField
             id={percentageInputId}
             type="number"
-            value={percentage}
+            value={percentageText}
             min={0.01}
             max={100}
             step={0.01}
             addonAfter="%"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setPercentageText(e.target.value)
               onChangePercentage(Number(e.target.value))
-            }
+            }}
+            onBlur={() => setPercentageText(String(percentage))}
             disabled={percentageDisabled || (!!pointer && isValid !== true)}
             required
             ariaDescription="Enter the percentage of revenue for this recipient. All recipient percentages must add up to 100."
