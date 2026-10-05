@@ -74,7 +74,7 @@ export const BuilderAccordion: React.FC<Props> = ({
         </div>
       </summary>
 
-      <div className="relative z-10 flex flex-col gap-lg mt-sm pb-md">
+      <div className="relative z-10 flex flex-col gap-lg mt-sm mb-sm">
         {children}
       </div>
     </details>
