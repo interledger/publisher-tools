@@ -19,11 +19,12 @@ import {
   appendShareRow,
   changeList,
   DUPLICATE_WALLET_ERROR,
-  getPercentageTotal,
-  hasValidPercentages,
+  dropIndex,
+  getPercentageIssue,
   hasDuplicatePointers,
+  isValidPercentage,
   PERCENTAGE_TOTAL,
-  removeShareRow,
+  type PercentageIssue,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
@@ -42,6 +43,22 @@ export const meta: MetaFunction = () => {
 }
 
 const baseUrl = new URL('/revshare/', API_URL).href
+
+function getPercentageIssueMessage(issue: PercentageIssue): string {
+  switch (issue.type) {
+    case 'not-positive':
+      return 'Each percentage must be greater than 0.'
+    case 'too-many-decimals':
+      return 'Percentages can have at most 2 decimal places.'
+    case 'wrong-total': {
+      const offBy =
+        issue.difference > 0
+          ? `${issue.difference}% over`
+          : `${-issue.difference}% short`
+      return `Percentages must add up to ${PERCENTAGE_TOTAL}%. Current total: ${issue.total}% (${offBy}).`
+    }
+  }
+}
 
 export default function RevsharePageWrapper() {
   return (
@@ -63,12 +80,14 @@ function Revshare() {
     () => sharesToPaymentPointer(shares, baseUrl) ?? '',
     [shares],
   )
-  const percentageTotal = useMemo(() => getPercentageTotal(shares), [shares])
   const hasDuplicates = hasDuplicatePointers(shares)
   const walletsAreValid = validateShares(shares)
-  const percentagesAreValid = hasValidPercentages(shares)
-  const hasValidShares =
-    walletsAreValid && percentagesAreValid && !hasDuplicates
+  const percentageIssue = getPercentageIssue(shares)
+  const percentageIssueMessage =
+    walletsAreValid && percentageIssue
+      ? getPercentageIssueMessage(percentageIssue)
+      : undefined
+  const hasValidShares = walletsAreValid && !percentageIssue && !hasDuplicates
 
   const addShare = useCallback(() => {
     setShares((prevShares) => appendShareRow(prevShares))
@@ -76,7 +95,7 @@ function Revshare() {
 
   const handleRemove = useCallback(
     (index: number) => {
-      setShares((prevShares) => removeShareRow(prevShares, index))
+      setShares((prevShares) => dropIndex(prevShares, index))
     },
     [setShares],
   )
@@ -172,6 +191,12 @@ function Revshare() {
                     onRemove={() => handleRemove(i)}
                     showDelete={showDeleteColumn}
                     percentageDisabled={!share.pointer}
+                    percentageError={
+                      percentageIssue?.type === 'wrong-total' ||
+                      !isValidPercentage(share.percentage)
+                        ? percentageIssueMessage
+                        : undefined
+                    }
                   />
                 )
               })}
@@ -182,11 +207,9 @@ function Revshare() {
               {DUPLICATE_WALLET_ERROR}
             </p>
           )}
-          {walletsAreValid && !percentagesAreValid && (
+          {percentageIssueMessage && (
             <p role="status" className="text-xs text-text-error">
-              {shares.some((share) => Number(share.percentage) <= 0)
-                ? `Each percentage must be greater than 0. Current total: ${percentageTotal}%.`
-                : `Percentages must add up to ${PERCENTAGE_TOTAL}%. Current total: ${percentageTotal}%.`}
+              {percentageIssueMessage}
             </p>
           )}
           <ToolsPrimaryButton

@@ -1,8 +1,4 @@
-import {
-  decode,
-  encode,
-  type PayloadEntry,
-} from '@shared/probabilistic-revenue-share'
+import { decode, encode } from '@shared/probabilistic-revenue-share'
 
 const POINTER_LIST_PARAM = 'p'
 const CHART_COLORS = [
@@ -19,9 +15,15 @@ const CHART_COLORS = [
 ]
 
 /** Represents a single revenue share participant */
-export interface Share extends PayloadEntry {
+export interface Share {
   /** Unique identifier for the share */
   id: string
+  /** The payment pointer or wallet address of the recipient */
+  pointer: string
+  /** The percentage chance that this recipient will be selected */
+  percentage: number
+  /** An optional name for the recipient for display purposes */
+  name?: string
   /** Indicates if the share is valid, used for validation purposes */
   isValid?: boolean
 }
@@ -29,12 +31,19 @@ export interface Share extends PayloadEntry {
 /** Represents the state of all shares in the revenue distribution */
 export type SharesState = Share[]
 
+export type PercentageIssue =
+  | { type: 'not-positive' }
+  | { type: 'too-many-decimals' }
+  | { type: 'wrong-total'; total: number; difference: number }
+
 export const DUPLICATE_WALLET_ERROR =
   'Duplicate wallet address detected. Each recipient must have a unique wallet address. Please update the entries and try again.'
 export const PERCENTAGE_TOTAL = 100
 const PERCENTAGE_DECIMAL_PLACES = 2
-const PERCENTAGE_TOTAL_UNITS =
-  PERCENTAGE_TOTAL * 10 ** PERCENTAGE_DECIMAL_PLACES
+// Percentages are calculated in whole hundredths of a percent to avoid
+// floating point drift (e.g. 33.33 + 33.33 + 33.34).
+const UNITS_PER_PERCENT = 10 ** PERCENTAGE_DECIMAL_PLACES
+const PERCENTAGE_TOTAL_UNITS = PERCENTAGE_TOTAL * UNITS_PER_PERCENT
 
 export function hasDuplicatePointers(shares: SharesState): boolean {
   const pointers = new Set<string>()
@@ -67,48 +76,92 @@ export function getValidShares(shares: Share[]): SharesState {
   )
 }
 
-export function roundPercentage(value: number): number {
-  const factor = 10 ** PERCENTAGE_DECIMAL_PLACES
-  return Math.round(value * factor) / factor
+/**
+ * Converts a percentage into whole hundredths of a percent
+ * @returns The units, or undefined if the percentage has more than 2 decimal places
+ */
+function toUnits(percentage: number): number | undefined {
+  const units = Number(percentage) * UNITS_PER_PERCENT
+  const roundedUnits = Math.round(units)
+  if (!Number.isFinite(units) || Math.abs(units - roundedUnits) > 1e-8) {
+    return undefined
+  }
+  return roundedUnits
 }
 
-export function getPercentageTotal(shares: Share[]): number {
-  return roundPercentage(
-    shares.reduce((total, share) => total + Number(share.percentage), 0),
-  )
+function fromUnits(units: number): number {
+  return units / UNITS_PER_PERCENT
+}
+
+/** Sums percentages in units, or returns undefined if any is not representable */
+function getTotalUnits(shares: Share[]): number | undefined {
+  let totalUnits = 0
+  for (const share of shares) {
+    const units = toUnits(share.percentage)
+    if (units === undefined) return undefined
+    totalUnits += units
+  }
+  return totalUnits
+}
+
+export function isValidPercentage(percentage: number): boolean {
+  const units = toUnits(percentage)
+  return units !== undefined && units > 0
+}
+
+/**
+ * Explains why the shares' percentages cannot be used
+ * @returns The first issue found, or undefined if the percentages are valid
+ */
+export function getPercentageIssue(
+  shares: Share[],
+): PercentageIssue | undefined {
+  if (shares.some((share) => !(Number(share.percentage) > 0))) {
+    return { type: 'not-positive' }
+  }
+  const totalUnits = getTotalUnits(shares)
+  if (totalUnits === undefined) {
+    return { type: 'too-many-decimals' }
+  }
+  if (totalUnits !== PERCENTAGE_TOTAL_UNITS) {
+    return {
+      type: 'wrong-total',
+      total: fromUnits(totalUnits),
+      difference: fromUnits(totalUnits - PERCENTAGE_TOTAL_UNITS),
+    }
+  }
+  return undefined
 }
 
 export function hasValidPercentages(shares: Share[]): boolean {
-  if (!shares.length) return false
-
-  let totalUnits = 0
-  for (const share of shares) {
-    const units = share.percentage * 10 ** PERCENTAGE_DECIMAL_PLACES
-    const roundedUnits = Math.round(units)
-    if (
-      !Number.isFinite(units) ||
-      Math.abs(units - roundedUnits) > 1e-8 ||
-      roundedUnits <= 0 ||
-      roundedUnits > PERCENTAGE_TOTAL_UNITS
-    ) {
-      return false
-    }
-    totalUnits += roundedUnits
-  }
-
-  return totalUnits === PERCENTAGE_TOTAL_UNITS
+  return shares.length > 0 && !getPercentageIssue(shares)
 }
 
-/** Maps relative values to 2-decimal percentages that sum to 100%. */
-export function normalizeSharePercentages(shares: Share[]): SharesState {
-  const values = shares.map((share) => Math.max(0, Number(share.percentage)))
+/**
+ * Returns the decimal part of a percentage (e.g. 0.5 for 28.5). Using it as the
+ * input's `min` makes native stepping keep the decimals (28.5 -> 29.5), since
+ * browsers step from `min`
+ */
+export function getPercentageStepBase(percentage: number): number {
+  if (!Number.isFinite(percentage) || percentage <= 0) return 0
+  const decimals = String(percentage).split('.')[1]?.length ?? 0
+  // toFixed avoids floating point noise such as 33.33 % 1 = 0.3299999999999983
+  return Number((percentage % 1).toFixed(decimals))
+}
+
+/**
+ * Maps relative weights to 2-decimal percentages that sum to exactly 100%,
+ * keeping every positive weight above zero
+ */
+export function weightsToPercentages(weights: number[]): number[] {
+  const values = weights.map((weight) => Math.max(0, Number(weight)))
   const total = values.reduce((sum, value) => sum + value, 0)
-  if (!Number.isFinite(total) || total <= 0) return shares
+  if (!Number.isFinite(total) || total <= 0) return values
 
   const positiveIndexes = values.flatMap((value, index) =>
     value > 0 ? [index] : [],
   )
-  if (positiveIndexes.length > PERCENTAGE_TOTAL_UNITS) return shares
+  if (positiveIndexes.length > PERCENTAGE_TOTAL_UNITS) return values
 
   const exactUnits = values.map(
     (value) => (value / total) * PERCENTAGE_TOTAL_UNITS,
@@ -116,12 +169,10 @@ export function normalizeSharePercentages(shares: Share[]): SharesState {
   const units = exactUnits.map((exact, index) =>
     values[index] > 0 ? Math.max(1, Math.floor(exact)) : 0,
   )
-  const remainders = positiveIndexes.map((index) => {
-    return {
-      index,
-      remainder: exactUnits[index] - Math.floor(exactUnits[index]),
-    }
-  })
+  const remainders = positiveIndexes.map((index) => ({
+    index,
+    remainder: exactUnits[index] - Math.floor(exactUnits[index]),
+  }))
   remainders.sort((a, b) => b.remainder - a.remainder || a.index - b.index)
   const allocatedUnits = units.reduce((sum, value) => sum + value, 0)
 
@@ -147,61 +198,24 @@ export function normalizeSharePercentages(shares: Share[]): SharesState {
     }
   }
 
-  return shares.map((share, index) => ({
-    ...share,
-    percentage: units[index] / 10 ** PERCENTAGE_DECIMAL_PLACES,
-  }))
+  return units.map(fromUnits)
 }
 
+export function newShare(percentage = 0): Share {
+  return {
+    id: generateShareId(),
+    name: '',
+    pointer: '',
+    percentage,
+  }
+}
+
+/** Appends an empty recipient, prefilled with whatever percentage is left */
 export function appendShareRow(shares: SharesState): SharesState {
-  const leftover = roundPercentage(
-    PERCENTAGE_TOTAL - getPercentageTotal(shares),
-  )
-  if (leftover >= 0.01) {
-    return [
-      ...shares,
-      {
-        id: generateShareId(),
-        name: '',
-        pointer: '',
-        percentage: leftover,
-      },
-    ]
-  }
-
-  const nextCount = shares.length + 1
-  const scaled = shares.map((share) => ({
-    ...share,
-    percentage: (Number(share.percentage) * shares.length) / nextCount,
-  }))
-  return normalizeSharePercentages([
-    ...scaled,
-    {
-      id: generateShareId(),
-      name: '',
-      pointer: '',
-      percentage: PERCENTAGE_TOTAL / nextCount,
-    },
-  ])
-}
-
-export function removeShareRow(shares: SharesState, i: number): SharesState {
-  const remaining = dropIndex(shares, i)
-  // Rescaling rounded even splits drifts (e.g. thirds become 50.01 / 49.99).
-  if (isEvenSplit(shares)) {
-    return normalizeSharePercentages(
-      remaining.map((share) => ({ ...share, percentage: 1 })),
-    )
-  }
-  return normalizeSharePercentages(remaining)
-}
-
-function isEvenSplit(shares: SharesState): boolean {
-  if (!hasValidPercentages(shares)) return false
-  const units = shares.map((share) =>
-    Math.round(share.percentage * 10 ** PERCENTAGE_DECIMAL_PLACES),
-  )
-  return Math.max(...units) - Math.min(...units) <= 1
+  const totalUnits = getTotalUnits(shares)
+  const leftoverUnits =
+    totalUnits === undefined ? 0 : PERCENTAGE_TOTAL_UNITS - totalUnits
+  return [...shares, newShare(leftoverUnits > 0 ? fromUnits(leftoverUnits) : 0)]
 }
 
 export function generateShareId(): string {
@@ -267,7 +281,13 @@ export function sharesToPaymentPointer(
   const validShares = getValidShares(shares)
   if (!validShares.length) return ''
 
-  const encodedShares = encode(normalizeSharePercentages(validShares))
+  const encodedShares = encode(
+    validShares.map(({ pointer, percentage, name }) => ({
+      pointer,
+      weight: percentage,
+      name,
+    })),
+  )
   return baseUrl + encodedShares
 }
 
@@ -292,13 +312,17 @@ export function pointerToShares(pointer: string): SharesState {
       )
     }
 
+    // Older links store arbitrary relative weights rather than percentages.
     const decoded = decode(encodedList)
-    return normalizeSharePercentages(
-      decoded.map((e) => ({
-        ...e,
-        id: generateShareId(),
-      })),
+    const percentages = weightsToPercentages(
+      decoded.map((entry) => entry.weight),
     )
+    return decoded.map((entry, i) => ({
+      id: generateShareId(),
+      pointer: entry.pointer,
+      name: entry.name,
+      percentage: percentages[i],
+    }))
   } catch (err: unknown) {
     if (err instanceof TypeError) {
       throw new Error('Meta tag or payment pointer is malformed', {

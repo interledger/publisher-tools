@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
+import { getPercentageStepBase } from '~/lib/revshare'
 import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {
@@ -11,6 +12,8 @@ interface ShareInputProps {
   pointer: string
   percentage: number
   percentageDisabled?: boolean
+  /** Why the percentage is invalid, shown through the field's validity */
+  percentageError?: string
   showDelete?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
@@ -23,6 +26,11 @@ const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
 const GRID_COLS =
   'md:grid-cols-[1fr_3fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_8rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
+
+function formatPercentage(percentage: number): string {
+  // Leave new rows empty rather than showing a 0 to delete first.
+  return percentage ? String(percentage) : ''
+}
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
   return (
@@ -100,17 +108,27 @@ export const ShareInput = React.memo(
     onRemove,
     showDelete = false,
     percentageDisabled = false,
+    percentageError,
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
     const [showSuccess, setShowSuccess] = useState(false)
-    // Keep the typed text so clearing doesnt add a 0 in the field
-    const [percentageText, setPercentageText] = useState(String(percentage))
+    // Keep the typed text so clearing doesn't add a 0 in the field
+    const [percentageText, setPercentageText] = useState(
+      formatPercentage(percentage),
+    )
 
     useEffect(() => {
       if (Number(percentageText) !== percentage) {
-        setPercentageText(String(percentage))
+        setPercentageText(formatPercentage(percentage))
       }
     }, [percentage])
+
+    // Let the browser's validity (and so the `invalid:` styles) include the
+    // rules it cannot check itself, such as the total being 100%.
+    const percentageInputRef = useRef<HTMLInputElement>(null)
+    useEffect(() => {
+      percentageInputRef.current?.setCustomValidity(percentageError ?? '')
+    }, [percentageError])
 
     useEffect(() => {
       onValidationChange(index, isValid)
@@ -212,20 +230,23 @@ export const ShareInput = React.memo(
             Percentage
           </label>
           <InputField
+            ref={percentageInputRef}
             id={percentageInputId}
             type="number"
             value={percentageText}
-            min={0.01}
+            min={getPercentageStepBase(percentage)}
             max={100}
-            step={0.01}
+            step={1}
             addonAfter="%"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setPercentageText(e.target.value)
               onChangePercentage(Number(e.target.value))
             }}
-            onBlur={() => setPercentageText(String(percentage))}
+            onBlur={() => setPercentageText(formatPercentage(percentage))}
             disabled={percentageDisabled || (!!pointer && isValid !== true)}
             required
+            aria-invalid={!!percentageError}
+            className="has-invalid:border-field-border-error"
             ariaDescription="Enter the percentage of revenue for this recipient. All recipient percentages must add up to 100."
           />
         </div>

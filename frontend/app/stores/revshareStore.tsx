@@ -1,9 +1,9 @@
 import { useContext, useState, createContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import {
-  generateShareId,
-  normalizeSharePercentages,
+  newShare,
   validateShares,
+  weightsToPercentages,
   type Share,
   type SharesState,
 } from '../lib/revshare'
@@ -21,15 +21,6 @@ export const SharesContext = createContext<SharesContextState | undefined>(
   undefined,
 )
 SharesContext.displayName = 'SharesContext'
-
-export function newShare(percentage = 0): Share {
-  return {
-    id: generateShareId(),
-    name: '',
-    pointer: '',
-    percentage,
-  }
-}
 
 function migrateStoredShares(value: unknown): SharesState | undefined {
   if (!Array.isArray(value)) return undefined
@@ -60,7 +51,11 @@ function migrateStoredShares(value: unknown): SharesState | undefined {
     })
   }
 
-  return hasLegacyWeights ? normalizeSharePercentages(shares) : shares
+  if (!hasLegacyWeights) return shares
+  const percentages = weightsToPercentages(
+    shares.map((share) => share.percentage),
+  )
+  return shares.map((share, i) => ({ ...share, percentage: percentages[i] }))
 }
 
 export function loadStartingShares(): SharesState {

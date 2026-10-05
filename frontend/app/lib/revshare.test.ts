@@ -1,87 +1,67 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import {
-  encode,
-  pickRandomByPercentage,
-} from '@shared/probabilistic-revenue-share'
+import { encode, pickWeightedRandom } from '@shared/probabilistic-revenue-share'
 import {
   appendShareRow,
-  getPercentageTotal,
+  getPercentageIssue,
+  getPercentageStepBase,
   hasValidPercentages,
   hasDuplicatePointers,
-  normalizeSharePercentages,
   pointerToShares,
-  removeShareRow,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
+  weightsToPercentages,
   type Share,
 } from './revshare'
 
 const baseUrl = 'https://example.com/revshare/'
-const shares = (...pointers: string[]): Share[] =>
-  normalizeSharePercentages(
-    pointers.map((pointer, index) => ({
-      id: String(index),
-      pointer,
-      percentage: 1,
-      isValid: true,
-    })),
-  )
+const shares = (...pointers: string[]): Share[] => {
+  const percentages = weightsToPercentages(pointers.map(() => 1))
+  return pointers.map((pointer, index) => ({
+    id: String(index),
+    pointer,
+    percentage: percentages[index],
+    isValid: true,
+  }))
+}
+const encodePointers = (...pointers: string[]): string =>
+  encode(pointers.map((pointer) => ({ pointer, weight: 1 })))
+const withPercentages = (...percentages: number[]): Share[] =>
+  percentages.map((percentage, index) => ({
+    id: String(index),
+    pointer: `https://wallet.example/${index}`,
+    percentage,
+    isValid: true,
+  }))
 
 afterEach(() => {
   vi.restoreAllMocks()
 })
 
 describe('percentage distributions', () => {
-  it('normalizes relative values and keeps the rounded total at 100', () => {
-    const normalized = normalizeSharePercentages([
-      { id: '1', pointer: 'one', percentage: 1 },
-      { id: '2', pointer: 'two', percentage: 1 },
-      { id: '3', pointer: 'three', percentage: 1 },
-    ])
+  it('converts equal weights to percentages that total exactly 100', () => {
+    const percentages = weightsToPercentages([1, 1, 1])
 
-    expect(normalized.map((share) => share.percentage)).toEqual([
-      33.34, 33.33, 33.33,
-    ])
-    expect(getPercentageTotal(normalized)).toBe(100)
-    expect(hasValidPercentages(normalized)).toBe(true)
+    expect(percentages).toEqual([33.34, 33.33, 33.33])
+    expect(hasValidPercentages(withPercentages(...percentages))).toBe(true)
   })
 
-  it('preserves proportional differences when converting legacy values', () => {
-    const normalized = normalizeSharePercentages([
-      { id: '1', pointer: 'one', percentage: 1 },
-      { id: '2', pointer: 'two', percentage: 2 },
-      { id: '3', pointer: 'three', percentage: 3 },
-    ])
-
-    expect(normalized.map((share) => share.percentage)).toEqual([
-      16.67, 33.33, 50,
-    ])
+  it('preserves proportional differences when converting legacy weights', () => {
+    expect(weightsToPercentages([1, 2, 3])).toEqual([16.67, 33.33, 50])
   })
 
-  it('keeps tiny positive legacy shares above zero', () => {
-    const normalized = normalizeSharePercentages([
-      { id: '1', pointer: 'one', percentage: 1 },
-      { id: '2', pointer: 'two', percentage: 100_000 },
-    ])
+  it('keeps tiny positive legacy weights above zero', () => {
+    const percentages = weightsToPercentages([1, 100_000])
 
-    expect(normalized.map((share) => share.percentage)).toEqual([0.01, 99.99])
-    expect(hasValidPercentages(normalized)).toBe(true)
+    expect(percentages).toEqual([0.01, 99.99])
+    expect(hasValidPercentages(withPercentages(...percentages))).toBe(true)
   })
 
   it('uses largest-remainder rounding when rounded shares would exceed 100', () => {
-    const normalized = normalizeSharePercentages(
-      Array.from({ length: 6 }, (_, index) => ({
-        id: String(index),
-        pointer: String(index),
-        percentage: 1,
-      })),
-    )
+    const percentages = weightsToPercentages(Array.from({ length: 6 }, () => 1))
 
-    expect(normalized.map((share) => share.percentage)).toEqual([
-      16.67, 16.67, 16.67, 16.67, 16.66, 16.66,
-    ])
-    expect(getPercentageTotal(normalized)).toBe(100)
+    expect(percentages).toEqual([16.67, 16.67, 16.67, 16.67, 16.66, 16.66])
+    expect(hasValidPercentages(withPercentages(...percentages))).toBe(true)
   })
 
   it('requires positive percentages that add up to 100', () => {
@@ -100,10 +80,6 @@ describe('percentage distributions', () => {
     expect(hasValidPercentages(recipients)).toBe(false)
     expect(sharesToPaymentPointer(recipients, baseUrl)).toBe('')
 
-    recipients[0].percentage = 50.002
-    recipients[1].percentage = 50.002
-    expect(hasValidPercentages(recipients)).toBe(false)
-
     recipients[0].percentage = 100.01
     recipients[1].percentage = Number.NaN
     expect(hasValidPercentages(recipients)).toBe(false)
@@ -115,22 +91,37 @@ describe('percentage distributions', () => {
     [[33.34, 33.34, 33.34]],
     [[33.33, 33.33, 33.33]],
   ])('rejects totals that are close to but not exactly 100: %j', (values) => {
-    const recipients = values.map((percentage, index) => ({
-      id: String(index),
-      pointer: `https://wallet.example/${index}`,
-      percentage,
-      isValid: true,
-    }))
+    const recipients = withPercentages(...values)
     expect(hasValidPercentages(recipients)).toBe(false)
     expect(sharesToPaymentPointer(recipients, baseUrl)).toBe('')
   })
 
+  it('reports why percentages are invalid', () => {
+    expect(getPercentageIssue(withPercentages(60, 40))).toBeUndefined()
+    expect(getPercentageIssue(withPercentages(100, 0))).toEqual({
+      type: 'not-positive',
+    })
+    expect(getPercentageIssue(withPercentages(100, Number.NaN))).toEqual({
+      type: 'not-positive',
+    })
+    // Rounding these to 2 decimals would hide that they cannot be encoded.
+    expect(getPercentageIssue(withPercentages(33.333, 33.333, 33.334))).toEqual(
+      { type: 'too-many-decimals' },
+    )
+    expect(getPercentageIssue(withPercentages(33.33, 33.33, 33.33))).toEqual({
+      type: 'wrong-total',
+      total: 99.99,
+      difference: -0.01,
+    })
+    expect(getPercentageIssue(withPercentages(70.1, 40.2))).toEqual({
+      type: 'wrong-total',
+      total: 110.3,
+      difference: 10.3,
+    })
+  })
+
   it('encodes an exact 100% split without altering it', () => {
-    const thirds = [
-      { id: '1', pointer: 'one', percentage: 33.34, isValid: true },
-      { id: '2', pointer: 'two', percentage: 33.33, isValid: true },
-      { id: '3', pointer: 'three', percentage: 33.33, isValid: true },
-    ]
+    const thirds = withPercentages(33.34, 33.33, 33.33)
     expect(hasValidPercentages(thirds)).toBe(true)
     expect(
       pointerToShares(sharesToPaymentPointer(thirds, baseUrl)).map(
@@ -139,57 +130,58 @@ describe('percentage distributions', () => {
     ).toEqual([33.34, 33.33, 33.33])
   })
 
-  it('fills leftover percentage when adding a recipient', () => {
-    const added = appendShareRow([
-      { id: '1', pointer: 'one', percentage: 40, isValid: true },
-      { id: '2', pointer: 'two', percentage: 40, isValid: true },
-    ])
-    expect(added.map((share) => share.percentage)).toEqual([40, 40, 20])
+  it('prefills the leftover percentage when adding a recipient', () => {
+    const added = appendShareRow(withPercentages(40.1, 39.9))
+    expect(added.map((share) => share.percentage)).toEqual([40.1, 39.9, 20])
   })
 
-  it('rescales existing shares when adding to a full 100% split', () => {
-    const added = appendShareRow([
-      { id: '1', pointer: 'one', percentage: 70, isValid: true },
-      { id: '2', pointer: 'two', percentage: 30, isValid: true },
-    ])
-    expect(added.map((share) => share.percentage)).toEqual([46.67, 20, 33.33])
-    expect(getPercentageTotal(added)).toBe(100)
-    expect(hasValidPercentages(added)).toBe(true)
+  it('leaves existing percentages alone when adding to a full split', () => {
+    expect(
+      appendShareRow(withPercentages(70, 30)).map((share) => share.percentage),
+    ).toEqual([70, 30, 0])
+    expect(
+      appendShareRow(withPercentages(70, 40)).map((share) => share.percentage),
+    ).toEqual([70, 40, 0])
+    expect(
+      appendShareRow(withPercentages(70, 29.999)).map(
+        (share) => share.percentage,
+      ),
+    ).toEqual([70, 29.999, 0])
   })
 
-  it('rebalances percentages when removing recipients', () => {
-    let remaining = shares('a', 'b', 'c', 'd', 'e')
-    expect(remaining.map((share) => share.percentage)).toEqual([
-      20, 20, 20, 20, 20,
-    ])
-    remaining = removeShareRow(remaining, 4)
-    remaining = removeShareRow(remaining, 3)
-    remaining = removeShareRow(remaining, 2)
-    expect(remaining.map((share) => share.percentage)).toEqual([50, 50])
-    expect(hasValidPercentages(remaining)).toBe(true)
+  it.each([
+    [28.5, 0.5],
+    [1.1, 0.1],
+    [33.33, 0.33],
+    [99.99, 0.99],
+    [50, 0],
+    [0, 0],
+    [-1.5, 0],
+    [Number.NaN, 0],
+  ])('uses %d as a step base of %d', (percentage, expected) => {
+    expect(getPercentageStepBase(percentage)).toBe(expected)
+  })
+
+  it('converts imported legacy weights to percentages', () => {
+    // Generated by the weight-based tool: alice has weight 1, bob weight 3.
+    const legacyLink =
+      'https://webmonetization.org/api/revshare/pay/W1siaHR0cHM6Ly93YWxsZXQuZXhhbXBsZS9hbGljZSIsMSwiQWxpY2UiXSxbImh0dHBzOi8vd2FsbGV0LmV4YW1wbGUvYm9iIiwzLCJCb2IiXV0'
+    const imported = tagOrPointerToShares(legacyLink)!
 
     expect(
-      removeShareRow(
-        [
-          { id: '1', pointer: 'one', percentage: 60 },
-          { id: '2', pointer: 'two', percentage: 20 },
-          { id: '3', pointer: 'three', percentage: 20 },
-        ],
-        2,
-      ).map((share) => share.percentage),
-    ).toEqual([75, 25])
-  })
-
-  it('normalizes imported legacy values to percentages', () => {
-    const imported = pointerToShares(
-      baseUrl +
-        encode([
-          { pointer: 'https://wallet.example/alice', percentage: 1 },
-          { pointer: 'https://wallet.example/bob', percentage: 3 },
-        ]),
-    )
-
-    expect(imported.map((share) => share.percentage)).toEqual([25, 75])
+      imported.map(({ pointer, name, percentage }) => ({
+        pointer,
+        name,
+        percentage,
+      })),
+    ).toEqual([
+      {
+        pointer: 'https://wallet.example/alice',
+        name: 'Alice',
+        percentage: 25,
+      },
+      { pointer: 'https://wallet.example/bob', name: 'Bob', percentage: 75 },
+    ])
   })
 })
 
@@ -197,13 +189,13 @@ describe('legacy encoded distributions', () => {
   it('uses the actual total when selecting from old relative weights', () => {
     const random = vi.spyOn(Math, 'random')
     const legacyDistribution = [
-      { pointer: 'alice', percentage: 1 },
-      { pointer: 'bob', percentage: 3 },
+      { pointer: 'alice', weight: 1 },
+      { pointer: 'bob', weight: 3 },
     ]
 
     random.mockReturnValueOnce(0.2).mockReturnValueOnce(0.5)
-    expect(pickRandomByPercentage(legacyDistribution)).toBe('alice')
-    expect(pickRandomByPercentage(legacyDistribution)).toBe('bob')
+    expect(pickWeightedRandom(legacyDistribution)).toBe('alice')
+    expect(pickWeightedRandom(legacyDistribution)).toBe('bob')
   })
 })
 
@@ -251,7 +243,7 @@ describe('duplicate recipient wallets', () => {
   it('detects duplicates in imported links before wallet validation', () => {
     const imported = tagOrPointerToShares(
       baseUrl +
-        encode(shares('https://wallet.example/alice', '$wallet.example/alice')),
+        encodePointers('https://wallet.example/alice', '$wallet.example/alice'),
     )!
     expect(imported.every((share) => share.isValid === undefined)).toBe(true)
     expect(hasDuplicatePointers(imported)).toBe(true)
@@ -260,11 +252,9 @@ describe('duplicate recipient wallets', () => {
       hasDuplicatePointers(
         tagOrPointerToShares(
           baseUrl +
-            encode(
-              shares(
-                'https://wallet.example/alice',
-                'https://wallet.example/bob',
-              ),
+            encodePointers(
+              'https://wallet.example/alice',
+              'https://wallet.example/bob',
             ),
         )!,
       ),
@@ -274,8 +264,9 @@ describe('duplicate recipient wallets', () => {
   it('keeps duplicate imports editable while blocking output until corrected', () => {
     const imported = tagOrPointerToShares(
       baseUrl +
-        encode(
-          shares('$wallet.example', 'https://wallet.example/.well-known/pay'),
+        encodePointers(
+          '$wallet.example',
+          'https://wallet.example/.well-known/pay',
         ),
     )!
     expect(imported.map((share) => share.pointer)).toEqual([
