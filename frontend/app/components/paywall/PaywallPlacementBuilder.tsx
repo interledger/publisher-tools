@@ -102,9 +102,6 @@ function PaywallDelayInput({
   onChange(val: number): void
 }) {
   const t = useTranslation('paywall')
-  const delayHint = t('input.delay.hint', {
-    max: String(MAX_PAYWALL_DELAY_SECONDS),
-  })
   return (
     <InputFieldNumeric
       label={t('input.delay.label')}
@@ -112,11 +109,10 @@ function PaywallDelayInput({
       inputMode="decimal"
       value={value}
       onChange={onChange}
-      helpText={delayHint}
-      ariaDescription={delayHint}
-      addonAfter={
-        <span id="input-delay-addon-suffix">{t('input.delay.suffix')}</span>
-      }
+      helpText={t('input.delay.hint', {
+        max: String(MAX_PAYWALL_DELAY_SECONDS),
+      })}
+      addonAfter={t('input.delay.suffix')}
       addonClassName="absolute left-12 top-2 bg-white"
       min={0}
       max={MAX_PAYWALL_DELAY_SECONDS}
