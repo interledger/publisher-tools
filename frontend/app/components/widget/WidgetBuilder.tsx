@@ -48,7 +48,7 @@ export function WidgetBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('content')
   const [snap, profile] = useWidgetProfile({ sync: true })
 
@@ -60,7 +60,6 @@ function ContentBuilder({ onRefresh }: Props) {
       onClick={onClick}
       onToggle={onToggle}
       onRefresh={() => onRefresh('content')}
-      onDone={onDone}
     >
       <TitleInput
         value={snap.title.text}
@@ -93,7 +92,7 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('appearance')
   const [snap, profile] = useWidgetProfile()
 
@@ -109,7 +108,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
       onClick={onClick}
       onToggle={onToggle}
       onRefresh={() => onRefresh('appearance')}
-      onDone={onDone}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown
