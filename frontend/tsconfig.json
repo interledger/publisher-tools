@@ -5,6 +5,7 @@
     "app/**/*.tsx",
     "app/**/*.json",
     "worker.ts",
+    "vitest.setup.ts",
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
