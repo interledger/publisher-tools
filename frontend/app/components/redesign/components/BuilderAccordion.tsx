@@ -1,14 +1,12 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGGreenVector } from '@/assets'
-import { ToolsSecondaryButton, Divider } from '@/components'
 import { Heading5 } from '@/typography'
 import { GhostButton } from './GhostButton'
 
 interface Props {
   title: string
   onRefresh: () => void
-  onDone?: () => void
   isComplete?: boolean
   isOpen?: boolean
   onClick?: (isOpen: boolean) => void
@@ -22,7 +20,6 @@ export const BuilderAccordion: React.FC<Props> = ({
   isOpen = false,
   onClick,
   onRefresh,
-  onDone,
   onToggle,
   children,
 }) => {
@@ -69,7 +66,7 @@ export const BuilderAccordion: React.FC<Props> = ({
               Reset changes
             </GhostButton>
           )}
-          {onDone && (
+          {onClick && (
             <SVGArrowCollapse
               className={cx('w-[48px] h-[48px] p-sm', !isOpen && 'rotate-180')}
             />
@@ -77,22 +74,9 @@ export const BuilderAccordion: React.FC<Props> = ({
         </div>
       </summary>
 
-      <div className="relative z-10 flex flex-col gap-lg mt-sm">{children}</div>
-      {isOpen && (
-        <>
-          <Divider />
-          {onDone && (
-            <div className="flex justify-end">
-              <ToolsSecondaryButton
-                className="w-full xl:w-[140px]"
-                onClick={onDone}
-              >
-                Done
-              </ToolsSecondaryButton>
-            </div>
-          )}
-        </>
-      )}
+      <div className="relative z-10 flex flex-col gap-lg mt-sm pb-md">
+        {children}
+      </div>
     </details>
   )
 }
