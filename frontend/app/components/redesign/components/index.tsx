@@ -1,6 +1,7 @@
 export { TabTooltip } from './TabTooltip'
 export { Thumbnail } from './Thumbnail'
 export { Checkbox } from './Checkbox'
+export { Toggle } from './Toggle'
 export { StepsIndicator } from './StepsIndicator'
 export { MobileStepsIndicator } from './StepsIndicator'
 export { BuilderBackground } from './BuilderBackground'

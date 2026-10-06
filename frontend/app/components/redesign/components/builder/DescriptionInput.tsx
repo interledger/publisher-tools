@@ -1,14 +1,15 @@
-import Checkbox from '../Checkbox'
-import { TextareaField } from '../TextareaField'
+import { useId } from 'react'
+import { cx } from 'class-variance-authority'
+import { Toggle } from '../Toggle'
 
 interface Props {
   label: string
   value: string
   onChange: (text: string) => void
-  isVisible: boolean
-  onVisibilityChange: (visible: boolean) => void
+  isVisible?: boolean
+  onVisibilityChange?: (visible: boolean) => void
   maxLength: number
-  helpText: string
+  helpText?: string
   placeholder: string
 }
 
@@ -16,40 +17,71 @@ export function DescriptionInput({
   label,
   value,
   onChange,
-  isVisible,
+  isVisible = true,
   onVisibilityChange,
   maxLength,
   helpText,
   placeholder,
 }: Props) {
+  const id = useId()
+  const labelId = `${id}-label`
+  const helpTextId = `${id}-help`
+
   return (
-    <fieldset className="space-y-xs">
-      <legend className="text-base leading-md font-bold text-text-primary">
-        {label}
-      </legend>
-      <div className="flex gap-lg items-start xl:flex-row flex-col">
-        <div className="flex items-center gap-xs shrink-0">
-          <Checkbox
+    <div
+      role="group"
+      aria-labelledby={labelId}
+      className={cx(
+        'rounded-lg border border-field-border overflow-hidden',
+        'has-[textarea:focus]:border-field-border-focus has-[textarea:focus]:ring-1 has-[textarea:focus]:ring-primary-focus',
+      )}
+    >
+      <div
+        className={cx(
+          'flex items-center justify-between gap-sm px-md py-xs bg-silver-50',
+          isVisible && 'border-b border-field-border',
+        )}
+      >
+        <span
+          id={labelId}
+          className="text-sm leading-sm font-bold text-text-primary"
+        >
+          {label}
+        </span>
+        {onVisibilityChange && (
+          <Toggle
             checked={isVisible}
             onChange={onVisibilityChange}
-            label="Visible"
+            label={`Show ${label.toLowerCase()}`}
+            onText="Shown"
+            offText="Hidden"
           />
-        </div>
+        )}
+      </div>
 
-        <div className="flex-grow w-full">
-          <TextareaField
+      {isVisible && (
+        <div className="flex flex-col gap-2xs px-md pt-sm pb-xs">
+          <textarea
+            aria-labelledby={labelId}
+            aria-describedby={helpText ? helpTextId : undefined}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            currentLength={value.length || 0}
             maxLength={maxLength}
-            showCounter={true}
-            helpText={helpText}
-            className="h-[84px]"
             placeholder={placeholder}
-            disabled={!isVisible}
+            rows={3}
+            className={cx(
+              'w-full resize-none bg-transparent outline-hidden',
+              'text-sm leading-sm text-text-primary placeholder:text-text-placeholder',
+            )}
           />
+          <div className="flex justify-between gap-xs text-xs leading-xs text-text-secondary">
+            <span id={helpTextId}>{helpText}</span>
+            <span className="shrink-0">
+              {value.length} / {maxLength}
+            </span>
+          </div>
         </div>
-      </div>
-    </fieldset>
+      )}
+    </div>
   )
 }

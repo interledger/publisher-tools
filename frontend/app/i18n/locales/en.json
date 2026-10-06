@@ -60,10 +60,9 @@
     "input.delay.label": "Show paywall after",
     "input.delay.hint": "Set to 0 to show the paywall immediately on page load.",
     "input.delay.suffix": "seconds",
-    "input.title.label": "",
-    "input.title.hint": "Short and direct works best.",
+    "input.title.label": "Title",
+    "input.title.hint": "Pick a suggestion or write your own — this is the paywall's heading.",
     "input.message.label": "Subtitle",
-    "input.message.hint": "Explain the value in one sentence.",
     "input.message.placeholder": "Unlock the full article with a one-time payment — no subscription, no account.",
     "input.payButton.label": "Pay button label",
     "input.payButton.placeholder": "Unlock article"

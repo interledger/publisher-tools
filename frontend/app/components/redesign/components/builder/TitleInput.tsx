@@ -1,4 +1,4 @@
-import Divider from '../Divider'
+import { useId } from 'react'
 import { InputField } from '../InputField'
 import PillRadioListItem from '../PillRadioListItem'
 
@@ -17,58 +17,47 @@ export function TitleInput({
   maxLength,
   helpText,
 }: Props) {
-  return (
-    <>
-      <SuggestedTitles
-        value={value}
-        onChange={onChange}
-        suggestions={suggestions}
-      />
-      <Divider />
+  const id = useId()
+  const labelId = `${id}-label`
+  const inputId = `${id}-input`
 
-      <CustomTitle
-        value={value}
-        onChange={onChange}
-        placeholder={suggestions[0]}
-        maxLength={maxLength}
-        helpText={helpText}
-        label="Custom title"
-        id="custom-title-input"
-      />
-    </>
-  )
-}
-
-function SuggestedTitles({
-  value,
-  suggestions,
-  onChange,
-}: Pick<Props, 'value' | 'suggestions' | 'onChange'>) {
   return (
     <div
       role="group"
-      aria-labelledby="label-suggested-title"
+      aria-labelledby={labelId}
       className="flex flex-col gap-xs"
     >
-      <div
-        id="label-suggested-title"
+      <label
+        id={labelId}
+        htmlFor={inputId}
         className="text-base leading-md font-bold text-text-primary"
       >
-        Suggested title
-      </div>
+        Title
+      </label>
       <div className="flex flex-wrap gap-xs group">
         {suggestions.map((title) => (
           <PillRadioListItem
             key={title}
             value={title}
             selected={value === title}
-            radioGroup="suggested-title"
+            radioGroup={`${id}-suggested-title`}
             onSelect={() => onChange(title)}
           >
             {title}
           </PillRadioListItem>
         ))}
       </div>
+      <InputField
+        id={inputId}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={suggestions[0]}
+        maxLength={maxLength}
+        helpText={helpText}
+        addonAfter={`${value.length} / ${maxLength}`}
+        addonClassName="text-xs whitespace-nowrap"
+        className="h-[48px] text-base leading-md"
+      />
     </div>
   )
 }
