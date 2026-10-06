@@ -58,7 +58,7 @@ describe('percentage distributions', () => {
   })
 
   it('uses largest-remainder rounding when rounded shares would exceed 100', () => {
-    const percentages = weightsToPercentages(Array.from({ length: 6 }, () => 1))
+    const percentages = weightsToPercentages(Array(6).fill(1))
 
     expect(percentages).toEqual([16.67, 16.67, 16.67, 16.67, 16.66, 16.66])
     expect(hasValidPercentages(withPercentages(...percentages))).toBe(true)
@@ -104,7 +104,6 @@ describe('percentage distributions', () => {
     expect(getPercentageIssue(withPercentages(100, Number.NaN))).toEqual({
       type: 'not-positive',
     })
-    // Rounding these to 2 decimals would hide that they cannot be encoded.
     expect(getPercentageIssue(withPercentages(33.333, 33.333, 33.334))).toEqual(
       { type: 'too-many-decimals' },
     )

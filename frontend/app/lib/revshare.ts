@@ -45,6 +45,12 @@ const PERCENTAGE_DECIMAL_PLACES = 2
 const UNITS_PER_PERCENT = 10 ** PERCENTAGE_DECIMAL_PLACES
 const PERCENTAGE_TOTAL_UNITS = PERCENTAGE_TOTAL * UNITS_PER_PERCENT
 
+/**
+ * Checks whether two shares point to the same wallet address, after normalizing
+ * `$` prefixes and root addresses
+ * @param shares - Array of shares to check
+ * @returns True if any wallet address appears more than once
+ */
 export function hasDuplicatePointers(shares: SharesState): boolean {
   const pointers = new Set<string>()
   for (const share of shares) {
@@ -89,11 +95,18 @@ function toUnits(percentage: number): number | undefined {
   return roundedUnits
 }
 
+/**
+ * Converts whole hundredths of a percent back into a percentage
+ * @returns The percentage, e.g. 33.33 for 3333 units
+ */
 function fromUnits(units: number): number {
   return units / UNITS_PER_PERCENT
 }
 
-/** Sums percentages in units, or returns undefined if any is not representable */
+/**
+ * Sums the shares' percentages in whole hundredths of a percent
+ * @returns The total units, or undefined if any percentage has more than 2 decimal places
+ */
 function getTotalUnits(shares: Share[]): number | undefined {
   let totalUnits = 0
   for (const share of shares) {
@@ -104,6 +117,10 @@ function getTotalUnits(shares: Share[]): number | undefined {
   return totalUnits
 }
 
+/**
+ * Checks whether a single percentage is positive and has at most 2 decimal places
+ * @returns True if the percentage can be used for a share
+ */
 export function isValidPercentage(percentage: number): boolean {
   const units = toUnits(percentage)
   return units !== undefined && units > 0
@@ -133,6 +150,10 @@ export function getPercentageIssue(
   return undefined
 }
 
+/**
+ * Checks whether the shares' percentages are all valid and add up to exactly 100%
+ * @returns True if there is at least one share and the percentages have no issue
+ */
 export function hasValidPercentages(shares: Share[]): boolean {
   return shares.length > 0 && !getPercentageIssue(shares)
 }
@@ -201,6 +222,11 @@ export function weightsToPercentages(weights: number[]): number[] {
   return units.map(fromUnits)
 }
 
+/**
+ * Creates an empty share with a fresh id
+ * @param percentage - The initial percentage, 0 (shown as empty) by default
+ * @returns The new share
+ */
 export function newShare(percentage = 0): Share {
   return {
     id: generateShareId(),
@@ -210,7 +236,11 @@ export function newShare(percentage = 0): Share {
   }
 }
 
-/** Appends an empty recipient, prefilled with whatever percentage is left */
+/**
+ * Appends an empty recipient, prefilled with whatever percentage is left
+ * @param shares - The current shares
+ * @returns New shares array with the extra recipient
+ */
 export function appendShareRow(shares: SharesState): SharesState {
   const totalUnits = getTotalUnits(shares)
   const leftoverUnits =
@@ -218,6 +248,10 @@ export function appendShareRow(shares: SharesState): SharesState {
   return [...shares, newShare(leftoverUnits > 0 ? fromUnits(leftoverUnits) : 0)]
 }
 
+/**
+ * Generates a unique id for a share
+ * @returns The share id
+ */
 export function generateShareId(): string {
   return `share-${Date.now()}-${Math.random().toString(36).slice(2)}`
 }
@@ -418,6 +452,11 @@ export function normalizePointerPrefix(pointer: string): string {
   return pointer.startsWith('$') ? 'https://' + pointer.substring(1) : pointer
 }
 
+/**
+ * Checks whether every share has a validated wallet address
+ * @param shares - Array of shares to check
+ * @returns True if there is at least one share and all of them are valid
+ */
 export function validateShares(shares: SharesState): boolean {
   return (
     Array.isArray(shares) &&

@@ -12,7 +12,6 @@ interface ShareInputProps {
   pointer: string
   percentage: number
   percentageDisabled?: boolean
-  /** Why the percentage is invalid, shown through the field's validity */
   percentageError?: string
   showDelete?: boolean
   onChangeName: (name: string) => void
@@ -26,11 +25,6 @@ const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
 const GRID_COLS =
   'md:grid-cols-[1fr_3fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_8rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
-
-function formatPercentage(percentage: number): string {
-  // Leave new rows empty rather than showing a 0 to delete first.
-  return percentage ? String(percentage) : ''
-}
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
   return (
@@ -112,14 +106,15 @@ export const ShareInput = React.memo(
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
     const [showSuccess, setShowSuccess] = useState(false)
-    // Keep the typed text so clearing doesn't add a 0 in the field
+    // Keep the typed text so clearing doesn't add a 0 in the field.
+    // New rows start empty rather than showing a 0 to delete first.
     const [percentageText, setPercentageText] = useState(
-      formatPercentage(percentage),
+      percentage ? String(percentage) : '',
     )
 
     useEffect(() => {
       if (Number(percentageText) !== percentage) {
-        setPercentageText(formatPercentage(percentage))
+        setPercentageText(String(percentage))
       }
     }, [percentage])
 
@@ -242,7 +237,10 @@ export const ShareInput = React.memo(
               setPercentageText(e.target.value)
               onChangePercentage(Number(e.target.value))
             }}
-            onBlur={() => setPercentageText(formatPercentage(percentage))}
+            onBlur={() => {
+              // Normalize what was typed (e.g. 05 -> 5), but keep an empty field empty
+              if (percentageText !== '') setPercentageText(String(percentage))
+            }}
             disabled={percentageDisabled || (!!pointer && isValid !== true)}
             required
             aria-invalid={!!percentageError}
