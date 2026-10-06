@@ -109,6 +109,13 @@ export class HomeView extends LitElement {
           <div id="wallet-error" class="error-message" role="alert">
             ${this._error}
           </div>
+
+          <span class="wallets-hint">
+            Don't have a wallet?
+            <a href="https://webmonetization.org/wallets/" target="_blank">
+              See compatible wallets
+            </a>
+          </span>
         </div>
 
         <button

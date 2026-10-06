@@ -185,6 +185,20 @@
   display: block;
 }
 
+.wallets-hint {
+  color: var(--Text-paragraph-standard);
+  font-family: var(--Font-Family-Inter);
+  font-size: var(--Font-Size-text-xs);
+  font-style: normal;
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Line-Height-xs);
+}
+
+.wallets-hint a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .form-wallet-address {
   display: flex;
   flex-direction: column;
