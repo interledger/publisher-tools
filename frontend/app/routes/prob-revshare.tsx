@@ -13,8 +13,8 @@ import {
   ToolsPrimaryButton,
   ToolsSecondaryButton,
 } from '@/components'
+import { Heading5 } from '@/typography'
 import { API_URL } from '@shared/defines'
-import { Heading5 } from '../components/redesign/Typography'
 import {
   appendShareRow,
   changeList,

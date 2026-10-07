@@ -3,7 +3,7 @@ import ClickAwayListener from 'react-click-away-listener'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { cx } from 'class-variance-authority'
 import type { Background, TextColor } from '@shared/types'
-import { SVGColorPicker, SVGArrowDropdown } from '../../../assets/svg'
+import { SVGColorPicker, SVGArrowDropdown } from '~/assets/svg'
 
 export type Color = {
   value: string
