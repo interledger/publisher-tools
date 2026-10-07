@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
+import { getPercentageStepBase } from '~/lib/revshare'
 import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {
   index: number
   name: string
   pointer: string
-  weight: number
-  percent: number
-  weightDisabled?: boolean
+  percentage: number
+  percentageDisabled?: boolean
+  percentageError?: string
   showDelete?: boolean
   onChangeName: (name: string) => void
   onChangePointer: (pointer: string) => void
-  onChangeWeight: (weight: number) => void
+  onChangePercentage: (percentage: number) => void
   onValidationChange: (index: number, isValid: boolean) => void
   onRemove: () => void
 }
 
 const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
 const GRID_COLS =
-  'md:grid-cols-[1fr_3fr_1fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_6rem_6rem_minmax(0,auto)]'
+  'md:grid-cols-[1fr_3fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_8rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
@@ -69,15 +70,8 @@ export const ShareInputHeader = ({ showDelete }: { showDelete: boolean }) => {
         </div>
         <div
           role="columnheader"
-          id="col-weight"
-          aria-label="Weight value for revenue distribution, required field"
-        >
-          Weight
-        </div>
-        <div
-          role="columnheader"
           id="col-percentage"
-          aria-label="Calculated percentage of total revenue based on weight"
+          aria-label="Percentage of revenue for recipient, required field"
         >
           Percentage
         </div>
@@ -100,18 +94,36 @@ export const ShareInput = React.memo(
     index,
     name,
     pointer,
-    weight,
-    percent,
+    percentage,
     onChangeName,
     onChangePointer,
-    onChangeWeight,
+    onChangePercentage,
     onValidationChange,
     onRemove,
     showDelete = false,
-    weightDisabled = false,
+    percentageDisabled = false,
+    percentageError,
   }: ShareInputProps) => {
     const { isValidating, isValid, error } = useDebounceValidation(pointer, 500)
     const [showSuccess, setShowSuccess] = useState(false)
+    // Keep the typed text so clearing doesn't add a 0 in the field.
+    // New rows start empty rather than showing a 0 to delete first.
+    const [percentageText, setPercentageText] = useState(
+      percentage ? String(percentage) : '',
+    )
+
+    useEffect(() => {
+      if (Number(percentageText) !== percentage) {
+        setPercentageText(String(percentage))
+      }
+    }, [percentage])
+
+    // Let the browser's validity (and so the `invalid:` styles) include the
+    // rules it cannot check itself, such as the total being 100%.
+    const percentageInputRef = useRef<HTMLInputElement>(null)
+    useEffect(() => {
+      percentageInputRef.current?.setCustomValidity(percentageError ?? '')
+    }, [percentageError])
 
     useEffect(() => {
       onValidationChange(index, isValid)
@@ -138,8 +150,7 @@ export const ShareInput = React.memo(
 
     const nameInputId = `name-input-${index}`
     const pointerInputId = `pointer-input-${index}`
-    const weightInputId = `weight-input-${index}`
-    const percentInputId = `percent-input-${index}`
+    const percentageInputId = `percentage-input-${index}`
 
     return (
       <div
@@ -209,31 +220,33 @@ export const ShareInput = React.memo(
             </div>
           )}
         </div>
-        <div role="cell" aria-labelledby="col-weight">
-          <label htmlFor={weightInputId} className="sr-only">
-            Weight
+        <div role="cell" aria-labelledby="col-percentage">
+          <label htmlFor={percentageInputId} className="sr-only">
+            Percentage
           </label>
           <InputField
-            id={weightInputId}
+            ref={percentageInputRef}
+            id={percentageInputId}
             type="number"
-            value={weight}
-            min={0}
-            step="any"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onChangeWeight(Number(e.target.value))
-            }
-            disabled={weightDisabled || (!!pointer && isValid !== true)}
+            value={percentageText}
+            min={getPercentageStepBase(percentage)}
+            max={100}
+            step={1}
+            addonAfter="%"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setPercentageText(e.target.value)
+              onChangePercentage(Number(e.target.value))
+            }}
+            onBlur={() => {
+              // Normalize what was typed (e.g. 05 -> 5), but keep an empty field empty
+              if (percentageText !== '') setPercentageText(String(percentage))
+            }}
+            disabled={percentageDisabled || (!!pointer && isValid !== true)}
             required
-            ariaDescription="Enter a numeric weight for this recipient. Higher weight values result in a larger percentage of revenue."
+            aria-invalid={!!percentageError}
+            className="has-invalid:border-field-border-error"
+            ariaDescription="Enter the percentage of revenue for this recipient. All recipient percentages must add up to 100."
           />
-        </div>
-        <div role="cell" aria-labelledby="col-percentage">
-          <div
-            id={percentInputId}
-            className="ml-2xs md:ml-0 md:text-center text-field-helpertext-default"
-          >
-            {Math.round(percent * 100)}%
-          </div>
         </div>
         {showDelete && (
           <div

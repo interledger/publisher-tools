@@ -1,8 +1,9 @@
 import { useContext, useState, createContext, useEffect, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import {
-  generateShareId,
+  newShare,
   validateShares,
+  weightsToPercentages,
   type Share,
   type SharesState,
 } from '../lib/revshare'
@@ -21,13 +22,40 @@ export const SharesContext = createContext<SharesContextState | undefined>(
 )
 SharesContext.displayName = 'SharesContext'
 
-export function newShare(): Share {
-  return {
-    id: generateShareId(),
-    name: '',
-    pointer: '',
-    weight: 1,
+function migrateStoredShares(value: unknown): SharesState | undefined {
+  if (!Array.isArray(value)) return undefined
+
+  let hasLegacyWeights = false
+  const shares: Share[] = []
+  for (const entry of value) {
+    if (!entry || typeof entry !== 'object') return undefined
+    const stored = entry as Record<string, unknown>
+    if (typeof stored.id !== 'string' || typeof stored.pointer !== 'string') {
+      return undefined
+    }
+
+    const usesLegacyWeight =
+      stored.percentage === undefined && typeof stored.weight === 'number'
+    hasLegacyWeights ||= usesLegacyWeight
+    const percentage = Number(
+      usesLegacyWeight ? stored.weight : stored.percentage,
+    )
+    if (!Number.isFinite(percentage)) return undefined
+
+    shares.push({
+      id: stored.id,
+      name: typeof stored.name === 'string' ? stored.name : '',
+      pointer: stored.pointer,
+      percentage,
+      isValid: stored.isValid === true,
+    })
   }
+
+  if (!hasLegacyWeights) return shares
+  const percentages = weightsToPercentages(
+    shares.map((share) => share.percentage),
+  )
+  return shares.map((share, i) => ({ ...share, percentage: percentages[i] }))
 }
 
 export function loadStartingShares(): SharesState {
@@ -37,14 +65,15 @@ export function loadStartingShares(): SharesState {
         ? undefined
         : localStorage.getItem(SHARES_KEY)
     const parsed = shareStr ? JSON.parse(shareStr) : undefined
-    if (parsed && validateShares(parsed)) {
-      return parsed as SharesState
+    const migrated = migrateStoredShares(parsed)
+    if (migrated && validateShares(migrated)) {
+      return migrated
     } else {
-      return [newShare(), newShare()]
+      return [newShare(50), newShare(50)]
     }
   } catch (e: unknown) {
     if (e instanceof SyntaxError) {
-      return [newShare(), newShare()]
+      return [newShare(50), newShare(50)]
     }
     throw e
   }
