@@ -16,15 +16,20 @@ import {
 import { API_URL } from '@shared/defines'
 import { Heading5 } from '../components/redesign/Typography'
 import {
+  appendShareRow,
   changeList,
   DUPLICATE_WALLET_ERROR,
   dropIndex,
+  getPercentageIssue,
   hasDuplicatePointers,
+  isValidPercentage,
+  PERCENTAGE_TOTAL,
+  type PercentageIssue,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
 } from '../lib/revshare'
-import { newShare, SharesProvider, useShares } from '../stores/revshareStore'
+import { SharesProvider, useShares } from '../stores/revshareStore'
 
 export const meta: MetaFunction = () => {
   return [
@@ -38,6 +43,22 @@ export const meta: MetaFunction = () => {
 }
 
 const baseUrl = new URL('/revshare/', API_URL).href
+
+function getPercentageIssueMessage(issue: PercentageIssue): string {
+  switch (issue.type) {
+    case 'not-positive':
+      return 'Each percentage must be greater than 0.'
+    case 'too-many-decimals':
+      return 'Percentages can have at most 2 decimal places.'
+    case 'wrong-total': {
+      const offBy =
+        issue.difference > 0
+          ? `${issue.difference}% over`
+          : `${-issue.difference}% short`
+      return `Percentages must add up to ${PERCENTAGE_TOTAL}%. Current total: ${issue.total}% (${offBy}).`
+    }
+  }
+}
 
 export default function RevsharePageWrapper() {
   return (
@@ -59,15 +80,17 @@ function Revshare() {
     () => sharesToPaymentPointer(shares, baseUrl) ?? '',
     [shares],
   )
-  const totalWeight = useMemo(
-    () => shares.reduce((a, b) => a + Number(b.weight), 0),
-    [shares],
-  )
   const hasDuplicates = hasDuplicatePointers(shares)
-  const hasValidShares = validateShares(shares) && !hasDuplicates
+  const walletsAreValid = validateShares(shares)
+  const percentageIssue = getPercentageIssue(shares)
+  const percentageIssueMessage =
+    walletsAreValid && percentageIssue
+      ? getPercentageIssueMessage(percentageIssue)
+      : undefined
+  const hasValidShares = walletsAreValid && !percentageIssue && !hasDuplicates
 
   const addShare = useCallback(() => {
-    setShares((prevShares) => [...prevShares, newShare()])
+    setShares((prevShares) => appendShareRow(prevShares))
   }, [setShares])
 
   const handleRemove = useCallback(
@@ -96,9 +119,9 @@ function Revshare() {
     [setShares],
   )
 
-  const handleChangeWeight = useCallback(
-    (index: number, weight: number) => {
-      setShares((prevShares) => changeList(prevShares, index, { weight }))
+  const handleChangePercentage = useCallback(
+    (index: number, percentage: number) => {
+      setShares((prevShares) => changeList(prevShares, index, { percentage }))
     },
     [setShares],
   )
@@ -156,19 +179,24 @@ function Revshare() {
                     index={i}
                     name={share.name || ''}
                     pointer={share.pointer}
-                    weight={share.weight || 0}
-                    percent={
-                      totalWeight > 0 ? (share.weight || 0) / totalWeight : 0
-                    }
+                    percentage={share.percentage || 0}
                     onChangeName={(name) => handleChangeName(i, name)}
                     onChangePointer={(pointer) =>
                       handleChangePointer(i, pointer)
                     }
-                    onChangeWeight={(weight) => handleChangeWeight(i, weight)}
+                    onChangePercentage={(percentage) =>
+                      handleChangePercentage(i, percentage)
+                    }
                     onValidationChange={handleValidationChange}
                     onRemove={() => handleRemove(i)}
                     showDelete={showDeleteColumn}
-                    weightDisabled={!share.pointer}
+                    percentageDisabled={!share.pointer}
+                    percentageError={
+                      percentageIssue?.type === 'wrong-total' ||
+                      !isValidPercentage(share.percentage)
+                        ? percentageIssueMessage
+                        : undefined
+                    }
                   />
                 )
               })}
@@ -177,6 +205,11 @@ function Revshare() {
           {hasDuplicates && (
             <p role="alert" className="text-xs text-text-error">
               {DUPLICATE_WALLET_ERROR}
+            </p>
+          )}
+          {percentageIssueMessage && (
+            <p role="status" className="text-xs text-text-error">
+              {percentageIssueMessage}
             </p>
           )}
           <ToolsPrimaryButton
