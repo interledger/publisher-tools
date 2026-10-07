@@ -9,7 +9,6 @@ interface Props {
   isVisible?: boolean
   onVisibilityChange?: (visible: boolean) => void
   maxLength: number
-  helpText?: string
   placeholder: string
 }
 
@@ -20,12 +19,10 @@ export function DescriptionInput({
   isVisible = true,
   onVisibilityChange,
   maxLength,
-  helpText,
   placeholder,
 }: Props) {
   const id = useId()
   const labelId = `${id}-label`
-  const helpTextId = `${id}-help`
 
   return (
     <div
@@ -38,8 +35,7 @@ export function DescriptionInput({
     >
       <div
         className={cx(
-          'flex items-center justify-between gap-sm px-md py-xs bg-silver-50',
-          isVisible && 'border-b border-field-border',
+          'flex items-center justify-between gap-sm px-md py-xs bg-interface-bg-main',
         )}
       >
         <span
@@ -63,19 +59,17 @@ export function DescriptionInput({
         <div className="flex flex-col gap-2xs px-md pt-sm pb-xs">
           <textarea
             aria-labelledby={labelId}
-            aria-describedby={helpText ? helpTextId : undefined}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             maxLength={maxLength}
             placeholder={placeholder}
-            rows={3}
+            rows={9}
             className={cx(
               'w-full resize-none bg-transparent outline-hidden',
               'text-sm leading-sm text-text-primary placeholder:text-text-placeholder',
             )}
           />
           <div className="flex justify-between gap-xs text-xs leading-xs text-text-secondary">
-            <span id={helpTextId}>{helpText}</span>
             <span className="shrink-0">
               {value.length} / {maxLength}
             </span>
