@@ -3,8 +3,8 @@ import { cx } from 'class-variance-authority'
 import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { InputField, ToolsSecondaryButton } from '@/components'
 import { BodyStandard } from '@/typography'
+import { useDebounceValidation } from '~/hooks/useDebounceValidation'
 import { getPercentageStepBase } from '~/lib/revshare'
-import { useDebounceValidation } from '../../hooks/useDebounceValidation'
 
 interface ShareInputProps {
   index: number

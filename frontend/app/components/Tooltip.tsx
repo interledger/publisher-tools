@@ -8,7 +8,7 @@ import {
   size,
   arrow,
 } from '@floating-ui/react-dom'
-import { SVGTooltip } from '../../../assets/svg'
+import { SVGTooltip } from '~/assets/svg'
 
 export interface TooltipProps {
   children: React.ReactNode
