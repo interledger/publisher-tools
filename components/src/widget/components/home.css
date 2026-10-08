@@ -62,7 +62,6 @@
   padding: 0px var(--Spacings-2xl);
   flex: 1 1 auto;
   gap: var(--Spacings-lg);
-  min-height: 0;
   overflow-y: auto;
 }
 
