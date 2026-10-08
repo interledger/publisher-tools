@@ -28,11 +28,11 @@ interface Props {
 
 const config = {
   suggestedTitles: WIDGET_SUGGESTED_TITLES,
-  titleHelpText: 'Message to encourage one-time payments',
+  titleHelpText:
+    "Pick a suggestion or write your own — this is the widget's heading.",
   titleMaxLength: 30,
   messageLabel: 'Widget message',
   messagePlaceholder: 'Enter your widget message...',
-  messageHelpText: 'Describe how payments support your work',
   messageMaxLength: 300,
 
   showThumbnail: false,
@@ -71,8 +71,6 @@ function ContentBuilder({ onRefresh }: Props) {
         helpText={config.titleHelpText}
       />
 
-      <Divider />
-
       <DescriptionInput
         label={config.messageLabel}
         value={snap.description.text}
@@ -84,7 +82,6 @@ function ContentBuilder({ onRefresh }: Props) {
           profile.description.isVisible = visible
         }}
         placeholder={config.messagePlaceholder}
-        helpText={config.messageHelpText}
         maxLength={config.messageMaxLength}
       />
     </BuilderAccordion>

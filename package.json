@@ -17,6 +17,7 @@
     "lint:check": "eslint . --cache --cache-location 'node_modules/.cache/eslintcache'",
     "typecheck": "tsc -b",
     "test": "pnpm -r test",
+    "test:e2e": "pnpm -C e2e test:e2e",
     "analytics:dev": "pnpm -C localenv/analytics dev",
     "analytics:down": "pnpm -C localenv/analytics down"
   },
