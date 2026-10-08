@@ -2,6 +2,7 @@ packages:
   - 'api'
   - 'frontend'
   - 'cdn'
+  - 'e2e'
   - 'components'
   - 'shared/*'
   - 'localenv/*'
