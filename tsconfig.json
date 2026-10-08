@@ -5,6 +5,7 @@
     { "path": "./cdn" },
     { "path": "./frontend" },
     { "path": "./components" },
+    { "path": "./e2e" },
     { "path": "./localenv/s3" },
     // { "path": "./migrations/s3" },
     { "path": "./shared/config-storage-service" },
