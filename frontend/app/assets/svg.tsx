@@ -287,30 +287,6 @@ export const SVGHamburgerIcon: SvgIcon = ({ className }) => (
   </svg>
 )
 
-export const SVGFooterDivider: SvgIcon = ({ className }) => (
-  <svg {...defaultProps} className={className}>
-    <path
-      stroke="url(#a)"
-      strokeLinecap="round"
-      strokeWidth="4"
-      d="M2 2.32h34"
-    />
-    <defs>
-      <linearGradient
-        id="a"
-        x1="4.427"
-        x2="4.754"
-        y1="2.773"
-        y2="5.896"
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="#009877" />
-        <stop offset="1" stopColor="#50D098" />
-      </linearGradient>
-    </defs>
-  </svg>
-)
-
 export const SVGCloseIcon: SvgIcon = ({ className }) => (
   <svg {...defaultProps} className={className}>
     <path
