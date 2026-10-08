@@ -54,10 +54,12 @@ export default function GrantInteraction() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full p-8 text-center">
+      <div className="max-w-[28rem] w-full p-8 text-center">
         <view.Icon className="mx-auto h-24 w-24 mb-6" />
         <h2 className="text-3xl font-bold text-gray-900 mb-4">{view.title}</h2>
-        <p className="text-gray-600 whitespace-pre-line">{view.message}</p>
+        <p className="text-gray-600 text-center whitespace-pre-line">
+          {view.message}
+        </p>
       </div>
     </div>
   )
