@@ -20,6 +20,7 @@ export const {
   wallet: widgetWallet,
   load: loadWidgetWallet,
   persist: persistWidgetWallet,
+  subscribeCrossTab: subscribeWidgetWalletCrossTab,
   actions: widgetWalletActions,
 } = createWalletStore(TOOL_WIDGET)
 
@@ -123,6 +124,7 @@ export const actions = {
 
 export const {
   subscribeProfilesToStorage,
+  subscribeProfilesToCrossTab,
   hydrateProfilesFromStorage,
   captureSnapshotsToStorage,
   hydrateSnapshotsFromStorage,

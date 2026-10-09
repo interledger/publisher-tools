@@ -28,10 +28,46 @@ export function patchProxy<T extends object>(
     const value = source[key]
     if (value && typeof value === 'object' && !Array.isArray(value)) {
       patchProxy(target[key] as object, value as object)
-    } else {
+    } else if (target[key] !== value) {
       target[key] = value as T[Extract<keyof T, string>]
     }
   }
+}
+
+export function parseWithShape<T extends object>(
+  raw: string | null,
+  shape: T,
+): Partial<T> | null {
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw)
+    if (
+      !parsed ||
+      typeof parsed !== 'object' ||
+      !Object.keys(parsed).every((key) => key in shape)
+    ) {
+      return null
+    }
+    return parsed as Partial<T>
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Listen for cross-tab localStorage writes. The `storage` event only fires
+ * in *other* tabs, so this cannot echo our own writes.
+ */
+export function subscribeToStorage(
+  handler: (event: StorageEvent) => void,
+): () => void {
+  const wrapped = (event: StorageEvent) => {
+    if (event.storageArea && event.storageArea !== localStorage) return
+    if (event.key === null || event.newValue === null) return
+    handler(event)
+  }
+  window.addEventListener('storage', wrapped)
+  return () => window.removeEventListener('storage', wrapped)
 }
 
 export function omit<T extends object>(

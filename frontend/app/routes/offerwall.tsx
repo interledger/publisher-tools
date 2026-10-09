@@ -20,6 +20,8 @@ import {
   offerwallWallet,
   offerwallWalletActions,
   persistOfferwallWallet,
+  subscribeOfferwallWalletCrossTab,
+  subscribeProfilesToCrossTab,
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
 } from '~/stores/offerwall-store'
@@ -90,9 +92,11 @@ export default function Offerwall() {
         actions: offerwallWalletActions,
         load: loadOfferwallWallet,
         persist: persistOfferwallWallet,
+        subscribeCrossTab: subscribeOfferwallWalletCrossTab,
       }}
       toolStoreUtils={{
         subscribeProfilesToStorage,
+        subscribeProfilesToCrossTab,
         hydrateProfilesFromStorage,
         hydrateSnapshotsFromStorage,
         subscribeProfilesToUpdates,
