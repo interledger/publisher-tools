@@ -168,13 +168,21 @@ export const ToolsWalletAddress = ({
             />
           </div>
           {snap.isWalletConnected && (
-            <button
-              onClick={handleDisconnect}
-              className="flex items-center justify-center w-[48px] h-[48px] p-xs rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
-              aria-label={t('button.disconnectAriaLabel')}
+            <Tooltip
+              trigger={
+                <button
+                  type="button"
+                  onClick={handleDisconnect}
+                  className="flex items-center justify-center w-[48px] h-[48px] p-xs rounded-lg shrink-0 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  aria-label={t('button.disconnectAriaLabel')}
+                  aria-description={t('button.disconnectTooltip')}
+                >
+                  <SVGRefresh className="w-5 h-5 text-purple-500" />
+                </button>
+              }
             >
-              <SVGRefresh className="w-5 h-5 text-purple-500" />
-            </button>
+              {t('button.disconnectTooltip')}
+            </Tooltip>
           )}
         </div>
       </div>
