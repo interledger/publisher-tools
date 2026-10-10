@@ -24,7 +24,8 @@
     "status.profilesFetched.paywall": "We've loaded your layout. Feel free to keep customizing your pay per article to fit your style.",
     "button.loadingLabel": "Connecting...",
     "button.submitLabel": "Continue",
-    "button.disconnectAriaLabel": "Disconnect wallet"
+    "button.disconnectAriaLabel": "Disconnect wallet",
+    "button.disconnectTooltip": "Disconnect this wallet address to use a different one. Unsaved changes will be reset."
   },
   "grantInteraction": {
     "success": "Wallet ownership confirmed!",

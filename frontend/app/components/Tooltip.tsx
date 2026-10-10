@@ -13,13 +13,18 @@ import { SVGTooltip } from '~/assets/svg'
 export interface TooltipProps {
   children: React.ReactNode
   label?: string
+  /**
+   * Element that shows the tooltip on hover and focus. Defaults to an info
+   * icon button labelled with `label`.
+   */
+  trigger?: React.ReactNode
 }
 const MAX_TOOLTIP_WIDTH = 450
 /** spacing between tooltip and viewport edges */
 const VIEWPORT_PADDING = 8
 const ARROW_HEIGHT = 6
 
-export function Tooltip({ children, label }: TooltipProps) {
+export function Tooltip({ children, label, trigger }: TooltipProps) {
   const arrowRef = useRef<HTMLDivElement | null>(null)
   const [open, setOpen] = useState(false)
 
@@ -60,21 +65,31 @@ export function Tooltip({ children, label }: TooltipProps) {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [])
 
+  const triggerProps = {
+    ref: refs.setReference,
+    onMouseEnter: () => setOpen(true),
+    onMouseLeave: () => setOpen(false),
+    onFocus: () => setOpen(true),
+    onBlur: () => setOpen(false),
+  }
+
   return (
     <>
-      <button
-        ref={refs.setReference}
-        type="button"
-        aria-label={label || 'More information'}
-        aria-describedby={open ? 'tooltip' : undefined}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        className="rounded-full hover:bg-gray-100 focus:outline-hidden focus:ring-1 focus:ring-primary-focus"
-      >
-        <SVGTooltip className="w-6 h-6" />
-      </button>
+      {trigger ? (
+        <span {...triggerProps} className="inline-flex shrink-0">
+          {trigger}
+        </span>
+      ) : (
+        <button
+          {...triggerProps}
+          type="button"
+          aria-label={label || 'More information'}
+          aria-describedby={open ? 'tooltip' : undefined}
+          className="rounded-full hover:bg-gray-100 focus:outline-hidden focus:ring-1 focus:ring-primary-focus"
+        >
+          <SVGTooltip className="w-6 h-6" />
+        </button>
+      )}
 
       {open && (
         <div
