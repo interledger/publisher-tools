@@ -13,7 +13,7 @@ import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { PaywallStore } from '~/stores/paywall-store'
 import type { WidgetStore } from '~/stores/widget-store'
 import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
-import { omit } from '~/utils/utils.storage'
+import { omit, splitProfileProperties } from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore | PaywallStore
 const STORAGE_PREFIX = 'wmt'
@@ -185,6 +185,33 @@ export function createToolStoreUtils<T extends Tool>(
         const storageKey = getProfileStorageKey(id)
         localStorage.removeItem(storageKey)
       })
+    },
+
+    hasSectionChanges(
+      profileId: ProfileId,
+      section?: 'content' | 'appearance',
+    ): boolean {
+      const baseline = snapshots.get(profileId)
+      if (!baseline) return false
+
+      const current = store.profiles[profileId]
+      if (!current) return false
+
+      const { content: baseContent, appearance: baseAppearance } =
+        splitProfileProperties(baseline)
+      const { content: curContent, appearance: curAppearance } =
+        splitProfileProperties(snapshot(current) as ToolProfile<T>)
+
+      if (section === 'content') {
+        return !deepEqual(curContent, baseContent)
+      }
+      if (section === 'appearance') {
+        return !deepEqual(curAppearance, baseAppearance)
+      }
+      return (
+        !deepEqual(curContent, baseContent) ||
+        !deepEqual(curAppearance, baseAppearance)
+      )
     },
   }
 }

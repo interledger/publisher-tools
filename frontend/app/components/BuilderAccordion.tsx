@@ -2,7 +2,11 @@ import React from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGGreenVector } from '@/assets'
 import { Heading5 } from '@/typography'
+import { useDialog } from '~/hooks/useDialog'
+import { tooltips } from '~/lib/tooltips'
+import { DiscardChangesDialog } from './dialogs/DiscardChangesDialog'
 import { GhostButton } from './GhostButton'
+import { Tooltip } from './Tooltip'
 
 interface Props {
   title: string
@@ -11,6 +15,7 @@ interface Props {
   isOpen?: boolean
   onClick?: (isOpen: boolean) => void
   onToggle?: (e: React.SyntheticEvent<HTMLDetailsElement>) => void
+  hasChanges?: boolean
   children: React.ReactNode
 }
 
@@ -21,11 +26,29 @@ export const BuilderAccordion: React.FC<Props> = ({
   onClick,
   onRefresh,
   onToggle,
+  hasChanges = false,
   children,
 }) => {
+  const [openDialog, closeDialog] = useDialog()
+
   const handleSummaryClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     onClick?.(!isOpen)
+  }
+
+  const handleResetClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!hasChanges) return
+
+    openDialog(
+      <DiscardChangesDialog
+        onCancel={closeDialog}
+        onDiscard={() => {
+          closeDialog()
+          onRefresh()
+        }}
+      />,
+    )
   }
 
   return (
@@ -53,18 +76,27 @@ export const BuilderAccordion: React.FC<Props> = ({
 
         <div className="flex gap-xs items-center">
           {isOpen && (
-            <GhostButton
-              icon="refresh"
-              iconPosition="left"
-              onClick={(e) => {
-                e.stopPropagation()
-                onRefresh()
-              }}
-              aria-label={`Reset ${title.toLowerCase()} to default`}
-              className="text-xs sm:text-sm gap-xs"
+            <div
+              className="flex items-center"
+              onClick={(e) => e.stopPropagation()}
             >
-              Reset changes
-            </GhostButton>
+              <Tooltip
+                content={tooltips.resetChanges}
+                placement="top"
+                label={`Reset ${title.toLowerCase()} to default`}
+              >
+                <GhostButton
+                  icon="refresh"
+                  iconPosition="left"
+                  disabled={!hasChanges}
+                  onClick={handleResetClick}
+                  aria-label={`Reset ${title.toLowerCase()} to default`}
+                  className="text-xs sm:text-sm gap-xs"
+                >
+                  Reset changes
+                </GhostButton>
+              </Tooltip>
+            </div>
           )}
           {onClick && (
             <SVGArrowCollapse

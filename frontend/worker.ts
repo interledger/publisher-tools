@@ -16,6 +16,10 @@ export default {
         return Response.redirect(new URL(`${APP_BASEPATH}/`, request.url), 302)
       }
 
+      if (url.pathname === '/favicon.ico') {
+        return new Response(null, { status: 204 })
+      }
+
       const routerContext = new RouterContextProvider()
       routerContext.set(cloudflareContext, { env, ctx })
 

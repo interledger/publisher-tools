@@ -121,6 +121,9 @@ export const actions = {
   commitProfiles() {
     paywallStoreUtils.commitAllProfiles()
   },
+  hasSectionChanges(section?: 'content' | 'appearance') {
+    return paywallStoreUtils.hasSectionChanges(toolState.activeTab, section)
+  },
 }
 
 export const {

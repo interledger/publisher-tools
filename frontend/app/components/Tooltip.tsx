@@ -1,48 +1,48 @@
 import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { cx } from 'class-variance-authority'
 import {
   useFloating,
   offset,
   flip,
   shift,
   autoUpdate,
-  size,
   arrow,
+  type Placement,
 } from '@floating-ui/react-dom'
 import { SVGTooltip } from '~/assets/svg'
 
 export interface TooltipProps {
   children: React.ReactNode
+  content?: React.ReactNode
   label?: string
+  placement?: Placement
+  className?: string
 }
-const MAX_TOOLTIP_WIDTH = 450
-/** spacing between tooltip and viewport edges */
 const VIEWPORT_PADDING = 8
 const ARROW_HEIGHT = 6
 
-export function Tooltip({ children, label }: TooltipProps) {
+export function Tooltip({
+  children,
+  content,
+  label,
+  placement: placementProp = 'right',
+  className,
+}: TooltipProps) {
   const arrowRef = useRef<HTMLDivElement | null>(null)
   const [open, setOpen] = useState(false)
 
   const { x, y, strategy, refs, middlewareData, placement } = useFloating({
     open,
-    placement: 'right',
+    placement: placementProp,
+    strategy: 'fixed',
     middleware: [
       offset(VIEWPORT_PADDING * 2),
       flip({
-        fallbackPlacements: ['top', 'bottom'],
+        fallbackPlacements: ['top', 'bottom', 'left', 'right'],
         padding: VIEWPORT_PADDING,
       }),
       shift({ padding: VIEWPORT_PADDING }),
-      size({
-        apply({ availableWidth, elements }) {
-          const maxWidth = Math.min(availableWidth, MAX_TOOLTIP_WIDTH)
-          Object.assign(elements.floating.style, {
-            maxWidth: `${maxWidth}px`,
-            width: 'auto',
-          })
-        },
-        padding: VIEWPORT_PADDING,
-      }),
       arrow({ element: arrowRef }),
     ],
     whileElementsMounted: autoUpdate,
@@ -60,58 +60,83 @@ export function Tooltip({ children, label }: TooltipProps) {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [])
 
+  const hasCustomTrigger = content !== undefined
+  const tooltipContent = hasCustomTrigger ? content : children
+
   return (
     <>
-      <button
-        ref={refs.setReference}
-        type="button"
-        aria-label={label || 'More information'}
-        aria-describedby={open ? 'tooltip' : undefined}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        className="rounded-full hover:bg-gray-100 focus:outline-hidden focus:ring-1 focus:ring-primary-focus"
-      >
-        <SVGTooltip className="w-6 h-6" />
-      </button>
-
-      {open && (
-        <div
-          ref={refs.setFloating}
-          id="tooltip"
-          role="tooltip"
-          style={{
-            position: strategy,
-            top: y,
-            left: x,
-          }}
-          className="relative z-50 p-md bg-interface-tooltip rounded-sm shadow-lg text-white text-xs sm:text-sm"
+      {hasCustomTrigger ? (
+        <span
+          ref={refs.setReference}
+          aria-label={label}
+          aria-describedby={open ? 'tooltip' : undefined}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(false)}
+          className={cx('inline-flex', className)}
         >
           {children}
-
-          <div
-            ref={arrowRef}
-            className="absolute w-4 h-4 bg-interface-tooltip rotate-45"
-            style={{
-              left: arrowX,
-              top: arrowY,
-              ...(placement.startsWith('top') && {
-                bottom: `-${ARROW_HEIGHT}px`,
-              }),
-              ...(placement.startsWith('bottom') && {
-                top: `-${ARROW_HEIGHT}px`,
-              }),
-              ...(placement.startsWith('right') && {
-                left: `-${ARROW_HEIGHT}px`,
-              }),
-              ...(placement.startsWith('left') && {
-                right: `-${ARROW_HEIGHT}px`,
-              }),
-            }}
-          />
-        </div>
+        </span>
+      ) : (
+        <button
+          ref={refs.setReference}
+          type="button"
+          aria-label={label || 'More information'}
+          aria-describedby={open ? 'tooltip' : undefined}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(false)}
+          className={cx(
+            'rounded-full hover:bg-gray-100 focus:outline-hidden focus:ring-1 focus:ring-primary-focus',
+            className,
+          )}
+        >
+          <SVGTooltip className="w-6 h-6" />
+        </button>
       )}
+
+      {open &&
+        (typeof document !== 'undefined'
+          ? createPortal(
+              <div
+                ref={refs.setFloating}
+                id="tooltip"
+                role="tooltip"
+                style={{
+                  position: strategy,
+                  top: y ?? 0,
+                  left: x ?? 0,
+                }}
+                className="pointer-events-none select-none z-50 p-md bg-interface-tooltip rounded-sm shadow-lg text-white text-xs sm:text-sm max-w-[450px] w-max"
+              >
+                {tooltipContent}
+
+                <div
+                  ref={arrowRef}
+                  className="absolute w-4 h-4 bg-interface-tooltip rotate-45 pointer-events-none"
+                  style={{
+                    left: arrowX,
+                    top: arrowY,
+                    ...(placement.startsWith('top') && {
+                      bottom: `-${ARROW_HEIGHT}px`,
+                    }),
+                    ...(placement.startsWith('bottom') && {
+                      top: `-${ARROW_HEIGHT}px`,
+                    }),
+                    ...(placement.startsWith('right') && {
+                      left: `-${ARROW_HEIGHT}px`,
+                    }),
+                    ...(placement.startsWith('left') && {
+                      right: `-${ARROW_HEIGHT}px`,
+                    }),
+                  }}
+                />
+              </div>,
+              document.body,
+            )
+          : null)}
     </>
   )
 }
