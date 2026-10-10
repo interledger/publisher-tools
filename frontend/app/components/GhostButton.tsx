@@ -23,13 +23,14 @@ export const GhostButton: React.FC<Props> = ({
         'flex flex-row items-center justify-center',
         'rounded-lg',
         'font-normal',
-        'transition-all duration-200',
+        'transition-colors duration-200',
         'text-secondary-edge',
         'bg-transparent',
         'hover:text-secondary-edge-hover',
         'hover:bg-secondary-hover-surface',
         'px-xs py-sm',
         'gap-sm',
+        'disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-secondary-edge disabled:hover:bg-transparent',
         className,
       )}
       {...props}

@@ -5,6 +5,7 @@
     "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "wrangler dev --persist-to ../.wrangler",
     "build": "node build.ts",
+    "pretest": "pnpm run build",
     "preview": "wrangler dev",
     "prepare": "wrangler types",
     "test": "vitest run",
