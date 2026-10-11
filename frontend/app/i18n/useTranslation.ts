@@ -1,6 +1,6 @@
 import { useTranslation as useReactI18nextTranslation } from 'react-i18next'
-import type { Translations } from './context.js'
 import type { defaultNS } from './config.js'
+import type { Translations } from './context.js'
 
 export type { Translations }
 export type Namespace = keyof Translations
@@ -18,7 +18,11 @@ export function useTranslation<NS extends Namespace = typeof defaultNS>(
   const { t: i18nextT, i18n } = useReactI18nextTranslation(ns)
 
   function t(key: NamespaceKey<NS>, params?: Params): string {
-    return i18nextT(key as any, params as any)
+    const translate = i18nextT as unknown as (
+      key: string,
+      params?: Params,
+    ) => string
+    return translate(key, params)
   }
 
   t.i18n = i18n

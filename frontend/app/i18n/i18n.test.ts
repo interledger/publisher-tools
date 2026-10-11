@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import i18next from 'i18next'
 import { RouterContextProvider } from 'react-router'
+import i18next from 'i18next'
+import { describe, it, expect, beforeEach } from 'vitest'
 import {
   i18nConfig,
   defaultLanguage,
@@ -153,12 +153,14 @@ describe('i18n configuration and remix-i18next setup', () => {
           expect(loaderData.meta.title).toBe(title)
           expect(loaderData.meta.description).toBe(description)
 
-          const metaTags = grantMeta({
+          const metaArgs = {
             loaderData,
-            location: new URL(request.url) as any,
-            matches: [] as any,
+            location: new URL(request.url),
+            matches: [],
             params: {},
-          })
+          } as unknown as Parameters<typeof grantMeta>[0]
+
+          const metaTags = grantMeta(metaArgs)
           expect(metaTags).toEqual([
             { title },
             { name: 'description', content: description },

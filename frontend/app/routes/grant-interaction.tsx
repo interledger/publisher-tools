@@ -5,9 +5,9 @@ import {
   type MetaFunction,
 } from 'react-router'
 import { SVGErrorVector, SVGMarkSuccess } from '@/assets'
-import { useTranslation } from '~/i18n/useTranslation'
 import { getInstance, getLocale } from '~/i18n/i18n.server.js'
-import { i18nConfig } from '~/i18n/config.js'
+import { resources } from '~/i18n/locales/index.js'
+import { useTranslation } from '~/i18n/useTranslation'
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url)
@@ -17,7 +17,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const t = i18n
     ? i18n.getFixedT(locale, 'paymentResult')
     : (key: string) => {
-        const paymentResult = (i18nConfig.resources.en as any).paymentResult
+        const paymentResult: Record<string, string> = resources.en.paymentResult
         return paymentResult[key] ?? key
       }
 

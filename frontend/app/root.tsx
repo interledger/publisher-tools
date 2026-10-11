@@ -13,12 +13,12 @@ import {
 } from 'react-router'
 import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
+import { I18nProvider } from '~/i18n/context.js'
+import i18next from '~/i18n/i18n.client.js'
+import { i18nextMiddleware, getLocale } from '~/i18n/i18n.server.js'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
-import { i18nextMiddleware, getLocale } from '~/i18n/i18n.server.js'
-import { I18nProvider } from '~/i18n/context.js'
-import i18next from '~/i18n/i18n.client.js'
 
 export const middleware = [i18nextMiddleware]
 

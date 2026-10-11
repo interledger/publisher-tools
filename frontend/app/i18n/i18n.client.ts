@@ -1,5 +1,5 @@
-import i18next from 'i18next'
 import { initReactI18next } from 'react-i18next'
+import i18next from 'i18next'
 import { i18nConfig, defaultLanguage } from './config.js'
 
 export function initI18nClient(initialLng: string = defaultLanguage) {
