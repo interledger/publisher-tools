@@ -1,28 +1,20 @@
-import { createContext, useContext, type ReactNode } from 'react'
-import en from './locales/en.json'
+import { type ReactNode } from 'react'
+import { I18nextProvider } from 'react-i18next'
+import i18next from './i18n.client.js'
+import { resources } from './locales/index.js'
 
-type Locale = 'en'
-
-const locales = { en } as const
-
-export type Translations = typeof en
-
-const I18nContext = createContext<Translations>(locales.en)
-I18nContext.displayName = 'I18nContext'
+export type Locale = 'en'
+export type Translations = (typeof resources)['en']
 
 interface I18nProviderProps {
   locale?: Locale
   children: ReactNode
 }
 
-export function I18nProvider({ locale = 'en', children }: I18nProviderProps) {
-  return (
-    <I18nContext.Provider value={locales[locale]}>
-      {children}
-    </I18nContext.Provider>
-  )
+export function I18nProvider({ children }: I18nProviderProps) {
+  return <I18nextProvider i18n={i18next}>{children}</I18nextProvider>
 }
 
 export function useI18n() {
-  return useContext(I18nContext)
+  return resources.en
 }

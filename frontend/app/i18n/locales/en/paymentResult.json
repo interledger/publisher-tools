@@ -1,0 +1,12 @@
+{
+  "meta.successTitle": "Payment Complete",
+  "meta.successDescription": "Your payment has been processed successfully.",
+  "meta.failureTitle": "Payment not authorized",
+  "meta.failureDescription": "The payment was declined or could not be completed.",
+  "meta.defaultTitle": "Grant Interaction",
+  "meta.defaultDescription": "Grant interaction result",
+  "success.title": "Payment Complete!",
+  "success.message": "Your payment has been processed successfully.\nYou can now close this window.",
+  "failure.title": "Payment not authorized",
+  "failure.message": "The payment was declined or could not be completed.\nYou can now close this window."
+}

@@ -1,31 +1,26 @@
-import { useI18n, type Translations } from './context'
+import { useTranslation as useReactI18nextTranslation } from 'react-i18next'
+import type { Translations } from './context.js'
+import type { defaultNS } from './config.js'
 
-type Namespace = keyof Translations
-type GeneralKey = keyof Translations['general'] & string
-type NamespaceKey<NS extends Namespace> = (
+export type { Translations }
+export type Namespace = keyof Translations
+export type GeneralKey = keyof Translations['general'] & string
+export type NamespaceKey<NS extends Namespace> = (
   keyof Translations[NS] | GeneralKey
 ) &
   string
 
-type Params = Record<string, string>
+export type Params = Record<string, string | number>
 
-function interpolate(str: string, params: Params): string {
-  return str.replace(/\{\{(\w+)\}\}/g, (_, key) =>
-    Object.hasOwn(params, key) ? String(params[key]) : `{{${key}}}`,
-  )
-}
+export function useTranslation<NS extends Namespace = typeof defaultNS>(
+  ns?: NS,
+) {
+  const { t: i18nextT, i18n } = useReactI18nextTranslation(ns)
 
-export function useTranslation<NS extends Namespace>(ns: NS) {
-  const translations = useI18n()
-
-  /** Translation result is plain text — safe in JSX, never pass to dangerouslySetInnerHTML or unsanitized href/src. */
   function t(key: NamespaceKey<NS>, params?: Params): string {
-    const ns_translations = translations[ns] as Record<string, string>
-    const general = translations.general as Record<string, string>
-    const value = ns_translations[key] ?? general[key] ?? key
-
-    return params ? interpolate(value, params) : value
+    return i18nextT(key as any, params as any)
   }
 
+  t.i18n = i18n
   return t
 }
