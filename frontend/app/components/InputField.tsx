@@ -40,8 +40,13 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ) => {
     const generatedId = useId()
     const fieldId = id || generatedId
+    const errorId = `${fieldId}-error`
     const ariaDescriptionId =
       ariaDescription && !error ? `${fieldId}-aria-desc` : undefined
+    const helpTextId = helpText && !error ? `${fieldId}-help` : undefined
+    const describedBy = error
+      ? errorId
+      : [ariaDescriptionId, helpTextId].filter(Boolean).join(' ') || undefined
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       const trimmed = e.target.value.trim()
@@ -96,7 +101,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             id={fieldId}
             name={fieldId}
             aria-invalid={!!error}
-            aria-describedby={displayError ? 'input-error' : ariaDescriptionId}
+            aria-describedby={describedBy}
             onChange={onChange}
             onBlur={handleBlur}
             {...props}
@@ -119,7 +124,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {displayError && (
             <span
-              id="input-error"
+              id={errorId}
               role="alert"
               aria-live="polite"
               className="absolute right-3 top-full
@@ -132,7 +137,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         </div>
         {(helpText || showCounter) && !displayError && (
           <div className="flex justify-between gap-xs text-xs text-text-secondary">
-            {helpText && <p>{helpText}</p>}
+            {helpText && <p id={helpTextId}>{helpText}</p>}
             {showCounter && maxLength && (
               <span>
                 {currentLength}/{maxLength}

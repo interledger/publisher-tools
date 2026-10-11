@@ -32,11 +32,11 @@ interface Props {
 
 const config = {
   suggestedTitles: BANNER_SUGGESTED_TITLES,
-  titleHelpText: 'Strong message to help people engage with Web Monetization',
+  titleHelpText:
+    "Pick a suggestion or write your own — this is the banner's heading.",
   titleMaxLength: 60,
   messageLabel: 'Banner message',
   messagePlaceholder: 'Enter your banner message...',
-  messageHelpText: 'Strong message to help people engage with Web Monetization',
   messageMaxLength: 300,
 
   showThumbnail: true,
@@ -75,8 +75,6 @@ function ContentBuilder({ onRefresh }: Props) {
         helpText={config.titleHelpText}
       />
 
-      <Divider />
-
       <DescriptionInput
         label={config.messageLabel}
         value={snap.description.text}
@@ -88,7 +86,6 @@ function ContentBuilder({ onRefresh }: Props) {
           profile.description.isVisible = visible
         }}
         placeholder={config.messagePlaceholder}
-        helpText={config.messageHelpText}
         maxLength={config.messageMaxLength}
       />
     </BuilderAccordion>

@@ -16,9 +16,9 @@
     "useDefineForClassFields": false,
     "paths": {
       "~/*": ["./app/*"],
-      "@/components": ["./app/components/redesign/components"],
-      "@/components/*": ["./app/components/redesign/components/*"],
-      "@/typography": ["./app/components/redesign/Typography.tsx"],
+      "@/components": ["./app/components"],
+      "@/components/*": ["./app/components/*"],
+      "@/typography": ["./app/components/Typography.tsx"],
       "@/assets": ["./app/assets/svg.tsx"],
       "@c/*": ["./node_modules/@tools/components/src/*"]
     },

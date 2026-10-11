@@ -3,8 +3,8 @@ import {
   ToolsDropdown,
   CornerRadiusSelector,
   TitleInput,
-  TextareaField,
 } from '@/components'
+import { DescriptionInput } from '@/components/builder/DescriptionInput'
 import { FontSizeInput } from '@/components/builder/FontSizeInput'
 import { InputFieldset } from '@/components/builder/InputFieldset'
 import { CustomTitle } from '@/components/builder/TitleInput'
@@ -62,24 +62,14 @@ function ContentBuilder({ onRefresh }: Props) {
         helpText={t('input.title.hint')}
       />
 
-      <Divider />
-
-      <TextareaField
+      <DescriptionInput
+        label={t('input.message.label')}
         value={snap.description.text}
-        onChange={(e) => {
-          profile.description.text = e.target.value
+        onChange={(text) => {
+          profile.description.text = text
         }}
-        currentLength={snap.description.text.length || 0}
-        showCounter={true}
-        label={
-          <span className="text-base leading-md font-bold text-text-primary">
-            {t('input.message.label')}
-          </span>
-        }
         placeholder={t('input.message.placeholder')}
-        helpText={t('input.message.hint')}
         maxLength={PAYWALL_DESCRIPTION_MAX_LENGTH}
-        className="h-[64px]"
       />
 
       <Divider />

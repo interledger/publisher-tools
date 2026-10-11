@@ -6,20 +6,17 @@ export const RevShareInfo = () => {
       <Heading5>Information</Heading5>
       <div>
         <p className="text-sm leading-sm text-field-helpertext-default">
-          Each recipient has a different chance of being chosen, depending on
-          their assigned weight.
+          Each recipient has a different chance of being chosen based on their
+          assigned percentage.
           <br />
-          The weight is translated to a percentage which represents the percent
-          of revenue each recipient will receive over time.
+          The percentage represents how much revenue that recipient should
+          receive over time.
           <br />
-          The higher the weight, the larger the percentage.
+          All recipient percentages must add up to 100%.
           <br />
           <br />
-          For example, if three recipients each have a weight of 1, then each
-          recipient will eventually receive 33% of the revenue.
-          <br />
-          If three recipients have a weight of 1, 2, and 3, the percentages will
-          be 17% (weight 1), 33% (weight 2), and 50% (weight 3).
+          For example, you could split revenue between three recipients by
+          assigning them 20%, 30%, and 50%.
           <br />
           <br />
           Additional information can be found in the overview of the&nbsp;
@@ -46,7 +43,8 @@ export const RevShareInfo = () => {
           <br />
           Click Add recipient to add more rows.
           <br />
-          Assign a weight to each recipient.
+          Assign a percentage to each recipient. Make sure the percentages add
+          up to 100%.
           <br />
           When you&apos;re finished, add the generated monetization link tag to
           your site.

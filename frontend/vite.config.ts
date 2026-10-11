@@ -35,13 +35,10 @@ export default defineConfig(({ mode, isSsrBuild }) => ({
   ],
   resolve: {
     alias: {
-      '@/components': path.resolve(
-        __dirname,
-        './app/components/redesign/components',
-      ),
+      '@/components': path.resolve(__dirname, './app/components'),
       '@/typography': path.resolve(
         __dirname,
-        './app/components/redesign/Typography.tsx',
+        './app/components/Typography.tsx',
       ),
       '@/assets': path.resolve(__dirname, './app/assets/svg.tsx'),
       ...(mode === 'production' &&

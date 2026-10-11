@@ -3,10 +3,10 @@ import { useSnapshot } from 'valtio'
 import { SVGMarkStatusSmall, SVGTooltip } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
 import { toWalletAddressUrl } from '@shared/utils'
+import { useCopyToClipboard } from '~/hooks/useCopyToClipboard'
 import { toolState } from '~/stores/toolStore'
 import type { WalletStore } from '~/stores/wallet-store'
 import { BaseDialog } from './BaseDialog'
-import { useCopyToClipboard } from '../../hooks/useCopyToClipboard'
 
 interface ScriptAttribute {
   name: string

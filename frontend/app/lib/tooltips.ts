@@ -10,6 +10,6 @@ export const tooltips = {
   linkTagGenerator:
     'Generate your Web Monetization tag to monetize your web pages. The generator helps you create a tag from your payment pointer or wallet address and validates the syntax.',
   revShareGenerator:
-    'Split Web Monetization revenue between multiple payment pointers and wallet addresses. Assign a weight to each recipient, then add the generated link tag to your HTML documents.<br />As you assign weights, the generator will calculate percentages.<br />The percentages represent how often a given wallet address or payment pointer will receive payments each time a web monetized visitor views your content.',
+    'Split Web Monetization revenue between multiple payment pointers and wallet addresses. Assign a percentage to each recipient, then add the generated link tag to your HTML documents.<br />The percentages must add up to 100% and represent how often a given wallet address or payment pointer will receive payments when a web monetized visitor views your content.',
   font: 'Setting the Font to Inherit, will make the component use the font from the website it is added to.',
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGCheck } from '../../../assets/svg'
+import { SVGCheck } from '~/assets/svg'
 
 export interface CheckboxProps {
   checked?: boolean
