@@ -27,10 +27,10 @@ export const createDefaultBannerProfile = (
     $name: profileName,
     $modifiedAt: now,
     title: {
-      text: 'How to support?',
+      text: 'Supported by visitors like you!',
     },
     description: {
-      text: 'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.',
+      text: 'The Web Monetization browser extension lets you set a monthly budget and automatically pay it out to the websites you enjoy. It’s simple, secure, and helps keep this content online.',
       isVisible: true,
     },
     font: {
