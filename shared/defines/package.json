@@ -1,6 +1,10 @@
 {
   "name": "@shared/defines",
   "version": "0.0.1",
+  "type": "module",
   "private": true,
-  "description": "Build time constants for API, CDN and the frontend."
+  "description": "Build time constants for API, CDN and the frontend.",
+  "exports": {
+    ".": "./index.ts"
+  }
 }

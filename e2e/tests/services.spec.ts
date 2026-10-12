@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { API_URL, CDN_URL, S3_URL } from '../services'
+import { API_URL, CDN_URL, S3_URL } from '../src/services'
 
 test('api is running', async ({ request }) => {
   const response = await request.get(API_URL)

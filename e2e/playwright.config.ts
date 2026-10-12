@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
-import { API_URL, CDN_URL, FRONTEND_URL, S3_URL } from './services'
+import { API_URL, CDN_URL, FRONTEND_URL, S3_URL } from './src/services'
 
 const reuseExistingServer = !process.env.CI
 const timeout = 120_000
