@@ -17,11 +17,10 @@ import { getExtensionHref } from '@shared/utils/extension'
 import bannerStyles from './banner.css?raw'
 import { applyFontFamily } from './utils.js'
 
-const DEFAULT_BANNER_TITLE = 'How to support?'
+const DEFAULT_BANNER_TITLE = 'Supported by visitors like you!'
 const DEFAULT_BANNER_DESCRIPTION =
-  'You can support this page and my work by a one time donation or proportional to the time you spend on this website through web monetization.'
-const DEFAULT_BANNER_LINK_TEXT =
-  'Install the Web Monetization browser extension'
+  'The Web Monetization browser extension lets you set a monthly budget and automatically pay it out to the websites you enjoy. It’s simple, secure, and helps keep this content online.'
+const DEFAULT_BANNER_LINK_TEXT = 'Get started'
 
 interface Props extends BannerProfile {
   cdnUrl: string
