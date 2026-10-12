@@ -16,6 +16,7 @@ interface BuilderBackgroundProps {
   children?: React.ReactNode
   actions?: React.ReactNode
   iframeMode?: boolean
+  mockup?: boolean
 }
 
 export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
@@ -23,6 +24,7 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
   children,
   actions,
   iframeMode = false,
+  mockup = true,
 }) => {
   const createDotPattern = () => {
     return `data:image/svg+xml;base64,${btoa(DOT_PATTERN_SVG)}`
@@ -45,30 +47,36 @@ export const BuilderBackground: React.FC<BuilderBackgroundProps> = ({
     >
       {actions}
 
-      <div
-        id="browser-mockup"
-        className={cx(
-          'w-full flex-1 border border-field-border overflow-hidden flex flex-col',
-          iframeMode ? 'rounded-t-2xl rounded-b-sm' : 'rounded-2xl',
-        )}
-      >
-        <div className="flex items-center p-md bg-white">
-          <div className="flex items-center gap-md w-full">
-            <BrowserDots />
-            <div className="flex-1 h-2 bg-field-border rounded-full" />
-          </div>
-        </div>
-
+      {mockup ? (
         <div
-          id="browser-content"
+          id="browser-mockup"
           className={cx(
-            'flex-1 flex flex-col [container-type:inline-size]',
-            !iframeMode && 'p-md',
+            'w-full flex-1 border border-field-border overflow-hidden flex flex-col',
+            iframeMode ? 'rounded-t-2xl rounded-b-sm' : 'rounded-2xl',
           )}
         >
+          <div className="flex items-center p-md bg-white">
+            <div className="flex items-center gap-md w-full">
+              <BrowserDots />
+              <div className="flex-1 h-2 bg-field-border rounded-full" />
+            </div>
+          </div>
+
+          <div
+            id="browser-content"
+            className={cx(
+              'flex-1 flex flex-col [container-type:inline-size]',
+              !iframeMode && 'p-md',
+            )}
+          >
+            {children}
+          </div>
+        </div>
+      ) : (
+        <div className="w-full flex-1 flex flex-col items-center justify-center overflow-hidden">
           {children}
         </div>
-      </div>
+      )}
     </div>
   )
 }

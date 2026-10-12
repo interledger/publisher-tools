@@ -1,4 +1,4 @@
-import { LitElement, html, nothing, unsafeCSS } from 'lit'
+import { LitElement, html, nothing, unsafeCSS, type PropertyValues } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
@@ -33,13 +33,30 @@ export class PaymentWaiting extends LitElement {
 
   @property({ type: String, attribute: false }) private paymentId = ''
   @property({ type: String, attribute: false }) private grantRedirectUrl = ''
+  @property({ type: String }) previewState?:
+    'authorizing' | 'success' | 'failed'
 
   static styles = unsafeCSS(styles)
+
+  override willUpdate(changedProperties: PropertyValues<this>) {
+    super.willUpdate(changedProperties)
+    if (changedProperties.has('previewState') && this.previewState) {
+      this.currentView = this.previewState
+    }
+  }
 
   connectedCallback() {
     super.connectedCallback()
 
+    if (this.previewState) {
+      this.currentView = this.previewState
+      return
+    }
+
     if (!this.grantRedirectUrl) {
+      if (this.#controller.isPreviewMode) {
+        return
+      }
       throw new Error('Grant redirect URL not found')
     }
     if (!this.#controller.isPreviewMode) {
@@ -56,6 +73,9 @@ export class PaymentWaiting extends LitElement {
 
   #controller = NO_OP_CONTROLLER
   @property({ type: Object, attribute: false })
+  get controller(): Controller {
+    return this.#controller
+  }
   set controller(controller: Controller) {
     if (this.#controller === controller) return
     if (this.#controller !== NO_OP_CONTROLLER) {

@@ -1,4 +1,4 @@
-import { LitElement, html, nothing, unsafeCSS } from 'lit'
+import { LitElement, html, nothing, unsafeCSS, type PropertyValues } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import { CloseBtn } from '@c/shared/close-btn'
@@ -16,6 +16,7 @@ import styles from './initiate.css?raw'
 export class PaymentInitiate extends LitElement {
   @property({ type: Object }) configController!: WidgetController
   @property({ type: String }) note = ''
+  @property({ type: Number }) initialAmount = 0
 
   @state() private inputAmount = ''
   @state() private isLoadingPreview = false
@@ -27,6 +28,27 @@ export class PaymentInitiate extends LitElement {
 
   static styles = unsafeCSS(styles)
 
+  override willUpdate(changedProperties: PropertyValues<this>) {
+    super.willUpdate(changedProperties)
+    if (changedProperties.has('initialAmount')) {
+      if (this.initialAmount > 0) {
+        this.inputAmount = this.formatAmount(String(this.initialAmount))
+        const assetCode =
+          this.configController?.state?.walletAddress?.assetCode || 'USD'
+        this.formattedDebitAmount = formatCurrency(this.initialAmount, assetCode)
+        this.formattedReceiveAmount = formatCurrency(
+          this.initialAmount,
+          assetCode,
+        )
+        this.configController?.updateState({ amount: this.initialAmount })
+      } else if (changedProperties.get('initialAmount') !== undefined) {
+        this.inputAmount = ''
+        this.formattedDebitAmount = undefined
+        this.formattedReceiveAmount = undefined
+      }
+    }
+  }
+
   connectedCallback() {
     super.connectedCallback()
     registerComponents({
@@ -34,10 +56,25 @@ export class PaymentInitiate extends LitElement {
       'wm-close-btn': CloseBtn,
       'wm-amount': PaymentAmount,
     })
+
+    if (this.initialAmount > 0) {
+      this.inputAmount = this.formatAmount(String(this.initialAmount))
+      const assetCode =
+        this.configController?.state?.walletAddress?.assetCode || 'USD'
+      this.formattedDebitAmount = formatCurrency(this.initialAmount, assetCode)
+      this.formattedReceiveAmount = formatCurrency(
+        this.initialAmount,
+        assetCode,
+      )
+      this.configController?.updateState({ amount: this.initialAmount })
+    }
   }
 
   #controller = NO_OP_CONTROLLER
   @property({ type: Object, attribute: false })
+  get controller(): Controller {
+    return this.#controller
+  }
   set controller(controller: Controller) {
     if (this.#controller === controller) return
     if (this.#controller !== NO_OP_CONTROLLER) {
@@ -218,9 +255,8 @@ export class PaymentInitiate extends LitElement {
   }
 
   render() {
-    const {
-      walletAddress: { assetCode },
-    } = this.configController.state
+    const assetCode =
+      this.configController?.state?.walletAddress?.assetCode || 'USD'
 
     return html`
       <div class="confirmation-container">
@@ -243,6 +279,8 @@ export class PaymentInitiate extends LitElement {
         <div class="widget-body">
           <wm-amount
             .currency=${assetCode}
+            .value=${this.initialAmount || 0}
+            .autoFocus=${!this.#controller.isPreviewMode}
             @change=${this.onAmountChange}
           ></wm-amount>
 

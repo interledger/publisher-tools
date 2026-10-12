@@ -17,26 +17,37 @@ type Props<MessageToIframe, MessageFromIframe> = PropsWithChildren<{
   tool: Tool
   onMessage: (message: MessageFromIframe) => void
   ref: RefObject<ToolPreviewHandle<MessageToIframe> | null>
+  mockup?: boolean
+  iframeSizeDesktop?: { width: number; height: number }
 }>
 
 export function ToolPreview<MessageToIframe, MessageFromIframe>({
   tool,
   onMessage,
   ref,
+  mockup,
+  iframeSizeDesktop,
   children,
 }: Props<MessageToIframe, MessageFromIframe>) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const desktopWidth =
+    iframeSizeDesktop?.width ??
+    (tool === 'widget' ? IFRAME_WIDTH_WIDGET : IFRAME_WIDTH_DESKTOP)
+  const desktopHeight =
+    iframeSizeDesktop?.height ??
+    (tool === 'widget' ? IFRAME_HEIGHT_WIDGET : IFRAME_HEIGHT_DESKTOP)
+
   const [iframeSize, setIframeSize] = useState({
-    width: IFRAME_WIDTH_DESKTOP,
-    height: IFRAME_HEIGHT_DESKTOP,
+    width: desktopWidth,
+    height: desktopHeight,
   })
 
   const updateScreenMode = (isDesktop: boolean) => {
     setIframeSize({
-      width: isDesktop ? IFRAME_WIDTH_DESKTOP : IFRAME_WIDTH_MOBILE,
-      height: isDesktop ? IFRAME_HEIGHT_DESKTOP : IFRAME_HEIGHT_MOBILE,
+      width: isDesktop ? desktopWidth : IFRAME_WIDTH_MOBILE,
+      height: isDesktop ? desktopHeight : IFRAME_HEIGHT_MOBILE,
     })
   }
 
@@ -58,7 +69,7 @@ export function ToolPreview<MessageToIframe, MessageFromIframe>({
     return () => {
       media.removeEventListener('change', listener)
     }
-  }, [])
+  }, [desktopWidth, desktopHeight])
 
   useEffect(() => {
     const resizePreview = () => {
@@ -85,7 +96,11 @@ export function ToolPreview<MessageToIframe, MessageFromIframe>({
   }, [onMessage])
 
   return (
-    <BuilderBackground iframeMode={true} actions={children}>
+    <BuilderBackground
+      iframeMode={true}
+      actions={children}
+      mockup={mockup ?? tool !== 'widget'}
+    >
       <div
         className="w-full relative overflow-hidden"
         style={{ aspectRatio: `${iframeSize.width}/${iframeSize.height}` }}
@@ -108,6 +123,9 @@ export function ToolPreview<MessageToIframe, MessageFromIframe>({
 
 const IFRAME_WIDTH_DESKTOP = 860
 const IFRAME_HEIGHT_DESKTOP = 720
+
+const IFRAME_WIDTH_WIDGET = 540
+const IFRAME_HEIGHT_WIDGET = 640
 
 const IFRAME_WIDTH_MOBILE = 380
 const IFRAME_HEIGHT_MOBILE = 600

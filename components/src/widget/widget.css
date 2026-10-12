@@ -84,6 +84,30 @@ a:focus-visible {
   align-items: flex-end;
 }
 
+:host([embedded]),
+:host([embedded].position-left),
+:host([embedded].position-right),
+:host(.embedded) {
+  position: relative;
+  bottom: auto;
+  right: auto;
+  left: auto;
+  z-index: auto;
+  align-items: center;
+}
+
+:host([embedded]) .content.open,
+:host(.embedded) .content.open {
+  max-height: none;
+  height: auto;
+  min-height: 520px;
+}
+
+:host([hide-trigger]) .trigger,
+:host(.hide-trigger) .trigger {
+  display: none !important;
+}
+
 .content {
   display: flex;
   flex-direction: column;

@@ -105,8 +105,11 @@ export const NO_OP_CONTROLLER: Controller = {
   },
 }
 
+export type WidgetScreen =
+  'home' | 'amount' | 'details' | 'authorizing' | 'success'
+
 export interface Actions {
-  setScreen(screen: unknown): void
+  setScreen(screen: WidgetScreen): void
 }
 
 export class WidgetController implements ReactiveController {

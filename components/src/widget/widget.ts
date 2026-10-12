@@ -1,4 +1,4 @@
-import { LitElement, html, unsafeCSS } from 'lit'
+import { LitElement, html, unsafeCSS, type PropertyValues } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@tools/components/assets/interledger_logo.svg'
@@ -8,7 +8,9 @@ import { HomeView, type SubmitEventDetail } from './components/home.js'
 import { PaymentInitiate } from './components/initiate.js'
 import { PaymentWaiting } from './components/waiting.js'
 import {
+  type Actions,
   type Controller,
+  type WidgetScreen,
   NO_OP_CONTROLLER,
   WidgetController,
 } from './controller'
@@ -32,10 +34,21 @@ export class PaymentWidget extends LitElement {
   }
 
   @property({ type: Boolean }) isOpen = false
+  @property({ type: String }) screen: WidgetScreen = 'home'
+  @property({ type: Boolean, reflect: true, attribute: 'hide-trigger' })
+  hideTrigger = false
+  @property({ type: Boolean, reflect: true }) embedded = false
 
   @state() private currentView: 'home' | 'initiate' | 'waiting' = 'home'
 
   static styles = unsafeCSS(styles)
+
+  override willUpdate(changedProperties: PropertyValues<this>) {
+    super.willUpdate(changedProperties)
+    if (changedProperties.has('screen') && this.screen) {
+      this.ensureMockState(this.screen)
+    }
+  }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -47,12 +60,57 @@ export class PaymentWidget extends LitElement {
   }
 
   #controller = NO_OP_CONTROLLER
-  setController(controller: Controller) {
-    if (this.#controller === controller) return
+  setController(controller: Controller): Actions {
+    if (this.#controller === controller) {
+      return { setScreen: (s) => this.setScreen(s) }
+    }
     if (this.#controller !== NO_OP_CONTROLLER) {
       throw new Error('controller is already set')
     }
     this.#controller = controller
+    return {
+      setScreen: (screen) => this.setScreen(screen),
+    }
+  }
+
+  setScreen(screen: WidgetScreen) {
+    this.screen = screen
+    this.ensureMockState(screen)
+    this.dispatchEvent(
+      new CustomEvent('screen-change', {
+        detail: { screen },
+        bubbles: true,
+        composed: true,
+      }),
+    )
+  }
+
+  private ensureMockState(screen?: WidgetScreen) {
+    if (!this.configController.state?.walletAddress) {
+      this.configController.updateState({
+        walletAddress: {
+          $url: 'https://example.com/wallet',
+          id: 'https://example.com/wallet',
+          assetCode: 'USD',
+          assetScale: 2,
+          authServer: 'https://auth.example.com',
+          resourceServer: 'https://resource.example.com',
+          publicName: 'Wallet (Preview)',
+        },
+        receiver: {
+          $url: 'https://example.com/receiver',
+          id: 'https://example.com/receiver',
+          assetCode: 'USD',
+          assetScale: 2,
+          authServer: 'https://auth.example.com',
+          resourceServer: 'https://resource.example.com',
+          publicName: 'Receiver',
+        },
+      })
+    }
+    if (screen === 'details') {
+      this.configController.updateState({ amount: 5 })
+    }
   }
 
   private async _handleSubmit(walletAddress: string) {
@@ -73,6 +131,7 @@ export class PaymentWidget extends LitElement {
         receiver,
       })
       this.currentView = 'initiate'
+      this.setScreen('amount')
     } catch (error) {
       return error instanceof Error
         ? error.message
@@ -100,27 +159,43 @@ export class PaymentWidget extends LitElement {
 
   private handleInteractionCancelled() {
     this.currentView = 'initiate'
+    this.setScreen('details')
   }
 
   private renderCurrentView() {
-    switch (this.currentView) {
+    switch (this.screen) {
       case 'home':
         return this.renderHomeView()
-      case 'initiate':
-        return this.renderInitiateView()
-      case 'waiting':
-        return this.renderWaitingView()
+      case 'amount':
+        return this.renderInitiateView({ initialAmount: 0 })
+      case 'details':
+        return this.renderInitiateView({ initialAmount: 5 })
+      case 'authorizing':
+        return this.renderWaitingView('authorizing')
+      case 'success':
+        return this.renderWaitingView('success')
       default:
-        return this.renderHomeView()
+        switch (this.currentView) {
+          case 'home':
+            return this.renderHomeView()
+          case 'initiate':
+            return this.renderInitiateView()
+          case 'waiting':
+            return this.renderWaitingView()
+          default:
+            return this.renderHomeView()
+        }
     }
   }
 
   private navigateToInteraction() {
     this.currentView = 'waiting'
+    this.setScreen('authorizing')
   }
 
   private navigateToHome() {
     this.currentView = 'home'
+    this.setScreen('home')
   }
 
   private renderHomeView() {
@@ -138,12 +213,13 @@ export class PaymentWidget extends LitElement {
     `
   }
 
-  private renderInitiateView() {
+  private renderInitiateView(options?: { initialAmount?: number }) {
     return html`
       <wm-payment-initiate
         .configController=${this.configController}
         .controller=${this.#controller}
         .note=${this.config.note || ''}
+        .initialAmount=${options?.initialAmount ?? 0}
         @back=${this.navigateToHome}
         @close=${this.toggleWidget}
         @payment-confirmed=${this.navigateToInteraction}
@@ -151,13 +227,14 @@ export class PaymentWidget extends LitElement {
     `
   }
 
-  private renderWaitingView() {
-    const { paymentId, grantRedirectUrl } = this.configController.state
+  private renderWaitingView(previewState?: 'authorizing' | 'success') {
+    const state = this.configController.state || {}
     return html`
       <wm-payment-waiting
-        .paymentId=${paymentId}
-        .grantRedirectUrl=${grantRedirectUrl}
+        .paymentId=${state.paymentId || 'preview-id'}
+        .grantRedirectUrl=${state.grantRedirectUrl || 'https://example.com/grant'}
         .controller=${this.#controller}
+        .previewState=${previewState}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}
       ></wm-payment-waiting>
@@ -186,14 +263,20 @@ export class PaymentWidget extends LitElement {
         </div>
       </div>
 
-      <button
-        class="trigger"
-        type="button"
-        @click=${this.toggleWidget}
-        aria-label="Toggle payment widget"
-      >
-        <img src="${triggerIcon}" alt="" />
-      </button>
+      ${
+        this.hideTrigger
+          ? html``
+          : html`
+              <button
+                class="trigger"
+                type="button"
+                @click=${this.toggleWidget}
+                aria-label="Toggle payment widget"
+              >
+                <img src="${triggerIcon}" alt="" />
+              </button>
+            `
+      }
     `
   }
 }

@@ -15,6 +15,7 @@ export class PaymentAmount extends LitElement {
   @property({ type: String }) currency = 'USD'
   @property({ type: Array }) presets: number[] = [1, 5, 10]
   @property({ type: Number }) value = 0
+  @property({ type: Boolean }) autoFocus = true
 
   @query('input') private _inputEl!: HTMLInputElement
 
@@ -27,7 +28,9 @@ export class PaymentAmount extends LitElement {
   }
 
   protected firstUpdated() {
-    this._inputEl.focus()
+    if (this.autoFocus && this.value === 0) {
+      this._inputEl.focus()
+    }
   }
 
   private _handleInput(e: Event) {
