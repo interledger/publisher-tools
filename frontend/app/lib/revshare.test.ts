@@ -314,3 +314,24 @@ describe('duplicate recipient wallets', () => {
     expect(sharesToPaymentPointer(recipients, baseUrl)).not.toBe('')
   })
 })
+
+describe('recipient names', () => {
+  it('encodes names outside the Latin1 range', () => {
+    const recipients = shares(
+      'https://wallet.example/alice',
+      'https://wallet.example/bob',
+    )
+    recipients[0].name = 'Łukasz'
+    recipients[1].name = 'José 日本 🎉'
+    expect(
+      pointerToShares(sharesToPaymentPointer(recipients, baseUrl)).map(
+        (s) => s.name,
+      ),
+    ).toEqual(['Łukasz', 'José 日本 🎉'])
+  })
+
+  it('still decodes Latin1 names from existing links', () => {
+    const existingLink = `${baseUrl}W1siaHR0cHM6Ly93YWxsZXQuZXhhbXBsZS9hbGljZSIsMSwiSm9z6SJdXQ`
+    expect(pointerToShares(existingLink)[0].name).toBe('José')
+  })
+})
