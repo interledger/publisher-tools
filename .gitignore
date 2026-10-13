@@ -53,5 +53,10 @@ build
 # React Router
 .react-router/
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
 # Local CDN embed test harness
 cdn/public/sandbox/

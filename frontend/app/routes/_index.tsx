@@ -9,8 +9,8 @@ import SVGRevShareGenerator from '~/assets/images/landing/illustration_rev_share
 import SVGWidget from '~/assets/images/landing/illustration_widget.svg?url'
 import SVGWordpressPlugin from '~/assets/images/landing/illustration_wordpress_plugin.svg?url'
 import SVGHeadingVector from '~/assets/images/landing/tools-heading-vector.svg?url'
-import { ToolCard } from '~/components/redesign/components/landing/ToolCard'
-import { Heading1, Heading3 } from '~/components/redesign/Typography'
+import { ToolCard } from '~/components/landing/ToolCard'
+import { Heading1, Heading3 } from '~/components/Typography'
 
 const DEFAULT_TITLE = 'Publisher Tools'
 const DEFAULT_DESCRIPTION = 'Choose and customize your tools!'

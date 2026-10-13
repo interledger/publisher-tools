@@ -19,12 +19,6 @@ export function useBuilderSectionHandlers(section: BuilderSection) {
           uiActions.setContentComplete(true)
         }
       },
-      onDone: () => {
-        uiActions.setActiveSection(
-          uiState.appearanceComplete ? null : 'appearance',
-        )
-        uiActions.setContentComplete(true)
-      },
     }
   }
 
@@ -40,10 +34,6 @@ export function useBuilderSectionHandlers(section: BuilderSection) {
       if (e.currentTarget.open) {
         uiActions.setAppearanceComplete(true)
       }
-    },
-    onDone: () => {
-      uiActions.setActiveSection(null)
-      uiActions.setAppearanceComplete(true)
     },
   }
 }

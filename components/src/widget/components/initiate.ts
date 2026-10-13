@@ -9,7 +9,7 @@ import {
   type Controller,
   type WidgetController,
 } from '@c/widget/controller'
-import { formatCurrency, toAmount } from '@shared/utils'
+import { formatCurrency } from '@shared/utils'
 import { type AmountChangeEventDetail, PaymentAmount } from './amount.js'
 import styles from './initiate.css?raw'
 
@@ -58,7 +58,10 @@ export class PaymentInitiate extends LitElement {
 
     if (amount <= 0 || (this.#minSendAmount && amount < this.#minSendAmount)) {
       if (this.#minSendAmount) {
-        const minSendAmount = formatCurrency(amount, sender.assetCode)
+        const minSendAmount = formatCurrency(
+          this.#minSendAmount,
+          sender.assetCode,
+        )
         this.amountError = `Please enter an amount greater than ${minSendAmount}`
       } else {
         this.amountError = `Please enter a higher amount.`
@@ -108,14 +111,14 @@ export class PaymentInitiate extends LitElement {
     }).format(number)
   }
 
-  validateAmount(amountToScale: number, minToScale: number): string | null {
-    const val = Number(amountToScale)
+  validateAmount(amount: number, minAmount: number): string | null {
+    const val = Number(amount)
     if (Number.isNaN(val)) {
       return 'Contribute a valid amount to continue.' // TODO: i18n
     }
-    if (val < minToScale) {
+    if (val < minAmount) {
       const amountWithCurrency = formatCurrency(
-        minToScale,
+        minAmount,
         this.configController.state.walletAddress.assetCode,
       )
       return `A minimum amount of ${amountWithCurrency} is required.`
@@ -129,7 +132,7 @@ export class PaymentInitiate extends LitElement {
     receiver: WalletAddressInfo
     amount: number | string
   }): Promise<void> {
-    const { sender, amount } = params
+    const { amount } = params
     const data = await this.#controller.fetchQuote(params)
 
     if ('error' in data) {
@@ -141,12 +144,8 @@ export class PaymentInitiate extends LitElement {
         }
         const value = data.minSendAmount.value
         // Rafiki v1.2.0-beta and later include `minSendAmount` with error
-        this.#minSendAmount = Number(toAmount(value, sender).value)
-        // TODO: in validateAmount, remove concept of assetScale
-        this.amountError = this.validateAmount(
-          Number(amount) * 10 ** sender.assetScale,
-          Number(value) * 10 ** sender.assetScale,
-        )
+        this.#minSendAmount = Number(value)
+        this.amountError = this.validateAmount(Number(amount), Number(value))
       }
       return
     }

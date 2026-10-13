@@ -1,5 +1,5 @@
 export const BANNER_SUGGESTED_TITLES = [
-  'How to support?',
+  'Supported by visitors like you!',
   'Fund me',
   'Pay as you browse',
   'Easy donate',

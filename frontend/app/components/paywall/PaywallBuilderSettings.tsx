@@ -1,8 +1,8 @@
 import { Divider } from '@/components'
+import { Heading5 } from '@/typography'
 import { useTranslation } from '~/i18n/useTranslation'
 import { PaywallPlacementBuilder } from './PaywallPlacementBuilder'
 import { PaywallPriceBuilder } from './PaywallPriceBuilder'
-import { Heading5 } from '../redesign/Typography'
 
 export function PaywallBuilderSettings() {
   const t = useTranslation('paywall')

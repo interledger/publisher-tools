@@ -48,7 +48,6 @@ function main() {
     cdnUrl: params.cdnUrl,
     fetchConfig: () => fetchProfile(API_URL, 'paywall', params),
     async checkEntitlement(walletAddress) {
-      console.debug('checkEntitlement', { walletAddress })
       const token = storage.authJwt.get()
       if (!walletAddress && !token) {
         return { entitlement: 'no-access' }
@@ -200,7 +199,6 @@ function handlePageUrlOnLoad() {
     window.history.replaceState(null, '', url.href)
   }
 
-  console.debug('handlePageUrlOnLoad', res)
   return res
 }
 

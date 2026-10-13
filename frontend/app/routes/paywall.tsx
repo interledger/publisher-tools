@@ -6,10 +6,10 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
+import { Divider } from '~/components/Divider'
 import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
 import { PaywallBuilderSettings } from '~/components/paywall/PaywallBuilderSettings'
 import { PaywallPreview } from '~/components/paywall/PaywallPreview'
-import { Divider } from '~/components/redesign/components'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
 import { useToolWallet } from '~/hooks/useToolWallet'
 import { useTranslation } from '~/i18n/useTranslation'

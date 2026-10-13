@@ -32,11 +32,11 @@ interface Props {
 
 const config = {
   suggestedTitles: BANNER_SUGGESTED_TITLES,
-  titleHelpText: 'Strong message to help people engage with Web Monetization',
+  titleHelpText:
+    "Pick a suggestion or write your own — this is the banner's heading.",
   titleMaxLength: 60,
   messageLabel: 'Banner message',
   messagePlaceholder: 'Enter your banner message...',
-  messageHelpText: 'Strong message to help people engage with Web Monetization',
   messageMaxLength: 300,
 
   showThumbnail: true,
@@ -52,7 +52,7 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('content')
   const [snap, profile] = useBannerProfile({ sync: true })
 
@@ -64,7 +64,6 @@ function ContentBuilder({ onRefresh }: Props) {
       onClick={onClick}
       onToggle={onToggle}
       onRefresh={() => onRefresh('content')}
-      onDone={onDone}
     >
       <TitleInput
         value={snap.title.text}
@@ -75,8 +74,6 @@ function ContentBuilder({ onRefresh }: Props) {
         maxLength={config.titleMaxLength}
         helpText={config.titleHelpText}
       />
-
-      <Divider />
 
       <DescriptionInput
         label={config.messageLabel}
@@ -89,7 +86,6 @@ function ContentBuilder({ onRefresh }: Props) {
           profile.description.isVisible = visible
         }}
         placeholder={config.messagePlaceholder}
-        helpText={config.messageHelpText}
         maxLength={config.messageMaxLength}
       />
     </BuilderAccordion>
@@ -97,7 +93,7 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle, onDone } =
+  const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('appearance')
   const [snap, profile] = useBannerProfile()
 
@@ -113,7 +109,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
       onClick={onClick}
       onToggle={onToggle}
       onRefresh={() => onRefresh('appearance')}
-      onDone={onDone}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown

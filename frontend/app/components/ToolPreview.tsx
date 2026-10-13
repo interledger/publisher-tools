@@ -6,8 +6,8 @@ import {
   type PropsWithChildren,
   type RefObject,
 } from 'react'
+import { BuilderBackground } from '@/components'
 import type { Tool } from '@shared/types'
-import { BuilderBackground } from './redesign/components'
 
 export interface ToolPreviewHandle<T> {
   postMessage: (message: T) => void

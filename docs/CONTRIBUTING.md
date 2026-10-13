@@ -55,6 +55,7 @@ This is a monorepo containing several packages:
 - **`components/`** - Lit-based web components for publishers. Contains reusable web components that get embedded into publisher websites.
 - **`cdn/`** - Content delivery network package. Delivers the embeddable scripts and their related assets that publishers include on their websites to show monetization tools.
 - **`shared/`** - Shared utilities and types
+- **`e2e/`** - Playwright end-to-end tests that drive the frontend in a real browser.
 - **`localenv/`** - Local development environment setup. Provides local S3 simulation for testing configuration storage during development.
 
 ### Pre-requisites
@@ -129,6 +130,32 @@ each package to suit the package's requirements.
 - `pnpm format` - Format code with Prettier
 - `pnpm lint` - Lint and fix code with ESLint
 - `pnpm typecheck` - Run TypeScript type checking across all packages
+
+### End-to-end tests
+
+End-to-end tests live in `e2e/` and use [Playwright](https://playwright.dev).
+Tests run in Chromium and Firefox.
+Before the first run, install the browsers Playwright uses:
+
+```sh
+pnpm -C e2e install-browsers
+```
+
+Then run the suite from the root:
+
+```sh
+pnpm test:e2e
+```
+
+Playwright starts the same dev servers as the VS Code "Dev" task, and reuses any that are already running:
+
+- local S3 on port 8081
+- api on port 8787, after applying the local D1 migrations
+- cdn on port 5173
+- frontend on port 3000
+
+The tests use the same local storage as the dev servers, so configs they save show up in your local environment.
+Use `pnpm -C e2e test:e2e:ui` to debug tests in Playwright's UI mode.
 
 ### CI
 
