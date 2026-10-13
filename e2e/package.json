@@ -11,8 +11,8 @@
   "devDependencies": {
     "@playwright/test": "^1.63.0",
     "@shared/defines": "workspace:^",
-    "@shared/utils": "workspace:^",
     "@types/node": "^24.13.3",
-    "react-router": "^8.4.0"
+    "react-router": "^8.4.0",
+    "vite": "^8.2.2"
   }
 }

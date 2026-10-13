@@ -2,7 +2,13 @@ import { mkdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
-import { API_URL, CDN_URL, FRONTEND_URL, S3_URL } from './src/services'
+import {
+  API_URL,
+  CDN_URL,
+  FRONTEND_PORT,
+  FRONTEND_URL,
+  S3_URL,
+} from './src/services'
 
 const reuseExistingServer = !process.env.CI
 const timeout = 120_000
@@ -66,7 +72,8 @@ export default defineConfig({
     },
     {
       name: 'Frontend',
-      command: 'pnpm -C ../frontend dev',
+      // Same as the frontend's dev script, but with the e2e Vite config and port
+      command: `pnpm -C ../frontend predev && pnpm -C ../frontend exec react-router dev . --port ${FRONTEND_PORT} --config ../e2e/vite.frontend.config.ts`,
       url: FRONTEND_URL,
       reuseExistingServer,
       timeout,

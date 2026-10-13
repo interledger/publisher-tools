@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "type": "module",
   "private": true,
-  "main": "./index.ts",
   "devDependencies": {
     "@interledger/open-payments": "^7.4.0",
     "@shared/types": "workspace:^"
