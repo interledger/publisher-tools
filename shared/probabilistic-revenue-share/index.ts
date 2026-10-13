@@ -82,7 +82,11 @@ function isPointerList(pointerList: unknown): pointerList is PointerList {
  * @returns URL-safe base64 encoded string
  */
 function base64url(str: string): string {
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+  const bytes = new TextEncoder().encode(str)
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '')
 }
 
 /**
@@ -91,5 +95,12 @@ function base64url(str: string): string {
  * @returns Decoded original string
  */
 function fromBase64url(str: string): string {
-  return atob(str.replace(/-/g, '+').replace(/_/g, '/'))
+  const binary = atob(str.replace(/-/g, '+').replace(/_/g, '/'))
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+  } catch {
+    // payloads created before UTF-8 support
+    return binary
+  }
 }
