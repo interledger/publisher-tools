@@ -27,13 +27,15 @@ describe('DiscardChangesDialog', () => {
         /Are you sure you want to discard your current changes\?/,
       ),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Keep changes' }),
+    ).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Discard changes' }),
     ).toBeInTheDocument()
   })
 
-  it('calls onCancel when Continue is clicked', async () => {
+  it('calls onCancel when Keep changes is clicked', async () => {
     const user = userEvent.setup()
     const onCancel = vi.fn()
     const onDiscard = vi.fn()
@@ -44,7 +46,7 @@ describe('DiscardChangesDialog', () => {
       </DialogProvider>,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Continue' }))
+    await user.click(screen.getByRole('button', { name: 'Keep changes' }))
     expect(onCancel).toHaveBeenCalledTimes(1)
     expect(onDiscard).not.toHaveBeenCalled()
   })

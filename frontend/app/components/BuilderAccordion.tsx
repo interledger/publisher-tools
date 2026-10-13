@@ -87,7 +87,7 @@ export const BuilderAccordion: React.FC<Props> = ({
                     iconPosition="left"
                     disabled={!hasChanges}
                     onClick={handleResetClick}
-                    aria-label={`Reset ${title.toLowerCase()} to default`}
+                    aria-label={`Reset ${title.toLowerCase()} to saved settings`}
                     className="text-xs sm:text-sm gap-xs"
                   >
                     Reset changes

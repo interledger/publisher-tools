@@ -24,7 +24,9 @@ describe('BuilderAccordion', () => {
     )
 
     expect(
-      screen.queryByRole('button', { name: /Reset content to default/i }),
+      screen.queryByRole('button', {
+        name: /Reset content to saved settings/i,
+      }),
     ).not.toBeInTheDocument()
   })
 
@@ -43,7 +45,7 @@ describe('BuilderAccordion', () => {
     )
 
     const button = screen.getByRole('button', {
-      name: /Reset content to default/i,
+      name: /Reset content to saved settings/i,
     })
     expect(button).toBeInTheDocument()
     expect(button).toBeDisabled()
@@ -65,7 +67,7 @@ describe('BuilderAccordion', () => {
     )
 
     const button = screen.getByRole('button', {
-      name: /Reset content to default/i,
+      name: /Reset content to saved settings/i,
     })
     expect(button).toBeInTheDocument()
     expect(button).toBeEnabled()
@@ -94,14 +96,16 @@ describe('BuilderAccordion', () => {
     )
 
     const resetButton = screen.getByRole('button', {
-      name: /Reset content to default/i,
+      name: /Reset content to saved settings/i,
     })
 
     await user.click(resetButton)
     expect(screen.getByText('Discard changes?')).toBeInTheDocument()
 
-    const continueButton = screen.getByRole('button', { name: 'Continue' })
-    await user.click(continueButton)
+    const keepChangesButton = screen.getByRole('button', {
+      name: 'Keep changes',
+    })
+    await user.click(keepChangesButton)
     expect(screen.queryByText('Discard changes?')).not.toBeInTheDocument()
     expect(onRefresh).not.toHaveBeenCalled()
 

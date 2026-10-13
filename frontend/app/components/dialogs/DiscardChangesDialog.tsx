@@ -33,10 +33,10 @@ export const DiscardChangesDialog: React.FC<Props> = ({
           className="flex-1 flex items-center justify-center"
           onClick={onCancel}
         >
-          Continue
+          Keep changes
         </ToolsSecondaryButton>
         <ToolsPrimaryButton
-          className="flex-1 flex items-center justify-center !bg-red-600 hover:!bg-red-700"
+          className="flex-1 flex items-center justify-center bg-red-600! hover:bg-red-700!"
           onClick={onDiscard}
         >
           Discard changes
