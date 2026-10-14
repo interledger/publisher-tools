@@ -184,6 +184,8 @@ export const ShareInput = React.memo(
             id={nameInputId}
             placeholder="Fill in name (optional)"
             value={name}
+            maxLength={100}
+            error={name.length >= 100 ? 'Maximum 100 characters reached' : undefined}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeName(e.target.value)
             }
