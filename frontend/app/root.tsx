@@ -13,7 +13,6 @@ import {
 } from 'react-router'
 import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
-import { I18nProvider } from '~/i18n/context.js'
 import i18next from '~/i18n/i18n.client.js'
 import { i18nextMiddleware, getLocale } from '~/i18n/i18n.server.js'
 import stylesheet from '~/tailwind.css?url'
@@ -47,29 +46,27 @@ export default function App({
   ).hostname
 
   return (
-    <I18nProvider>
-      <html lang={locale}>
-        <head>
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <Meta />
-          <Links />
-          {UMAMI_HOST && UMAMI_WEBSITE_ID && (
-            <script
-              defer
-              src={`${UMAMI_HOST}/script.js`}
-              data-website-id={UMAMI_WEBSITE_ID}
-              data-domains={domain}
-            />
-          )}
-        </head>
-        <body className="h-screen bg-interface-bg-main flex flex-col">
-          <Outlet />
-          <ScrollRestoration />
-          <Scripts crossOrigin="" />
-        </body>
-      </html>
-    </I18nProvider>
+    <html lang={locale}>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <Meta />
+        <Links />
+        {UMAMI_HOST && UMAMI_WEBSITE_ID && (
+          <script
+            defer
+            src={`${UMAMI_HOST}/script.js`}
+            data-website-id={UMAMI_WEBSITE_ID}
+            data-domains={domain}
+          />
+        )}
+      </head>
+      <body className="h-screen bg-interface-bg-main flex flex-col">
+        <Outlet />
+        <ScrollRestoration />
+        <Scripts crossOrigin="" />
+      </body>
+    </html>
   )
 }
 
@@ -119,25 +116,23 @@ export function ErrorBoundary() {
 
 const ErrorPage = ({ children }: { children: ReactNode }) => {
   return (
-    <I18nProvider>
-      <html lang="en" className="h-full">
-        <head>
-          <Meta />
-          <Links />
-        </head>
-        <body className="h-full text-tealish">
-          <div className="min-h-full">
-            <div className="flex pt-20 md:pt-0 flex-1 flex-col">
-              <main className="grid min-h-screen place-items-center">
-                {children}
-              </main>
-            </div>
+    <html lang="en" className="h-full">
+      <head>
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full text-tealish">
+        <div className="min-h-full">
+          <div className="flex pt-20 md:pt-0 flex-1 flex-col">
+            <main className="grid min-h-screen place-items-center">
+              {children}
+            </main>
           </div>
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    </I18nProvider>
+        </div>
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
   )
 }
 
