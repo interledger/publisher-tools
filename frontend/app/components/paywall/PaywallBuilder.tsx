@@ -20,7 +20,7 @@ import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { useTranslation } from '~/i18n/useTranslation'
 import { PAYWALL_SUGGESTED_TITLES } from '~/lib/presets'
-import { usePaywallProfile } from '~/stores/paywall-store'
+import { usePaywallProfile, actions } from '~/stores/paywall-store'
 import type { BuilderSection } from '~/stores/uiStore'
 import { PaywallColorsSelector } from './PaywallColorsSelector'
 
@@ -42,6 +42,7 @@ function ContentBuilder({ onRefresh }: Props) {
   const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('content')
   const [snap, profile] = usePaywallProfile({ sync: true })
+  const hasChanges = actions.hasSectionChanges('content')
 
   return (
     <BuilderAccordion
@@ -50,6 +51,7 @@ function ContentBuilder({ onRefresh }: Props) {
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
+      hasChanges={hasChanges}
       onRefresh={() => onRefresh('content')}
     >
       <TitleInput
@@ -93,6 +95,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('appearance')
   const [snap, profile] = usePaywallProfile()
+  const hasChanges = actions.hasSectionChanges('appearance')
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
@@ -105,6 +108,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
+      hasChanges={hasChanges}
       onRefresh={() => onRefresh('appearance')}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
