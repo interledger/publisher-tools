@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router'
 import { Header, Footer } from '@/components'
-
 import { UIProvider } from '~/stores/uiStore'
 
 export default function MainLayout() {
