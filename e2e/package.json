@@ -6,10 +6,11 @@
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "install-browsers": "playwright install chromium"
+    "install-browsers": "playwright install"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
+    "@shared/defines": "workspace:^",
     "@types/node": "^24.13.3"
   }
 }

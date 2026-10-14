@@ -134,7 +134,8 @@ each package to suit the package's requirements.
 ### End-to-end tests
 
 End-to-end tests live in `e2e/` and use [Playwright](https://playwright.dev).
-Before the first run, install the browser Playwright uses:
+Tests run in Chromium and Firefox.
+Before the first run, install the browsers Playwright uses:
 
 ```sh
 pnpm -C e2e install-browsers
@@ -146,7 +147,14 @@ Then run the suite from the root:
 pnpm test:e2e
 ```
 
-Playwright starts the frontend dev server on port 3000, or reuses it if it is already running.
+Playwright starts the same dev servers as the VS Code "Dev" task, and reuses any that are already running:
+
+- local S3 on port 8081
+- api on port 8787, after applying the local D1 migrations
+- cdn on port 5173
+- frontend on port 3000
+
+The tests use the same local storage as the dev servers, so configs they save show up in your local environment.
 Use `pnpm -C e2e test:e2e:ui` to debug tests in Playwright's UI mode.
 
 ### CI
