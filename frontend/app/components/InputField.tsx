@@ -121,17 +121,20 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               {ariaDescription}
             </p>
           )}
+
+          {displayError && (
+            <span
+              id={errorId}
+              role="alert"
+              aria-live="polite"
+              className="absolute right-3 top-full
+              -translate-y-1/2
+              px-2xs text-xs text-text-error bg-white"
+            >
+              {displayError}
+            </span>
+          )}
         </div>
-        {displayError && (
-          <p
-            id={errorId}
-            role="alert"
-            aria-live="polite"
-            className="text-xs text-text-error"
-          >
-            {displayError}
-          </p>
-        )}
         {(helpText || showCounter) && !displayError && (
           <div className="flex justify-between gap-xs text-xs text-text-secondary">
             {helpText && <p id={helpTextId}>{helpText}</p>}

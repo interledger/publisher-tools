@@ -22,8 +22,9 @@ interface ShareInputProps {
 }
 
 const DEFAULT_WALLET_ADDRESS = 'https://walletprovider.com/myWallet'
+const MAX_NAME_LENGTH = 100
 const GRID_COLS =
-  'md:grid-cols-[1fr_3fr_1fr_minmax(0,auto)] lg:grid-cols-[12rem_1fr_8rem_minmax(0,auto)]'
+  'md:grid-cols-[1.25fr_2.75fr_1fr_minmax(0,auto)] lg:grid-cols-[15rem_1fr_8rem_minmax(0,auto)]'
 const GRID_GAP = 'md:gap-x-md'
 
 export const ShareInputTable = ({ children }: React.PropsWithChildren) => {
@@ -184,8 +185,9 @@ export const ShareInput = React.memo(
             id={nameInputId}
             placeholder="Fill in name (optional)"
             value={name}
-            maxLength={100}
-            error={name.length >= 100 ? 'Maximum 100 characters reached' : undefined}
+            maxLength={MAX_NAME_LENGTH}
+            addonAfter={`${name.length} / ${MAX_NAME_LENGTH}`}
+            addonClassName="text-xs whitespace-nowrap"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onChangeName(e.target.value)
             }
