@@ -1,13 +1,6 @@
 /**
- * A wallet address that only exists in the tests. Lookups of it are answered
- * locally, in the browser and in the frontend's server, so no test needs the
- * internet.
+ * The frontend looks this wallet address up on the Interledger test network,
+ * so it has to be a real one. Tests only write to the local storage.
  */
-export const WALLET = {
-  id: 'https://wallet.e2e.test/publisher',
-  publicName: 'E2E Publisher',
-  assetCode: 'USD',
-  assetScale: 2,
-  authServer: 'https://auth.wallet.e2e.test',
-  resourceServer: 'https://wallet.e2e.test',
-}
+export const WALLET_ADDRESS =
+  process.env.E2E_WALLET_ADDRESS || 'https://ilp.interledger-test.dev/alice'

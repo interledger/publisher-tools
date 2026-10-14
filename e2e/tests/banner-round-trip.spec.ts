@@ -1,22 +1,17 @@
 import { expect } from '@playwright/test'
+import { getWalletAddress } from '@shared/utils'
 import { test } from '../src/publisher-page'
 import { API_URL } from '../src/services'
 import { authorizeWallet } from '../src/session'
-import { WALLET } from '../src/wallet'
+import { WALLET_ADDRESS } from '../src/wallet'
 
 test('a banner saved in the frontend renders on a publisher page', async ({
   page,
   request,
   servePublisherPage,
 }, testInfo) => {
-  await authorizeWallet(page.context(), WALLET.id)
-  // The browser's lookup of the wallet address; the frontend's server has its own mock
-  await page.route(WALLET.id, (route) =>
-    route.fulfill({
-      json: WALLET,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-    }),
-  )
+  const wallet = await getWalletAddress(WALLET_ADDRESS)
+  await authorizeWallet(page.context(), wallet.id)
 
   // Unique per run, so a title left over from an earlier run can't pass
   const title = `E2E ${testInfo.project.name} ${Date.now()}`
@@ -26,7 +21,7 @@ test('a banner saved in the frontend renders on a publisher page', async ({
     const walletInput = page.getByRole('textbox', { name: 'Wallet address' })
     // Typing before the page is interactive is lost, so retry until it sticks
     await expect(async () => {
-      await walletInput.fill(WALLET.id)
+      await walletInput.fill(WALLET_ADDRESS)
       await page.getByRole('button', { name: 'Continue' }).click()
       await expect(walletInput).not.toBeEditable({ timeout: 1000 })
     }).toPass()
