@@ -149,7 +149,7 @@ export const ProfilesDialog: React.FC<Props> = ({
         <div className="bg-silver-50 rounded-lg p-sm">
           <div className="flex items-center text-style-small-standard text-text-secondary">
             <span className="w-[50px] mr-md">Tab</span>
-            <span className="w-[150px] mr-md">Current version</span>
+            <span className="w-[150px] mr-md">Local version</span>
             <span className="w-[70px] text-center mr-md">Override</span>
             <span className="w-[140px]">Saved version</span>
           </div>
