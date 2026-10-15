@@ -135,7 +135,8 @@ export function createHTTPException(
   message: string,
   error?: unknown,
 ) {
-  const serializedError = error !== undefined ? serializeError(error) : undefined
+  const serializedError =
+    error !== undefined ? serializeError(error) : undefined
   return new HTTPException(statusCode, {
     message,
     cause: serializedError,
