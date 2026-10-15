@@ -35,8 +35,15 @@ async function handler(encodedPayload: string): Promise<WalletAddress> {
     throw createHTTPException(400, 'Invalid payload', error)
   }
 
-  if (pointerMap.some((entry) => entry.name !== undefined && entry.name.length > 100)) {
-    throw createHTTPException(400, 'Recipient name must be 100 characters or less')
+  if (
+    pointerMap.some(
+      (entry) => entry.name !== undefined && entry.name.length > 100,
+    )
+  ) {
+    throw createHTTPException(
+      400,
+      'Recipient name must be 100 characters or less',
+    )
   }
 
   const selected = pickWeightedRandom(pointerMap)
