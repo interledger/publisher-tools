@@ -155,6 +155,9 @@ Playwright starts the same dev servers as the VS Code "Dev" task, and reuses any
 - frontend on port 3000
 
 The tests use the same local storage as the dev servers, so configs they save show up in your local environment.
+Tests that save a config look up a wallet address on the Interledger test network, so they need an internet connection.
+They use `https://ilp.interledger-test.dev/alice` by default; set `E2E_WALLET_ADDRESS` to use another one.
+These tests sign their own session cookie instead of approving a grant at the wallet provider.
 Use `pnpm -C e2e test:e2e:ui` to debug tests in Playwright's UI mode.
 
 ### CI
