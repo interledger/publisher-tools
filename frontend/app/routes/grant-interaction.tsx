@@ -6,7 +6,6 @@ import {
 } from 'react-router'
 import { SVGErrorVector, SVGMarkSuccess } from '@/assets'
 import { getInstance, getLocale } from '~/i18n/i18n.server.js'
-import { resources } from '~/i18n/locales/index.js'
 import { useTranslation } from '~/i18n/useTranslation'
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
@@ -14,12 +13,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const result = url.searchParams.get('result')
   const i18n = getInstance(context)
   const locale = getLocale(context) ?? 'en'
-  const t = i18n
-    ? i18n.getFixedT(locale, 'paymentResult')
-    : (key: string) => {
-        const paymentResult: Record<string, string> = resources.en.paymentResult
-        return paymentResult[key] ?? key
-      }
+  const t = i18n.getFixedT(locale, 'paymentResult')
 
   let title = t('meta.defaultTitle')
   let description = t('meta.defaultDescription')
