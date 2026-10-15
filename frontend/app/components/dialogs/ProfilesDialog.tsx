@@ -141,7 +141,7 @@ export const ProfilesDialog: React.FC<Props> = ({
       <div className="px-md w-full text-center">
         <div className="text-style-body-standard space-y-2xs">
           <p>We found previous edits correlated to this wallet address.</p>
-          <p>Choose configurations to keep:</p>
+          <p>Select the configurations you want to keep:</p>
         </div>
       </div>
 
@@ -149,8 +149,8 @@ export const ProfilesDialog: React.FC<Props> = ({
         <div className="bg-silver-50 rounded-lg p-sm">
           <div className="flex items-center text-style-small-standard text-text-secondary">
             <span className="w-[50px] mr-md">Tab</span>
-            <span className="w-[150px] mr-md">Current version</span>
-            <span className="w-[70px] text-center mr-md">Override</span>
+            <span className="w-[150px] mr-md">Local version</span>
+            <span className="w-[70px] text-center mr-md">Keep local</span>
             <span className="w-[140px]">Saved version</span>
           </div>
         </div>
@@ -183,10 +183,10 @@ export const ProfilesDialog: React.FC<Props> = ({
             {isOverriding && <SVGSpinner className="w-4 h-4" />}
             <span>
               {isOverriding
-                ? 'Overriding and saving...'
+                ? 'Saving...'
                 : selectedConfigs.length > 0
-                  ? `Override ${selectedConfigs.length} local configuration${selectedConfigs.length > 1 ? 's' : ''} and save`
-                  : 'Keep all saved edits and save'}
+                  ? `Save ${selectedConfigs.length} local change${selectedConfigs.length > 1 ? 's' : ''} and continue`
+                  : 'Use all saved configurations and continue'}
             </span>
           </div>
         </ToolsPrimaryButton>
@@ -194,7 +194,7 @@ export const ProfilesDialog: React.FC<Props> = ({
 
       <div className="px-md w-full text-center">
         <p className="text-style-body-standard max-w-[394px] mx-auto">
-          Would you like to use a different wallet address?
+          Want to switch to a different wallet address instead?
         </p>
       </div>
 
@@ -203,7 +203,7 @@ export const ProfilesDialog: React.FC<Props> = ({
           className="w-full h-[48px] rounded-lg border border-secondary-edge text-text-buttons-default hover:border-secondary-edge-hover hover:text-secondary-edge-hover"
           onClick={onAddWalletAddress}
         >
-          Add another wallet address
+          Use a different wallet address
         </ToolsSecondaryButton>
       </div>
     </BaseDialog>
