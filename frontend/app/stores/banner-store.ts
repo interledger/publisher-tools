@@ -105,6 +105,9 @@ export const actions = {
     const { content, appearance } = splitProfileProperties(snapshot)
     patchProxy(banner.profile, section === 'content' ? content : appearance)
   },
+  restoreDefaultSection(section: 'content' | 'appearance') {
+    bannerStoreUtils.restoreDefaultSection(toolState.activeTab, section)
+  },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
     return await saveToolProfile(

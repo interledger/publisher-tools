@@ -62,6 +62,7 @@ function ContentBuilder({ onRefresh }: Props) {
       onToggle={onToggle}
       hasChanges={hasChanges}
       onRefresh={() => onRefresh('content')}
+      onRestoreDefaults={() => actions.restoreDefaultSection('content')}
     >
       <TitleInput
         value={snap.title.text}
@@ -109,6 +110,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       onToggle={onToggle}
       hasChanges={hasChanges}
       onRefresh={() => onRefresh('appearance')}
+      onRestoreDefaults={() => actions.restoreDefaultSection('appearance')}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown

@@ -106,6 +106,9 @@ export const actions = {
     const { content, appearance } = splitProfileProperties(snapshot)
     patchProxy(paywall.profile, section === 'content' ? content : appearance)
   },
+  restoreDefaultSection(section: 'content' | 'appearance') {
+    paywallStoreUtils.restoreDefaultSection(toolState.activeTab, section)
+  },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(paywall.profile)
     return await saveToolProfile(

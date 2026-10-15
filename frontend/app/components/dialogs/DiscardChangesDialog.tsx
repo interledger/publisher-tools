@@ -6,11 +6,17 @@ import { BaseDialog } from './BaseDialog'
 interface Props {
   onDiscard: () => void
   onCancel: () => void
+  title?: string
+  description?: string
+  discardLabel?: string
 }
 
 export const DiscardChangesDialog: React.FC<Props> = ({
   onDiscard,
   onCancel,
+  title = 'Discard changes?',
+  description = 'Are you sure you want to discard your current changes? All unsaved edits in this section will be lost.',
+  discardLabel = 'Discard changes',
 }) => {
   return (
     <BaseDialog
@@ -19,13 +25,12 @@ export const DiscardChangesDialog: React.FC<Props> = ({
     >
       <div className="text-center">
         <BodyEmphasis id="discard-changes-title" as="h2" className="text-lg">
-          Discard changes?
+          {title}
         </BodyEmphasis>
       </div>
       <div className="text-center">
         <BodyStandard className="text-field-helpertext-default!">
-          Are you sure you want to discard your current changes? All unsaved
-          edits in this section will be lost.
+          {description}
         </BodyStandard>
       </div>
       <div className="flex flex-col-reverse sm:flex-row gap-sm w-full mt-sm">
@@ -39,7 +44,7 @@ export const DiscardChangesDialog: React.FC<Props> = ({
           className="flex-1 flex items-center justify-center bg-red-600! hover:bg-red-700!"
           onClick={onDiscard}
         >
-          Discard changes
+          {discardLabel}
         </ToolsPrimaryButton>
       </div>
     </BaseDialog>

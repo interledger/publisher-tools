@@ -1,5 +1,6 @@
 import { deepEqual } from 'fast-equals'
 import { snapshot, subscribe } from 'valtio'
+import { getDefaultProfile } from '@shared/default-data'
 import {
   type BaseToolProfile,
   type ProfileId,
@@ -13,7 +14,7 @@ import type { OfferwallStore } from '~/stores/offerwall-store'
 import type { PaywallStore } from '~/stores/paywall-store'
 import type { WidgetStore } from '~/stores/widget-store'
 import { diffProfile, type ChangedFields } from '~/utils/profile-diff'
-import { omit, splitProfileProperties } from '~/utils/utils.storage'
+import { omit, patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 
 type Store = BannerStore | WidgetStore | OfferwallStore | PaywallStore
 const STORAGE_PREFIX = 'wmt'
@@ -185,6 +186,22 @@ export function createToolStoreUtils<T extends Tool>(
         const storageKey = getProfileStorageKey(id)
         localStorage.removeItem(storageKey)
       })
+    },
+
+    restoreDefaultSection(
+      profileId: ProfileId,
+      section?: 'content' | 'appearance',
+    ): void {
+      const { content, appearance } = splitProfileProperties(
+        getDefaultProfile(tool),
+      )
+      if (section === 'content') {
+        patchProxy(store.profiles[profileId], content)
+      } else if (section === 'appearance') {
+        patchProxy(store.profiles[profileId], appearance)
+      } else {
+        patchProxy(store.profiles[profileId], { ...content, ...appearance })
+      }
     },
 
     hasSectionChanges(

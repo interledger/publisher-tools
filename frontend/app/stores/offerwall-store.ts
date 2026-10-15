@@ -106,6 +106,9 @@ export const actions = {
 
     patchProxy(offerwall.profile, snapshot)
   },
+  restoreDefaultSection() {
+    offerwallStoreUtils.restoreDefaultSection(toolState.activeTab)
+  },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(offerwall.profile)
     return await saveToolProfile(

@@ -104,6 +104,9 @@ export const actions = {
     const { content, appearance } = splitProfileProperties(snapshot)
     patchProxy(widget.profile, section === 'content' ? content : appearance)
   },
+  restoreDefaultSection(section: 'content' | 'appearance') {
+    widgetStoreUtils.restoreDefaultSection(toolState.activeTab, section)
+  },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(widget.profile)
     return await saveToolProfile(

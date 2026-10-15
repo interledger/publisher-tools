@@ -11,6 +11,7 @@ import { Tooltip } from './Tooltip'
 interface Props {
   title: string
   onRefresh: () => void
+  onRestoreDefaults?: () => void
   isComplete?: boolean
   isOpen?: boolean
   onClick?: (isOpen: boolean) => void
@@ -25,6 +26,7 @@ export const BuilderAccordion: React.FC<Props> = ({
   isOpen = false,
   onClick,
   onRefresh,
+  onRestoreDefaults,
   onToggle,
   hasChanges = false,
   children,
@@ -46,6 +48,23 @@ export const BuilderAccordion: React.FC<Props> = ({
         onDiscard={() => {
           closeDialog()
           onRefresh()
+        }}
+      />,
+    )
+  }
+
+  const handleRestoreDefaultsClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    openDialog(
+      <DiscardChangesDialog
+        title="Restore defaults?"
+        description="All settings in this section will be replaced with the defaults. Your saved settings stay until you save again."
+        discardLabel="Restore defaults"
+        onCancel={closeDialog}
+        onDiscard={() => {
+          closeDialog()
+          onRestoreDefaults?.()
         }}
       />,
     )
@@ -77,9 +96,25 @@ export const BuilderAccordion: React.FC<Props> = ({
         <div className="flex gap-xs items-center">
           {isOpen && (
             <div
-              className="flex items-center"
+              className="flex flex-wrap items-center justify-end"
               onClick={(e) => e.stopPropagation()}
             >
+              {onRestoreDefaults && (
+                <Tooltip
+                  trigger={
+                    <GhostButton
+                      iconPosition="none"
+                      onClick={handleRestoreDefaultsClick}
+                      aria-label={`Restore ${title.toLowerCase()} to default settings`}
+                      className="text-xs sm:text-sm"
+                    >
+                      Restore defaults
+                    </GhostButton>
+                  }
+                >
+                  {tooltips.restoreDefaults}
+                </Tooltip>
+              )}
               <Tooltip
                 trigger={
                   <GhostButton
