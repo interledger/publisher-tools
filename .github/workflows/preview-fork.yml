@@ -1,0 +1,212 @@
+name: Preview Fork
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Fork PR number to preview (e.g. 832)'
+        required: true
+        type: number
+      reason:
+        description: 'Reason for preview (optional, shown in summary for audit)'
+        required: false
+        type: string
+
+run-name: Preview PR #${{ inputs.pr_number }}
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: preview-fork-pr-${{ inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    name: Preview PR
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Resolve PR head
+        id: pr
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER);
+            if (!prNumber) {
+              core.setFailed('inputs.pr_number is required');
+              return;
+            }
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo,
+              pull_number: prNumber,
+            });
+            if (pr.state !== 'open') {
+              core.setFailed(`PR #${prNumber} is ${pr.state}, expected open.`);
+              return;
+            }
+            if (!pr.head.repo) {
+              core.setFailed(`PR #${prNumber} head repo is unavailable (fork deleted?).`);
+              return;
+            }
+            core.setOutput('head_repo', pr.head.repo.full_name);
+            core.setOutput('head_sha', pr.head.sha);
+            core.setOutput('head_ref', pr.head.ref);
+            core.setOutput('pr_number', String(pr.number));
+            core.info(`PR #${pr.number}: ${pr.head.repo.full_name}@${pr.head.sha} (${pr.head.ref})`);
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.pr.outputs.head_repo }}
+          ref: ${{ steps.pr.outputs.head_sha }}
+          fetch-depth: 0
+
+      - uses: ./.github/workflows/setup
+
+      - name: Install wrangler globally
+        # The wrangler Action expects a global installation, so we better reuse
+        # what we've in our project.
+        run: |
+          wrangler_version=$(yq '.overrides.wrangler' pnpm-workspace.yaml)
+          pnpm install -g "wrangler@${wrangler_version}"
+
+      #region Deploy
+      # Manual fork preview: always deploy all three workers in preview mode.
+      # Trigger (workflow_dispatch by write+ user after review) is the approval gate,
+      # so no check-deploy-permissions / paths-filter split needed. Keeps it simple per #831.
+
+      - name: Deploy API
+        uses: ./.github/workflows/deploy-worker
+        id: api
+        with:
+          name: 'api'
+          changed: 'true'
+          mode: 'preview'
+          pr-number: ${{ steps.pr.outputs.pr_number }}
+          skip-deploy: 'false'
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.API_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy CDN
+        uses: ./.github/workflows/deploy-worker
+        id: cdn
+        with:
+          name: 'cdn'
+          changed: 'true'
+          mode: 'preview'
+          pr-number: ${{ steps.pr.outputs.pr_number }}
+          skip-deploy: 'false'
+          build: 'pnpm -C cdn run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          origin: ${{ vars.CDN_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy Frontend
+        uses: ./.github/workflows/deploy-worker
+        id: frontend
+        with:
+          name: 'frontend'
+          changed: 'true'
+          mode: 'preview'
+          pr-number: ${{ steps.pr.outputs.pr_number }}
+          skip-deploy: 'false'
+          build: 'pnpm -C frontend run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.APP_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #endregion
+
+      #region Summary
+      - name: Create Job summary
+        if: always()
+        uses: actions/github-script@v9
+        id: summary
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.pr_number }}
+          HEAD_SHA: ${{ steps.pr.outputs.head_sha }}
+          TRIGGERED_BY: ${{ github.triggering_actor }}
+          REASON: ${{ inputs.reason }}
+          API_URL: ${{ steps.api.outputs.url }}
+          API_VERSIONED_URL: ${{ steps.api.outputs.versioned-url }}
+          API_OUTCOME: ${{ steps.api.outcome }}
+          CDN_URL: ${{ steps.cdn.outputs.url }}
+          CDN_VERSIONED_URL: ${{ steps.cdn.outputs.versioned-url }}
+          CDN_OUTCOME: ${{ steps.cdn.outcome }}
+          FRONTEND_URL: ${{ steps.frontend.outputs.url }}
+          FRONTEND_VERSIONED_URL: ${{ steps.frontend.outputs.versioned-url }}
+          FRONTEND_OUTCOME: ${{ steps.frontend.outcome }}
+        with:
+          script: |
+            core.summary.addHeading('Fork preview results', 'h2');
+            core.summary.addRaw(`PR #${process.env.PR_NUMBER} @ \`${(process.env.HEAD_SHA ?? '').slice(0, 7)}\` by @${process.env.TRIGGERED_BY}`, true);
+            if (process.env.REASON) {
+              core.summary.addRaw(`Reason: ${process.env.REASON}`, true);
+            }
+
+            core.summary.addRaw(`
+            | Worker | Alias | URL  | Outcome |
+            | ------ | --- | --- | --- |
+            | API    | ${getTableText(process.env.API_URL, process.env.API_VERSIONED_URL, process.env.API_OUTCOME)} |
+            | CDN    | ${getTableText(process.env.CDN_URL, process.env.CDN_VERSIONED_URL, process.env.CDN_OUTCOME)} |
+            | App    | ${getTableText(process.env.FRONTEND_URL, process.env.FRONTEND_VERSIONED_URL, process.env.FRONTEND_OUTCOME)} |
+            `, true);
+
+            const repoUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}`;
+            const runId = process.env.GITHUB_RUN_ID;
+            core.summary.addSeparator();
+            core.summary.addLink(`Logs #${runId}`, `${repoUrl}/actions/runs/${runId}`);
+
+            await core.setOutput('summary', core.summary.stringify());
+            await core.summary.write();
+
+            function getTableText(url, versionedUrl, outcome) {
+              if (outcome !== 'success') {
+                return ['-', '-', outcome].join(' | ');
+              }
+              return [
+                url !== versionedUrl ? getUrlText(url, outcome) : '-',
+                getUrlText(versionedUrl, outcome),
+                outcome,
+              ].join(' | ');
+            }
+
+            function getUrlText(url, outcome) {
+              if (url) {
+                const RE = /^https?:\/\/([a-z0-9]+)-/i;
+                const text = url.match(RE)?.[1] ?? url;
+                return `[${text}](${url})`;
+              }
+              return outcome;
+            }
+
+      - name: Create/update preview comment
+        if: always()
+        continue-on-error: true
+        uses: edumserrano/find-create-or-update-comment@v3
+        with:
+          issue-number: ${{ inputs.pr_number }}
+          body-includes: '<!-- worker-deploy-summary -->'
+          comment-author: 'github-actions[bot]'
+          body: |
+            <!-- worker-deploy-summary -->
+            ${{ steps.summary.outputs.summary }}
+          edit-mode: replace
+    #endregion
