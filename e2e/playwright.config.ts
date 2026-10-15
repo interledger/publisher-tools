@@ -22,6 +22,8 @@ function firefoxLaunchEnv(): Record<string, string> | undefined {
 export default defineConfig({
   testDir: './tests',
   forbidOnly: !!process.env.CI,
+  // Tests share one local storage, so two saving at once would overwrite each other
+  workers: 1,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
   use: {
