@@ -4,11 +4,18 @@ import { SVGClose } from '@/assets'
 import { useDialog } from '~/hooks/useDialog'
 
 interface Props {
-  children: React.ReactNode
-  className?: string
+  'children': React.ReactNode
+  'className'?: string
+  'aria-labelledby'?: string
+  'aria-label'?: string
 }
 
-export const BaseDialog: React.FC<Props> = ({ children, className }) => {
+export const BaseDialog: React.FC<Props> = ({
+  children,
+  className,
+  'aria-labelledby': ariaLabelledby,
+  'aria-label': ariaLabel,
+}) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [, closeDialog] = useDialog()
 
@@ -31,6 +38,8 @@ export const BaseDialog: React.FC<Props> = ({ children, className }) => {
   return (
     <dialog
       ref={dialogRef}
+      aria-labelledby={ariaLabelledby}
+      aria-label={ariaLabel}
       className={cx(
         'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-[34rem] rounded-lg border border-interface-edge-container bg-interface-bg-container shadow-2xl backdrop:bg-[#8995a7]/65',
         className,

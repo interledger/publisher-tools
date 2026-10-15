@@ -20,7 +20,7 @@ import { WidgetPositionSelector } from '~/components/widget/WidgetPositionSelect
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { WIDGET_SUGGESTED_TITLES } from '~/lib/presets'
 import type { BuilderSection } from '~/stores/uiStore'
-import { useWidgetProfile } from '~/stores/widget-store'
+import { useWidgetProfile, actions } from '~/stores/widget-store'
 
 interface Props {
   onRefresh: (section: BuilderSection) => void
@@ -51,6 +51,7 @@ function ContentBuilder({ onRefresh }: Props) {
   const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('content')
   const [snap, profile] = useWidgetProfile({ sync: true })
+  const hasChanges = actions.hasSectionChanges('content')
 
   return (
     <BuilderAccordion
@@ -59,6 +60,7 @@ function ContentBuilder({ onRefresh }: Props) {
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
+      hasChanges={hasChanges}
       onRefresh={() => onRefresh('content')}
     >
       <TitleInput
@@ -92,6 +94,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
   const { isComplete, isOpen, onClick, onToggle } =
     useBuilderSectionHandlers('appearance')
   const [snap, profile] = useWidgetProfile()
+  const hasChanges = actions.hasSectionChanges('appearance')
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
@@ -104,6 +107,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
+      hasChanges={hasChanges}
       onRefresh={() => onRefresh('appearance')}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>

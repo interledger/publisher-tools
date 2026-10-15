@@ -12,4 +12,6 @@ export const tooltips = {
   revShareGenerator:
     'Split Web Monetization revenue between multiple payment pointers and wallet addresses. Assign a percentage to each recipient, then add the generated link tag to your HTML documents.<br />The percentages must add up to 100% and represent how often a given wallet address or payment pointer will receive payments when a web monetized visitor views your content.',
   font: 'Setting the Font to Inherit, will make the component use the font from the website it is added to.',
+  resetChanges:
+    'Discard all current changes made to this section and revert to saved settings.',
 }
