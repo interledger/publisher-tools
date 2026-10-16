@@ -1,5 +1,6 @@
 import type { ProfileId, Tool, ToolProfile, ToolProfiles } from '@shared/types'
 import { urlWithParams } from '@shared/utils'
+import i18next from '~/i18n/i18n.client.js'
 import { APP_BASEPATH } from '~/lib/constants'
 import { ApiError } from '~/lib/helpers'
 import type { GetProfilesResult, SaveResult } from '~/lib/types'
@@ -28,7 +29,7 @@ export async function saveToolProfile<T extends Tool>(
 
   if (!response.ok) {
     throw new ApiError(
-      data.error?.message || 'Failed to save profile',
+      data.error?.message || i18next.t('errors.saveFailed', { ns: 'general' }),
       data.error?.cause?.errors,
     )
   }
@@ -50,7 +51,8 @@ export async function getToolProfiles<T extends Tool>(
 
   if (!response.ok) {
     throw new ApiError(
-      data.error?.message || 'Failed to fetch layouts',
+      data.error?.message ||
+        i18next.t('errors.fetchLayoutsFailed', { ns: 'general' }),
       data.error?.cause?.errors,
       response.status,
     )

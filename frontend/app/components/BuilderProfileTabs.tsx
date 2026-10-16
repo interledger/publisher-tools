@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGEdit2, SVGExclamationCircle } from '~/assets/svg'
+import { useTranslation } from '~/i18n/useTranslation'
 
 type TabOption<T extends string> = { id: T; label: string; hasUpdates: boolean }
 interface Props<T extends string> {
@@ -249,18 +250,20 @@ function TabNameEditor<T extends string>({
   setHasError,
   inputId,
 }: TabNameEditorProps<T>) {
+  const t = useTranslation('general')
   const [errorMessage, setErrorMessage] = useState('')
   const ALLOWED_CHARS = /[a-zA-Z0-9-_\s#@&]/
 
   const validateTabName = useCallback(
     (input: HTMLInputElement): boolean => {
-      const errMsg = validateInput(input.value, options, tabId)
+      const errorKey = validateInput(input.value, options, tabId)
+      const errMsg = errorKey ? t(errorKey) : ''
       input.setCustomValidity(errMsg)
       setErrorMessage(errMsg)
       setHasError(!!errMsg)
       return !errMsg
     },
-    [tabId, options, setErrorMessage],
+    [tabId, options, setErrorMessage, t],
   )
 
   const onKeyDown = useCallback((ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -345,14 +348,16 @@ function TabNameEditor<T extends string>({
   )
 }
 
+type TabNameErrorKey = 'errors.nameRequired' | 'errors.duplicateName'
+
 const validateInput = <T extends string>(
   value: string,
   options: readonly TabOption<T>[],
   currentTabId: T,
-): string | '' => {
+): TabNameErrorKey | '' => {
   const val = value.trim()
   if (!val) {
-    return 'Name is required'
+    return 'errors.nameRequired'
   }
 
   const isDuplicate = options.some(
@@ -360,7 +365,7 @@ const validateInput = <T extends string>(
       opt.id !== currentTabId && opt.label.toLowerCase() === val.toLowerCase(),
   )
   if (isDuplicate) {
-    return 'This name is already used'
+    return 'errors.duplicateName'
   }
 
   return ''

@@ -15,6 +15,7 @@ import { APP_URL, UMAMI_HOST, UMAMI_WEBSITE_ID } from '@shared/defines'
 import faviconSvg from '~/assets/images/favicon.svg?url'
 import i18next from '~/i18n/i18n.client.js'
 import { i18nextMiddleware, getLocale } from '~/i18n/i18n.server.js'
+import { useTranslation } from '~/i18n/useTranslation'
 import stylesheet from '~/tailwind.css?url'
 import { XCircle } from './components/icons.js'
 import { Button } from './components/index.js'
@@ -71,6 +72,7 @@ export default function App({
 }
 
 export function ErrorBoundary() {
+  const t = useTranslation('general')
   const error = useRouteError()
 
   if (isRouteErrorResponse(error)) {
@@ -99,9 +101,7 @@ export function ErrorBoundary() {
       <div className="flex items-center justify-center flex-col bg-white p-10 rounded-md shadow-md space-y-5">
         <div className="grid place-items-center">
           <XCircle className="w-[40px] h-[40px] text-red-500" />
-          <p className="text-lg font-semibold">
-            There was an issue with your request.
-          </p>
+          <p className="text-lg font-semibold">{t('errors.pageError')}</p>
         </div>
         <div>
           <span className="font-light">Cause:</span> <span>{errorMessage}</span>

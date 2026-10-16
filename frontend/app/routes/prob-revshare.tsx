@@ -15,6 +15,7 @@ import {
 } from '@/components'
 import { Heading5 } from '@/typography'
 import { API_URL } from '@shared/defines'
+import { useTranslation } from '~/i18n/useTranslation'
 import {
   appendShareRow,
   changeList,
@@ -69,6 +70,7 @@ export default function RevsharePageWrapper() {
 }
 
 function Revshare() {
+  const t = useTranslation('general')
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [importTag, setImportTag] = useState('')
@@ -141,9 +143,9 @@ function Revshare() {
       setIsModalOpen(false)
       setImportTag('')
     } catch (err: unknown) {
-      setImportError((err as Error).message || 'An unexpected error occurred.')
+      setImportError((err as Error).message || t('errors.unexpectedError'))
     }
-  }, [importTag, setShares, setIsModalOpen])
+  }, [importTag, setShares, setIsModalOpen, t])
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)
