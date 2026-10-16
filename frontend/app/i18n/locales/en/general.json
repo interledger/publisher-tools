@@ -5,5 +5,11 @@
   "errors.pageError": "There was an issue with your request.",
   "errors.connectWalletFailed": "Use connect wallet error",
   "errors.saveFailed": "Failed to save profile",
-  "errors.fetchLayoutsFailed": "Failed to fetch layouts"
+  "errors.fetchLayoutsFailed": "Failed to fetch layouts",
+  "errors.fetchProfilesFailed": "Failed to get profiles",
+  "errors.configurationNotFound": "Configuration not found",
+  "errors.fetchConfigurationFailed": "Failed to get configuration: {{message}}",
+  "errors.methodNotAllowed": "Method not allowed",
+  "status.copyMonetizationTag": "Copy monetization tag to clipboard",
+  "status.copiedMonetizationTag": "Monetization tag copied to clipboard"
 }

@@ -9,6 +9,7 @@ import { AWS_PREFIX } from '@shared/defines'
 import type { Configuration, Tool } from '@shared/types'
 import { TOOLS } from '@shared/types'
 import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { getInstance, getLocale } from '~/i18n/i18n.server.js'
 import { cloudflareContext } from '~/lib/context.js'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
@@ -21,6 +22,9 @@ const ApiGetProfilesSchema = z.object({
 })
 
 export async function loader({ request, context }: Route.LoaderArgs) {
+  const i18n = getInstance(context)
+  const locale = getLocale(context) ?? 'en'
+  const t = i18n.getFixedT(locale, 'general')
   const { env } = context.get(cloudflareContext)
 
   try {
@@ -34,7 +38,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       return data<GetProfilesResult<Tool>>(
         {
           error: {
-            message: 'Failed to get profiles',
+            message: t('errors.fetchProfilesFailed'),
             cause: {
               message: INVALID_PAYLOAD_ERROR,
               errors: { reason: z.prettifyError(parsed.error) },
@@ -72,14 +76,18 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     if (isConfigStorageNotFoundError(err)) {
       return data<GetProfilesResult<Tool>>(
         {
-          error: { message: 'Configuration not found' },
+          error: { message: t('errors.configurationNotFound') },
         },
         { status: 404 },
       )
     }
     return data<GetProfilesResult<Tool>>(
       {
-        error: { message: `Failed to get configuration: ${err.message}` },
+        error: {
+          message: t('errors.fetchConfigurationFailed', {
+            message: err.message,
+          }),
+        },
       },
       { status: 500 },
     )

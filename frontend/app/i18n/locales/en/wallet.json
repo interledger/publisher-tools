@@ -1,0 +1,21 @@
+{
+  "errors.walletNotFound": "This wallet address does not exist",
+  "errors.fetchWalletFailed": "Unable to fetch wallet details",
+  "errors.invalidWalletUrl": "Provided URL is not a valid wallet address",
+  "errors.invalidWalletFormat": "Invalid wallet address format",
+  "errors.httpsRequired": "Wallet address must use HTTPS protocol",
+  "errors.urlElementsNotAllowed": "Wallet address URL must not contain query/fragment/port/username/password elements.",
+  "errors.doesNotExist": "Wallet address does not exist",
+  "errors.notValidWalletAddress": "Wallet address is not a valid wallet address",
+  "errors.invalidWalletResponse": "Wallet address does not have a valid wallet response",
+  "errors.required": "Wallet address is required",
+  "errors.mustStartWithHttps": "Wallet address must start with https:// or $",
+  "errors.noSpaces": "Wallet address must not contain spaces",
+  "errors.invalidCharacters": "Wallet address contains invalid characters",
+  "errors.notValidUrl": "Wallet address is not a valid URL",
+  "errors.mustUseHttps": "Wallet address must use HTTPS protocol",
+  "errors.domainRequired": "Wallet address must include a domain name",
+  "errors.queryOrFragmentNotAllowed": "Wallet address must not contain query string or fragment",
+  "errors.pathMustStartWithSlash": "Wallet address path must start with a slash",
+  "errors.invalidDomain": "Wallet address domain name is not valid"
+}
