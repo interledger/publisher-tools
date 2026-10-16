@@ -6,12 +6,14 @@ import paymentResult from './paymentResult.json'
 import paywall from './paywall.json'
 import revshare from './revshare.json'
 import toolsWalletAddress from './toolsWalletAddress.json'
+import wallet from './wallet.json'
 
 const en = {
   general,
   header,
   linkTag,
   revshare,
+  wallet,
   toolsWalletAddress,
   grantInteraction,
   paymentResult,
