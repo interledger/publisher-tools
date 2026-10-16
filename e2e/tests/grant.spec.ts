@@ -30,7 +30,7 @@ test.describe('with a test wallet login', () => {
     !WALLET_LOGIN,
     'Set E2E_WALLET_EMAIL and E2E_WALLET_PASSWORD, see docs/env-vars.md',
   )
-  // Goes through the wallet provider's login and consent pages
+  // Goes through the wallet provider's login and ownership confirmation
   test.slow()
 
   test('approving the grant at the wallet lets the publisher save', async ({
@@ -49,16 +49,22 @@ test.describe('with a test wallet login', () => {
     await expect(confirmDialog.getByText(wallet.id)).toBeVisible()
     await confirmDialog.getByRole('button', { name: 'Confirm' }).click()
 
-    // The wallet asks to log in first, unless it remembers the session
-    const emailInput = page.getByRole('textbox', { name: 'E-mail' })
-    const acceptButton = page.getByRole('button', { name: 'accept' })
-    await expect(emailInput.or(acceptButton)).toBeVisible({ timeout: 30_000 })
-    if (await emailInput.isVisible()) {
-      await emailInput.fill(login.email)
-      await page.getByRole('textbox', { name: 'Password' }).fill(login.password)
-      await page.getByRole('button', { name: 'login' }).click()
-    }
-    await acceptButton.click({ timeout: 30_000 })
+    // The wallet asks to log in first. Its login form only works once React
+    // hydrates it, before that a click submits it natively and drops the
+    // callback to the grant
+    const loginButton = page.getByRole('button', { name: 'login' })
+    await expect
+      .poll(() => loginButton.evaluate(isHydrated), { timeout: 30_000 })
+      .toBe(true)
+    await page.getByRole('textbox', { name: 'E-mail' }).fill(login.email)
+    await page.getByRole('textbox', { name: 'Password' }).fill(login.password)
+    await loginButton.click()
+
+    // An ownership grant needs no consent, the wallet confirms it and sends
+    // the publisher back by itself
+    await expect(
+      page.getByText(`Confirmed ${wallet.id} ownership`),
+    ).toBeVisible({ timeout: 30_000 })
 
     // Back on the frontend, the save that asked for the grant goes through
     await expect(
@@ -66,3 +72,8 @@ test.describe('with a test wallet login', () => {
     ).toBeVisible({ timeout: 30_000 })
   })
 })
+
+// React attaches its props to the DOM nodes it has hydrated
+function isHydrated(element: Element) {
+  return Object.keys(element).some((key) => key.startsWith('__reactProps$'))
+}
