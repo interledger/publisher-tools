@@ -17,6 +17,7 @@ interface Props {
   onClick?: (isOpen: boolean) => void
   onToggle?: (e: React.SyntheticEvent<HTMLDetailsElement>) => void
   hasChanges?: boolean
+  canRestoreDefaults?: boolean
   children: React.ReactNode
 }
 
@@ -29,6 +30,7 @@ export const BuilderAccordion: React.FC<Props> = ({
   onRestoreDefaults,
   onToggle,
   hasChanges = false,
+  canRestoreDefaults = false,
   children,
 }) => {
   const [openDialog, closeDialog] = useDialog()
@@ -104,6 +106,7 @@ export const BuilderAccordion: React.FC<Props> = ({
                   trigger={
                     <GhostButton
                       iconPosition="none"
+                      disabled={!canRestoreDefaults}
                       onClick={handleRestoreDefaultsClick}
                       aria-label={`Restore ${title.toLowerCase()} to default settings`}
                       className="text-xs sm:text-sm"

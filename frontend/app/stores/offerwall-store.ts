@@ -127,6 +127,9 @@ export const actions = {
   hasSectionChanges(section?: 'content' | 'appearance') {
     return offerwallStoreUtils.hasSectionChanges(toolState.activeTab, section)
   },
+  hasDefaultChanges(section?: 'content' | 'appearance') {
+    return offerwallStoreUtils.hasDefaultChanges(toolState.activeTab, section)
+  },
 }
 
 export const {

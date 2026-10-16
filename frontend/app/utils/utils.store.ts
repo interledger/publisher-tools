@@ -75,6 +75,18 @@ export function createToolStoreUtils<T extends Tool>(
     })
   }
 
+  function getDefaultSection(section?: 'content' | 'appearance') {
+    const { content, appearance } = splitProfileProperties(
+      getDefaultProfile(tool),
+    )
+    // price and placement are edited in the paywall settings, not appearance
+    const appearanceOnly = omit(appearance, ['price', 'behavior'])
+
+    if (section === 'content') return content
+    if (section === 'appearance') return appearanceOnly
+    return { ...content, ...appearanceOnly }
+  }
+
   function hasPendingUpdates(id: ProfileId, snap: ToolProfile<T>): boolean {
     const baseline = snapshots.get(id)
     if (!baseline) {
@@ -192,16 +204,20 @@ export function createToolStoreUtils<T extends Tool>(
       profileId: ProfileId,
       section?: 'content' | 'appearance',
     ): void {
-      const { content, appearance } = splitProfileProperties(
-        getDefaultProfile(tool),
+      patchProxy(store.profiles[profileId], getDefaultSection(section))
+    },
+
+    hasDefaultChanges(
+      profileId: ProfileId,
+      section?: 'content' | 'appearance',
+    ): boolean {
+      const current = store.profiles[profileId]
+      if (!current) return false
+
+      const profile = snapshot(current) as Record<string, unknown>
+      return Object.entries(getDefaultSection(section)).some(
+        ([key, value]) => !deepEqual(profile[key], value),
       )
-      if (section === 'content') {
-        patchProxy(store.profiles[profileId], content)
-      } else if (section === 'appearance') {
-        patchProxy(store.profiles[profileId], appearance)
-      } else {
-        patchProxy(store.profiles[profileId], { ...content, ...appearance })
-      }
     },
 
     hasSectionChanges(

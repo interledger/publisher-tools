@@ -66,6 +66,7 @@ function ContentBuilder({ onRefresh }: Props) {
       onToggle={onToggle}
       hasChanges={hasChanges}
       onRefresh={() => onRefresh('content')}
+      canRestoreDefaults={actions.hasDefaultChanges('content')}
       onRestoreDefaults={() => actions.restoreDefaultSection('content')}
     >
       <TitleInput
@@ -114,6 +115,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       onToggle={onToggle}
       hasChanges={hasChanges}
       onRefresh={() => onRefresh('appearance')}
+      canRestoreDefaults={actions.hasDefaultChanges('appearance')}
       onRestoreDefaults={() => actions.restoreDefaultSection('appearance')}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>

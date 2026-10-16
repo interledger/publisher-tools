@@ -126,6 +126,9 @@ export const actions = {
   hasSectionChanges(section?: 'content' | 'appearance') {
     return bannerStoreUtils.hasSectionChanges(toolState.activeTab, section)
   },
+  hasDefaultChanges(section?: 'content' | 'appearance') {
+    return bannerStoreUtils.hasDefaultChanges(toolState.activeTab, section)
+  },
 }
 
 export const {

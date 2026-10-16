@@ -119,6 +119,27 @@ describe('BuilderAccordion', () => {
     expect(onRefresh).toHaveBeenCalledTimes(1)
   })
 
+  it('renders disabled restore button when already on defaults', () => {
+    render(
+      <DialogProvider>
+        <BuilderAccordion
+          title="Content"
+          isOpen={true}
+          onRefresh={vi.fn()}
+          onRestoreDefaults={vi.fn()}
+        >
+          <div>Child content</div>
+        </BuilderAccordion>
+      </DialogProvider>,
+    )
+
+    expect(
+      screen.getByRole('button', {
+        name: 'Restore content to default settings',
+      }),
+    ).toBeDisabled()
+  })
+
   it('asks for confirmation before restoring defaults', async () => {
     const user = userEvent.setup()
     const onRestoreDefaults = vi.fn()
@@ -129,6 +150,7 @@ describe('BuilderAccordion', () => {
           title="Content"
           isOpen={true}
           onRefresh={vi.fn()}
+          canRestoreDefaults={true}
           onRestoreDefaults={onRestoreDefaults}
         >
           <div>Child content</div>

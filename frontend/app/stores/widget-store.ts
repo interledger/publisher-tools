@@ -125,6 +125,9 @@ export const actions = {
   hasSectionChanges(section?: 'content' | 'appearance') {
     return widgetStoreUtils.hasSectionChanges(toolState.activeTab, section)
   },
+  hasDefaultChanges(section?: 'content' | 'appearance') {
+    return widgetStoreUtils.hasDefaultChanges(toolState.activeTab, section)
+  },
 }
 
 export const {

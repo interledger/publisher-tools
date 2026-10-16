@@ -51,6 +51,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
       title="Appearance"
       isComplete={uiState.appearanceComplete}
       onRefresh={onRefresh}
+      canRestoreDefaults={actions.hasDefaultChanges()}
       onRestoreDefaults={() => actions.restoreDefaultSection()}
       hasChanges={hasChanges}
       isOpen

@@ -24,4 +24,16 @@ describe('banner store', () => {
     expect(banner.profile.color.background).toBe(defaults.color.background)
     expect(banner.profile.$name).toBe('My banner')
   })
+
+  it('reports whether a section differs from the defaults', () => {
+    actions.restoreDefaultSection('content')
+    actions.restoreDefaultSection('appearance')
+    expect(actions.hasDefaultChanges('content')).toBe(false)
+    expect(actions.hasDefaultChanges('appearance')).toBe(false)
+
+    banner.profile.title.text = 'Custom title'
+
+    expect(actions.hasDefaultChanges('content')).toBe(true)
+    expect(actions.hasDefaultChanges('appearance')).toBe(false)
+  })
 })
