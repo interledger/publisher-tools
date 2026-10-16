@@ -27,7 +27,7 @@ export const LinkTagGenerator = () => {
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const trackEvent = useTrackEvent()
-  const t = useTranslation('general')
+  const t = useTranslation('linkTag')
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {

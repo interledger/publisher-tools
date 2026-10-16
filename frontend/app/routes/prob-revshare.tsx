@@ -70,7 +70,7 @@ export default function RevsharePageWrapper() {
 }
 
 function Revshare() {
-  const t = useTranslation('general')
+  const t = useTranslation('revshare')
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [importTag, setImportTag] = useState('')

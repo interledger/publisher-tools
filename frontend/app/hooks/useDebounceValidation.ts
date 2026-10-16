@@ -15,7 +15,7 @@ export function useDebounceValidation(
   value: string,
   delay: number = 500,
 ): ValidationState {
-  const t = useTranslation('general')
+  const t = useTranslation('linkTag')
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
     isValid: false,
