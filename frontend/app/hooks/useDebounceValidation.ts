@@ -3,6 +3,7 @@ import {
   validateAndConfirmPointer,
   WalletAddressFormatError,
 } from '@shared/utils/index'
+import { useTranslation } from '~/i18n/useTranslation'
 
 interface ValidationState {
   isValidating: boolean
@@ -14,6 +15,7 @@ export function useDebounceValidation(
   value: string,
   delay: number = 500,
 ): ValidationState {
+  const t = useTranslation('linkTag')
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
     isValid: false,
@@ -50,7 +52,7 @@ export function useDebounceValidation(
           error:
             error instanceof WalletAddressFormatError
               ? error.message
-              : 'Invalid wallet address',
+              : t('errors.invalidWalletAddress'),
         }
       }
 
@@ -75,7 +77,7 @@ export function useDebounceValidation(
       isCurrent = false
       clearTimeout(timeoutId)
     }
-  }, [value, delay])
+  }, [value, delay, t])
 
   return validationState
 }

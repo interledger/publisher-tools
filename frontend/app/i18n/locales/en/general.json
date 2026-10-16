@@ -1,3 +1,9 @@
 {
-  "tools": "Tools"
+  "tools": "Tools",
+  "errors.nameRequired": "Name is required",
+  "errors.duplicateName": "This name is already used",
+  "errors.pageError": "There was an issue with your request.",
+  "errors.connectWalletFailed": "Use connect wallet error",
+  "errors.saveFailed": "Failed to save profile",
+  "errors.fetchLayoutsFailed": "Failed to fetch layouts"
 }
