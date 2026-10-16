@@ -12,7 +12,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url)
   const result = url.searchParams.get('result')
   const i18n = getInstance(context)
-  const locale = getLocale(context) ?? 'en'
+  const locale = getLocale(context)
   const t = i18n.getFixedT(locale, 'paymentResult')
 
   let title = t('meta.defaultTitle')
