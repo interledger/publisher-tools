@@ -182,6 +182,9 @@ importers:
       '@playwright/test':
         specifier: ^1.63.0
         version: 1.63.0
+      '@shared/config-storage-service':
+        specifier: workspace:^
+        version: link:../shared/config-storage-service
       '@shared/defines':
         specifier: workspace:^
         version: link:../shared/defines

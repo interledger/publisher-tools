@@ -1,17 +1,30 @@
 import { createServer } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { test as base } from '@playwright/test'
+import { getWalletAddress, normalizeWalletAddress } from '@shared/utils'
+import { deleteConfig } from './storage'
+import { WALLET_ADDRESS } from './wallet'
 
 type Fixtures = {
+  /**
+   * The test wallet address. Whatever a test saves for it is deleted afterwards,
+   * so tests don't leave configs in the local storage.
+   */
+  wallet: Awaited<ReturnType<typeof getWalletAddress>>
   /** Serves a publisher's page with the embed script in it, and returns its URL */
   servePublisherPage: (embedScript: string) => Promise<string>
 }
 
-/**
- * The page is served from a real local server rather than a mocked response,
- * because Chromium blocks a page from elsewhere from loading scripts off localhost.
- */
 export const test = base.extend<Fixtures>({
+  // eslint-disable-next-line no-empty-pattern -- Playwright requires destructuring here
+  wallet: async ({}, use) => {
+    const wallet = await getWalletAddress(WALLET_ADDRESS)
+    await use(wallet)
+    // The frontend saves under the normalized id
+    await deleteConfig(normalizeWalletAddress(wallet))
+  },
+  // Served from a real local server rather than a mocked response, because
+  // Chromium blocks a page from elsewhere from loading scripts off localhost
   // eslint-disable-next-line no-empty-pattern -- Playwright requires destructuring here
   servePublisherPage: async ({}, use) => {
     let html = ''

@@ -22,6 +22,9 @@ Then, edit the `.dev.vars` file to set the required values as described below.
 | `AWS_S3_ENDPOINT`       | The endpoint for the S3-compatible storage.      | `http://localhost:8081`                      |
 | `UMAMI_HOST`            | URL of your Umami instance.                      | `http://localhost:8082`                      |
 | `UMAMI_WEBSITE_ID`      | Website ID from the Umami dashboard.             | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`       |
+| `E2E_WALLET_ADDRESS`    | Test wallet address the e2e tests save for.      | `https://ilp.interledger-test.dev/my-wallet` |
+| `E2E_WALLET_EMAIL`      | Login of the account that owns it.               | `you@example.com`                            |
+| `E2E_WALLET_PASSWORD`   | Password of that account.                        | `your-test-wallet-password`                  |
 
 ## Detailed Configuration
 
@@ -140,6 +143,18 @@ Then log in at `http://localhost:8082` (default credentials: `admin` / `umami`),
 UMAMI_HOST="http://localhost:8082"
 UMAMI_WEBSITE_ID="<your-website-id>"
 ```
+
+### End-to-end tests
+
+These variables are optional.
+The end-to-end tests use them to approve a grant at the wallet provider, like a publisher proving they own their wallet address.
+Without them, the tests that need a login are skipped.
+
+1.  Sign up for your own [Interledger Testnet wallet](https://wallet.interledger-test.dev), separate from any real account.
+2.  Set `E2E_WALLET_ADDRESS` to a wallet address in that account.
+3.  Set `E2E_WALLET_EMAIL` and `E2E_WALLET_PASSWORD` to the account's login.
+
+The tests also need working [Open Payments](#open-payments-configuration) variables, since the frontend uses them to request the grant.
 
 ## Development vs Production
 
