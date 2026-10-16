@@ -75,7 +75,11 @@ export const ToolsWalletAddress = ({
     } catch (error) {
       setError({
         walletAddress: [
-          walletErrorMessage(error, tWallet, t('errors.fieldRequired')),
+          walletErrorMessage(
+            error,
+            tWallet,
+            (error as Error).message || t('errors.fieldRequired'),
+          ),
         ],
       })
     } finally {
