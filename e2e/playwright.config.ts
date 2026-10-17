@@ -25,7 +25,8 @@ export default defineConfig({
   // Tests share one local storage, so two saving at once would overwrite each other
   workers: 1,
   retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  // CI uploads the HTML report when the suite fails
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: FRONTEND_URL,
     trace: 'on-first-retry',
