@@ -166,6 +166,10 @@ We use GitHub actions to manage our CI pipeline.
 
 The workflows can be found in `.github/workflows`
 
+The PR checks also run the end-to-end tests in Chromium and Firefox, using the values from `.env.sample`.
+If they fail, the Playwright report and test results are uploaded as the `playwright-report` artifact of the run.
+Download it and open the report with `pnpm -C e2e exec playwright show-report <folder>/playwright-report`.
+
 ### How to preview changes
 
 For contributors without write access to the repository, deployment previews on PRs are not automatic.

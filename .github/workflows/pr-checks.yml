@@ -37,3 +37,28 @@ jobs:
         uses: ./.github/workflows/setup
       - name: Run tests
         run: pnpm test
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Environment setup
+        uses: ./.github/workflows/setup
+      - name: Install Playwright browsers
+        run: pnpm -C e2e exec playwright install --with-deps chromium firefox
+      - name: Create .dev.vars
+        run: cp .env.sample .dev.vars
+      - name: Run E2E tests
+        run: pnpm test:e2e
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+          retention-days: 14
