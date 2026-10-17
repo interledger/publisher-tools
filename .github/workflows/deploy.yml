@@ -156,43 +156,8 @@ jobs:
           FRONTEND_OUTCOME: ${{ steps.frontend.outcome }}
         with:
           script: |
-            core.summary.addHeading('Deployment results', 'h2');
-
-            core.summary.addRaw(`
-            | Worker | Alias | URL  | Outcome |
-            | ------ | --- | --- | --- |
-            | API    | ${getTableText(process.env.API_URL, process.env.API_VERSIONED_URL, process.env.API_OUTCOME)} |
-            | CDN    | ${getTableText(process.env.CDN_URL, process.env.CDN_VERSIONED_URL, process.env.CDN_OUTCOME)} |
-            | App    | ${getTableText(process.env.FRONTEND_URL, process.env.FRONTEND_VERSIONED_URL, process.env.FRONTEND_OUTCOME)} |
-            `, true);
-
-            const repoUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}`;
-            const runId = process.env.GITHUB_RUN_ID;
-            core.summary.addSeparator();
-            core.summary.addLink(`Logs #${runId}`, `${repoUrl}/actions/runs/${runId}`);
-
-            await core.setOutput('summary', core.summary.stringify());
-            await core.summary.write();
-
-            function getTableText(url, versionedUrl, outcome) {
-              if (outcome !== 'success') {
-                return ['-', '-', outcome].join(' | ');
-              }
-              return [
-                url !== versionedUrl ? getUrlText(url, outcome) : '-',
-                getUrlText(versionedUrl, outcome),
-                outcome,
-              ].join(' | ');
-            }
-
-            function getUrlText(url, outcome) {
-              if (url) {
-                const RE = /^https?:\/\/([a-z0-9]+)-/i;
-                const text = url.match(RE)?.[1] ?? url;
-                return `[${text}](${url})`;
-              }
-              return outcome;
-            }
+            const script = await import(`${process.env.GITHUB_WORKSPACE}/.github/scripts/build-deploy-summary.ts`);
+            await script.default({ core, context });
 
       - name: Create deploy comment
         if: github.event_name == 'pull_request'
