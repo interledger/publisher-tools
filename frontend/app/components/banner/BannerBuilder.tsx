@@ -52,15 +52,13 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle } =
-    useBuilderSectionHandlers('content')
+  const { isOpen, onClick, onToggle } = useBuilderSectionHandlers('content')
   const [snap, profile] = useBannerProfile({ sync: true })
   const hasChanges = actions.hasSectionChanges('content')
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
@@ -97,8 +95,7 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle } =
-    useBuilderSectionHandlers('appearance')
+  const { isOpen, onClick, onToggle } = useBuilderSectionHandlers('appearance')
   const [snap, profile] = useBannerProfile()
   const hasChanges = actions.hasSectionChanges('appearance')
 
@@ -109,7 +106,6 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
