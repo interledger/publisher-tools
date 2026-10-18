@@ -41,6 +41,10 @@ function drawBanner(profile: BannerProfile) {
     cdnUrl: params.cdnUrl,
   }
 
+  bannerElement.addEventListener('banner-closed', () => {
+    sessionStorage.setItem('_wm_tools_closed_by_user', 'true')
+  })
+
   bannerElement.addEventListener(
     'click-extension-link',
     (e: CustomEvent<{ link: string }>) => {
