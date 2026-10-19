@@ -1,6 +1,7 @@
 import { cx } from 'class-variance-authority'
 import { SVGCheckIcon, SVGCopyIcon } from '~/assets/svg'
 import { useCopyToClipboard } from '~/hooks/useCopyToClipboard'
+import { useTranslation } from '~/i18n/useTranslation'
 
 type CodeBlockProps = {
   link: string
@@ -51,6 +52,7 @@ const CopyButton = ({
   isCopied: boolean
   onCopyClick: () => void
 }) => {
+  const t = useTranslation('general')
   return (
     <button
       type="button"
@@ -58,8 +60,8 @@ const CopyButton = ({
       onClick={onCopyClick}
       aria-label={
         isCopied
-          ? 'Monetization tag copied to clipboard'
-          : 'Copy monetization tag to clipboard'
+          ? t('status.copiedMonetizationTag')
+          : t('status.copyMonetizationTag')
       }
     >
       {isCopied ? (
