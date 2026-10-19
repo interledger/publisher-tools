@@ -1,8 +1,9 @@
 import React from 'react'
 import { cx } from 'class-variance-authority'
-import { SVGArrowCollapse, SVGGreenVector } from '@/assets'
+import { SVGArrowCollapse, SVGEdit } from '@/assets'
 import { Heading5 } from '@/typography'
 import { useDialog } from '~/hooks/useDialog'
+import { useTranslation } from '~/i18n/useTranslation'
 import { tooltips } from '~/lib/tooltips'
 import { DiscardChangesDialog } from './dialogs/DiscardChangesDialog'
 import { GhostButton } from './GhostButton'
@@ -11,24 +12,27 @@ import { Tooltip } from './Tooltip'
 interface Props {
   title: string
   onRefresh: () => void
-  isComplete?: boolean
+  onRestoreDefaults?: () => void
   isOpen?: boolean
   onClick?: (isOpen: boolean) => void
   onToggle?: (e: React.SyntheticEvent<HTMLDetailsElement>) => void
   hasChanges?: boolean
+  canRestoreDefaults?: boolean
   children: React.ReactNode
 }
 
 export const BuilderAccordion: React.FC<Props> = ({
   title,
-  isComplete = false,
   isOpen = false,
   onClick,
   onRefresh,
+  onRestoreDefaults,
   onToggle,
   hasChanges = false,
+  canRestoreDefaults = false,
   children,
 }) => {
+  const t = useTranslation('general')
   const [openDialog, closeDialog] = useDialog()
 
   const handleSummaryClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -46,6 +50,23 @@ export const BuilderAccordion: React.FC<Props> = ({
         onDiscard={() => {
           closeDialog()
           onRefresh()
+        }}
+      />,
+    )
+  }
+
+  const handleRestoreDefaultsClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    openDialog(
+      <DiscardChangesDialog
+        title="Restore defaults?"
+        description="All settings in this section will be replaced with the defaults. Your saved settings stay until you save again."
+        discardLabel="Restore defaults"
+        onCancel={closeDialog}
+        onDiscard={() => {
+          closeDialog()
+          onRestoreDefaults?.()
         }}
       />,
     )
@@ -70,16 +91,38 @@ export const BuilderAccordion: React.FC<Props> = ({
         )}
       >
         <div className="flex gap-xs items-center">
-          {isComplete && !isOpen && <SVGGreenVector className="w-6 h-[18px]" />}
+          {hasChanges && !isOpen && (
+            <>
+              <span className="sr-only">{t('status.edited')}</span>
+              <SVGEdit className="w-6 h-6 text-text-secondary" />
+            </>
+          )}
           <Heading5>{title}</Heading5>
         </div>
 
         <div className="flex gap-xs items-center">
           {isOpen && (
             <div
-              className="flex items-center"
+              className="flex flex-wrap items-center justify-end"
               onClick={(e) => e.stopPropagation()}
             >
+              {onRestoreDefaults && (
+                <Tooltip
+                  trigger={
+                    <GhostButton
+                      iconPosition="none"
+                      disabled={!canRestoreDefaults}
+                      onClick={handleRestoreDefaultsClick}
+                      aria-label={`Restore ${title.toLowerCase()} to default settings`}
+                      className="text-xs sm:text-sm"
+                    >
+                      Restore defaults
+                    </GhostButton>
+                  }
+                >
+                  {tooltips.restoreDefaults}
+                </Tooltip>
+              )}
               <Tooltip
                 trigger={
                   <GhostButton

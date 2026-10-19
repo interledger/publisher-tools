@@ -19,13 +19,13 @@ import { useTranslation } from '~/i18n/useTranslation'
 import {
   appendShareRow,
   changeList,
-  DUPLICATE_WALLET_ERROR,
   dropIndex,
   getPercentageIssue,
   hasDuplicatePointers,
   isValidPercentage,
   PERCENTAGE_TOTAL,
   type PercentageIssue,
+  RevshareError,
   sharesToPaymentPointer,
   tagOrPointerToShares,
   validateShares,
@@ -45,22 +45,6 @@ export const meta: MetaFunction = () => {
 
 const baseUrl = new URL('/revshare/', API_URL).href
 
-function getPercentageIssueMessage(issue: PercentageIssue): string {
-  switch (issue.type) {
-    case 'not-positive':
-      return 'Each percentage must be greater than 0.'
-    case 'too-many-decimals':
-      return 'Percentages can have at most 2 decimal places.'
-    case 'wrong-total': {
-      const offBy =
-        issue.difference > 0
-          ? `${issue.difference}% over`
-          : `${-issue.difference}% short`
-      return `Percentages must add up to ${PERCENTAGE_TOTAL}%. Current total: ${issue.total}% (${offBy}).`
-    }
-  }
-}
-
 export default function RevsharePageWrapper() {
   return (
     <SharesProvider>
@@ -76,6 +60,45 @@ function Revshare() {
   const [importTag, setImportTag] = useState('')
   const [importError, setImportError] = useState('')
   const { shares, setShares } = useShares()
+
+  const getPercentageIssueMessage = (issue: PercentageIssue): string => {
+    switch (issue.type) {
+      case 'not-positive':
+        return t('errors.percentageNotPositive')
+      case 'too-many-decimals':
+        return t('errors.percentageTooManyDecimals')
+      case 'wrong-total':
+        return issue.difference > 0
+          ? t('errors.percentageWrongTotalOver', {
+              total: PERCENTAGE_TOTAL,
+              currentTotal: issue.total,
+              difference: issue.difference,
+            })
+          : t('errors.percentageWrongTotalShort', {
+              total: PERCENTAGE_TOTAL,
+              currentTotal: issue.total,
+              difference: -issue.difference,
+            })
+    }
+  }
+
+  const getImportErrorMessage = (err: unknown): string => {
+    if (err instanceof RevshareError) {
+      switch (err.code) {
+        case 'noShareData':
+          return t('errors.noShareData')
+        case 'malformedTag':
+          return t('errors.malformedTag')
+        case 'malformedShareData':
+          return t('errors.malformedShareData')
+        case 'invalidTag':
+          return t('errors.invalidTag')
+        case 'fieldEmpty':
+          return t('errors.fieldEmpty')
+      }
+    }
+    return (err as Error).message || t('errors.unexpectedError')
+  }
 
   const showDeleteColumn = shares.length > 2
   const revShareUrl = useMemo(
@@ -111,12 +134,17 @@ function Revshare() {
 
   const handleChangePointer = useCallback(
     (index: number, pointer: string) => {
-      setShares((prevShares) =>
-        changeList(prevShares, index, {
-          pointer: pointer.trim(),
+      const trimmed = pointer.trim()
+      setShares((prevShares) => {
+        const current = prevShares[index]
+        if (current && current.pointer === trimmed) {
+          return prevShares
+        }
+        return changeList(prevShares, index, {
+          pointer: trimmed,
           isValid: false,
-        }),
-      )
+        })
+      })
     },
     [setShares],
   )
@@ -143,7 +171,7 @@ function Revshare() {
       setIsModalOpen(false)
       setImportTag('')
     } catch (err: unknown) {
-      setImportError((err as Error).message || t('errors.unexpectedError'))
+      setImportError(getImportErrorMessage(err))
     }
   }, [importTag, setShares, setIsModalOpen, t])
 
@@ -206,7 +234,7 @@ function Revshare() {
           </ShareInputTable>
           {hasDuplicates && (
             <p role="alert" className="text-xs text-text-error">
-              {DUPLICATE_WALLET_ERROR}
+              {t('errors.duplicateWallet')}
             </p>
           )}
           {percentageIssueMessage && (

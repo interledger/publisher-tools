@@ -1,4 +1,5 @@
 {
   "errors.walletAddressRequired": "Wallet address is required",
-  "errors.invalidWalletAddress": "Invalid wallet address"
+  "errors.invalidWalletAddress": "Invalid wallet address",
+  "status.copiedClipboard": "Copied to clipboard."
 }
