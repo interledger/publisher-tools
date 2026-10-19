@@ -1,5 +1,6 @@
 {
   "tools": "Tools",
+  "status.edited": "Edited",
   "errors.nameRequired": "Name is required",
   "errors.duplicateName": "This name is already used",
   "errors.pageError": "There was an issue with your request.",

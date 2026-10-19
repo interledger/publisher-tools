@@ -118,7 +118,6 @@ describe('BuilderAccordion', () => {
     await user.click(discardButton)
     expect(onRefresh).toHaveBeenCalledTimes(1)
   })
-
   it('renders disabled restore button when already on defaults', () => {
     render(
       <DialogProvider>
@@ -171,5 +170,56 @@ describe('BuilderAccordion', () => {
     await user.click(restoreButton)
     await user.click(screen.getByRole('button', { name: 'Restore defaults' }))
     expect(onRestoreDefaults).toHaveBeenCalledTimes(1)
+  })
+
+  it('renders edited icon when closed with changes', () => {
+    render(
+      <DialogProvider>
+        <BuilderAccordion
+          title="Content"
+          isOpen={false}
+          hasChanges={true}
+          onRefresh={vi.fn()}
+        >
+          <div>Child content</div>
+        </BuilderAccordion>
+      </DialogProvider>,
+    )
+
+    expect(screen.getByText('Edited')).toBeInTheDocument()
+  })
+
+  it('does not render edited icon when closed with no changes', () => {
+    render(
+      <DialogProvider>
+        <BuilderAccordion
+          title="Content"
+          isOpen={false}
+          hasChanges={false}
+          onRefresh={vi.fn()}
+        >
+          <div>Child content</div>
+        </BuilderAccordion>
+      </DialogProvider>,
+    )
+
+    expect(screen.queryByText('Edited')).not.toBeInTheDocument()
+  })
+
+  it('does not render edited icon when open even with changes', () => {
+    render(
+      <DialogProvider>
+        <BuilderAccordion
+          title="Content"
+          isOpen={true}
+          hasChanges={true}
+          onRefresh={vi.fn()}
+        >
+          <div>Child content</div>
+        </BuilderAccordion>
+      </DialogProvider>,
+    )
+
+    expect(screen.queryByText('Edited')).not.toBeInTheDocument()
   })
 })
