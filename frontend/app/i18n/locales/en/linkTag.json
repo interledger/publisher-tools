@@ -1,0 +1,4 @@
+{
+  "errors.walletAddressRequired": "Wallet address is required",
+  "errors.invalidWalletAddress": "Invalid wallet address"
+}

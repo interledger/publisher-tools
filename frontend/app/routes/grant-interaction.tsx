@@ -1,29 +1,46 @@
 import type { ComponentType, SVGProps } from 'react'
-import { useSearchParams, type MetaFunction } from 'react-router'
+import {
+  useSearchParams,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from 'react-router'
 import { SVGErrorVector, SVGMarkSuccess } from '@/assets'
-import en from '~/i18n/locales/en.json'
+import { getInstance, getLocale } from '~/i18n/i18n.server.js'
 import { useTranslation } from '~/i18n/useTranslation'
 
-export const meta: MetaFunction = ({ location }) => {
-  const params = new URLSearchParams(location.search)
-  const result = params.get('result')
-  const t = en.paymentResult
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const url = new URL(request.url)
+  const result = url.searchParams.get('result')
+  const i18n = getInstance(context)
+  const locale = getLocale(context)
+  const t = i18n.getFixedT(locale, 'paymentResult')
+
+  let title = t('meta.defaultTitle')
+  let description = t('meta.defaultDescription')
 
   if (result === 'success') {
-    return [
-      { title: t['meta.successTitle'] },
-      { name: 'description', content: t['meta.successDescription'] },
-    ]
+    title = t('meta.successTitle')
+    description = t('meta.successDescription')
+  } else if (result === 'failure') {
+    title = t('meta.failureTitle')
+    description = t('meta.failureDescription')
   }
-  if (result === 'failure') {
-    return [
-      { title: t['meta.failureTitle'] },
-      { name: 'description', content: t['meta.failureDescription'] },
-    ]
+
+  return {
+    meta: {
+      title,
+      description,
+    },
   }
+}
+
+export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   return [
-    { title: t['meta.defaultTitle'] },
-    { name: 'description', content: t['meta.defaultDescription'] },
+    { title: loaderData?.meta.title ?? 'Grant Interaction' },
+    {
+      name: 'description',
+      content: loaderData?.meta.description ?? 'Grant interaction result',
+    },
   ]
 }
 
