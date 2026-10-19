@@ -166,9 +166,12 @@ We use GitHub actions to manage our CI pipeline.
 
 The workflows can be found in `.github/workflows`
 
-The PR checks also run the end-to-end tests in Chromium and Firefox, using the values from `.env.sample`.
-If they fail, the Playwright report and test results are uploaded as the `playwright-report` artifact of the run.
-Download it and open the report with `pnpm -C e2e exec playwright show-report <folder>/playwright-report`.
+The PR checks also run the end-to-end tests in Chromium and Firefox.
+The job sets the environment variables itself instead of using a `.dev.vars` file.
+The test wallet's credentials come from the repository's Actions secrets and variables, which PRs from forks don't get, so the tests that need them are skipped there.
+If the tests fail, the Playwright report and test results are uploaded as `playwright-report.zip` in the `playwright-report` artifact of the run.
+When the run had the test wallet's credentials, the zip is encrypted with the `E2E_PLAYWRIGHT_REPORT_PASSWORD` secret, because the traces include the login.
+Unzip it and open the report with `pnpm -C e2e exec playwright show-report <folder>/playwright-report`.
 
 ### How to preview changes
 
