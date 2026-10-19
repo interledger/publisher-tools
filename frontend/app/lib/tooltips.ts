@@ -14,4 +14,6 @@ export const tooltips = {
   font: 'Setting the Font to Inherit, will make the component use the font from the website it is added to.',
   resetChanges:
     'Discard all current changes made to this section and revert to saved settings.',
+  restoreDefaults:
+    'Replace all settings in this section with the default settings.',
 }
