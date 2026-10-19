@@ -12,6 +12,7 @@ The Web Monetization standard will continue to be actively stewarded by the foun
 
 - Have you read the [code of conduct](CODE_OF_CONDUCT.md)?
 - Check out the [existing issues](https://github.com/interledger/publisher-tools/issues) & see if we [accept contributions](#types-of-contributions) for your type of issue.
+- If you use AI tools as part of your contribution, make sure you've read our [AI usage policy](./AI_POLICY.md).
 
 ## Types of contributions
 
