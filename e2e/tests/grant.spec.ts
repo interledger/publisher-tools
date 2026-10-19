@@ -2,7 +2,6 @@ import { expect } from '@playwright/test'
 import { test } from '../src/fixtures'
 import { connectWallet, WALLET_LOGIN } from '../src/wallet'
 
-// Where the wallet provider sends the publisher back after the grant step
 const GRANT_CALLBACK = 'api/grant/banner/'
 
 test('a declined grant shows an error', async ({ page }) => {

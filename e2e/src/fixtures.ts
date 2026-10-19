@@ -20,7 +20,6 @@ export const test = base.extend<Fixtures>({
   wallet: async ({}, use) => {
     const wallet = await getWalletAddress(WALLET_ADDRESS)
     await use(wallet)
-    // The frontend saves under the normalized id
     await deleteConfig(normalizeWalletAddress(wallet))
   },
   // Served from a real local server rather than a mocked response, because
