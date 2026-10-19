@@ -3,7 +3,7 @@ import {
   type WalletAddressErrorCode,
 } from '@shared/utils'
 
-type TranslateWalletError = (
+export type TranslateWalletError = (
   key: `errors.${WalletAddressErrorCode}`,
   options?: Record<string, string>,
 ) => string

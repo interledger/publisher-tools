@@ -13,10 +13,8 @@ import { getInstance, getLocale } from '~/i18n/i18n.server.js'
 import { cloudflareContext } from '~/lib/context.js'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
-import {
-  createWalletSchema,
-  type TranslateWalletError,
-} from '~/utils/validate.server'
+import type { TranslateWalletError } from '~/lib/walletError'
+import { createWalletSchema } from '~/utils/validate.server'
 import type { Route } from './+types/api.profiles'
 
 export async function loader({ request, context }: Route.LoaderArgs) {

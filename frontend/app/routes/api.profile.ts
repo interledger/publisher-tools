@@ -17,14 +17,12 @@ import { cloudflareContext } from '~/lib/context.js'
 import type { ApiError } from '~/lib/helpers'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { SaveResult } from '~/lib/types'
+import type { TranslateWalletError } from '~/lib/walletError'
 import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import {
-  createWalletSchema,
-  type TranslateWalletError,
-} from '~/utils/validate.server'
+import { createWalletSchema } from '~/utils/validate.server'
 import {
   BannerProfileSchema,
   OfferwallProfileSchema,

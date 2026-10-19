@@ -78,7 +78,7 @@ export const ToolsWalletAddress = ({
           walletErrorMessage(
             error,
             tWallet,
-            (error as Error).message || t('errors.connectionError'),
+            (error as Error).message || t('errors.genericError'),
           ),
         ],
       })

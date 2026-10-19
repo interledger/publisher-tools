@@ -4,24 +4,8 @@ import {
   getWalletAddress,
   toWalletAddressUrl,
   WalletAddressFormatError,
-  type WalletAddressErrorCode,
 } from '@shared/utils'
-import walletMessages from '~/i18n/locales/en/wallet.json'
-
-export type TranslateWalletError = (
-  key: `errors.${WalletAddressErrorCode}`,
-  options?: Record<string, string>,
-) => string
-
-const translateWalletErrorEn: TranslateWalletError = (key, options) => {
-  let message: string = (walletMessages as Record<string, string>)[key] ?? key
-  if (options) {
-    for (const [name, value] of Object.entries(options)) {
-      message = message.replace(`{{${name}}}`, value)
-    }
-  }
-  return message
-}
+import type { TranslateWalletError } from '~/lib/walletError'
 
 // TODO: refactor walletSchema to .transform() and return WalletAddress object directly from getWalletAddress
 export function createWalletSchema(t: TranslateWalletError) {
@@ -48,5 +32,3 @@ export function createWalletSchema(t: TranslateWalletError) {
       }),
   })
 }
-
-export const walletSchema = createWalletSchema(translateWalletErrorEn)
