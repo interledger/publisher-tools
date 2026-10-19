@@ -12,6 +12,7 @@ import { SVGRefresh, SVGSpinner } from '~/assets/svg'
 import { useConnectWallet } from '~/hooks/useConnectWallet'
 import { useTranslation } from '~/i18n/useTranslation'
 import { useTrackEvent } from '~/lib/analytics'
+import { walletErrorMessage } from '~/lib/walletError'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 
@@ -27,6 +28,7 @@ export const ToolsWalletAddress = ({
   tool,
 }: Props) => {
   const t = useTranslation('toolsWalletAddress')
+  const tWallet = useTranslation('wallet')
   const { connect, disconnect } = useConnectWallet(snap, walletActions)
   const uiActions = useUIActions()
   const trackEvent = useTrackEvent()
@@ -71,7 +73,15 @@ export const ToolsWalletAddress = ({
         wallet_provider: new URL(walletAddressInfo.id).hostname,
       })
     } catch (error) {
-      setError({ walletAddress: [(error as Error).message] })
+      setError({
+        walletAddress: [
+          walletErrorMessage(
+            error,
+            tWallet,
+            (error as Error).message || t('errors.genericError'),
+          ),
+        ],
+      })
     } finally {
       setIsLoading(false)
     }

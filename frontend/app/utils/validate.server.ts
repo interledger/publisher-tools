@@ -5,27 +5,30 @@ import {
   toWalletAddressUrl,
   WalletAddressFormatError,
 } from '@shared/utils'
+import type { TranslateWalletError } from '~/lib/walletError'
 
 // TODO: refactor walletSchema to .transform() and return WalletAddress object directly from getWalletAddress
-export const walletSchema = z.object({
-  walletAddress: z
-    .string()
-    .min(1, { message: 'Wallet address is required' })
-    .transform((url) => toWalletAddressUrl(url))
-    .superRefine(async (updatedUrl, ctx) => {
-      if (updatedUrl.length === 0) return
+export function createWalletSchema(t: TranslateWalletError) {
+  return z.object({
+    walletAddress: z
+      .string()
+      .min(1, { message: t('errors.required') })
+      .transform((url) => toWalletAddressUrl(url))
+      .superRefine(async (updatedUrl, ctx) => {
+        if (updatedUrl.length === 0) return
 
-      try {
-        checkHrefFormat(updatedUrl)
-        await getWalletAddress(updatedUrl)
-      } catch (e) {
-        ctx.addIssue({
-          code: 'custom',
-          message:
-            e instanceof WalletAddressFormatError
-              ? e.message
-              : 'Invalid wallet address format',
-        })
-      }
-    }),
-})
+        try {
+          checkHrefFormat(updatedUrl)
+          await getWalletAddress(updatedUrl)
+        } catch (e) {
+          ctx.addIssue({
+            code: 'custom',
+            message:
+              e instanceof WalletAddressFormatError && e.code
+                ? t(`errors.${e.code}`, e.params)
+                : t('errors.invalidWalletFormat'),
+          })
+        }
+      }),
+  })
+}
