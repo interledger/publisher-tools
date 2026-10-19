@@ -43,6 +43,7 @@ function drawBanner(profile: BannerProfile) {
 
   bannerElement.addEventListener('banner-closed', () => {
     sessionStorage.setItem('_wm_tools_closed_by_user', 'true')
+    trackEvent('banner_closed')
   })
 
   bannerElement.addEventListener(
