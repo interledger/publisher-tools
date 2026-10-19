@@ -3,6 +3,7 @@ import { cx } from 'class-variance-authority'
 import { SVGArrowCollapse, SVGEdit } from '@/assets'
 import { Heading5 } from '@/typography'
 import { useDialog } from '~/hooks/useDialog'
+import { useTranslation } from '~/i18n/useTranslation'
 import { tooltips } from '~/lib/tooltips'
 import { DiscardChangesDialog } from './dialogs/DiscardChangesDialog'
 import { GhostButton } from './GhostButton'
@@ -31,6 +32,7 @@ export const BuilderAccordion: React.FC<Props> = ({
   canRestoreDefaults = false,
   children,
 }) => {
+  const t = useTranslation('general')
   const [openDialog, closeDialog] = useDialog()
 
   const handleSummaryClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -91,7 +93,7 @@ export const BuilderAccordion: React.FC<Props> = ({
         <div className="flex gap-xs items-center">
           {hasChanges && !isOpen && (
             <>
-              <span className="sr-only">Edited</span>
+              <span className="sr-only">{t('status.edited')}</span>
               <SVGEdit className="w-6 h-6 text-text-secondary" />
             </>
           )}
