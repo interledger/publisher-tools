@@ -13,18 +13,22 @@ import { getInstance, getLocale } from '~/i18n/i18n.server.js'
 import { cloudflareContext } from '~/lib/context.js'
 import { INVALID_PAYLOAD_ERROR } from '~/lib/helpers'
 import type { GetProfilesResult } from '~/lib/types'
-import { walletSchema } from '~/utils/validate.server'
+import {
+  createWalletSchema,
+  type TranslateWalletError,
+} from '~/utils/validate.server'
 import type { Route } from './+types/api.profiles'
-
-const ApiGetProfilesSchema = z.object({
-  ...walletSchema.shape,
-  tool: z.enum(TOOLS),
-})
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const i18n = getInstance(context)
-  const locale = getLocale(context) ?? 'en'
+  const locale = getLocale(context)
   const t = i18n.getFixedT(locale, 'general')
+  const ApiGetProfilesSchema = z.object({
+    ...createWalletSchema(
+      i18n.getFixedT(locale, 'wallet') as TranslateWalletError,
+    ).shape,
+    tool: z.enum(TOOLS),
+  })
   const { env } = context.get(cloudflareContext)
 
   try {

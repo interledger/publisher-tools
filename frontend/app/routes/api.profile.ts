@@ -21,7 +21,10 @@ import { ConfigStorageService } from '~/utils/config-storage.server.js'
 import { createInteractiveGrant } from '~/utils/open-payments.server.js'
 import { sanitizeProfileFields } from '~/utils/sanitize.server'
 import { commitSession, getSession } from '~/utils/session.server.js'
-import { walletSchema } from '~/utils/validate.server'
+import {
+  createWalletSchema,
+  type TranslateWalletError,
+} from '~/utils/validate.server'
 import {
   BannerProfileSchema,
   OfferwallProfileSchema,
@@ -29,34 +32,39 @@ import {
   WidgetProfileSchema,
 } from '~/utils/validate.shared'
 
-const BaseApiSchema = z.object({
-  ...walletSchema.shape,
-  profileId: z.enum(PROFILE_IDS),
-})
+function createApiSaveProfileSchema(tWallet: TranslateWalletError) {
+  const BaseApiSchema = z.object({
+    ...createWalletSchema(tWallet).shape,
+    profileId: z.enum(PROFILE_IDS),
+  })
 
-const ApiSaveProfileSchema = z.discriminatedUnion('tool', [
-  BaseApiSchema.extend({
-    tool: z.literal(TOOL_BANNER),
-    profile: BannerProfileSchema,
-  }),
-  BaseApiSchema.extend({
-    tool: z.literal(TOOL_WIDGET),
-    profile: WidgetProfileSchema,
-  }),
-  BaseApiSchema.extend({
-    tool: z.literal(TOOL_OFFERWALL),
-    profile: OfferwallProfileSchema,
-  }),
-  BaseApiSchema.extend({
-    tool: z.literal(TOOL_PAYWALL),
-    profile: PaywallProfileSchema,
-  }),
-])
+  return z.discriminatedUnion('tool', [
+    BaseApiSchema.extend({
+      tool: z.literal(TOOL_BANNER),
+      profile: BannerProfileSchema,
+    }),
+    BaseApiSchema.extend({
+      tool: z.literal(TOOL_WIDGET),
+      profile: WidgetProfileSchema,
+    }),
+    BaseApiSchema.extend({
+      tool: z.literal(TOOL_OFFERWALL),
+      profile: OfferwallProfileSchema,
+    }),
+    BaseApiSchema.extend({
+      tool: z.literal(TOOL_PAYWALL),
+      profile: PaywallProfileSchema,
+    }),
+  ])
+}
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const i18n = getInstance(context)
-  const locale = getLocale(context) ?? 'en'
+  const locale = getLocale(context)
   const t = i18n.getFixedT(locale, 'general')
+  const ApiSaveProfileSchema = createApiSaveProfileSchema(
+    i18n.getFixedT(locale, 'wallet') as TranslateWalletError,
+  )
 
   if (request.method !== 'POST') {
     return data<SaveResult>(

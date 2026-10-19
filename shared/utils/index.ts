@@ -127,6 +127,7 @@ export type WalletAddressErrorCode =
   | 'invalidWalletUrl'
   | 'invalidWalletFormat'
   | 'httpsRequired'
+  | 'invalidUrl'
   | 'urlElementsNotAllowed'
   | 'doesNotExist'
   | 'notValidWalletAddress'
@@ -144,14 +145,19 @@ export type WalletAddressErrorCode =
 
 export class WalletAddressFormatError extends Error {
   code?: WalletAddressErrorCode
+  params?: Record<string, string>
 
   constructor(
     message: string,
-    options?: ErrorOptions & { code?: WalletAddressErrorCode },
+    options?: ErrorOptions & {
+      code?: WalletAddressErrorCode
+      params?: Record<string, string>
+    },
   ) {
     super(message, options)
     this.name = 'WalletAddressFormatError'
     this.code = options?.code
+    this.params = options?.params
   }
 }
 
@@ -171,6 +177,7 @@ export function checkHrefFormat(href: string): string {
     }
     throw new WalletAddressFormatError(
       `Invalid wallet address URL: ${JSON.stringify(href)}`,
+      { code: 'invalidUrl', params: { href: JSON.stringify(href) } },
     )
   }
 

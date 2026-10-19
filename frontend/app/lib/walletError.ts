@@ -3,7 +3,10 @@ import {
   type WalletAddressErrorCode,
 } from '@shared/utils'
 
-type TranslateWalletError = (key: `errors.${WalletAddressErrorCode}`) => string
+type TranslateWalletError = (
+  key: `errors.${WalletAddressErrorCode}`,
+  options?: Record<string, string>,
+) => string
 
 /**
  * Shared wallet code can not use the translation hook, so its errors carry a
@@ -18,7 +21,7 @@ export function walletErrorMessage(
   fallback: string,
 ): string {
   if (error instanceof WalletAddressFormatError && error.code) {
-    return t(`errors.${error.code}`)
+    return t(`errors.${error.code}`, error.params)
   }
   return fallback
 }

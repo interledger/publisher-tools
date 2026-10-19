@@ -4,6 +4,7 @@
   "errors.invalidWalletUrl": "Provided URL is not a valid wallet address",
   "errors.invalidWalletFormat": "Invalid wallet address format",
   "errors.httpsRequired": "Wallet address must use HTTPS protocol",
+  "errors.invalidUrl": "Invalid wallet address URL: {{href}}",
   "errors.urlElementsNotAllowed": "Wallet address URL must not contain query/fragment/port/username/password elements.",
   "errors.doesNotExist": "Wallet address does not exist",
   "errors.notValidWalletAddress": "Wallet address is not a valid wallet address",
