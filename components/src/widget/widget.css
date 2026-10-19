@@ -86,6 +86,7 @@ a:focus-visible {
 
 :host(.position-right) {
   align-items: flex-end;
+  left: auto;
 }
 
 .content {
@@ -105,7 +106,6 @@ a:focus-visible {
     opacity 0.25s ease-out,
     transform 0.25s ease-out,
     visibility 0s linear 0.25s;
-  pointer-events: none;
   visibility: hidden;
   height: 0;
 }
@@ -137,7 +137,6 @@ a:focus-visible {
 .content.closed {
   opacity: 0;
   transform: translateY(20px);
-  pointer-events: none;
   visibility: hidden;
   width: 0;
   height: 0;
