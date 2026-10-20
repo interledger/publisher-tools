@@ -42,6 +42,7 @@ export default async function buildDeploySummary({ core }: AsyncFunctionArgument
 
   core.summary.addRaw(
     [
+      '',
       '| Worker | Alias | URL | Outcome |',
       '| ------ | ----- | --- | ------- |',
       ...rows,
