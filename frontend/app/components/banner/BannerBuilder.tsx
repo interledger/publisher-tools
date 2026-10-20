@@ -52,20 +52,20 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle } =
-    useBuilderSectionHandlers('content')
+  const { isOpen, onClick, onToggle } = useBuilderSectionHandlers('content')
   const [snap, profile] = useBannerProfile({ sync: true })
   const hasChanges = actions.hasSectionChanges('content')
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
       hasChanges={hasChanges}
       onRefresh={() => onRefresh('content')}
+      canRestoreDefaults={actions.hasDefaultChanges('content')}
+      onRestoreDefaults={() => actions.restoreDefaultSection('content')}
     >
       <TitleInput
         value={snap.title.text}
@@ -95,8 +95,7 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle } =
-    useBuilderSectionHandlers('appearance')
+  const { isOpen, onClick, onToggle } = useBuilderSectionHandlers('appearance')
   const [snap, profile] = useBannerProfile()
   const hasChanges = actions.hasSectionChanges('appearance')
 
@@ -107,12 +106,13 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
       hasChanges={hasChanges}
       onRefresh={() => onRefresh('appearance')}
+      canRestoreDefaults={actions.hasDefaultChanges('appearance')}
+      onRestoreDefaults={() => actions.restoreDefaultSection('appearance')}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown

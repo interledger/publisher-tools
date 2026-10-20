@@ -36,9 +36,33 @@ export type PercentageIssue =
   | { type: 'too-many-decimals' }
   | { type: 'wrong-total'; total: number; difference: number }
 
-export const DUPLICATE_WALLET_ERROR =
-  'Duplicate wallet address detected. Each recipient must have a unique wallet address. Please update the entries and try again.'
 export const PERCENTAGE_TOTAL = 100
+
+export type RevshareErrorCode =
+  | 'noShareData'
+  | 'malformedTag'
+  | 'malformedShareData'
+  | 'invalidTag'
+  | 'fieldEmpty'
+
+/**
+ * This file can not use the translation hook, so its errors carry a code.
+ * The UI turns the code into the translated message. The English message is
+ * kept as a fallback for other callers.
+ */
+export class RevshareError extends Error {
+  code: RevshareErrorCode
+
+  constructor(
+    code: RevshareErrorCode,
+    message: string,
+    options?: ErrorOptions,
+  ) {
+    super(message, options)
+    this.name = 'RevshareError'
+    this.code = code
+  }
+}
 const PERCENTAGE_DECIMAL_PLACES = 2
 // Percentages are calculated in whole hundredths of a percent to avoid
 // floating point drift (e.g. 33.33 + 33.33 + 33.34).
@@ -341,7 +365,8 @@ export function pointerToShares(pointer: string): SharesState {
       params.get(POINTER_LIST_PARAM) || parsed.pathname.split('/').pop()
 
     if (!encodedList) {
-      throw new Error(
+      throw new RevshareError(
+        'noShareData',
         'No share data found. Make sure you copy the whole "content" field from your meta tag.',
       )
     }
@@ -359,11 +384,14 @@ export function pointerToShares(pointer: string): SharesState {
     }))
   } catch (err: unknown) {
     if (err instanceof TypeError) {
-      throw new Error('Meta tag or payment pointer is malformed', {
-        cause: err,
-      })
+      throw new RevshareError(
+        'malformedTag',
+        'Meta tag or payment pointer is malformed',
+        { cause: err },
+      )
     } else if (err instanceof SyntaxError) {
-      throw new Error(
+      throw new RevshareError(
+        'malformedShareData',
         'Payment pointer has malformed share data. Make sure to copy the entire pointer.',
         { cause: err },
       )
@@ -391,7 +419,8 @@ export function tagToShares(tag: string): SharesState {
   if (link) {
     return pointerToShares(link.href)
   }
-  throw new Error(
+  throw new RevshareError(
+    'invalidTag',
     'Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.',
   )
 }
@@ -433,7 +462,7 @@ function isRevsharePointer(str: string): boolean {
 export function tagOrPointerToShares(tag: string): SharesState | undefined {
   const trimmedTag = tag.trim()
   if (!trimmedTag) {
-    throw new Error('Field is empty')
+    throw new RevshareError('fieldEmpty', 'Field is empty')
   }
 
   if (isRevsharePointer(trimmedTag)) {

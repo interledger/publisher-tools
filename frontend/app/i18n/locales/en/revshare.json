@@ -1,3 +1,13 @@
 {
-  "errors.unexpectedError": "An unexpected error occurred."
+  "errors.unexpectedError": "An unexpected error occurred.",
+  "errors.noShareData": "No share data found. Make sure you copy the whole \"content\" field from your meta tag.",
+  "errors.malformedTag": "Meta tag or payment pointer is malformed",
+  "errors.malformedShareData": "Payment pointer has malformed share data. Make sure to copy the entire pointer.",
+  "errors.invalidTag": "Please enter the exact link tag you generated from this revshare tool. It seems to be malformed.",
+  "errors.fieldEmpty": "Field is empty",
+  "errors.duplicateWallet": "Duplicate wallet address detected. Each recipient must have a unique wallet address. Please update the entries and try again.",
+  "errors.percentageNotPositive": "Each percentage must be greater than 0.",
+  "errors.percentageTooManyDecimals": "Percentages can have at most 2 decimal places.",
+  "errors.percentageWrongTotalOver": "Percentages must add up to {{total}}%. Current total: {{currentTotal}}% ({{difference}}% over).",
+  "errors.percentageWrongTotalShort": "Percentages must add up to {{total}}%. Current total: {{currentTotal}}% ({{difference}}% short)."
 }
