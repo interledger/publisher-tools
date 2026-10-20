@@ -10,6 +10,7 @@ const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
+
 if (shouldShowBanner()) {
   fetchProfile(API_URL, 'banner', params)
     .then((profile) => document.body.appendChild(drawBanner(profile)))
@@ -17,18 +18,16 @@ if (shouldShowBanner()) {
 }
 
 function shouldShowBanner() {
-  // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
   // check if user / visitor has monetization
   const monetizationLinks = document.querySelector<HTMLLinkElement>(
     'link[rel=monetization]',
   )
-  // skip the banner if the extension is installed
-  return !(
-    (monetizationLinks && monetizationLinks.relList.supports('monetization')) ||
-    closedByUser
-  )
+  const monetizationSupported =
+    monetizationLinks?.relList.supports('monetization')
+
+  return !monetizationSupported && !closedByUser
 }
 
 function drawBanner(profile: BannerProfile) {
