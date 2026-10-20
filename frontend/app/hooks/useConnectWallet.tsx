@@ -12,7 +12,7 @@ import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
 import { widget } from '~/stores/widget-store'
 
-export function getLegacyOptions() {
+function getLegacyOptions() {
   //TODO: refactor ProfilesDialog and remove legacy options
   if (toolState.currentToolType === 'banner') {
     return {
