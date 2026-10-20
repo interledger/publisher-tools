@@ -19,7 +19,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'release' && 'production' || 'staging' }}
+    environment: ${{ github.ref_name == 'release' && 'production' || github.ref_name == 'main' && 'staging' || 'preview' }}
     steps:
       - uses: actions/checkout@v7
         with:

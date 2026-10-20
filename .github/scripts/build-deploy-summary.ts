@@ -30,7 +30,7 @@ export default async function buildDeploySummary({ core }: AsyncFunctionArgument
 
   const intro = env.SUMMARY_INTRO?.trim();
   if (intro) {
-    core.summary.addRaw(intro, true);
+    core.summary.addRaw(`\n ${intro}`, true);
   }
 
   const rows = WORKERS.map(({ label, envKey }) => {
@@ -42,6 +42,7 @@ export default async function buildDeploySummary({ core }: AsyncFunctionArgument
 
   core.summary.addRaw(
     [
+      '',
       '| Worker | Alias | URL | Outcome |',
       '| ------ | ----- | --- | ------- |',
       ...rows,

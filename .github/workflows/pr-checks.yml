@@ -87,3 +87,4 @@ jobs:
           name: playwright-report
           path: e2e/playwright-report.zip
           retention-days: 14
+          archive: false
