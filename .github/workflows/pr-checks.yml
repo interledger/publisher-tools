@@ -3,7 +3,7 @@ name: PR Checks
 on:
   push:
     branches:
-      - '!main'
+      - "!main"
   pull_request:
     types:
       - opened
@@ -87,3 +87,4 @@ jobs:
           name: playwright-report
           path: e2e/playwright-report.zip
           retention-days: 14
+          archive: false
