@@ -190,7 +190,7 @@ export default function Index() {
         </div>
 
         <p className="text-style-h5 text-landing-content! text-center w-full max-xl:text-style-body-standard!">
-          !!!!!!!Use our suite of tools to set up and promote Web Monetization.
+          Use our suite of tools to set up and promote Web Monetization.
           <br />
           Encourage your visitors to support your content and website.
         </p>
