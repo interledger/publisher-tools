@@ -1,12 +1,15 @@
 import { expect, type Page, type TestInfo } from '@playwright/test'
-import { getWalletAddress } from '@shared/utils'
-import { test } from '../src/publisher-page'
+import type { getWalletAddress } from '@shared/utils'
+import { test } from '../src/fixtures'
 import { API_URL } from '../src/services'
 import { authorizeWallet } from '../src/session'
-import { WALLET_ADDRESS } from '../src/wallet'
+import { connectWallet } from '../src/wallet'
 
-async function setupBanner(page: Page, testInfo: TestInfo) {
-  const wallet = await getWalletAddress(WALLET_ADDRESS)
+async function setupBanner(
+  page: Page,
+  testInfo: TestInfo,
+  wallet: Awaited<ReturnType<typeof getWalletAddress>>,
+) {
   await authorizeWallet(page.context(), wallet.id)
 
   // Unique per run, so a title left over from an earlier run can't pass
@@ -14,14 +17,7 @@ async function setupBanner(page: Page, testInfo: TestInfo) {
 
   await test.step('connect the wallet address', async () => {
     await page.goto('banner')
-    const walletInput = page.getByRole('textbox', { name: 'Wallet address' })
-    // Typing before the page is interactive is lost, so retry until it sticks
-    await expect(async () => {
-      await walletInput.fill(WALLET_ADDRESS)
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await expect(walletInput).not.toBeEditable({ timeout: 1000 })
-    }).toPass()
-    await expect(walletInput).toBeDisabled({ timeout: 15_000 })
+    await connectWallet(page)
   })
 
   const snippet = await test.step('change the title and save', async () => {
@@ -44,8 +40,9 @@ test('a banner saved in the frontend renders on a publisher page', async ({
   page,
   request,
   servePublisherPage,
+  wallet,
 }, testInfo) => {
-  const { title, snippet } = await setupBanner(page, testInfo)
+  const { title, snippet } = await setupBanner(page, testInfo, wallet)
 
   await test.step('the api returns the saved profile', async () => {
     // Ask for the same profile the embed script will ask for
@@ -74,8 +71,9 @@ test('a banner saved in the frontend renders on a publisher page', async ({
 test('closing the banner is remembered for the session', async ({
   page,
   servePublisherPage,
+  wallet,
 }, testInfo) => {
-  const { snippet } = await setupBanner(page, testInfo)
+  const { snippet } = await setupBanner(page, testInfo, wallet)
 
   const publisherPageUrl = await servePublisherPage(snippet)
 

@@ -4,6 +4,13 @@ import path from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
 import { API_URL, CDN_URL, FRONTEND_URL, S3_URL } from './src/services'
 
+// Same env file as the dev servers, for the test wallet login (see docs/env-vars.md)
+try {
+  process.loadEnvFile(path.resolve(import.meta.dirname, '../.dev.vars'))
+} catch {
+  // CI sets the variables directly
+}
+
 const reuseExistingServer = !process.env.CI
 const timeout = 120_000
 
