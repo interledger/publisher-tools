@@ -2,10 +2,10 @@ name: Deploy
 on:
   push:
     branches: [main, release]
-    paths-ignore: ['**.md']
+    paths-ignore: ["**.md"]
   pull_request:
     branches: [main]
-    paths-ignore: ['**.md']
+    paths-ignore: ["**.md"]
 
 defaults:
   run:
@@ -19,7 +19,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'release' && 'production' || 'staging' }}
+    environment: ${{ github.ref_name == 'release' && 'production' || github.ref_name == 'main' && 'staging' || 'preview' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -94,7 +94,7 @@ jobs:
         uses: ./.github/workflows/deploy-worker
         id: api
         with:
-          name: 'api'
+          name: "api"
           changed: ${{ steps.changes.outputs.api }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
@@ -109,11 +109,11 @@ jobs:
         uses: ./.github/workflows/deploy-worker
         id: cdn
         with:
-          name: 'cdn'
+          name: "cdn"
           changed: ${{ steps.changes.outputs.cdn }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
-          build: 'pnpm -C cdn run build'
+          build: "pnpm -C cdn run build"
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
           origin: ${{ vars.CDN_ORIGIN }}
@@ -124,11 +124,11 @@ jobs:
         uses: ./.github/workflows/deploy-worker
         id: frontend
         with:
-          name: 'frontend'
+          name: "frontend"
           changed: ${{ steps.changes.outputs.frontend }}
           mode: ${{ steps.deploy-mode.outputs.mode }}
           skip-deploy: ${{ steps.deploy-check.outputs.should-deploy == 'false' }}
-          build: 'pnpm -C frontend run build'
+          build: "pnpm -C frontend run build"
           BUILD_API_URL: ${{ steps.api.outputs.url }}
           BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
           BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
@@ -165,8 +165,8 @@ jobs:
         uses: edumserrano/find-create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          body-includes: '<!-- worker-deploy-summary -->'
-          comment-author: 'github-actions[bot]'
+          body-includes: "<!-- worker-deploy-summary -->"
+          comment-author: "github-actions[bot]"
           body: |
             <!-- worker-deploy-summary -->
             ${{ steps.summary.outputs.summary }}
