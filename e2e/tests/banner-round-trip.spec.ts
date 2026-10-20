@@ -1,16 +1,15 @@
 import { expect } from '@playwright/test'
-import { getWalletAddress } from '@shared/utils'
-import { test } from '../src/publisher-page'
+import { test } from '../src/fixtures'
 import { API_URL } from '../src/services'
 import { authorizeWallet } from '../src/session'
-import { WALLET_ADDRESS } from '../src/wallet'
+import { connectWallet } from '../src/wallet'
 
 test('a banner saved in the frontend renders on a publisher page', async ({
   page,
   request,
   servePublisherPage,
+  wallet,
 }, testInfo) => {
-  const wallet = await getWalletAddress(WALLET_ADDRESS)
   await authorizeWallet(page.context(), wallet.id)
 
   // Unique per run, so a title left over from an earlier run can't pass
@@ -18,14 +17,7 @@ test('a banner saved in the frontend renders on a publisher page', async ({
 
   await test.step('connect the wallet address', async () => {
     await page.goto('banner')
-    const walletInput = page.getByRole('textbox', { name: 'Wallet address' })
-    // Typing before the page is interactive is lost, so retry until it sticks
-    await expect(async () => {
-      await walletInput.fill(WALLET_ADDRESS)
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await expect(walletInput).not.toBeEditable({ timeout: 1000 })
-    }).toPass()
-    await expect(walletInput).toBeDisabled({ timeout: 15_000 })
+    await connectWallet(page)
   })
 
   const snippet = await test.step('change the title and save', async () => {
