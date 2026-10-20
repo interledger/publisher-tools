@@ -10,16 +10,13 @@ const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
-fetchProfile(API_URL, 'banner', params)
-  .then((profile) => {
-    const el = drawBanner(profile)
-    if (el) {
-      document.body.appendChild(el)
-    }
-  })
-  .catch((error) => console.error(error))
+if (shouldShowBanner()) {
+  fetchProfile(API_URL, 'banner', params)
+    .then((profile) => document.body.appendChild(drawBanner(profile)))
+    .catch((error) => console.error(error))
+}
 
-function drawBanner(profile: BannerProfile) {
+function shouldShowBanner() {
   // check if user closed the banner
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
@@ -27,14 +24,14 @@ function drawBanner(profile: BannerProfile) {
   const monetizationLinks = document.querySelector<HTMLLinkElement>(
     'link[rel=monetization]',
   )
-  if (
+  // skip the banner if the extension is installed
+  return !(
     (monetizationLinks && monetizationLinks.relList.supports('monetization')) ||
     closedByUser
-  ) {
-    // prevent element being created, if the extension is installed
-    return
-  }
+  )
+}
 
+function drawBanner(profile: BannerProfile) {
   const bannerElement = document.createElement('wm-banner')
   bannerElement.config = {
     ...profile,
