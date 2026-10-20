@@ -1,0 +1,185 @@
+name: Preview PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number the reviewed commit belongs to (used for logs and the summary comment)'
+        required: true
+        type: number
+      head_sha:
+        description: >
+          Exact head commit SHA that was reviewed, e.g. from `gh pr view <n> --json headRefOid`.
+          Pinning the SHA prevents newly pushed commits from being deployed unintentionally.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: preview-pr-${{ inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    name: Preview PR
+    runs-on: ubuntu-latest
+    environment: preview
+    steps:
+      # Only the repository is resolved from the API. The ref we deploy is always the
+      # reviewed `head_sha` input, so commits pushed after the review are never deployed.
+      - name: Resolve PR head repository
+        id: pr
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER);
+            const headSha = process.env.HEAD_SHA?.trim();
+            if (!prNumber) {
+              core.setFailed('inputs.pr_number is required');
+              return;
+            }
+            if (!headSha) {
+              core.setFailed('inputs.head_sha is required');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo,
+              pull_number: prNumber,
+            });
+            if (pr.state !== 'open') {
+              core.setFailed(`PR #${prNumber} is ${pr.state}, expected open.`);
+              return;
+            }
+            if (!pr.head.repo) {
+              core.setFailed(`PR #${prNumber} head repo is unavailable (fork deleted?).`);
+              return;
+            }
+
+            core.setOutput('head_repo', pr.head.repo.full_name);
+            core.setOutput('pr_number', String(pr.number));
+            core.info(`PR #${pr.number} head repo: ${pr.head.repo.full_name}`);
+            core.info(`Deploying reviewed commit: ${headSha}`);
+            if (pr.head.sha !== headSha) {
+              core.warning(
+                `PR head is now ${pr.head.sha}, which differs from the requested ${headSha}. ` +
+                  'Deploying the requested SHA.'
+              );
+            }
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.pr.outputs.head_repo }}
+          ref: ${{ inputs.head_sha }}
+          fetch-depth: 0
+
+      - uses: ./.github/workflows/setup
+
+      - name: Install wrangler globally
+        # The wrangler Action expects a global installation, so we better reuse
+        # what we've in our project.
+        id: wrangler
+        run: |
+          wrangler_version=$(yq '.overrides.wrangler' pnpm-workspace.yaml)
+          pnpm install -g "wrangler@${wrangler_version}"
+
+      #region Deploy
+      # The manual trigger by a write-access user, after review, is the approval gate,
+      # so no check-deploy-permissions / paths-filter split is needed (see #831).
+
+      - name: Deploy API
+        uses: ./.github/workflows/deploy-worker
+        id: api
+        with:
+          name: 'api'
+          changed: 'true'
+          mode: 'preview'
+          pr-number: ${{ steps.pr.outputs.pr_number }}
+          skip-deploy: 'false'
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.API_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy CDN
+        uses: ./.github/workflows/deploy-worker
+        id: cdn
+        with:
+          name: 'cdn'
+          changed: 'true'
+          mode: 'preview'
+          pr-number: ${{ steps.pr.outputs.pr_number }}
+          skip-deploy: 'false'
+          build: 'pnpm -C cdn run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          origin: ${{ vars.CDN_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Deploy Frontend
+        uses: ./.github/workflows/deploy-worker
+        id: frontend
+        with:
+          name: 'frontend'
+          changed: 'true'
+          mode: 'preview'
+          pr-number: ${{ steps.pr.outputs.pr_number }}
+          skip-deploy: 'false'
+          build: 'pnpm -C frontend run build'
+          BUILD_API_URL: ${{ steps.api.outputs.url }}
+          BUILD_CDN_URL: ${{ steps.cdn.outputs.url }}
+          BUILD_AWS_PREFIX: ${{ vars.AWS_PREFIX }}
+          BUILD_UMAMI_HOST: ${{ vars.UMAMI_HOST }}
+          BUILD_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          origin: ${{ vars.APP_ORIGIN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #endregion
+
+      #region Summary
+      # Runs even when a deploy failed, but not when the setup itself failed.
+      - name: Create Job summary
+        if: ${{ always() && steps.wrangler.outcome == 'success' }}
+        uses: actions/github-script@v9
+        id: summary
+        env:
+          SUMMARY_HEADING: 'Preview PR results'
+          SUMMARY_INTRO: >-
+            PR #${{ steps.pr.outputs.pr_number }} @ `${{ inputs.head_sha }}`,
+            triggered by @${{ github.triggering_actor }}
+          API_URL: ${{ steps.api.outputs.url }}
+          API_VERSIONED_URL: ${{ steps.api.outputs.versioned-url }}
+          API_OUTCOME: ${{ steps.api.outcome }}
+          CDN_URL: ${{ steps.cdn.outputs.url }}
+          CDN_VERSIONED_URL: ${{ steps.cdn.outputs.versioned-url }}
+          CDN_OUTCOME: ${{ steps.cdn.outcome }}
+          FRONTEND_URL: ${{ steps.frontend.outputs.url }}
+          FRONTEND_VERSIONED_URL: ${{ steps.frontend.outputs.versioned-url }}
+          FRONTEND_OUTCOME: ${{ steps.frontend.outcome }}
+        with:
+          script: |
+            const script = await import(`${process.env.GITHUB_WORKSPACE}/.github/scripts/build-deploy-summary.ts`);
+            await script.default({ core, context });
+
+      - name: Create/update preview comment
+        if: ${{ always() && steps.wrangler.outcome == 'success' }}
+        continue-on-error: true
+        uses: edumserrano/find-create-or-update-comment@v3
+        with:
+          issue-number: ${{ steps.pr.outputs.pr_number }}
+          body-includes: '<!-- worker-deploy-summary -->'
+          comment-author: 'github-actions[bot]'
+          body: |
+            <!-- worker-deploy-summary -->
+            ${{ steps.summary.outputs.summary }}
+          edit-mode: replace
+    #endregion
