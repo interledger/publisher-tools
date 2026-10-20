@@ -50,7 +50,6 @@ export function isWalletAddress(obj: unknown): obj is WalletAddress {
   return !!(
     o.id &&
     typeof o.id === 'string' &&
-    o.assetScale !== undefined &&
     typeof o.assetScale === 'number' &&
     o.assetCode &&
     typeof o.assetCode === 'string' &&

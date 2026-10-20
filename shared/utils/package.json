@@ -4,8 +4,13 @@
   "type": "module",
   "private": true,
   "main": "./index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
   "devDependencies": {
     "@interledger/open-payments": "^7.4.0",
-    "@shared/types": "workspace:^"
+    "@shared/types": "workspace:^",
+    "vitest": "^4.1.11"
   }
 }

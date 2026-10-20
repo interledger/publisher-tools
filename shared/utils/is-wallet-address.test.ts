@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isWalletAddress } from '@shared/utils'
+import { isWalletAddress } from './index.js'
 
 const baseWallet = {
   id: 'https://wallet.example/alice',
@@ -10,7 +10,7 @@ const baseWallet = {
 }
 
 describe('isWalletAddress', () => {
-  it('returns true for a valid wallet address with normal assetScale', () => {
+  it('returns true for a valid wallet address with assetScale 0', () => {
     expect(isWalletAddress(baseWallet)).toBe(true)
   })
 
