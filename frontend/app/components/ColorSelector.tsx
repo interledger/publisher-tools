@@ -1,7 +1,14 @@
-import { useState, useRef, useEffect, forwardRef } from 'react'
+import { useState, useEffect, forwardRef } from 'react'
 import ClickAwayListener from 'react-click-away-listener'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { cx } from 'class-variance-authority'
+import {
+  useFloating,
+  offset,
+  flip,
+  shift,
+  autoUpdate,
+} from '@floating-ui/react-dom'
 import type { Background, TextColor } from '@shared/types'
 import { SVGColorPicker, SVGArrowDropdown } from '~/assets/svg'
 
@@ -19,6 +26,9 @@ const defaultColors: Color[] = [
   { value: '#A9CAC9', label: 'Teal' }, // custom teal
   { value: '#F2797F', label: 'Red' }, // custom red
 ]
+
+const VIEWPORT_PADDING = 4
+const OVERLAY_OFFSET = 2
 
 interface ColorSelectorProps {
   label?: string
@@ -45,7 +55,20 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
       value,
     )
     const [isFocused, setIsFocused] = useState(false)
-    const selectorRef = useRef<HTMLButtonElement>(null)
+
+    // Only one overlay is open at a time so both share the same positioning
+    const { refs, floatingStyles } = useFloating({
+      open: isOpen || openColorPicker,
+      placement: 'bottom-start',
+      strategy: 'fixed',
+      middleware: [
+        offset(OVERLAY_OFFSET),
+        flip({ padding: VIEWPORT_PADDING }),
+        shift({ padding: VIEWPORT_PADDING }),
+      ],
+      whileElementsMounted: autoUpdate,
+    })
+
     useEffect(() => {
       setSelectedColor(value)
     }, [value])
@@ -86,7 +109,7 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               disabled={disabled}
               aria-expanded={isOpen}
               aria-haspopup="listbox"
-              ref={selectorRef}
+              ref={refs.setReference}
             >
               <div className="flex items-center">
                 <div
@@ -114,7 +137,11 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
               </span>
             </button>
             {isOpen && (
-              <div className="absolute z-10 mt-2xs left-0 w-auto bg-white border border-silver-200 rounded-lg shadow-xs p-sm">
+              <div
+                ref={refs.setFloating}
+                style={floatingStyles}
+                className="z-10 w-auto bg-white border border-silver-200 rounded-lg shadow-xs p-sm"
+              >
                 <div className="flex items-center gap-sm whitespace-nowrap">
                   <SVGColorPicker
                     className="w-5 h-5 cursor-pointer fill-purple-300"
@@ -159,8 +186,10 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
                   onClickAway={() => setDisplayColorPicker(false)}
                 >
                   <div
+                    ref={refs.setFloating}
+                    style={floatingStyles}
                     className={cx(
-                      'absolute border border-gray-400 p-2xs bg-gray-200 rounded-lg z-10',
+                      'border border-gray-400 p-2xs bg-gray-200 rounded-lg z-10',
                       openColorPicker ? 'flex flex-col' : 'hidden',
                     )}
                   >
