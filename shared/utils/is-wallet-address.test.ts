@@ -10,7 +10,7 @@ const baseWallet = {
 }
 
 describe('isWalletAddress', () => {
-  it('returns true for a valid wallet address with assetScale 0', () => {
+  it('returns true for a valid wallet address with assetScale 2', () => {
     expect(isWalletAddress(baseWallet)).toBe(true)
   })
 
