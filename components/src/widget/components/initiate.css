@@ -214,6 +214,15 @@
   }
 }
 
+.payment-error {
+  color: var(--Colors-red-500, #ef4444);
+  font-size: var(--Font-Size-text-xs, 12px);
+  font-family: var(--Font-Family-Inter, Inter);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
 .loading-state {
   display: flex;
   align-items: center;

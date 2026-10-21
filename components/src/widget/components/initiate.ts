@@ -21,6 +21,7 @@ export class PaymentInitiate extends LitElement {
   @state() private isLoadingPreview = false
   @state() private isPreparingPayment = false
   @state() private amountError: string | null = null
+  @state() private paymentError: string | null = null
   @state() private formattedDebitAmount?: string
   @state() private formattedReceiveAmount?: string
   #minSendAmount?: number
@@ -160,6 +161,7 @@ export class PaymentInitiate extends LitElement {
 
   private onPaymentConfirmed = () => {
     this.isPreparingPayment = true
+    this.paymentError = null
     this.handlePaymentConfirmed()
   }
 
@@ -192,6 +194,11 @@ export class PaymentInitiate extends LitElement {
       )
     } catch (error) {
       console.error('Error initializing payment:', error)
+      this.isPreparingPayment = false
+      this.paymentError =
+        error instanceof Error
+          ? error.message
+          : 'Something went wrong. Please try again.'
     }
   }
 
@@ -317,6 +324,11 @@ export class PaymentInitiate extends LitElement {
             : 'Confirm Payment'
         }
       </button>
+      ${
+        this.paymentError
+          ? html`<p class="payment-error">${this.paymentError}</p>`
+          : nothing
+      }
     `
   }
 }
