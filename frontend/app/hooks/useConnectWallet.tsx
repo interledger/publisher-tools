@@ -6,6 +6,7 @@ import { useTranslation } from '~/i18n/useTranslation'
 import { ApiError } from '~/lib/helpers'
 import { banner } from '~/stores/banner-store'
 import { offerwall } from '~/stores/offerwall-store'
+import { paywall } from '~/stores/paywall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
@@ -26,6 +27,14 @@ function getLegacyOptions() {
       hasConflicts: offerwall.profilesUpdate.size > 0,
       updates: [...offerwall.profilesUpdate],
       profiles: offerwall.profiles,
+    }
+  }
+
+  if (toolState.currentToolType === 'paywall') {
+    return {
+      hasConflicts: paywall.profilesUpdate.size > 0,
+      updates: [...paywall.profilesUpdate],
+      profiles: paywall.profiles,
     }
   }
 

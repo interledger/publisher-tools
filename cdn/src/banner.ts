@@ -10,36 +10,37 @@ const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
 appendPaymentPointer(params.walletAddress)
-fetchProfile(API_URL, 'banner', params)
-  .then((profile) => {
-    const el = drawBanner(profile)
-    if (el) {
-      document.body.appendChild(el)
-    }
-  })
-  .catch((error) => console.error(error))
 
-function drawBanner(profile: BannerProfile) {
-  // check if user closed the banner
+if (shouldShowBanner()) {
+  fetchProfile(API_URL, 'banner', params)
+    .then((profile) => document.body.appendChild(drawBanner(profile)))
+    .catch((error) => console.error(error))
+}
+
+function shouldShowBanner() {
   const closedByUser = sessionStorage.getItem('_wm_tools_closed_by_user')
 
   // check if user / visitor has monetization
   const monetizationLinks = document.querySelector<HTMLLinkElement>(
     'link[rel=monetization]',
   )
-  if (
-    (monetizationLinks && monetizationLinks.relList.supports('monetization')) ||
-    closedByUser
-  ) {
-    // prevent element being created, if the extension is installed
-    return
-  }
+  const monetizationSupported =
+    monetizationLinks?.relList.supports('monetization')
 
+  return !monetizationSupported && !closedByUser
+}
+
+function drawBanner(profile: BannerProfile) {
   const bannerElement = document.createElement('wm-banner')
   bannerElement.config = {
     ...profile,
     cdnUrl: params.cdnUrl,
   }
+
+  bannerElement.addEventListener('banner-closed', () => {
+    sessionStorage.setItem('_wm_tools_closed_by_user', 'true')
+    trackEvent('banner_closed')
+  })
 
   bannerElement.addEventListener(
     'click-extension-link',

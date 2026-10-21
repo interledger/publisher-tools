@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
+    "predev": "node -e \"const fs = require('fs'); if (fs.existsSync('../.dev.vars')) fs.copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "react-router dev --port 3000",
     "preview": "pnpm run build && wrangler dev",
     "deploy": "wrangler deploy",
