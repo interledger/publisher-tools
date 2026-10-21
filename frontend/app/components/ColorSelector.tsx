@@ -63,8 +63,8 @@ export const ColorSelector = forwardRef<HTMLDivElement, ColorSelectorProps>(
       strategy: 'fixed',
       middleware: [
         offset(OVERLAY_OFFSET),
-        flip({ padding: VIEWPORT_PADDING }),
-        shift({ padding: VIEWPORT_PADDING }),
+        flip({ padding: VIEWPORT_PADDING, altBoundary: true }),
+        shift({ padding: VIEWPORT_PADDING, altBoundary: true }),
       ],
       whileElementsMounted: autoUpdate,
     })
