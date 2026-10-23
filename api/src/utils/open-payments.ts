@@ -24,13 +24,21 @@ const OUTGOING_PAYMENT_POLLING_MAX_ATTEMPTS = 3
 
 export class OpenPaymentsService {
   private client!: AuthenticatedClient
-  private static _instance: OpenPaymentsService
+  private static _instance: Promise<OpenPaymentsService> | undefined
 
   public static async getInstance(env: Env): Promise<OpenPaymentsService> {
     if (!OpenPaymentsService._instance) {
-      OpenPaymentsService._instance = new OpenPaymentsService()
-      OpenPaymentsService._instance.client =
-        await OpenPaymentsService._instance.initClient(env)
+      const instance = new OpenPaymentsService()
+      OpenPaymentsService._instance = instance
+        .initClient(env)
+        .then((client) => {
+          instance.client = client
+          return instance
+        })
+        .catch((error) => {
+          OpenPaymentsService._instance = undefined
+          throw error
+        })
     }
     return OpenPaymentsService._instance
   }
