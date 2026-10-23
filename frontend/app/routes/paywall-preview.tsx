@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { NO_OP_CONTROLLER } from '@c/paywall/controller'
 import { getDefaultProfile } from '@shared/default-data'
 import { CDN_URL } from '@shared/defines'
@@ -40,8 +40,11 @@ export default function PaywallPreview() {
     if (saved) setProfile(saved)
   }, [])
 
+  // The element is created once; later updates come through messages.
+  const getProfile = useEffectEvent(() => profile)
   useEffect(() => {
     if (!isLoaded) return
+    const profile = getProfile()
 
     const el = document.createElement(NAME)
     const actions = el.setController({

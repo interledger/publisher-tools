@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import type { OfferwallModal } from '@c/offerwall'
 import { applyFontFamily } from '@c/utils'
 import { getDefaultProfile } from '@shared/default-data'
@@ -30,8 +30,11 @@ export default function OfferwallPreviewRoute() {
     load()
   }, [])
 
+  // The element is created once; later updates come through messages.
+  const getProfile = useEffectEvent(() => profile)
   useEffect(() => {
     if (!isLoaded) return
+    const profile = getProfile()
 
     const update = (profile: OfferwallProfile) => {
       setCssVars(el, profile)
