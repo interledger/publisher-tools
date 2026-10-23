@@ -5,6 +5,7 @@ import {
   type ProfileId,
   type PaywallProfile,
   type ToolProfiles,
+  PROFILE_A,
   PROFILE_IDS,
   DEFAULT_PROFILE_NAMES,
   TOOL_PAYWALL,
@@ -14,7 +15,6 @@ import { createWalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils } from '~/utils/utils.store'
-import { toolState } from './toolStore'
 
 export const {
   wallet: paywallWallet,
@@ -22,6 +22,12 @@ export const {
   persist: persistPaywallWallet,
   actions: paywallWalletActions,
 } = createWalletStore(TOOL_PAYWALL)
+
+/**
+ * The paywall has a single profile (it has no version tabs), so it uses a
+ * fixed one instead of the active tab of the other tools.
+ */
+export const PAYWALL_PROFILE_ID: ProfileId = PROFILE_A
 
 export type PaywallStore = ReturnType<typeof createPaywallStore>
 
@@ -39,7 +45,7 @@ function createPaywallStore() {
     profilesUpdate: proxySet<ProfileId>(),
 
     get profile(): PaywallProfile {
-      return this.profiles[toolState.activeTab]
+      return this.profiles[PAYWALL_PROFILE_ID]
     },
     get profileTabs() {
       return PROFILE_IDS.map((id) => ({
@@ -75,7 +81,7 @@ const paywallStoreUtils = createToolStoreUtils({
 
 export const actions = {
   setProfileName(name: string) {
-    paywall.profiles[toolState.activeTab].$name = name
+    paywall.profiles[PAYWALL_PROFILE_ID].$name = name
   },
   setProfiles(profiles: ToolProfiles<'paywall'>) {
     if (!profiles) return
@@ -98,7 +104,7 @@ export const actions = {
     })
   },
   resetProfileSection(section: 'content' | 'appearance') {
-    const snapshot = snapshots.get(toolState.activeTab)
+    const snapshot = snapshots.get(PAYWALL_PROFILE_ID)
     if (!snapshot) {
       throw new Error('No snapshot found for the profile')
     }
@@ -107,7 +113,7 @@ export const actions = {
     patchProxy(paywall.profile, section === 'content' ? content : appearance)
   },
   restoreDefaultSection(section: 'content' | 'appearance') {
-    paywallStoreUtils.restoreDefaultSection(toolState.activeTab, section)
+    paywallStoreUtils.restoreDefaultSection(PAYWALL_PROFILE_ID, section)
   },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(paywall.profile)
@@ -115,20 +121,20 @@ export const actions = {
       paywallWallet.walletAddress,
       TOOL_PAYWALL,
       profile,
-      toolState.activeTab,
+      PAYWALL_PROFILE_ID,
     )
   },
   commitProfile() {
-    return paywallStoreUtils.commitActiveProfile(toolState.activeTab)
+    return paywallStoreUtils.commitActiveProfile(PAYWALL_PROFILE_ID)
   },
   commitProfiles() {
     paywallStoreUtils.commitAllProfiles()
   },
   hasSectionChanges(section?: 'content' | 'appearance') {
-    return paywallStoreUtils.hasSectionChanges(toolState.activeTab, section)
+    return paywallStoreUtils.hasSectionChanges(PAYWALL_PROFILE_ID, section)
   },
   hasDefaultChanges(section?: 'content' | 'appearance') {
-    return paywallStoreUtils.hasDefaultChanges(toolState.activeTab, section)
+    return paywallStoreUtils.hasDefaultChanges(PAYWALL_PROFILE_ID, section)
   },
 }
 

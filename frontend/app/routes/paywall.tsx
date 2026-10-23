@@ -20,6 +20,7 @@ import {
   hydrateSnapshotsFromStorage,
   loadPaywallWallet,
   paywall,
+  PAYWALL_PROFILE_ID,
   paywallWallet,
   paywallWalletActions,
   persistPaywallWallet,
@@ -116,7 +117,7 @@ export default function Paywall() {
         isGrantResponse,
         OP_WALLET_ADDRESS,
       }}
-      hasUnsavedChanges={paywallSnap.profilesUpdate.has(snap.activeTab)}
+      hasUnsavedChanges={paywallSnap.profilesUpdate.has(PAYWALL_PROFILE_ID)}
       stepMiddle={<PaywallBuilderSettings />}
     >
       <div className="bg-interface-bg-container rounded-lg p-md flex-col gap-md w-full flex">

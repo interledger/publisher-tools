@@ -1,8 +1,47 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createDefaultPaywallProfile } from '@shared/default-data'
+import { PROFILE_A, PROFILE_B, TOOL_PAYWALL } from '@shared/types'
+import { saveToolProfile } from '~/utils/profile-api'
 import { actions, paywall } from './paywall-store'
+import { toolActions } from './toolStore'
+
+vi.mock('~/utils/profile-api', () => ({
+  getToolProfiles: vi.fn(),
+  saveToolProfile: vi.fn(async () => ({ success: true })),
+}))
 
 describe('paywall store', () => {
+  afterEach(() => {
+    toolActions.setActiveTab(PROFILE_A)
+    vi.unstubAllGlobals()
+  })
+
+  it('edits and saves its own profile, not the version selected in other tools', async () => {
+    // saving a profile also stores its snapshot
+    vi.stubGlobal('localStorage', { setItem: vi.fn() })
+    // e.g. "Version 2" selected in the banner
+    toolActions.setActiveTab(PROFILE_B)
+
+    paywall.profile.title.text = 'Paywall title'
+
+    expect(paywall.profiles[PROFILE_A].title.text).toBe('Paywall title')
+    expect(paywall.profiles[PROFILE_B].title.text).not.toBe('Paywall title')
+
+    await actions.saveProfile()
+    expect(saveToolProfile).toHaveBeenCalledWith(
+      expect.any(String),
+      TOOL_PAYWALL,
+      expect.objectContaining({
+        title: expect.objectContaining({ text: 'Paywall title' }),
+      }),
+      PROFILE_A,
+    )
+
+    actions.commitProfile()
+    expect(actions.hasSectionChanges()).toBe(false)
+    expect(paywall.profilesUpdate.has(PROFILE_B)).toBe(false)
+  })
+
   it('restores defaults only for the given section', () => {
     const defaults = createDefaultPaywallProfile('Default')
     paywall.profile.$name = 'My paywall'
