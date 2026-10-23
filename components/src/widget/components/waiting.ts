@@ -3,7 +3,11 @@ import { property, state } from 'lit/decorators.js'
 import failedIcon from '@c/assets/interaction/authorization_failed.svg'
 import loadingIcon from '@c/assets/interaction/authorization_loading.svg'
 import successIcon from '@c/assets/interaction/authorization_success.svg'
-import { NO_OP_CONTROLLER, type Controller } from '@c/widget/controller'
+import {
+  NO_OP_CONTROLLER,
+  type Controller,
+  type WidgetController,
+} from '@c/widget/controller'
 import styles from './waiting.css?raw'
 
 type ButtonAction = {
@@ -33,6 +37,7 @@ export class PaymentWaiting extends LitElement {
 
   @property({ type: String, attribute: false }) private paymentId = ''
   @property({ type: String, attribute: false }) private grantRedirectUrl = ''
+  @property({ type: Object }) configController!: WidgetController
 
   static styles = unsafeCSS(styles)
 
@@ -80,6 +85,7 @@ export class PaymentWaiting extends LitElement {
         } else if (status.type === 'OUTGOING_PAYMENT_DONE') {
           if (status.result === 'success') {
             this.currentView = 'success'
+            this.dispatchMonetizationEvent()
           } else {
             this.currentView = 'failed'
             this.errorMessage = status.error?.message || 'Payment failed'
@@ -105,6 +111,27 @@ export class PaymentWaiting extends LitElement {
       new CustomEvent('interaction-cancelled', {
         bubbles: true,
         composed: true,
+      }),
+    )
+  }
+
+  private dispatchMonetizationEvent() {
+    if (this.#controller.isPreviewMode) return
+
+    const { walletAddress, receiver, amount, incomingPaymentId } =
+      this.configController.state
+    this.dispatchEvent(
+      new CustomEvent('wm-widget-monetization', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          amountSent: {
+            value: String(amount),
+            currency: walletAddress.assetCode,
+          },
+          incomingPayment: incomingPaymentId,
+          walletAddress: receiver.id,
+        },
       }),
     )
   }
