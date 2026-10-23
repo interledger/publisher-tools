@@ -103,7 +103,7 @@ export const useConnectWallet = (
       )
       throw err
     }
-  }, [openDialog, resetWalletUIState, walletActions, t])
+  }, [openDialog, closeDialog, resetWalletUIState, walletActions, t])
 
   const disconnect = useCallback(() => {
     toolActions.resetToolProfiles()
