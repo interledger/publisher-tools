@@ -15,6 +15,13 @@ permissions:
   contents: read
   pull-requests: write
 
+# One deploy per PR/branch at a time to prevent outdated builds from going live.
+# `queue: max` keeps every pending run (oldest first) instead of only the latest,
+# so changes from a skipped run can't be missed by the changed-paths filter.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  queue: max
+
 jobs:
   deploy:
     name: Deploy
