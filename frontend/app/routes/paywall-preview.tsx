@@ -9,7 +9,7 @@ import type {
   MessageFromIframe,
 } from '~/components/paywall/PaywallPreview'
 import { ToolPreviewPlaceholder } from '~/components/ToolPreviewPlaceholder'
-import { toolState } from '~/stores/toolStore'
+import { PAYWALL_PROFILE_ID } from '~/stores/paywall-store'
 import { getStorageKeys } from '~/utils/utils.store'
 
 const TOOL = 'paywall'
@@ -101,7 +101,7 @@ export default function PaywallPreview() {
 }
 
 function getProfileFromLocalStorage(): PaywallProfile | null {
-  const key = getStorageKeys(TOOL).getProfileStorageKey(toolState.activeTab)
+  const key = getStorageKeys(TOOL).getProfileStorageKey(PAYWALL_PROFILE_ID)
   const stored = localStorage.getItem(key)
   if (!stored) return null
 
