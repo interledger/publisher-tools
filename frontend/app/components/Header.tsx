@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SVGHamburgerIcon } from '@/assets'
 import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
@@ -7,6 +7,7 @@ import { useTranslation } from '~/i18n/useTranslation'
 export const Header = () => {
   const t = useTranslation('header')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const hamburgerRef = useRef<HTMLButtonElement>(null)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
 
@@ -65,6 +66,7 @@ export const Header = () => {
           </ul>
 
           <GhostButton
+            ref={hamburgerRef}
             onClick={toggleMobileMenu}
             tabIndex={0}
             className="md:hidden size-[48px] focusable-nav-item"
@@ -74,7 +76,7 @@ export const Header = () => {
         </nav>
       </header>
 
-      {isMobileMenuOpen && <MobileMenu onClose={toggleMobileMenu} />}
+      {isMobileMenuOpen && <MobileMenu onClose={toggleMobileMenu} triggerRef={hamburgerRef} />}
     </>
   )
 }
