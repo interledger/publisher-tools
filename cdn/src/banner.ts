@@ -2,14 +2,14 @@ import { Banner } from '@c/banner.js'
 import { API_URL } from '@shared/defines'
 import type { BannerProfile } from '@shared/types'
 import { trackEventFactory } from './lib/analytics'
-import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
+import { ensureMonetizationLink, fetchProfile, getScriptParams } from './utils'
 
 customElements.define('wm-banner', Banner)
 
 const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
-appendPaymentPointer(params.walletAddress)
+ensureMonetizationLink(params.walletAddress)
 
 if (shouldShowBanner()) {
   fetchProfile(API_URL, 'banner', params)

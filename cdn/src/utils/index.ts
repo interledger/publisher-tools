@@ -136,12 +136,53 @@ export async function initiatePayment(
   return json
 }
 
-export function appendPaymentPointer(walletAddressUrl: string) {
+/**
+ * Adds a monetization link for the wallet address, unless the page already has
+ * one. Payments are split across all monetization links on a page, so another
+ * link would change how the publisher's own links (e.g. a revenue share) or
+ * another tool's link are paid.
+ */
+export function ensureMonetizationLink(walletAddressUrl: string): void {
+  if (getMonetizationLinks().length > 0) return
+  addMonetizationLink(walletAddressUrl)
+}
+
+/**
+ * Returns the page's monetization link for the wallet address, and adds one if
+ * there's none. For tools that need payments to go to this wallet address.
+ */
+export function getOrAddMonetizationLink(
+  walletAddressUrl: string,
+): HTMLLinkElement {
+  const url = toComparableUrl(walletAddressUrl)
+  const existing = getMonetizationLinks().find(
+    (link) => toComparableUrl(link.getAttribute('href') ?? '') === url,
+  )
+  return existing ?? addMonetizationLink(walletAddressUrl)
+}
+
+/** Links with `disabled` are not used for monetization. */
+function getMonetizationLinks() {
+  return [
+    ...document.querySelectorAll<HTMLLinkElement>('link[rel="monetization"]'),
+  ].filter((link) => !link.hasAttribute('disabled'))
+}
+
+function addMonetizationLink(walletAddressUrl: string) {
   const monetizationElement = document.createElement('link')
   monetizationElement.rel = 'monetization'
   monetizationElement.href = walletAddressUrl
   document.head.appendChild(monetizationElement)
   return monetizationElement
+}
+
+function toComparableUrl(walletAddressUrl: string) {
+  try {
+    const url = new URL(toWalletAddressUrl(walletAddressUrl.trim()))
+    return `${url.origin}${url.pathname.replace(/\/$/, '')}`
+  } catch {
+    return walletAddressUrl
+  }
 }
 
 export function isAuthJwt(tokenStr?: string | null): tokenStr is string {
