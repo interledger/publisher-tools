@@ -4,7 +4,7 @@ import type { WidgetProfile } from '@shared/types'
 import { sleep } from '@shared/utils'
 import { PaymentWidget } from '@tools/components'
 import {
-  appendPaymentPointer,
+  ensureMonetizationLink,
   fetchProfile,
   fetchQuote,
   getScriptParams,
@@ -18,7 +18,7 @@ customElements.define('wm-payment-widget', PaymentWidget)
 
 const params = getScriptParams('widget')
 
-appendPaymentPointer(params.walletAddress)
+ensureMonetizationLink(params.walletAddress)
 fetchProfile(API_URL, 'widget', params)
   .then((profile) => {
     const el = drawWidget(params.walletAddress, profile)
