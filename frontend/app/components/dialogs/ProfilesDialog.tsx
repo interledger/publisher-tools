@@ -123,8 +123,9 @@ export const ProfilesDialog: React.FC<Props> = ({
         }
       })
 
-      // let user save last action for banner separately
-      toolActions.setToolProfiles<Tool>(mergedProfiles)
+      // Kept local changes are not on the server yet, so the fetched
+      // configurations stay the saved baseline and the changes stay unsaved.
+      toolActions.setToolProfiles<Tool>(mergedProfiles, fetchedConfigs)
       closeDialog()
 
       walletActions.setHasRemoteConfigs(true)
