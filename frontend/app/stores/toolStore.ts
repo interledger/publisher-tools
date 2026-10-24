@@ -75,25 +75,35 @@ export const toolActions = {
         break
     }
   },
-  setToolProfiles<T extends Tool>(profiles: ToolProfiles<T>) {
+  /**
+   * Loads `profiles` and marks them as saved. Pass `serverProfiles` when some
+   * of `profiles` are local changes the server doesn't have yet, so that they
+   * stay unsaved.
+   */
+  setToolProfiles<T extends Tool>(
+    profiles: ToolProfiles<T>,
+    serverProfiles: ToolProfiles<T> = profiles,
+  ) {
     if (!profiles) return
 
     switch (toolState.currentToolType) {
       case TOOL_BANNER:
         bannerActions.setProfiles(profiles as ToolProfiles<'banner'>)
-        bannerActions.commitProfiles()
+        bannerActions.commitProfiles(serverProfiles as ToolProfiles<'banner'>)
         break
       case TOOL_WIDGET:
         widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
-        widgetActions.commitProfiles()
+        widgetActions.commitProfiles(serverProfiles as ToolProfiles<'widget'>)
         break
       case TOOL_PAYWALL:
         paywallActions.setProfiles(profiles as ToolProfiles<'paywall'>)
-        paywallActions.commitProfiles()
+        paywallActions.commitProfiles(serverProfiles as ToolProfiles<'paywall'>)
         break
       case TOOL_OFFERWALL:
         offerwallActions.setProfiles(profiles as ToolProfiles<'offerwall'>)
-        offerwallActions.commitProfiles()
+        offerwallActions.commitProfiles(
+          serverProfiles as ToolProfiles<'offerwall'>,
+        )
         break
 
       default:

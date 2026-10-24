@@ -181,12 +181,20 @@ export function createToolStoreUtils<T extends Tool>(
       return changed
     },
 
-    // Server-load baseline reset; no analytics
-    commitAllProfiles(): void {
+    // Server-load baseline reset; no analytics. `serverProfiles` are the
+    // profiles as saved on the server when they differ from the loaded ones
+    // (local changes kept over them): those stay as unsaved changes.
+    commitAllProfiles(serverProfiles?: ToolProfiles<T>): void {
       PROFILE_IDS.forEach((id) => {
         const profile = snapshot(store.profiles[id]) as ToolProfile<T>
-        snapshots.set(id, profile)
-        store.profilesUpdate.delete(id)
+        const baseline =
+          (serverProfiles?.[id] as ToolProfile<T> | undefined) ?? profile
+        snapshots.set(id, baseline)
+        if (hasPendingUpdates(id, profile)) {
+          store.profilesUpdate.add(id)
+        } else {
+          store.profilesUpdate.delete(id)
+        }
       })
       persistSnapshots()
     },

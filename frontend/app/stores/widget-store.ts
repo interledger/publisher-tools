@@ -119,8 +119,8 @@ export const actions = {
   commitProfile() {
     return widgetStoreUtils.commitActiveProfile(toolState.activeTab)
   },
-  commitProfiles() {
-    widgetStoreUtils.commitAllProfiles()
+  commitProfiles(serverProfiles?: ToolProfiles<'widget'>) {
+    widgetStoreUtils.commitAllProfiles(serverProfiles)
   },
   hasSectionChanges(section?: 'content' | 'appearance') {
     return widgetStoreUtils.hasSectionChanges(toolState.activeTab, section)
