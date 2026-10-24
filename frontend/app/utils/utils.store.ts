@@ -97,16 +97,17 @@ export function createToolStoreUtils<T extends Tool>(
     return !deepEqual(omit(snap, keys), omit(baseline, keys))
   }
 
+  function syncPendingUpdates(id: ProfileId) {
+    const snap = snapshot(store.profiles[id]) as ToolProfile<T>
+    if (hasPendingUpdates(id, snap)) {
+      store.profilesUpdate.add(id)
+    } else {
+      store.profilesUpdate.delete(id)
+    }
+  }
+
   function subscribeProfileToUpdates(id: ProfileId) {
-    const profile = store.profiles[id]
-    return subscribe(profile, () => {
-      const snap = snapshot(profile) as ToolProfile<T>
-      if (hasPendingUpdates(id, snap)) {
-        store.profilesUpdate.add(id)
-      } else {
-        store.profilesUpdate.delete(id)
-      }
-    })
+    return subscribe(store.profiles[id], () => syncPendingUpdates(id))
   }
 
   function persistSnapshots() {
@@ -181,12 +182,25 @@ export function createToolStoreUtils<T extends Tool>(
       return changed
     },
 
-    // Server-load baseline reset; no analytics
-    commitAllProfiles(): void {
+    /**
+     * Server-load baseline reset; no analytics.
+     * Pass `savedProfiles` when the store holds local values that were never
+     * saved, so those profiles stay flagged as having unsaved changes.
+     */
+    commitAllProfiles(savedProfiles?: ToolProfiles<T>): void {
       PROFILE_IDS.forEach((id) => {
-        const profile = snapshot(store.profiles[id]) as ToolProfile<T>
-        snapshots.set(id, profile)
-        store.profilesUpdate.delete(id)
+        const current = snapshot(store.profiles[id]) as ToolProfile<T>
+        if (!savedProfiles) {
+          snapshots.set(id, current)
+        } else {
+          const saved = savedProfiles[id] as ToolProfile<T> | undefined
+          // no server copy: keep the previous baseline
+          if (saved) {
+            // merge like `setProfiles` does, so untouched fields compare equal
+            snapshots.set(id, { ...current, ...structuredClone(saved) })
+          }
+        }
+        syncPendingUpdates(id)
       })
       persistSnapshots()
     },
