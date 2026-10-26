@@ -120,8 +120,8 @@ export const actions = {
   commitProfile() {
     return bannerStoreUtils.commitActiveProfile(toolState.activeTab)
   },
-  commitProfiles() {
-    bannerStoreUtils.commitAllProfiles()
+  commitProfiles(savedProfiles?: ToolProfiles<'banner'>) {
+    bannerStoreUtils.commitAllProfiles(savedProfiles)
   },
   hasSectionChanges(section?: 'content' | 'appearance') {
     return bannerStoreUtils.hasSectionChanges(toolState.activeTab, section)
