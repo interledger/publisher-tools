@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import {
-  validateAndConfirmPointer,
-  WalletAddressFormatError,
-} from '@shared/utils/index'
+import { validateAndConfirmPointer } from '@shared/utils/index'
+import { useTranslation } from '~/i18n/useTranslation'
+import { walletErrorMessage } from '~/lib/walletError'
 
 interface ValidationState {
   isValidating: boolean
@@ -14,6 +13,8 @@ export function useDebounceValidation(
   value: string,
   delay: number = 500,
 ): ValidationState {
+  const t = useTranslation('linkTag')
+  const tWallet = useTranslation('wallet')
   const [validationState, setValidationState] = useState<ValidationState>({
     isValidating: false,
     isValid: false,
@@ -47,10 +48,11 @@ export function useDebounceValidation(
       } catch (error) {
         finalState = {
           isValid: false,
-          error:
-            error instanceof WalletAddressFormatError
-              ? error.message
-              : 'Invalid wallet address',
+          error: walletErrorMessage(
+            error,
+            tWallet,
+            t('errors.invalidWalletAddress'),
+          ),
         }
       }
 
@@ -75,7 +77,7 @@ export function useDebounceValidation(
       isCurrent = false
       clearTimeout(timeoutId)
     }
-  }, [value, delay])
+  }, [value, delay, t, tWallet])
 
   return validationState
 }

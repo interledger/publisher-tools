@@ -14,9 +14,8 @@ import {
   FONT_FAMILY_OPTIONS,
 } from '@shared/types'
 import { SVGColorPicker, SVGRoundedCorner, SVGText } from '~/assets/svg'
-import { useOfferwallProfile } from '~/stores/offerwall-store'
+import { useOfferwallProfile, actions } from '~/stores/offerwall-store'
 import { toolActions } from '~/stores/toolStore'
-import { useUIState } from '~/stores/uiStore'
 
 interface Props {
   onRefresh: () => void
@@ -31,8 +30,8 @@ export function OfferwallBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const uiState = useUIState()
   const [snap, profile] = useOfferwallProfile()
+  const hasChanges = actions.hasSectionChanges()
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
   )
@@ -48,8 +47,10 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={uiState.appearanceComplete}
       onRefresh={onRefresh}
+      canRestoreDefaults={actions.hasDefaultChanges()}
+      onRestoreDefaults={() => actions.restoreDefaultSection()}
+      hasChanges={hasChanges}
       isOpen
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>

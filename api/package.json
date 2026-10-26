@@ -2,7 +2,7 @@
   "name": "publisher-tools-api",
   "version": "1.0.0",
   "scripts": {
-    "predev": "node -e \"require('fs').copyFileSync('../.dev.vars', '.dev.vars');\"",
+    "predev": "node -e \"const fs = require('fs'); if (fs.existsSync('../.dev.vars')) fs.copyFileSync('../.dev.vars', '.dev.vars');\"",
     "dev": "wrangler dev --persist-to ../.wrangler",
     "build": "node build.ts",
     "preview": "wrangler dev",

@@ -2,11 +2,10 @@ import { useState, useCallback } from 'react'
 import { SVGSpinner } from '@/assets'
 import { InputField, ToolsPrimaryButton, CodeBlockLink } from '@/components'
 import { Heading5 } from '@/typography'
-import {
-  validateAndConfirmPointer,
-  WalletAddressFormatError,
-} from '@shared/utils/index'
+import { validateAndConfirmPointer } from '@shared/utils/index'
+import { useTranslation } from '~/i18n/useTranslation'
 import { useTrackEvent } from '~/lib/analytics'
+import { walletErrorMessage } from '~/lib/walletError'
 
 const htmlEncodePointer = (pointer: string): string => {
   return pointer
@@ -26,6 +25,8 @@ export const LinkTagGenerator = () => {
   const [showCodeBox, setShowCodeBox] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const trackEvent = useTrackEvent()
+  const t = useTranslation('linkTag')
+  const tWallet = useTranslation('wallet')
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -36,7 +37,7 @@ export const LinkTagGenerator = () => {
 
       if (!pointerInput.trim()) {
         setInvalidUrl(true)
-        setError('Wallet address is required')
+        setError(t('errors.walletAddressRequired'))
         setIsLoading(false)
         return
       }
@@ -49,17 +50,15 @@ export const LinkTagGenerator = () => {
           wallet_provider: new URL(validatedPointer).hostname,
         })
       } catch (err) {
-        const message =
-          err instanceof WalletAddressFormatError
-            ? err.message
-            : 'invalid wallet address'
         setInvalidUrl(true)
-        setError(message)
+        setError(
+          walletErrorMessage(err, tWallet, t('errors.invalidWalletAddress')),
+        )
       } finally {
         setIsLoading(false)
       }
     },
-    [pointerInput, trackEvent],
+    [pointerInput, trackEvent, t, tWallet],
   )
 
   const handleOnChange = useCallback(
@@ -113,7 +112,7 @@ export const LinkTagGenerator = () => {
       {isCopied && (
         <div className="h-[40px] p-sm rounded-lg bg-interface-bg-main">
           <p className="font-sans text-sm font-normal leading-normal text-text-success text-center">
-            Copied to clipboard.
+            {t('status.copiedClipboard')}
           </p>
         </div>
       )}

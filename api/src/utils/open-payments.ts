@@ -350,14 +350,8 @@ export class OpenPaymentsService {
         accessToken: continuationAccessToken,
       })
 
-      if (hasCancellationReason(outgoingPayment)) {
-        return {
-          success: false,
-          error: {
-            code: 'CANCELLATION_REASON',
-            message: `Payment aborted due to: ${outgoingPayment.metadata?.cancellationReason}`,
-          },
-        }
+      if (outgoingPayment.failed) {
+        return { success: false, error: getFailedPaymentError(outgoingPayment) }
       }
 
       if (
@@ -418,12 +412,22 @@ export const isNonPositiveAmountError = (
   )
 }
 
-function hasCancellationReason(outgoingPayment: OutgoingPayment): boolean {
-  return (
-    outgoingPayment.failed &&
-    typeof outgoingPayment.metadata === 'object' &&
-    'cancellationReason' in outgoingPayment.metadata
-  )
+/**
+ * A failed outgoing payment won't send the rest of its amount. The wallet may
+ * add a `cancellationReason` to its metadata, but it doesn't have to.
+ */
+function getFailedPaymentError(outgoingPayment: OutgoingPayment) {
+  const { metadata } = outgoingPayment
+  if (typeof metadata === 'object' && metadata?.cancellationReason) {
+    return {
+      code: 'CANCELLATION_REASON',
+      message: `Payment aborted due to: ${metadata.cancellationReason}`,
+    }
+  }
+  return {
+    code: 'OUTGOING_PAYMENT_FAILED',
+    message: 'The payment failed to send its full amount.',
+  }
 }
 
 type CreateIncomingPaymentParams = {

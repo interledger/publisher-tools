@@ -12,6 +12,7 @@ The Web Monetization standard will continue to be actively stewarded by the foun
 
 - Have you read the [code of conduct](CODE_OF_CONDUCT.md)?
 - Check out the [existing issues](https://github.com/interledger/publisher-tools/issues) & see if we [accept contributions](#types-of-contributions) for your type of issue.
+- If you use AI tools as part of your contribution, make sure you've read our [AI usage policy](./AI_POLICY.md).
 
 ## Types of contributions
 
@@ -154,7 +155,12 @@ Playwright starts the same dev servers as the VS Code "Dev" task, and reuses any
 - cdn on port 5173
 - frontend on port 3000
 
-The tests use the same local storage as the dev servers, so configs they save show up in your local environment.
+The tests use the same local storage as the dev servers, and delete the configs they save for the test wallet address when they finish.
+Tests that save a config look up a wallet address on the Interledger test network, so they need an internet connection.
+They use `https://ilp.interledger-test.dev/alice` by default; set `E2E_WALLET_ADDRESS` to use another one.
+These tests sign their own session cookie instead of approving a grant at the wallet provider.
+Tests that approve a grant at the wallet provider need a test wallet login, and are skipped without one.
+See [End-to-end tests](./env-vars.md#end-to-end-tests) in the environment variables guide to set it up.
 Use `pnpm -C e2e test:e2e:ui` to debug tests in Playwright's UI mode.
 
 ### CI
@@ -162,6 +168,13 @@ Use `pnpm -C e2e test:e2e:ui` to debug tests in Playwright's UI mode.
 We use GitHub actions to manage our CI pipeline.
 
 The workflows can be found in `.github/workflows`
+
+The PR checks also run the end-to-end tests in Chromium and Firefox.
+The job sets the environment variables itself instead of using a `.dev.vars` file.
+The test wallet's credentials come from the repository's Actions secrets and variables, which PRs from forks don't get, so the tests that need them are skipped there.
+If the tests fail, the Playwright report and test results are uploaded as `playwright-report.zip` in the `playwright-report` artifact of the run.
+When the run had the test wallet's credentials, the zip is encrypted with the `E2E_PLAYWRIGHT_REPORT_PASSWORD` secret, because the traces include the login.
+Unzip it and open the report with `pnpm -C e2e exec playwright show-report <folder>/playwright-report`.
 
 ### How to preview changes
 

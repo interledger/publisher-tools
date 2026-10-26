@@ -2,9 +2,11 @@ import { useCallback } from 'react'
 import { ProfilesDialog, StatusDialog } from '@/components'
 import { PROFILE_A } from '@shared/types'
 import { useDialog } from '~/hooks/useDialog'
+import { useTranslation } from '~/i18n/useTranslation'
 import { ApiError } from '~/lib/helpers'
 import { banner } from '~/stores/banner-store'
 import { offerwall } from '~/stores/offerwall-store'
+import { paywall } from '~/stores/paywall-store'
 import { toolActions, toolState } from '~/stores/toolStore'
 import { useUIActions } from '~/stores/uiStore'
 import type { WalletActions, WalletStore } from '~/stores/wallet-store'
@@ -28,6 +30,14 @@ function getLegacyOptions() {
     }
   }
 
+  if (toolState.currentToolType === 'paywall') {
+    return {
+      hasConflicts: paywall.profilesUpdate.size > 0,
+      updates: [...paywall.profilesUpdate],
+      profiles: paywall.profiles,
+    }
+  }
+
   return {
     hasConflicts: widget.profilesUpdate.size > 0,
     updates: [...widget.profilesUpdate],
@@ -39,6 +49,7 @@ export const useConnectWallet = (
   _wallet: WalletStore,
   walletActions: WalletActions,
 ) => {
+  const t = useTranslation('general')
   const [openDialog, closeDialog] = useDialog()
   const uiActions = useUIActions()
 
@@ -78,7 +89,7 @@ export const useConnectWallet = (
       }
 
       const errorMessage =
-        err instanceof ApiError ? err.message : 'Use connect wallet error'
+        err instanceof ApiError ? err.message : t('errors.connectWalletFailed')
 
       openDialog(
         <StatusDialog
@@ -92,7 +103,7 @@ export const useConnectWallet = (
       )
       throw err
     }
-  }, [openDialog, resetWalletUIState, walletActions])
+  }, [openDialog, resetWalletUIState, walletActions, t])
 
   const disconnect = useCallback(() => {
     toolActions.resetToolProfiles()

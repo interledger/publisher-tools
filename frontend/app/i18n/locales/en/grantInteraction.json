@@ -1,0 +1,6 @@
+{
+  "success": "Wallet ownership confirmed!",
+  "declined": "Wallet authorization was declined.",
+  "sessionExpired": "Your session has expired. Please try again.",
+  "verificationFailed": "Unable to verify wallet access. Please try again."
+}

@@ -106,6 +106,9 @@ export const actions = {
 
     patchProxy(offerwall.profile, snapshot)
   },
+  restoreDefaultSection() {
+    offerwallStoreUtils.restoreDefaultSection(toolState.activeTab)
+  },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(offerwall.profile)
     return await saveToolProfile(
@@ -120,6 +123,12 @@ export const actions = {
   },
   commitProfiles() {
     offerwallStoreUtils.commitAllProfiles()
+  },
+  hasSectionChanges(section?: 'content' | 'appearance') {
+    return offerwallStoreUtils.hasSectionChanges(toolState.activeTab, section)
+  },
+  hasDefaultChanges(section?: 'content' | 'appearance') {
+    return offerwallStoreUtils.hasDefaultChanges(toolState.activeTab, section)
   },
 }
 

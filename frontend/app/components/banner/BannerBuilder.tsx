@@ -23,7 +23,7 @@ import { BannerPositionSelector } from '~/components/banner/BannerPositionSelect
 import { BannerThumbnailSelector } from '~/components/banner/BannerThumbnailSelector'
 import { useBuilderSectionHandlers } from '~/hooks/useBuilderSectionHandlers'
 import { BANNER_SUGGESTED_TITLES } from '~/lib/presets'
-import { useBannerProfile } from '~/stores/banner-store'
+import { useBannerProfile, actions } from '~/stores/banner-store'
 import type { BuilderSection } from '~/stores/uiStore'
 
 interface Props {
@@ -52,18 +52,20 @@ export function BannerBuilder({ onRefresh }: Props) {
 }
 
 function ContentBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle } =
-    useBuilderSectionHandlers('content')
+  const { isOpen, onClick, onToggle } = useBuilderSectionHandlers('content')
   const [snap, profile] = useBannerProfile({ sync: true })
+  const hasChanges = actions.hasSectionChanges('content')
 
   return (
     <BuilderAccordion
       title="Content"
-      isComplete={isComplete}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
+      hasChanges={hasChanges}
       onRefresh={() => onRefresh('content')}
+      canRestoreDefaults={actions.hasDefaultChanges('content')}
+      onRestoreDefaults={() => actions.restoreDefaultSection('content')}
     >
       <TitleInput
         value={snap.title.text}
@@ -93,9 +95,9 @@ function ContentBuilder({ onRefresh }: Props) {
 }
 
 function AppearanceBuilder({ onRefresh }: Props) {
-  const { isComplete, isOpen, onClick, onToggle } =
-    useBuilderSectionHandlers('appearance')
+  const { isOpen, onClick, onToggle } = useBuilderSectionHandlers('appearance')
   const [snap, profile] = useBannerProfile()
+  const hasChanges = actions.hasSectionChanges('appearance')
 
   const defaultFontIndex = FONT_FAMILY_OPTIONS.findIndex(
     (option) => option === snap.font.name,
@@ -104,11 +106,13 @@ function AppearanceBuilder({ onRefresh }: Props) {
   return (
     <BuilderAccordion
       title="Appearance"
-      isComplete={isComplete}
       isOpen={isOpen}
       onClick={onClick}
       onToggle={onToggle}
+      hasChanges={hasChanges}
       onRefresh={() => onRefresh('appearance')}
+      canRestoreDefaults={actions.hasDefaultChanges('appearance')}
+      onRestoreDefaults={() => actions.restoreDefaultSection('appearance')}
     >
       <InputFieldset label="Text" icon={<SVGText className="w-5 h-5" />}>
         <ToolsDropdown

@@ -4,6 +4,13 @@ import path from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
 import { API_URL, CDN_URL, FRONTEND_URL, S3_URL } from './src/services'
 
+// Same env file as the dev servers, for the test wallet login (see docs/env-vars.md)
+try {
+  process.loadEnvFile(path.resolve(import.meta.dirname, '../.dev.vars'))
+} catch {
+  // CI sets the variables directly
+}
+
 const reuseExistingServer = !process.env.CI
 const timeout = 120_000
 
@@ -22,8 +29,11 @@ function firefoxLaunchEnv(): Record<string, string> | undefined {
 export default defineConfig({
   testDir: './tests',
   forbidOnly: !!process.env.CI,
+  // Tests share one local storage, so two saving at once would overwrite each other
+  workers: 1,
   retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  // CI uploads the HTML report when the suite fails
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: FRONTEND_URL,
     trace: 'on-first-retry',

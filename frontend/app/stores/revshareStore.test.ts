@@ -40,4 +40,18 @@ describe('revshare storage', () => {
       70, 20,
     ])
   })
+
+  it('restores shares even when an empty row was added (regression #959)', () => {
+    setStoredShares([
+      { id: '1', pointer: 'wallet-one', percentage: 50, isValid: true },
+      { id: '2', pointer: 'wallet-two', percentage: 50, isValid: true },
+      { id: '3', pointer: '', percentage: 0 },
+    ])
+
+    const shares = loadStartingShares()
+    expect(shares).toHaveLength(3)
+    expect(shares[0].pointer).toBe('wallet-one')
+    expect(shares[1].pointer).toBe('wallet-two')
+    expect(shares[2].pointer).toBe('')
+  })
 })

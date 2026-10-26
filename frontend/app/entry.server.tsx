@@ -4,9 +4,15 @@
  * @see https://reactrouter.com/api/framework-conventions/entry.server.tsx
  */
 
-import { ServerRouter, type EntryContext } from 'react-router'
+import { I18nextProvider } from 'react-i18next'
+import {
+  ServerRouter,
+  type EntryContext,
+  type RouterContextProvider,
+} from 'react-router'
 import { isbot } from 'isbot'
 import { renderToReadableStream } from 'react-dom/server'
+import { getInstance } from '~/i18n/i18n.server.js'
 
 export const streamTimeout = 5000
 
@@ -15,12 +21,16 @@ export default async function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   reactRouterContext: EntryContext,
+  loadContext: RouterContextProvider,
 ) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), streamTimeout)
+  const i18n = getInstance(loadContext)
 
   const body = await renderToReadableStream(
-    <ServerRouter context={reactRouterContext} url={request.url} />,
+    <I18nextProvider i18n={i18n}>
+      <ServerRouter context={reactRouterContext} url={request.url} />
+    </I18nextProvider>,
     {
       signal: controller.signal,
       onError(error: unknown) {

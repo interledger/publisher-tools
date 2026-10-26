@@ -105,6 +105,9 @@ export const actions = {
     const { content, appearance } = splitProfileProperties(snapshot)
     patchProxy(banner.profile, section === 'content' ? content : appearance)
   },
+  restoreDefaultSection(section: 'content' | 'appearance') {
+    bannerStoreUtils.restoreDefaultSection(toolState.activeTab, section)
+  },
   async saveProfile(): Promise<SaveResult> {
     const profile = snapshot(banner.profile)
     return await saveToolProfile(
@@ -119,6 +122,12 @@ export const actions = {
   },
   commitProfiles() {
     bannerStoreUtils.commitAllProfiles()
+  },
+  hasSectionChanges(section?: 'content' | 'appearance') {
+    return bannerStoreUtils.hasSectionChanges(toolState.activeTab, section)
+  },
+  hasDefaultChanges(section?: 'content' | 'appearance') {
+    return bannerStoreUtils.hasDefaultChanges(toolState.activeTab, section)
   },
 }
 
