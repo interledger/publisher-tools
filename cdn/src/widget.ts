@@ -18,7 +18,7 @@ customElements.define('wm-payment-widget', PaymentWidget)
 
 const params = getScriptParams('widget')
 
-ensureMonetizationLink(params.walletAddress)
+ensureMonetizationLink(params.walletAddress, params.walletAddressId)
 fetchProfile(API_URL, 'widget', params)
   .then((profile) => {
     const el = drawWidget(params.walletAddress, profile)

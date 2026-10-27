@@ -6,12 +6,13 @@ import { CDN_URL } from '../src/services'
 // need a saved profile or a real wallet address.
 const WALLET_A = 'https://ilp.interledger-test.dev/publisher-a'
 const WALLET_B = 'https://ilp.interledger-test.dev/publisher-b'
+const WALLET_C = 'https://ilp.interledger-test.dev/publisher-c'
 const REVSHARE = 'https://revshare.example/pay/publisher-a-and-b'
 
 type Tool = 'banner' | 'widget' | 'offerwall'
 
-const embed = (tool: Tool, walletAddress: string) =>
-  `<script id="wmt-${tool}-init-script" type="module" src="${CDN_URL}/${tool}.js" data-wallet-address="${walletAddress}" data-tag="version1"></script>`
+const embed = (tool: Tool, walletAddress: string, walletAddressId?: string) =>
+  `<script id="wmt-${tool}-init-script" type="module" src="${CDN_URL}/${tool}.js" data-wallet-address="${walletAddress}"${walletAddressId ? ` data-wallet-address-id="${walletAddressId}"` : ''} data-tag="version1"></script>`
 
 const link = (href: string, attributes = '') =>
   `<link rel="monetization" href="${href}"${attributes}>`
@@ -41,7 +42,57 @@ test.describe('monetization links added by the embed scripts', () => {
     expect(await getMonetizationLinks(page)).toEqual([WALLET_A])
   })
 
-  test('the banner and widget keep the page’s own link', async ({
+  test('tools with the same wallet address share one link', async ({
+    page,
+    servePublisherPage,
+  }) => {
+    await page.goto(
+      await servePublisherPage(
+        embed('banner', WALLET_A) +
+          embed('widget', WALLET_A) +
+          embed('offerwall', WALLET_A),
+      ),
+    )
+
+    expect(await getMonetizationLinks(page)).toEqual([WALLET_A])
+  })
+
+  test('tools with different wallet addresses each add their link', async ({
+    page,
+    servePublisherPage,
+  }) => {
+    await page.goto(
+      await servePublisherPage(
+        embed('banner', WALLET_A) +
+          embed('widget', WALLET_B) +
+          embed('offerwall', WALLET_C),
+      ),
+    )
+
+    expect(await getMonetizationLinks(page)).toEqual(
+      [WALLET_A, WALLET_B, WALLET_C].sort(),
+    )
+  })
+
+  test('a link on the page to the same wallet address is reused', async ({
+    page,
+    servePublisherPage,
+  }) => {
+    // the host's case doesn't change the wallet address
+    const sameWalletAddress = WALLET_A.replace('ilp.', 'ILP.')
+    await page.goto(
+      await servePublisherPage(
+        link(sameWalletAddress) +
+          embed('banner', WALLET_A) +
+          embed('widget', WALLET_A) +
+          embed('offerwall', WALLET_A),
+      ),
+    )
+
+    expect(await getMonetizationLinks(page)).toEqual([sameWalletAddress])
+  })
+
+  test('links to other wallet addresses, such as a revenue share, are kept', async ({
     page,
     servePublisherPage,
   }) => {
@@ -51,61 +102,39 @@ test.describe('monetization links added by the embed scripts', () => {
       ),
     )
 
-    expect(await getMonetizationLinks(page)).toEqual([REVSHARE])
+    expect(await getMonetizationLinks(page)).toEqual(
+      [REVSHARE, WALLET_A].sort(),
+    )
   })
 
-  test('the banner and widget together add a single link', async ({
+  test('a link to the normalized wallet address id is reused', async ({
     page,
     servePublisherPage,
   }) => {
+    // e.g. an Interledger Cards wallet address entered as its ilp.dev address
+    const walletAddress = 'https://ilp.dev/publisher-a'
+    const walletAddressId = 'https://ilp.interledger.cards/publisher-a'
     await page.goto(
       await servePublisherPage(
-        embed('banner', WALLET_A) + embed('widget', WALLET_A),
+        link(walletAddressId) + embed('banner', walletAddress, walletAddressId),
       ),
     )
 
-    expect(await getMonetizationLinks(page)).toEqual([WALLET_A])
+    expect(await getMonetizationLinks(page)).toEqual([walletAddressId])
   })
 
-  test('disabled links are not counted', async ({
+  test('a disabled link is not reused', async ({
     page,
     servePublisherPage,
   }) => {
     await page.goto(
       await servePublisherPage(
-        link(WALLET_B, ' disabled') + embed('banner', WALLET_A),
+        link(WALLET_A, ' disabled') + embed('banner', WALLET_A),
       ),
     )
 
     expect(await getMonetizationLinks(page)).toEqual(
-      [WALLET_A, `${WALLET_B} (disabled)`].sort(),
-    )
-  })
-
-  test('the offerwall reuses a link to its wallet address', async ({
-    page,
-    servePublisherPage,
-  }) => {
-    const sameWalletAddress = `${WALLET_A.replace('ilp.', 'ILP.')}/`
-    await page.goto(
-      await servePublisherPage(
-        link(sameWalletAddress) + embed('offerwall', WALLET_A),
-      ),
-    )
-
-    expect(await getMonetizationLinks(page)).toEqual([sameWalletAddress])
-  })
-
-  test('the offerwall adds its own link next to other wallet addresses', async ({
-    page,
-    servePublisherPage,
-  }) => {
-    await page.goto(
-      await servePublisherPage(link(WALLET_B) + embed('offerwall', WALLET_A)),
-    )
-
-    expect(await getMonetizationLinks(page)).toEqual(
-      [WALLET_A, WALLET_B].sort(),
+      [WALLET_A, `${WALLET_A} (disabled)`].sort(),
     )
   })
 })

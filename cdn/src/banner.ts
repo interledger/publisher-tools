@@ -9,7 +9,7 @@ customElements.define('wm-banner', Banner)
 const trackEvent = trackEventFactory('banner')
 const params = getScriptParams('banner')
 
-ensureMonetizationLink(params.walletAddress)
+ensureMonetizationLink(params.walletAddress, params.walletAddressId)
 
 if (shouldShowBanner()) {
   fetchProfile(API_URL, 'banner', params)

@@ -137,26 +137,26 @@ export async function initiatePayment(
 }
 
 /**
- * Adds a monetization link for the wallet address, unless the page already has
- * one. Payments are split across all monetization links on a page, so another
- * link would change how the publisher's own links (e.g. a revenue share) or
- * another tool's link are paid.
+ * Returns the page's monetization link to the tool's wallet address, and adds
+ * one if there's none, so tools using the same wallet address share one link.
+ * Links to other wallet addresses (another tool's, or the publisher's own) are
+ * left as they are, and this one is added next to them.
+ *
+ * `walletAddressId` is the `data-wallet-address-id` of the script: the wallet
+ * address as `normalizeWalletAddress` returns it, when that differs from
+ * `data-wallet-address`. A link to either one is a link to this wallet.
  */
-export function ensureMonetizationLink(walletAddressUrl: string): void {
-  if (getMonetizationLinks().length > 0) return
-  addMonetizationLink(walletAddressUrl)
-}
-
-/**
- * Returns the page's monetization link for the wallet address, and adds one if
- * there's none. For tools that need payments to go to this wallet address.
- */
-export function getOrAddMonetizationLink(
+export function ensureMonetizationLink(
   walletAddressUrl: string,
+  walletAddressId?: string,
 ): HTMLLinkElement {
-  const url = toComparableUrl(walletAddressUrl)
-  const existing = getMonetizationLinks().find(
-    (link) => toComparableUrl(link.getAttribute('href') ?? '') === url,
+  const walletUrls = new Set(
+    [walletAddressUrl, walletAddressId]
+      .filter((url): url is string => Boolean(url))
+      .map((url) => new URL(url).href),
+  )
+  const existing = getMonetizationLinks().find((link) =>
+    walletUrls.has(link.href),
   )
   return existing ?? addMonetizationLink(walletAddressUrl)
 }
@@ -174,15 +174,6 @@ function addMonetizationLink(walletAddressUrl: string) {
   monetizationElement.href = walletAddressUrl
   document.head.appendChild(monetizationElement)
   return monetizationElement
-}
-
-function toComparableUrl(walletAddressUrl: string) {
-  try {
-    const url = new URL(toWalletAddressUrl(walletAddressUrl.trim()))
-    return `${url.origin}${url.pathname.replace(/\/$/, '')}`
-  } catch {
-    return walletAddressUrl
-  }
 }
 
 export function isAuthJwt(tokenStr?: string | null): tokenStr is string {
