@@ -130,9 +130,14 @@ export const ShareInput = React.memo(
       percentageInputRef.current?.setCustomValidity(percentageError ?? '')
     }, [percentageError])
 
-    useEffect(() => {
+    // Only report when `isValid` changes. The validity moves with the share
+    // when a row above is removed, so a new `index` alone needs no report.
+    const reportValidation = useEffectEvent((isValid: boolean) => {
       onValidationChange(index, isValid)
-    }, [index, isValid, onValidationChange])
+    })
+    useEffect(() => {
+      reportValidation(isValid)
+    }, [isValid])
 
     useEffect(() => {
       let timerId: NodeJS.Timeout | undefined
