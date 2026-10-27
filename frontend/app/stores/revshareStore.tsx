@@ -9,7 +9,6 @@ import {
 import type { ReactNode } from 'react'
 import {
   newShare,
-  validateShares,
   weightsToPercentages,
   type Share,
   type SharesState,
@@ -73,7 +72,7 @@ export function loadStartingShares(): SharesState {
         : localStorage.getItem(SHARES_KEY)
     const parsed = shareStr ? JSON.parse(shareStr) : undefined
     const migrated = migrateStoredShares(parsed)
-    if (migrated && validateShares(migrated)) {
+    if (migrated && migrated.length > 0) {
       return migrated
     } else {
       return [newShare(50), newShare(50)]

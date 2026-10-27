@@ -121,8 +121,8 @@ export const actions = {
   commitProfile() {
     return paywallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
-  commitProfiles() {
-    paywallStoreUtils.commitAllProfiles()
+  commitProfiles(savedProfiles?: ToolProfiles<'paywall'>) {
+    paywallStoreUtils.commitAllProfiles(savedProfiles)
   },
   hasSectionChanges(section?: 'content' | 'appearance') {
     return paywallStoreUtils.hasSectionChanges(toolState.activeTab, section)
