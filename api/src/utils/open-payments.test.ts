@@ -1,10 +1,14 @@
-import { describe, it, expect, vi } from 'vitest'
-import type { OutgoingPayment } from '@interledger/open-payments'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import {
+  createAuthenticatedClient,
+  type AuthenticatedClient,
+  type OutgoingPayment,
+} from '@interledger/open-payments'
 import type * as SharedUtils from '@shared/utils'
 import { OpenPaymentsService } from './open-payments.js'
+import type { Env } from '../app.js'
 
-// The real module doesn't load in the workers test environment, and these
-// tests don't need the client.
+// The real module doesn't load in the workers test environment.
 vi.mock('@interledger/open-payments', () => ({
   createAuthenticatedClient: vi.fn(),
   isFinalizedGrantWithAccessToken: vi.fn(),
@@ -121,5 +125,42 @@ describe('OpenPaymentsService.pollOutgoingPayment', () => {
       error: { code: 'OUTGOING_PAYMENT_INCOMPLETE' },
     })
     expect(get).toHaveBeenCalledTimes(3)
+  })
+})
+
+describe('OpenPaymentsService.getClient', () => {
+  const env = {
+    OP_WALLET_ADDRESS: 'https://wallet.test/publisher',
+    OP_PRIVATE_KEY: '',
+    OP_KEY_ID: 'key-id',
+  } as Env
+  const client = {} as AuthenticatedClient
+
+  beforeEach(() => {
+    vi.mocked(createAuthenticatedClient).mockReset()
+    // _instance is private
+    Object.assign(OpenPaymentsService, { _instance: undefined })
+  })
+
+  it('gives concurrent callers an initialized client', async () => {
+    vi.mocked(createAuthenticatedClient).mockResolvedValue(client)
+
+    const clients = await Promise.all([
+      OpenPaymentsService.getClient(env),
+      OpenPaymentsService.getClient(env),
+    ])
+
+    expect(clients).toEqual([client, client])
+  })
+
+  it('retries the client initialization after it fails', async () => {
+    vi.mocked(createAuthenticatedClient)
+      .mockRejectedValueOnce(new Error('wallet unreachable'))
+      .mockResolvedValueOnce(client)
+
+    await expect(OpenPaymentsService.getClient(env)).rejects.toThrow(
+      'wallet unreachable',
+    )
+    await expect(OpenPaymentsService.getClient(env)).resolves.toBe(client)
   })
 })
