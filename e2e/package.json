@@ -14,6 +14,6 @@
     "@shared/defines": "workspace:^",
     "@shared/utils": "workspace:^",
     "@types/node": "^24.13.3",
-    "react-router": "^8.4.0"
+    "react-router": "^8.5.0"
   }
 }
