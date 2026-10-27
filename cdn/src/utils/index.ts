@@ -7,7 +7,12 @@ import type {
   WalletAddressInfo,
 } from 'publisher-tools-api'
 import type { Tool, ProfileId, ToolProfile } from '@shared/types'
-import { checkHrefFormat, fromAmount, toWalletAddressUrl } from '@shared/utils'
+import {
+  checkHrefFormat,
+  fromAmount,
+  toComparableWalletAddressUrl,
+  toWalletAddressUrl,
+} from '@shared/utils'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
@@ -144,7 +149,8 @@ export async function initiatePayment(
  *
  * `walletAddressId` is the `data-wallet-address-id` of the script: the wallet
  * address as `normalizeWalletAddress` returns it, when that differs from
- * `data-wallet-address`. A link to either one is a link to this wallet.
+ * `data-wallet-address`. A link to either one is a link to this wallet, also
+ * with a trailing slash or as `/.well-known/pay` (`toComparableWalletAddressUrl`).
  */
 export function ensureMonetizationLink(
   walletAddressUrl: string,
@@ -153,10 +159,10 @@ export function ensureMonetizationLink(
   const walletUrls = new Set(
     [walletAddressUrl, walletAddressId]
       .filter((url): url is string => Boolean(url))
-      .map((url) => new URL(url).href),
+      .map(toComparableWalletAddressUrl),
   )
   const existing = getMonetizationLinks().find((link) =>
-    walletUrls.has(link.href),
+    walletUrls.has(toComparableWalletAddressUrl(link.href)),
   )
   return existing ?? addMonetizationLink(walletAddressUrl)
 }

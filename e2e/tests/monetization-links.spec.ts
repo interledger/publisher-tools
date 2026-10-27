@@ -92,6 +92,36 @@ test.describe('monetization links added by the embed scripts', () => {
     expect(await getMonetizationLinks(page)).toEqual([sameWalletAddress])
   })
 
+  test('a link with a trailing slash to the same wallet address is reused', async ({
+    page,
+    servePublisherPage,
+  }) => {
+    const sameWalletAddress = `${WALLET_A}/`
+    await page.goto(
+      await servePublisherPage(
+        link(sameWalletAddress) + embed('banner', WALLET_A),
+      ),
+    )
+
+    expect(await getMonetizationLinks(page)).toEqual([sameWalletAddress])
+  })
+
+  test('a link to the wallet address as /.well-known/pay is reused', async ({
+    page,
+    servePublisherPage,
+  }) => {
+    // a payment pointer such as $wallet.example maps to /.well-known/pay
+    const walletAddress = 'https://wallet.example'
+    const wellKnown = `${walletAddress}/.well-known/pay`
+    await page.goto(
+      await servePublisherPage(
+        link(wellKnown) + embed('banner', walletAddress),
+      ),
+    )
+
+    expect(await getMonetizationLinks(page)).toEqual([wellKnown])
+  })
+
   test('links to other wallet addresses, such as a revenue share, are kept', async ({
     page,
     servePublisherPage,
