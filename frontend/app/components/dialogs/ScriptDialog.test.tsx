@@ -4,7 +4,9 @@ import {
   PROFILE_A,
   PROFILE_B,
   TOOL_BANNER,
+  TOOL_OFFERWALL,
   TOOL_PAYWALL,
+  TOOL_WIDGET,
   type Tool,
 } from '@shared/types'
 import { toolActions, toolState } from '~/stores/toolStore'
@@ -41,9 +43,12 @@ describe('ScriptDialog', () => {
     toolActions.setActiveTab(PROFILE_A)
   })
 
-  it('uses the selected version for tools with version tabs', () => {
-    expect(renderScript(TOOL_BANNER)).toContain(`data-tag="${PROFILE_B}"`)
-  })
+  it.each<Tool>([TOOL_BANNER, TOOL_WIDGET, TOOL_OFFERWALL])(
+    'uses the selected version for the %s',
+    (tool) => {
+      expect(renderScript(tool)).toContain(`data-tag="${PROFILE_B}"`)
+    },
+  )
 
   it('always uses the paywall profile for the paywall', () => {
     expect(renderScript(TOOL_PAYWALL)).toContain(`data-tag="${PROFILE_A}"`)

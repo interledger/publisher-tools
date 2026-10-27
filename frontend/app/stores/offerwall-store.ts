@@ -38,8 +38,12 @@ function createOfferwallStore() {
     ) as Record<ProfileId, OfferwallProfile>,
     profilesUpdate: proxySet<ProfileId>(),
 
+    /** The profile being edited, and the one its script uses: the selected tab. */
+    get profileId(): ProfileId {
+      return toolState.activeTab
+    },
     get profile(): OfferwallProfile {
-      return this.profiles[toolState.activeTab]
+      return this.profiles[this.profileId]
     },
     get profileTabs() {
       return PROFILE_IDS.map((id) => ({

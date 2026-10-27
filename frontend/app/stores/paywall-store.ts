@@ -44,8 +44,15 @@ function createPaywallStore() {
     ) as Record<ProfileId, PaywallProfile>,
     profilesUpdate: proxySet<ProfileId>(),
 
+    /**
+     * The profile being edited, and the one its script uses. Always
+     * PAYWALL_PROFILE_ID, whichever tab is selected in the other tools.
+     */
+    get profileId(): ProfileId {
+      return PAYWALL_PROFILE_ID
+    },
     get profile(): PaywallProfile {
-      return this.profiles[PAYWALL_PROFILE_ID]
+      return this.profiles[this.profileId]
     },
     get profileTabs() {
       return PROFILE_IDS.map((id) => ({

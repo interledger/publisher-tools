@@ -38,8 +38,12 @@ function createWidgetStore() {
     ) as Record<ProfileId, WidgetProfile>,
     profilesUpdate: proxySet<ProfileId>(),
 
+    /** The profile being edited, and the one its script uses: the selected tab. */
+    get profileId(): ProfileId {
+      return toolState.activeTab
+    },
     get profile(): WidgetProfile {
-      return this.profiles[toolState.activeTab]
+      return this.profiles[this.profileId]
     },
     get profileTabs() {
       return PROFILE_IDS.map((id) => ({

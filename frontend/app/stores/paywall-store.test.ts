@@ -16,6 +16,14 @@ describe('paywall store', () => {
     vi.unstubAllGlobals()
   })
 
+  it('reports its own profile as the active one, whichever tab is selected', () => {
+    toolActions.setActiveTab(PROFILE_B)
+    toolActions.setCurrentToolType(TOOL_PAYWALL)
+
+    expect(paywall.profileId).toBe(PROFILE_A)
+    expect(toolActions.getActiveProfileId()).toBe(PROFILE_A)
+  })
+
   it('edits and saves its own profile, not the version selected in other tools', async () => {
     // saving a profile also stores its snapshot
     vi.stubGlobal('localStorage', { setItem: vi.fn() })

@@ -2,11 +2,9 @@ import React from 'react'
 import { useSnapshot } from 'valtio'
 import { SVGMarkStatusSmall, SVGTooltip } from '@/assets'
 import { ToolsPrimaryButton } from '@/components'
-import { TOOL_PAYWALL } from '@shared/types'
 import { toWalletAddressUrl } from '@shared/utils'
 import { useCopyToClipboard } from '~/hooks/useCopyToClipboard'
-import { PAYWALL_PROFILE_ID } from '~/stores/paywall-store'
-import { toolState } from '~/stores/toolStore'
+import { toolActions, toolState } from '~/stores/toolStore'
 import type { WalletStore } from '~/stores/wallet-store'
 import { BaseDialog } from './BaseDialog'
 
@@ -25,11 +23,7 @@ export const ScriptDialog: React.FC<Props> = ({ wallet }) => {
     walletAddress: wallet.walletAddress,
     walletAddressId: wallet.walletAddressId,
     currentToolType: snap.currentToolType,
-    // the paywall has a single profile, see PAYWALL_PROFILE_ID
-    activeTab:
-      snap.currentToolType === TOOL_PAYWALL
-        ? PAYWALL_PROFILE_ID
-        : snap.activeTab,
+    activeTab: toolActions.getActiveProfileId(),
     cdnUrl: snap.cdnUrl,
   })
   const { isCopied, handleCopyClick } = useCopyToClipboard(

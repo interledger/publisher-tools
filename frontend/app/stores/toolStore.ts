@@ -10,10 +10,13 @@ import {
   PROFILE_A,
   TOOL_PAYWALL,
 } from '@shared/types'
-import { actions as bannerActions } from '~/stores/banner-store'
-import { actions as offerwallActions } from '~/stores/offerwall-store'
-import { actions as paywallActions } from '~/stores/paywall-store'
-import { actions as widgetActions } from '~/stores/widget-store'
+import { banner, actions as bannerActions } from '~/stores/banner-store'
+import {
+  offerwall,
+  actions as offerwallActions,
+} from '~/stores/offerwall-store'
+import { paywall, actions as paywallActions } from '~/stores/paywall-store'
+import { widget, actions as widgetActions } from '~/stores/widget-store'
 import { omit } from '~/utils/utils.storage'
 
 const STORAGE_KEY = 'valtio-store'
@@ -55,6 +58,22 @@ export const toolState = proxy({
 export const toolActions = {
   setActiveTab(profileId: ProfileId) {
     toolState.activeTab = profileId
+  },
+  /** The profile the current tool edits, and the `data-tag` of its script. */
+  getActiveProfileId(): ProfileId {
+    switch (toolState.currentToolType) {
+      case TOOL_BANNER:
+        return banner.profileId
+      case TOOL_WIDGET:
+        return widget.profileId
+      case TOOL_PAYWALL:
+        return paywall.profileId
+      case TOOL_OFFERWALL:
+        return offerwall.profileId
+
+      default:
+        return toolState.activeTab
+    }
   },
   async getToolProfiles<T extends Tool>(): Promise<ToolProfiles<T>> {
     switch (toolState.currentToolType) {
