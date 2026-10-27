@@ -121,8 +121,8 @@ export const actions = {
   commitProfile() {
     return offerwallStoreUtils.commitActiveProfile(toolState.activeTab)
   },
-  commitProfiles() {
-    offerwallStoreUtils.commitAllProfiles()
+  commitProfiles(savedProfiles?: ToolProfiles<'offerwall'>) {
+    offerwallStoreUtils.commitAllProfiles(savedProfiles)
   },
   hasSectionChanges(section?: 'content' | 'appearance') {
     return offerwallStoreUtils.hasSectionChanges(toolState.activeTab, section)

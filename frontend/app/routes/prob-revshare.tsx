@@ -82,23 +82,26 @@ function Revshare() {
     }
   }
 
-  const getImportErrorMessage = (err: unknown): string => {
-    if (err instanceof RevshareError) {
-      switch (err.code) {
-        case 'noShareData':
-          return t('errors.noShareData')
-        case 'malformedTag':
-          return t('errors.malformedTag')
-        case 'malformedShareData':
-          return t('errors.malformedShareData')
-        case 'invalidTag':
-          return t('errors.invalidTag')
-        case 'fieldEmpty':
-          return t('errors.fieldEmpty')
+  const getImportErrorMessage = useCallback(
+    (err: unknown): string => {
+      if (err instanceof RevshareError) {
+        switch (err.code) {
+          case 'noShareData':
+            return t('errors.noShareData')
+          case 'malformedTag':
+            return t('errors.malformedTag')
+          case 'malformedShareData':
+            return t('errors.malformedShareData')
+          case 'invalidTag':
+            return t('errors.invalidTag')
+          case 'fieldEmpty':
+            return t('errors.fieldEmpty')
+        }
       }
-    }
-    return (err as Error).message || t('errors.unexpectedError')
-  }
+      return (err as Error).message || t('errors.unexpectedError')
+    },
+    [t],
+  )
 
   const showDeleteColumn = shares.length > 2
   const revShareUrl = useMemo(
@@ -173,7 +176,7 @@ function Revshare() {
     } catch (err: unknown) {
       setImportError(getImportErrorMessage(err))
     }
-  }, [importTag, setShares, setIsModalOpen, t])
+  }, [importTag, setShares, setIsModalOpen, getImportErrorMessage])
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false)

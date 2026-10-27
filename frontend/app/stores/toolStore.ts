@@ -75,25 +75,35 @@ export const toolActions = {
         break
     }
   },
-  setToolProfiles<T extends Tool>(profiles: ToolProfiles<T>) {
+  /**
+   * Loads profiles into the store and marks them as saved.
+   * Pass `savedProfiles` when `profiles` include local values that are not on
+   * the server yet, so they are compared against the server version instead.
+   */
+  setToolProfiles<T extends Tool>(
+    profiles: ToolProfiles<T>,
+    savedProfiles?: ToolProfiles<T>,
+  ) {
     if (!profiles) return
 
     switch (toolState.currentToolType) {
       case TOOL_BANNER:
         bannerActions.setProfiles(profiles as ToolProfiles<'banner'>)
-        bannerActions.commitProfiles()
+        bannerActions.commitProfiles(savedProfiles as ToolProfiles<'banner'>)
         break
       case TOOL_WIDGET:
         widgetActions.setProfiles(profiles as ToolProfiles<'widget'>)
-        widgetActions.commitProfiles()
+        widgetActions.commitProfiles(savedProfiles as ToolProfiles<'widget'>)
         break
       case TOOL_PAYWALL:
         paywallActions.setProfiles(profiles as ToolProfiles<'paywall'>)
-        paywallActions.commitProfiles()
+        paywallActions.commitProfiles(savedProfiles as ToolProfiles<'paywall'>)
         break
       case TOOL_OFFERWALL:
         offerwallActions.setProfiles(profiles as ToolProfiles<'offerwall'>)
-        offerwallActions.commitProfiles()
+        offerwallActions.commitProfiles(
+          savedProfiles as ToolProfiles<'offerwall'>,
+        )
         break
 
       default:

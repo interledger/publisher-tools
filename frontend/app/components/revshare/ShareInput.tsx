@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { cx } from 'class-variance-authority'
 import { SVGCheckIcon, SVGDeleteScript, SVGSpinner } from '@/assets'
 import { InputField, ToolsSecondaryButton } from '@/components'
@@ -113,10 +113,14 @@ export const ShareInput = React.memo(
       percentage ? String(percentage) : '',
     )
 
-    useEffect(() => {
+    // Only sync when `percentage` changes, not while the user is typing.
+    const syncPercentageText = useEffectEvent((percentage: number) => {
       if (Number(percentageText) !== percentage) {
         setPercentageText(String(percentage))
       }
+    })
+    useEffect(() => {
+      syncPercentageText(percentage)
     }, [percentage])
 
     // Let the browser's validity (and so the `invalid:` styles) include the
@@ -126,8 +130,13 @@ export const ShareInput = React.memo(
       percentageInputRef.current?.setCustomValidity(percentageError ?? '')
     }, [percentageError])
 
-    useEffect(() => {
+    // Only report when `isValid` changes. The validity moves with the share
+    // when a row above is removed, so a new `index` alone needs no report.
+    const reportValidation = useEffectEvent((isValid: boolean) => {
       onValidationChange(index, isValid)
+    })
+    useEffect(() => {
+      reportValidation(isValid)
     }, [isValid])
 
     useEffect(() => {
