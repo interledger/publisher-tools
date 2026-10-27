@@ -74,7 +74,7 @@ export default function Banner() {
 
   useEffect(() => {
     uiActions.setActiveSection('content')
-  }, [OP_WALLET_ADDRESS])
+  }, [OP_WALLET_ADDRESS, uiActions])
 
   return (
     <ToolLayoutWithPreview

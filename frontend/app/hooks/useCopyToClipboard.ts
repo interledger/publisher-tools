@@ -1,17 +1,21 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useEffectEvent } from 'react'
 
 export const useCopyToClipboard = (
   text: string,
   callback?: (copied: boolean) => void,
 ) => {
   const [isCopied, setIsCopied] = useState(false)
+  // callers may pass a new callback on each render; don't restart the timer
+  const onCopiedChange = useEffectEvent((copied: boolean) => {
+    callback?.(copied)
+  })
 
   useEffect(() => {
     if (isCopied) {
-      callback?.(isCopied)
+      onCopiedChange(isCopied)
       const timer = setTimeout(() => {
         setIsCopied(false)
-        callback?.(!isCopied)
+        onCopiedChange(!isCopied)
       }, 2000)
 
       return () => clearTimeout(timer)

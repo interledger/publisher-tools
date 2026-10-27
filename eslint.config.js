@@ -1,5 +1,6 @@
 import pluginImport from 'eslint-plugin-import'
 import pluginReact from 'eslint-plugin-react'
+import pluginReactHooks from 'eslint-plugin-react-hooks'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import pluginJs from '@eslint/js'
@@ -23,6 +24,17 @@ export default [
       react: {
         version: '19',
       },
+    },
+  },
+  {
+    // React is only used in the frontend (e2e tests use Playwright's `use()`)
+    files: ['frontend/**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': pluginReactHooks,
+    },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'error',
     },
   },
   {
