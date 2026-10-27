@@ -87,7 +87,7 @@ importers:
     devDependencies:
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.22.0
-        version: 0.22.0(@cloudflare/workers-types@5.20260816.1)(@vitest/runner@4.1.11)(@vitest/snapshot@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
+        version: 0.22.0(@cloudflare/workers-types@5.20260816.1)(@vitest/runner@4.1.11)(@vitest/snapshot@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
       '@cloudflare/workers-types':
         specifier: ^5.20260816.1
         version: 5.20260816.1
@@ -102,7 +102,7 @@ importers:
         version: 0.28.2
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       wrangler:
         specifier: ^4.105.0
         version: 4.123.0(@cloudflare/workers-types@5.20260816.1)
@@ -320,7 +320,7 @@ importers:
         version: 10.4.2
       '@testing-library/jest-dom':
         specifier: ^7.0.1
-        version: 7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
+        version: 7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
       '@testing-library/react':
         specifier: ^16.3.3
         version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -346,8 +346,8 @@ importers:
         specifier: ^10.11.0
         version: 10.11.0(jiti@2.7.0)
       jsdom:
-        specifier: ^30.1.2
-        version: 30.1.2(@noble/hashes@2.0.1)
+        specifier: ^30.1.3
+        version: 30.1.3(@noble/hashes@2.0.1)
       publisher-tools-api:
         specifier: workspace:^
         version: link:../api
@@ -359,7 +359,7 @@ importers:
         version: 6.1.1(typescript@6.0.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       wrangler:
         specifier: ^4.105.0
         version: 4.123.0(@cloudflare/workers-types@5.20260816.1)
@@ -403,7 +403,7 @@ importers:
         version: link:../types
       vitest:
         specifier: ^4.1.11
-        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
 
 packages:
 
@@ -444,8 +444,8 @@ packages:
     resolution: {integrity: sha512-vZ6JQVq8Ivgz6b/IBlAf90wZviXdluY13cQOPO+nJHbmXwGrPl2GcpqUY7a55/8ZVdfONXpCFMpRijOBCHNlcQ==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
-  '@asamuzakjp/dom-selector@9.2.4':
-    resolution: {integrity: sha512-YnVzxDxLaqL0t7Q4wfcgHZjg55Wm6y5EaO7Bhu3q9J7wq/8iw3PhsnWiOQhYekx4VexnbkgWpTT6n+QIV7kczw==}
+  '@asamuzakjp/dom-selector@10.0.5':
+    resolution: {integrity: sha512-EgmJ7oEaGQECTn3H3wmnQpEy4hKY66VvM7VQndwPIQob3p877BgbyOUE3EX0LgXQCciF2H8KMdR+RznqjMNOLw==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   '@babel/code-frame@7.29.7':
@@ -2803,8 +2803,8 @@ packages:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
-  jsdom@30.1.2:
-    resolution: {integrity: sha512-0FFE/jE1rppmVfUrJUgxqXjcwolZYIGtAgj1pTussMhNZxIxi7W/PvfWaMNroGi2B36X1IKHbexpZ9DhkoOPiQ==}
+  jsdom@30.1.3:
+    resolution: {integrity: sha512-hQMUPvRgN7KxsfIytDQji7bimuJeRQa6Qo5+iuiZQk5CafeRxLIA10/cG5YCBFNpD9RO3oqIiN4CO1Y44kxqXg==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     peerDependencies:
       canvas: ^3.2.3
@@ -4203,7 +4203,7 @@ snapshots:
       '@csstools/css-tokenizer': 4.0.2
       lru-cache: 11.5.3
 
-  '@asamuzakjp/dom-selector@9.2.4':
+  '@asamuzakjp/dom-selector@10.0.5':
     dependencies:
       bidi-js: 1.1.0
       css-tree: 3.2.1
@@ -4349,14 +4349,14 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@cloudflare/vitest-pool-workers@0.22.0(@cloudflare/workers-types@5.20260816.1)(@vitest/runner@4.1.11)(@vitest/snapshot@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
+  '@cloudflare/vitest-pool-workers@0.22.0(@cloudflare/workers-types@5.20260816.1)(@vitest/runner@4.1.11)(@vitest/snapshot@4.1.11)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
     dependencies:
       '@vitest/runner': 4.1.11
       '@vitest/snapshot': 4.1.11
       cjs-module-lexer: 1.2.3
       esbuild: 0.28.2
       miniflare: 5.20260815.0-alpha
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       wrangler: 4.123.0(@cloudflare/workers-types@5.20260816.1)
       zod: 4.4.3
     transitivePeerDependencies:
@@ -5073,7 +5073,7 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
+  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
     dependencies:
       '@adobe/css-tools': 4.5.0
       '@testing-library/dom': 10.4.2
@@ -5083,7 +5083,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
     optionalDependencies:
-      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+      vitest: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
 
   '@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -6615,10 +6615,10 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsdom@30.1.2(@noble/hashes@2.0.1):
+  jsdom@30.1.3(@noble/hashes@2.0.1):
     dependencies:
       '@asamuzakjp/css-color': 7.1.9
-      '@asamuzakjp/dom-selector': 9.2.4
+      '@asamuzakjp/dom-selector': 10.0.5
       '@bramus/specificity': 2.4.3
       '@csstools/css-syntax-patches-for-csstree': 1.1.15(css-tree@3.2.1)
       '@exodus/bytes': 1.16.0(@noble/hashes@2.0.1)
@@ -7818,7 +7818,7 @@ snapshots:
       tsx: 4.20.6
       yaml: 2.9.0
 
-  vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.2(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)):
+  vitest@4.1.11(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.11
       '@vitest/mocker': 4.1.11(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
@@ -7843,7 +7843,7 @@ snapshots:
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
       '@types/node': 24.13.3
-      jsdom: 30.1.2(@noble/hashes@2.0.1)
+      jsdom: 30.1.3(@noble/hashes@2.0.1)
     transitivePeerDependencies:
       - msw
 
