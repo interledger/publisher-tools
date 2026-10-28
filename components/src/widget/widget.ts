@@ -181,7 +181,7 @@ export class PaymentWidget extends LitElement {
           <div class="powered-by">
             Powered by
             <a href="https://webmonetization.org" target="_blank">
-              <img src=${interledgerLogoIcon} height="24px" alt="Interledger" />
+              <img src=${interledgerLogoIcon} height="24px" alt="Interledger Foundation" />
             </a>
           </div>
         </div>
