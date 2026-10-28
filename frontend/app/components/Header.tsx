@@ -53,8 +53,8 @@ export const Header = () => {
           >
             <img
               src={wmLogo}
-              alt="Web Monetization Logo"
-              className="w-[32px] md:w-[44px] h-[32px] md:h-[44px]"
+              alt="Web Monetization"
+              className="h-8 w-auto md:h-11"
             />
           </a>
 

@@ -14,7 +14,7 @@ export const PoweredByFooter = () => {
           <img
             src={interledgerLogoIcon}
             className="h-6"
-            alt="Interledger logo"
+            alt="Interledger Foundation"
           />
         </a>
       </div>
