@@ -82,7 +82,7 @@ export const useSaveProfile = (wallet: WalletStore) => {
         )
       }
     },
-    [openDialog, closeDialog, trackEvent],
+    [openDialog, closeDialog, trackEvent, wallet],
   )
 
   const saveLastAction = useCallback(async (): Promise<void> => {

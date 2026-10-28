@@ -19,6 +19,7 @@ export interface WidgetState {
   quote: Quote
   grantRedirectUrl: string
   paymentId: string
+  incomingPaymentId: string
   debitAmount: string
   receiveAmount: string
   receiverPublicName?: string
@@ -46,6 +47,7 @@ interface InitiatePaymentInput {
 }
 interface InitiatePaymentResult {
   paymentId: string
+  incomingPaymentId: string
   grantRedirectUrl: PendingGrant['interact']['redirect']
 }
 
@@ -93,6 +95,7 @@ export const NO_OP_CONTROLLER: Controller = {
   initiatePayment() {
     return Promise.resolve({
       paymentId: 'payment-id',
+      incomingPaymentId: 'incoming-payment-id',
       grantRedirectUrl: 'https://example.com/redirect',
     })
   },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { NO_OP_CONTROLLER } from '@c/widget/controller.js'
 import { getDefaultProfile } from '@shared/default-data'
 import { API_URL, CDN_URL } from '@shared/defines'
@@ -31,8 +31,11 @@ export default function WidgetPreviewRoute() {
     load()
   }, [])
 
+  // The element is created once; later updates come through messages.
+  const getProfile = useEffectEvent(() => profile)
   useEffect(() => {
     if (!isLoaded) return
+    const profile = getProfile()
 
     const update = (profile: WidgetProfile) => {
       el.config = {

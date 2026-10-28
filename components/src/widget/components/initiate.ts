@@ -182,6 +182,7 @@ export class PaymentInitiate extends LitElement {
       this.configController.updateState({
         grantRedirectUrl: res.grantRedirectUrl,
         paymentId: res.paymentId,
+        incomingPaymentId: res.incomingPaymentId,
         note: this.note,
       })
 

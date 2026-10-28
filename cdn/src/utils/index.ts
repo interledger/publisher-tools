@@ -7,7 +7,12 @@ import type {
   WalletAddressInfo,
 } from 'publisher-tools-api'
 import type { Tool, ProfileId, ToolProfile } from '@shared/types'
-import { checkHrefFormat, fromAmount, toWalletAddressUrl } from '@shared/utils'
+import {
+  checkHrefFormat,
+  fromAmount,
+  toComparableWalletAddressUrl,
+  toWalletAddressUrl,
+} from '@shared/utils'
 
 export function getScriptParams(tool: Tool) {
   const script = document.querySelector<HTMLScriptElement>(
@@ -136,7 +141,40 @@ export async function initiatePayment(
   return json
 }
 
-export function appendPaymentPointer(walletAddressUrl: string) {
+/**
+ * Returns the page's monetization link to the tool's wallet address, and adds
+ * one if there's none, so tools using the same wallet address share one link.
+ * Links to other wallet addresses (another tool's, or the publisher's own) are
+ * left as they are, and this one is added next to them.
+ *
+ * `walletAddressId` is the `data-wallet-address-id` of the script: the wallet
+ * address as `normalizeWalletAddress` returns it, when that differs from
+ * `data-wallet-address`. A link to either one is a link to this wallet, also
+ * with a trailing slash or as `/.well-known/pay` (`toComparableWalletAddressUrl`).
+ */
+export function ensureMonetizationLink(
+  walletAddressUrl: string,
+  walletAddressId?: string,
+): HTMLLinkElement {
+  const walletUrls = new Set(
+    [walletAddressUrl, walletAddressId]
+      .filter((url): url is string => Boolean(url))
+      .map(toComparableWalletAddressUrl),
+  )
+  const existing = getMonetizationLinks().find((link) =>
+    walletUrls.has(toComparableWalletAddressUrl(link.href)),
+  )
+  return existing ?? addMonetizationLink(walletAddressUrl)
+}
+
+/** Links with `disabled` are not used for monetization. */
+function getMonetizationLinks() {
+  return [
+    ...document.querySelectorAll<HTMLLinkElement>('link[rel="monetization"]'),
+  ].filter((link) => !link.hasAttribute('disabled'))
+}
+
+function addMonetizationLink(walletAddressUrl: string) {
   const monetizationElement = document.createElement('link')
   monetizationElement.rel = 'monetization'
   monetizationElement.href = walletAddressUrl

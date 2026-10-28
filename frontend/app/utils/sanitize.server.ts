@@ -1,4 +1,4 @@
-import he from 'he'
+import { decode } from 'he'
 import sanitizeHtml from 'sanitize-html'
 import {
   type BannerProfile,
@@ -18,12 +18,12 @@ function sanitizeText(
   value: string,
   saveFailedMessage: string = 'Failed to save profile',
 ): string {
-  const decoded = he.decode(value)
+  const decoded = decode(value)
   const sanitizedText = sanitizeHtml(value, {
     allowedTags: [],
     allowedAttributes: {},
     textFilter(text) {
-      return he.decode(text)
+      return decode(text)
     },
   })
   if (sanitizedText !== decoded) {
@@ -42,13 +42,13 @@ function sanitizeHtmlField(
   value: string,
   saveFailedMessage: string = 'Failed to save profile',
 ): string {
-  const decoded = he.decode(value.replace(/&nbsp;/g, '').trim())
+  const decoded = decode(value.replace(/&nbsp;/g, '').trim())
   const sanitizedHTML = sanitizeHtml(decoded, {
     allowedTags: [],
     allowedAttributes: {},
     allowProtocolRelative: false,
   })
-  const decodedSanitized = he.decode(sanitizedHTML)
+  const decodedSanitized = decode(sanitizedHTML)
   if (decodedSanitized !== decoded) {
     throw new ApiError(
       saveFailedMessage,
