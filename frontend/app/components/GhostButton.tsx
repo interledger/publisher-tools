@@ -10,37 +10,39 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
 }
 
-export const GhostButton = React.forwardRef<HTMLButtonElement, Props>(
-  ({ children, iconPosition = 'right', icon, className, ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cx(
-          'flex flex-row items-center justify-center',
-          'rounded-lg',
-          'font-normal',
-          'transition-colors duration-200',
-          'text-secondary-edge',
-          'bg-transparent',
-          'hover:text-secondary-edge-hover',
-          'hover:bg-secondary-hover-surface',
-          'px-xs py-sm',
-          'gap-sm',
-          'disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-secondary-edge disabled:hover:bg-transparent',
-          className,
-        )}
-        {...props}
-      >
-        {icon === 'refresh' && iconPosition === 'left' && (
-          <SVGRefresh className="w-5 h-5" />
-        )}
-        <span className="relative z-10 flex items-center gap-inherit">
-          {children}
-        </span>
-      </button>
-    )
-  },
-)
-GhostButton.displayName = 'GhostButton'
+export const GhostButton = ({
+  children,
+  iconPosition = 'right',
+  icon,
+  className,
+  ...props
+}: Props) => {
+  return (
+    <button
+      className={cx(
+        'flex flex-row items-center justify-center',
+        'rounded-lg',
+        'font-normal',
+        'transition-colors duration-200',
+        'text-secondary-edge',
+        'bg-transparent',
+        'hover:text-secondary-edge-hover',
+        'hover:bg-secondary-hover-surface',
+        'px-xs py-sm',
+        'gap-sm',
+        'disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-secondary-edge disabled:hover:bg-transparent',
+        className,
+      )}
+      {...props}
+    >
+      {icon === 'refresh' && iconPosition === 'left' && (
+        <SVGRefresh className="w-5 h-5" />
+      )}
+      <span className="relative z-10 flex items-center gap-inherit">
+        {children}
+      </span>
+    </button>
+  )
+}
 
 export default GhostButton

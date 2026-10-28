@@ -1,35 +1,35 @@
-import type { RefObject } from 'react'
+import { useEffect, type RefObject } from 'react'
 import { SVGCloseIcon } from '@/assets'
 import { GhostButton, PoweredByFooter } from '@/components'
 import mobileLogo from '~/assets/images/mobile_logo.svg'
 
-const toolItems: MobileMenuItemData[] = [
+interface MenuLink {
+  to: string
+  text: string
+}
+
+interface MobileMenuItemData extends MenuLink {
+  onClick: () => void
+}
+
+interface MobileMenuSectionProps {
+  title: string
+  items: MenuLink[]
+  onItemClick: () => void
+}
+
+const toolItems: MenuLink[] = [
   { to: '/publishers', text: 'Publisher tools' },
   { to: '/supporters', text: 'Supporter tools' },
   { to: '/developers', text: 'Developer tools' },
 ]
 
-const technicalItems: MobileMenuItemData[] = [
+const technicalItems: MenuLink[] = [
   { to: '/docs', text: 'Documentation' },
   { to: '/specification', text: 'Specification' },
 ]
 
-interface MobileMenuItemData {
-  to: string
-  text: string
-}
-
-interface MobileMenuSectionProps {
-  title: string
-  items: MobileMenuItemData[]
-  onItemClick: () => void
-}
-
-const MobileMenuItem = ({
-  to,
-  text,
-  onClick,
-}: MobileMenuItemData & { onClick: () => void }) => {
+const MobileMenuItem = ({ to, text, onClick }: MobileMenuItemData) => {
   return (
     <li>
       <a
@@ -75,10 +75,26 @@ export const MobileMenu = ({
 }) => {
   const close = () => dialogRef.current?.close()
 
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    const handleToggle = () => {
+      document.body.style.overflow = dialog.open ? 'hidden' : ''
+    }
+
+    dialog.addEventListener('toggle', handleToggle)
+
+    return () => {
+      dialog.removeEventListener('toggle', handleToggle)
+      document.body.style.overflow = ''
+    }
+  }, [dialogRef])
+
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 z-50 m-0 hidden h-full w-full max-h-none max-w-none border-none bg-white p-0 open:flex open:flex-col md:hidden"
+      className="fixed inset-0 z-50 m-0 hidden h-full w-full flex-col bg-white open:flex md:hidden"
       aria-label="Mobile menu"
     >
       <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs pl-7">
@@ -87,6 +103,7 @@ export const MobileMenu = ({
         </a>
         <GhostButton
           onClick={close}
+          autoFocus
           className="size-[48px] flex items-center justify-center focusable-nav-item"
           aria-label="Close menu"
         >
