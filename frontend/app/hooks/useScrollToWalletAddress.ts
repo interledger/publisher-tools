@@ -43,7 +43,7 @@ export function useScrollToWalletAddress() {
         prefersReducedMotion ? 0 : 700,
       )
     })
-  }, [])
+  }, [uiActions])
 
   return { walletAddressRef, scrollToWalletAddress }
 }

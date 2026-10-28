@@ -3,6 +3,8 @@ import { cx } from 'class-variance-authority'
 import { SVGEdit2, SVGExclamationCircle } from '~/assets/svg'
 import { useTranslation } from '~/i18n/useTranslation'
 
+const ALLOWED_CHARS = /[a-zA-Z0-9_\s#@&-]/
+
 type TabOption<T extends string> = { id: T; label: string; hasUpdates: boolean }
 interface Props<T extends string> {
   options: readonly TabOption<T>[]
@@ -29,11 +31,14 @@ export const BuilderProfileTabs = <T extends string>({
   const [editIntentId, setEditIntentId] = useState<T | null>(null)
   const [hasEditingError, setHasEditingError] = useState(false)
 
-  const getTabElement = (id: T) => {
-    return tabListRef.current!.querySelector<HTMLElement>(
-      `#${idPrefix}-tab-${id}`,
-    )
-  }
+  const getTabElement = useCallback(
+    (id: T) => {
+      return tabListRef.current!.querySelector<HTMLElement>(
+        `#${idPrefix}-tab-${id}`,
+      )
+    },
+    [idPrefix],
+  )
 
   const handleEditIntentLeave = useCallback(
     (e: React.MouseEvent | React.FocusEvent, id: T) => {
@@ -54,7 +59,7 @@ export const BuilderProfileTabs = <T extends string>({
       onChange(tabId)
       getTabElement(tabId)?.focus()
     },
-    [options, onChange],
+    [options, onChange, getTabElement],
   )
 
   const onKeyDown = useCallback(
@@ -82,7 +87,14 @@ export const BuilderProfileTabs = <T extends string>({
         setEditingId(null)
       }
     },
-    [activeTabId, activeTabIdx],
+    [
+      activeTabId,
+      activeTabIdx,
+      editingId,
+      hasEditingError,
+      options.length,
+      setActiveTab,
+    ],
   )
 
   return (
@@ -252,7 +264,6 @@ function TabNameEditor<T extends string>({
 }: TabNameEditorProps<T>) {
   const t = useTranslation('general')
   const [errorMessage, setErrorMessage] = useState('')
-  const ALLOWED_CHARS = /[a-zA-Z0-9-_\s#@&]/
 
   const validateTabName = useCallback(
     (input: HTMLInputElement): boolean => {
@@ -263,7 +274,7 @@ function TabNameEditor<T extends string>({
       setHasError(!!errMsg)
       return !errMsg
     },
-    [tabId, options, setErrorMessage, t],
+    [tabId, options, setErrorMessage, setHasError, t],
   )
 
   const onKeyDown = useCallback((ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -281,7 +292,7 @@ function TabNameEditor<T extends string>({
         validateTabName(input)
       }, 0)
     },
-    [tabId],
+    [validateTabName],
   )
 
   return (

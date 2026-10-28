@@ -99,6 +99,20 @@ export function toWalletAddressUrl(s: string): string {
   return `${addr}/.well-known/pay`
 }
 
+/**
+ * The wallet address in one form, to tell whether two strings point to the
+ * same wallet address. `toWalletAddressUrl` keeps any `https://` URL as it is,
+ * so this also drops a trailing slash, and gives an address with no path the
+ * `/.well-known/pay` that a payment pointer such as `$wallet.example` maps to.
+ *
+ * @throws if the result isn't a valid URL
+ */
+export function toComparableWalletAddressUrl(walletAddress: string): string {
+  const url = new URL(toWalletAddressUrl(walletAddress.trim()))
+  const path = url.pathname.replace(/\/+$/, '')
+  return `${url.origin}${path || '/.well-known/pay'}`
+}
+
 export function normalizeWalletAddress(walletAddress: WalletAddress): string {
   const IS_INTERLEDGER_CARDS =
     walletAddress.authServer === 'https://auth.interledger.cards'

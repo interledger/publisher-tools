@@ -75,22 +75,40 @@ export function ToolLayoutWithPreview({
   })
   const { save, saveLastAction } = useSaveProfile(walletStore.wallet)
 
+  // Routes pass these as new objects on every render, but the functions in
+  // them are stable, so depend on the functions instead.
+  const { load: loadWallet, persist: persistWallet } = walletStore
+  const {
+    subscribeProfilesToUpdates,
+    hydrateProfilesFromStorage,
+    subscribeProfilesToStorage,
+    hydrateSnapshotsFromStorage,
+  } = toolStoreUtils
+
   useEffect(() => {
-    const unsubscribeUpdates = toolStoreUtils.subscribeProfilesToUpdates()
-    toolStoreUtils.hydrateProfilesFromStorage()
-    const unsubscribeStorage = toolStoreUtils.subscribeProfilesToStorage()
-    toolStoreUtils.hydrateSnapshotsFromStorage()
+    const unsubscribeUpdates = subscribeProfilesToUpdates()
+    hydrateProfilesFromStorage()
+    const unsubscribeStorage = subscribeProfilesToStorage()
+    hydrateSnapshotsFromStorage()
 
     loadState(loaderData.OP_WALLET_ADDRESS)
     persistState()
-    walletStore.load()
-    walletStore.persist()
+    loadWallet()
+    persistWallet()
 
     return () => {
       unsubscribeStorage()
       unsubscribeUpdates()
     }
-  }, [loaderData.OP_WALLET_ADDRESS])
+  }, [
+    loaderData.OP_WALLET_ADDRESS,
+    subscribeProfilesToUpdates,
+    hydrateProfilesFromStorage,
+    subscribeProfilesToStorage,
+    hydrateSnapshotsFromStorage,
+    loadWallet,
+    persistWallet,
+  ])
 
   useGrantResponseHandler(
     loaderData.grantResponse,

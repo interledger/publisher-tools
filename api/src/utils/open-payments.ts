@@ -28,9 +28,9 @@ export class OpenPaymentsService {
 
   public static async getInstance(env: Env): Promise<OpenPaymentsService> {
     if (!OpenPaymentsService._instance) {
-      OpenPaymentsService._instance = new OpenPaymentsService()
-      OpenPaymentsService._instance.client =
-        await OpenPaymentsService._instance.initClient(env)
+      const instance = new OpenPaymentsService()
+      instance.client = await instance.initClient(env)
+      OpenPaymentsService._instance = instance
     }
     return OpenPaymentsService._instance
   }

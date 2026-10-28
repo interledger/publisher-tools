@@ -33,7 +33,7 @@ export const BaseDialog: React.FC<Props> = ({
     return () => {
       dialog?.removeEventListener('cancel', handleCancel)
     }
-  }, [])
+  }, [closeDialog])
 
   return (
     <dialog

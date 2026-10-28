@@ -179,6 +179,7 @@
 
 .detail-note {
   margin-top: var(--Spacings-sm);
+  margin-bottom: var(--Spacings-sm, 8px);
 }
 
 .primary-button {
@@ -212,6 +213,16 @@
     background: color-mix(in srgb, var(--primary-color) 85%, black 15%);
     filter: none;
   }
+}
+
+.widget-body .payment-error {
+  color: var(--Colors-red-500, #ef4444);
+  font-size: var(--Font-Size-text-xs, 12px);
+  font-family: var(--Font-Family-Inter, Inter);
+  line-height: var(--Font-Line-Height-xs, 16px);
+  text-align: center;
+  margin: var(--Spacings-sm, 8px) 0;
+  padding: 0;
 }
 
 .loading-state {

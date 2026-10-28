@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Checkbox, Thumbnail } from '@/components'
-import wmLogo from '~/assets/images/wm_logo_animated.svg?url'
+import wmLogo from '~/assets/images/wm_logo_mark.svg?url'
 
 interface BannerThumbnailSelectorProps {
   value: string
