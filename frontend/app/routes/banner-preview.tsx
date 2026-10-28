@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { getDefaultProfile } from '@shared/default-data'
 import { CDN_URL } from '@shared/defines'
 import type { BannerProfile } from '@shared/types'
@@ -9,7 +9,6 @@ import type {
 import { ToolPreviewPlaceholder } from '~/components/ToolPreviewPlaceholder'
 
 export default function BannerPreviewRoute() {
-  const cdnUrl = CDN_URL
   const [profile, setProfile] = useState<BannerProfile>(() =>
     getDefaultProfile('banner'),
   )
@@ -29,11 +28,14 @@ export default function BannerPreviewRoute() {
     load()
   }, [])
 
+  // The element is created once; later updates come through messages.
+  const getProfile = useEffectEvent(() => profile)
   useEffect(() => {
     if (!isLoaded) return
+    const profile = getProfile()
 
     const update = (profile: BannerProfile) => {
-      el.config = { ...profile, cdnUrl }
+      el.config = { ...profile, cdnUrl: CDN_URL }
       el.undoDismiss()
     }
 
