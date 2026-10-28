@@ -1,33 +1,40 @@
+import { useEffect, type RefObject } from 'react'
 import { SVGCloseIcon } from '@/assets'
 import { GhostButton, PoweredByFooter } from '@/components'
 import wmLogo from '~/assets/images/wm_logo.svg'
 
-const toolItems: MobileMenuItemData[] = [
+interface MenuLink {
+  to: string
+  text: string
+}
+
+interface MobileMenuItemData extends MenuLink {
+  onClick: () => void
+}
+
+interface MobileMenuSectionProps {
+  title: string
+  items: MenuLink[]
+  onItemClick: () => void
+}
+
+const toolItems: MenuLink[] = [
   { to: '/publishers', text: 'Publisher tools' },
   { to: '/supporters', text: 'Supporter tools' },
   { to: '/developers', text: 'Developer tools' },
 ]
 
-const technicalItems: MobileMenuItemData[] = [
+const technicalItems: MenuLink[] = [
   { to: '/docs', text: 'Documentation' },
   { to: '/specification', text: 'Specification' },
 ]
 
-interface MobileMenuItemData {
-  to: string
-  text: string
-}
-
-interface MobileMenuSectionProps {
-  title: string
-  items: MobileMenuItemData[]
-}
-
-const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
+const MobileMenuItem = ({ to, text, onClick }: MobileMenuItemData) => {
   return (
     <li>
       <a
         href={to}
+        onClick={onClick}
         className="flex w-full items-center gap-xs rounded-lg p-md text-base font-normal leading-md text-nav-link-default focusable-nav-item"
       >
         {text}
@@ -36,7 +43,11 @@ const MobileMenuItem = ({ to, text }: MobileMenuItemData) => {
   )
 }
 
-const MobileMenuSection = ({ title, items }: MobileMenuSectionProps) => {
+const MobileMenuSection = ({
+  title,
+  items,
+  onItemClick,
+}: MobileMenuSectionProps) => {
   return (
     <section className="flex w-full flex-col gap-xs">
       <div className="flex flex-col gap-3xs">
@@ -45,19 +56,45 @@ const MobileMenuSection = ({ title, items }: MobileMenuSectionProps) => {
       </div>
       <ul className="flex flex-col gap-xs">
         {items.map((item) => (
-          <MobileMenuItem key={item.text} to={item.to} text={item.text} />
+          <MobileMenuItem
+            key={item.text}
+            to={item.to}
+            text={item.text}
+            onClick={onItemClick}
+          />
         ))}
       </ul>
     </section>
   )
 }
 
-export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
+export const MobileMenu = ({
+  dialogRef,
+}: {
+  dialogRef: RefObject<HTMLDialogElement | null>
+}) => {
+  const close = () => dialogRef.current?.close()
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+
+    const handleToggle = () => {
+      document.body.style.overflow = dialog.open ? 'hidden' : ''
+    }
+
+    dialog.addEventListener('toggle', handleToggle)
+
+    return () => {
+      dialog.removeEventListener('toggle', handleToggle)
+      document.body.style.overflow = ''
+    }
+  }, [dialogRef])
+
   return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col bg-white md:hidden"
-      role="dialog"
-      aria-modal="true"
+    <dialog
+      ref={dialogRef}
+      className="fixed inset-0 z-50 m-0 hidden h-full w-full flex-col bg-white open:flex md:hidden"
       aria-label="Mobile menu"
     >
       <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs pl-7">
@@ -65,7 +102,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
           <img src={wmLogo} alt="Web Monetization" className="h-8 w-auto" />
         </a>
         <GhostButton
-          onClick={onClose}
+          onClick={close}
           autoFocus
           className="size-[48px] flex items-center justify-center focusable-nav-item"
           aria-label="Close menu"
@@ -75,11 +112,19 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
       </div>
       <div className="flex-1 overflow-y-auto px-lg mt-lg">
         <div className="flex flex-col gap-lg">
-          <MobileMenuSection title="Tools" items={toolItems} />
-          <MobileMenuSection title="Technical" items={technicalItems} />
+          <MobileMenuSection
+            title="Tools"
+            items={toolItems}
+            onItemClick={close}
+          />
+          <MobileMenuSection
+            title="Technical"
+            items={technicalItems}
+            onItemClick={close}
+          />
         </div>
       </div>
       <PoweredByFooter />
-    </div>
+    </dialog>
   )
 }

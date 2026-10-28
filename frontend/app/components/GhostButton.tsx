@@ -10,13 +10,13 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string
 }
 
-export const GhostButton: React.FC<Props> = ({
+export const GhostButton = ({
   children,
   iconPosition = 'right',
   icon,
   className,
   ...props
-}) => {
+}: Props) => {
   return (
     <button
       className={cx(

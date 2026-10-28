@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SVGHamburgerIcon } from '@/assets'
 import { GhostButton, NavDropdown, NavLink, MobileMenu } from '@/components'
 import wmLogo from '~/assets/images/wm_logo.svg?url'
@@ -6,20 +6,13 @@ import { useTranslation } from '~/i18n/useTranslation'
 
 export const Header = () => {
   const t = useTranslation('header')
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-    if (!isMobileMenuOpen) {
-      setIsVisible(true)
-    }
-  }
-
   useEffect(() => {
     const controlNavbar = () => {
-      if (isMobileMenuOpen) return
+      if (dialogRef.current?.open) return
 
       const currentScrollY = window.scrollY
       if (currentScrollY > lastScrollY && currentScrollY > 75) {
@@ -34,7 +27,7 @@ export const Header = () => {
     return () => {
       window.removeEventListener('scroll', controlNavbar)
     }
-  }, [lastScrollY, isMobileMenuOpen])
+  }, [lastScrollY])
 
   return (
     <>
@@ -65,16 +58,18 @@ export const Header = () => {
           </ul>
 
           <GhostButton
-            onClick={toggleMobileMenu}
+            onClick={() => dialogRef.current?.show()}
             tabIndex={0}
             className="md:hidden size-[48px] focusable-nav-item"
+            aria-label="Open menu"
+            aria-haspopup="dialog"
           >
             <SVGHamburgerIcon className="w-5 h-5" />
           </GhostButton>
         </nav>
       </header>
 
-      {isMobileMenuOpen && <MobileMenu onClose={toggleMobileMenu} />}
+      <MobileMenu dialogRef={dialogRef} />
     </>
   )
 }
