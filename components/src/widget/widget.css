@@ -192,6 +192,8 @@ a:focus-visible {
 
 .trigger img {
   width: 2rem;
+  height: 2rem;
+  object-fit: contain;
   transition: transform 0.2s ease;
   position: relative;
   z-index: 1;

@@ -1,7 +1,7 @@
 import type { RefObject } from 'react'
 import { SVGCloseIcon } from '@/assets'
 import { GhostButton, PoweredByFooter } from '@/components'
-import mobileLogo from '~/assets/images/mobile_logo.svg'
+import wmLogo from '~/assets/images/wm_logo.svg'
 
 const toolItems: MobileMenuItemData[] = [
   { to: '/publishers', text: 'Publisher tools' },
@@ -83,7 +83,7 @@ export const MobileMenu = ({
     >
       <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs pl-7">
         <a href="https://webmonetization.org/">
-          <img src={mobileLogo} alt="Web Monetization Logo" />
+          <img src={wmLogo} alt="Web Monetization" className="h-8 w-auto" />
         </a>
         <GhostButton
           onClick={close}

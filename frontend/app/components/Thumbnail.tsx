@@ -18,7 +18,11 @@ export const Thumbnail: React.FC<ThumbnailProps> = ({
       }`}
       onClick={onClick}
     >
-      <img src={imageUrl} alt="Thumbnail" className="w-[50%] h-[45%]" />
+      <img
+        src={imageUrl}
+        alt="Thumbnail"
+        className="max-h-[70%] max-w-[70%] object-contain"
+      />
     </div>
   )
 }

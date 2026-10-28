@@ -6,7 +6,7 @@ import {
   type ReactiveControllerHost,
 } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import defaultLogo from '@c/assets/wm_logo_animated.svg?url'
+import defaultLogo from '@c/assets/wm_logo_mark.svg?url'
 import { BANNER_FONT_SIZE_MAP, BORDER_RADIUS } from '@shared/types'
 import type {
   FontFamilyKey,
