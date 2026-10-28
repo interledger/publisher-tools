@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 import { StatusDialog } from '@/components'
 import { useDialog } from '~/hooks/useDialog'
 import { useTranslation } from '~/i18n/useTranslation'
@@ -17,24 +17,25 @@ export const useGrantResponseHandler = (
   const [openDialog, closeDialog] = useDialog()
   const t = useTranslation('grantInteraction')
 
-  useEffect(() => {
+  const handleGrantResponse = useEffectEvent(async () => {
     if (!isGrantResponse) return
 
-    const handleGrantResponse = async () => {
-      if (!isGrantAccepted) {
-        openDialog(
-          <StatusDialog
-            onDone={closeDialog}
-            message={grantResponse ? t(grantResponse) : undefined}
-            status="error"
-          />,
-        )
-        return
-      }
-
-      await options.onGrantSuccess()
+    if (!isGrantAccepted) {
+      openDialog(
+        <StatusDialog
+          onDone={closeDialog}
+          message={grantResponse ? t(grantResponse) : undefined}
+          status="error"
+        />,
+      )
+      return
     }
 
+    await options.onGrantSuccess()
+  })
+
+  // Handle the grant response once, when the page loads after the redirect.
+  useEffect(() => {
     handleGrantResponse()
   }, [])
 }

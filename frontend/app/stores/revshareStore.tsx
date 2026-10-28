@@ -1,4 +1,11 @@
-import { useContext, useState, createContext, useEffect, useMemo } from 'react'
+import {
+  useCallback,
+  useContext,
+  useState,
+  createContext,
+  useEffect,
+  useMemo,
+} from 'react'
 import type { ReactNode } from 'react'
 import {
   newShare,
@@ -90,20 +97,21 @@ export function SharesProvider({ children }: SharesProviderProps) {
     _setShares(loadedShares)
   }, [])
 
-  const setShares = (
-    newShares: SharesState | ((prevShares: SharesState) => SharesState),
-  ) => {
-    if (typeof newShares === 'function') {
-      _setShares((prevShares) => {
-        const result = newShares(prevShares)
-        localStorage.setItem(SHARES_KEY, JSON.stringify(result))
-        return result
-      })
-    } else {
-      localStorage.setItem(SHARES_KEY, JSON.stringify(newShares))
-      _setShares(newShares)
-    }
-  }
+  const setShares = useCallback(
+    (newShares: SharesState | ((prevShares: SharesState) => SharesState)) => {
+      if (typeof newShares === 'function') {
+        _setShares((prevShares) => {
+          const result = newShares(prevShares)
+          localStorage.setItem(SHARES_KEY, JSON.stringify(result))
+          return result
+        })
+      } else {
+        localStorage.setItem(SHARES_KEY, JSON.stringify(newShares))
+        _setShares(newShares)
+      }
+    },
+    [],
+  )
 
   const value = useMemo(() => ({ shares, setShares }), [shares, setShares])
 

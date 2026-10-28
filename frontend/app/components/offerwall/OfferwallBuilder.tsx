@@ -42,7 +42,7 @@ function AppearanceBuilder({ onRefresh }: Props) {
     })
 
     return unsubscribe
-  }, [])
+  }, [profile])
 
   return (
     <BuilderAccordion
