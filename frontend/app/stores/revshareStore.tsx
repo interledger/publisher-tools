@@ -1,8 +1,14 @@
-import { useContext, useState, createContext, useEffect, useMemo } from 'react'
+import {
+  useCallback,
+  useContext,
+  useState,
+  createContext,
+  useEffect,
+  useMemo,
+} from 'react'
 import type { ReactNode } from 'react'
 import {
   newShare,
-  validateShares,
   weightsToPercentages,
   type Share,
   type SharesState,
@@ -66,7 +72,7 @@ export function loadStartingShares(): SharesState {
         : localStorage.getItem(SHARES_KEY)
     const parsed = shareStr ? JSON.parse(shareStr) : undefined
     const migrated = migrateStoredShares(parsed)
-    if (migrated && validateShares(migrated)) {
+    if (migrated && migrated.length > 0) {
       return migrated
     } else {
       return [newShare(50), newShare(50)]
@@ -91,20 +97,21 @@ export function SharesProvider({ children }: SharesProviderProps) {
     _setShares(loadedShares)
   }, [])
 
-  const setShares = (
-    newShares: SharesState | ((prevShares: SharesState) => SharesState),
-  ) => {
-    if (typeof newShares === 'function') {
-      _setShares((prevShares) => {
-        const result = newShares(prevShares)
-        localStorage.setItem(SHARES_KEY, JSON.stringify(result))
-        return result
-      })
-    } else {
-      localStorage.setItem(SHARES_KEY, JSON.stringify(newShares))
-      _setShares(newShares)
-    }
-  }
+  const setShares = useCallback(
+    (newShares: SharesState | ((prevShares: SharesState) => SharesState)) => {
+      if (typeof newShares === 'function') {
+        _setShares((prevShares) => {
+          const result = newShares(prevShares)
+          localStorage.setItem(SHARES_KEY, JSON.stringify(result))
+          return result
+        })
+      } else {
+        localStorage.setItem(SHARES_KEY, JSON.stringify(newShares))
+        _setShares(newShares)
+      }
+    },
+    [],
+  )
 
   const value = useMemo(() => ({ shares, setShares }), [shares, setShares])
 

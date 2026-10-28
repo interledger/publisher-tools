@@ -1,6 +1,6 @@
 import { API_URL } from '@shared/defines'
 import { OfferwallModal } from '@tools/components'
-import { appendPaymentPointer, fetchProfile, getScriptParams } from './utils'
+import { ensureMonetizationLink, fetchProfile, getScriptParams } from './utils'
 import {
   WebMonetizationCustomOfferwallChoice,
   type OfferwallChoiceConstructorParams,
@@ -11,7 +11,10 @@ const NAME = 'wm-offerwall'
 customElements.define(NAME, OfferwallModal)
 
 const params = getScriptParams('offerwall')
-const linkElem = appendPaymentPointer(params.walletAddress)
+const linkElem = ensureMonetizationLink(
+  params.walletAddress,
+  params.walletAddressId,
+)
 
 const STORAGE_KEY_PREFIX = 'wmt.offerwall.'
 const toStorageKey = (key: string) => `${STORAGE_KEY_PREFIX}${key}`

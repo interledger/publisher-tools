@@ -157,6 +157,7 @@ export class PaymentWidget extends LitElement {
       <wm-payment-waiting
         .paymentId=${paymentId}
         .grantRedirectUrl=${grantRedirectUrl}
+        .configController=${this.configController}
         .controller=${this.#controller}
         @interaction-cancelled=${this.handleInteractionCancelled}
         @back=${this.navigateToHome}

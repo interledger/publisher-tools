@@ -48,7 +48,7 @@ export const ToolsWalletAddress = ({
     }
 
     return uiActions.registerWalletInput(walletInputApi)
-  }, [])
+  }, [uiActions])
 
   const handleContinue = async () => {
     if (!snap.walletAddress.trim()) {
