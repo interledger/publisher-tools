@@ -3,7 +3,7 @@ import { cx } from 'class-variance-authority'
 import { SVGEdit2, SVGExclamationCircle } from '~/assets/svg'
 import { useTranslation } from '~/i18n/useTranslation'
 
-const ALLOWED_CHARS = /[a-zA-Z0-9-_\s#@&]/
+const ALLOWED_CHARS = /[a-zA-Z0-9_\s#@&-]/
 
 type TabOption<T extends string> = { id: T; label: string; hasUpdates: boolean }
 interface Props<T extends string> {
