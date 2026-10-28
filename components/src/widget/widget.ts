@@ -2,7 +2,7 @@ import { LitElement, html, unsafeCSS } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import type { WalletAddressInfo } from 'publisher-tools-api'
 import interledgerLogoIcon from '@tools/components/assets/interledger_logo.svg'
-import defaultTriggerIcon from '@tools/components/assets/wm_logo_animated.svg'
+import defaultTriggerIcon from '@tools/components/assets/wm_logo_mark.svg'
 import { registerComponents } from '@tools/components/utils.js'
 import { HomeView, type SubmitEventDetail } from './components/home.js'
 import { PaymentInitiate } from './components/initiate.js'
@@ -181,7 +181,11 @@ export class PaymentWidget extends LitElement {
           <div class="powered-by">
             Powered by
             <a href="https://webmonetization.org" target="_blank">
-              <img src=${interledgerLogoIcon} height="24px" alt="Interledger" />
+              <img
+                src=${interledgerLogoIcon}
+                height="24px"
+                alt="Interledger Foundation"
+              />
             </a>
           </div>
         </div>

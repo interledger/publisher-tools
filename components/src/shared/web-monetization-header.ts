@@ -1,6 +1,6 @@
 import { LitElement, css, html, unsafeCSS } from 'lit'
 import { property } from 'lit/decorators.js'
-import wmLogo from '@c/assets/wm_logo_animated.svg'
+import wmLogo from '@c/assets/wm_logo_mark.svg'
 
 const styles = css`
   .header {
