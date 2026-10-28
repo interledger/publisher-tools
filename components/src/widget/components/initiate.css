@@ -78,7 +78,7 @@
   line-height: var(--Font-Line-Height-sm, 20px);
 }
 
-.widget-body p,
+.widget-body p:not(.payment-error),
 .widget-body label:not(.form-label) {
   color: var(--Text-paragraph-standard, #363636);
   font-family: var(--Font-Family-Inter, Inter);
@@ -179,6 +179,7 @@
 
 .detail-note {
   margin-top: var(--Spacings-sm);
+  margin-bottom: var(--Spacings-sm, 8px);
 }
 
 .primary-button {
@@ -214,12 +215,14 @@
   }
 }
 
+.widget-body .payment-error,
 .payment-error {
   color: var(--Colors-red-500, #ef4444);
   font-size: var(--Font-Size-text-xs, 12px);
   font-family: var(--Font-Family-Inter, Inter);
+  line-height: var(--Font-Line-Height-xs, 16px);
   text-align: center;
-  margin: 0;
+  margin: var(--Spacings-sm, 8px) 0;
   padding: 0;
 }
 

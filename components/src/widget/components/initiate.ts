@@ -327,7 +327,7 @@ export class PaymentInitiate extends LitElement {
       </button>
       ${
         this.paymentError
-          ? html`<p class="payment-error">${this.paymentError}</p>`
+          ? html`<p class="payment-error" role="alert">${this.paymentError}</p>`
           : nothing
       }
     `
