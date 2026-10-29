@@ -10,7 +10,7 @@ import {
   TOOL_PAYWALL,
 } from '@shared/types'
 import type { SaveResult } from '~/lib/types'
-import { createWalletStore } from '~/stores/wallet-store'
+import { createWalletStore, type WalletStore } from '~/stores/wallet-store'
 import { getToolProfiles, saveToolProfile } from '~/utils/profile-api'
 import { patchProxy, splitProfileProperties } from '~/utils/utils.storage'
 import { createToolStoreUtils } from '~/utils/utils.store'
@@ -56,6 +56,31 @@ export function usePaywallProfile(options?: {
 }): [PaywallProfile, PaywallProfile] {
   const snapshot = useSnapshot(paywall.profile, options)
   return [snapshot, paywall.profile]
+}
+
+/**
+ * The currency the price is charged in. Payments go to the connected wallet,
+ * so it's that wallet's currency, and the profile's while none is connected.
+ * Only a connected wallet counts: `walletAddressInfo` is set as soon as an
+ * address is entered, before its profiles are loaded and it is connected.
+ *
+ * It is written into the profile only by a successful save
+ * (`actions.saveProfile`), not when the wallet changes: changing the profile
+ * then would mark every version as edited and trigger the import check on
+ * connect.
+ */
+function getPaywallCurrency(
+  wallet: Pick<WalletStore, 'isWalletConnected' | 'walletAddressInfo'>,
+  profile: PaywallProfile,
+): string {
+  const walletCurrency = wallet.isWalletConnected
+    ? wallet.walletAddressInfo?.assetCode
+    : undefined
+  return walletCurrency ?? profile.price.currency
+}
+
+export function usePaywallCurrency(profile: PaywallProfile): string {
+  return getPaywallCurrency(useSnapshot(paywallWallet), profile)
 }
 
 export const paywall = createPaywallStore()
@@ -110,13 +135,19 @@ export const actions = {
     paywallStoreUtils.restoreDefaultSection(toolState.activeTab, section)
   },
   async saveProfile(): Promise<SaveResult> {
-    const profile = snapshot(paywall.profile)
-    return await saveToolProfile(
+    const profileId = toolState.activeTab
+    const profile = snapshot(paywall.profiles[profileId])
+    const currency = getPaywallCurrency(paywallWallet, profile)
+    const result = await saveToolProfile(
       paywallWallet.walletAddress,
       TOOL_PAYWALL,
-      profile,
-      toolState.activeTab,
+      { ...profile, price: { ...profile.price, currency } },
+      profileId,
     )
+    if (result.success) {
+      paywall.profiles[profileId].price.currency = currency
+    }
+    return result
   },
   commitProfile() {
     return paywallStoreUtils.commitActiveProfile(toolState.activeTab)

@@ -5,7 +5,7 @@ import { ToolsSecondaryButton } from '@/components/ToolsSecondaryButton'
 import type { View } from '@c/paywall/controller'
 import type { PaywallProfile } from '@shared/types'
 import { ToolPreview, type ToolPreviewHandle } from '~/components/ToolPreview'
-import { usePaywallProfile } from '~/stores/paywall-store'
+import { usePaywallCurrency, usePaywallProfile } from '~/stores/paywall-store'
 
 export type Message =
   { action: 'RESET' } | { action: 'UPDATE'; profile: PaywallProfile }
@@ -16,20 +16,21 @@ export type MessageFromIframe =
 export function PaywallPreview() {
   const [currentView, setCurrentView] = useState<keyof View>('home')
   const [profile] = usePaywallProfile()
+  const currency = usePaywallCurrency(profile)
   const ref = useRef<ToolPreviewHandle<Message>>(null)
 
   const messageHandler = (data: MessageFromIframe) => {
     switch (data.type) {
       case 'READY':
-        return ref.current?.postMessage(UpdateUIMessage(profile))
+        return ref.current?.postMessage(UpdateUIMessage(profile, currency))
       case 'CURRENT_SCREEN':
         return setCurrentView(data.view)
     }
   }
 
   useEffect(() => {
-    ref.current?.postMessage(UpdateUIMessage(profile))
-  }, [profile])
+    ref.current?.postMessage(UpdateUIMessage(profile, currency))
+  }, [profile, currency])
 
   return (
     <ToolPreview tool="paywall" ref={ref} onMessage={messageHandler}>
@@ -44,6 +45,8 @@ export function PaywallPreview() {
   )
 }
 
-function UpdateUIMessage(profile: PaywallProfile): Message {
-  return { action: 'UPDATE', profile: deepClone(profile) }
+function UpdateUIMessage(profile: PaywallProfile, currency: string): Message {
+  const preview = deepClone(profile)
+  preview.price.currency = currency
+  return { action: 'UPDATE', profile: preview }
 }

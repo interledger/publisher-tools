@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import {
   data,
   useLoaderData,
@@ -6,12 +5,12 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router'
 import { useSnapshot } from 'valtio'
+import { BuilderProfileTabs } from '~/components/BuilderProfileTabs'
 import { Divider } from '~/components/Divider'
 import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
 import { PaywallBuilderSettings } from '~/components/paywall/PaywallBuilderSettings'
 import { PaywallPreview } from '~/components/paywall/PaywallPreview'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import { useTranslation } from '~/i18n/useTranslation'
 import { cloudflareContext } from '~/lib/context.js'
 import {
@@ -26,7 +25,7 @@ import {
   subscribeProfilesToStorage,
   subscribeProfilesToUpdates,
 } from '~/stores/paywall-store'
-import { toolState } from '~/stores/toolStore'
+import { toolActions, toolState } from '~/stores/toolStore'
 import { commitSession, getSession } from '~/utils/session.server'
 
 export const meta: MetaFunction = () => {
@@ -69,17 +68,8 @@ export default function Paywall() {
   const t = useTranslation('paywall')
   const snap = useSnapshot(toolState)
   const paywallSnap = useSnapshot(paywall)
-  const [walletSnap] = useToolWallet({
-    wallet: paywallWallet,
-    actions: paywallWalletActions,
-  })
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
-
-  useEffect(() => {
-    paywall.profile.price.currency =
-      walletSnap.walletAddressInfo?.assetCode || 'USD'
-  }, [walletSnap.walletAddressInfo])
 
   return (
     <ToolLayoutWithPreview
@@ -105,10 +95,7 @@ export default function Paywall() {
         subscribeProfilesToUpdates,
       }}
       tool="paywall"
-      steps={[
-        { number: 2, label: 'Configure', status: snap.configureStep },
-        { number: 3, label: 'Build', status: snap.buildStep },
-      ]}
+      steps={[{ number: 2, label: 'Build', status: snap.buildStep }]}
       preview={<PaywallPreview />}
       loaderData={{
         grantResponse,
@@ -117,13 +104,19 @@ export default function Paywall() {
         OP_WALLET_ADDRESS,
       }}
       hasUnsavedChanges={paywallSnap.profilesUpdate.has(snap.activeTab)}
-      stepMiddle={<PaywallBuilderSettings />}
     >
-      <div className="bg-interface-bg-container rounded-lg p-md flex-col gap-md w-full flex">
+      <BuilderProfileTabs
+        idPrefix="profile"
+        options={paywallSnap.profileTabs}
+        selectedId={snap.activeTab}
+        onChange={(profileId) => toolActions.setActiveTab(profileId)}
+        onRename={(name) => actions.setProfileName(name)}
+      >
+        <PaywallBuilderSettings />
         <PaywallBuilder
           onRefresh={(section) => actions.resetProfileSection(section)}
         />
-      </div>
+      </BuilderProfileTabs>
     </ToolLayoutWithPreview>
   )
 }
