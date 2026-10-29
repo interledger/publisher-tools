@@ -58,6 +58,18 @@ export function usePaywallProfile(options?: {
   return [snapshot, paywall.profile]
 }
 
+/**
+ * The currency the price is charged in. Payments go to the connected wallet,
+ * so it's the wallet's currency, and the profile's only until a wallet is
+ * known. It is written into the profile on save (`actions.saveProfile`), not
+ * when the wallet changes: changing the profile then would mark every version
+ * as edited and trigger the import check on connect.
+ */
+export function usePaywallCurrency(profile: PaywallProfile): string {
+  const wallet = useSnapshot(paywallWallet)
+  return wallet.walletAddressInfo?.assetCode ?? profile.price.currency
+}
+
 export const paywall = createPaywallStore()
 
 const snapshots = new Map<ProfileId, PaywallProfile>(
@@ -110,6 +122,11 @@ export const actions = {
     paywallStoreUtils.restoreDefaultSection(toolState.activeTab, section)
   },
   async saveProfile(): Promise<SaveResult> {
+    // see usePaywallCurrency
+    const currency = paywallWallet.walletAddressInfo?.assetCode
+    if (currency) {
+      paywall.profile.price.currency = currency
+    }
     const profile = snapshot(paywall.profile)
     return await saveToolProfile(
       paywallWallet.walletAddress,

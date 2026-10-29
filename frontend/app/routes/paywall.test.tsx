@@ -1,11 +1,16 @@
 import type { ReactNode } from 'react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { WalletAddress } from '@interledger/open-payments'
 import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createDefaultPaywallProfile } from '@shared/default-data'
 import { DEFAULT_PROFILE_NAMES, PROFILE_A, PROFILE_IDS } from '@shared/types'
-import { paywall, paywallWallet } from '~/stores/paywall-store'
+import {
+  actions,
+  paywall,
+  paywallWallet,
+  subscribeProfilesToUpdates,
+} from '~/stores/paywall-store'
 import { toolState } from '~/stores/toolStore'
 import { patchProxy } from '~/utils/utils.storage'
 import Paywall from './paywall'
@@ -52,23 +57,39 @@ vi.mock('~/components/paywall/PaywallBuilder', async () => {
   }
 })
 
-// valtio notifies React asynchronously, so let the update settle in act()
+// valtio notifies React and the change tracking asynchronously, so let
+// updates settle in act()
+async function settle() {
+  await act(async () => {})
+}
+
 async function setWalletCurrency(assetCode: string) {
   await act(async () => {
     paywallWallet.walletAddressInfo = { assetCode } as WalletAddress
   })
+  await settle()
 }
 
 describe('paywall route', () => {
+  let unsubscribeUpdates: () => void
+
+  // Each test starts from three saved USD versions, with the "unsaved changes"
+  // tracking on as the page has it (the layout that sets it up is stubbed).
   beforeEach(() => {
     toolState.activeTab = PROFILE_A
     paywallWallet.walletAddressInfo = null
     PROFILE_IDS.forEach((id, idx) => {
       const profile = createDefaultPaywallProfile(DEFAULT_PROFILE_NAMES[id])
       profile.title.text = `Title ${idx + 1}`
-      profile.price.value = `${idx + 1}.00`
+      profile.price = { value: `${idx + 1}.00`, currency: 'USD' }
       patchProxy(paywall.profiles[id], profile)
     })
+    actions.commitProfiles()
+    unsubscribeUpdates = subscribeProfilesToUpdates()
+  })
+
+  afterEach(() => {
+    unsubscribeUpdates()
   })
 
   it('shows a tab for each version, with the first one selected', () => {
@@ -127,17 +148,50 @@ describe('paywall route', () => {
     expect(paywall.profiles.version3.price.value).toBe('7.5')
     expect(paywall.profiles.version1.price.value).toBe('1.00')
     expect(paywall.profiles.version2.price.value).toBe('2.00')
+    await settle()
+    expect([...paywall.profilesUpdate]).toEqual(['version3'])
   })
 
-  it("sets the wallet's currency on each version as it is selected", async () => {
-    const user = userEvent.setup()
+  // A wallet in another currency used to be written into the versions, which
+  // counted as an edit: the import check then asked to keep "local changes"
+  // nobody made.
+  it('does not change the saved versions when the wallet is in another currency', async () => {
     render(<Paywall />)
 
     await setWalletCurrency('EUR')
-    expect(paywall.profiles.version1.price.currency).toBe('EUR')
 
-    await user.click(screen.getByRole('tab', { name: 'Default layout 2' }))
-    expect(paywall.profiles.version2.price.currency).toBe('EUR')
+    expect(
+      PROFILE_IDS.map((id) => paywall.profiles[id].price.currency),
+    ).toEqual(['USD', 'USD', 'USD'])
+    expect([...paywall.profilesUpdate]).toEqual([])
+  })
+
+  it('does not mark a version as unsaved when switching tabs', async () => {
+    const user = userEvent.setup()
+    render(<Paywall />)
+    await setWalletCurrency('EUR')
+
+    for (const name of [
+      'Default layout 2',
+      'Default layout 3',
+      'Default layout 1',
+    ]) {
+      await user.click(screen.getByRole('tab', { name }))
+    }
+    await settle()
+
+    expect([...paywall.profilesUpdate]).toEqual([])
+    expect(screen.queryByText(/unsaved changes/)).not.toBeInTheDocument()
+  })
+
+  it("shows the price in the wallet's currency", async () => {
+    render(<Paywall />)
+
+    await setWalletCurrency('EUR')
+
+    expect(
+      screen.getByText("Charged in your wallet's currency (EUR)"),
+    ).toBeInTheDocument()
   })
 
   it('renames the selected version', async () => {

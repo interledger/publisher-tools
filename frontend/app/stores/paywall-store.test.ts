@@ -1,8 +1,48 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { WalletAddress } from '@interledger/open-payments'
 import { createDefaultPaywallProfile } from '@shared/default-data'
-import { actions, paywall } from './paywall-store'
+import type { PaywallProfile } from '@shared/types'
+import { saveToolProfile } from '~/utils/profile-api'
+import { actions, paywall, paywallWallet } from './paywall-store'
+
+vi.mock('~/utils/profile-api', () => ({
+  getToolProfiles: vi.fn(),
+  saveToolProfile: vi.fn(async () => ({ success: true })),
+}))
+
+const savedPrice = () =>
+  (vi.mocked(saveToolProfile).mock.calls[0][2] as PaywallProfile).price
 
 describe('paywall store', () => {
+  afterEach(() => {
+    paywallWallet.walletAddressInfo = null
+    vi.clearAllMocks()
+  })
+
+  it("saves the price in the connected wallet's currency", async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    paywallWallet.walletAddressInfo = { assetCode: 'EUR' } as WalletAddress
+
+    await actions.saveProfile()
+
+    expect(savedPrice()).toEqual({
+      value: '5.00',
+      currency: 'EUR',
+    })
+    expect(paywall.profile.price.currency).toBe('EUR')
+  })
+
+  it('keeps the saved currency while no wallet is known', async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+
+    await actions.saveProfile()
+
+    expect(savedPrice()).toEqual({
+      value: '5.00',
+      currency: 'USD',
+    })
+  })
+
   it('restores defaults only for the given section', () => {
     const defaults = createDefaultPaywallProfile('Default')
     paywall.profile.$name = 'My paywall'

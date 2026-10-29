@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import {
   data,
   useLoaderData,
@@ -12,7 +11,6 @@ import { PaywallBuilder } from '~/components/paywall/PaywallBuilder'
 import { PaywallBuilderSettings } from '~/components/paywall/PaywallBuilderSettings'
 import { PaywallPreview } from '~/components/paywall/PaywallPreview'
 import { ToolLayoutWithPreview } from '~/components/ToolLayoutWithPreview'
-import { useToolWallet } from '~/hooks/useToolWallet'
 import { useTranslation } from '~/i18n/useTranslation'
 import { cloudflareContext } from '~/lib/context.js'
 import {
@@ -70,19 +68,8 @@ export default function Paywall() {
   const t = useTranslation('paywall')
   const snap = useSnapshot(toolState)
   const paywallSnap = useSnapshot(paywall)
-  const [walletSnap] = useToolWallet({
-    wallet: paywallWallet,
-    actions: paywallWalletActions,
-  })
   const { grantResponse, isGrantAccepted, isGrantResponse, OP_WALLET_ADDRESS } =
     useLoaderData<typeof loader>()
-
-  // Each version has its own price, so the version being edited takes the
-  // wallet's currency when either of them changes.
-  useEffect(() => {
-    paywall.profiles[snap.activeTab].price.currency =
-      walletSnap.walletAddressInfo?.assetCode || 'USD'
-  }, [walletSnap.walletAddressInfo, snap.activeTab])
 
   return (
     <ToolLayoutWithPreview
