@@ -63,9 +63,13 @@ async function settle() {
   await act(async () => {})
 }
 
-async function setWalletCurrency(assetCode: string) {
+async function setWallet(
+  assetCode: string,
+  { connected }: { connected: boolean },
+) {
   await act(async () => {
     paywallWallet.walletAddressInfo = { assetCode } as WalletAddress
+    paywallWallet.isWalletConnected = connected
   })
   await settle()
 }
@@ -78,6 +82,7 @@ describe('paywall route', () => {
   beforeEach(() => {
     toolState.activeTab = PROFILE_A
     paywallWallet.walletAddressInfo = null
+    paywallWallet.isWalletConnected = false
     PROFILE_IDS.forEach((id, idx) => {
       const profile = createDefaultPaywallProfile(DEFAULT_PROFILE_NAMES[id])
       profile.title.text = `Title ${idx + 1}`
@@ -158,7 +163,7 @@ describe('paywall route', () => {
   it('does not change the saved versions when the wallet is in another currency', async () => {
     render(<Paywall />)
 
-    await setWalletCurrency('EUR')
+    await setWallet('EUR', { connected: true })
 
     expect(
       PROFILE_IDS.map((id) => paywall.profiles[id].price.currency),
@@ -169,7 +174,7 @@ describe('paywall route', () => {
   it('does not mark a version as unsaved when switching tabs', async () => {
     const user = userEvent.setup()
     render(<Paywall />)
-    await setWalletCurrency('EUR')
+    await setWallet('EUR', { connected: true })
 
     for (const name of [
       'Default layout 2',
@@ -184,13 +189,25 @@ describe('paywall route', () => {
     expect(screen.queryByText(/unsaved changes/)).not.toBeInTheDocument()
   })
 
-  it("shows the price in the wallet's currency", async () => {
+  it("shows the price in the connected wallet's currency", async () => {
     render(<Paywall />)
 
-    await setWalletCurrency('EUR')
+    await setWallet('EUR', { connected: true })
 
     expect(
       screen.getByText("Charged in your wallet's currency (EUR)"),
+    ).toBeInTheDocument()
+  })
+
+  // The wallet info is set as soon as an address is entered, before its
+  // profiles are loaded and it is connected.
+  it('keeps the version currency while the entered wallet is not connected', async () => {
+    render(<Paywall />)
+
+    await setWallet('EUR', { connected: false })
+
+    expect(
+      screen.getByText("Charged in your wallet's currency (USD)"),
     ).toBeInTheDocument()
   })
 

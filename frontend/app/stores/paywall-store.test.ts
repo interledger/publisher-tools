@@ -13,34 +13,59 @@ vi.mock('~/utils/profile-api', () => ({
 const savedPrice = () =>
   (vi.mocked(saveToolProfile).mock.calls[0][2] as PaywallProfile).price
 
+function setWallet(assetCode: string, isWalletConnected: boolean) {
+  paywallWallet.walletAddressInfo = { assetCode } as WalletAddress
+  paywallWallet.isWalletConnected = isWalletConnected
+}
+
 describe('paywall store', () => {
   afterEach(() => {
     paywallWallet.walletAddressInfo = null
+    paywallWallet.isWalletConnected = false
     vi.clearAllMocks()
   })
 
   it("saves the price in the connected wallet's currency", async () => {
     paywall.profile.price = { value: '5.00', currency: 'USD' }
-    paywallWallet.walletAddressInfo = { assetCode: 'EUR' } as WalletAddress
+    setWallet('EUR', true)
 
     await actions.saveProfile()
 
-    expect(savedPrice()).toEqual({
-      value: '5.00',
-      currency: 'EUR',
-    })
+    expect(savedPrice()).toEqual({ value: '5.00', currency: 'EUR' })
     expect(paywall.profile.price.currency).toBe('EUR')
   })
 
-  it('keeps the saved currency while no wallet is known', async () => {
+  it('leaves the profile unchanged when saving fails', async () => {
     paywall.profile.price = { value: '5.00', currency: 'USD' }
+    setWallet('EUR', true)
+    vi.mocked(saveToolProfile).mockResolvedValueOnce({
+      error: { message: 'Server error' },
+    })
 
     await actions.saveProfile()
 
-    expect(savedPrice()).toEqual({
-      value: '5.00',
-      currency: 'USD',
-    })
+    expect(savedPrice().currency).toBe('EUR')
+    expect(paywall.profile.price.currency).toBe('USD')
+  })
+
+  it('leaves the profile unchanged when saving throws', async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    setWallet('EUR', true)
+    vi.mocked(saveToolProfile).mockRejectedValueOnce(new Error('offline'))
+
+    await expect(actions.saveProfile()).rejects.toThrow('offline')
+
+    expect(paywall.profile.price.currency).toBe('USD')
+  })
+
+  it('keeps the saved currency while no wallet is connected', async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    // entered but not connected yet: its profiles are not loaded
+    setWallet('EUR', false)
+
+    await actions.saveProfile()
+
+    expect(savedPrice()).toEqual({ value: '5.00', currency: 'USD' })
   })
 
   it('restores defaults only for the given section', () => {
