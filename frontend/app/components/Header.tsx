@@ -58,7 +58,7 @@ export const Header = () => {
           </ul>
 
           <GhostButton
-            onClick={() => dialogRef.current?.show()}
+            onClick={() => dialogRef.current?.showModal()}
             tabIndex={0}
             className="md:hidden size-[48px] focusable-nav-item"
             aria-label="Open menu"

@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { type RefObject } from 'react'
 import { SVGCloseIcon } from '@/assets'
 import { GhostButton, PoweredByFooter } from '@/components'
 import wmLogo from '~/assets/images/wm_logo.svg'
@@ -75,26 +75,10 @@ export const MobileMenu = ({
 }) => {
   const close = () => dialogRef.current?.close()
 
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-
-    const handleToggle = () => {
-      document.body.style.overflow = dialog.open ? 'hidden' : ''
-    }
-
-    dialog.addEventListener('toggle', handleToggle)
-
-    return () => {
-      dialog.removeEventListener('toggle', handleToggle)
-      document.body.style.overflow = ''
-    }
-  }, [dialogRef])
-
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 z-50 m-0 hidden h-full w-full flex-col bg-white open:flex md:hidden"
+      className="fixed inset-0 z-50 m-0 h-full w-full flex-col bg-white open:flex md:hidden"
       aria-label="Mobile menu"
     >
       <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs pl-7">
