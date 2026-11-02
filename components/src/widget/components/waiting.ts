@@ -51,7 +51,8 @@ export class PaymentWaiting extends LitElement {
       window.open(this.grantRedirectUrl, '_blank')
     }
 
-    const POLLING_TIMEOUT = 25_000 * 5
+    // A bit longer than the incoming payment, which expires after 6 minutes.
+    const POLLING_TIMEOUT = 7 * 60 * 1000
     this.#pollingAbortController = new AbortController()
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
       this.#pollingAbortController?.abort(ev)
