@@ -51,8 +51,7 @@ export class PaymentWaiting extends LitElement {
       window.open(this.grantRedirectUrl, '_blank')
     }
 
-    // The incoming payment expires after 6 minutes, so a payment approved just
-    // before that can still complete. /payment/initiate keeps it pending longer.
+    // A bit longer than the incoming payment, which expires after 6 minutes.
     const POLLING_TIMEOUT = 7 * 60 * 1000
     this.#pollingAbortController = new AbortController()
     AbortSignal.timeout(POLLING_TIMEOUT).addEventListener('abort', (ev) => {
