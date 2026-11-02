@@ -62,7 +62,7 @@ app.post(
           metadata: { description: params.note },
           nonce,
         },
-        { expirationTtl: 10 * 60 /* 10 minutes */ },
+        { expirationTtl: 8 * 60 /* 8 minutes, longer than the widget polls */ },
       )
       return json({
         paymentId: paymentId,
