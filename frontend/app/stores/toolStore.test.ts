@@ -1,12 +1,16 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createDefaultWidgetProfile } from '@shared/default-data'
+import {
+  createDefaultPaywallProfile,
+  createDefaultWidgetProfile,
+} from '@shared/default-data'
 import {
   PROFILE_A,
   PROFILE_B,
   PROFILE_C,
   type ToolProfiles,
 } from '@shared/types'
+import { paywall } from '~/stores/paywall-store'
 import { toolActions } from '~/stores/toolStore'
 import { widget } from '~/stores/widget-store'
 
@@ -52,5 +56,43 @@ describe('toolActions.setToolProfiles', () => {
 
     expect(widget.profiles[PROFILE_C].$name).toBe('Local C')
     expect([...widget.profilesUpdate]).toEqual([PROFILE_C])
+  })
+})
+
+// The paywall nests objects two levels deep (`behavior.delay`). Assigning the
+// server profiles into the store turns those into proxies, and the import
+// dialog's "keep local change" then failed to clone them.
+describe('toolActions.setToolProfiles for the paywall', () => {
+  // a fresh copy, as each fetch from the API returns
+  const fetchServerProfiles = (): ToolProfiles<'paywall'> =>
+    JSON.parse(
+      JSON.stringify({
+        [PROFILE_A]: createDefaultPaywallProfile('Server A'),
+        [PROFILE_B]: createDefaultPaywallProfile('Server B'),
+        [PROFILE_C]: createDefaultPaywallProfile('Server C'),
+      }),
+    )
+
+  beforeEach(() => {
+    localStorage.clear()
+    toolActions.setCurrentToolType('paywall')
+    toolActions.setToolProfiles(fetchServerProfiles())
+  })
+
+  it('keeps a local change and loads the other versions from the server', () => {
+    paywall.profiles[PROFILE_A].price.value = '9.00'
+    paywall.profiles[PROFILE_A].behavior.delay.value = 5
+    const serverProfiles = fetchServerProfiles()
+    const mergedProfiles: ToolProfiles<'paywall'> = {
+      ...serverProfiles,
+      [PROFILE_A]: paywall.profiles[PROFILE_A],
+    }
+
+    toolActions.setToolProfiles(mergedProfiles, serverProfiles)
+
+    expect(paywall.profiles[PROFILE_A].price.value).toBe('9.00')
+    expect(paywall.profiles[PROFILE_A].behavior.delay.value).toBe(5)
+    expect(paywall.profiles[PROFILE_B].$name).toBe('Server B')
+    expect([...paywall.profilesUpdate]).toEqual([PROFILE_A])
   })
 })

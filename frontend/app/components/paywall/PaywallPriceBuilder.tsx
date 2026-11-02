@@ -1,14 +1,14 @@
 import { InputFieldNumeric } from '@/components/InputFieldNumeric'
 import { getCurrencySymbol } from '@c/utils'
 import { useTranslation } from '~/i18n/useTranslation'
-import { usePaywallProfile } from '~/stores/paywall-store'
+import { usePaywallCurrency, usePaywallProfile } from '~/stores/paywall-store'
 
 export function PaywallPriceBuilder() {
   const [snap, profile] = usePaywallProfile()
   const t = useTranslation('paywall')
 
   const precision = 2 // TODO: get from walletAddressInfo
-  const currency = snap.price.currency
+  const currency = usePaywallCurrency(snap)
   const currencySymbol = getCurrencySymbol(currency)
 
   return (
