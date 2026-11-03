@@ -78,7 +78,7 @@ export const MobileMenu = ({
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 z-50 m-0 h-full w-full flex-col bg-white open:flex md:hidden"
+      className="fixed inset-0 z-50 m-0 h-full w-full max-h-none max-w-none border-none bg-white p-0 flex-col open:flex md:hidden"
       aria-label="Mobile menu"
     >
       <div className="shrink-0 flex items-center justify-between pt-lg pr-5 pb-2xs pl-7">
