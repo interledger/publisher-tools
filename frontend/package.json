@@ -42,7 +42,7 @@
     "react-router": "^8.4.0",
     "remix-i18next": "^8.0.0",
     "sanitize-html": "^2.17.7",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.4",
     "valtio": "^2.3.2",
     "zod": "^4.6.5"
   },
@@ -53,7 +53,7 @@
     "@shared/default-data": "workspace:^",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.4",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
