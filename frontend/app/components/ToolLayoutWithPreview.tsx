@@ -35,9 +35,7 @@ type Props = React.PropsWithChildren<{
     | 'hydrateSnapshotsFromStorage'
     | 'subscribeProfilesToUpdates'
   >
-  steps: [StepsIndicatorStep] | [StepsIndicatorStep, StepsIndicatorStep]
-  // XXX: Fix me sometime - hacky for now
-  stepMiddle?: ReactNode
+  steps: [StepsIndicatorStep]
   tool: ComponentProps<typeof ToolsWalletAddress>['tool']
   preview: ReactNode
   loaderData: {
@@ -57,7 +55,6 @@ export function ToolLayoutWithPreview({
   toolStoreUtils,
   tool,
   steps,
-  stepMiddle,
   loaderData,
   preview,
   hasUnsavedChanges,
@@ -170,23 +167,11 @@ export function ToolLayoutWithPreview({
 
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-y-xl gap-x-sm">
                 <div className="flex flex-col gap-xl">
-                  {steps.length > 1 && stepMiddle && (
-                    <div id="configure-builder" className="w-full">
-                      <MobileStepsIndicator
-                        number={steps[0].number}
-                        label={steps[0].label}
-                        status={steps[0].status}
-                      />
-
-                      <div className="space-y-md">{stepMiddle}</div>
-                    </div>
-                  )}
-
                   <div id="builder" className="w-full">
                     <MobileStepsIndicator
-                      number={steps.at(-1)!.number}
-                      label={steps.at(-1)!.label}
-                      status={steps.at(-1)!.status}
+                      number={steps[0].number}
+                      label={steps[0].label}
+                      status={steps[0].status}
                     />
 
                     {children}

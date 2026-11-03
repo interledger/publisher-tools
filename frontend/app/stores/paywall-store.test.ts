@@ -1,8 +1,73 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { WalletAddress } from '@interledger/open-payments'
 import { createDefaultPaywallProfile } from '@shared/default-data'
-import { actions, paywall } from './paywall-store'
+import type { PaywallProfile } from '@shared/types'
+import { saveToolProfile } from '~/utils/profile-api'
+import { actions, paywall, paywallWallet } from './paywall-store'
+
+vi.mock('~/utils/profile-api', () => ({
+  getToolProfiles: vi.fn(),
+  saveToolProfile: vi.fn(async () => ({ success: true })),
+}))
+
+const savedPrice = () =>
+  (vi.mocked(saveToolProfile).mock.calls[0][2] as PaywallProfile).price
+
+function setWallet(assetCode: string, isWalletConnected: boolean) {
+  paywallWallet.walletAddressInfo = { assetCode } as WalletAddress
+  paywallWallet.isWalletConnected = isWalletConnected
+}
 
 describe('paywall store', () => {
+  afterEach(() => {
+    paywallWallet.walletAddressInfo = null
+    paywallWallet.isWalletConnected = false
+    vi.clearAllMocks()
+  })
+
+  it("saves the price in the connected wallet's currency", async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    setWallet('EUR', true)
+
+    await actions.saveProfile()
+
+    expect(savedPrice()).toEqual({ value: '5.00', currency: 'EUR' })
+    expect(paywall.profile.price.currency).toBe('EUR')
+  })
+
+  it('leaves the profile unchanged when saving fails', async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    setWallet('EUR', true)
+    vi.mocked(saveToolProfile).mockResolvedValueOnce({
+      error: { message: 'Server error' },
+    })
+
+    await actions.saveProfile()
+
+    expect(savedPrice().currency).toBe('EUR')
+    expect(paywall.profile.price.currency).toBe('USD')
+  })
+
+  it('leaves the profile unchanged when saving throws', async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    setWallet('EUR', true)
+    vi.mocked(saveToolProfile).mockRejectedValueOnce(new Error('offline'))
+
+    await expect(actions.saveProfile()).rejects.toThrow('offline')
+
+    expect(paywall.profile.price.currency).toBe('USD')
+  })
+
+  it('keeps the saved currency while no wallet is connected', async () => {
+    paywall.profile.price = { value: '5.00', currency: 'USD' }
+    // entered but not connected yet: its profiles are not loaded
+    setWallet('EUR', false)
+
+    await actions.saveProfile()
+
+    expect(savedPrice()).toEqual({ value: '5.00', currency: 'USD' })
+  })
+
   it('restores defaults only for the given section', () => {
     const defaults = createDefaultPaywallProfile('Default')
     paywall.profile.$name = 'My paywall'
