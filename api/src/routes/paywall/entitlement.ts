@@ -61,7 +61,7 @@ app.get(
       const authToken = authorizationHeader.replace('Bearer ', '')
       const refreshedToken = await refreshToken(authToken, env.JWT_SECRET)
       if (!refreshedToken) {
-        throw createHTTPException(401, 'Token expired or invalid', {})
+        return null
       }
 
       const { payload, token: jwt } = refreshedToken
@@ -69,7 +69,7 @@ app.get(
         (params.wa && payload.sub !== params.wa) ||
         (params.$wa && payload.waUrl && payload.waUrl !== params.$wa)
       ) {
-        throw createHTTPException(401, 'Invalid token', {})
+        return null
       }
 
       return { jwt, payload }

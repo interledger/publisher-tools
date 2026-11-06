@@ -222,7 +222,7 @@
     font-family: var(--font-sans);
   }
 
-  body:has([aria-label='Mobile menu']) {
+  body:has(dialog[open][aria-label='Mobile menu']) {
     @apply overflow-hidden;
   }
 

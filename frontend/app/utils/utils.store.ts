@@ -1,5 +1,6 @@
 import { deepEqual } from 'fast-equals'
 import { snapshot, subscribe } from 'valtio'
+import { deepClone } from 'valtio/utils'
 import { getDefaultProfile } from '@shared/default-data'
 import {
   type BaseToolProfile,
@@ -196,8 +197,11 @@ export function createToolStoreUtils<T extends Tool>(
           const saved = savedProfiles[id] as ToolProfile<T> | undefined
           // no server copy: keep the previous baseline
           if (saved) {
-            // merge like `setProfiles` does, so untouched fields compare equal
-            snapshots.set(id, { ...current, ...structuredClone(saved) })
+            // merge like `setProfiles` does, so untouched fields compare equal.
+            // `setProfiles` assigned `saved` into the store, which can turn its
+            // nested objects into proxies (the paywall's `behavior.delay`), and
+            // structuredClone() throws on those.
+            snapshots.set(id, { ...current, ...deepClone(saved) })
           }
         }
         syncPendingUpdates(id)
