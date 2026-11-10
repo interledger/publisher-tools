@@ -14,5 +14,4 @@ allowBuilds:
   workerd: true
 
 overrides:
-  esbuild: ^0.28.2
-  wrangler: ^4.105.0
+  '@actions/http-client@2>undici': ^6.29.1

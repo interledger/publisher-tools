@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config'
 import {
   cloudflareTest,
   readD1Migrations,
-} from '@cloudflare/vitest-pool-workers'
+} from '@cloudflare/vitest-plugin'
 
 export default defineConfig(async () => {
   const migrationsPath = path.join(import.meta.dirname, 'migrations')
