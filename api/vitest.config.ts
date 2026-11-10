@@ -1,9 +1,6 @@
 import path from 'node:path'
 import { defineConfig } from 'vitest/config'
-import {
-  cloudflareTest,
-  readD1Migrations,
-} from '@cloudflare/vitest-plugin'
+import { cloudflareTest, readD1Migrations } from '@cloudflare/vitest-plugin'
 
 export default defineConfig(async () => {
   const migrationsPath = path.join(import.meta.dirname, 'migrations')
