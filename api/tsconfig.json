@@ -2,7 +2,7 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@cloudflare/vitest-pool-workers"]
+    "types": ["@cloudflare/vitest-plugin/types"]
   },
   "include": ["./src/**/*", "./test/**/*", "./worker-configuration.d.ts"]
 }

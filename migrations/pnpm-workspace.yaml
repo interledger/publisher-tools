@@ -2,3 +2,6 @@ packages:
   - '001-config-s3-structure'
   - 's3'
   - '../shared/*'
+
+allowBuilds:
+  esbuild: true

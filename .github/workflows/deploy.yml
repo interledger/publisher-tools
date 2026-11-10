@@ -47,7 +47,7 @@ jobs:
         # The wrangler Action expects a global installation, so we better reuse
         # what we've in our project.
         run: |
-          wrangler_version=$(yq '.overrides.wrangler' pnpm-workspace.yaml)
+          wrangler_version=$(jq -r '.devDependencies.wrangler' api/package.json)
           pnpm install -g "wrangler@${wrangler_version}"
 
       # https://github.com/dorny/paths-filter/issues/232
