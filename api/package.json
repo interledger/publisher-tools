@@ -28,7 +28,7 @@
     "@shared/probabilistic-revenue-share": "workspace:^",
     "@shared/utils": "workspace:^",
     "hono": "^4.13.2",
-    "http-message-signatures": "^1.0.6",
+    "http-message-signatures": "^1.0.8",
     "httpbis-digest-headers": "^1.0.0",
     "zod": "^4.6.7"
   },

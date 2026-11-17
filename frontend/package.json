@@ -28,7 +28,7 @@
     "crypto-browserify": "^3.12.1",
     "fast-equals": "^6.0.4",
     "he": "^2.0.0",
-    "http-message-signatures": "^1.0.6",
+    "http-message-signatures": "^1.0.8",
     "httpbis-digest-headers": "^1.0.0",
     "i18next": "^26.4.2",
     "isbot": "^5.2.2",

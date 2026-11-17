@@ -78,8 +78,8 @@ importers:
         specifier: ^4.13.2
         version: 4.13.16
       http-message-signatures:
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.8
+        version: 1.0.8
       httpbis-digest-headers:
         specifier: ^1.0.0
         version: 1.0.0
@@ -245,8 +245,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       http-message-signatures:
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.8
+        version: 1.0.8
       httpbis-digest-headers:
         specifier: ^1.0.0
         version: 1.0.0
@@ -2840,6 +2840,9 @@ packages:
 
   http-message-signatures@1.0.6:
     resolution: {integrity: sha512-mGaW/gs0WyP1X4wcc0iHguoDuv/LGyGLbvn8NWgbSdR+opFXKncrNiwQO8bN5rZ5j0z9HrwrRj33CzIK5dhGXA==}
+
+  http-message-signatures@1.0.8:
+    resolution: {integrity: sha512-xBeoY5ym6Z577C5DKIhVXhGes9IHjl0AwW71+IVvT0U8HFc6cofGow5pxwZrjUPEbHZDFaeHN2cf355Ne0w9Xg==}
 
   httpbis-digest-headers@1.0.0:
     resolution: {integrity: sha512-RpaFuZD3tG8wtsvjDv1u7O8wAvfpAxS20F3CrFPZOMn+IBb7E7yiqlN5Tks4E5tBEnTdpMOD151rJsUv03sAIg==}
@@ -6815,6 +6818,10 @@ snapshots:
   http-message-signatures@0.1.2: {}
 
   http-message-signatures@1.0.6:
+    dependencies:
+      structured-headers: 2.0.2
+
+  http-message-signatures@1.0.8:
     dependencies:
       structured-headers: 2.0.2
 
