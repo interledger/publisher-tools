@@ -89,7 +89,7 @@ importers:
     devDependencies:
       '@cloudflare/vitest-plugin':
         specifier: ^1.6.0
-        version: 1.6.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
+        version: 1.6.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
       '@cloudflare/workers-types':
         specifier: ^5.20261108.1
         version: 5.20261108.1
@@ -104,10 +104,10 @@ importers:
         version: 0.28.2
       vitest:
         specifier: ^4.1.12
-        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       wrangler:
         specifier: ^4.158.0
-        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
 
   cdn:
     devDependencies:
@@ -152,7 +152,7 @@ importers:
         version: link:../api
       wrangler:
         specifier: ^4.158.0
-        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
 
   components:
     dependencies:
@@ -177,7 +177,7 @@ importers:
         version: link:../api
       vite:
         specifier: ^8.2.2
-        version: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+        version: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
 
   e2e:
     devDependencies:
@@ -194,8 +194,8 @@ importers:
         specifier: workspace:^
         version: link:../shared/utils
       '@types/node':
-        specifier: ^24.13.3
-        version: 24.13.3
+        specifier: ^26.6.6
+        version: 26.6.6
       react-router:
         specifier: ^8.4.0
         version: 8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -298,13 +298,13 @@ importers:
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.67.0
-        version: 1.67.0(@types/node@24.13.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(workerd@1.20261109.1)(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3))
+        version: 1.67.0(@types/node@26.6.6)(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(workerd@1.20261109.1)(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6))
       '@lit/react':
         specifier: ^1.0.8
         version: 1.0.8(@types/react@19.3.0)
       '@react-router/dev':
         specifier: ^8.4.0
-        version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3))
+        version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6))
       '@shared/default-data':
         specifier: workspace:^
         version: link:../shared/default-data
@@ -316,13 +316,13 @@ importers:
         version: link:../shared/types
       '@tailwindcss/vite':
         specifier: ^4.3.5
-        version: 4.3.5(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.3.5(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       '@testing-library/dom':
         specifier: ^10.4.2
         version: 10.4.2
       '@testing-library/jest-dom':
         specifier: ^7.0.1
-        version: 7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
+        version: 7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))
       '@testing-library/react':
         specifier: ^16.3.3
         version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -333,8 +333,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@types/node':
-        specifier: ^24.13.3
-        version: 24.13.3
+        specifier: ^26.6.6
+        version: 26.6.6
       '@types/react':
         specifier: ^19.3.0
         version: 19.3.0
@@ -355,16 +355,16 @@ importers:
         version: link:../api
       vite:
         specifier: ^8.2.2
-        version: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+        version: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
       vite-tsconfig-paths:
         specifier: ^6.1.1
-        version: 6.1.1(typescript@6.0.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 6.1.1(typescript@6.0.3)(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       vitest:
         specifier: ^4.1.12
-        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       wrangler:
         specifier: ^4.158.0
-        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
 
   localenv/analytics: {}
 
@@ -372,7 +372,7 @@ importers:
     devDependencies:
       wrangler:
         specifier: ^4.158.0
-        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+        version: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
 
   shared/config-storage-service:
     dependencies:
@@ -405,7 +405,7 @@ importers:
         version: link:../types
       vitest:
         specifier: ^4.1.12
-        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
 
 packages:
 
@@ -1789,8 +1789,8 @@ packages:
   '@types/node@24.13.2':
     resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
 
-  '@types/node@24.13.3':
-    resolution: {integrity: sha512-Dh8vAsV36ig5wa9OX4pXvMc9D3Veibfw2wix0CUwYODLD8nkj9UsLjASr49nPg+2eKzxhBV+v7L8pXvT4e639Q==}
+  '@types/node@26.6.6':
+    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
 
   '@types/react-dom@19.3.0':
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
@@ -4022,6 +4022,9 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
+  undici-types@8.9.0:
+    resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
+
   undici@6.29.1:
     resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
@@ -4559,13 +4562,13 @@ snapshots:
     optionalDependencies:
       workerd: 1.20261109.1
 
-  '@cloudflare/vite-plugin@1.67.0(@types/node@24.13.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(workerd@1.20261109.1)(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3))':
+  '@cloudflare/vite-plugin@1.67.0(@types/node@26.6.6)(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(workerd@1.20261109.1)(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6))':
     dependencies:
       '@cloudflare/unenv-preset': 2.16.2(unenv@2.0.0-rc.24)(workerd@1.20261109.1)
-      miniflare: 5.20261101.0-beta(@types/node@24.13.3)
+      miniflare: 5.20261101.0-beta(@types/node@26.6.6)
       unenv: 2.0.0-rc.24
-      vite: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
-      wrangler: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+      vite: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+      wrangler: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
       ws: 8.22.0
     transitivePeerDependencies:
       - '@types/node'
@@ -4573,13 +4576,13 @@ snapshots:
       - utf-8-validate
       - workerd
 
-  '@cloudflare/vitest-plugin@1.6.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
+  '@cloudflare/vitest-plugin@1.6.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
     dependencies:
       cjs-module-lexer: 1.2.3
       esbuild: 0.28.2
-      miniflare: 5.20261104.0-beta(@types/node@24.13.3)
-      vitest: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
-      wrangler: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+      miniflare: 5.20261104.0-beta(@types/node@26.6.6)
+      vitest: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+      wrangler: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
       zod: 4.6.6
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
@@ -5229,7 +5232,7 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  '@react-router/dev@8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3))':
+  '@react-router/dev@8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@6.0.3)(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))(wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/generator': 7.29.7
@@ -5255,10 +5258,10 @@ snapshots:
       semver: 7.8.5
       tinyglobby: 0.2.17
       valibot: 1.4.2(typescript@6.0.3)
-      vite: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+      vite: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
     optionalDependencies:
       typescript: 6.0.3
-      wrangler: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3)
+      wrangler: 4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -5399,12 +5402,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.5
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.5
 
-  '@tailwindcss/vite@4.3.5(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))':
+  '@tailwindcss/vite@4.3.5(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))':
     dependencies:
       '@tailwindcss/node': 4.3.5
       '@tailwindcss/oxide': 4.3.5
       tailwindcss: 4.3.5
-      vite: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+      vite: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
 
   '@testing-library/dom@10.4.2':
     dependencies:
@@ -5417,7 +5420,7 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
+  '@testing-library/jest-dom@7.0.1(@testing-library/dom@10.4.2)(vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)))':
     dependencies:
       '@adobe/css-tools': 4.5.0
       '@testing-library/dom': 10.4.2
@@ -5427,7 +5430,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
     optionalDependencies:
-      vitest: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+      vitest: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
 
   '@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
@@ -5471,9 +5474,9 @@ snapshots:
     dependencies:
       undici-types: 7.18.2
 
-  '@types/node@24.13.3':
+  '@types/node@26.6.6':
     dependencies:
-      undici-types: 7.18.2
+      undici-types: 8.9.0
 
   '@types/react-dom@19.3.0(@types/react@19.3.0)':
     dependencies:
@@ -5589,13 +5592,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.2.0
 
-  '@vitest/mocker@4.1.12(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.12(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.12
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+      vite: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.12':
     dependencies:
@@ -7230,10 +7233,10 @@ snapshots:
 
   min-indent@1.0.1: {}
 
-  miniflare@5.20261101.0-beta(@types/node@24.13.3):
+  miniflare@5.20261101.0-beta(@types/node@26.6.6):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
-      sharp: 0.35.5(@types/node@24.13.3)
+      sharp: 0.35.5(@types/node@26.6.6)
       undici: 7.30.1
       workerd: 1.20261101.1
       ws: 8.21.0
@@ -7243,10 +7246,10 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  miniflare@5.20261104.0-beta(@types/node@24.13.3):
+  miniflare@5.20261104.0-beta(@types/node@26.6.6):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
-      sharp: 0.35.5(@types/node@24.13.3)
+      sharp: 0.35.5(@types/node@26.6.6)
       undici: 7.30.1
       workerd: 1.20261104.1
       ws: 8.21.0
@@ -7772,7 +7775,7 @@ snapshots:
       safe-buffer: 5.2.1
       to-buffer: 1.2.2
 
-  sharp@0.35.5(@types/node@24.13.3):
+  sharp@0.35.5(@types/node@26.6.6):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
@@ -7803,7 +7806,7 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.5
       '@img/sharp-win32-ia32': 0.35.5
       '@img/sharp-win32-x64': 0.35.5
-      '@types/node': 24.13.3
+      '@types/node': 26.6.6
 
   shebang-command@2.0.0:
     dependencies:
@@ -8095,6 +8098,8 @@ snapshots:
 
   undici-types@7.18.2: {}
 
+  undici-types@8.9.0: {}
+
   undici@6.29.1: {}
 
   undici@7.30.1: {}
@@ -8142,17 +8147,17 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-tsconfig-paths@6.1.1(typescript@6.0.3)(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)):
+  vite-tsconfig-paths@6.1.1(typescript@6.0.3)(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@6.0.3)
-      vite: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+      vite: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0):
+  vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -8160,17 +8165,17 @@ snapshots:
       rolldown: 1.2.19
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 24.13.3
+      '@types/node': 26.6.6
       esbuild: 0.28.2
       fsevents: 2.3.3
       jiti: 2.7.0
       tsx: 4.20.6
       yaml: 2.9.0
 
-  vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.13.3)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)):
+  vitest@4.1.12(@opentelemetry/api@1.9.1)(@types/node@26.6.6)(jsdom@30.1.3(@noble/hashes@2.0.1))(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.12
-      '@vitest/mocker': 4.1.12(vite@8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.12(vite@8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.12
       '@vitest/runner': 4.1.12
       '@vitest/snapshot': 4.1.12
@@ -8187,11 +8192,11 @@ snapshots:
       tinyexec: 1.1.2
       tinyglobby: 0.2.17
       tinyrainbow: 3.2.0
-      vite: 8.2.4(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
+      vite: 8.2.4(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.20.6)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
-      '@types/node': 24.13.3
+      '@types/node': 26.6.6
       jsdom: 30.1.3(@noble/hashes@2.0.1)
     transitivePeerDependencies:
       - msw
@@ -8294,14 +8299,14 @@ snapshots:
       '@cloudflare/workerd-windows-64': 1.20261109.1
     optional: true
 
-  wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@24.13.3):
+  wrangler@4.158.0(@cloudflare/workers-types@5.20261108.1)(@types/node@26.6.6):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.2(unenv@2.0.0-rc.24)(workerd@1.20261104.1)
       '@cspotcode/source-map-support': 0.8.1
       blake3-wasm: 2.1.5
       esbuild: 0.28.2
-      miniflare: 5.20261104.0-beta(@types/node@24.13.3)
+      miniflare: 5.20261104.0-beta(@types/node@26.6.6)
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.24
       workerd: 1.20261104.1
