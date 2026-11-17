@@ -35,7 +35,7 @@
   "types": "./src/types.ts",
   "devDependencies": {
     "@cloudflare/vitest-plugin": "^1.6.0",
-    "@cloudflare/workers-types": "^5.20261108.1",
+    "@cloudflare/workers-types": "^5.20261117.1",
     "@shared/defines": "workspace:^",
     "@shared/types": "workspace:^",
     "esbuild": "^0.28.2",
