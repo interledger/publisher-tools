@@ -31,7 +31,7 @@
     "http-message-signatures": "^1.0.6",
     "httpbis-digest-headers": "^1.0.0",
     "i18next": "^26.4.2",
-    "isbot": "^5.2.2",
+    "isbot": "^5.2.3",
     "microdiff": "^1.6.0",
     "react": "^19.3.1",
     "react-click-away-listener": "^2.4.2",
