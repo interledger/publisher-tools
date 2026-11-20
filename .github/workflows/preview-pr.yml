@@ -86,7 +86,7 @@ jobs:
         # what we've in our project.
         id: wrangler
         run: |
-          wrangler_version=$(yq '.overrides.wrangler' pnpm-workspace.yaml)
+          wrangler_version=$(jq -r '.devDependencies.wrangler' api/package.json)
           pnpm install -g "wrangler@${wrangler_version}"
 
       #region Deploy
