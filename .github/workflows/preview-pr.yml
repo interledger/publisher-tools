@@ -32,7 +32,7 @@ jobs:
       # reviewed `head_sha` input, so commits pushed after the review are never deployed.
       - name: Resolve PR head repository
         id: pr
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9.0.0
         env:
           PR_NUMBER: ${{ inputs.pr_number }}
           HEAD_SHA: ${{ inputs.head_sha }}
@@ -73,13 +73,13 @@ jobs:
               );
             }
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           repository: ${{ steps.pr.outputs.head_repo }}
           ref: ${{ inputs.head_sha }}
           fetch-depth: 0
 
-      - uses: ./.github/workflows/setup
+      - uses: $/.github/workflows/setup
 
       - name: Install wrangler globally
         # The wrangler Action expects a global installation, so we better reuse
@@ -94,7 +94,7 @@ jobs:
       # so no check-deploy-permissions / paths-filter split is needed (see #831).
 
       - name: Deploy API
-        uses: ./.github/workflows/deploy-worker
+        uses: $/.github/workflows/deploy-worker
         id: api
         with:
           name: 'api'
@@ -110,7 +110,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Deploy CDN
-        uses: ./.github/workflows/deploy-worker
+        uses: $/.github/workflows/deploy-worker
         id: cdn
         with:
           name: 'cdn'
@@ -126,7 +126,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Deploy Frontend
-        uses: ./.github/workflows/deploy-worker
+        uses: $/.github/workflows/deploy-worker
         id: frontend
         with:
           name: 'frontend'
@@ -149,7 +149,7 @@ jobs:
       # Runs even when a deploy failed, but not when the setup itself failed.
       - name: Create Job summary
         if: ${{ always() && steps.wrangler.outcome == 'success' }}
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9.0.0
         id: summary
         env:
           SUMMARY_HEADING: 'Preview PR results'
@@ -173,7 +173,7 @@ jobs:
       - name: Create/update preview comment
         if: ${{ always() && steps.wrangler.outcome == 'success' }}
         continue-on-error: true
-        uses: edumserrano/find-create-or-update-comment@v3
+        uses: edumserrano/find-create-or-update-comment@v3.0.0
         with:
           issue-number: ${{ steps.pr.outputs.pr_number }}
           body-includes: '<!-- worker-deploy-summary -->'

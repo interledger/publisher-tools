@@ -28,20 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name == 'release' && 'production' || github.ref_name == 'main' && 'staging' || 'preview' }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           # Fetches the full git history, both base and head SHAs are available
           fetch-depth: 0
 
       - name: Check deployment permissions
         id: deploy-check
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9.0.0
         with:
           script: |
             const script = await import(`${process.env.GITHUB_WORKSPACE}/.github/scripts/check-deploy-permissions.ts`);
             await script.default({ core, context });
 
-      - uses: ./.github/workflows/setup
+      - uses: $/.github/workflows/setup
 
       - name: Install wrangler globally
         # The wrangler Action expects a global installation, so we better reuse
@@ -51,7 +51,7 @@ jobs:
           pnpm install -g "wrangler@${wrangler_version}"
 
       # https://github.com/dorny/paths-filter/issues/232
-      - uses: dorny/paths-filter@v4
+      - uses: dorny/paths-filter@v4.0.3
         id: changes
         with:
           filters: |
@@ -98,7 +98,7 @@ jobs:
       # 3. frontend
 
       - name: Deploy API
-        uses: ./.github/workflows/deploy-worker
+        uses: $/.github/workflows/deploy-worker
         id: api
         with:
           name: 'api'
@@ -113,7 +113,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Deploy CDN
-        uses: ./.github/workflows/deploy-worker
+        uses: $/.github/workflows/deploy-worker
         id: cdn
         with:
           name: 'cdn'
@@ -128,7 +128,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Deploy Frontend
-        uses: ./.github/workflows/deploy-worker
+        uses: $/.github/workflows/deploy-worker
         id: frontend
         with:
           name: 'frontend'
@@ -149,7 +149,7 @@ jobs:
       #region Summary
       - name: Create Job summary
         if: always()
-        uses: actions/github-script@v9
+        uses: actions/github-script@v9.0.0
         id: summary
         env:
           API_URL: ${{ steps.api.outputs.url }}
@@ -169,7 +169,7 @@ jobs:
       - name: Create deploy comment
         if: github.event_name == 'pull_request'
         continue-on-error: true
-        uses: edumserrano/find-create-or-update-comment@v3
+        uses: edumserrano/find-create-or-update-comment@v3.0.0
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: '<!-- worker-deploy-summary -->'

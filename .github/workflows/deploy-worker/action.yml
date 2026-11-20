@@ -1,5 +1,5 @@
-name: 'Deploy a Cloudflare worker'
-description: 'Conditionally deploys a Cloudflare worker, outputs deploy URL'
+name: "Deploy a Cloudflare worker"
+description: "Conditionally deploys a Cloudflare worker, outputs deploy URL"
 
 inputs:
   name:
@@ -7,64 +7,64 @@ inputs:
     description: Name of the folder containing the worker code
   build:
     required: false
-    description: 'Build script'
-    default: ''
+    description: "Build script"
+    default: ""
   changed:
     required: true
-    description: 'Whether the worker code has changed' # check with == 'true'
+    description: "Whether the worker code has changed" # check with == 'true'
   mode:
     required: true
-    description: 'Deployment mode: `staging` (push to main), `production` (push to release) or `preview` (pull_request to main)'
+    description: "Deployment mode: `staging` (push to main), `production` (push to release) or `preview` (pull_request to main)"
   pr-number:
     required: false
-    description: 'PR number for preview alias. Defaults to github.event.pull_request.number (required when mode is preview and event is not pull_request, e.g. workflow_dispatch).'
-    default: ''
+    description: "PR number for preview alias. Defaults to github.event.pull_request.number (required when mode is preview and event is not pull_request, e.g. workflow_dispatch)."
+    default: ""
   skip-deploy:
     required: false
-    description: 'Skip actual deployment (only build/test for validation)'
-    default: 'false'
+    description: "Skip actual deployment (only build/test for validation)"
+    default: "false"
   origin:
     required: true
-    description: 'Default URL Origin when deploying to staging/production'
+    description: "Default URL Origin when deploying to staging/production"
 
   # Authentication
   apiToken:
     required: true
-    description: 'https://developers.cloudflare.com/fundamentals/api/get-started/create-token/'
+    description: "https://developers.cloudflare.com/fundamentals/api/get-started/create-token/"
   accountId:
     required: true
-    description: 'Cloudflare account ID'
+    description: "Cloudflare account ID"
 
   # build time constants
   BUILD_API_URL:
-    description: 'API_URL from deploying api'
+    description: "API_URL from deploying api"
     required: false
   BUILD_CDN_URL:
-    description: 'CDN_URL from deploying cdn'
+    description: "CDN_URL from deploying cdn"
     required: false
   BUILD_AWS_PREFIX:
-    description: 'AWS_PREFIX used for config storage'
+    description: "AWS_PREFIX used for config storage"
     required: true
   BUILD_UMAMI_HOST:
-    description: 'Umami host (e.g. https://cloud.umami.is)'
+    description: "Umami host (e.g. https://cloud.umami.is)"
     required: false
   BUILD_UMAMI_WEBSITE_ID:
-    description: 'Umami analytics website ID'
+    description: "Umami analytics website ID"
     required: false
 
 outputs:
   url:
-    description: 'The aliased deploy or the versioned deploy URL if no alias is set'
+    description: "The aliased deploy or the versioned deploy URL if no alias is set"
     value: ${{ steps.get-url.outputs.url }}
   versioned-url:
-    description: 'The versioned deploy URL'
+    description: "The versioned deploy URL"
     value: ${{ steps.get-url.outputs.versioned-url }}
   did-deploy:
-    description: 'Whether the worker was deployed'
+    description: "Whether the worker was deployed"
     value: ${{ steps.get-url.outputs.did-deploy }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Build worker
       if: ${{ inputs.build && (inputs.changed == 'true' || inputs.mode == 'production') }}
@@ -96,7 +96,7 @@ runs:
     - name: Deploy Worker
       if: ${{ inputs.skip-deploy == 'false' && (inputs.changed == 'true' || inputs.mode == 'production') }}
       id: deploy
-      uses: cloudflare/wrangler-action@v4
+      uses: cloudflare/wrangler-action@v4.1.3
       with:
         apiToken: ${{ inputs.apiToken }}
         accountId: ${{ inputs.accountId }}
