@@ -18,8 +18,8 @@ jobs:
     name: Lint and Typecheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/workflows/setup
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/workflows/setup
       - run: pnpm format:check
       - run: pnpm lint:check
       - run: pnpm typecheck
@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
       - name: Environment setup
-        uses: ./.github/workflows/setup
+        uses: $/.github/workflows/setup
       - name: Run tests
         run: pnpm test
 
@@ -59,9 +59,9 @@ jobs:
       E2E_WALLET_PASSWORD: ${{ secrets.E2E_WALLET_PASSWORD }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
       - name: Environment setup
-        uses: ./.github/workflows/setup
+        uses: $/.github/workflows/setup
       - name: Run E2E tests
         run: pnpm test:e2e
       # Traces record what the tests type, including the test wallet password
@@ -83,7 +83,7 @@ jobs:
           fi
       - name: Upload Playwright report
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: playwright-report
           path: e2e/playwright-report.zip
